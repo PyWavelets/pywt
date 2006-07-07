@@ -1,0 +1,26 @@
+Changelog
+
+0.1.4
+    changes:
+        - Wavelet class can be subclassed
+        - requires NumPy, edit numerix.py to use with other numeric modules,
+          array.array is no more directly supported
+        - code cleanup & comments
+        - wavedec and waverec Pyrex code moved to pure Python multilevel.py
+          module
+        - doctesting doc examples
+
+    fixes:
+        - fixed swt for too high level value
+        - fixed bug in upcoef wrapper code for some take values
+
+0.1.2
+    changes:
+        - support for custom filter banks
+        - now compiles without numpy installed
+
+    fixes:
+        - fixed handling of non-contiguous arrays 
+
+0.1.0 
+    initial release

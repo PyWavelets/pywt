@@ -1,0 +1,688 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<title>PyWavelets - Discrete Wavelet Transform in Python</title>
+<meta name="author" content="Filip Wasilewski" />
+<meta name="date" content="2006-07-07 17:21" />
+<meta content="pywavelets wavelet transform python module discrete dwt idwt swt wavelets packets" name="keywords" />
+<meta content="Python discrete wavelet transform module" lang="en" name="description" />
+<link rel="stylesheet" href="css/python.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="pywavelets-discrete-wavelet-transform-in-python">
+<h1 class="title">PyWavelets - Discrete Wavelet Transform in Python</h1>
+<h2 class="subtitle" id="user-guide">User Guide</h2>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name" />
+<col class="docinfo-content" />
+<tbody valign="top">
+<tr><th class="docinfo-name">Author:</th>
+<td>Filip Wasilewski</td></tr>
+<tr><th class="docinfo-name">Contact:</th>
+<td><a class="first last reference" href="mailto:filipwasilewski&#64;gmail.com">filipwasilewski&#64;gmail.com</a></td></tr>
+<tr><th class="docinfo-name">Version:</th>
+<td>0.1.4</td></tr>
+<tr><th class="docinfo-name">Status:</th>
+<td>alpha</td></tr>
+<tr><th class="docinfo-name">Date:</th>
+<td>2006-07-07 17:21</td></tr>
+<tr class="field"><th class="docinfo-name">License:</th><td class="field-body"><a class="reference" href="COPYING.txt">MIT</a></td>
+</tr>
+</tbody>
+</table>
+<div class="abstract topic">
+<p class="topic-title first">Abstract</p>
+<p><cite>PyWavelets</cite> is a <a class="reference" href="http://python.org/">Python</a> module for calculating forward and inverse
+Discrete Wavelet Transform, Stationary Wavelet Transform and Wavelet Packets
+decomposition and reconstruction.
+This document is a User Guide to <cite>PyWavelets</cite>.</p>
+</div>
+<div class="contents local topic">
+<p class="topic-title first"><a id="table-of-contents" name="table-of-contents">Table of Contents</a></p>
+<ul class="auto-toc simple">
+<li><a class="reference" href="#introduction" id="id2" name="id2">1.&nbsp;&nbsp;&nbsp;Introduction</a><ul class="auto-toc">
+<li><a class="reference" href="#requirements" id="id3" name="id3">1.1.&nbsp;&nbsp;&nbsp;Requirements</a></li>
+<li><a class="reference" href="#download" id="id4" name="id4">1.2.&nbsp;&nbsp;&nbsp;Download</a></li>
+<li><a class="reference" href="#install" id="id5" name="id5">1.3.&nbsp;&nbsp;&nbsp;Install</a></li>
+<li><a class="reference" href="#license" id="id6" name="id6">1.4.&nbsp;&nbsp;&nbsp;License</a></li>
+<li><a class="reference" href="#contact" id="id7" name="id7">1.5.&nbsp;&nbsp;&nbsp;Contact</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#wavelets" id="id8" name="id8">2.&nbsp;&nbsp;&nbsp;Wavelets</a><ul class="auto-toc">
+<li><a class="reference" href="#families" id="id9" name="id9">2.1.&nbsp;&nbsp;&nbsp;<tt class="docutils literal"><span class="pre">families</span></tt></a></li>
+<li><a class="reference" href="#id1" id="id10" name="id10">2.2.&nbsp;&nbsp;&nbsp;<tt class="docutils literal"><span class="pre">wavelist</span></tt></a></li>
+<li><a class="reference" href="#wavelet" id="id11" name="id11">2.3.&nbsp;&nbsp;&nbsp;<tt class="docutils literal"><span class="pre">Wavelet</span></tt></a></li>
+</ul>
+</li>
+<li><a class="reference" href="#discrete-wavelet-transform" id="id12" name="id12">3.&nbsp;&nbsp;&nbsp;Discrete Wavelet Transform</a><ul class="auto-toc">
+<li><a class="reference" href="#single-level-dwt" id="id13" name="id13">3.1.&nbsp;&nbsp;&nbsp;Single level <tt class="docutils literal"><span class="pre">dwt</span></tt></a></li>
+<li><a class="reference" href="#multilevel-decomposition-using-wavedec" id="id14" name="id14">3.2.&nbsp;&nbsp;&nbsp;Multilevel decomposition using <tt class="docutils literal"><span class="pre">wavedec</span></tt></a></li>
+<li><a class="reference" href="#maximum-decomposition-level-dwt-max-level" id="id15" name="id15">3.3.&nbsp;&nbsp;&nbsp;Maximum decomposition level - <tt class="docutils literal"><span class="pre">dwt_max_level</span></tt></a></li>
+<li><a class="reference" href="#result-coefficients-length-dwt-coeff-len" id="id16" name="id16">3.4.&nbsp;&nbsp;&nbsp;Result coefficients length - <tt class="docutils literal"><span class="pre">dwt_coeff_len</span></tt></a></li>
+<li><a class="reference" href="#signal-extension-modes-modes" id="id17" name="id17">3.5.&nbsp;&nbsp;&nbsp;Signal extension modes - <tt class="docutils literal"><span class="pre">MODES</span></tt></a></li>
+</ul>
+</li>
+<li><a class="reference" href="#inverse-discrete-wavelet-transform" id="id18" name="id18">4.&nbsp;&nbsp;&nbsp;Inverse Discrete Wavelet Transform</a><ul class="auto-toc">
+<li><a class="reference" href="#idwt" id="id19" name="id19">4.1.&nbsp;&nbsp;&nbsp;<tt class="docutils literal"><span class="pre">idwt</span></tt></a></li>
+<li><a class="reference" href="#waverec" id="id20" name="id20">4.2.&nbsp;&nbsp;&nbsp;<tt class="docutils literal"><span class="pre">waverec</span></tt></a></li>
+<li><a class="reference" href="#upcoef" id="id21" name="id21">4.3.&nbsp;&nbsp;&nbsp;<tt class="docutils literal"><span class="pre">upcoef</span></tt></a></li>
+</ul>
+</li>
+<li><a class="reference" href="#wavelet-packets" id="id22" name="id22">5.&nbsp;&nbsp;&nbsp;Wavelet Packets</a><ul class="auto-toc">
+<li><a class="reference" href="#wavelet-packet" id="id23" name="id23">5.1.&nbsp;&nbsp;&nbsp;Wavelet Packet</a></li>
+<li><a class="reference" href="#node" id="id24" name="id24">5.2.&nbsp;&nbsp;&nbsp;Node</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#stationary-wavelet-transform" id="id25" name="id25">6.&nbsp;&nbsp;&nbsp;Stationary Wavelet Transform</a><ul class="auto-toc">
+<li><a class="reference" href="#multilevel-swt" id="id26" name="id26">6.1.&nbsp;&nbsp;&nbsp;Multilevel <tt class="docutils literal"><span class="pre">swt</span></tt></a></li>
+<li><a class="reference" href="#maximum-decomposition-level-swt-max-level" id="id27" name="id27">6.2.&nbsp;&nbsp;&nbsp;Maximum decomposition level - <tt class="docutils literal"><span class="pre">swt_max_level</span></tt></a></li>
+</ul>
+</li>
+<li><a class="reference" href="#demo" id="id28" name="id28">7.&nbsp;&nbsp;&nbsp;Demo</a></li>
+</ul>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id2" id="introduction" name="introduction">1.&nbsp;&nbsp;&nbsp;Introduction</a></h1>
+<div class="section">
+<h2><a class="toc-backref" href="#id3" id="requirements" name="requirements">1.1.&nbsp;&nbsp;&nbsp;Requirements</a></h2>
+<p><cite>PyWavelets</cite> was developed and tested with <a class="reference" href="http://python.org/">Python</a> 2.4. Since version 0.1.4 it
+requires a recent version of <a class="reference" href="http://www.scipy.org/">NumPy</a> numeric array module.</p>
+</div>
+<div class="section">
+<h2><a class="toc-backref" href="#id4" id="download" name="download">1.2.&nbsp;&nbsp;&nbsp;Download</a></h2>
+<p>Current release, including source and binary version for Windows, is available
+for download from Python Cheese Shop directory at:</p>
+<blockquote>
+<a class="reference" href="http://cheeseshop.python.org/pypi/PyWavelets/">http://cheeseshop.python.org/pypi/PyWavelets/</a></blockquote>
+<p>The latest <em>development</em> version can be downloaded from
+<a class="reference" href="http://wavelets.scipy.org">wavelets.scipy.org</a>'s SVN <a class="reference" href="http://wavelets.scipy.org/svn/multiresolution/pywt/trunk">repository</a>:</p>
+<pre class="literal-block">
+svn co http://wavelets.scipy.org/svn/multiresolution/pywt/trunk
+</pre>
+</div>
+<div class="section">
+<h2><a class="toc-backref" href="#id5" id="install" name="install">1.3.&nbsp;&nbsp;&nbsp;Install</a></h2>
+<p><cite>PyWavelets</cite> was originaly developed using <a class="reference" href="http://www.mingw.org/">MinGW</a> C compiler, <a class="reference" href="http://www.cosc.canterbury.ac.nz/~greg/python/Pyrex/">Pyrex</a> and
+<a class="reference" href="http://python.org/">Python</a> 2.4 under WindowsXP. Most of the code is written in C with
+<a class="reference" href="http://www.cosc.canterbury.ac.nz/~greg/python/Pyrex/">Pyrex</a> bindings.</p>
+<p>If you are using Python 2.4 on Windows then just download and execute
+the binary version for Windows.</p>
+<p>To install from source you will need a C compiler and optionally Pyrex
+installed:</p>
+<pre class="literal-block">
+python setup.py install
+</pre>
+<p>If you have <a class="reference" href="http://www.scipy.org/">numpy</a> and <a class="reference" href="http://matplotlib.sourceforge.net">matplotlib</a> installed try running some examples from <cite>demo</cite>
+directory to verify installation. Test cases coming soon.</p>
+</div>
+<div class="section">
+<h2><a class="toc-backref" href="#id6" id="license" name="license">1.4.&nbsp;&nbsp;&nbsp;License</a></h2>
+<p><cite>PyWavelets</cite> is free open source software available under <a class="reference" href="COPYING.txt">MIT license</a>.</p>
+</div>
+<div class="section">
+<h2><a class="toc-backref" href="#id7" id="contact" name="contact">1.5.&nbsp;&nbsp;&nbsp;Contact</a></h2>
+<p>Feel free to contact me directly <a class="reference" href="mailto:filipwasilewski&#64;gmail.com">filipwasilewski&#64;gmail.com</a>.
+Comments and bug reports (and fixes;) are welcome.</p>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id8" id="wavelets" name="wavelets">2.&nbsp;&nbsp;&nbsp;Wavelets</a></h1>
+<div class="section">
+<h2><a class="toc-backref" href="#id9" id="families" name="families">2.1.&nbsp;&nbsp;&nbsp;<tt class="docutils literal"><span class="pre">families</span></tt></a></h2>
+<p>The <tt class="docutils literal"><span class="pre">families()</span></tt> function returns names of available wavelet families.</p>
+<p>Currently the following wavelet families with over seventhy wavelets are available:</p>
+<ul class="simple">
+<li>Haar (<tt class="docutils literal"><span class="pre">haar</span></tt>)</li>
+<li>Daubechies (<tt class="docutils literal"><span class="pre">db</span></tt>)</li>
+<li>Symlets (<tt class="docutils literal"><span class="pre">sym</span></tt>)</li>
+<li>Coiflets (<tt class="docutils literal"><span class="pre">coif</span></tt>)</li>
+<li>Biorthogonal (<tt class="docutils literal"><span class="pre">bior</span></tt>)</li>
+<li>Reverse biorthogonal (<tt class="docutils literal"><span class="pre">rbio</span></tt>)</li>
+<li><cite>&quot;Discrete&quot;</cite> FIR approximation of Meyer wavelet (<tt class="docutils literal"><span class="pre">dmey</span></tt>)</li>
+</ul>
+<p class="example">Example:</p>
+<div class="example"><pre class="pycode doctest-block"><span class="pmt">&gt;&gt;&gt;</span> <span class="kwd">import</span> <span class="name">pywt</span>
+<span class="pmt">&gt;&gt;&gt;</span> <span class="kwd">print</span> <span class="name">pywt</span><span class="op">.</span><span class="name">families</span><span class="op">(</span><span class="op">)</span>
+<span class="op">[</span><span class="str">'haar'</span><span class="op">,</span> <span class="str">'db'</span><span class="op">,</span> <span class="str">'sym'</span><span class="op">,</span> <span class="str">'coif'</span><span class="op">,</span> <span class="str">'bior'</span><span class="op">,</span> <span class="str">'rbio'</span><span class="op">,</span> <span class="str">'dmey'</span><span class="op">]</span><span class="txt"></span></pre>
+</div></div>
+<div class="section">
+<h2><a class="toc-backref" href="#id10" id="id1" name="id1"><span id="wavelist"></span>2.2.&nbsp;&nbsp;&nbsp;<tt class="docutils literal"><span class="pre">wavelist</span></tt></a></h2>
+<p>The <tt class="docutils literal"><span class="pre">wavelist(short_name=None)</span></tt> function returns list of available
+wavelet names.</p>
+<p>If <tt class="docutils literal"><span class="pre">short_name</span></tt> is None, then names of all implemented wavelets is returned,
+otherwise the function returns names of wavelets from given family name.</p>
+<p class="example">Example:</p>
+<div class="example"><pre class="pycode doctest-block"><span class="pmt">&gt;&gt;&gt;</span> <span class="kwd">import</span> <span class="name">pywt</span>
+<span class="pmt">&gt;&gt;&gt;</span> <span class="kwd">print</span> <span class="name">pywt</span><span class="op">.</span><span class="name">wavelist</span><span class="op">(</span><span class="str">'coif'</span><span class="op">)</span>
+<span class="op">[</span><span class="str">'coif1'</span><span class="op">,</span> <span class="str">'coif2'</span><span class="op">,</span> <span class="str">'coif3'</span><span class="op">,</span> <span class="str">'coif4'</span><span class="op">,</span> <span class="str">'coif5'</span><span class="op">]</span><span class="txt"></span></pre>
+</div></div>
+<div class="section">
+<h2><a class="toc-backref" href="#id11" id="wavelet" name="wavelet">2.3.&nbsp;&nbsp;&nbsp;<tt class="docutils literal"><span class="pre">Wavelet</span></tt></a></h2>
+<p><tt class="docutils literal"><span class="pre">Wavelet(name,</span> <span class="pre">filter_bank=None)</span></tt> class describes properties of wavelet
+identified by <tt class="docutils literal"><span class="pre">name</span></tt>. The parameter <tt class="docutils literal"><span class="pre">name</span></tt> must be valid wavelet name
+from <a class="reference" href="#wavelist"><tt class="docutils literal"><span class="pre">wavelist()</span></tt></a> list. Otherwise a <a class="reference" href="#filter-bank">filter_bank</a> must be provided.</p>
+<dl class="docutils">
+<dt>name</dt>
+<dd>Wavelet name</dd>
+</dl>
+<dl class="docutils" id="filter-bank">
+<dt>filter_bank</dt>
+<dd>Use user supplied filter bank instead of builtin <tt class="docutils literal"><span class="pre">Wavelet</span></tt>.
+The filter bank object must implement the
+<a class="reference" href="#get-filters-coeffs">get_filters_coeffs()</a> method,
+which returns a list of filters (dec_lo, dec_hi, rec_lo, rec_hi).
+A Wavelet object can be used as a filter bank. See <a class="reference" href="./demo/user_filter_banks.py">user_filter_banks.py</a> for example.</dd>
+<dt>dec_lo, dec_hi</dt>
+<dd>Decomposition filters values.</dd>
+<dt>rec_lo, rec_hi</dt>
+<dd>Reconstruction filters values.</dd>
+<dt>dec_len</dt>
+<dd>Decomposition filter length.</dd>
+<dt>rec_len</dt>
+<dd>Reconstruction filter length.</dd>
+</dl>
+<dl class="docutils" id="get-filters-coeffs">
+<dt>get_filters_coeffs()</dt>
+<dd>Quadrature mirror filters list for current wavelet (dec_lo, dec_hi, rec_lo, rec_hi)</dd>
+<dt>other properties:</dt>
+<dd><ul class="first last simple">
+<li>family_name</li>
+<li>short_name</li>
+<li>orthogonal</li>
+<li>biorthogonal</li>
+<li>orthonormal</li>
+<li>symmetry - <tt class="docutils literal"><span class="pre">asymmetric</span></tt>, <tt class="docutils literal"><span class="pre">near</span> <span class="pre">symmetric</span></tt>, <tt class="docutils literal"><span class="pre">symmetric</span></tt></li>
+<li>vanishing_moments_psi</li>
+<li>vanishing_moments_phi</li>
+</ul>
+</dd>
+</dl>
+<p class="example">Example:</p>
+<div class="example"><pre class="pycode doctest-block"><span class="pmt">&gt;&gt;&gt;</span> <span class="kwd">import</span> <span class="name">pywt</span>
+<span class="pmt">&gt;&gt;&gt;</span> <span class="name">wavelet</span> <span class="op">=</span> <span class="name">pywt</span><span class="op">.</span><span class="name">Wavelet</span><span class="op">(</span><span class="str">'db1'</span><span class="op">)</span>
+<span class="pmt">&gt;&gt;&gt;</span> <span class="kwd">print</span> <span class="name">wavelet</span>
+<span class="name">Wavelet</span> <span class="name">db1</span>
+  <span class="name">Family</span> <span class="name">name</span><span class="op">:</span>    <span class="name">Daubechies</span>
+  <span class="name">Short</span> <span class="name">name</span><span class="op">:</span>     <span class="name">db</span>
+  <span class="name">Filters</span> <span class="name">length</span><span class="op">:</span> <span class="num">2</span>
+  <span class="name">Orthogonal</span><span class="op">:</span>     <span class="name">True</span>
+  <span class="name">Biorthogonal</span><span class="op">:</span>   <span class="name">True</span>
+  <span class="name">Orthonormal</span><span class="op">:</span>    <span class="name">False</span>
+  <span class="name">Symmetry</span><span class="op">:</span>       <span class="name">asymmetric</span>
+<span class="pmt">&gt;&gt;&gt;</span> <span class="kwd">print</span> <span class="name">wavelet</span><span class="op">.</span><span class="name">dec_lo</span><span class="op">,</span> <span class="name">wavelet</span><span class="op">.</span><span class="name">dec_hi</span>
+<span class="op">[</span><span class="num">0.70710678118654757</span><span class="op">,</span> <span class="num">0.70710678118654757</span><span class="op">]</span> <span class="op">[</span><span class="op">-</span><span class="num">0.70710678118654757</span><span class="op">,</span> <span class="num">0.70710678118654757</span><span class="op">]</span>
+<span class="pmt">&gt;&gt;&gt;</span> <span class="kwd">print</span> <span class="name">wavelet</span><span class="op">.</span><span class="name">rec_lo</span><span class="op">,</span> <span class="name">wavelet</span><span class="op">.</span><span class="name">rec_hi</span>
+<span class="op">[</span><span class="num">0.70710678118654757</span><span class="op">,</span> <span class="num">0.70710678118654757</span><span class="op">]</span> <span class="op">[</span><span class="num">0.70710678118654757</span><span class="op">,</span> <span class="op">-</span><span class="num">0.70710678118654757</span><span class="op">]</span><span class="txt"></span></pre>
+</div><div class="section">
+<h3><a id="wavefun" name="wavefun">2.3.1.&nbsp;&nbsp;&nbsp;<tt class="docutils literal"><span class="pre">wavefun</span></tt></a></h3>
+<p>The <tt class="docutils literal"><span class="pre">wavefun(level)</span></tt> function can be used to calculates aproximations wavelet function (<em>psi</em>)
+and associated of scaling function (<em>phi</em>) at given level of refinement.</p>
+<p>For an orthogonal wavelet returns scaling and wavelet function.</p>
+<div class="example"><pre class="pycode doctest-block"><span class="pmt">&gt;&gt;&gt;</span> <span class="kwd">import</span> <span class="name">pywt</span>
+<span class="pmt">&gt;&gt;&gt;</span> <span class="name">wavelet</span> <span class="op">=</span> <span class="name">pywt</span><span class="op">.</span><span class="name">Wavelet</span><span class="op">(</span><span class="str">'db2'</span><span class="op">)</span>
+<span class="pmt">&gt;&gt;&gt;</span> <span class="name">phi</span><span class="op">,</span> <span class="name">psi</span> <span class="op">=</span> <span class="name">wavelet</span><span class="op">.</span><span class="name">wavefun</span><span class="op">(</span><span class="name">level</span><span class="op">=</span><span class="num">5</span><span class="op">)</span><span class="txt"></span></pre>
+</div><p>For an biorthogonal wavelet returns scaling and wavelet function both for decomposition
+and reconstruction.</p>
+<div class="example"><pre class="pycode doctest-block"><span class="pmt">&gt;&gt;&gt;</span> <span class="kwd">import</span> <span class="name">pywt</span>
+<span class="pmt">&gt;&gt;&gt;</span> <span class="name">wavelet</span> <span class="op">=</span> <span class="name">pywt</span><span class="op">.</span><span class="name">Wavelet</span><span class="op">(</span><span class="str">'bior1.1'</span><span class="op">)</span>
+<span class="pmt">&gt;&gt;&gt;</span> <span class="name">phi_d</span><span class="op">,</span> <span class="name">psi_d</span><span class="op">,</span> <span class="name">phi_r</span><span class="op">,</span> <span class="name">psi_r</span> <span class="op">=</span> <span class="name">wavelet</span><span class="op">.</span><span class="name">wavefun</span><span class="op">(</span><span class="name">level</span><span class="op">=</span><span class="num">5</span><span class="op">)</span><span class="txt"></span></pre>
+</div><p>See also plots of Daubechies and Symlets wavelet familes generated
+with <tt class="docutils literal"><span class="pre">wavefun</span></tt> function:</p>
+<ul class="simple">
+<li><a class="reference" href="./img/db.png">db.png</a></li>
+<li><a class="reference" href="./img/sym.png">sym.png</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id12" id="discrete-wavelet-transform" name="discrete-wavelet-transform">3.&nbsp;&nbsp;&nbsp;Discrete Wavelet Transform</a></h1>
+<p>Wavelet transform has recently became very popular
+when it comes to data analysis, denoising or compression,
+either 1 or 2 dimensional signals.</p>
+<div class="section">
+<h2><a class="toc-backref" href="#id13" id="single-level-dwt" name="single-level-dwt"><span id="dwt"></span>3.1.&nbsp;&nbsp;&nbsp;Single level <tt class="docutils literal"><span class="pre">dwt</span></tt></a></h2>
+<p>The <tt class="docutils literal"><span class="pre">dwt</span></tt> function is used to perform single level,
+one dimensional Discrete Wavelet Transform.</p>
+<pre class="literal-block">
+(cA, cD) = dwt(data, wavelet, mode='sym')
+</pre>
+<dl class="docutils">
+<dt>data</dt>
+<dd>Input signal can be numeric arrray, python list or other iterable.
+If data is not in <em>double</em> format it will be converted to that type
+before performing computation.</dd>
+<dt>wavelet</dt>
+<dd>Wavelet to use in transform. This can be name of wavelet from <a class="reference" href="#wavelist"><tt class="docutils literal"><span class="pre">wavelist()</span></tt></a> or <a class="reference" href="#wavelet"><tt class="docutils literal"><span class="pre">Wavelet</span></tt></a> object.</dd>
+<dt>mode</dt>
+<dd>Signal extension mode, see <a class="reference" href="#modes">MODES</a>.</dd>
+</dl>
+<p>Length of returned approximation (cA) and details(cD) coefficient
+arrays depends on selected <a class="reference" href="#mode">mode</a> - see <a class="reference" href="#dwt-coeff-len">dwt_coeff_len</a>:</p>
+<ul>
+<li><p class="first">for all modes except <em>periodization</em>:</p>
+<pre class="literal-block">
+len(cA) == len(cD) == floor((len(data) + wavelet.dec_len - 1) / 2)
+</pre>
+</li>
+<li><p class="first">for <em>periodization</em> mode (<tt class="docutils literal"><span class="pre">MODES.per</span></tt>):</p>
+<pre class="literal-block">
+len(cA) == len(cD) == ceil(len(data) / 2)
+</pre>
+</li>
+</ul>
+<p class="example">Example:</p>
+<div class="example"><pre class="pycode doctest-block"><span class="pmt">&gt;&gt;&gt;</span> <span class="kwd">import</span> <span class="name">pywt</span>
+<span class="pmt">&gt;&gt;&gt;</span> <span class="op">(</span><span class="name">cA</span><span class="op">,</span> <span class="name">cD</span><span class="op">)</span> <span class="op">=</span> <span class="name">pywt</span><span class="op">.</span><span class="name">dwt</span><span class="op">(</span><span class="op">[</span><span class="num">1</span><span class="op">,</span><span class="num">2</span><span class="op">,</span><span class="num">3</span><span class="op">,</span><span class="num">4</span><span class="op">,</span><span class="num">5</span><span class="op">,</span><span class="num">6</span><span class="op">]</span><span class="op">,</span> <span class="str">'db1'</span><span class="op">)</span>
+<span class="pmt">&gt;&gt;&gt;</span> <span class="kwd">print</span> <span class="name">cA</span>
+<span class="op">[</span> <span class="num">2.12132034</span>  <span class="num">4.94974747</span>  <span class="num">7.77817459</span><span class="op">]</span>
+<span class="pmt">&gt;&gt;&gt;</span> <span class="kwd">print</span> <span class="name">cD</span>
+<span class="op">[</span><span class="op">-</span><span class="num">0.70710678</span> <span class="op">-</span><span class="num">0.70710678</span> <span class="op">-</span><span class="num">0.70710678</span><span class="op">]</span><span class="txt"></span></pre>
+</div></div>
+<div class="section">
+<h2><a class="toc-backref" href="#id14" id="multilevel-decomposition-using-wavedec" name="multilevel-decomposition-using-wavedec"><span id="wavedec"></span>3.2.&nbsp;&nbsp;&nbsp;Multilevel decomposition using <tt class="docutils literal"><span class="pre">wavedec</span></tt></a></h2>
+<p>Performs multilevel Discrete Wavelet Transform decomposition of given
+signal and returns coefficient list in form [cAn cDn cDn-1 ... cD2 cD1].</p>
+<pre class="literal-block">
+wavedec(data, wavelet, level=1, mode='sym')
+</pre>
+<dl class="docutils">
+<dt>data</dt>
+<dd>Input signal can be numeric arrray, python list or other iterable.
+If data is not in <em>double</em> format it will be converted to that type
+before performing computation.</dd>
+<dt>wavelet</dt>
+<dd>Wavelet to use in transform. This can be name of wavelet from <a class="reference" href="#wavelist"><tt class="docutils literal"><span class="pre">wavelist()</span></tt></a> or <a class="reference" href="#wavelet"><tt class="docutils literal"><span class="pre">Wavelet</span></tt></a> object.</dd>
+<dt>level</dt>
+<dd>Decomposition level. This should not be greater than value
+from the <a class="reference" href="#dwt-max-level">dwt_max_level</a> function for corresponding arguments.</dd>
+<dt>mode</dt>
+<dd>Signal extension mode, see <a class="reference" href="#modes">MODES</a>.</dd>
+</dl>
+<p class="example">Example:</p>
+<div class="example"><pre class="pycode doctest-block"><span class="pmt">&gt;&gt;&gt;</span> <span class="kwd">import</span> <span class="name">pywt</span>
+<span class="pmt">&gt;&gt;&gt;</span> <span class="name">coeffs</span> <span class="op">=</span> <span class="name">pywt</span><span class="op">.</span><span class="name">wavedec</span><span class="op">(</span><span class="op">[</span><span class="num">1</span><span class="op">,</span><span class="num">2</span><span class="op">,</span><span class="num">3</span><span class="op">,</span><span class="num">4</span><span class="op">,</span><span class="num">5</span><span class="op">,</span><span class="num">6</span><span class="op">,</span><span class="num">7</span><span class="op">,</span><span class="num">8</span><span class="op">]</span><span class="op">,</span> <span class="str">'db1'</span><span class="op">,</span> <span class="name">level</span><span class="op">=</span><span class="num">2</span><span class="op">)</span>
+<span class="pmt">&gt;&gt;&gt;</span> <span class="name">a2</span><span class="op">,</span> <span class="name">d2</span><span class="op">,</span> <span class="name">d1</span> <span class="op">=</span> <span class="name">coeffs</span>
+<span class="pmt">&gt;&gt;&gt;</span> <span class="kwd">print</span> <span class="name">d1</span>
+<span class="op">[</span><span class="op">-</span><span class="num">0.70710678</span> <span class="op">-</span><span class="num">0.70710678</span> <span class="op">-</span><span class="num">0.70710678</span> <span class="op">-</span><span class="num">0.70710678</span><span class="op">]</span>
+<span class="pmt">&gt;&gt;&gt;</span> <span class="kwd">print</span> <span class="name">d2</span>
+<span class="op">[</span><span class="op">-</span><span class="num">2.</span> <span class="op">-</span><span class="num">2.</span><span class="op">]</span>
+<span class="pmt">&gt;&gt;&gt;</span> <span class="kwd">print</span> <span class="name">a2</span>
+<span class="op">[</span>  <span class="num">5.</span>  <span class="num">13.</span><span class="op">]</span><span class="txt"></span></pre>
+</div></div>
+<div class="section">
+<h2><a class="toc-backref" href="#id15" id="maximum-decomposition-level-dwt-max-level" name="maximum-decomposition-level-dwt-max-level"><span id="dwt-max-level"></span>3.3.&nbsp;&nbsp;&nbsp;Maximum decomposition level - <tt class="docutils literal"><span class="pre">dwt_max_level</span></tt></a></h2>
+<p>The <tt class="docutils literal"><span class="pre">dwt_max_level</span></tt> function can be used to
+compute the maximum usefull level of decomposition for given <tt class="docutils literal"><span class="pre">input</span> <span class="pre">data</span> <span class="pre">length</span></tt>
+and <tt class="docutils literal"><span class="pre">wavelet</span> <span class="pre">filter</span> <span class="pre">length</span></tt>.</p>
+<pre class="literal-block">
+dwt_max_level(data_len, filter_len)
+</pre>
+<p>The returned value equals:</p>
+<pre class="literal-block">
+floor(log(data_len/(filter_len-1))/log(2))
+</pre>
+<p>Although the maximum decomposition level can be quite big for long signals,
+usually smaller values are chosen (5 for 1-dimensional signals).</p>
+<p class="example">Example:</p>
+<div class="example"><pre class="pycode doctest-block"><span class="pmt">&gt;&gt;&gt;</span> <span class="kwd">import</span> <span class="name">pywt</span>
+<span class="pmt">&gt;&gt;&gt;</span> <span class="name">w</span> <span class="op">=</span> <span class="name">pywt</span><span class="op">.</span><span class="name">Wavelet</span><span class="op">(</span><span class="str">'sym5'</span><span class="op">)</span>
+<span class="pmt">&gt;&gt;&gt;</span> <span class="kwd">print</span> <span class="name">pywt</span><span class="op">.</span><span class="name">dwt_max_level</span><span class="op">(</span><span class="name">data_len</span> <span class="op">=</span> <span class="num">1000</span><span class="op">,</span> <span class="name">filter_len</span> <span class="op">=</span> <span class="name">w</span><span class="op">.</span><span class="name">dec_len</span><span class="op">)</span>
+<span class="num">6</span><span class="txt"></span></pre>
+</div></div>
+<div class="section">
+<h2><a class="toc-backref" href="#id16" id="result-coefficients-length-dwt-coeff-len" name="result-coefficients-length-dwt-coeff-len"><span id="dwt-coeff-len"></span>3.4.&nbsp;&nbsp;&nbsp;Result coefficients length - <tt class="docutils literal"><span class="pre">dwt_coeff_len</span></tt></a></h2>
+<p>Depending on the selected signal extension <a class="reference" href="#mode">mode</a>, the <tt class="docutils literal"><span class="pre">dwt_coeff_len</span></tt>
+function calculates the length of <a class="reference" href="#dwt">dwt</a> coefficients.</p>
+<pre class="literal-block">
+dwt_coeff_len(data_len, filter_len, mode)
+</pre>
+<p>For <em>periodization</em> mode this equals:</p>
+<pre class="literal-block">
+ceil(data_len / 2)
+</pre>
+<p>which is the lowest possible length guaranteeing perfect reconstruction.</p>
+<p>For other modes:</p>
+<pre class="literal-block">
+floor((data_len + filter_len - 1) / 2)
+</pre>
+</div>
+<div class="section">
+<h2><a class="toc-backref" href="#id17" id="signal-extension-modes-modes" name="signal-extension-modes-modes"><span id="modes"></span><span id="mode"></span>3.5.&nbsp;&nbsp;&nbsp;Signal extension modes - <tt class="docutils literal"><span class="pre">MODES</span></tt></a></h2>
+<p>To handle problem of border distortion while performing DWT,
+one of several signal extension modes can be selected.</p>
+<ul>
+<li><p class="first"><tt class="docutils literal"><span class="pre">zpd</span></tt> - <strong>zero-padpadding</strong> - signal is extended by adding zero samples:</p>
+<pre class="literal-block">
+0  0 | x1 x2 ... xn | 0  0
+</pre>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">cpd</span></tt> - <strong>constant-padding</strong> - edge values are used:</p>
+<pre class="literal-block">
+x1 x1 | x1 x2 ... xn | xn xn
+</pre>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">sym</span></tt> - <strong>symmetric-padding</strong> - signal is extended by <em>mirroring</em> samples:</p>
+<pre class="literal-block">
+x2 x1 | x1 x2 ... xn | xn xn-1
+</pre>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">ppd</span></tt> - <strong>periodic-padding</strong> - signal is treated as periodic:</p>
+<pre class="literal-block">
+xn-1 xn | x1 x2 ... xn | x1 x2
+</pre>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">sp1</span></tt> - <strong>smooth-padding</strong> - signal is extended accordin to first derivatives
+calculated on the edges</p>
+</li>
+</ul>
+<p>DWT performed for these extension modes is slightly redundant, but ensure
+a perfect reconstruction. To receive the smallest number of coefficients
+DWT can be computed with <cite>periodization</cite> mode</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">per</span></tt> - <strong>periodization</strong> - is like <cite>periodic-padding</cite> but gives the smallest possible
+number of decomposition coefficients. IDWT must be performed with the same mode to
+ensure perfect reconstruction.</li>
+</ul>
+<p class="example">Example:</p>
+<div class="example"><pre class="pycode doctest-block"><span class="pmt">&gt;&gt;&gt;</span> <span class="kwd">import</span> <span class="name">pywt</span>
+<span class="pmt">&gt;&gt;&gt;</span> <span class="kwd">print</span> <span class="name">pywt</span><span class="op">.</span><span class="name">MODES</span><span class="op">.</span><span class="name">modes</span>
+<span class="op">[</span><span class="str">'zpd'</span><span class="op">,</span> <span class="str">'cpd'</span><span class="op">,</span> <span class="str">'sym'</span><span class="op">,</span> <span class="str">'ppd'</span><span class="op">,</span> <span class="str">'sp1'</span><span class="op">,</span> <span class="str">'per'</span><span class="op">]</span><span class="txt"></span></pre>
+</div><p>Notice that you can use either of the following forms:</p>
+<pre class="pycode doctest-block"><span class="pmt">&gt;&gt;&gt;</span> <span class="kwd">import</span> <span class="name">pywt</span>
+<span class="pmt">&gt;&gt;&gt;</span> <span class="op">(</span><span class="name">a</span><span class="op">,</span> <span class="name">d</span><span class="op">)</span> <span class="op">=</span> <span class="name">pywt</span><span class="op">.</span><span class="name">dwt</span><span class="op">(</span><span class="op">[</span><span class="num">1</span><span class="op">,</span><span class="num">2</span><span class="op">,</span><span class="num">3</span><span class="op">,</span><span class="num">4</span><span class="op">,</span><span class="num">5</span><span class="op">,</span><span class="num">6</span><span class="op">]</span><span class="op">,</span> <span class="str">'db2'</span><span class="op">,</span> <span class="str">'sp1'</span><span class="op">)</span>
+<span class="pmt">&gt;&gt;&gt;</span> <span class="op">(</span><span class="name">a</span><span class="op">,</span> <span class="name">d</span><span class="op">)</span> <span class="op">=</span> <span class="name">pywt</span><span class="op">.</span><span class="name">dwt</span><span class="op">(</span><span class="op">[</span><span class="num">1</span><span class="op">,</span><span class="num">2</span><span class="op">,</span><span class="num">3</span><span class="op">,</span><span class="num">4</span><span class="op">,</span><span class="num">5</span><span class="op">,</span><span class="num">6</span><span class="op">]</span><span class="op">,</span> <span class="name">pywt</span><span class="op">.</span><span class="name">Wavelet</span><span class="op">(</span><span class="str">'db2'</span><span class="op">)</span><span class="op">,</span> <span class="name">pywt</span><span class="op">.</span><span class="name">MODES</span><span class="op">.</span><span class="name">sp1</span><span class="op">)</span><span class="txt"></span></pre>
+<p>Note that extending data in context of <cite>PyWavelets</cite> does not really mean reallocating
+memory and copying values. Instead of that the extra values are computed only
+when needed. This feature can often save extra page swapping when handling
+relatively big data arrays on computers with low physical memory available.</p>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id18" id="inverse-discrete-wavelet-transform" name="inverse-discrete-wavelet-transform">4.&nbsp;&nbsp;&nbsp;Inverse Discrete Wavelet Transform</a></h1>
+<div class="section">
+<h2><a class="toc-backref" href="#id19" id="idwt" name="idwt">4.1.&nbsp;&nbsp;&nbsp;<tt class="docutils literal"><span class="pre">idwt</span></tt></a></h2>
+<p>The <tt class="docutils literal"><span class="pre">idwt</span></tt> function reconstruct data from given coefficients by performing
+single level Inverse Discrete Wavelet Transform.</p>
+<pre class="literal-block">
+idwt(cA, cD, wavelet, mode='sym', correct_size=0)
+</pre>
+<dl class="docutils">
+<dt>cA</dt>
+<dd>approximation coefficients.</dd>
+<dt>cD</dt>
+<dd>detail coefficients.</dd>
+<dt>wavelet</dt>
+<dd>Wavelet to use in transform. This can be name of wavelet from <a class="reference" href="#wavelist"><tt class="docutils literal"><span class="pre">wavelist()</span></tt></a> or <a class="reference" href="#wavelet"><tt class="docutils literal"><span class="pre">Wavelet</span></tt></a> object.</dd>
+<dt>mode</dt>
+<dd>Signal extension mode, see <a class="reference" href="#modes">MODES</a>. This is only important when DWT was performed in <em>periodization</em> mode.</dd>
+<dt>correct_size</dt>
+<dd>additional option. Normally coeff_a and coeff_d must have
+the same length. With correct_size set to True, length of coeff_a may
+be greater than length of coeff_d by value of 1.
+This is useful when doing multilevel decomposition and reconstruction
+of non-dyadic length signals.</dd>
+</dl>
+<p class="example">Example:</p>
+<div class="example"><pre class="pycode doctest-block"><span class="pmt">&gt;&gt;&gt;</span> <span class="kwd">import</span> <span class="name">pywt</span>
+<span class="pmt">&gt;&gt;&gt;</span> <span class="op">(</span><span class="name">cA</span><span class="op">,</span> <span class="name">cD</span><span class="op">)</span> <span class="op">=</span> <span class="name">pywt</span><span class="op">.</span><span class="name">dwt</span><span class="op">(</span><span class="op">[</span><span class="num">1</span><span class="op">,</span><span class="num">2</span><span class="op">,</span><span class="num">3</span><span class="op">,</span><span class="num">4</span><span class="op">,</span><span class="num">5</span><span class="op">,</span><span class="num">6</span><span class="op">]</span><span class="op">,</span> <span class="str">'db2'</span><span class="op">,</span> <span class="str">'sp1'</span><span class="op">)</span>
+<span class="pmt">&gt;&gt;&gt;</span> <span class="kwd">print</span> <span class="name">pywt</span><span class="op">.</span><span class="name">idwt</span><span class="op">(</span><span class="name">cA</span><span class="op">,</span> <span class="name">cD</span><span class="op">,</span> <span class="str">'db2'</span><span class="op">,</span> <span class="str">'sp1'</span><span class="op">)</span>
+<span class="op">[</span> <span class="num">1.</span>  <span class="num">2.</span>  <span class="num">3.</span>  <span class="num">4.</span>  <span class="num">5.</span>  <span class="num">6.</span><span class="op">]</span><span class="txt"></span></pre>
+</div><p>One of <em>cA</em> and <em>cD</em> arguments can be <em>None</em>. In that situation
+the reconstruction will be performed using the other one.</p>
+<p class="example">Example:</p>
+<div class="example"><pre class="pycode doctest-block"><span class="pmt">&gt;&gt;&gt;</span> <span class="kwd">import</span> <span class="name">pywt</span>
+<span class="pmt">&gt;&gt;&gt;</span> <span class="op">(</span><span class="name">cA</span><span class="op">,</span> <span class="name">cD</span><span class="op">)</span> <span class="op">=</span> <span class="name">pywt</span><span class="op">.</span><span class="name">dwt</span><span class="op">(</span><span class="op">[</span><span class="num">1</span><span class="op">,</span><span class="num">2</span><span class="op">,</span><span class="num">3</span><span class="op">,</span><span class="num">4</span><span class="op">,</span><span class="num">5</span><span class="op">,</span><span class="num">6</span><span class="op">]</span><span class="op">,</span> <span class="str">'db2'</span><span class="op">,</span> <span class="str">'sp1'</span><span class="op">)</span>
+<span class="pmt">&gt;&gt;&gt;</span> <span class="name">A</span> <span class="op">=</span> <span class="name">pywt</span><span class="op">.</span><span class="name">idwt</span><span class="op">(</span><span class="name">cA</span><span class="op">,</span> <span class="name">None</span><span class="op">,</span> <span class="str">'db2'</span><span class="op">,</span> <span class="str">'sp1'</span><span class="op">)</span>
+<span class="pmt">&gt;&gt;&gt;</span> <span class="name">D</span> <span class="op">=</span> <span class="name">pywt</span><span class="op">.</span><span class="name">idwt</span><span class="op">(</span><span class="name">None</span><span class="op">,</span> <span class="name">cD</span><span class="op">,</span> <span class="str">'db2'</span><span class="op">,</span> <span class="str">'sp1'</span><span class="op">)</span>
+<span class="pmt">&gt;&gt;&gt;</span> <span class="kwd">print</span> <span class="name">A</span> <span class="op">+</span> <span class="name">D</span>
+<span class="op">[</span> <span class="num">1.</span>  <span class="num">2.</span>  <span class="num">3.</span>  <span class="num">4.</span>  <span class="num">5.</span>  <span class="num">6.</span><span class="op">]</span><span class="txt"></span></pre>
+</div></div>
+<div class="section">
+<h2><a class="toc-backref" href="#id20" id="waverec" name="waverec">4.2.&nbsp;&nbsp;&nbsp;<tt class="docutils literal"><span class="pre">waverec</span></tt></a></h2>
+<p>Performs multilevel reconstruction of signal from given coefficient list.</p>
+<pre class="literal-block">
+waverec(coeffs_list, wavelet, mode='sym')
+</pre>
+<dl class="docutils">
+<dt>coeffs_list</dt>
+<dd><p class="first">coefficient list must be in form like that from <a class="reference" href="#wavedec">wavedec</a> decomposition:</p>
+<pre class="last literal-block">
+[cAn cDn cDn-1 ... cD2 cD1]
+</pre>
+</dd>
+<dt>wavelet</dt>
+<dd>Wavelet to use in transform. This can be name of wavelet from <a class="reference" href="#wavelist"><tt class="docutils literal"><span class="pre">wavelist()</span></tt></a> or <a class="reference" href="#wavelet"><tt class="docutils literal"><span class="pre">Wavelet</span></tt></a> object.</dd>
+<dt>mode</dt>
+<dd>Signal extension mode, see <a class="reference" href="#modes">MODES</a>.</dd>
+</dl>
+<p class="example">Example:</p>
+<div class="example"><pre class="pycode doctest-block"><span class="pmt">&gt;&gt;&gt;</span> <span class="kwd">import</span> <span class="name">pywt</span>
+<span class="pmt">&gt;&gt;&gt;</span> <span class="name">coeffs</span> <span class="op">=</span> <span class="name">pywt</span><span class="op">.</span><span class="name">wavedec</span><span class="op">(</span><span class="op">[</span><span class="num">1</span><span class="op">,</span><span class="num">2</span><span class="op">,</span><span class="num">3</span><span class="op">,</span><span class="num">4</span><span class="op">,</span><span class="num">5</span><span class="op">,</span><span class="num">6</span><span class="op">,</span><span class="num">7</span><span class="op">,</span><span class="num">8</span><span class="op">]</span><span class="op">,</span> <span class="str">'db2'</span><span class="op">,</span> <span class="name">level</span><span class="op">=</span><span class="num">2</span><span class="op">)</span>
+<span class="pmt">&gt;&gt;&gt;</span> <span class="kwd">print</span> <span class="name">pywt</span><span class="op">.</span><span class="name">waverec</span><span class="op">(</span><span class="name">coeffs</span><span class="op">,</span> <span class="str">'db2'</span><span class="op">)</span>
+<span class="op">[</span> <span class="num">1.</span>  <span class="num">2.</span>  <span class="num">3.</span>  <span class="num">4.</span>  <span class="num">5.</span>  <span class="num">6.</span>  <span class="num">7.</span>  <span class="num">8.</span><span class="op">]</span><span class="txt"></span></pre>
+</div></div>
+<div class="section">
+<h2><a class="toc-backref" href="#id21" id="upcoef" name="upcoef">4.3.&nbsp;&nbsp;&nbsp;<tt class="docutils literal"><span class="pre">upcoef</span></tt></a></h2>
+<p>Direct reconstruction from cefficients.</p>
+<pre class="literal-block">
+upcoef(part, coef, wavelet, level=1, take=0)
+</pre>
+<dl class="docutils">
+<dt>part</dt>
+<dd><p class="first">defines coefficients type:</p>
+<ul class="last simple">
+<li><strong>'a'</strong> - approximations reconstruction is performed</li>
+<li><strong>'d'</strong> - details reconstruction is performed</li>
+</ul>
+</dd>
+<dt>coef</dt>
+<dd>coefficients array.</dd>
+<dt>wavele</dt>
+<dd><tt class="docutils literal"><span class="pre">Wavelet</span></tt></dd>
+<dt>level</dt>
+<dd>if <em>level</em> is specified then multilevel reconstruction is performed</dd>
+<dt>take</dt>
+<dd>if <em>take</em> is specified then the central part of length <em>'take'</em> from result
+is returned.</dd>
+</dl>
+<p class="example">Example:</p>
+<div class="example"><pre class="pycode doctest-block"><span class="pmt">&gt;&gt;&gt;</span> <span class="kwd">import</span> <span class="name">pywt</span>
+<span class="pmt">&gt;&gt;&gt;</span> <span class="name">data</span> <span class="op">=</span> <span class="op">[</span><span class="num">1</span><span class="op">,</span><span class="num">2</span><span class="op">,</span><span class="num">3</span><span class="op">,</span><span class="num">4</span><span class="op">,</span><span class="num">5</span><span class="op">,</span><span class="num">6</span><span class="op">]</span>
+<span class="pmt">&gt;&gt;&gt;</span> <span class="op">(</span><span class="name">cA</span><span class="op">,</span> <span class="name">cD</span><span class="op">)</span> <span class="op">=</span> <span class="name">pywt</span><span class="op">.</span><span class="name">dwt</span><span class="op">(</span><span class="name">data</span><span class="op">,</span> <span class="str">'db2'</span><span class="op">,</span> <span class="str">'sp1'</span><span class="op">)</span>
+<span class="pmt">&gt;&gt;&gt;</span> <span class="kwd">print</span> <span class="name">pywt</span><span class="op">.</span><span class="name">upcoef</span><span class="op">(</span><span class="str">'a'</span><span class="op">,</span> <span class="name">cA</span><span class="op">,</span> <span class="str">'db2'</span><span class="op">)</span> <span class="op">+</span> <span class="name">pywt</span><span class="op">.</span><span class="name">upcoef</span><span class="op">(</span><span class="str">'d'</span><span class="op">,</span> <span class="name">cD</span><span class="op">,</span> <span class="str">'db2'</span><span class="op">)</span>
+<span class="op">[</span><span class="op">-</span><span class="num">0.25</span>       <span class="op">-</span><span class="num">0.4330127</span>   <span class="num">1.</span>          <span class="num">2.</span>          <span class="num">3.</span>          <span class="num">4.</span>          <span class="num">5.</span>
+  <span class="num">6.</span>          <span class="num">1.78589838</span> <span class="op">-</span><span class="num">1.03108891</span><span class="op">]</span>
+<span class="pmt">&gt;&gt;&gt;</span> <span class="name">n</span> <span class="op">=</span> <span class="name">len</span><span class="op">(</span><span class="name">data</span><span class="op">)</span>
+<span class="pmt">&gt;&gt;&gt;</span> <span class="kwd">print</span> <span class="name">pywt</span><span class="op">.</span><span class="name">upcoef</span><span class="op">(</span><span class="str">'a'</span><span class="op">,</span><span class="name">cA</span><span class="op">,</span><span class="str">'db2'</span><span class="op">,</span><span class="name">take</span><span class="op">=</span><span class="name">n</span><span class="op">)</span> <span class="op">+</span> <span class="name">pywt</span><span class="op">.</span><span class="name">upcoef</span><span class="op">(</span><span class="str">'d'</span><span class="op">,</span><span class="name">cD</span><span class="op">,</span><span class="str">'db2'</span><span class="op">,</span><span class="name">take</span><span class="op">=</span><span class="name">n</span><span class="op">)</span>
+<span class="op">[</span> <span class="num">1.</span>  <span class="num">2.</span>  <span class="num">3.</span>  <span class="num">4.</span>  <span class="num">5.</span>  <span class="num">6.</span><span class="op">]</span><span class="txt"></span></pre>
+</div></div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id22" id="wavelet-packets" name="wavelet-packets">5.&nbsp;&nbsp;&nbsp;Wavelet Packets</a></h1>
+<div class="section">
+<h2><a class="toc-backref" href="#id23" id="wavelet-packet" name="wavelet-packet">5.1.&nbsp;&nbsp;&nbsp;Wavelet Packet</a></h2>
+<p>Tree structure simplifying operations on Wavelet Packet decomposition coefficients.
+It consists of <a class="reference" href="#node">Node</a> elements.</p>
+<pre class="literal-block">
+WaveletPacket(data, wavelet, mode='sp1', maxlevel=None)
+</pre>
+<dl class="docutils">
+<dt>data</dt>
+<dd>Input signal can be numeric arrray, python list or other iterable.
+If data is not in <em>double</em> format it will be converted to that type
+before performing computation.</dd>
+<dt>wavelet</dt>
+<dd>Wavelet to use in transform. This can be name of wavelet from <a class="reference" href="#wavelist"><tt class="docutils literal"><span class="pre">wavelist()</span></tt></a> or <a class="reference" href="#wavelet"><tt class="docutils literal"><span class="pre">Wavelet</span></tt></a> object.</dd>
+<dt>mode</dt>
+<dd>Signal extension mode, see <a class="reference" href="#modes">MODES</a>.</dd>
+<dt>maxlevel</dt>
+<dd>Maximum level of decomposition. If <em>maxlevel</em> is None it will be computed with
+<a class="reference" href="#dwt-max-level">dwt_max_level</a> function.</dd>
+</dl>
+<p>wp = WaveletPacket(range(16), 'db1', maxlevel=3)</p>
+<div class="section">
+<h3><a id="access-nodes-get-node-path" name="access-nodes-get-node-path"><span id="get-node-path"></span>5.1.1.&nbsp;&nbsp;&nbsp;Access nodes - <tt class="docutils literal"><span class="pre">get_node(path)</span></tt></a></h3>
+<p>Find node of given path in tree.</p>
+<dl class="docutils">
+<dt>path</dt>
+<dd>string composed of &quot;a&quot; and &quot;d&quot;, of total length not greater than maxlevel.</dd>
+</dl>
+<p>If node does not exist yet, it will be created by decomposition of its
+parent node.</p>
+</div>
+<div class="section">
+<h3><a id="access-node-data-getitem-path" name="access-node-data-getitem-path">5.1.2.&nbsp;&nbsp;&nbsp;Access node data - <tt class="docutils literal"><span class="pre">__getitem__(path)</span></tt></a></h3>
+<p>Calls <a class="reference" href="#get-node-path">get_node(path)</a> and returns data associated with node under given path.</p>
+</div>
+<div class="section">
+<h3><a id="set-node-data-setitem-path-data" name="set-node-data-setitem-path-data">5.1.3.&nbsp;&nbsp;&nbsp;Set node data - <tt class="docutils literal"><span class="pre">__setitem__(path,</span> <span class="pre">data)</span></tt></a></h3>
+<p>Calls <a class="reference" href="#get-node-path">get_node(path)</a> and sets data of node under given path.</p>
+</div>
+<div class="section">
+<h3><a id="delete-node-delitem-path" name="delete-node-delitem-path">5.1.4.&nbsp;&nbsp;&nbsp;Delete node - <tt class="docutils literal"><span class="pre">__delitem__(path)</span></tt></a></h3>
+<p>Marks node under given path in tree as ZeroTree root.</p>
+<dl class="docutils">
+<dt>path</dt>
+<dd>string composed of &quot;a&quot; and &quot;d&quot;, of total length not greater than maxlevel.</dd>
+</dl>
+<p>If node does not exist yet, it will be created by decomposition of its
+parent node.</p>
+</div>
+<div class="section">
+<h3><a id="reconstruct-signal-reconstruct-update-true" name="reconstruct-signal-reconstruct-update-true">5.1.5.&nbsp;&nbsp;&nbsp;Reconstruct signal - <tt class="docutils literal"><span class="pre">reconstruct(update=True)</span></tt></a></h3>
+<p>Returns data reconstruction using coefficients from subnodes.</p>
+<p>If update is True, then node's data values will be replaced by
+reconstruction values (also in subnodes).</p>
+</div>
+<div class="section">
+<h3><a id="get-nodes-by-level-get-level-level-order-natural" name="get-nodes-by-level-get-level-level-order-natural">5.1.6.&nbsp;&nbsp;&nbsp;Get nodes by level - <tt class="docutils literal"><span class="pre">get_level(level,</span> <span class="pre">order=&quot;natural&quot;)</span></tt></a></h3>
+<p>Returns all nodes from specified level.</p>
+<dl class="docutils">
+<dt>order</dt>
+<dd><ul class="first last simple">
+<li>&quot;natural&quot; - left to right in tree</li>
+<li>&quot;freq&quot; - frequency ordered nodes</li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section">
+<h3><a id="get-terminal-nodes-get-nonzero-decompose-false" name="get-terminal-nodes-get-nonzero-decompose-false">5.1.7.&nbsp;&nbsp;&nbsp;Get terminal nodes - <tt class="docutils literal"><span class="pre">get_nonzero(decompose=False)</span></tt></a></h3>
+<p>Returns non-zero terminal nodes.</p>
+</div>
+<div class="section">
+<h3><a id="walk-tree-walk-func-args-tuple" name="walk-tree-walk-func-args-tuple">5.1.8.&nbsp;&nbsp;&nbsp;Walk tree - <tt class="docutils literal"><span class="pre">walk(func,</span> <span class="pre">args=tuple())</span></tt></a></h3>
+<p>Walks tree and calls func on every node - <tt class="docutils literal"><span class="pre">func(node,</span> <span class="pre">*args)</span></tt>.
+If func returns True, descending to subnodes will proceed.</p>
+<dl class="docutils">
+<dt>func</dt>
+<dd>callable object</dd>
+<dt>args</dt>
+<dd>additional func parms</dd>
+</dl>
+</div>
+<div class="section">
+<h3><a id="walk-tree-postorder-walk-depth-func-args-tuple" name="walk-tree-postorder-walk-depth-func-args-tuple">5.1.9.&nbsp;&nbsp;&nbsp;Walk tree postorder - <tt class="docutils literal"><span class="pre">walk_depth(func,</span> <span class="pre">args=tuple())</span></tt></a></h3>
+<p>Walks tree and calls func on every node starting from bottom most nodes.</p>
+<dl class="docutils">
+<dt>func</dt>
+<dd>callable object</dd>
+<dt>args</dt>
+<dd>additional func parms</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h2><a class="toc-backref" href="#id24" id="node" name="node">5.2.&nbsp;&nbsp;&nbsp;Node</a></h2>
+<p>WaveletPacket tree node.</p>
+<p>Subnodes are called <strong>'a'</strong> and <strong>'d'</strong>, like approximation and detail coefficients
+in Discrete Wavelet Transform</p>
+<div class="section">
+<h3><a id="path" name="path">5.2.1.&nbsp;&nbsp;&nbsp;<tt class="docutils literal"><span class="pre">path</span></tt></a></h3>
+<p>Path under node is accessible in Wavelet Packet tree.</p>
+</div>
+<div class="section">
+<h3><a id="data" name="data">5.2.2.&nbsp;&nbsp;&nbsp;<tt class="docutils literal"><span class="pre">data</span></tt></a></h3>
+<p>Data associated with node.</p>
+</div>
+<div class="section">
+<h3><a id="markzerotree-flag-true-remove-sub-true" name="markzerotree-flag-true-remove-sub-true">5.2.3.&nbsp;&nbsp;&nbsp;<tt class="docutils literal"><span class="pre">markZeroTree(flag=True,</span> <span class="pre">remove_sub=True)</span></tt></a></h3>
+<p>Mark <em>node</em> as root of ZeroTree, which means that current node and all subnodes
+don't take part in reconstruction (all coefficients equals 0).</p>
+<dl class="docutils">
+<dt>flag</dt>
+<dd>True/False - mark/unmark node.</dd>
+<dt>remove_sub</dt>
+<dd>If remove_sub and flag is True, subnodes of current node will be removed.</dd>
+</dl>
+</div>
+<div class="section">
+<h3><a id="iszerotree" name="iszerotree">5.2.4.&nbsp;&nbsp;&nbsp;<tt class="docutils literal"><span class="pre">isZeroTree</span></tt></a></h3>
+<p>Field - like markZeroTree.</p>
+</div>
+<div class="section">
+<h3><a id="getchild-part-decompose-true" name="getchild-part-decompose-true">5.2.5.&nbsp;&nbsp;&nbsp;<tt class="docutils literal"><span class="pre">getChild(part,</span> <span class="pre">decompose=True)</span></tt></a></h3>
+<p>Returns chosen subnode.</p>
+<dl class="docutils">
+<dt>part</dt>
+<dd>subnode name ('a' or 'd')</dd>
+<dt>decompose</dt>
+<dd>if True and subnodes don't exist, they will be created by
+decomposition of current node (lazy evaluation).</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id25" id="stationary-wavelet-transform" name="stationary-wavelet-transform">6.&nbsp;&nbsp;&nbsp;Stationary Wavelet Transform</a></h1>
+<div class="section">
+<h2><a class="toc-backref" href="#id26" id="multilevel-swt" name="multilevel-swt">6.1.&nbsp;&nbsp;&nbsp;Multilevel <tt class="docutils literal"><span class="pre">swt</span></tt></a></h2>
+<p>Performs multilevel Stationary Wavelet Transform.</p>
+<pre class="literal-block">
+swt(data, wavelet, level)
+</pre>
+<dl class="docutils">
+<dt>data</dt>
+<dd>Input signal can be numeric arrray, python list or other iterable.
+If data is not in <em>double</em> format it will be converted to that type
+before performing computation. Data length must be divisible by <tt class="docutils literal"><span class="pre">2^level</span></tt>.</dd>
+<dt>wavelet</dt>
+<dd>Wavelet to use in transform. This can be name of wavelet from <a class="reference" href="#wavelist"><tt class="docutils literal"><span class="pre">wavelist()</span></tt></a> or <a class="reference" href="#wavelet"><tt class="docutils literal"><span class="pre">Wavelet</span></tt></a> object.</dd>
+<dt>level</dt>
+<dd>Required transform level. See <a class="reference" href="#swt-max-level">swt_max_level</a>.</dd>
+</dl>
+<p>Returned list of coefficient pairs is in form
+<tt class="docutils literal"><span class="pre">[(cA1,</span> <span class="pre">cD1),</span> <span class="pre">(cA2,</span> <span class="pre">cD2),</span> <span class="pre">...,</span> <span class="pre">(cAn,</span> <span class="pre">cDn)]</span></tt>, where n = level</p>
+</div>
+<div class="section">
+<h2><a class="toc-backref" href="#id27" id="maximum-decomposition-level-swt-max-level" name="maximum-decomposition-level-swt-max-level"><span id="swt-max-level"></span>6.2.&nbsp;&nbsp;&nbsp;Maximum decomposition level - <tt class="docutils literal"><span class="pre">swt_max_level</span></tt></a></h2>
+<p>Returns maximum level of Stationary Wavelet Transform for data of given length.</p>
+<pre class="literal-block">
+swt_max_level(input_len)
+</pre>
+<dl class="docutils">
+<dt>input_len</dt>
+<dd>input data length.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id28" id="demo" name="demo">7.&nbsp;&nbsp;&nbsp;Demo</a></h1>
+<ul class="simple">
+<li>Multilevet wavelet decomposition and reconstruction - <a class="reference" href="./demo/wavedec.py">wavedec.py</a></li>
+<li>Plot wavelet families - <a class="reference" href="./demo/plot_wavelets.py">plot_wavelets.py</a> - <a class="reference" href="./img/db.png">db.png</a> <a class="reference" href="./img/sym.png">sym.png</a></li>
+<li>Plot coefficients from DWT and SWT for 3 different signals - <a class="reference" href="./demo/dwt_swt_show_coeffs.py">dwt_swt_show_coeffs.py</a></li>
+<li>Multilevel signal decomposition with DWT - <a class="reference" href="./demo/dwt_signal_decomposition.py">dwt_signal_decomposition.py</a></li>
+<li>Simple compression with Wavelet Packet - <a class="reference" href="./demo/wp_simple_compression.py">wp_simple_compression.py</a></li>
+<li>Coefficient distribution for several Wavelet Packet Transform levels - <a class="reference" href="./demo/wp_visualize_coeffs_distribution.py">wp_visualize_coeffs_distribution.py</a> - <a class="reference" href="./img/wp_distrib.png">wp_distrib.png</a></li>
+<li>Signal frequency analysis using Wavelet Packet - <a class="reference" href="./demo/wp_scalogram.py">wp_scalogram.py</a> - <a class="reference" href="./img/linchirp.png">linchirp.png</a>. See also output of some orca sound scalogram with WP - <a class="reference" href="./img/orca.png">orca.png</a>.</li>
+<li>Benchmark <a class="reference" href="#dwt">dwt</a> and <a class="reference" href="#idwt">idwt</a> computation - <a class="reference" href="./demo/benchmark.py">benchmark.py</a> - results achieved on Centrino 1,8GHz laptop - <a class="reference" href="./img/benchmark_dwt.png">benchmark_dwt.png</a>, <a class="reference" href="./img/benchmark_idwt.png">benchmark_idwt.png</a></li>
+<li>Creating Wavelet objects from user supplied filter banks - <a class="reference" href="./demo/user_filter_banks.py">user_filter_banks.py</a></li>
+</ul>
+</div>
+</div>
+</body>
+</html>

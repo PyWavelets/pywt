@@ -1,0 +1,9 @@
+include setup.py README INSTALL CHANGES COPYING HISTORY
+include MANIFEST.in README.txt INSTALL.txt CHANGES.txt
+include demo/*.py
+include doc/html/css/*.css
+include doc/html/index.html
+include pywt/*.py
+include test/*.py test/*.bat
+recursive-include src *.c *.h *.pxi *.pxd *.pyx
+exclude pywt/.svn

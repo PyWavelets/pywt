@@ -1,0 +1,182 @@
+@import url("default.css"); 
+
+
+body { 
+	background-color: white; 
+	margin: 5px 0px 10px 0px; 
+	padding: 0px; 
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: medium;
+	width: 100%;
+}
+
+div.document {
+	margin-left: auto;
+	margin-right: auto;
+	width: 700px;
+	font-size: small;
+}
+
+tt.docutils {
+	background: none;
+	font-size: 100%;
+}
+span.pre {
+    font-family: Lucida, Courier New;
+}
+pre.literal-block  {
+    font-family: Lucida, Courier New;
+    font-size: small;
+    border: none;
+    background: white;
+}
+
+
+
+
+a.reference:visited {
+	color: #FF6600;
+	color: #3333FF;
+	text-decoration: none;
+}
+a.reference:hover {
+	color: #FF9900;
+	text-decoration: none;
+}
+a:link {
+	color: #FF6600;
+	color: #3333FF;
+	text-decoration: none;
+}
+a:active {
+	text-decoration: none;
+}
+
+h1 {
+  font-size: x-large;
+  color:#555555;
+}
+
+h1 a.toc-backref {
+  font-size: x-large;
+  text-decoration: none ;
+  color: #555555;
+}
+
+h1.title {
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: x-large;
+  margin-bottom: 20px;
+}
+
+h2 a.toc-backref {
+  font-family: Arial, Helvetica, sans-serif;
+   font-size: x-large;
+   color:#555555;
+   font-weight: bold;
+}
+
+h2.subtitle {
+  text-align: center;
+  font-family:Arial, Helvetica, sans-serif;
+  font-size: x-large;
+  font-weight: normal;
+}
+
+h3 a {
+   font-size: large;
+   color:#555555;
+   font-weight: bold;
+}
+
+
+img { border: none; }
+
+/* TOC */
+p.topic-title, #table-of-contents {
+	font-weight: bold;
+	color:#555555;
+	margin-bottom: 0px;
+}
+div.contents {
+	border: none;
+	padding: 3px 3px 0px 3px;
+	display: block;
+}
+
+
+div.note {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  margin: 0em 2em 0em 0em;
+  border: 1px solid #DDDDDD;
+  background: white;
+  padding: 3px 3px 3px 3px;
+} 
+  
+ul.auto-toc {
+	margin-top: 4px;
+}
+ul.auto-toc li {
+	display: block;
+}
+/* TOC */
+
+dl.docutils dt {
+font-weight: bolder;
+
+font-family: Verdana;
+font-size: 100%;
+color: #222222;
+}
+
+p.example, p.admonition-title {
+font-family: Verdana;
+font-size: 100%;
+color: #222222;
+font-weight: bold;
+}
+
+pre.doctest-block  {
+    font-family: Lucida, Courier New;
+    font-size: small;
+    border: 1px solid #DDDDDD;
+    background: white;
+    padding: 3px 3px 3px 3px;
+}
+
+pre.pycode {
+    font-family: Lucida, Courier New;
+    font-size: small;
+    border: 1px solid #DDDDDD;
+    background: white;
+    padding: 3px 3px 3px 3px;
+}
+pre.pycode .num {
+    color: #333333;
+}
+pre.pycode .op {
+    color: #0000C0;
+}
+pre.pycode .str {
+    color: #004080;
+}
+pre.pycode .com {
+    color: #008000;
+}
+pre.pycode .name {
+    color: ##000000;
+}
+pre.pycode .err {
+    color: #FF8080;
+}
+pre.pycode .kwd {
+    color: #C00000;
+}
+pre.pycode .txt {
+    color: #000000;
+}
+pre.pycode .pmt {
+    /*color: #770000;*/
+    color: #0000C0;
+}
