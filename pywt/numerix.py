@@ -3,7 +3,7 @@
 # Copyright (c) 2006 Filip Wasilewski <filipwasilewski@gmail.com>
 # See COPYING for license details.
 
-# $Id: numerix.py 50 2006-07-07 14:27:54Z Filip $
+# $Id$
 
 """A thin wrapper for numeric libraries. Modify this to use wavelets with
 libraries other than NumPy."""

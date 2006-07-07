@@ -4,7 +4,7 @@
 # Copyright (c) 2006 Filip Wasilewski <filipwasilewski@gmail.com>
 # See COPYING for license details.
 
-# $Id: wavelet_packets.py 49 2006-07-06 22:45:04Z Filip $
+# $Id$
 
 """Wavelet packet transform"""
 

@@ -1,7 +1,7 @@
 # Copyright (c) 2006 Filip Wasilewski <filipwasilewski@gmail.com>
 # See COPYING for license details.
 
-# $Id: c_wt.pxd 52 2006-07-07 15:56:50Z Filip $
+# $Id$
 
 cdef extern from "common.h":
 

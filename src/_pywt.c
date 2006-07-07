@@ -89,7 +89,7 @@ static PyObject *(__pyx_f_5_pywt_wname_to_code(char (*))); /*proto*/
 
 /* Implementation of _pywt */
 
-static char (__pyx_k1[]) = "$Id: _pywt.pyx 53 2006-07-07 15:59:33Z Filip $";
+static char (__pyx_k1[]) = "$Id$";
 static char (__pyx_k2[]) = "Pyrex wrapper for low level C wavelet transform implementation.";
 static char (__pyx_k7[]) = "\n    Different ways of dealing with border distortion problem while performing\n    Discrete Wavelet Transform analysis.\n    \n    To reduce this effect the signal or image can be extended by adding extra samples.\n    \n    zpd - zero-padpadding                0  0 | x1 x2 ... xn | 0  0\n    cpd - constant-padding              x1 x1 | x1 x2 ... xn | xn xn\n    sym - symmetric-padding             x2 x1 | x1 x2 ... xn | xn xn-1\n    ppd - periodic-padding            xn-1 xn | x1 x2 ... xn | x1 x2\n    sp1 - smooth-padding               (1st derivative interpolation)\n    \n    DWT performed for these extension modes is slightly redundant, but ensure\n    a perfect reconstruction for IDWT.\n\n    per - periodization - like periodic-padding but gives the smallest number\n          of decomposition coefficients. IDWT must be performed with the same mode.\n          \n    ";
 static char (__pyx_k14[]) = "";

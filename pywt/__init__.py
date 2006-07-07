@@ -3,7 +3,7 @@
 # Copyright (c) 2006 Filip Wasilewski <filipwasilewski@gmail.com>
 # See COPYING for license details.
 
-# $Id: __init__.py 49 2006-07-06 22:45:04Z Filip $
+# $Id$
 
 """
 Discrete forward and inverse wavelet transform, stationary wavelet transform,

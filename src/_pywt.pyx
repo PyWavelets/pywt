@@ -1,8 +1,8 @@
 # Copyright (c) 2006 Filip Wasilewski <filipwasilewski@gmail.com>
 # See COPYING for license details.
 
-# $Id: _pywt.pyx 53 2006-07-07 15:59:33Z Filip $
-__id__ = "$Id: _pywt.pyx 53 2006-07-07 15:59:33Z Filip $"
+# $Id$
+__id__ = "$Id$"
 
 """Pyrex wrapper for low level C wavelet transform implementation."""
 

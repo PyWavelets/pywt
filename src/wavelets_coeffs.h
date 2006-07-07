@@ -1,7 +1,7 @@
 #ifndef _WAVELETS_COEFFS_H_
 #define _WAVELETS_COEFFS_H_
 
-// $Id: wavelets_coeffs.h 53 2006-07-07 15:59:33Z Filip $
+// $Id$
 
 // Filters coefficients for selected wavelets
 

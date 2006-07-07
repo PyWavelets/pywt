@@ -4,7 +4,7 @@
 
 name         = "PyWavelets"
 version      = "0.1.4"
-#revision     = "$Revision: 50 $"[11:-2]
+#revision     = "$Revision$"[11:-2]
 author       = "Filip Wasilewski"
 author_email = "filipwasilewski@gmail.com"
 url          = "http://www.pybytes.com/pywavelets/"

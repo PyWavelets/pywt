@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Author: Filip Wasilewski
-# Date: $Date: 2006-07-05 16:19:42 +0200 (Śr, 05 lip 2006) $
+# Date: $Date$
 
 """
 Extracts code-blocks from reStructuredText and produces Python doctests.

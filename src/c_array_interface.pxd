@@ -4,7 +4,7 @@
 # see http://numeric.scipy.org/array_interface.html
 # see http://new.scipy.org/Wiki/Cookbook/ArrayStruct_and_Pyrex
 
-# $Id: c_array_interface.pxd 53 2006-07-07 15:59:33Z Filip $
+# $Id$
 
 cimport c_python
 

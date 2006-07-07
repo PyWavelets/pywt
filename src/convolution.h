@@ -1,7 +1,7 @@
 // Copyright (c) 2006 Filip Wasilewski <filipwasilewski@gmail.com>
 // See COPYING for license details.
 
-// $Id: convolution.h 53 2006-07-07 15:59:33Z Filip $
+// $Id$
 
 #ifndef _CONVOLUTION_H_
 #define _CONVOLUTION_H_
