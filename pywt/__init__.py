@@ -13,6 +13,7 @@ wavelet packets signal decomposition and reconstruction module.
 from _pywt import *
 from wnames import *
 from multilevel import *
+from multidim import *
 from wavelet_packets import WaveletPacket
 
 del _pywt
