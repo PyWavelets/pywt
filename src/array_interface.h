@@ -32,12 +32,14 @@ enum PyGenericArray_KINDS {
     PyArrayKind_OTHER   = 'X'
 };
 
-#define GA_CONTIGUOUS      0x001
-#define GA_FORTRAN         0x010
-#define GA_ALIGNED         0x100
-#define GA_NOTSWAPPED      0x200
-#define GA_WRITEABLE       0x400
-#define GA_ARR_HAS_DESCR   0x800
+enum {
+	GA_CONTIGUOUS      =0x001,
+	GA_FORTRAN         =0x010,
+	GA_ALIGNED         =0x100,
+	GA_NOTSWAPPED      =0x200,
+	GA_WRITEABLE       =0x400,
+	GA_ARR_HAS_DESCR   =0x800
+	};
 
 typedef struct  {
     int two;                         // equals 2, sanity check
@@ -48,7 +50,7 @@ typedef struct  {
     intp *shape;                     // A length-nd array of shape information
     intp *strides;                   // A length-nd array of stride information
     void *data;                      // A pointer to the first element of the array
-    // PyObject *descr;                 // NULL or data-description -- must set ARR_HAS_DESCR flag
+    PyObject *descr;                 // NULL or data-description -- must set ARR_HAS_DESCR flag
 } PyGenericArrayInterface;
 
 #define GA_CONTINUOUS_C_RO    (GA_CONTIGUOUS | GA_ALIGNED)
@@ -63,6 +65,7 @@ typedef struct  {
 #define PyArrayInterface_IS_FORTRAN(ai)     (((ai)->flags) & GA_FORTRAN)
 #define PyArrayInterface_IS_WRITABLE(ai)    (((ai)->flags) & GA_WRITABLE)
 #define PyArrayInterface_IS_ALIGNED(ai)     (((ai)->flags) & GA_ALIGNED)
+#define PyArrayInterface_HAS_DESCR(ai)      (((ai)->flags) & GA_ARR_HAS_DESCR)
 
 #define PyArrayInterface_TWO(ai)            ((ai)->two)
 #define PyArrayInterface_ND(ai)             ((ai)->nd)
@@ -72,8 +75,9 @@ typedef struct  {
 #define PyArrayInterface_SHAPES(ai)         ((ai)->shape)
 #define PyArrayInterface_SHAPE(ai, n)       ((ai)->shape[n])
 #define PyArrayInterface_STRIDES(ai)        ((ai)->strides)
-#define PyArrayInterface_STRIDE(ai, n)      ((ai)->stride[n])
+#define PyArrayInterface_STRIDE(ai, n)      ((ai)->strides[n])
 #define PyArrayInterface_DATA(ai)           ((ai)->data)
+#define PyArrayInterface_DESCR(ai)          (PyArrayInterface_HAS_DESCR(ai) ? ((ai)->descr) : NULL)
 
 #define PyArrayInterface_DATA_AS_DOUBLE_C_ARRAY(ai)     ( \
             (PyArrayInterface_IS_C_ARRAY(ai) && PyArrayInterface_IS_KIND(ai, PyArrayKind_FLOAT) && (PyArrayInterface_ITEMSIZE(ai) == 8)) \
@@ -86,5 +90,6 @@ typedef struct  {
 #define PyArrayInterface_CHECK(ai)      (PyArrayInterface_TWO(ai) == 2)
 #define PyArrayInterface_CHECK_1D(ai)   (PyArrayInterface_CHECK(ai) && PyArrayInterface_ND(ai) == 1)
 #define PyArrayInterface_CHECK_2D(ai)   (PyArrayInterface_CHECK(ai) && PyArrayInterface_ND(ai) == 2)
+
 
 #endif

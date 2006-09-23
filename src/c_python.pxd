@@ -5,18 +5,19 @@ cdef extern from "Python.h":
     ctypedef int Py_intptr_t
 
     # structs
-    cdef struct _typeobject:
+    ctypedef struct _typeobject:
         pass
-    cdef struct PyObject:
+    ctypedef struct PyObject:
         _typeobject* ob_type
+        #pass
 
     # memory
     void* PyMem_Malloc(size_t n) 
     void PyMem_Free(void* mem) 
     object PyErr_NoMemory()
     
-    void Py_DECREF(object obj)
-    void Py_XDECREF(object obj)
+    void Py_DECREF(object)
+    void Py_XDECREF(object)
     void Py_INCREF(object obj)
     void Py_XINCREF(object obj)
 
@@ -24,7 +25,7 @@ cdef extern from "Python.h":
     object PyBool_FromLong(long)
 
     # int
-    #PyObject* PyInt_FromLong(long v)
+    object PyInt_FromLong(long v)
     long PyInt_AsLong(object io) 
 
     # float
@@ -45,10 +46,15 @@ cdef extern from "Python.h":
     int PyList_Append(object list, object item) 
 
     # tuple
+    object PyTuple_New(int len)
     int PyTuple_Check(object p)
     int PyTuple_Size(object p) 
     PyObject* PyTuple_GET_ITEM(object p, int pos)               # notice PyObject*
     object PyTuple_GetItem(object p, int pos) 
+    void PyTuple_SET_ITEM(object p, int pos, object o) 
+
+
+
 
     # cobject
     int PyCObject_Check(object p) 
@@ -61,7 +67,23 @@ cdef extern from "Python.h":
     int PyObject_AsWriteBuffer(object, void **rbuf, int *len)
 
 
+    PyObject* PyObject_GetAttrString(object, char*)
+    object PyObject_GetAttr(object, char*)
+    int PyObject_HasAttrString(object, char*)
+    
+    ctypedef struct PyTypeObject:
+        pass
+    ctypedef PyTypeObject PyInt_Type
+    
+    int PyObject_IsInstance(object inst, object cls) 
+    int PyObject_TypeCheck(object obj, PyTypeObject* type)
+
+    int PyInt_Check(object o) 
 
 
-
+    PyObject* PyErr_Occurred()
+    void PyErr_Print()
+    void PyErr_Clear()
+    
+            
 

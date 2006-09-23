@@ -5,7 +5,7 @@ from pywt import WaveletPacket
 import pylab
 import numpy
 
-x = numpy.arrayrange(612-80, 20, -0.5)/150.
+x = numpy.arange(612-80, 20, -0.5)/150.
 data = numpy.sin(20*pylab.log(x)) * numpy.sign((pylab.log(x)))
 from sample_data import ecg as data
 
