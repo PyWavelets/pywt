@@ -9,10 +9,8 @@
 
 Wavelet* wavelet(char name, int order)
 {
-	Wavelet* w;
-
-	const double* tmp;
-	index_t tmpi;
+	Wavelet *w, *wtmp;
+	index_t i;
 
 	// Haar wavelet
 	if(name == 'h' || name == 'H'){
@@ -27,31 +25,32 @@ Wavelet* wavelet(char name, int order)
 	} else if (name == 'r' || name == 'R') { 
 
 		// rbio is like bior, only with switched filters
-		w = wavelet('b', order);
+		wtmp = wavelet('b', order);
+		w = copy_wavelet(wtmp);
 		
 		if(w == NULL)
 			return NULL;
 		
-		tmp = w->dec_lo;
-		w->dec_lo = w->rec_lo;
-		w->rec_lo = tmp;
+		w->dec_len = wtmp->rec_len;
+		w->rec_len = wtmp->dec_len;
 
-		tmp = w->dec_hi;
-		w->dec_hi = w->rec_hi;
-		w->rec_hi = tmp;
+		w->dec_hi_offset = wtmp->rec_hi_offset;
+		w->rec_hi_offset = wtmp->dec_hi_offset;
+		w->dec_lo_offset = wtmp->rec_lo_offset;
+		w->rec_lo_offset = wtmp->dec_lo_offset;
 
-		tmpi = w->dec_hi_offset;
-		w->dec_hi_offset = w->rec_hi_offset;
-		w->rec_hi_offset = tmpi;
+		for(i = 0; i < w->rec_len; ++i){
+			w->rec_lo[i] = wtmp->dec_lo[wtmp->dec_len-1-i];
+			w->rec_hi[i] = wtmp->dec_hi[wtmp->dec_len-1-i];
+		}
 
-		tmpi = w->dec_lo_offset;
-		w->dec_lo_offset = w->rec_lo_offset;
-		w->rec_lo_offset = tmpi;
+		for(i = 0; i < w->dec_len; ++i){
+			w->dec_hi[i] = wtmp->rec_hi[wtmp->rec_len-1-i];
+			w->dec_lo[i] = wtmp->rec_lo[wtmp->rec_len-1-i];
+		}
 
-		
-		tmpi = w->vanishing_moments_phi;
-		w->vanishing_moments_phi = w->vanishing_moments_psi;
-		w->vanishing_moments_psi = tmpi;
+		w->vanishing_moments_phi = wtmp->vanishing_moments_psi;
+		w->vanishing_moments_psi = wtmp->vanishing_moments_phi;
 
 		w->family_name = "Reverse biorthogonal\0";
 		w->short_name = "rbio\0";
@@ -615,6 +614,47 @@ Wavelet* blank_wavelet(index_t filters_length)
 	w->compact_support = 0;
 	w->family_name = "\0";
 	w->short_name = "\0";
+
+	return w;
+}
+
+
+Wavelet* copy_wavelet(Wavelet* base)
+{
+	Wavelet* w;
+	index_t i;
+
+	if(base == NULL) return NULL;
+
+	if(base->dec_len < 1 || base->rec_len < 1)
+		return NULL;
+
+	w = wtmalloc(sizeof(Wavelet));
+	if(w == NULL) return NULL;
+
+	memcpy(w, base, sizeof(Wavelet));
+
+	w->_builtin = 0;
+
+	w->dec_lo = wtcalloc(w->dec_len, sizeof(double));
+	w->dec_hi = wtcalloc(w->dec_len, sizeof(double));
+	w->rec_lo = wtcalloc(w->rec_len, sizeof(double));
+	w->rec_hi = wtcalloc(w->rec_len, sizeof(double));
+
+	if(w->dec_lo == NULL || w->dec_hi == NULL || w->rec_lo == NULL || w->rec_hi == NULL){
+		free_wavelet(w);
+		return NULL;
+	}
+
+	for(i=0; i< w->dec_len; ++i){
+		w->dec_lo[i] = base->dec_lo[i];
+		w->dec_hi[i] = base->dec_hi[i];
+	}
+
+	for(i=0; i< w->rec_len; ++i){
+		w->rec_lo[i] = base->rec_lo[i];
+		w->rec_hi[i] = base->rec_hi[i];
+	}
 
 	return w;
 }

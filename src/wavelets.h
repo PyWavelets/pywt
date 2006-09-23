@@ -22,10 +22,10 @@ typedef enum {
 // Wavelet structure holding pointers to filter arays and property attributes
 typedef struct {
 	
-	const double* dec_hi;		// highpass decomposition
-	const double* dec_lo;		// lowpass	decomposition
-	const double* rec_hi;		// highpass reconstruction
-	const double* rec_lo;		// lowpass	reconstruction
+	double* dec_hi;		// highpass decomposition
+	double* dec_lo;		// lowpass	decomposition
+	double* rec_hi;		// highpass reconstruction
+	double* rec_lo;		// lowpass	reconstruction
 	
 	index_t dec_len;				// length of decomposition filter
 	index_t rec_len;				// length of reconstruction filter
@@ -70,6 +70,11 @@ Wavelet* wavelet(char name, int order);
 // _builtin field is set to 0
 
 Wavelet* blank_wavelet(index_t filters_length);
+
+
+// Deep copy Wavelet
+
+Wavelet* copy_wavelet(Wavelet* base);
 
 
 // Free wavelet struct. Use this to free Wavelet allocated with

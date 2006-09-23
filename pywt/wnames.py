@@ -7,6 +7,8 @@
 
 """Lists builtin wavelet families and names"""
 
+# reflects wavelets_coeffs.h
+
 bior_n = [(1,1), (1,3), (1,5),
           (2,2), (2,4), (2,6), (2,8),
           (3,1), (3,3), (3,5), (3,7), (3,9),
@@ -21,7 +23,6 @@ sym_n = range(2, 21)
 db_n = range(1, 21)
 coif_n = range(1, 6)
 
-
 __daubechies = [("db%d" % n) for n in db_n]
 __symlets = [("sym%d" % n) for n in sym_n]
 __coiflets = [("coif%d" % n) for n in coif_n]
@@ -33,6 +34,7 @@ __dmey = ["dmey"]
 del bior_n, sym_n, db_n, coif_n, rbio_n, n, m
 
 __wavelet_names = __haar + __daubechies + __symlets + __coiflets + __bior + __rbio + __dmey
+
 
 def families(short=True):
     if short:
@@ -46,22 +48,20 @@ def wavelist(short_name=None):
 
     short_name - short family name ("haar", "db", "sym", "coif", "bior", "rbio" or "dmey")
     """
+
+    names = {"db": __daubechies,
+             "sym": __symlets,
+             "coif": __coiflets,
+             "haar": __haar,
+             "bior": __bior,
+             "rbio": __rbio,
+             "dmey": __dmey,
+             }
+        
     if short_name is None:
         return __wavelet_names[:]
-    elif short_name == "db":
-        return __daubechies[:]
-    elif short_name == "sym":
-        return __symlets[:]
-    elif short_name == "coif":
-        return __coiflets[:]
-    elif short_name == "haar":
-        return __haar[:]
-    elif short_name == "bior":
-        return __bior[:]
-    elif short_name == "rbio":
-        return __rbio[:]
-    elif short_name == "dmey":
-        return __dmey[:]
+    elif short_name in names:
+        return names[short_name][:]
     else:
         raise ValueError("Invalid short family name '%s'" % short_name)
 
