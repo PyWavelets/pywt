@@ -25,11 +25,11 @@ def dwt2(data, wavelet, mode='sym'):
     wavelet - wavelet to use (Wavelet object or name string)
     mode    - signal extension mode, see MODES
         
-    Returns average and (three) details 2D coefficients arrays. The result
-    has the following form:
+    Returns approximaion and (three) details 2D coefficients arrays.
+    The result has the following form:
     
-        ((average, horizontal),
-         (vertical, diagonal))
+        ((approximation, horizontal det.),
+         (vertical det., diagonal det.))
     """
     
     data = asarray(data, dtype=float64)
@@ -71,7 +71,7 @@ def dwt2(data, wavelet, mode='sym'):
     del H
 	
 	# build result structure
-    ret = ((transpose(LL), transpose(LH)),  # ((average,  horizontal),
+    ret = ((transpose(LL), transpose(LH)),  # ((approx.,  horizontal),
            (transpose(HL), transpose(HH)))  #  (vertical, diagonal)) 
 		
     return ret
@@ -83,8 +83,8 @@ def idwt2(coeffs, wavelet, mode='sym'):
     
     coeffs  - 2D coefficients arrays arranged in tuples:
     
-        ((average, horizontal),
-         (vertical, diagonal))
+        ((approximation, horizontal det.),
+         (vertical det., diagonal det.))
 
     wavelet - wavelet to use (Wavelet object or name string)
     mode    - signal extension mode, see MODES

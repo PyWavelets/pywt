@@ -1,13 +1,13 @@
-========================================================
+=================================================
 PyWavelets - Discrete Wavelet Transform in Python
-========================================================
+=================================================
 
 User Guide
 ==========
 
 :Author: Filip Wasilewski
 :Contact: filipwasilewski@gmail.com
-:Version: 0.1.4
+:Version: 0.1.5
 :Status: alpha
 :Date: |date|
 :License: `MIT`_
@@ -466,7 +466,7 @@ Inverse Discrete Wavelet Transform
 ``idwt``
 ~~~~~~~~
 
-The ``idwt`` function reconstruct data from given coefficients by performing
+The ``idwt`` function reconstructs data from given coefficients by performing
 single level Inverse Discrete Wavelet Transform.
 
 ::
@@ -591,6 +591,87 @@ take
     >>> n = len(data)
     >>> print pywt.upcoef('a',cA,'db2',take=n) + pywt.upcoef('d',cD,'db2',take=n)
     [ 1.  2.  3.  4.  5.  6.]
+
+
+2D DWT and IDWT
+---------------
+
+``dwt2``
+~~~~~~~~~
+
+The ``dwt2`` function performs single level 2D Discrete Wavelet Transform.
+
+::
+
+  dwt2(data, wavelet, mode='sym')
+
+data
+  2D array with input data 
+
+wavelet
+  |wavelet_arg|
+
+mode
+  |mode| This is only important when DWT was performed in *periodization* mode.
+
+Returns 2D average and (three) details coefficients arrays. The result
+has the following form:
+    
+  ((approximation, horizontal det.),
+   (vertical det., diagonal det.))
+
+.. class:: example
+
+  Example:
+
+  .. code-block:: Python
+  
+    >>> import pywt, numpy
+    >>> data = numpy.ones((4,4), dtype=numpy.float64)
+    >>> coeffs = pywt.dwt2(data, 'haar')
+    >>> (cA, cH), (cV, cD) = coeffs
+    >>> print cA
+    [[ 2.  2.]
+     [ 2.  2.]]
+    >>> print cV
+    [[ 0.  0.]
+     [ 0.  0.]]
+
+
+``idwt2``
+~~~~~~~~~
+
+The ``idwt2`` function reconstructs data from given coefficients by performing
+single level 2D Inverse Discrete Wavelet Transform.
+
+::
+
+  idwt2(coeffs, wavelet, mode='sym')
+
+coeffs
+  Two tuples with 2D arrays containing approximation and details coefficients:
+     
+    ((approximation, horizontal det.),
+    (vertical det., diagonal det.))
+
+wavelet
+  |wavelet_arg|
+
+mode
+  |mode| This is only important when DWT was performed in *periodization* mode.
+
+.. class:: example
+
+  Example:
+
+  .. code-block:: Python
+  
+    >>> import pywt, numpy
+    >>> data = numpy.array([[1,2], [3,4]], dtype=numpy.float64)
+    >>> coeffs = pywt.dwt2(data, 'haar')
+    >>> print pywt.idwt2(coeffs, 'haar')
+    [[ 1.  2.]
+     [ 3.  4.]]
    
 
 Wavelet Packets

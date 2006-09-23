@@ -147,6 +147,32 @@ def test_14_on_line_583():
     """
 
 
+def test_15_on_line_627():
+    """
+    >>> import pywt, numpy
+    >>> data = numpy.ones((4,4), dtype=numpy.float64)
+    >>> coeffs = pywt.dwt2(data, 'haar')
+    >>> (cA, cH), (cV, cD) = coeffs
+    >>> print cA
+    [[ 2.  2.]
+     [ 2.  2.]]
+    >>> print cV
+    [[ 0.  0.]
+     [ 0.  0.]]
+    """
+
+
+def test_16_on_line_667():
+    """
+    >>> import pywt, numpy
+    >>> data = numpy.array([[1,2], [3,4]], dtype=numpy.float64)
+    >>> coeffs = pywt.dwt2(data, 'haar')
+    >>> print pywt.idwt2(coeffs, 'haar')
+    [[ 1.  2.]
+     [ 3.  4.]]
+    """
+
+
 def _test():
     import doctest
     doctest.testmod()

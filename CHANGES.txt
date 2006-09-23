@@ -1,5 +1,9 @@
 Changelog
 
+0.1.5
+    changes:
+        - 2D dwt and idwt
+
 0.1.4
     changes:
         - Wavelet class can be subclassed
