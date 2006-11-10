@@ -9,7 +9,7 @@
 Multilevel DWT and IDWT transforms.
 """
 
-from _pywt import Wavelet, MODES, dwt, idwt
+from _pywt import Wavelet, MODES, dwt, idwt, dwt_max_level
 
 def wavedec(data, wavelet, level=None, mode='sym'):
     """
