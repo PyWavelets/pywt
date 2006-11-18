@@ -5,6 +5,17 @@
 
 #include "common.h"
 
+#ifdef _AS_PY_EXTENSION
+inline void *wtcalloc(size_t len, size_t size){
+		void *p = wtmalloc(len*size);
+		if(p)
+			memset(p, 0, len*size);
+		return p;
+}
+#endif
+
+// buffers and max levels params
+
 index_t dwt_buffer_length(index_t input_len, index_t filter_len, MODE mode){
 	if(input_len < 1 || filter_len < 1)
 		return 0;

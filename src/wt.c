@@ -72,7 +72,7 @@ int d_rec_d(double coeffs_d[], index_t coeffs_len,
 //
 // If fix_size_diff is 1 then coeffs arrays can differ by one in length (this
 // is useful in multilevel decompositions and reconstructions of odd-length signals)
-
+// Requires zoer-filled output buffer
 int d_idwt(double coeffs_a[], index_t coeffs_a_len,
 		   double coeffs_d[], index_t coeffs_d_len,
 		   Wavelet* wavelet,
@@ -115,8 +115,8 @@ int d_idwt(double coeffs_a[], index_t coeffs_a_len,
 	if(output_len != idwt_buffer_length(input_len, wavelet->rec_len, mode))
 		goto error;
 
-	// set output to zero (this can be ommited if output array is already cleared)
-	memset(output, 0, output_len * sizeof(double));
+	// // set output to zero (this can be ommited if output array is already cleared)
+	// memset(output, 0, output_len * sizeof(double));
 
 	// reconstruct approximation coeffs with lowpass reconstruction filter
 	if(coeffs_a){

@@ -12,11 +12,42 @@
 #include <math.h>
 #include <memory.h>
 
-// Memory management functions, can be changet to Python C-API equivalents
-#define wtmalloc(size_t) malloc(size_t)
-#define wtcalloc(len, size_t) calloc(len, size_t)
-#define wtfree(ptr) free(ptr)
+///////////////////////////////////////////////////////////////////////////////
+// Typedefs
 
+#define _AS_PY_EXTENSION
+#ifdef _AS_PY_EXTENSION
+	// PyWavelets not tested with Python 2.5 on 64bit platforms. Use with caution.
+
+	#include <Python.h>
+	#if PY_VERSION_HEX < 0x02050000 && !defined(PY_SSIZE_T_MIN)
+		typedef int Py_ssize_t;
+		#define PY_SSIZE_T_MAX INT_MAX
+		#define PY_SSIZE_T_MIN INT_MIN
+	#endif
+	
+	// index_t
+	typedef Py_ssize_t index_t;
+	
+	// using Python's memory manager
+	#define wtmalloc(size)		PyMem_Malloc(size)
+	#define wtfree(ptr)			PyMem_Free(ptr)
+	inline void *wtcalloc(size_t, size_t);
+#else
+	// index_t
+	typedef int index_t; 
+
+	// standard c memory management
+	#define wtmalloc(size)		malloc(size)
+	#define wtfree(ptr)			free(ptr)
+	#define wtcalloc(len, size) calloc(len, size)
+#endif
+
+typedef const index_t const_index_t;
+
+// Data type for input arrays (ie. can be changed to float if needed)
+typedef double DTYPE;
+typedef const DTYPE CONST_DTYPE;
 
 // Signal extension modes
 typedef enum {
@@ -30,21 +61,6 @@ typedef enum {
        MODE_PERIODIZATION, // signal is treated as being periodic, minimal output lenght
        MODE_MAX
 } MODE;
-
-
-///////////////////////////////////////////////////////////////////////////////
-// Typedefs
-
-// Integer type for indexing arrays.
-// - it is signed because negative indexes are used in several places
-// - TODO: should be changed to Py_ssize_t in future releases for Python 2.5
-
-typedef int index_t; 
-typedef const index_t const_index_t;
-
-// Data type for input arrays (ie. can be changed to float)
-typedef double DTYPE;
-typedef const DTYPE CONST_DTYPE;
 
 
 ///////////////////////////////////////////////////////////////////////////////

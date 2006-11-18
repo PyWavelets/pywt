@@ -2,11 +2,8 @@
 # See COPYING for license details.
 from pywt.numerix import contiguous_array_from_any
 
-# $Id$
 __id__ = "$Id$"
-
 __doc__ = """Pyrex wrapper for low-level C wavelet transform implementation."""
-
 
 ###############################################################################
 # cimports
