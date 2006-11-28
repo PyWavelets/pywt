@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
-# Doctest for ../doc/index.rst document
+# Doctest for doc\index.rst document
 
-def test_1_on_line_125():
+def test_1_on_line_134():
     """
     >>> import pywt
     >>> print pywt.families()
@@ -10,7 +10,7 @@ def test_1_on_line_125():
     """
 
 
-def test_2_on_line_146():
+def test_2_on_line_155():
     """
     >>> import pywt
     >>> print pywt.wavelist('coif')
@@ -18,7 +18,7 @@ def test_2_on_line_146():
     """
 
 
-def test_3_on_line_203():
+def test_3_on_line_215():
     """
     >>> import pywt
     >>> wavelet = pywt.Wavelet('db1')
@@ -29,7 +29,6 @@ def test_3_on_line_203():
       Filters length: 2
       Orthogonal:     True
       Biorthogonal:   True
-      Orthonormal:    False
       Symmetry:       asymmetric
     >>> print wavelet.dec_lo, wavelet.dec_hi
     [0.70710678118654757, 0.70710678118654757] [-0.70710678118654757, 0.70710678118654757]
@@ -38,7 +37,7 @@ def test_3_on_line_203():
     """
 
 
-def test_4_on_line_232():
+def test_4_on_line_243():
     """
     >>> import pywt
     >>> wavelet = pywt.Wavelet('db2')
@@ -46,7 +45,7 @@ def test_4_on_line_232():
     """
 
 
-def test_5_on_line_243():
+def test_5_on_line_254():
     """
     >>> import pywt
     >>> wavelet = pywt.Wavelet('bior1.1')
@@ -54,7 +53,19 @@ def test_5_on_line_243():
     """
 
 
-def test_6_on_line_299():
+def test_6_on_line_291():
+    """
+    >>> import pywt, math
+    >>> class HaarFilterBank(object):
+    ...     def get_filters_coeffs(self):
+    ...         c = math.sqrt(2)/2
+    ...         dec_lo, dec_hi, rec_lo, rec_hi = [c, c], [-c, c], [c, c], [c, -c]
+    ...         return [dec_lo, dec_hi, rec_lo, rec_hi]
+    >>> myWavelet = pywt.Wavelet(name="myHaarWavelet", filter_bank=HaarFilterBank())
+    """
+
+
+def test_7_on_line_346():
     """
     >>> import pywt
     >>> (cA, cD) = pywt.dwt([1,2,3,4,5,6], 'db1')
@@ -65,21 +76,21 @@ def test_6_on_line_299():
     """
 
 
-def test_7_on_line_337():
+def test_8_on_line_389():
     """
     >>> import pywt
     >>> coeffs = pywt.wavedec([1,2,3,4,5,6,7,8], 'db1', level=2)
-    >>> a2, d2, d1 = coeffs
-    >>> print d1
+    >>> cA2, cD2, cD1 = coeffs
+    >>> print cD1
     [-0.70710678 -0.70710678 -0.70710678 -0.70710678]
-    >>> print d2
+    >>> print cD2
     [-2. -2.]
-    >>> print a2
+    >>> print cA2
     [  5.  13.]
     """
 
 
-def test_8_on_line_373():
+def test_9_on_line_425():
     """
     >>> import pywt
     >>> w = pywt.Wavelet('sym5')
@@ -88,7 +99,7 @@ def test_8_on_line_373():
     """
 
 
-def test_9_on_line_443():
+def test_10_on_line_499():
     """
     >>> import pywt
     >>> print pywt.MODES.modes
@@ -96,7 +107,7 @@ def test_9_on_line_443():
     """
 
 
-def test_10_on_line_452():
+def test_11_on_line_508():
     """
     >>> import pywt
     >>> (a, d) = pywt.dwt([1,2,3,4,5,6], 'db2', 'sp1')
@@ -104,7 +115,7 @@ def test_10_on_line_452():
     """
 
 
-def test_11_on_line_499():
+def test_12_on_line_558():
     """
     >>> import pywt
     >>> (cA, cD) = pywt.dwt([1,2,3,4,5,6], 'db2', 'sp1')
@@ -113,7 +124,7 @@ def test_11_on_line_499():
     """
 
 
-def test_12_on_line_513():
+def test_13_on_line_572():
     """
     >>> import pywt
     >>> (cA, cD) = pywt.dwt([1,2,3,4,5,6], 'db2', 'sp1')
@@ -124,7 +135,7 @@ def test_12_on_line_513():
     """
 
 
-def test_13_on_line_546():
+def test_14_on_line_608():
     """
     >>> import pywt
     >>> coeffs = pywt.wavedec([1,2,3,4,5,6,7,8], 'db2', level=2)
@@ -133,7 +144,7 @@ def test_13_on_line_546():
     """
 
 
-def test_14_on_line_583():
+def test_15_on_line_646():
     """
     >>> import pywt
     >>> data = [1,2,3,4,5,6]
@@ -147,12 +158,12 @@ def test_14_on_line_583():
     """
 
 
-def test_15_on_line_627():
+def test_16_on_line_695():
     """
     >>> import pywt, numpy
     >>> data = numpy.ones((4,4), dtype=numpy.float64)
     >>> coeffs = pywt.dwt2(data, 'haar')
-    >>> (cA, cH), (cV, cD) = coeffs
+    >>> cA, (cH, cV, cD) = coeffs
     >>> print cA
     [[ 2.  2.]
      [ 2.  2.]]
@@ -162,7 +173,7 @@ def test_15_on_line_627():
     """
 
 
-def test_16_on_line_667():
+def test_17_on_line_737():
     """
     >>> import pywt, numpy
     >>> data = numpy.array([[1,2], [3,4]], dtype=numpy.float64)
@@ -170,6 +181,31 @@ def test_16_on_line_667():
     >>> print pywt.idwt2(coeffs, 'haar')
     [[ 1.  2.]
      [ 3.  4.]]
+    """
+
+
+def test_18_on_line_778():
+    """
+    >>> import pywt, numpy
+    >>> coeffs = pywt.wavedec2(numpy.ones((8,8)), 'db1', level=2)
+    >>> cA2, (cH2, cV2, cD2), (cH1, cV1, cD1) = coeffs
+    >>> print cA2
+    [[ 4.  4.]
+     [ 4.  4.]]
+    """
+
+
+def test_19_on_line_812():
+    """
+    >>> import pywt, numpy
+    >>> coeffs = pywt.wavedec2(numpy.ones((4,4)), 'db1')
+    >>> print "levels:", len(coeffs)-1
+    levels: 2
+    >>> print pywt.waverec2(coeffs, 'db1')
+    [[ 1.  1.  1.  1.]
+     [ 1.  1.  1.  1.]
+     [ 1.  1.  1.  1.]
+     [ 1.  1.  1.  1.]]
     """
 
 

@@ -145,38 +145,38 @@ pre.doctest-block  {
     padding: 3px 3px 3px 3px;
 }
 
-pre.pycode {
+.code {
     font-family: Lucida, Courier New;
     font-size: small;
     border: 1px solid #DDDDDD;
     background: white;
     padding: 3px 3px 3px 3px;
 }
-pre.pycode .num {
+.code .num {
     color: #333333;
 }
-pre.pycode .op {
+.code .op {
     color: #0000C0;
 }
-pre.pycode .str {
+.code .str {
     color: #004080;
 }
-pre.pycode .com {
+.code .com {
     color: #008000;
 }
-pre.pycode .name {
+.code .name {
     color: ##000000;
 }
-pre.pycode .err {
+.code .err {
     color: #FF8080;
 }
-pre.pycode .kwd {
+.code .kwd {
     color: #C00000;
 }
-pre.pycode .txt {
+.code .txt {
     color: #000000;
 }
-pre.pycode .pmt {
+.code .pmt {
     /*color: #770000;*/
     color: #0000C0;
 }

@@ -6,14 +6,14 @@ User Guide
 ==========
 
 :Author: Filip Wasilewski
-:Contact: filipwasilewski@gmail.com
-:Version: 0.1.5
+:Contact: filip.wasilewski@gmail.com
+:Version: 0.1.6
 :Status: alpha
 :Date: |date|
 :License: `MIT`_
 
-:Abstract: |pywt| is a `Python`_ module for calculating forward and inverse
-  Discrete Wavelet Transform, Stationary Wavelet Transform and Wavelet Packets
+:Abstract: |pywt| is a `Python`_ module for computing forward and inverse
+  1D and 2D Discrete Wavelet Transform, Stationary Wavelet Transform and Wavelet Packets
   decomposition and reconstruction.
   This document is a User Guide to |pywt|.
 
@@ -21,7 +21,7 @@ User Guide
 .. _MIT: COPYING.txt
 
 .. meta::
-   :keywords: pywavelets wavelet transform python module discrete dwt idwt swt wavelets packets
+   :keywords: pywavelets wavelets discrete wavelet transform Python module dwt idwt swt wavelet packets
    :description lang=en: Python discrete wavelet transform module
 
 .. contents:: Table of Contents
@@ -38,8 +38,8 @@ Introduction
 Requirements
 ~~~~~~~~~~~~
 
-|pywt| was developed and tested with `Python`_ 2.4. Since version 0.1.4 it
-requires a recent version of `NumPy`_ numeric array module.
+|pywt| requires `Python`_ 2.4 or 2.5 and a recent version of
+`NumPy`_ numeric array module. 
 
 .. _NumPy: http://www.scipy.org/
 .. _Python: http://python.org/ 
@@ -48,7 +48,7 @@ requires a recent version of `NumPy`_ numeric array module.
 Download
 ~~~~~~~~
 
-Current release, including source and binary version for Windows, is available
+Current release, including source and binary versions for Windows, is available
 for download from Python Cheese Shop directory at:
 
     http://cheeseshop.python.org/pypi/PyWavelets/
@@ -56,7 +56,7 @@ for download from Python Cheese Shop directory at:
 The latest *development* version can be downloaded from
 `wavelets.scipy.org`_'s SVN `repository`_::
 
-    svn co http://wavelets.scipy.org/svn/multiresolution/pywt/trunk
+    svn co http://wavelets.scipy.org/svn/multiresolution/pywt/trunk pywt
 
 .. _`wavelets.scipy.org`: http://wavelets.scipy.org
 .. _`repository`: http://wavelets.scipy.org/svn/multiresolution/pywt/trunk
@@ -66,22 +66,29 @@ Install
 ~~~~~~~
 
 |pywt| was originaly developed using `MinGW`_ C compiler, `Pyrex`_ and
-`Python`_ 2.4 under WindowsXP. Most of the code is written in C with
-`Pyrex`_ bindings.
+`Python`_ 2.4 on 32-bit WindowsXP platform.
+Recent release adds support for `Python`_ 2.5,
+however |pywt| was not tested on 64-bit platforms yet.
 
 .. _Pyrex: http://www.cosc.canterbury.ac.nz/~greg/python/Pyrex/
 .. _MinGW: http://www.mingw.org/
 
-If you are using Python 2.4 on Windows then just download and execute
-the binary version for Windows.
+If you are using Python 2.4 or 2.5 on Windows then just download and
+execute the binary installer or binary egg distribution for Windows.
 
-To install from source you will need a C compiler and optionally Pyrex
-installed::
+To build |pywt| from source you will need a C compiler and,
+in case of modified source or SVN build, an updated version of Pyrex
+from http://codespeak.net/svn/lxml/pyrex/.
+Then in the shell prompt in the |pywt| source directory type::
 
   python setup.py install
 
-If you have `numpy`_ and `matplotlib`_ installed try running some examples from `demo`
-directory to verify installation. Test cases coming soon.
+.. Since version 0.1.6 the source distribution includes this version of Pyrex.
+
+
+
+To verify the installation try running tests and examples from `test` and
+`demo` directories. Note that some examples need `matplotlib`_ installed.
 
 .. _matplotlib: http://matplotlib.sourceforge.net
 
@@ -89,26 +96,28 @@ directory to verify installation. Test cases coming soon.
 License
 ~~~~~~~
 
-|pywt| is free open source software available under `MIT license`_.
+|pywt| is free Open Source software available under `MIT license`_.
 
 .. _MIT license: COPYING.txt
 
 Contact
 ~~~~~~~
 
-Feel free to contact me directly filipwasilewski@gmail.com.
-Comments and bug reports (and fixes;) are welcome.
+Feel free to contact me directly at filip.wasilewski@gmail.com.
+Comments, bug reports and fixes are welcome.
+
+You can also use the wiki and trac system available at `wavelets.scipy.org`_
+to improve documentation, post use cases and submit enhancement proposals or bug reports.
 
 
 Wavelets
 --------
 
-``families``
-~~~~~~~~~~~~~~
+Wavelet ``families``
+~~~~~~~~~~~~~~~~~~~~
 
-The ``families()`` function returns names of available wavelet families.
-
-Currently the following wavelet families with over seventhy wavelets are available:
+The ``families()`` function returns names of available built-in wavelet families.
+Currently the following wavelet families with over seventy wavelets are available:
 
 * Haar (``haar``)
 * Daubechies (``db``)
@@ -128,10 +137,10 @@ Currently the following wavelet families with over seventhy wavelets are availab
     >>> print pywt.families()
     ['haar', 'db', 'sym', 'coif', 'bior', 'rbio', 'dmey']
 
-.. _wavelist():
+.. _`wavelist()`:
 
-``wavelist``
-~~~~~~~~~~~~~~
+Built-in wavelets - ``wavelist``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The ``wavelist(short_name=None)`` function returns list of available
 wavelet names.
@@ -150,12 +159,15 @@ otherwise the function returns names of wavelets from given family name.
     ['coif1', 'coif2', 'coif3', 'coif4', 'coif5']
 
 
-``Wavelet``
-~~~~~~~~~~~
+.. _Wavelet:
 
-``Wavelet(name, filter_bank=None)`` class describes properties of wavelet
-identified by ``name``. The parameter ``name`` must be valid wavelet name
-from |wavelist()|_ list. Otherwise a `filter_bank`_ must be provided.
+``Wavelet`` object
+~~~~~~~~~~~~~~~~~~~~
+
+``Wavelet(name, filter_bank=None)`` object describe properties of a wavelet
+identified by ``name``. 
+In order to use a built-in wavelet the parameter ``name`` must be a valid
+name from `wavelist()`_ list. Otherwise a `filter_bank`_ argument must be provided.
 
 name
   Wavelet name
@@ -163,11 +175,12 @@ name
 .. _`filter_bank`:
 
 filter_bank
-  Use user supplied filter bank instead of builtin ``Wavelet``.
+  Use user supplied filter bank instead of built-in ``Wavelet``.
   The filter bank object must implement the
   `get_filters_coeffs()`_ method,
   which returns a list of filters (dec_lo, dec_hi, rec_lo, rec_hi).
-  A Wavelet object can be used as a filter bank. See `user_filter_banks.py`_ for example.
+  Other Wavelet object can also be used as a filter bank. See section
+  on `using custom wavelets`_ for more information.
   
 dec_lo, dec_hi
   Decomposition filters values.
@@ -184,14 +197,13 @@ rec_len
 .. _`get_filters_coeffs()`:
 
 get_filters_coeffs()
-  Quadrature mirror filters list for current wavelet (dec_lo, dec_hi, rec_lo, rec_hi)
+  Returns quadrature mirror filters list for current wavelet (dec_lo, dec_hi, rec_lo, rec_hi)
 
 other properties:
   - family_name
   - short_name
   - orthogonal
   - biorthogonal
-  - orthonormal
   - symmetry - ``asymmetric``, ``near symmetric``, ``symmetric``
   - vanishing_moments_psi
   - vanishing_moments_phi
@@ -211,7 +223,6 @@ other properties:
       Filters length: 2
       Orthogonal:     True
       Biorthogonal:   True
-      Orthonormal:    False
       Symmetry:       asymmetric
     >>> print wavelet.dec_lo, wavelet.dec_hi
     [0.70710678118654757, 0.70710678118654757] [-0.70710678118654757, 0.70710678118654757]
@@ -220,12 +231,12 @@ other properties:
 
 
 ``wavefun``
-"""""""""""
+""""""""""""
 
-The ``wavefun(level)`` function can be used to calculates aproximations wavelet function (*psi*)
-and associated of scaling function (*phi*) at given level of refinement.
+The ``wavefun(level)`` function can be used to calculates approximations of wavelet function (*psi*)
+and associated scaling function (*phi*) at given level of refinement.
 
-For an orthogonal wavelet returns scaling and wavelet function.
+For orthogonal wavelet returns scaling and wavelet function.
 
 .. class:: example
 
@@ -235,7 +246,7 @@ For an orthogonal wavelet returns scaling and wavelet function.
     >>> wavelet = pywt.Wavelet('db2')
     >>> phi, psi = wavelet.wavefun(level=5)
 
-For an biorthogonal wavelet returns scaling and wavelet function both for decomposition
+For biorthogonal wavelet returns scaling and wavelet function both for decomposition
 and reconstruction.
 
 .. class:: example
@@ -246,19 +257,54 @@ and reconstruction.
     >>> wavelet = pywt.Wavelet('bior1.1')
     >>> phi_d, psi_d, phi_r, psi_r = wavelet.wavefun(level=5)
 
-See also plots of Daubechies and Symlets wavelet familes generated
-with ``wavefun`` function:
+.. See also plots of Daubechies and Symlets wavelet familes generated with ``wavefun`` function:
 
-- `db.png`_
-- `sym.png`_
+    - `db.png`_
+    - `sym.png`_
 
 
-Discrete Wavelet Transform
---------------------------
+.. _`using custom wavelets`:
+
+Using custom wavelets
+~~~~~~~~~~~~~~~~~~~~~~
+
+|pywt| comes with `long list`_ of the most popular wavelets built-in and ready to use.
+If there is a need of using a specific wavelet which is not included in the list it is
+very easy to create one.
+Just pass an object of a class implementing ``get_filters_coeffs()`` method
+as a `filter_bank`_ argument of Wavelet_ constructor.
+
+.. _`long list`: `wavelist()`_
+
+The ``get_filters_coeffs()`` method must return a list of four filters:
+lowpass decomposition, highpass decomposition, lowpass reconstruction and
+highpass reconstruction filter, just as the `get_filters_coeffs()`_ method 
+of the Wavelet_ class.
+
+A Wavelet object created in this way is a standard Wavelet_ object and can be used
+as any other Wavelet_ object.
+
+.. class:: example
+
+  Example:
+
+  .. code-block:: Python
+  
+    >>> import pywt, math
+    >>> class HaarFilterBank(object):
+    ...     def get_filters_coeffs(self):
+    ...         c = math.sqrt(2)/2
+    ...         dec_lo, dec_hi, rec_lo, rec_hi = [c, c], [-c, c], [c, c], [c, -c]
+    ...         return [dec_lo, dec_hi, rec_lo, rec_hi]
+    >>> myWavelet = pywt.Wavelet(name="myHaarWavelet", filter_bank=HaarFilterBank())
+
+
+Discrete Wavelet Transform (DWT)
+----------------------------------
 
 Wavelet transform has recently became very popular 
-when it comes to data analysis, denoising or compression,
-either 1 or 2 dimensional signals.
+when it comes to analysis, denoising and compression of
+signals and images.
 
 
 .. _dwt:
@@ -281,14 +327,15 @@ wavelet
 mode
   |mode|
 
-Length of returned approximation (cA) and details(cD) coefficient
-arrays depends on selected `mode`_ - see `dwt_coeff_len`_:
+The transform coefficients are returned as two arrays containing
+approximation (cA) and detail (cD) coefficients respectively.
+Length of returned arrays depends on selected `mode`_ - see `dwt_coeff_len`_:
 
-* for all modes except *periodization*::
+* for all modes_ except `periodization`_::
 
     len(cA) == len(cD) == floor((len(data) + wavelet.dec_len - 1) / 2)
 
-* for *periodization* mode (``MODES.per``)::
+* for `periodization`_ mode (`"per"`)::
   
     len(cA) == len(cD) == ceil(len(data) / 2)
 
@@ -310,12 +357,15 @@ arrays depends on selected `mode`_ - see `dwt_coeff_len`_:
 Multilevel decomposition using ``wavedec``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Performs multilevel Discrete Wavelet Transform decomposition of given
-signal and returns coefficient list in form [cAn cDn cDn-1 ... cD2 cD1].
+The ``wavedec`` function performs 1D multilevel Discrete Wavelet Transform
+decomposition of given signal and returns ordered list of coefficients arrays
+``[cAn, cDn, cDn-1, ..., cD2, cD1]``, where ``n`` denotes the level of decomposition.
+The first element (``cAn``) of the result is approximation coefficients array and
+the following elements (``cDn`` - ``cD1``) are details coefficients arrays.
 
 ::
 
-  wavedec(data, wavelet, level=1, mode='sym')
+  wavedec(data, wavelet, mode='sym', level=None)
 
 data
   |data|
@@ -323,12 +373,14 @@ data
 wavelet
   |wavelet_arg|
 
-level
-  Decomposition level. This should not be greater than value 
-  from the `dwt_max_level`_ function for corresponding arguments.
-
 mode
   |mode|
+
+level
+  Decomposition levels count. 
+  If the level is None, then full decomposition up to 
+  level computed with `dwt_max_level`_ function for corresponding
+  data and wavelet lengths is performed. 
 
 .. class:: example
 
@@ -338,12 +390,12 @@ mode
 
     >>> import pywt
     >>> coeffs = pywt.wavedec([1,2,3,4,5,6,7,8], 'db1', level=2)
-    >>> a2, d2, d1 = coeffs
-    >>> print d1
+    >>> cA2, cD2, cD1 = coeffs
+    >>> print cD1
     [-0.70710678 -0.70710678 -0.70710678 -0.70710678]
-    >>> print d2
+    >>> print cD2
     [-2. -2.]
-    >>> print a2
+    >>> print cA2
     [  5.  13.]
  
 .. _`dwt_max_level`:
@@ -352,19 +404,19 @@ Maximum decomposition level - ``dwt_max_level``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The ``dwt_max_level`` function can be used to
-compute the maximum usefull level of decomposition for given ``input data length``
-and ``wavelet filter length``.
+compute the maximum useful level of decomposition
+for given ``input data length`` and ``wavelet filter length``.
 
 ::
 
   dwt_max_level(data_len, filter_len)
 
-The returned value equals::
+The returned value equals to::
 
   floor(log(data_len/(filter_len-1))/log(2))
 
-Although the maximum decomposition level can be quite big for long signals,
-usually smaller values are chosen (5 for 1-dimensional signals).
+Although the maximum decomposition level can be quite high for long signals,
+usually smaller values are chosen.
 
 .. class:: example
 
@@ -382,20 +434,20 @@ usually smaller values are chosen (5 for 1-dimensional signals).
 Result coefficients length - ``dwt_coeff_len``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Depending on the selected signal extension `mode`_, the ``dwt_coeff_len``
-function calculates the length of `dwt`_ coefficients.
+Based on input data length, Wavelet decomposition filter length and signal extension `mode`_,
+the ``dwt_coeff_len`` function calculates length of result coefficients arrays after `dwt`_.
 
 ::
 
   dwt_coeff_len(data_len, filter_len, mode)
 
-For *periodization* mode this equals::
+For `periodization`_ mode this equals::
 
   ceil(data_len / 2)
 
 which is the lowest possible length guaranteeing perfect reconstruction.
 
-For other modes::
+For other `modes`_::
 
   floor((data_len + filter_len - 1) / 2)
 
@@ -405,10 +457,10 @@ For other modes::
 Signal extension modes - ``MODES``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To handle problem of border distortion while performing DWT,
+To handle problem of border distortion while performing DWT_,
 one of several signal extension modes can be selected.
 
-* ``zpd`` - **zero-padpadding** - signal is extended by adding zero samples::
+* ``zpd`` - **zero-padding** - signal is extended by adding zero samples::
 
     0  0 | x1 x2 ... xn | 0  0
 
@@ -421,19 +473,23 @@ one of several signal extension modes can be selected.
 
     x2 x1 | x1 x2 ... xn | xn xn-1
 
+.. _`periodic-padding`:
+
 * ``ppd`` - **periodic-padding** - signal is treated as periodic::
   
     xn-1 xn | x1 x2 ... xn | x1 x2
 
-* ``sp1`` - **smooth-padding** - signal is extended accordin to first derivatives
+* ``sp1`` - **smooth-padding** - signal is extended according to first derivatives
   calculated on the edges
   
-DWT performed for these extension modes is slightly redundant, but ensure
-a perfect reconstruction. To receive the smallest number of coefficients
-DWT can be computed with `periodization` mode
+DWT_ performed for these extension modes is slightly redundant, but ensure
+the perfect reconstruction. To receive the smallest number of coefficients,
+DWT_ can be computed with `periodization`_ mode
 
-* ``per`` - **periodization** - is like `periodic-padding` but gives the smallest possible
-  number of decomposition coefficients. IDWT must be performed with the same mode to
+.. _`periodization`:
+
+* ``per`` - **periodization** - is like `periodic-padding`_ but gives the smallest possible
+  number of decomposition coefficients. IDWT_ must be performed with the same mode to
   ensure perfect reconstruction.
 
 .. class:: example
@@ -457,14 +513,17 @@ Notice that you can use either of the following forms:
 
 Note that extending data in context of |pywt| does not really mean reallocating
 memory and copying values. Instead of that the extra values are computed only
-when needed. This feature can often save extra page swapping when handling
-relatively big data arrays on computers with low physical memory available.
+when needed. This feature saves extra memory and CPU resources and helps to avoid
+page swapping when handling relatively big data arrays on computers with low
+physical memory.
 
-Inverse Discrete Wavelet Transform
-----------------------------------
+Inverse Discrete Wavelet Transform (IDWT)
+------------------------------------------
 
-``idwt``
-~~~~~~~~
+.. _idwt:
+
+Single level ``idwt``
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The ``idwt`` function reconstructs data from given coefficients by performing
 single level Inverse Discrete Wavelet Transform.
@@ -483,13 +542,13 @@ wavelet
   |wavelet_arg|
 
 mode
-  |mode| This is only important when DWT was performed in *periodization* mode.
+  |mode| This is only important when DWT was performed in `periodization`_ mode.
 
 correct_size
-  additional option. Normally coeff_a and coeff_d must have
-  the same length. With correct_size set to True, length of coeff_a may
-  be greater than length of coeff_d by value of 1.
-  This is useful when doing multilevel decomposition and reconstruction
+  additional option. Under normal conditions (all data lengths dyadic) Ca and cD
+  coefficients lists must have the same lengths. With correct_size set to True,
+  length of cA may be greater by one than length of cA.
+  This option is very useful when doing multilevel decomposition and reconstruction
   of non-dyadic length signals.
 
 .. class:: example
@@ -503,8 +562,8 @@ correct_size
     >>> print pywt.idwt(cA, cD, 'db2', 'sp1')
     [ 1.  2.  3.  4.  5.  6.]
 
-One of *cA* and *cD* arguments can be *None*. In that situation
-the reconstruction will be performed using the other one.
+One of the *cA* and *cD* arguments can be *None*. In that situation
+the reconstruction will be performed using only the other one.
 
 .. class:: example
 
@@ -520,19 +579,22 @@ the reconstruction will be performed using the other one.
     [ 1.  2.  3.  4.  5.  6.]
 
 
-``waverec``
-~~~~~~~~~~~
+.. _waverec:
+
+
+Multilevel reconstruction using ``waverec``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Performs multilevel reconstruction of signal from given coefficient list.
 
 ::
 
-  waverec(coeffs_list, wavelet, mode='sym')
+  waverec(coeffs, wavelet, mode='sym')
 
-coeffs_list
-  coefficient list must be in form like that from `wavedec`_ decomposition::
+coeffs
+  coefficients list must be in the form like returned from `wavedec`_ decomposition::
   
-  [cAn cDn cDn-1 ... cD2 cD1]
+  [cAn, cDn, cDn-1, ..., cD2, cD1]
 
 wavelet
   |wavelet_arg|
@@ -550,15 +612,16 @@ mode
     >>> print pywt.waverec(coeffs, 'db2')
     [ 1.  2.  3.  4.  5.  6.  7.  8.]
 
+.. _upcoef:
 
-``upcoef``
-~~~~~~~~~~
+Direct reconstruction with ``upcoef``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Direct reconstruction from cefficients.
+Direct reconstruction from coefficients.
 
 ::
   
-  upcoef(part, coef, wavelet, level=1, take=0)
+  upcoef(part, coeffs, wavelet, level=1, take=0)
 
 part
   defines coefficients type:
@@ -566,15 +629,15 @@ part
   - **'a'** - approximations reconstruction is performed
   - **'d'** - details reconstruction is performed
 
-coef
+coeffs
   coefficients array.
 wavele
   |wavelet|
 level
   if *level* is specified then multilevel reconstruction is performed
 take
-  if *take* is specified then the central part of length *'take'* from result
-  is returned.
+  if *take* is specified then only the central part of length equal to
+  *'take'* is returned.
   
 .. class:: example
 
@@ -596,8 +659,10 @@ take
 2D DWT and IDWT
 ---------------
 
-``dwt2``
-~~~~~~~~~
+.. _dwt2:
+
+Single level ``dwt2``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The ``dwt2`` function performs single level 2D Discrete Wavelet Transform.
 
@@ -606,19 +671,22 @@ The ``dwt2`` function performs single level 2D Discrete Wavelet Transform.
   dwt2(data, wavelet, mode='sym')
 
 data
-  2D array with input data 
+  2D input data 
 
 wavelet
   |wavelet_arg|
 
 mode
-  |mode| This is only important when DWT was performed in *periodization* mode.
+  |mode| This is only important when DWT was performed in `periodization`_ mode.
 
-Returns 2D average and (three) details coefficients arrays. The result
-has the following form:
-    
-  ((approximation, horizontal det.),
-   (vertical det., diagonal det.))
+Returns one average and three details 2D coefficients arrays. The coefficients
+arrays are organized in tuples in the following form::
+
+  (cA, (cH, cV, cD)),
+
+where ``cA``, ``cH``, ``cV``, ``cD`` denotes approximation,
+horizontal detail, vertical detail
+and diagonal detail coefficients respectively.
 
 .. class:: example
 
@@ -629,7 +697,7 @@ has the following form:
     >>> import pywt, numpy
     >>> data = numpy.ones((4,4), dtype=numpy.float64)
     >>> coeffs = pywt.dwt2(data, 'haar')
-    >>> (cA, cH), (cV, cD) = coeffs
+    >>> cA, (cH, cV, cD) = coeffs
     >>> print cA
     [[ 2.  2.]
      [ 2.  2.]]
@@ -638,8 +706,10 @@ has the following form:
      [ 0.  0.]]
 
 
-``idwt2``
-~~~~~~~~~
+.. _idwt2:
+
+Single level ``idwt2``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The ``idwt2`` function reconstructs data from given coefficients by performing
 single level 2D Inverse Discrete Wavelet Transform.
@@ -649,16 +719,16 @@ single level 2D Inverse Discrete Wavelet Transform.
   idwt2(coeffs, wavelet, mode='sym')
 
 coeffs
-  Two tuples with 2D arrays containing approximation and details coefficients:
-     
-    ((approximation, horizontal det.),
-    (vertical det., diagonal det.))
+  A tuple with approximation coefficients and three details coefficients 2D arrays
+  like from `dwt2`_::
+
+    (cA, (cH, cV, cD))
 
 wavelet
   |wavelet_arg|
 
 mode
-  |mode| This is only important when DWT was performed in *periodization* mode.
+  |mode| This is only important when DWT was performed in `periodization`_ mode.
 
 .. class:: example
 
@@ -672,8 +742,85 @@ mode
     >>> print pywt.idwt2(coeffs, 'haar')
     [[ 1.  2.]
      [ 3.  4.]]
-   
 
+   
+.. _wavedec2:
+
+2D multilevel decomposition using ``wavedec2``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Performs multilevel 2D Discrete Wavelet Transform decomposition 
+and returns coefficients list ``[cAn, (cHn, cVn, cDn), ..., (cH1, cV1, cD1)]``,
+where ``n`` denotes the level of decomposition and cA, cH, cV and cD are 
+approximation, horizontal detail, vertical detail and diagonal detail coefficients arrays.
+
+::
+
+  wavedec2(data, wavelet, mode='sym', level=None)
+
+data
+  |data|
+
+wavelet
+  |wavelet_arg|
+
+level
+  Decomposition level. This should not be greater than value 
+  from the `dwt_max_level`_ function for smallest dimension.
+
+mode
+  |mode|
+
+.. class:: example
+
+  Example:
+
+  .. code-block:: Python
+
+    >>> import pywt, numpy
+    >>> coeffs = pywt.wavedec2(numpy.ones((8,8)), 'db1', level=2)
+    >>> cA2, (cH2, cV2, cD2), (cH1, cV1, cD1) = coeffs
+    >>> print cA2
+    [[ 4.  4.]
+     [ 4.  4.]]
+
+.. _waverec2:
+
+2D multilevel reconstruction using ``waverec2``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Performs multilevel reconstruction from given coefficient list.
+
+::
+
+  waverec2(coeffs, wavelet, mode='sym')
+
+coeffs
+  coefficients list must be in form like that from `wavedec2`_ decomposition::
+  
+  [cAn, (cHn, cVn, cDn), ..., (cH1, cV1, cD1)]
+
+wavelet
+  |wavelet_arg|
+mode
+  |mode|
+
+.. class:: example
+
+  Example:
+
+  .. code-block:: Python
+
+    >>> import pywt, numpy
+    >>> coeffs = pywt.wavedec2(numpy.ones((4,4)), 'db1')
+    >>> print "levels:", len(coeffs)-1
+    levels: 2
+    >>> print pywt.waverec2(coeffs, 'db1')
+    [[ 1.  1.  1.  1.]
+     [ 1.  1.  1.  1.]
+     [ 1.  1.  1.  1.]
+     [ 1.  1.  1.  1.]]    
+    
 Wavelet Packets
 ---------------
 
@@ -705,7 +852,7 @@ wp = WaveletPacket(range(16), 'db1', maxlevel=3)
 .. _get_node(path):
 
 Access nodes - ``get_node(path)``
-"""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""
 
 Find node of given path in tree.
 
@@ -717,7 +864,7 @@ parent node.
 
 
 Access node data - ``__getitem__(path)``
-""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""
 
 Calls `get_node(path)`_ and returns data associated with node under given path.
 
@@ -727,7 +874,7 @@ Set node data - ``__setitem__(path, data)``
 Calls `get_node(path)`_ and sets data of node under given path.
 
 Delete node - ``__delitem__(path)``
-"""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""
 
 Marks node under given path in tree as ZeroTree root.
 
@@ -747,7 +894,7 @@ If update is True, then node's data values will be replaced by
 reconstruction values (also in subnodes).
 
 Get nodes by level - ``get_level(level, order="natural")``
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 Returns all nodes from specified level.
 
@@ -756,13 +903,13 @@ order
   - "freq" - frequency ordered nodes
 
 Get terminal nodes - ``get_nonzero(decompose=False)``
-"""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 Returns non-zero terminal nodes.
         
 
 Walk tree - ``walk(func, args=tuple())``
-""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""
 
 Walks tree and calls func on every node - ``func(node, *args)``.
 If func returns True, descending to subnodes will proceed.
@@ -816,7 +963,7 @@ remove_sub
 Field - like markZeroTree.
 
 ``getChild(part, decompose=True)``
-""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""
 
 Returns chosen subnode.
 
@@ -903,14 +1050,13 @@ Demo
 .. |mode| replace:: Signal extension mode, see `MODES`_.
 
 .. |data| replace::
-    Input signal can be numeric arrray, python list or other iterable.
+    Input signal can be numeric array, python list or other iterable.
     If data is not in *double* format it will be converted to that type
     before performing computation.
 
-.. |wavelet_arg| replace:: Wavelet to use in transform. This can be name of wavelet from |wavelist()|_ or |Wavelet|_ object.
+.. |wavelet_arg| replace:: Wavelet to use in transform. This can be name of wavelet from `wavelist()`_ or Wavelet_ object.
 
 .. |pywt| replace:: `PyWavelets`
 
 .. |Wavelet| replace:: ``Wavelet``
-.. |wavelist()| replace:: ``wavelist()``
 
