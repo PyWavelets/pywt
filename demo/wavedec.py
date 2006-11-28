@@ -13,7 +13,7 @@ print data
 print
 
 # dec = [cA(n-1) cD(n-1) cD(n-2) ... cD(2) cD(1)]
-dec = pywt.wavedec(data, wavelet, level, mode)
+dec = pywt.wavedec(data, wavelet, mode, level)
 
 print "decomposition:"
 

@@ -9,7 +9,7 @@ import pylab
 #data = r.read(0, 5050, 1024)
 
 data1 = pylab.array(range(1,400) + range(398, 600) + range(601, 1024))/1024.
-data2 = pylab.arrayrange(612-80, 20, -0.5)/250.
+data2 = pylab.arange(612-80, 20, -0.5)/250.
 data2 = pylab.sin(40*pylab.log(data2)) * pylab.sign((pylab.log(data2)))
 from sample_data import ecg as data3
 

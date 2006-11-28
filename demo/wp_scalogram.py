@@ -29,7 +29,7 @@ pylab.xlim(0, x[-1])
 
 ax = pylab.subplot(2,1,2)
 pylab.title("Wavelet packet coefficients at level %d" % level)
-pylab.imshow(values, interpolation=interpolation, cmap = cmap, origin="lower", extent=[0,1,0,len(labels)])
+pylab.imshow(values, interpolation=interpolation, cmap = cmap, aspect="auto", origin="lower", extent=[0,1,0,len(values)])
 pylab.yticks(pylab.arange(0.5, len(labels)+0.5), labels)
 #pylab.setp(ax.get_xticklabels(), visible=False)
 

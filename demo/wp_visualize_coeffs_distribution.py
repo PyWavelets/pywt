@@ -23,7 +23,7 @@ for i in range(1, wp.maxlevel+1):
     nodes.reverse()
     labels = [n.path for n in nodes]
     values = -abs(numpy.array([n.data for n in nodes]))
-    pylab.imshow(values, interpolation='nearest')
+    pylab.imshow(values, interpolation='nearest', aspect='auto')
     pylab.yticks(numpy.arange(len(labels)-0.5, -0.5, -1), labels)
     pylab.setp(ax.get_xticklabels(), visible=False)
 
