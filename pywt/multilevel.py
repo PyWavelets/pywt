@@ -6,21 +6,26 @@
 # $Id$
 
 """
-Multilevel DWT and IDWT transforms.
+Multilevel 1D and 2D Discrete Wavelet Transform
+and Inverse Discrete Wavelet Transform.
 """
 
-from _pywt import Wavelet, MODES, dwt, idwt, dwt_max_level
+from _pywt import Wavelet, MODES
+from _pywt import dwt, idwt, dwt_max_level
+from multidim import dwt2, idwt2
 
-def wavedec(data, wavelet, level=None, mode='sym'):
+from numerix import asarray, float64
+
+def wavedec(data, wavelet, mode='sym', level=None):
     """
-    Multilevel one-dimensional Discrete Wavelet Transform of data.
-    Returns coefficient list - [cAn cDn cDn-1 ... cD2 cD1]
+    Multilevel 1D Discrete Wavelet Transform of data.
+    Returns coefficients list - [cAn, cDn, cDn-1, ..., cD2, cD1]
 
     data    - input data
     wavelet - wavelet to use (Wavelet object or name string)
+    mode    - signal extension mode, see MODES
     level   - decomposition level. If level is None then it will be
               calculated using `dwt_max_level` function.
-    mode    - signal extension mode, see MODES
     """
     
     if not isinstance(wavelet, Wavelet):
@@ -29,7 +34,7 @@ def wavedec(data, wavelet, level=None, mode='sym'):
     if level is None:
         level = dwt_max_level(len(data), wavelet.dec_len)
     elif level < 0:
-        raise ValueError, "Level value of %d is too low . Minimum '1' required." % level
+        raise ValueError("Level value of %d is too low . Minimum level is 0." % level)
 
     coeffs_list = []
 
@@ -44,26 +49,93 @@ def wavedec(data, wavelet, level=None, mode='sym'):
     return coeffs_list
     
 
-def waverec(coeffs_list, wavelet, mode='sym'):
+def waverec(coeffs, wavelet, mode='sym'):
     """
-    Multilevel one-dimensional IDWT of data from coefficients list.
+    Multilevel 1D Inverse Discrete Wavelet Transform.
 
-    coeffs_list - coefficients list [cAn aDn cDn-1 ... cD2 cD1]
+    coeffs  - coefficients list [cAn, cDn, cDn-1, ..., cD2, cD1]
     wavelet - wavelet to use (Wavelet object or name string)
     mode    - signal extension mode, see MODES
     """
     
-    if not isinstance(coeffs_list, (list, tuple)):
-        raise ValueError, "Expected sequence of coefficient arrays"
+    if not isinstance(coeffs, (list, tuple)):
+        raise ValueError("Expected sequence of coefficient arrays.")
         
-    if len(coeffs_list) < 2:
-        raise ValueError, "Coefficient list too short (minimum 2 arrays required)"
+    if len(coeffs) < 2:
+        raise ValueError("Coefficient list too short (minimum 2 arrays required).")
 
-    a, ds = coeffs_list[0], coeffs_list[1:]
+    a, ds = coeffs[0], coeffs[1:]
     
     for d in ds:
         a = idwt(a, d, wavelet, mode, 1)
         
     return a
 
-__all__ = ['wavedec', 'waverec']
+
+
+def wavedec2(data, wavelet, mode='sym', level=None):
+    """
+    Multilevel 2D Discrete Wavelet Transform.
+    
+    data    - 2D input data
+    wavelet - wavelet to use (Wavelet object or name string)
+    mode    - signal extension mode, see MODES
+    level   - decomposition level. If level is None then it will be
+              calculated using `dwt_max_level` function .
+
+    Returns coefficients list - [cAn, (cHn, cVn, cDn), ... (cH1, cV1, cD1)]
+    """
+    
+    data = asarray(data, dtype=float64)
+    
+    if len(data.shape) != 2:
+        raise ValueError("Expected 2D input data.")
+        
+    if not isinstance(wavelet, Wavelet):
+        wavelet = Wavelet(wavelet)
+    
+    if level is None:
+        size = min(data.shape)
+        level = dwt_max_level(size, wavelet.dec_len)
+    elif level < 0:
+        raise ValueError("Level value of %d is too low . Minimum level is 0." % level)
+
+    coeffs_list = []
+
+    a = data
+    for i in xrange(level):
+        a, ds = dwt2(a, wavelet, mode)
+        coeffs_list.append(ds)
+    
+    coeffs_list.append(a)
+    coeffs_list.reverse()
+    
+    return coeffs_list
+    
+
+def waverec2(coeffs, wavelet, mode='sym'):
+    """
+    Multilevel 2D Inverse Discrete Wavelet Transform.
+
+    coeffs  - coefficients list [cAn, (cHn, cVn, cDn), ... (cH1, cV1, cD1)]
+    wavelet - wavelet to use (Wavelet object or name string)
+    mode    - signal extension mode, see MODES
+    
+    Returns 2D array of reconstructed data.
+    """
+    
+    if not isinstance(coeffs, (list, tuple)):
+        raise ValueError("Expected sequence of coefficient arrays.")
+        
+    if len(coeffs) < 2:
+        raise ValueError("Coefficient list too short (minimum 2 arrays required).")
+
+    a, ds = coeffs[0], coeffs[1:]
+    
+    for d in ds:
+        a = idwt2((a, d), wavelet, mode)
+        
+    return a
+
+
+__all__ = ['wavedec', 'waverec', 'wavedec2', 'waverec2']
