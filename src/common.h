@@ -15,16 +15,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Typedefs
 
-#define _AS_PY_EXTENSION
-#ifdef _AS_PY_EXTENSION
-	// PyWavelets not tested with Python 2.5 on 64bit platforms. Use with caution.
-
-	#include <Python.h>
-	#if PY_VERSION_HEX < 0x02050000 && !defined(PY_SSIZE_T_MIN)
-		typedef int Py_ssize_t;
-		#define PY_SSIZE_T_MAX INT_MAX
-		#define PY_SSIZE_T_MIN INT_MIN
-	#endif
+#ifdef PY_SSIZE_T_CLEAN
+	// Compiled as Python extension
+	// Warning, PyWavelets not tested with Python 2.5 on 64bit platforms. Use with caution.
 	
 	// index_t
 	typedef Py_ssize_t index_t;

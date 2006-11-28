@@ -1,3 +1,5 @@
+#ifndef __HAS_PYX__pywt
+#define __HAS_PYX__pywt
 #ifdef __cplusplus
 #define __PYX_EXTERN_C extern "C"
 #else
@@ -12,3 +14,4 @@ struct WaveletObject {
   PyObject *number;
 };
 PyMODINIT_FUNC init_pywt(void);
+#endif /* __HAS_PYX__pywt */

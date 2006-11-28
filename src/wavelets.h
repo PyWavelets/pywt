@@ -45,7 +45,6 @@ typedef struct {
 
 	int orthogonal:1;
 	int biorthogonal:1;
-	int orthonormal:1;
 	int compact_support:1;
 
 	// Set if filters arrays shouldn't be dealocated by free_wavelet(Wavelet) func

@@ -5,7 +5,7 @@
 
 cdef extern from "common.h":
 
-    ctypedef int index_t
+    ctypedef Py_ssize_t index_t
     ctypedef index_t const_index_t
 
     cdef void* wtmalloc(long size)
@@ -63,7 +63,6 @@ cdef extern from "wavelets.h":
 
         int orthogonal
         int biorthogonal
-        int orthonormal
 
         int symmetry
 

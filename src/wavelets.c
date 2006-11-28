@@ -608,7 +608,6 @@ Wavelet* blank_wavelet(index_t filters_length)
 	w->vanishing_moments_phi = 0;
 	w->support_width = -1;
 	w->orthogonal = 0;
-	w->orthonormal = 0;
 	w->biorthogonal = 0;
 	w->symmetry = UNKNOWN;
 	w->compact_support = 0;
