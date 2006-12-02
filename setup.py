@@ -1,10 +1,12 @@
 #!/usr/bin/env python
+#-*- coding: utf-8 -*-
 
 from distutils.core import setup
 from distutils.extension import Extension
 import glob, os, os.path
 
-if os.path.exists('MANIFEST'): os.remove('MANIFEST')
+if os.path.exists('MANIFEST'):
+    os.remove('MANIFEST')
 
 try:
     from Pyrex.Distutils import build_ext
@@ -13,20 +15,23 @@ except ImportError:
     has_pyrex = False
 
 if has_pyrex:
-    pyx_sources = ['src/_pywt.pyx']
+    source_ext = '.pyx'
     cmdclass    = {'build_ext': build_ext}
 else:
-    pyx_sources = ['src/_pywt.c']
+    source_ext = '.c'
     cmdclass    = {}
 
+# gather the release details
 release = {}
-execfile(os.path.join('pywt','release_details.py'), {}, release)
+execfile(os.path.join(os.path.dirname(__file__), 'pywt','release_details.py'), {}, release)
 
-extra_compile_args = ['-Wno-uninitialized', '-Wno-unused']
+# tune the C compiler settings
+extra_compile_args = ['-Wno-uninitialized', '-Wno-unused', '-O2']
+#extra_compile_args += ['-march=pentium3',  '-mtune=pentium3', '-msse', '-mmmx']
 
-ext_modules=[ 
-    Extension("pywt._pywt",
-        sources = pyx_sources + ["src/common.c", "src/convolution.c", "src/wavelets.c", "src/wt.c"], 
+
+dwt = Extension("pywt._pywt",
+        sources = [(n + source_ext) for n in ['src/_pywt']] + ["src/common.c", "src/convolution.c", "src/wavelets.c", "src/wt.c"], 
         include_dirs = ['src'],
         library_dirs = [],
         runtime_library_dirs = [],
@@ -34,28 +39,37 @@ ext_modules=[
         extra_compile_args = extra_compile_args,
 		extra_link_args = [],
 		export_symbols = [],
-    ),
-]
+    )
+ 
+ext_modules = [dwt]
+packages =  ['pywt']
+package_dir = {'pywt':'pywt'}
 
-setup(
-    name = release["name"],
-    version = release["version"],
-    description = release["description"],
-    long_description = release["long_description"],
-    author = release["author"],
-    author_email = release["author_email"], 
-    url = release["url"],
-    download_url = release["download_url"],
-    license = release["license"],
-    keywords = release["keywords"],
-    platforms = release["platforms"],
-    classifiers = release["classifiers"],
     
-    ext_modules = ext_modules,
-    
-    packages = ['pywt'],
-    package_dir = {'pywt':'pywt'},
-    #script_args = ["build_ext"],
-    
-    cmdclass = cmdclass
-)
+def do_setup(**extra_kwds):
+    setup(
+        name = release["name"],
+        version = release["version"],
+        description = release["description"],
+        long_description = release["long_description"],
+        author = release["author"],
+        author_email = release["author_email"], 
+        url = release["url"],
+        download_url = release["download_url"],
+        license = release["license"],
+        keywords = release["keywords"],
+        platforms = release["platforms"],
+        classifiers = release["classifiers"],
+        
+        ext_modules = ext_modules,
+        
+        packages = packages,
+        package_dir = package_dir,
+        #script_args = ["build_ext"],
+        
+        cmdclass = cmdclass,
+        **extra_kwds
+    )
+
+if __name__ == '__main__':
+    do_setup()
