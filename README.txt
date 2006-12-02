@@ -28,7 +28,7 @@ The most convenient way to install PyWavelets is to use Easy Install
 packet manager, which will connect to Cheese Shop repository and
 automatically download PyWavelets::
 
-    easy_setup PyWavelets
+    easy_install PyWavelets
 
 If you want to build and install the project from source code there
 are two possibilities:
