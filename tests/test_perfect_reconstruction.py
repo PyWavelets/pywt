@@ -1,6 +1,7 @@
+#!/usr/bin/env python
+
 """
 Verify DWT perfect reconstruction.
-
 """
     
 import math

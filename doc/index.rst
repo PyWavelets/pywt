@@ -38,9 +38,15 @@ Introduction
 Requirements
 ~~~~~~~~~~~~
 
-|pywt| requires `Python`_ 2.4 or 2.5 and a recent version of
-`NumPy`_ numeric array module. 
+|pywt| was originaly developed using `MinGW`_ C compiler, `Pyrex`_ and
+`Python`_ 2.4 on 32-bit WindowsXP platform. Recent release adds support
+for Python 2.5. 
 
+The only external requirement is a recent version of
+`NumPy`_ numeric array module.
+
+.. _Pyrex: http://www.cosc.canterbury.ac.nz/~greg/python/Pyrex/
+.. _MinGW: http://www.mingw.org/
 .. _NumPy: http://www.scipy.org/
 .. _Python: http://python.org/ 
 
@@ -54,7 +60,7 @@ for download from Python Cheese Shop directory at:
     http://cheeseshop.python.org/pypi/PyWavelets/
 
 The latest *development* version can be downloaded from
-`wavelets.scipy.org`_'s SVN `repository`_::
+`wavelets.scipy.org`_ SVN `repository`_::
 
     svn co http://wavelets.scipy.org/svn/multiresolution/pywt/trunk pywt
 
@@ -65,30 +71,37 @@ The latest *development* version can be downloaded from
 Install
 ~~~~~~~
 
-|pywt| was originaly developed using `MinGW`_ C compiler, `Pyrex`_ and
-`Python`_ 2.4 on 32-bit WindowsXP platform.
-Recent release adds support for `Python`_ 2.5,
-however |pywt| was not tested on 64-bit platforms yet.
+The most convenient way to install PyWavelets is to use setuptools_
+`Easy Install`_ manager::
 
-.. _Pyrex: http://www.cosc.canterbury.ac.nz/~greg/python/Pyrex/
-.. _MinGW: http://www.mingw.org/
+    easy_setup PyWavelets
 
-If you are using Python 2.4 or 2.5 on Windows then just download and
-execute the binary installer or binary egg distribution for Windows.
+.. _setuptools: http://peak.telecommunity.com/DevCenter/setuptools
+.. _`Easy Install`: http://peak.telecommunity.com/DevCenter/EasyInstall#using-easy-install
 
-To build |pywt| from source you will need a C compiler and,
-in case of modified source or SVN build, an updated version of Pyrex
-from http://codespeak.net/svn/lxml/pyrex/.
-Then in the shell prompt in the |pywt| source directory type::
+Please note that in order to build |pywt| from source code you will
+need a working C compiler and, in case of source code modifications,
+an *updated* version of Pyrex from
 
-  python setup.py install
+    http://codespeak.net/svn/lxml/pyrex/
 
-.. Since version 0.1.6 the source distribution includes this version of Pyrex.
+SVN repository, which includes features and bug fixes not yet available
+in the regular Pyrex distribution.
 
+Then in the shell prompt in the |pywt| source code directory type::
 
+    python setupegg.py install
 
-To verify the installation try running tests and examples from `test` and
-`demo` directories. Note that some examples need `matplotlib`_ installed.
+or if using the default distutils manager::
+
+    python setup.py install
+
+For Windows users there is also standard binary installer available
+in the Cheese Shop repository. Just download and execute it.
+
+To verify the installation process try running tests and examples
+from `tests` and `demo` directories included in the source distribution.
+Note that some examples need `matplotlib`_ installed.
 
 .. _matplotlib: http://matplotlib.sourceforge.net
 
@@ -96,7 +109,7 @@ To verify the installation try running tests and examples from `test` and
 License
 ~~~~~~~
 
-|pywt| is free Open Source software available under `MIT license`_.
+|pywt| is free Open Source software available under `MIT license`_. Just do no evil.
 
 .. _MIT license: COPYING.txt
 
@@ -107,7 +120,8 @@ Feel free to contact me directly at filip.wasilewski@gmail.com.
 Comments, bug reports and fixes are welcome.
 
 You can also use the wiki and trac system available at `wavelets.scipy.org`_
-to improve documentation, post use cases and submit enhancement proposals or bug reports.
+to improve documentation, post cookbook recipies or submit enhancement proposals
+or bug reports.
 
 
 Wavelets
@@ -356,6 +370,8 @@ Length of returned arrays depends on selected `mode`_ - see `dwt_coeff_len`_:
 
 Multilevel decomposition using ``wavedec``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+`(Please note the mode and level arguments order change in 0.1.6 version.)`
 
 The ``wavedec`` function performs 1D multilevel Discrete Wavelet Transform
 decomposition of given signal and returns ordered list of coefficients arrays
@@ -863,17 +879,17 @@ If node does not exist yet, it will be created by decomposition of its
 parent node.
 
 
-Access node data - ``__getitem__(path)``
+Access node data - ``wp[path]``
 """"""""""""""""""""""""""""""""""""""""""
 
 Calls `get_node(path)`_ and returns data associated with node under given path.
 
-Set node data - ``__setitem__(path, data)``
+Set node data - ``wp[path] = data``
 """""""""""""""""""""""""""""""""""""""""""
 
 Calls `get_node(path)`_ and sets data of node under given path.
 
-Delete node - ``__delitem__(path)``
+Delete node - ``del wp[path]``
 """"""""""""""""""""""""""""""""""""
 
 Marks node under given path in tree as ZeroTree root.
@@ -1020,6 +1036,7 @@ Demo
 
 * Multilevet wavelet decomposition and reconstruction - `wavedec.py`_
 * Plot wavelet families - `plot_wavelets.py`_ - `db.png`_ `sym.png`_
+* Plot wavelet and scaling functions - `waveinfo.py`_
 * Plot coefficients from DWT and SWT for 3 different signals - `dwt_swt_show_coeffs.py`_
 * Multilevel signal decomposition with DWT - `dwt_signal_decomposition.py`_
 * Simple compression with Wavelet Packet - `wp_simple_compression.py`_
@@ -1027,6 +1044,7 @@ Demo
 * Signal frequency analysis using Wavelet Packet - `wp_scalogram.py`_ - `linchirp.png`_. See also output of some orca sound scalogram with WP - `orca.png`_.
 * Benchmark `dwt`_ and `idwt`_ computation - `benchmark.py`_ - results achieved on Centrino 1,8GHz laptop - `benchmark_dwt.png`_, `benchmark_idwt.png`_
 * Creating Wavelet objects from user supplied filter banks - `user_filter_banks.py`_
+* Blending image textures in wavelet space - `image_blender.py`_
 
 .. _wavedec.py: ./demo/wavedec.py
 .. _plot_wavelets.py: ./demo/plot_wavelets.py
@@ -1037,6 +1055,8 @@ Demo
 .. _wp_scalogram.py: ./demo/wp_scalogram.py
 .. _benchmark.py: ./demo/benchmark.py
 .. _user_filter_banks.py: ./demo/user_filter_banks.py
+.. _`image_blender.py`: ./demo/image_blender.py
+.. _`waveinfo.py`: ./demo/waveinfo.py
 
 .. _db.png: ./img/db.png
 .. _sym.png: ./img/sym.png

@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """
 Test used to verify PyWavelets Discrete Wavelet Transform computation
 accuracy against MathWorks Wavelet Toolbox.
