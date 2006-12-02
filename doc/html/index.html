@@ -5,7 +5,7 @@
 <meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
 <title>PyWavelets - Discrete Wavelet Transform in Python</title>
 <meta name="author" content="Filip Wasilewski" />
-<meta name="date" content="2006-12-02 14:15" />
+<meta name="date" content="2006-12-02 14:38" />
 <meta content="pywavelets wavelets discrete wavelet transform Python module dwt idwt swt wavelet packets" name="keywords" />
 <meta content="Python discrete wavelet transform module" lang="en" name="description" />
 <link rel="stylesheet" href="css/python.css" type="text/css" />
@@ -27,7 +27,7 @@
 <tr><th class="docinfo-name">Status:</th>
 <td>alpha</td></tr>
 <tr><th class="docinfo-name">Date:</th>
-<td>2006-12-02 14:15</td></tr>
+<td>2006-12-02 14:38</td></tr>
 <tr class="field"><th class="docinfo-name">License:</th><td class="field-body"><a class="reference" href="COPYING.txt">MIT</a></td>
 </tr>
 </tbody>
@@ -95,7 +95,7 @@ This document is a User Guide to <cite>PyWavelets</cite>.</p>
 <h1><a class="toc-backref" href="#id2" id="introduction" name="introduction">1.&nbsp;&nbsp;&nbsp;Introduction</a></h1>
 <div class="section">
 <h2><a class="toc-backref" href="#id3" id="requirements" name="requirements">1.1.&nbsp;&nbsp;&nbsp;Requirements</a></h2>
-<p><cite>PyWavelets</cite> was originaly developed using <a class="reference" href="http://www.mingw.org/">MinGW</a> C compiler, <a class="reference" href="http://www.cosc.canterbury.ac.nz/~greg/python/Pyrex/">Pyrex</a> and
+<p><cite>PyWavelets</cite> was originally developed using <a class="reference" href="http://www.mingw.org/">MinGW</a> C compiler, <a class="reference" href="http://www.cosc.canterbury.ac.nz/~greg/python/Pyrex/">Pyrex</a> and
 <a class="reference" href="http://python.org/">Python</a> 2.4 on 32-bit WindowsXP platform. Recent release adds support
 for Python 2.5.</p>
 <p>The only external requirement is a recent version of
@@ -150,7 +150,7 @@ Note that some examples need <a class="reference" href="http://matplotlib.source
 <p>Feel free to contact me directly at <a class="reference" href="mailto:filip.wasilewski&#64;gmail.com">filip.wasilewski&#64;gmail.com</a>.
 Comments, bug reports and fixes are welcome.</p>
 <p>You can also use the wiki and trac system available at <a class="reference" href="http://wavelets.scipy.org">wavelets.scipy.org</a>
-to improve documentation, post cookbook recipies or submit enhancement proposals
+to improve documentation, post cookbook recipes or submit enhancement proposals
 or bug reports.</p>
 </div>
 </div>
@@ -271,7 +271,7 @@ one dimensional Discrete Wavelet Transform.</p>
 </pre>
 <dl class="docutils">
 <dt>data</dt>
-<dd>Input signal can be numeric array, python list or other iterable.
+<dd>Input signal can be numeric array, python list or other iterable object.
 If data is not in <em>double</em> format it will be converted to that type
 before performing computation.</dd>
 <dt>wavelet</dt>
@@ -310,7 +310,7 @@ wavedec(data, wavelet, mode='sym', level=None)
 </pre>
 <dl class="docutils">
 <dt>data</dt>
-<dd>Input signal can be numeric array, python list or other iterable.
+<dd>Input signal can be numeric array, python list or other iterable object.
 If data is not in <em>double</em> format it will be converted to that type
 before performing computation.</dd>
 <dt>wavelet</dt>
@@ -552,7 +552,7 @@ wavedec2(data, wavelet, mode='sym', level=None)
 </pre>
 <dl class="docutils">
 <dt>data</dt>
-<dd>Input signal can be numeric array, python list or other iterable.
+<dd>Input signal can be numeric array, python list or other iterable object.
 If data is not in <em>double</em> format it will be converted to that type
 before performing computation.</dd>
 <dt>wavelet</dt>
@@ -599,7 +599,7 @@ WaveletPacket(data, wavelet, mode='sp1', maxlevel=None)
 </pre>
 <dl class="docutils">
 <dt>data</dt>
-<dd>Input signal can be numeric array, python list or other iterable.
+<dd>Input signal can be numeric array, python list or other iterable object.
 If data is not in <em>double</em> format it will be converted to that type
 before performing computation.</dd>
 <dt>wavelet</dt>
@@ -734,7 +734,7 @@ swt(data, wavelet, level)
 </pre>
 <dl class="docutils">
 <dt>data</dt>
-<dd>Input signal can be numeric array, python list or other iterable.
+<dd>Input signal can be numeric array, python list or other iterable object.
 If data is not in <em>double</em> format it will be converted to that type
 before performing computation. Data length must be divisible by <tt class="docutils literal"><span class="pre">2^level</span></tt>.</dd>
 <dt>wavelet</dt>

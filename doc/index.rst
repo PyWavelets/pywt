@@ -38,7 +38,7 @@ Introduction
 Requirements
 ~~~~~~~~~~~~
 
-|pywt| was originaly developed using `MinGW`_ C compiler, `Pyrex`_ and
+|pywt| was originally developed using `MinGW`_ C compiler, `Pyrex`_ and
 `Python`_ 2.4 on 32-bit WindowsXP platform. Recent release adds support
 for Python 2.5. 
 
@@ -120,7 +120,7 @@ Feel free to contact me directly at filip.wasilewski@gmail.com.
 Comments, bug reports and fixes are welcome.
 
 You can also use the wiki and trac system available at `wavelets.scipy.org`_
-to improve documentation, post cookbook recipies or submit enhancement proposals
+to improve documentation, post cookbook recipes or submit enhancement proposals
 or bug reports.
 
 
@@ -1070,7 +1070,7 @@ Demo
 .. |mode| replace:: Signal extension mode, see `MODES`_.
 
 .. |data| replace::
-    Input signal can be numeric array, python list or other iterable.
+    Input signal can be numeric array, python list or other iterable object.
     If data is not in *double* format it will be converted to that type
     before performing computation.
 
