@@ -1,8 +1,15 @@
 Changelog
 
-0.1.5
+0.1.6
     changes:
-        - 2D dwt and idwt
+        - argument order changed for wavedec to be more consistent with other
+          functions. Now is (data, wavelet, *mode*, *level*).
+        - added 2D DWT and IDWT (dwt2, idwt2)
+        - added 2D multilevel transform - wavedec2 and waverec2
+        - added support for Python 2.5 (requires modified Pyrex, see the documentation)
+        - using Python memory management functions instead of C stdlib ones
+    fixes:
+        - rbior wavelets filters corrected
 
 0.1.4
     changes:

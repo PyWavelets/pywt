@@ -1,0 +1,5 @@
+A special thanks goes to:
+
+* Fernando Perez and people behind scipy.org for
+  help with wavelets.scipy.org wiki and SVN hosting
+
