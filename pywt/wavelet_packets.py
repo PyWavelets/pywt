@@ -1,7 +1,6 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2006 Filip Wasilewski <filipwasilewski@gmail.com>
+# Copyright (c) 2006-2007 Filip Wasilewski <filip.wasilewski@gmail.com>
 # See COPYING for license details.
 
 # $Id$

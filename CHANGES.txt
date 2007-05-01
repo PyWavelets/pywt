@@ -1,5 +1,7 @@
 Changelog
 
+0.1.7 - maintenance release
+
 0.1.6
     changes:
         - argument order changed for wavedec to be more consistent with other
