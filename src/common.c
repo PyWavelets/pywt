@@ -5,7 +5,7 @@
 
 #include "common.h"
 
-#ifdef _AS_PY_EXTENSION
+#ifdef PY_EXTENSION
 inline void *wtcalloc(size_t len, size_t size){
 		void *p = wtmalloc(len*size);
 		if(p)
@@ -23,10 +23,8 @@ index_t dwt_buffer_length(index_t input_len, index_t filter_len, MODE mode){
 	switch(mode){
 			case MODE_PERIODIZATION:
 				return (index_t) ceil(input_len / 2.);
-				break;
 			default:
 				return (index_t) floor((input_len + filter_len - 1) / 2.);
-				break;
 	}
 }
 
@@ -44,7 +42,6 @@ index_t idwt_buffer_length(index_t coeffs_len, index_t filter_len, MODE mode){
 	switch(mode){
 			case MODE_PERIODIZATION:
 				return 2*coeffs_len;
-				break;
 			default:
 				return 2*coeffs_len-filter_len+2;
 	}

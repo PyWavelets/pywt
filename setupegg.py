@@ -12,5 +12,5 @@ from setuptools import setup
 from setup import *
 
 do_setup(zip_safe=False,
-         install_requires=["numpy >=0.9.8"],
+         #install_requires=["numpy >=0.9.8"],
         )

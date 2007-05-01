@@ -1,39 +1,39 @@
 # Copyright (c) 2006-2007 Filip Wasilewski <filip.wasilewski@gmail.com>
 # See COPYING for license details.
-from pywt.numerix import contiguous_array_from_any
+
 
 __id__ = "$Id$"
 __doc__ = """Pyrex wrapper for low-level C wavelet transform implementation."""
 
+
 ###############################################################################
-# cimports
+# imports
 
 cimport c_python
-cimport c_array_interface
 cimport c_wt
+cimport c_array_interface
 cimport c_math
 
 ctypedef Py_ssize_t index_t
 
 from numerix import contiguous_array_from_any, memory_buffer_object
 
-###############################################################################
-#
 
 include "arraytools.pxi"
+
 
 ###############################################################################
 # MODES
 
-cdef int c_mode_from_object(mode) except -1:
-    cdef int m
+cdef c_wt.MODE c_mode_from_object(mode) except c_wt.MODE_INVALID:
+    cdef c_wt.MODE m
     cdef c_python.PyObject* co
     cdef object o
     if c_python.PyInt_Check(mode):
         m = mode
         if m <= c_wt.MODE_INVALID or m >= c_wt.MODE_MAX:
             raise ValueError("Invalid mode")
-            return -1
+            return c_wt.MODE_INVALID
     else:
         co = c_python.PyObject_GetAttrString(MODES, mode)
         if co != NULL:
@@ -43,7 +43,7 @@ cdef int c_mode_from_object(mode) except -1:
         else:
             c_python.PyErr_Clear()
             raise ValueError("Unknown mode name")
-            return -1
+            return c_wt.MODE_INVALID
     return m
 
 def __from_object(mode):
@@ -98,7 +98,7 @@ cdef object wname_to_code(char* name):
                 number = int(name_[len(n):])
                 return (code, number)
             except ValueError:
-                pass
+                break
 
     if name_[:4] == "bior":
         if len(name_) == 7 and name_[-2] == '.':
@@ -429,7 +429,7 @@ def dwt_coeff_len(data_len, filter_len, mode):
 
     mode = c_mode_from_object(mode)
    
-    return c_wt.dwt_buffer_length(data_len, filter_len, <int>mode)
+    return c_wt.dwt_buffer_length(data_len, filter_len, <c_wt.MODE>mode)
 
 ###############################################################################
 # idwt
@@ -532,7 +532,7 @@ def idwt(object cA, object cD, object wavelet, object mode = c_wt.MODE_SYMMETRIC
     return reconstruction
 
 ###############################################################################
-#
+# upcoef
 
 def upcoef(part, coeffs, wavelet, int level=1, take=0):
     """upcoef(part, coeffs, wavelet, level=1, take=0)

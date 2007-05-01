@@ -29,6 +29,7 @@ execfile(os.path.join(os.path.dirname(__file__), 'pywt','release_details.py'), {
 extra_compile_args = ['-Wno-uninitialized', '-Wno-unused', '-O2']
 #extra_compile_args += ['-march=pentium3',  '-mtune=pentium3', '-msse', '-mmmx']
 
+macros = [('PY_EXTENSION', None)]
 
 dwt = Extension("pywt._pywt",
         sources = [(n + source_ext) for n in ['src/_pywt']] + ["src/common.c", "src/convolution.c", "src/wavelets.c", "src/wt.c"], 
@@ -36,6 +37,7 @@ dwt = Extension("pywt._pywt",
         library_dirs = [],
         runtime_library_dirs = [],
         libraries = [],
+        define_macros = macros,
         extra_compile_args = extra_compile_args,
 		extra_link_args = [],
 		export_symbols = [],
