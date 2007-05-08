@@ -783,7 +783,7 @@ int upsampling_convolution_valid_sf(CONST_DTYPE* input, const_index_t N,
 }
 
 // -> swt - todo
-int upsampled_filter_convolution(CONST_DTYPE* input, const_index_t N, const double* filter, const_index_t F, DTYPE* output, int step, MODE mode)
+int upsampled_filter_convolution(CONST_DTYPE* input, const_index_t N, const double* filter, const_index_t F, DTYPE* output, const_index_t step, MODE mode)
 {
     return -1;
 }

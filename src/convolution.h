@@ -24,12 +24,12 @@
 
 // memory efficient version
 
-int downsampling_convolution(CONST_DTYPE* input, const_index_t N, const double* filter, const_index_t F, DTYPE* output, const int step, const int mode);
+int downsampling_convolution(CONST_DTYPE* input, const_index_t N, const double* filter, const_index_t F, DTYPE* output, const_index_t step, MODE mode);
 
 // Straightfoward implementation with memory reallocation - for very short signals (shorter than filter).
 // This id called from downsampling_convolution
 
-int allocating_downsampling_convolution(CONST_DTYPE* input, const_index_t N, const double* filter, const_index_t F, DTYPE* output, const int step, const int mode);
+int allocating_downsampling_convolution(CONST_DTYPE* input, const_index_t N, const double* filter, const_index_t F, DTYPE* output, const_index_t step, MODE mode);
 
 // standard convolution
 // decimation step = 1
@@ -66,7 +66,7 @@ int upsampling_convolution_full(CONST_DTYPE* input, const_index_t N, const doubl
 // Performs valid convolution (signals must overlap)
 // Extends (virtually) input for MODE_PERIODIZATION.
 
-int upsampling_convolution_valid_sf(CONST_DTYPE* input, const_index_t N, const double* filter, const_index_t F, DTYPE* output, const_index_t O, const int mode);
+int upsampling_convolution_valid_sf(CONST_DTYPE* input, const_index_t N, const double* filter, const_index_t F, DTYPE* output, const_index_t O, MODE mode);
 
 // TODO
 // for SWT
