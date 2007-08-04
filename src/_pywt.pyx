@@ -32,7 +32,7 @@ cdef c_wt.MODE c_mode_from_object(mode) except c_wt.MODE_INVALID:
     if c_python.PyInt_Check(mode):
         m = mode
         if m <= c_wt.MODE_INVALID or m >= c_wt.MODE_MAX:
-            raise ValueError("Invalid mode")
+            raise ValueError("Invalid mode.")
             return c_wt.MODE_INVALID
     else:
         co = c_python.PyObject_GetAttrString(MODES, mode)
@@ -42,7 +42,7 @@ cdef c_wt.MODE c_mode_from_object(mode) except c_wt.MODE_INVALID:
             m = <object>co
         else:
             c_python.PyErr_Clear()
-            raise ValueError("Unknown mode name")
+            raise ValueError("Unknown mode name.")
             return c_wt.MODE_INVALID
     return m
 
@@ -90,7 +90,7 @@ cdef object wname_to_code(char* name):
     name_ = name.lower()
     
     if len(name_) == 0:
-        raise ValueError("Invalid wavelet name")
+        raise ValueError("Invalid wavelet name.")
 
     for n, code in (("db", c"d"), ("sym", c"s"), ("coif", c"c")):
         if name_[:len(n)] == n:
@@ -120,7 +120,7 @@ cdef object wname_to_code(char* name):
     elif name_ == "dmey":
         return c'm', 0
 
-    raise ValueError("Unknown wavelet name, '%s' not in wavelist()" % name)
+    raise ValueError("Unknown wavelet name, '%s' not in wavelist()." % name)
 
 
 cdef public class Wavelet [type WaveletType, object WaveletObject]:
@@ -141,7 +141,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
     def __new__(self, char* name="", object filter_bank=None):
 
         if not name and filter_bank is None:
-            raise TypeError("Wavelet name or filter bank must be specified")
+            raise TypeError("Wavelet name or filter bank must be specified.")
         #print wname_to_code(name, number)
 
         if filter_bank is None:
@@ -150,7 +150,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
             self.w = <c_wt.Wavelet*> c_wt.wavelet(c, nr)
 
             if self.w == NULL:
-                raise ValueError("Wrong wavelet name")
+                raise ValueError("Invalid wavelet name.")
 
             self.name = name.lower()
             self.number = nr
@@ -158,22 +158,22 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
         else:
             filters = filter_bank.get_filters_coeffs()
             if len(filters) != 4:
-                raise ValueError("Expected filter bank with 4 filters, got filter bank with %d filters" % len(filters))
+                raise ValueError("Expected filter bank with 4 filters, got filter bank with %d filters." % len(filters))
             try:
                 dec_lo = map(float, filters[0])
                 dec_hi = map(float, filters[1])
                 rec_lo = map(float, filters[2])
                 rec_hi = map(float, filters[3])
             except TypeError:
-                raise TypeError("Filter bank with float or int values required")
+                raise TypeError("Filter bank with float or int values required.")
 
             max_length = max(len(dec_lo), len(dec_hi), len(rec_lo), len(rec_hi))
             if max_length == 0:
-                raise ValueError("Filter bank can not be zero-length")
+                raise ValueError("Filter bank can not be zero-length.")
 
             self.w = <c_wt.Wavelet*> c_wt.blank_wavelet(max_length)
             if self.w == NULL:
-                raise MemoryError("Could not allocate memory for given filter bank")
+                raise MemoryError("Could not allocate memory for given filter bank.")
 
             # copy values to struct
             copy_object_to_double_array(dec_lo, self.w.dec_lo)
@@ -244,9 +244,6 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
     property symmetry:
         "Wavelet symmetry"
         def __get__(self):
-            #if "symmetry" in self.properties:
-            #    return self.properties["symmetry"]
-            #else:
             if self.w.symmetry == c_wt.ASYMMETRIC:
                 return "asymmetric"
             elif self.w.symmetry == c_wt.NEAR_SYMMETRIC:
@@ -257,25 +254,26 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
                 return "unknown"
 
     property vanishing_moments_psi:
-        "Number of wavelet function vanishing moments"
+        "Number of vanishing moments for wavelet function"
         def __get__(self):
             if self.w.vanishing_moments_psi > 0:
                 return self.w.vanishing_moments_psi
 
     property vanishing_moments_phi:
-        "Number of scaling function vanishing moments"
+        "Number of vanishing moments for scaling function"
         def __get__(self):
             if self.w.vanishing_moments_phi > 0:
                 return self.w.vanishing_moments_phi
 
     property _builtin:
-        "Is built-in"
+        "Returns True if the wavelet is built-in one (not created with custom filter bank)"
         def __get__(self):
             return bool(self.w._builtin)
 
+            
     def get_filters_coeffs(self):
-        """List of wavelet filters coefficients
-        [dec_lo, dec_hi, rec_lo, rec_hi]
+        """Returns tuple of wavelet filters coefficients
+        (dec_lo, dec_hi, rec_lo, rec_hi)
         """
         return (self.dec_lo, self.dec_hi, self.rec_lo, self.rec_hi)
 
@@ -323,7 +321,6 @@ def wavelet_from_object(wavelet):
     return c_wavelet_from_object(wavelet)
 
 cdef c_wavelet_from_object(wavelet):
-    cdef Wavelet w
     if c_python.PyObject_IsInstance(wavelet, Wavelet):
         return wavelet
     else:
@@ -381,30 +378,30 @@ def dwt(object data, object wavelet, object mode='sym'):
     if object_as_buffer(data, &input_data, &input_len, c'r') < 0:
         alternative_data = contiguous_array_from_any(data)
         if object_as_buffer(alternative_data, &input_data, &input_len, c'r'):
-            raise TypeError("Invalid data type, 1D array or iterable object required")
+            raise TypeError("Invalid data type, 1D array or iterable object required.")
     if input_len < 1:
-        raise ValueError("Invalid input length (len(data) < 1)")
+        raise ValueError("Invalid input length (len(data) < 1).")
 
     w = c_wavelet_from_object(wavelet)
     
     # output len
     output_len = c_wt.dwt_buffer_length(input_len, w.dec_len, mode_)
     if output_len < 1:
-        raise RuntimeError("Invalid output length")
+        raise RuntimeError("Invalid output length.")
 
     # decompose A
     cA = memory_buffer_object(output_len)
     if object_as_buffer(cA, &output_data, &output_len, c'w') < 0:
-        raise RuntimeError("Getting data pointer for buffer failed")
+        raise RuntimeError("Getting data pointer for buffer failed.")
     if c_wt.d_dec_a(input_data, input_len, w.w, output_data, output_len, mode_) < 0:
-        raise RuntimeError("C dwt failed")
+        raise RuntimeError("C dwt failed.")
    
     # decompose D
     cD = memory_buffer_object(output_len)
     if object_as_buffer(cD, &output_data, &output_len, c'w') < 0:
-        raise RuntimeError("Getting data pointer for buffer failed")
+        raise RuntimeError("Getting data pointer for buffer failed.")
     if c_wt.d_dec_d(input_data, input_len, w.w, output_data, output_len, mode_) < 0:
-        raise RuntimeError("C dwt failed")
+        raise RuntimeError("C dwt failed.")
  
     # return
     return (cA, cD)
@@ -423,9 +420,9 @@ def dwt_coeff_len(data_len, filter_len, mode):
             len(cA) == len(cD) == ceil(len(data) / 2)
     """
     if data_len < 1:
-        raise ValueError("data_len must be > 0")
+        raise ValueError("Value of data_len value must be greater than zero.")
     if filter_len < 1:
-        raise ValueError("data_len must be > 0")
+        raise ValueError("Value of filter_len must be greater than zero.")
 
     mode = c_mode_from_object(mode)
    
@@ -434,7 +431,7 @@ def dwt_coeff_len(data_len, filter_len, mode):
 ###############################################################################
 # idwt
 
-def idwt(object cA, object cD, object wavelet, object mode = c_wt.MODE_SYMMETRIC, int correct_size = 0):
+def idwt(object cA, object cD, object wavelet, object mode = 'sym', int correct_size = 0):
     """
     A = idwt(cA, cD, wavelet, mode='sym', correct_size=0)
 
@@ -471,28 +468,28 @@ def idwt(object cA, object cD, object wavelet, object mode = c_wt.MODE_SYMMETRIC
 
     mode_ = c_mode_from_object(mode)
 
-    w = wavelet_from_object(wavelet)
+    w = c_wavelet_from_object(wavelet)
 
     if cA is None and cD is None:
-        raise ValueError("Coeffs not specified")
+        raise ValueError("At least one coefficient parameter must be specified.")
 
     # get data pointer and size
     if cA is not None:
         if object_as_buffer(cA, &input_data_a, &input_len_a, c'r') < 0:
             alternative_data_a = contiguous_array_from_any(cA)
             if object_as_buffer(alternative_data_a, &input_data_a, &input_len_a, c'r'):
-                raise TypeError("Invalid cA type")
+                raise TypeError("Invalid cA type.")
         if input_len_a < 1:
-            raise ValueError("len(cA) < 1")
+            raise ValueError("Length of cA must be greater than zero.")
 
     # get data pointer and size
     if cD is not None:
         if object_as_buffer(cD, &input_data_d, &input_len_d, c'r') < 0:
             alternative_data_d = contiguous_array_from_any(cD)
             if object_as_buffer(alternative_data_d, &input_data_d, &input_len_d, c'r'):
-                raise TypeError("Invalid cD type")
+                raise TypeError("Invalid cD type.")
         if input_len_d < 1:
-            raise ValueError("len(cD) < 1")
+            raise ValueError("Length of cD must be greater than zero.")
 
     # check if sizes differ
     cdef index_t diff
@@ -501,10 +498,10 @@ def idwt(object cA, object cD, object wavelet, object mode = c_wt.MODE_SYMMETRIC
             diff = input_len_a - input_len_d
             if correct_size:
                 if diff < 0 or diff > 1:
-                    raise ValueError("Coefficient arrays lengths differs too much")
+                    raise ValueError("Coefficients arrays lengths must satisfy (0 <= len(cA) - len(cD) <= 1).")
                 input_len = input_len_a -diff
             elif diff:
-                raise ValueError("Coefficient arrays must have the same size")
+                raise ValueError("Coefficients arrays must have the same size.")
             else:
                 input_len = input_len_d
         else:
@@ -522,12 +519,12 @@ def idwt(object cA, object cD, object wavelet, object mode = c_wt.MODE_SYMMETRIC
 
     # get buffer's data pointer and len
     if object_as_buffer(reconstruction, &reconstruction_data, &reconstruction_len, c'w') < 0:
-        raise RuntimeError("Getting data pointer for buffer failed")
+        raise RuntimeError("Getting data pointer for buffer failed.")
 
     # call idwt func
     # one of input_data_a/input_data_d can be NULL, then only reconstruction of non-null part will be performed
     if c_wt.d_idwt(input_data_a, input_len_a, input_data_d, input_len_d, w.w, reconstruction_data, reconstruction_len, mode_, correct_size) < 0:
-        raise RuntimeError("C idwt failed")
+        raise RuntimeError("C idwt failed.")
  
     return reconstruction
 
@@ -563,41 +560,41 @@ def upcoef(part, coeffs, wavelet, int level=1, take=0):
     input_len = 0
 
     if part not in ('a', 'd'):
-        raise ValueError("Arument 1 must be 'a' or 'd' not %s" % part)
+        raise ValueError("Argument 1 must be 'a' or 'd', not '%s'." % part)
     rec_a = 0
     if part == 'a':
         rec_a = 1
 
-    w = wavelet_from_object(wavelet)
+    w = c_wavelet_from_object(wavelet)
 
     if level < 1:
-        raise ValueError("level must be greater than 0")
+        raise ValueError("Value of level must be greater than 0.")
 
     # input as array
     if object_as_buffer(coeffs, &input_data, &input_len, c'r') < 0:
         alternative_data = contiguous_array_from_any(coeffs)
         if object_as_buffer(alternative_data, &input_data, &input_len, c'r'):
-            raise TypeError("Invalid data type, 1D array or iterable required")
+            raise TypeError("Invalid data type, 1D array or iterable required.")
     if input_len < 1:
-        raise ValueError("Invalid input length (len(data) < 1)")
+        raise ValueError("Invalid input length (len(data) < 1).")
 
     for i from 0 <= i < level:
         # output len
         reconstruction_len = c_wt.reconstruction_buffer_length(input_len, w.dec_len)
         if reconstruction_len < 1:
-            raise RuntimeError("Invalid output length")
+            raise RuntimeError("Invalid output length.")
 
         # reconstruct
         reconstruction = memory_buffer_object(reconstruction_len)
         if object_as_buffer(reconstruction, &reconstruction_data, &reconstruction_len, c'w') < 0:
-            raise RuntimeError("Getting data pointer for buffer failed")
+            raise RuntimeError("Getting data pointer for buffer failed.")
 
         if rec_a:
             if c_wt.d_rec_a(input_data, input_len, w.w, reconstruction_data, reconstruction_len) < 0:
-                raise RuntimeError("C rec_a failed")
+                raise RuntimeError("C rec_a failed.")
         else:
             if c_wt.d_rec_d(input_data, input_len, w.w, reconstruction_data, reconstruction_len) < 0:
-                raise RuntimeError("C rec_d failed")
+                raise RuntimeError("C rec_d failed.")
         rec_a = 1
 
         data = reconstruction # keep reference
@@ -635,7 +632,7 @@ def swt(object data, object wavelet, int level):
     wavelet - wavelet to use (Wavelet object or name)
     level   - transform level
 
-    Returns list of coefficient pairs in form
+    Returns list of approximation and details coefficients pairs in form
         [(cA1, cD1), (cA2, cD2), ..., (cAn, cDn)], where n = level
     """
     cdef double* input_data
@@ -655,25 +652,25 @@ def swt(object data, object wavelet, int level):
     if object_as_buffer(data, &input_data, &input_len, c'r') < 0:
         alternative_data = contiguous_array_from_any(data)
         if object_as_buffer(alternative_data, &input_data, &input_len, c'r'):
-            raise TypeError("Invalid data type, 1D array or iterable object required")
+            raise TypeError("Invalid data type, 1D array or iterable object required.")
     if input_len < 1:
-        raise ValueError("Invalid input data length")
+        raise ValueError("Invalid input data length.")
     elif input_len % 2:
-        raise ValueError("Length of data must be even")
+        raise ValueError("Length of data must be even.")
 
     # wavelet
-    w = wavelet_from_object(wavelet)
+    w = c_wavelet_from_object(wavelet)
     
     # level
     if level < 1:
-        raise ValueError("Level must be strictly positive number")
+        raise ValueError("Level must be strictly positive number.")
     elif level > c_wt.swt_max_level(input_len):
-        raise ValueError("Level value too high (max level for current input len is %d)" % c_wt.swt_max_level(input_len))
+        raise ValueError("Level value too high (max level for current input len is %d)." % c_wt.swt_max_level(input_len))
 
     # output length
     output_len = c_wt.swt_buffer_length(input_len)
     if output_len < 1:
-        raise RuntimeError("Invalid output length")
+        raise RuntimeError("Invalid output length.")
     
     ret = []
     for i from 1 <= i <= level:
@@ -683,15 +680,15 @@ def swt(object data, object wavelet, int level):
         
         # decompose D
         if object_as_buffer(cD, &output_data, &output_len, c'w') < 0:
-            raise RuntimeError("Getting data pointer for buffer failed")
+            raise RuntimeError("Getting data pointer for buffer failed.")
         if c_wt.d_swt_d(input_data, input_len, w.w, output_data, output_len, i) < 0:
-            raise RuntimeError("C dwt failed")
+            raise RuntimeError("C swt failed.")
 
         # decompose A
         if object_as_buffer(cA, &output_data, &output_len, c'w') < 0:
-            raise RuntimeError("Getting data pointer for buffer failed")
+            raise RuntimeError("Getting data pointer for buffer failed.")
         if c_wt.d_swt_a(input_data, input_len, w.w, output_data, output_len, i) < 0:
-            raise RuntimeError("C dwt failed")
+            raise RuntimeError("C swt failed.")
         input_data = output_data # a -> input
         input_len = output_len
 
