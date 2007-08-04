@@ -49,12 +49,14 @@ Wavelet* wavelet(char name, int order)
 			w->dec_lo[i] = wtmp->rec_lo[wtmp->rec_len-1-i];
 		}
 
-		w->vanishing_moments_phi = wtmp->vanishing_moments_psi;
-		w->vanishing_moments_psi = wtmp->vanishing_moments_phi;
+        w->vanishing_moments_psi = order / 10; // 1st digit
+		w->vanishing_moments_phi = -1;
 
 		w->family_name = "Reverse biorthogonal\0";
 		w->short_name = "rbio\0";
-		
+
+        free_wavelet(wtmp);
+        
 		return w;
 	}
 
