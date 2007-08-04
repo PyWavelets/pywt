@@ -17,6 +17,7 @@ cimport c_math
 ctypedef Py_ssize_t index_t
 
 from numerix import contiguous_array_from_any, memory_buffer_object
+from numerix import concatenate, zeros, linspace, keep
 from wnames import wavelist
 
 include "arraytools.pxi"
@@ -307,35 +308,83 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
         """
         return (self.dec_lo, self.dec_hi, self.rec_lo, self.rec_hi)
 
-    def wavefun(self, int level=3):
-        """wavefun(level)
-        
-        Calculates aproximations of wavelet function (psi) and associated
-        scaling function (*phi*) at given level of refinement.
+    property reverse_filters_coeffs:
+        def __get__(self):
+            return self.get_reverse_filters_coeffs()
 
-        For orthogonal wavelet returns scaling and wavelet function.
-        For biorthogonal wavelet returns scaling and wavelet function both
-        for decomposition and reconstruction.
+    def get_reverse_filters_coeffs(self):
+        """Tuple of reverse wavelet filters coefficients
+        (rec_lo[::-1], rec_hi[::-1], dec_lo[::-1], dec_hi[::-1])
         """
-        cdef double coef "coef"
-        cdef double pas "pas"
+        return (self.rec_lo[::-1], self.rec_hi[::-1], self.dec_lo[::-1], self.dec_hi[::-1])
+
+    def wavefun(self, int level=8):
+        """wavefun(int level=8)
         
-        coef = c_math.pow(c_math.sqrt(2.), <double>level)
-        pas  = 1./(c_math.pow(2., <double>level))
+        Calculates aproximations of scaling function (*phi*) and wavelet
+        function (*psi*) on xgrid (*x*) at a given level of refinement.
+
+        For orthogonal wavelets returns scaling function, wavelet function
+        and xgrid - [phi, psi, x].
         
-        if self.short_name == "sym" or self.short_name == "coif":
-            return upcoef('a', [coef], self, level), upcoef('d', [-coef], self, level)
+        For biorthogonal wavelets returns scaling and wavelet function both
+        for decomposition and reconstruction and xgrid
+        - [phi_d, psi_d, phi_r, psi_r, x].
+        """
+
+        cdef index_t filter_length "filter_length"
+        cdef index_t right_extent_length "right_extent_length"
+        cdef index_t output_length "output_length"
+        cdef index_t keep_length "keep_length"
+        cdef double n "n"
+        cdef double p "p"
+        cdef double mul "mul"
+        cdef Wavelet other "other"
+        cdef phi_d, psi_d, phi_r, psi_r
+        
+        n = c_math.pow(c_math.sqrt(2.), <double>level)
+        p = (c_math.pow(2., <double>level))
+        
+        if self.w.orthogonal:
+            filter_length = self.w.dec_len
+            output_length = <index_t> ((filter_length-1) * p + 1)
+            keep_length = get_keep_length(output_length,level,filter_length)
+            output_length = fix_output_length(output_length,keep_length)
+                
+            right_extent_length = get_right_extent_length(output_length, keep_length)
             
-        elif self.short_name in ("bior", "rbio"):
-            if self.short_name == "bior":
-                other_name = "rbio" + self.name[4:]
-            elif self.short_name == "rbio":
-                other_name = "bior" + self.name[4:]
-            other = Wavelet(other_name)
-            return upcoef('a', [1], self, level), upcoef('d', [1], self, level), upcoef('a', [1], other, level), upcoef('d', [1], other, level)
-        
+            return [
+                    concatenate(([0.], keep(upcoef('a', [n], self, level), keep_length), zeros(right_extent_length))), # phi
+                    concatenate(([0.], keep(upcoef('d', [n], self, level), keep_length), zeros(right_extent_length))), # psi
+                    linspace(0.0,(output_length-1)/p,output_length)                                                    # x
+                ]
         else:
-            return upcoef('a', [coef], self, level), upcoef('d', [coef], self, level)
+            mul = 1
+            if self.w.biorthogonal:
+                if (self.w.vanishing_moments_psi % 4) != 1:
+                    mul = -1
+
+            other = Wavelet(filter_bank=self.reverse_filters_coeffs)
+            
+            filter_length  = other.w.dec_len
+            output_length = <index_t> ((filter_length-1) * p)
+            keep_length = get_keep_length(output_length,level,filter_length)
+            output_length = fix_output_length(output_length,keep_length)
+            right_extent_length = get_right_extent_length(output_length, keep_length)
+
+            phi_d  = concatenate(([0.], keep(upcoef('a', [n], other, level), keep_length), zeros(right_extent_length)))
+            psi_d  = concatenate(([0.], keep(upcoef('d', [mul*n], other, level), keep_length), zeros(right_extent_length)))
+
+            filter_length = self.w.dec_len
+            output_length = <index_t> ((filter_length-1) * p)
+            keep_length = get_keep_length(output_length,level,filter_length)
+            output_length = fix_output_length(output_length,keep_length)
+            right_extent_length = get_right_extent_length(output_length, keep_length)
+            
+            phi_r  = concatenate(([0.], keep(upcoef('a', [n], self, level), keep_length), zeros(right_extent_length)))
+            psi_r  = concatenate(([0.], keep(upcoef('d', [mul*n], self, level), keep_length), zeros(right_extent_length)))
+
+            return  [phi_d, psi_d, phi_r, psi_r, linspace(0.0,(output_length-1)/p, output_length)]
 
     def __str__(self):
         return "Wavelet %s\n" \
@@ -346,6 +395,24 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
         "  Biorthogonal:   %s\n" \
         "  Symmetry:       %s" % \
         (self.name, self.family_name, self.short_name, self.dec_len, self.orthogonal, self.biorthogonal, self.symmetry)
+
+cdef index_t get_keep_length(index_t output_length, int level, index_t filter_length):
+    cdef index_t lplus "lplus"
+    cdef index_t keep_length "keep_length"
+    cdef int i "i"
+    lplus = filter_length - 2
+    keep_length = 1
+    for i from 0 <= i < level:
+        keep_length = 2*keep_length+lplus
+    return keep_length
+
+cdef index_t fix_output_length(index_t output_length, index_t keep_length):
+    if output_length-keep_length-2 < 0:
+        output_length = keep_length+2
+    return output_length
+
+cdef index_t get_right_extent_length(index_t output_length, index_t keep_length):
+     return output_length - keep_length - 1
 
 def wavelet_from_object(wavelet):
     return c_wavelet_from_object(wavelet)

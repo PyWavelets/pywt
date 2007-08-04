@@ -5,17 +5,23 @@
 
 # $Id$
 
-"""A thin wrapper for numeric libraries. Modify this to use wavelets with
-libraries other than NumPy."""
+"""
+Thin wrapper for numeric modules. Modify this to use wavelets with libraries other than NumPy.
 
-from numpy import ndarray
-from numpy import float64
-from numpy import array as _array
-from numpy import asarray, empty, zeros
-from numpy import transpose
+Provides efficient mathematical functions and array datatypes.
+"""
+
+from numpy import ndarray, array, asarray
+from numpy import empty, zeros, linspace, arange
+from numpy import intp, float64
+from numpy import transpose, concatenate
+from numpy import cumsum, cos, diff, exp, sinc
+from numpy import argmax, mean
+from numpy import convolve
+from numpy import where, less, greater
 
 def contiguous_array_from_any(source):
-    return _array(source, float64, ndmin=1) # ensure contiguous
+    return array(source, float64, ndmin=1) # ensure contiguous
 
 def astype(source, dtype):
     return asarray(source, dtype)
@@ -23,9 +29,12 @@ def astype(source, dtype):
 def memory_buffer_object(size):
     return zeros((size,), float64)
 
-def array(*args, **kwds):
-    return _array(*args, **kwds)
+def is_array_type(arr, typ):
+    return isinstance(arr, ndarray) and arr.dtype == typ
 
-def is_array_type(ar, typ):
-    return isinstance(ar, ndarray) and ar.dtype == typ
-    
+def keep(arr, keep_length):
+    length = len(arr)
+    if keep_length < length:
+        left_bound = (length - keep_length) / 2
+        return arr[left_bound:left_bound+keep_length]
+    return arr
