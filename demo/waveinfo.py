@@ -9,7 +9,7 @@ try:
     try:
         level = int(sys.argv[2])
     except IndexError, e:
-        level = 5
+        level = 10
 except ValueError, e:
     print "Unknown wavelet"
     raise SystemExit
@@ -20,20 +20,19 @@ except IndexError, e:
 print wavelet
 
 data = wavelet.wavefun(level)
+funcs, x = data[:-1], data[-1]
 
-y = len(data) // 2
-
-labels = ("wavelet function", "scaling function", "r. wavelet function", "r. scaling function")
-
-for i, (d, label) in enumerate(zip(data, labels)):
+n = (len(data)-1) // 2
+labels = ("scaling function (phi)", "wavelet function (psi)", "r. scaling function (phi)", "r. wavelet function (psi)")
+colours = ("r", "g", "r", "g")
+for i, (d, label, colour) in enumerate(zip(funcs, labels, colours)):
     mi, ma = d.min(), d.max()
     margin = (ma - mi)*0.05
-    ax = pylab.subplot(y, 2, 1+i)
+    ax = pylab.subplot(n, 2, 1+i)
     
-    pylab.plot(d)
+    pylab.plot(x, d, colour)
     pylab.title(label)
     pylab.ylim(mi-margin, ma+margin)
-    pylab.xlim(0, len(d)-1)
-    pylab.setp(ax.get_xticklabels(), visible=False)
+    pylab.xlim(x[0], x[-1])
     
 pylab.show()
