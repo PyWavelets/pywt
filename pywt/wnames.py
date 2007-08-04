@@ -7,6 +7,8 @@
 
 """Lists builtin wavelet families and names"""
 
+__all__ = ["families", "wavelist"]
+
 # reflects wavelets_coeffs.h
 
 bior_n = [(1,1), (1,3), (1,5),
@@ -74,7 +76,3 @@ if __name__ == "__main__":
 
     for n in wavelist():
         print pywt.Wavelet(n)
-
-
-__all__ = ["families", "wavelist"]
-

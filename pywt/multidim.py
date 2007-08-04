@@ -13,7 +13,8 @@ __all__ = ['dwt2', 'idwt2']
 
 from itertools import izip
 
-from pywt import Wavelet, dwt, idwt, MODES
+from _pywt import Wavelet, MODES
+from _pywt import dwt, idwt
 from numerix import transpose, array, asarray, float64
 
 
@@ -96,10 +97,10 @@ def idwt2(coeffs, wavelet, mode='sym'):
     LL, (LH, HL, HH) = coeffs
 
     (LL, LH, HL, HH) = (transpose(LL), transpose(LH), transpose(HL), transpose(HH))
-    for _ in (LL, LH, HL, HH):
-        if len(_.shape) != 2:
+    for arr in (LL, LH, HL, HH):
+        if len(arr.shape) != 2:
             raise TypeError("All input coefficients arrays must be 2D")
-    del _
+    del arr
     
     
     if not isinstance(wavelet, Wavelet):

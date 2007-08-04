@@ -6,7 +6,7 @@
 
 """
 Extracts code-blocks from reStructuredText and produces Python doctests.
-(I hate when examples from documentation does not work)
+(I hate when examples from documentation do not work)
 
 Usage: rst2doctest.py input.rst > test_doc.py
 """
@@ -69,7 +69,7 @@ publish_programmatically(source_class=docutils.io.FileInput, source=None,
     destination_path=None, reader=None, reader_name='standalone',
     parser=None, parser_name='restructuredtext', writer=NullWriter(),
     writer_name=None, settings=None, settings_spec=None,
-    settings_overrides=None, config_section=None, enable_exit_status=None)
+    settings_overrides=None, config_section=None, enable_exit_status=None) # wow 8-)
 
 f = sys.stdout
 
