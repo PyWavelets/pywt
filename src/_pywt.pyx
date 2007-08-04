@@ -17,7 +17,7 @@ cimport c_math
 ctypedef Py_ssize_t index_t
 
 from numerix import contiguous_array_from_any, memory_buffer_object
-
+from wnames import wavelist
 
 include "arraytools.pxi"
 
@@ -87,28 +87,35 @@ class MODES(object):
 # Wavelet
 
 cdef object wname_to_code(char* name):
-    name_ = name.lower()
+    cdef object name_ "name_"
+    cdef int length "length"
+    cdef int i "i"
+    cdef number "number"
     
-    if len(name_) == 0:
+    name_ = name.lower()
+    length = len(name_)
+    
+    if length == 0:
         raise ValueError("Invalid wavelet name.")
 
     for n, code in (("db", c"d"), ("sym", c"s"), ("coif", c"c")):
-        if name_[:len(n)] == n:
+        i = len(n)
+        if name_[:i] == n:
             try:
-                number = int(name_[len(n):])
+                number = int(name_[i:])
                 return (code, number)
             except ValueError:
                 break
 
     if name_[:4] == "bior":
-        if len(name_) == 7 and name_[-2] == '.':
+        if length == 7 and name_[-2] == '.':
             try:
                 number = int(name_[-3])*10 + int(name_[-1])
                 return (c'b', number)
             except ValueError:
                 pass
     elif name_[:4] == "rbio":
-        if len(name_) == 7 and name_[-2] == '.':
+        if length == 7 and name_[-2] == '.':
             try:
                 number = int(name_[-3])*10 + int(name_[-1])
                 return (c'r', number)
@@ -120,15 +127,23 @@ cdef object wname_to_code(char* name):
     elif name_ == "dmey":
         return c'm', 0
 
-    raise ValueError("Unknown wavelet name, '%s' not in wavelist()." % name)
+    if name_ in wavelist():
+        raise RuntimeError("Wavelet '%s' does not exist but is listed on wavelist() builtin wavelets list." % name)
+    else:
+        raise ValueError("Unknown wavelet name '%s', check wavelist() for the list of available builtin wavelets." % name)
 
 
 cdef public class Wavelet [type WaveletType, object WaveletObject]:
     """
     Wavelet(name, filter_bank=None) object describe properties of
-    a wavelet identified by name. In order to use a built-in wavelet
-    the parameter name must be a valid name from wavelist() list.
-    Otherwise a filter_bank argument must be provided.
+    a wavelet identified by name.
+    
+    In order to use a built-in wavelet the parameter name must be
+    a valid name from wavelist() list.
+    To create a custom wavelet object, filter_bank parameter must
+    be specified. It can be either a list of four filters or
+    an object defining the `get_filters_coeffs` mehod that return
+    a list of four filters - just like the Wavelet instances.
     """
     
     cdef c_wt.Wavelet* w
@@ -139,7 +154,9 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
     #cdef readonly properties
  
     def __new__(self, char* name="", object filter_bank=None):
-
+        cdef filters, c, nr, max_length
+        cdef dec_lo, dec_hi, rec_lo, rec_hi
+        
         if not name and filter_bank is None:
             raise TypeError("Wavelet name or filter bank must be specified.")
         #print wname_to_code(name, number)
@@ -156,9 +173,15 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
             self.number = nr
 
         else:
-            filters = filter_bank.get_filters_coeffs()
-            if len(filters) != 4:
-                raise ValueError("Expected filter bank with 4 filters, got filter bank with %d filters." % len(filters))
+            if hasattr(filter_bank, "get_filters_coeffs"):
+                filters = filter_bank.get_filters_coeffs()
+                if len(filters) != 4:
+                    raise ValueError("Expected filter bank with 4 filters, got filter bank with %d filters." % len(filters))
+            else:
+                filters = filter_bank
+                if len(filters) != 4:
+                    raise ValueError("Expected list of 4 filters coefficients, got %d filters." % len(filters))
+                
             try:
                 dec_lo = map(float, filters[0])
                 dec_hi = map(float, filters[1])
@@ -235,11 +258,15 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
         "Is orthogonal"
         def __get__(self):
             return bool(self.w.orthogonal)
+        def __set__(self, int value):
+            self.w.orthogonal = (value != 0)
 
     property biorthogonal:
         "Is biorthogonal"
         def __get__(self):
             return bool(self.w.biorthogonal)
+        def __set__(self, int value):
+            self.w.biorthogonal = (value != 0)
     
     property symmetry:
         "Wavelet symmetry"
@@ -270,6 +297,9 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
         def __get__(self):
             return bool(self.w._builtin)
 
+    property filters_coeffs:
+        def __get__(self):
+            return self.get_filters_coeffs()
             
     def get_filters_coeffs(self):
         """Returns tuple of wavelet filters coefficients
