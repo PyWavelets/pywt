@@ -22,9 +22,9 @@ index_t dwt_buffer_length(index_t input_len, index_t filter_len, MODE mode){
 
 	switch(mode){
 			case MODE_PERIODIZATION:
-				return (index_t) ceil(input_len / 2.);
+				return (index_t) ceil(input_len / 2.0);
 			default:
-				return (index_t) floor((input_len + filter_len - 1) / 2.);
+				return (index_t) floor((input_len + filter_len - 1) / 2.0);
 	}
 }
 
@@ -55,10 +55,12 @@ index_t swt_buffer_length(index_t input_len){
 }
 
 int dwt_max_level(index_t input_len, index_t filter_len){
+    int i;
 	if(input_len < 1 || filter_len < 2)
 		return 0;
 	
-	return (int) floor(log((double)input_len/(double)(filter_len-1)) /log(2.0));
+	i = (int) floor(log((double)input_len/(double)(filter_len-1)) /log(2.0));
+	return (i > 0) ? i : 0;
 }
 
 int swt_max_level(index_t input_len){
@@ -71,6 +73,5 @@ int swt_max_level(index_t input_len){
 			return j;
 		input_len >>= 1;
 	}
-	return i;
+	return (i > 0) ? i : 0;
 }
-
