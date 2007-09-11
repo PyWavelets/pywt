@@ -7,36 +7,40 @@
 
 """Tresholding routines"""
 
-import numpy
+__all__ = ['soft', 'hard', 'greater', 'less', 'zero', 'copy']
+
+import numerix
 
 def soft(data, value, substitute=0):
     mvalue = -value
     
-    cond_less = numpy.less(data, value)
-    cond_greater = numpy.greater(data, mvalue)
+    cond_less = numerix.less(data, value)
+    cond_greater = numerix.greater(data, mvalue)
 
-    data = numpy.where(cond_less & cond_greater, substitute, data)
-    data = numpy.where(cond_less, data + value, data)
-    data = numpy.where(cond_greater, data - value, data)
+    data = numerix.where(cond_less & cond_greater, substitute, data)
+    data = numerix.where(cond_less, data + value, data)
+    data = numerix.where(cond_greater, data - value, data)
     
     return data
 
 def hard(data, value, substitute=0):
     mvalue = -value
     
-    cond = numpy.less(data, value)
-    cond &= numpy.greater(data, mvalue)
+    cond = numerix.less(data, value)
+    cond &= numerix.greater(data, mvalue)
     
-    return numpy.where(cond, substitute, data)
+    return numerix.where(cond, substitute, data)
     
 def greater(data, value, substitute=0):
-    return numpy.where(numpy.less(data, value), substitute, data)
+    return numerix.where(numerix.less(data, value), substitute, data)
 
 def less(data, value, substitute=0):
-    return numpy.where(numpy.greater(data, value), substitute, data)
+    return numerix.where(numerix.greater(data, value), substitute, data)
 
 def zero(data, *args):
-    return numpy.zeros(len(data), 'd')
+    if isinstance(data, ndarray):
+        return numerix.zeros(len(data), data.dtype)
+    return numerix.zeros(len(data))
 
 def copy(data, *args):
-    return numpy.array(data, 'd')
+    return numerix.array(data)
