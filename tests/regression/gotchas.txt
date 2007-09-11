@@ -1,0 +1,18 @@
+Gotchas
+-------
+
+PyWavelets utilizes NumPy under the hood. That's why handling the data
+containing None values can be surprising. Nones are converted to
+'not a number' values:
+
+    >>> import pywt
+    >>> x = [None, None]
+    >>> mode = 'sym'
+    >>> wavelet = 'db1'
+    >>> cA, cD = pywt.dwt(x, wavelet, mode)
+    >>> print cA
+    [           1.#QNAN]
+    >>> print cD
+    [           1.#QNAN]
+    >>> print pywt.idwt(cA, cD, wavelet, mode)
+    [           1.#QNAN            1.#QNAN]

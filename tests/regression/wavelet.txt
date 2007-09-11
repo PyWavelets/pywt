@@ -1,0 +1,211 @@
+The Wavelet object
+==================
+
+Wavelet families and builtin Wavelets' names
+--------------------------------------------
+
+Wavelet objects are really a handy carriers of a bunch of DWT specific data
+like 4 Quadrature Mirror Filters and some general properties associated with
+them.
+
+At first let's go through the methods of creating a Wavelet object.
+The easiest and the most convenient way is to use builtin named Wavelets.
+
+These wavelets are organized into groups called wavelet families. The most
+commonly used families are:
+
+    >>> import pywt
+    >>> pywt.families()
+    ['haar', 'db', 'sym', 'coif', 'bior', 'rbio', 'dmey']
+
+The `wavelist` function with family name passed as an argument is used to
+obtain the list of wavelet names in each family.
+
+    >>> for family in pywt.families():
+    ...     print "%s family:" % family, ', '.join(pywt.wavelist(family))
+    haar family: haar
+    db family: db1, db2, db3, db4, db5, db6, db7, db8, db9, db10, db11, db12, db13, db14, db15, db16, db17, db18, db19, db20
+    sym family: sym2, sym3, sym4, sym5, sym6, sym7, sym8, sym9, sym10, sym11, sym12, sym13, sym14, sym15, sym16, sym17, sym18, sym19, sym20
+    coif family: coif1, coif2, coif3, coif4, coif5
+    bior family: bior1.1, bior1.3, bior1.5, bior2.2, bior2.4, bior2.6, bior2.8, bior3.1, bior3.3, bior3.5, bior3.7, bior3.9, bior4.4, bior5.5, bior6.8
+    rbio family: rbio1.1, rbio1.3, rbio1.5, rbio2.2, rbio2.4, rbio2.6, rbio2.8, rbio3.1, rbio3.3, rbio3.5, rbio3.7, rbio3.9, rbio4.4, rbio5.5, rbio6.8
+    dmey family: dmey
+
+To get the full list of builtin wavelets' names just use the `wavelist` with
+no argument. As you can see currently there are 76 builtin wavelets.
+
+    >>> len(pywt.wavelist())
+    76
+
+
+Creating Wavelet objects
+------------------------
+
+Now when we know all the names let's finnally create a Wavelet object:
+
+    >>> w = pywt.Wavelet('db3')
+
+Erm, that's really it..
+
+
+Wavelet properties
+------------------
+
+But what can we do with Wavelet objects? Well, they carry some
+interresting information.
+
+First, let's try printing a Wavelet object. This shows a brief information
+about it's name, it's family name and some properties like orthogonality
+and symmetry.
+
+    >>> print w
+    Wavelet db3
+      Family name:    Daubechies
+      Short name:     db
+      Filters length: 6
+      Orthogonal:     True
+      Biorthogonal:   True
+      Symmetry:       asymmetric
+
+But the most important information are the wavelet filters coefficients, which are
+used in Discrete Wavelet Transform. These coefficients can be obtained
+via the `dec_lo`, `dec_hi`, `rec_lo` and `rec_hi` attributes, which corresponds
+to lowpass and highpass decomposition filters and lowpass and highpass reconstruction
+filters respectively.
+
+    >>> w.dec_lo
+    [0.035226291882100656, -0.085441273882241486, -0.13501102001039084, 0.45987750211933132, 0.80689150931333875, 0.33267055295095688]
+    >>> w.dec_hi
+    [-0.33267055295095688, 0.80689150931333875, -0.45987750211933132, -0.13501102001039084, 0.085441273882241486, 0.035226291882100656]
+    >>> w.rec_lo
+    [0.33267055295095688, 0.80689150931333875, 0.45987750211933132, -0.13501102001039084, -0.085441273882241486, 0.035226291882100656]
+    >>> w.rec_hi
+    [0.035226291882100656, 0.085441273882241486, -0.13501102001039084, -0.45987750211933132, 0.80689150931333875, -0.33267055295095688]
+
+Another way to get the filters data is to use the `get_filters_coeffs` method
+or simplier the `filters_coeffs` attribute, which returns all four filters
+in a tuple:
+
+    >>> w.get_filters_coeffs() == (w.dec_lo, w.dec_hi, w.rec_lo, w.rec_hi)
+    True
+
+    >>> w.filters_coeffs == (w.dec_lo, w.dec_hi, w.rec_lo, w.rec_hi)
+    True
+
+Other Wavelet's properties are:
+
+    - Wavelet name and short and full family names
+    
+        >>> print w.name
+        db3
+        >>> print w.short_family_name
+        db
+        >>> print w.family_name
+        Daubechies
+
+    - Decomposition and reconstruction filters' lengths
+    
+        >>> w.dec_len
+        6
+        >>> w.rec_len
+        6
+    
+    - Orthogonality and biorthogonality:
+    
+        >>> w.orthogonal
+        True
+        >>> w.biorthogonal
+        True
+    
+    - Symmetry
+    
+        >>> print w.symmetry
+        asymmetric
+    
+    - Number of vanishing moments for the scaling function (*phi*) and the
+      wavelet function (*psi*) associated with the filters.
+      
+        >>> w.vanishing_moments_phi
+        0
+        >>> w.vanishing_moments_psi
+        3
+
+Now when we know a bit about the builtin Wavelets, les't see how to create
+custom Wavelets objects. These can be done in two ways:
+
+    1) Passing the filter bank object that implements the get_filters_coeffs
+       method. The method must return four filters' coefficients.
+
+
+       >>> class MyHaarFilterBank(object):
+       ...     def get_filters_coeffs(self):
+       ...         from math import sqrt
+       ...         return ([sqrt(2), sqrt(2)], [-sqrt(2), sqrt(2)], [sqrt(2), sqrt(2)], [sqrt(2), -sqrt(2)])
+
+    
+       >>> my_wavelet = pywt.Wavelet('My Haar Wavelet', filter_bank=MyHaarFilterBank())
+
+
+    2) Passing the filters coefficients directly as the filter_bank parameter.
+    
+       >>> from math import sqrt
+       >>> my_filter_bank = ([sqrt(2), sqrt(2)], [-sqrt(2), sqrt(2)], [sqrt(2), sqrt(2)], [sqrt(2), -sqrt(2)])
+       >>> my_wavelet = pywt.Wavelet('My Haar Wavelet', filter_bank=my_filter_bank)
+
+
+       Note that such custom wavelets will _not_ have all the properties set to correct values:
+
+       >>> print my_wavelet
+       Wavelet My Haar Wavelet
+         Family name:    
+         Short name:     
+         Filters length: 2
+         Orthogonal:     False
+         Biorthogonal:   False
+         Symmetry:       unknown
+
+       You can hovewer set a few of them on your own:
+       >>> my_wavelet.orthogonal = True
+       >>> my_wavelet.biorthogonal = True
+       
+       >>> print my_wavelet
+       Wavelet My Haar Wavelet
+         Family name:    
+         Short name:     
+         Filters length: 2
+         Orthogonal:     True
+         Biorthogonal:   True
+         Symmetry:       unknown
+
+
+And now... the `wavefun`!
+-------------------------
+
+We all know that the fun with wavelets is in wavelet functions.
+Now what would be this package without a tool to compute wavelet
+and scaling functions approximations?
+
+This is the purpose of the `wavefun` method, which is used to
+approximate scaling function (*phi*) and wavelet function (*psi*)
+at the given level of refinement, based on the filters coefficients.
+
+The number of returned values varies depending on the wavelet's
+orthogonality property. For orthogonal wavelets the result is tuple
+with scaling function, wavelet function and xgrid coordinates.
+
+    >>> w = pywt.Wavelet('sym3')
+    >>> w.orthogonal
+    True
+    >>> (phi, psi, x) = w.wavefun(level=5)
+    
+For biorthogonal (non-orthogonal) wavelets different scaling and wavelet
+functions are used for decomposition and reconstruction, and thus five
+elements are returned: decomposition scaling and wavelet functions
+approximations, reconstruction scaling and wavelet functions approximations,
+and the xgrid.
+
+    >>> w = pywt.Wavelet('bior1.3')
+    >>> w.orthogonal
+    False
+    >>> (phi_d, psi_d, phi_r, psi_r, x) = w.wavefun(level=5)
+
