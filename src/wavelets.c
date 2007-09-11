@@ -595,10 +595,10 @@ Wavelet* blank_wavelet(index_t filters_length)
 
 	w->dec_len = w->rec_len = filters_length;
 
-	w->dec_lo = wtcalloc(filters_length, sizeof(double));
-	w->dec_hi = wtcalloc(filters_length, sizeof(double));
-	w->rec_lo = wtcalloc(filters_length, sizeof(double));
-	w->rec_hi = wtcalloc(filters_length, sizeof(double));
+	w->dec_lo = wtcalloc(filters_length, sizeof(FILTER_TYPE));
+	w->dec_hi = wtcalloc(filters_length, sizeof(FILTER_TYPE));
+	w->rec_lo = wtcalloc(filters_length, sizeof(FILTER_TYPE));
+	w->rec_hi = wtcalloc(filters_length, sizeof(FILTER_TYPE));
 
 	if(w->dec_lo == NULL || w->dec_hi == NULL || w->rec_lo == NULL || w->rec_hi == NULL){
 		free_wavelet(w);
@@ -637,10 +637,10 @@ Wavelet* copy_wavelet(Wavelet* base)
 
 	w->_builtin = 0;
 
-	w->dec_lo = wtcalloc(w->dec_len, sizeof(double));
-	w->dec_hi = wtcalloc(w->dec_len, sizeof(double));
-	w->rec_lo = wtcalloc(w->rec_len, sizeof(double));
-	w->rec_hi = wtcalloc(w->rec_len, sizeof(double));
+	w->dec_lo = wtcalloc(w->dec_len, sizeof(FILTER_TYPE));
+	w->dec_hi = wtcalloc(w->dec_len, sizeof(FILTER_TYPE));
+	w->rec_lo = wtcalloc(w->rec_len, sizeof(FILTER_TYPE));
+	w->rec_hi = wtcalloc(w->rec_len, sizeof(FILTER_TYPE));
 
 	if(w->dec_lo == NULL || w->dec_hi == NULL || w->rec_lo == NULL || w->rec_hi == NULL){
 		free_wavelet(w);
@@ -669,22 +669,22 @@ void free_wavelet(Wavelet *w){
 		// dealocate filters
 		
 		if(w->dec_lo != NULL){
-			wtfree((double*)w->dec_lo);
+			wtfree(w->dec_lo);
 			w->dec_lo = NULL;
 		}
 
 		if(w->dec_hi != NULL){
-			wtfree((double*)w->dec_hi);
+			wtfree(w->dec_hi);
 			w->dec_hi = NULL;
 		}
 
 		if(w->rec_lo != NULL){
-			wtfree((double*)w->rec_lo);
+			wtfree(w->rec_lo);
 			w->rec_lo = NULL;
 		}
 
 		if(w->rec_hi != NULL){
-			wtfree((double*)w->rec_hi);
+			wtfree(w->rec_hi);
 			w->rec_hi = NULL;
 		}
 	}

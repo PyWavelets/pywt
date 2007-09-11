@@ -15,7 +15,7 @@ __all__ = ['wavedec', 'waverec', 'wavedec2', 'waverec2']
 from _pywt import Wavelet, MODES
 from _pywt import dwt, idwt, dwt_max_level
 from multidim import dwt2, idwt2
-from numerix import asarray, float64
+from numerix import as_float_array
 
 def wavedec(data, wavelet, mode='sym', level=None):
     """
@@ -87,7 +87,7 @@ def wavedec2(data, wavelet, mode='sym', level=None):
     Returns coefficients list - [cAn, (cHn, cVn, cDn), ... (cH1, cV1, cD1)]
     """
     
-    data = asarray(data, dtype=float64)
+    data = as_float_array(data)
     
     if len(data.shape) != 2:
         raise ValueError("Expected 2D input data.")

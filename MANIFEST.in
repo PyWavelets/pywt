@@ -4,13 +4,13 @@ include MANIFEST.in
 
 recursive-include doc *.rst *.css *.html
 exclude doc/html/img/*
-exclude doc/*.bat
+
+include ez_setup/*
 
 include demo/*.py
+recursive-include  util *.py *.conf *.bat *.sh
 
-include pywt/*.py
-recursive-include src *.c *.h *.pxi *.pxd *.pyx
+recursive-include pywt *.py
+recursive-include src *.c *.h *.pxi *.pxd *.pyx *.template
 
-include tests/*.py tests/*.bat
-
-recursive-exclude .svn
+recursive-include tests *.py *.txt

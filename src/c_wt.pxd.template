@@ -5,8 +5,9 @@
 
 cdef extern from "common.h":
 
-    ctypedef Py_ssize_t index_t
-    ctypedef index_t const_index_t
+    ctypedef int index_t
+    ctypedef int const_index_t
+    ctypedef float FILTER_TYPE
 
     cdef void* wtmalloc(long size)
     cdef void* wtcalloc(long len, long size)
@@ -44,10 +45,10 @@ cdef extern from "wavelets.h":
         SYMMETRIC
 
     ctypedef struct Wavelet:
-        double* dec_hi      # highpass decomposition
-        double* dec_lo      # lowpass   decomposition
-        double* rec_hi      # highpass reconstruction
-        double* rec_lo      # lowpass   reconstruction
+        FILTER_TYPE* dec_hi      # highpass decomposition
+        FILTER_TYPE* dec_lo      # lowpass   decomposition
+        FILTER_TYPE* rec_hi      # highpass reconstruction
+        FILTER_TYPE* rec_lo      # lowpass   reconstruction
                 
         index_t dec_len         # length of decomposition filter
         index_t rec_len         # length of reconstruction filter
@@ -81,14 +82,19 @@ cdef extern from "wavelets.h":
 
 cdef extern from "wt.h":
 
-    cdef int d_dec_a(double input[], index_t input_len, Wavelet* wavelet, double output[], index_t output_len, MODE mode)
-    cdef int d_dec_d(double input[], index_t input_len, Wavelet* wavelet, double output[], index_t output_len, MODE mode)
+//## FOR $DTYPE$ IN (double, float):
 
-    cdef int d_rec_a(double coeffs_a[], index_t coeffs_len, Wavelet* wavelet, double output[], index_t output_len)
-    cdef int d_rec_d(double coeffs_d[], index_t coeffs_len, Wavelet* wavelet, double output[], index_t output_len)
+    cdef int $DTYPE$_dec_a($DTYPE$ input[], index_t input_len, Wavelet* wavelet, $DTYPE$ output[], index_t output_len, MODE mode)
+    cdef int $DTYPE$_dec_d($DTYPE$ input[], index_t input_len, Wavelet* wavelet, $DTYPE$ output[], index_t output_len, MODE mode)
 
-    cdef int d_idwt(double coeffs_a[], index_t coeffs_a_len, double coeffs_d[], index_t coeffs_d_len, Wavelet* wavelet, double output[], index_t output_len, MODE mode, int correct_size)
+    cdef int $DTYPE$_rec_a($DTYPE$ coeffs_a[], index_t coeffs_len, Wavelet* wavelet, $DTYPE$ output[], index_t output_len)
+    cdef int $DTYPE$_rec_d($DTYPE$ coeffs_d[], index_t coeffs_len, Wavelet* wavelet, $DTYPE$ output[], index_t output_len)
 
-    cdef int d_swt_a(double input[], index_t input_len, Wavelet* wavelet, double output[], index_t output_len, int level)
-    cdef int d_swt_d(double input[], index_t input_len, Wavelet* wavelet, double output[], index_t output_len, int level)
+    cdef int $DTYPE$_idwt($DTYPE$ coeffs_a[], index_t coeffs_a_len, $DTYPE$ coeffs_d[], index_t coeffs_d_len,
+                        Wavelet* wavelet, $DTYPE$ output[], index_t output_len, MODE mode, int correct_size)
+
+    cdef int $DTYPE$_swt_a($DTYPE$ input[], index_t input_len, Wavelet* wavelet, $DTYPE$ output[], index_t output_len, int level)
+    cdef int $DTYPE$_swt_d($DTYPE$ input[], index_t input_len, Wavelet* wavelet, $DTYPE$ output[], index_t output_len, int level)
+
+//## ENDFOR $DTYPE$
 

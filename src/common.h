@@ -51,21 +51,18 @@
 
 typedef const index_t const_index_t;
 
-// Data type for input arrays (ie. can be changed to float if needed)
-typedef double DTYPE;
-typedef const DTYPE CONST_DTYPE;
 
 // Signal extension modes
 typedef enum {
        MODE_INVALID = -1,
        MODE_ZEROPAD = 0,   // default, signal extended with zeros
        MODE_SYMMETRIC,     // signal extended symmetrically (mirror)
-       MODE_ASYMMETRIC,
        MODE_CONSTANT_EDGE, // signal extended with the border value
        MODE_SMOOTH,        // linear extrapolation (first derivative)
        MODE_PERIODIC,      // signal is treated as being periodic
        MODE_PERIODIZATION, // signal is treated as being periodic, minimal output lenght
-       MODE_MAX
+       MODE_MAX,
+       MODE_ASYMMETRIC // TODO
 } MODE;
 
 

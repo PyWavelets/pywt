@@ -22,10 +22,15 @@ typedef enum {
 // Wavelet structure holding pointers to filter arays and property attributes
 typedef struct {
 	
-	double* dec_hi;		// highpass decomposition
-	double* dec_lo;		// lowpass	decomposition
-	double* rec_hi;		// highpass reconstruction
-	double* rec_lo;		// lowpass	reconstruction
+	FILTER_TYPE* dec_hi;		// highpass decomposition
+	FILTER_TYPE* dec_lo;		// lowpass	decomposition
+	FILTER_TYPE* rec_hi;		// highpass reconstruction
+	FILTER_TYPE* rec_lo;		// lowpass	reconstruction
+
+	//float* dec_hi_float;		// highpass decomposition
+	//float* dec_lo_float;		// lowpass	decomposition
+	//float* rec_hi_float;		// highpass reconstruction
+	//float* rec_lo_float;		// lowpass	reconstruction
 	
 	index_t dec_len;				// length of decomposition filter
 	index_t rec_len;				// length of reconstruction filter

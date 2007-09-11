@@ -14,8 +14,8 @@ __all__ = ['dwt2', 'idwt2']
 from itertools import izip
 
 from _pywt import Wavelet, MODES
-from _pywt import dwt, idwt
-from numerix import transpose, array, asarray, float64
+from _pywt import dwt, idwt, swt
+from numerix import transpose, array, as_float_array, default_dtype
 
 
 def dwt2(data, wavelet, mode='sym'):
@@ -32,7 +32,7 @@ def dwt2(data, wavelet, mode='sym'):
         (approximation, (horizontal det., vertical det., diagonal det.))
     """
     
-    data = asarray(data, dtype=float64)
+    data = as_float_array(data)
     if len(data.shape) != 2:
         raise ValueError("Expected 2D data array")
     
@@ -57,7 +57,7 @@ def dwt2(data, wavelet, mode='sym'):
     LL, LH = [], []
     append_LL = LL.append; append_LH = LH.append
     for row in L:
-        cA, cD = dwt(array(row), wavelet, mode)
+        cA, cD = dwt(array(row, default_dtype), wavelet, mode)
         append_LL(cA)
         append_LH(cD)
     del L
@@ -65,7 +65,7 @@ def dwt2(data, wavelet, mode='sym'):
     HL, HH = [], []
     append_HL = HL.append; append_HH = HH.append
     for row in H:
-        cA, cD = dwt(array(row), wavelet, mode)
+        cA, cD = dwt(array(row, default_dtype), wavelet, mode)
         append_HL(cA)
         append_HH(cD)
     del H
@@ -131,6 +131,4 @@ def idwt2(coeffs, wavelet, mode='sym'):
     for rowL, rowH in izip(L, H):
         append_data(idwt(rowL, rowH, wavelet, mode, 1))
 
-    return array(data, float64)
-
-
+    return array(data, default_dtype)

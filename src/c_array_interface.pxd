@@ -45,8 +45,14 @@ cdef extern from "array_interface.h":
         GA_WRITEABLE
         GA_ARR_HAS_DESCR
 
-    cdef double* PyArrayInterface_DATA_AS_DOUBLE_C_ARRAY(PyGenericArrayInterface* )
-    cdef double* PyArrayInterface_DATA_AS_DOUBLE_C_ARRAY_RO(PyGenericArrayInterface* )
+    cdef double* PyArrayInterface_DATA_AS_FLOAT64_C_ARRAY(PyGenericArrayInterface* )
+    cdef double* PyArrayInterface_DATA_AS_FLOAT64_C_ARRAY_RO(PyGenericArrayInterface* )
+
+    cdef float* PyArrayInterface_DATA_AS_FLOAT32_C_ARRAY(PyGenericArrayInterface* )
+    cdef float* PyArrayInterface_DATA_AS_FLOAT32_C_ARRAY_RO(PyGenericArrayInterface* )
+
+    cdef void* PyArrayInterface_DATA_AS_FLOAT_C_ARRAY(PyGenericArrayInterface* )
+    cdef void* PyArrayInterface_DATA_AS_FLOAT_C_ARRAY_RO(PyGenericArrayInterface* )
 
     cdef int PyArrayInterface_IS_C_ARRAY(PyGenericArrayInterface* )
     cdef int PyArrayInterface_IS_C_ARRAY_RO(PyGenericArrayInterface* )

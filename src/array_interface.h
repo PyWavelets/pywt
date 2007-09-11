@@ -79,17 +79,36 @@ typedef struct  {
 #define PyArrayInterface_DATA(ai)           ((ai)->data)
 #define PyArrayInterface_DESCR(ai)          (PyArrayInterface_HAS_DESCR(ai) ? ((ai)->descr) : NULL)
 
-#define PyArrayInterface_DATA_AS_DOUBLE_C_ARRAY(ai)     ( \
+#define PyArrayInterface_DATA_AS_FLOAT64_C_ARRAY(ai)     ( \
             (PyArrayInterface_IS_C_ARRAY(ai) && PyArrayInterface_IS_KIND(ai, PyArrayKind_FLOAT) && (PyArrayInterface_ITEMSIZE(ai) == 8)) \
                 ? ((double*)(ai)->data) : NULL )
 
-#define PyArrayInterface_DATA_AS_DOUBLE_C_ARRAY_RO(ai)  ( \
+#define PyArrayInterface_DATA_AS_FLOAT64_C_ARRAY_RO(ai)  ( \
             (PyArrayInterface_IS_C_ARRAY_RO(ai) && PyArrayInterface_IS_KIND(ai, PyArrayKind_FLOAT) && (PyArrayInterface_ITEMSIZE(ai) == 8)) \
                 ? ((double*)(ai)->data) : NULL )
+
+#define PyArrayInterface_DATA_AS_FLOAT32_C_ARRAY(ai)     ( \
+            (PyArrayInterface_IS_C_ARRAY(ai) && PyArrayInterface_IS_KIND(ai, PyArrayKind_FLOAT) && (PyArrayInterface_ITEMSIZE(ai) == 4)) \
+                ? ((float*)(ai)->data) : NULL )
+
+#define PyArrayInterface_DATA_AS_FLOAT32_C_ARRAY_RO(ai)  ( \
+            (PyArrayInterface_IS_C_ARRAY_RO(ai) && PyArrayInterface_IS_KIND(ai, PyArrayKind_FLOAT) && (PyArrayInterface_ITEMSIZE(ai) == 4)) \
+                ? ((float*)(ai)->data) : NULL )
+
+
+#define PyArrayInterface_DATA_AS_FLOAT_C_ARRAY_RO(ai)  ( \
+            (PyArrayInterface_IS_C_ARRAY_RO(ai) && PyArrayInterface_IS_KIND(ai, PyArrayKind_FLOAT) \
+              && ((PyArrayInterface_ITEMSIZE(ai) == 4) || (PyArrayInterface_ITEMSIZE(ai) == 8))) \
+                ? ((void*)(ai)->data) : NULL )
+
+#define PyArrayInterface_DATA_AS_FLOAT_C_ARRAY(ai)     ( \
+            (PyArrayInterface_IS_C_ARRAY(ai) && PyArrayInterface_IS_KIND(ai, PyArrayKind_FLOAT) \
+              && ((PyArrayInterface_ITEMSIZE(ai) == 4) || (PyArrayInterface_ITEMSIZE(ai) == 8))) \
+                ? ((void*)(ai)->data) : NULL )
+
 
 #define PyArrayInterface_CHECK(ai)      (PyArrayInterface_TWO(ai) == 2)
 #define PyArrayInterface_CHECK_1D(ai)   (PyArrayInterface_CHECK(ai) && PyArrayInterface_ND(ai) == 1)
 #define PyArrayInterface_CHECK_2D(ai)   (PyArrayInterface_CHECK(ai) && PyArrayInterface_ND(ai) == 2)
-
 
 #endif

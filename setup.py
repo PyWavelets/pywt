@@ -4,6 +4,7 @@
 from distutils.core import setup
 from distutils.extension import Extension
 import glob, os, os.path
+import util.templating
 
 if os.path.exists('MANIFEST'):
     os.remove('MANIFEST')
@@ -26,10 +27,14 @@ release = {}
 execfile(os.path.join(os.path.dirname(__file__), 'pywt','release_details.py'), {}, release)
 
 # tune the C compiler settings
-extra_compile_args = ['-Wno-uninitialized', '-Wno-unused', '-O2']
-#extra_compile_args += ['-march=pentium3',  '-mtune=pentium3', '-msse', '-mmmx']
+extra_compile_args = ['-Wall', '-finline-limit=1', '-O2']
+#extra_compile_args += ['-march=pentium4',  '-mtune=pentium4']
+#extra_compile_args += ['-Wno-long-long', '-Wno-uninitialized', '-Wno-unused']
 
-macros = [('PY_EXTENSION', None)]
+macros = [('PY_EXTENSION', None),
+          ('FILTER_TYPE', 'double'),
+          #('OPT_UNROLL2', None), ('OPT_UNROLL4', None) # enable some manual unroll loop optimizations
+         ]
 
 dwt = Extension("pywt._pywt",
         sources = [(n + source_ext) for n in ['src/_pywt']] + ["src/common.c", "src/convolution.c", "src/wavelets.c", "src/wt.c"], 
@@ -41,7 +46,7 @@ dwt = Extension("pywt._pywt",
         extra_compile_args = extra_compile_args,
 		extra_link_args = [],
 		export_symbols = [],
-    )
+)
  
 ext_modules = [dwt]
 packages =  ['pywt']
@@ -49,6 +54,8 @@ package_dir = {'pywt':'pywt'}
 
     
 def do_setup(**extra_kwds):
+    util.templating.expand_files('src/*.template', True)
+
     setup(
         name = release["name"],
         version = release["version"],

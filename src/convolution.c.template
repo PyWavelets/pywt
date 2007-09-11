@@ -5,16 +5,18 @@
 
 #include "convolution.h"
 
-int downsampling_convolution_periodization(CONST_DTYPE* input, const_index_t N,
-                             const double* filter, const_index_t F,
-                             DTYPE* output, const_index_t step)
+//## FOR $DTYPE$ IN (double, float):
+
+int $DTYPE$_downsampling_convolution_periodization(const $DTYPE$* input, const_index_t N,
+                             const FILTER_TYPE* filter, const_index_t F,
+                             $DTYPE$* output, const_index_t step)
 
 {
 
     index_t i, j, k, F_2, corr;
     index_t start;
-    DTYPE sum;
-    DTYPE* ptr_w = output;
+    $DTYPE$ sum;
+    $DTYPE$* ptr_w = output;
     
     i = step-1; // first element taken from input is input[step-1]
     //extending by (F-2)/2 elements
@@ -71,9 +73,9 @@ int downsampling_convolution_periodization(CONST_DTYPE* input, const_index_t N,
 }
 
 
-int downsampling_convolution(CONST_DTYPE* input, const_index_t N,
-                             const double* filter, const_index_t F,
-                             DTYPE* output,
+int $DTYPE$_downsampling_convolution(const $DTYPE$* input, const_index_t N,
+                             const FILTER_TYPE* filter, const_index_t F,
+                             $DTYPE$* output,
                              const_index_t step, MODE mode)
 {
 
@@ -93,16 +95,25 @@ int downsampling_convolution(CONST_DTYPE* input, const_index_t N,
 
     index_t i, j, k;
     index_t start;
-    DTYPE sum, tmp;
+    $DTYPE$ sum, tmp;
+    #ifdef OPT_UNROLL2
+        $DTYPE$ sum2;
+    #endif
+    #ifdef OPT_UNROLL4
+        #ifndef OPT_UNROLL2
+            $DTYPE$ sum2;
+        #endif
+        $DTYPE$ sum3, sum4;
+    #endif
 
-    DTYPE* ptr_w = output;
+    $DTYPE$* ptr_w = output;
     
     i = start = step-1; // first element taken from input is input[step-1]
 
     if(F <= N){
 
         if(mode == MODE_PERIODIZATION){
-            return downsampling_convolution_periodization(input, N, filter, F, output, step);
+            return $DTYPE$_downsampling_convolution_periodization(input, N, filter, F, output, step);
 
         // Other signal extension modes
         } else {
@@ -190,13 +201,55 @@ int downsampling_convolution(CONST_DTYPE* input, const_index_t N,
             ///////////////////////////////////////////////////////////////////////
             // F - N-1        - filter in input range - simple convolution
             // most time is spent in this loop
+            //printf("entering loop\n");
+            #ifdef OPT_UNROLL4
+            // manually unroll the loop a bit
+            //printf("F: %d, N: %d, i: %d\n", F, N, i);
+            if((N - F)/step > 4) {
+                for(; i < (N - (3*step)); i += 4*step){                    // input elements, 
+                    //printf("EO4 iter: %d\n", i);
+                    sum  = input[i]          * filter[0];
+                    sum2 = input[i+step]     * filter[0];
+                    sum3 = input[i+(2*step)] * filter[0];
+                    sum4 = input[i+(3*step)] * filter[0];
+                    for(j = 1; j < F; ++j){                
+                        sum += input[i-j]           * filter[j];
+                        sum2 += input[(step+i)-j]   * filter[j];
+                        sum3 += input[(2*step+i)-j] * filter[j];
+                        sum4 += input[(3*step+i)-j] * filter[j];
+                    }
+                    *(ptr_w++) = sum;
+                    *(ptr_w++) = sum2;
+                    *(ptr_w++) = sum3;
+                    *(ptr_w++) = sum4;
+                }
+            }
+            #endif
+            
+            #ifdef OPT_UNROLL2
+            if((N - F)/step > 2) {
+                for(; i < (N - step); i += 2*step){                    // input elements, 
+                    //printf("EO2 iter: %d\n", i);
+                    sum  = input[i]   * filter[0];
+                    sum2 = input[i+step] * filter[0];
+                    for(j = 1; j < F; ++j){                
+                        sum += input[i-j]         * filter[j];
+                        sum2 += input[(step+i)-j] * filter[j];
+                    }
+                    *(ptr_w++) = sum;
+                    *(ptr_w++) = sum2;
+                }
+            }
+            #endif
+            
             for(; i < N; i+=step){                    // input elements, 
-                sum = 0;
-                for(j = 0; j < F; ++j)                
+                sum = input[i] * filter[0];
+                for(j = 1; j < F; ++j){
+                    //printf("EO1 iter: %d\n", i);
                     sum += input[i-j]*filter[j];
+                }
                 *(ptr_w++) = sum;
-            }  
-
+            }
             ///////////////////////////////////////////////////////////////////////
             // N - N+F-1    - sliding out filter
             switch(mode)
@@ -283,7 +336,7 @@ int downsampling_convolution(CONST_DTYPE* input, const_index_t N,
 
     } else {
         // reallocating memory for short signals (shorter than filter) is cheap
-        return allocating_downsampling_convolution(input, N, filter, F, output, step, mode);
+        return $DTYPE$_allocating_downsampling_convolution(input, N, filter, F, output, step, mode);
     }
 }
 
@@ -292,16 +345,16 @@ int downsampling_convolution(CONST_DTYPE* input, const_index_t N,
 // like downsampling_convolution, but with memory allocation
 //
 
-int allocating_downsampling_convolution(CONST_DTYPE* input, const_index_t N,
-                                        const double* filter, const_index_t F,
-                                        DTYPE* output,
+int $DTYPE$_allocating_downsampling_convolution(const $DTYPE$* input, const_index_t N,
+                                        const FILTER_TYPE* filter, const_index_t F,
+                                        $DTYPE$* output,
                                         const_index_t step, MODE mode)
 {
     index_t i, j, F_minus_1, N_extended_len, N_extended_right_start;
     index_t start, stop;
-    DTYPE sum, tmp;
-    DTYPE *buffer;
-    DTYPE* ptr_w = output;
+    $DTYPE$ sum, tmp;
+    $DTYPE$ *buffer;
+    $DTYPE$* ptr_w = output;
     
     F_minus_1 = F - 1;
     start = F_minus_1+step-1;
@@ -312,11 +365,11 @@ int allocating_downsampling_convolution(CONST_DTYPE* input, const_index_t N,
         N_extended_len = N + 2*F_minus_1;
         N_extended_right_start = N + F_minus_1;
 
-        buffer = wtcalloc(N_extended_len, sizeof(DTYPE));
+        buffer = wtcalloc(N_extended_len, sizeof($DTYPE$));
         if(buffer == NULL)
             return -1;
 
-        memcpy(buffer+F_minus_1, input, sizeof(DTYPE) * N);
+        memcpy(buffer+F_minus_1, input, sizeof($DTYPE$) * N);
         stop = N_extended_len;
 
     } else {
@@ -324,11 +377,11 @@ int allocating_downsampling_convolution(CONST_DTYPE* input, const_index_t N,
         N_extended_len = N + F-1;
         N_extended_right_start = N-1 + F/2;
 
-        buffer = wtcalloc(N_extended_len, sizeof(DTYPE));
+        buffer = wtcalloc(N_extended_len, sizeof($DTYPE$));
         if(buffer == NULL)
             return -1;
 
-        memcpy(buffer+F/2-1, input, sizeof(DTYPE) * N);
+        memcpy(buffer+F/2-1, input, sizeof($DTYPE$) * N);
 
         start -= 1;
         
@@ -412,9 +465,9 @@ int allocating_downsampling_convolution(CONST_DTYPE* input, const_index_t N,
 
         case MODE_ZEROPAD:
         default:
-            //memset(buffer, 0, sizeof(DTYPE)*F_minus_1);
-            //memset(buffer+N_extended_right_start, 0, sizeof(DTYPE)*F_minus_1);
-            //memcpy(buffer+N_extended_right_start, buffer, sizeof(DTYPE)*F_minus_1);
+            //memset(buffer, 0, sizeof($DTYPE$)*F_minus_1);
+            //memset(buffer+N_extended_right_start, 0, sizeof($DTYPE$)*F_minus_1);
+            //memcpy(buffer+N_extended_right_start, buffer, sizeof($DTYPE$)*F_minus_1);
             break;
     }
 
@@ -440,12 +493,12 @@ int allocating_downsampling_convolution(CONST_DTYPE* input, const_index_t N,
 // output is larger than input
 // performs "normal" convolution of "upsampled" input coeffs array with filter
 
-int upsampling_convolution_full(CONST_DTYPE* input, const_index_t N,
-                                const double* filter, const_index_t F,
-                                DTYPE* output, const_index_t O){
+int $DTYPE$_upsampling_convolution_full(const $DTYPE$* input, const_index_t N,
+                                const FILTER_TYPE* filter, const_index_t F,
+                                $DTYPE$* output, const_index_t O){
     register index_t i;
     register index_t j;
-    DTYPE *ptr_out;
+    $DTYPE$ *ptr_out;
 
     if(F<2)
         return -1;
@@ -475,17 +528,17 @@ int upsampling_convolution_full(CONST_DTYPE* input, const_index_t N,
 //
 // The input data has to be periodically extended for this mode.
 
-int upsampling_convolution_valid_sf_periodization(CONST_DTYPE* input, const_index_t N,
-                                    const double* filter, const_index_t F,
-                                    DTYPE* output, const_index_t O)
+int $DTYPE$_upsampling_convolution_valid_sf_periodization(const $DTYPE$* input, const_index_t N,
+                                    const FILTER_TYPE* filter, const_index_t F,
+                                    $DTYPE$* output, const_index_t O)
 {
     
-    DTYPE *ptr_out = output;
-    double *filter_even, *filter_odd;
-    DTYPE *periodization_buf = NULL;
-    DTYPE *periodization_buf_rear = NULL;
-    DTYPE *ptr_base;
-    DTYPE sum_even, sum_odd;
+    $DTYPE$ *ptr_out = output;
+    FILTER_TYPE *filter_even, *filter_odd;
+    $DTYPE$ *periodization_buf = NULL;
+    $DTYPE$ *periodization_buf_rear = NULL;
+    $DTYPE$ *ptr_base;
+    $DTYPE$ sum_even, sum_odd;
     index_t i, j, k, N_p = 0;
     index_t F_2 = F/2;
 
@@ -505,7 +558,7 @@ int upsampling_convolution_valid_sf_periodization(CONST_DTYPE* input, const_inde
         N_p = F_2-1 +N; 
 
         // periodization_buf will hold periodically copied input coeffs values
-        periodization_buf = wtcalloc(N_p, sizeof(DTYPE));
+        periodization_buf = wtcalloc(N_p, sizeof($DTYPE$));
         
         if(periodization_buf == NULL)
             return -1;
@@ -539,7 +592,7 @@ int upsampling_convolution_valid_sf_periodization(CONST_DTYPE* input, const_inde
         
         // Now perform the valid convolution
         if(F_2%2){
-            upsampling_convolution_valid_sf(periodization_buf, N_p, filter, F, output, O, MODE_ZEROPAD);
+            $DTYPE$_upsampling_convolution_valid_sf(periodization_buf, N_p, filter, F, output, O, MODE_ZEROPAD);
         
         // The F_2%2==0 case needs special result fix (oh my, another one..)
         } else {
@@ -548,14 +601,14 @@ int upsampling_convolution_valid_sf_periodization(CONST_DTYPE* input, const_inde
             // Memory allocation for temporary output is done.
             // Computed temporary result is copied to output*
 
-            ptr_out = wtcalloc(idwt_buffer_length(N, F, MODE_PERIODIZATION), sizeof(DTYPE));
+            ptr_out = wtcalloc(idwt_buffer_length(N, F, MODE_PERIODIZATION), sizeof($DTYPE$));
             if(ptr_out == NULL){
                 wtfree(periodization_buf);
                 return -1;
             }
 
             // Convolve here as for (F_2%2) branch above
-            upsampling_convolution_valid_sf(periodization_buf, N_p, filter, F, ptr_out, O, MODE_ZEROPAD);
+            $DTYPE$_upsampling_convolution_valid_sf(periodization_buf, N_p, filter, F, ptr_out, O, MODE_ZEROPAD);
 
             // rewrite result to output
             for(i=2*N-1; i > 0; --i){
@@ -571,8 +624,8 @@ int upsampling_convolution_valid_sf_periodization(CONST_DTYPE* input, const_inde
     // Otherwise (N >= F_2)
 
         // Allocate memory for even and odd elements of the filter
-        filter_even = wtmalloc(F_2 * sizeof(double));
-        filter_odd = wtmalloc(F_2 * sizeof(double));
+        filter_even = wtmalloc(F_2 * sizeof(FILTER_TYPE));
+        filter_odd = wtmalloc(F_2 * sizeof(FILTER_TYPE));
 
         if(filter_odd == NULL || filter_odd == NULL){
             if(filter_odd == NULL) wtfree(filter_odd);
@@ -607,8 +660,8 @@ int upsampling_convolution_valid_sf_periodization(CONST_DTYPE* input, const_inde
 
             // Allocate memory only for the front and rear extension parts, not the
             // whole input
-            periodization_buf = wtcalloc(N_p, sizeof(DTYPE));
-            periodization_buf_rear = wtcalloc(N_p, sizeof(DTYPE));
+            periodization_buf = wtcalloc(N_p, sizeof($DTYPE$));
+            periodization_buf_rear = wtcalloc(N_p, sizeof($DTYPE$));
 
             // Memory checking
             if(periodization_buf == NULL || periodization_buf_rear == NULL){
@@ -620,11 +673,11 @@ int upsampling_convolution_valid_sf_periodization(CONST_DTYPE* input, const_inde
             }
         
             // Fill buffers with appriopriate elements
-            memcpy(periodization_buf + N_p - k, input, k * sizeof(DTYPE));        // copy from beginning of input to end of buffer
+            memcpy(periodization_buf + N_p - k, input, k * sizeof($DTYPE$));        // copy from beginning of input to end of buffer
             for(i = 1; i <= (N_p - k); ++i)                                        // kopiowanie 'cykliczne' od koñca input 
                 periodization_buf[(N_p - k) - i] = input[N - (i%N)];
 
-            memcpy(periodization_buf_rear, input + N - k, k * sizeof(DTYPE));    // copy from end of input to begginning of buffer
+            memcpy(periodization_buf_rear, input + N - k, k * sizeof($DTYPE$));    // copy from end of input to begginning of buffer
             for(i = 0; i < (N_p - k); ++i)                                        // kopiowanie 'cykliczne' od pocz¹tku input
                 periodization_buf_rear[k + i] = input[i%N];
         
@@ -643,12 +696,12 @@ int upsampling_convolution_valid_sf_periodization(CONST_DTYPE* input, const_inde
 
                 --k;
                 if(k)
-                    upsampling_convolution_valid_sf(periodization_buf + 1, N_p-1, filter, F, ptr_out, O-1, MODE_ZEROPAD);
+                    $DTYPE$_upsampling_convolution_valid_sf(periodization_buf + 1, N_p-1, filter, F, ptr_out, O-1, MODE_ZEROPAD);
                 
                 ptr_out += k; // k0 - 1 // really move backward by 1
             
             } else if(k){
-                upsampling_convolution_valid_sf(periodization_buf, N_p, filter, F, ptr_out, O, MODE_ZEROPAD);
+                $DTYPE$_upsampling_convolution_valid_sf(periodization_buf, N_p, filter, F, ptr_out, O, MODE_ZEROPAD);
                 ptr_out += k;
             }
         }
@@ -659,7 +712,7 @@ int upsampling_convolution_valid_sf_periodization(CONST_DTYPE* input, const_inde
         //
         // This part is simple, no extra hacks, just two convolutions in one loop
 
-        ptr_base = (DTYPE*)input + F_2 - 1;
+        ptr_base = ($DTYPE$*)input + F_2 - 1;
         for(i = 0; i < N-(F_2-1); ++i){    // sliding over signal from left to right
             
             sum_even = 0;
@@ -682,7 +735,7 @@ int upsampling_convolution_valid_sf_periodization(CONST_DTYPE* input, const_inde
             k = F_2-1;
             if(k%2 == 1){
                 if(F/2 <= N_p - 1){ // k > 1 ?
-                    upsampling_convolution_valid_sf(periodization_buf_rear , N_p-1, filter, F, ptr_out, O-1, MODE_ZEROPAD);
+                    $DTYPE$_upsampling_convolution_valid_sf(periodization_buf_rear , N_p-1, filter, F, ptr_out, O-1, MODE_ZEROPAD);
                 }
 
                 ptr_out += k; // move forward anyway -> see lower
@@ -698,7 +751,7 @@ int upsampling_convolution_valid_sf_periodization(CONST_DTYPE* input, const_inde
                 }
             } else {
                 if(k){
-                    upsampling_convolution_valid_sf(periodization_buf_rear, N_p, filter, F, ptr_out, O, MODE_ZEROPAD);
+                    $DTYPE$_upsampling_convolution_valid_sf(periodization_buf_rear, N_p, filter, F, ptr_out, O, MODE_ZEROPAD);
                 }
             }
         }
@@ -721,27 +774,38 @@ int upsampling_convolution_valid_sf_periodization(CONST_DTYPE* input, const_inde
 // After refactoring the PERIODIZATION mode case to separate function this
 // looks much clearer now.
 
-int upsampling_convolution_valid_sf(CONST_DTYPE* input, const_index_t N,
-                                    const double* filter, const_index_t F,
-                                    DTYPE* output, const_index_t O,
+int $DTYPE$_upsampling_convolution_valid_sf(const $DTYPE$* input, const_index_t N,
+                                    const FILTER_TYPE* filter, const_index_t F,
+                                    $DTYPE$* output, const_index_t O,
                                     MODE mode){
     
-    DTYPE *ptr_out = output;
-    double *filter_even, *filter_odd;
-    DTYPE *ptr_base;
-    DTYPE sum_even, sum_odd;
+    $DTYPE$ *ptr_out = output;
+    FILTER_TYPE *filter_even, *filter_odd;
+    $DTYPE$ *ptr_base;
+    $DTYPE$ sum_even, sum_odd;
+    #ifdef OPT_UNROLL2
+        $DTYPE$ sum_even2, sum_odd2;
+    #endif
+    #ifdef OPT_UNROLL4
+        #ifndef OPT_UNROLL2
+            $DTYPE$ sum_even2, sum_odd2;
+        #endif
+        $DTYPE$ sum_even3, sum_odd3;
+        $DTYPE$ sum_even4, sum_odd4;
+    #endif
+
     index_t i, j;
     index_t F_2 = F/2;
 
     if(mode == MODE_PERIODIZATION) // Special case
-        return upsampling_convolution_valid_sf_periodization(input, N, filter, F, output, O);
+        return $DTYPE$_upsampling_convolution_valid_sf_periodization(input, N, filter, F, output, O);
         
     if((F%2) || (N < F_2)) // Filter must have even length.
         return -1; 
 
     // Allocate memory for even and odd elements of the filter
-    filter_even = wtmalloc(F_2 * sizeof(double));
-    filter_odd = wtmalloc(F_2 * sizeof(double));
+    filter_even = wtmalloc(F_2 * sizeof(FILTER_TYPE));
+    filter_odd = wtmalloc(F_2 * sizeof(FILTER_TYPE));
 
     if(filter_odd == NULL || filter_odd == NULL){
         if(filter_odd == NULL) wtfree(filter_odd);
@@ -761,12 +825,74 @@ int upsampling_convolution_valid_sf(CONST_DTYPE* input, const_index_t N,
     //
     // This part is simple, no extra hacks, just two convolutions in one loop
 
-    ptr_base = (DTYPE*)input + F_2 - 1;
-    for(i = 0; i < N-(F_2-1); ++i){    // sliding over signal from left to right
-        sum_even = 0;
-        sum_odd = 0;
+    ptr_base = ($DTYPE$*)input + F_2 - 1;
+    i = 0;
+
+    #ifdef OPT_UNROLL4
+    // manually unroll the loop a bit
+    for(; i < N-(F_2-1+8); i+=4){    // sliding over signal from left to right
+        sum_even  = filter_even[0] * ptr_base[i];
+        sum_even2 = filter_even[0] * ptr_base[i+1];
+        sum_even3 = filter_even[0] * ptr_base[i+2];
+        sum_even4 = filter_even[0] * ptr_base[i+3];
         
-        for(j = 0; j < F_2; ++j){
+        sum_odd   = filter_odd[0] * ptr_base[i];
+        sum_odd2  = filter_odd[0] * ptr_base[i+1];
+        sum_odd3  = filter_odd[0] * ptr_base[i+2];
+        sum_odd4  = filter_odd[0] * ptr_base[i+3];
+        
+        for(j = 1; j < F_2; ++j){
+            sum_even  += filter_even[j] * ptr_base[i-j];
+            sum_even2 += filter_even[j] * ptr_base[(i+1)-j];
+            sum_even3 += filter_even[j] * ptr_base[(i+2)-j];
+            sum_even4 += filter_even[j] * ptr_base[(i+3)-j];
+
+            sum_odd  += filter_odd[j] * ptr_base[i-j];
+            sum_odd2 += filter_odd[j] * ptr_base[(i+1)-j];
+            sum_odd3 += filter_odd[j] * ptr_base[(i+2)-j];
+            sum_odd4 += filter_odd[j] * ptr_base[(i+3)-j];
+        }
+
+        *(ptr_out++) += sum_even;
+        *(ptr_out++) += sum_odd;
+        *(ptr_out++) += sum_even2;
+        *(ptr_out++) += sum_odd2;
+        *(ptr_out++) += sum_even3;
+        *(ptr_out++) += sum_odd3;
+        *(ptr_out++) += sum_even4;
+        *(ptr_out++) += sum_odd4;
+    }
+    #endif
+
+    #ifdef OPT_UNROLL2
+    // manually unroll the loop a bit
+    for(; i < N-(F_2+1); i+=2){    // sliding over signal from left to right
+        sum_even = filter_even[0] * ptr_base[i];
+        sum_even2 = filter_even[0] * ptr_base[i+1];
+        
+        sum_odd  = filter_odd[0] * ptr_base[i];
+        sum_odd2  = filter_odd[0] * ptr_base[i+1];
+        
+        for(j = 1; j < F_2; ++j){
+            sum_even += filter_even[j] * ptr_base[i-j];
+            sum_even2 += filter_even[j] * ptr_base[(i+1)-j];
+
+            sum_odd += filter_odd[j] * ptr_base[i-j];
+            sum_odd2 += filter_odd[j] * ptr_base[(i+1)-j];
+        }
+
+        *(ptr_out++) += sum_even;
+        *(ptr_out++) += sum_odd;
+        *(ptr_out++) += sum_even2;
+        *(ptr_out++) += sum_odd2;
+    }
+    #endif
+    
+    for(; i < N-(F_2-1); ++i){    // sliding over signal from left to right
+        sum_even = filter_even[0] * ptr_base[i];
+        sum_odd  = filter_odd[0] * ptr_base[i];
+        
+        for(j = 1; j < F_2; ++j){
             sum_even += filter_even[j] * ptr_base[i-j];
             sum_odd += filter_odd[j] * ptr_base[i-j];
         }
@@ -774,6 +900,7 @@ int upsampling_convolution_valid_sf(CONST_DTYPE* input, const_index_t N,
         *(ptr_out++) += sum_even; 
         *(ptr_out++) += sum_odd;
     }
+
     //
     ///////////////////////////////////////////////////////////////////////////
 
@@ -783,7 +910,9 @@ int upsampling_convolution_valid_sf(CONST_DTYPE* input, const_index_t N,
 }
 
 // -> swt - todo
-int upsampled_filter_convolution(CONST_DTYPE* input, const_index_t N, const double* filter, const_index_t F, DTYPE* output, const_index_t step, MODE mode)
+int $DTYPE$_upsampled_filter_convolution(const $DTYPE$* input, const_index_t N, const FILTER_TYPE* filter, const_index_t F, $DTYPE$* output, const_index_t step, MODE mode)
 {
     return -1;
 }
+
+//## ENDFOR $DTYPE$
