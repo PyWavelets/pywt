@@ -9,7 +9,7 @@
 2D Discrete Wavelet Transform and Inverse Discrete Wavelet Transform.
 """
 
-__all__ = ['dwt2', 'idwt2']
+__all__ = ['dwt2', 'idwt2', 'swt2']
 
 from itertools import izip
 
@@ -132,3 +132,68 @@ def idwt2(coeffs, wavelet, mode='sym'):
         append_data(idwt(rowL, rowH, wavelet, mode, 1))
 
     return array(data, default_dtype)
+
+
+def swt2(data, wavelet, level, start_level=0):
+    """
+    2D Stationary Wavelet Transform.
+    
+    data    - 2D array with input data 
+    wavelet - wavelet to use (Wavelet object or name string)
+    level   - how many decomposition steps to perform
+    start_level - the level at which the decomposition will start
+    
+    Returns list of approximation and details coefficients
+    [(LL_n, (LH_n, HL_n, HH_n)),
+     (LL_n+1, (LH_n+1, HL_n+1, HH_n+1)),
+     ...,
+     (LL_+level, (LH_n+level, HL_n+level, HH_n+level))]
+    Where n = start_level and m = n+level
+    """
+    
+    data = as_float_array(data)
+    if len(data.shape) != 2:
+        raise ValueError("Expected 2D data array")
+    
+    if not isinstance(wavelet, Wavelet):
+        wavelet = Wavelet(wavelet)
+
+    ret = []
+    for i in range(start_level, start_level+level):
+        # filter rows
+        H, L = [], []
+        append_L = L.append; append_H = H.append
+        for row in data:
+            cA, cD = swt(row, wavelet, level=1, start_level=i)[0]
+            append_L(cA)
+            append_H(cD)
+        del data
+	
+        # filter columns
+        H = transpose(H)
+        L = transpose(L)
+ 
+        LL, LH = [], []
+        append_LL = LL.append; append_LH = LH.append
+        for row in L:
+            cA, cD = swt(array(row, default_dtype), wavelet, level=1, start_level=i)[0]
+            append_LL(cA)
+            append_LH(cD)
+        del L
+    
+        HL, HH = [], []
+        append_HL = HL.append; append_HH = HH.append
+        for row in H:
+            cA, cD = swt(array(row, default_dtype), wavelet, level=1, start_level=i)[0]
+            append_HL(cA)
+            append_HH(cD)
+        del H
+	
+        # build result structure
+        #     (approx.,        (horizontal,    vertical,       diagonal))
+        approx = transpose(LL)
+        ret.append((approx, (transpose(LH), transpose(HL), transpose(HH))))
+        
+        data = approx # for next iteration
+        
+    return ret
