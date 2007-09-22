@@ -5,7 +5,7 @@
 
 # $Id$
 
-"""Tresholding routines"""
+"""Thresholding routines"""
 
 __all__ = ['soft', 'hard', 'greater', 'less', 'zero', 'copy']
 
@@ -38,8 +38,8 @@ def less(data, value, substitute=0):
     return numerix.where(numerix.greater(data, value), substitute, data)
 
 def zero(data, *args):
-    if isinstance(data, ndarray):
-        return numerix.zeros(len(data), data.dtype)
+    if isinstance(data, numerix.ndarray):
+        return numerix.zeros(data.shape, data.dtype)
     return numerix.zeros(len(data))
 
 def copy(data, *args):
