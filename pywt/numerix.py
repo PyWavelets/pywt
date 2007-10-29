@@ -24,7 +24,7 @@ from numpy.fft import fft
 default_dtype = float64
 
 def as_float_array(source):
-    if isinstance(source, ndarray) and source.dtype in (float64, float32):
+    if isinstance(source, ndarray) and (source.dtype == float64 or source.dtype == float32):
         return source
     return array(source, default_dtype)
 

@@ -49,8 +49,8 @@ def dwt2(data, wavelet, mode='sym'):
         append_L(cA)
         append_H(cD)
     del data
-	
-	# filter columns
+    
+    # filter columns
     H = transpose(H)
     L = transpose(L)
  
@@ -69,11 +69,11 @@ def dwt2(data, wavelet, mode='sym'):
         append_HL(cA)
         append_HH(cD)
     del H
-	
-	# build result structure
+    
+    # build result structure
     #     (approx.,        (horizontal,    vertical,       diagonal))
     ret = (transpose(LL), (transpose(LH), transpose(HL), transpose(HH)))  
-		
+        
     return ret
 
 def idwt2(coeffs, wavelet, mode='sym'):
@@ -92,7 +92,6 @@ def idwt2(coeffs, wavelet, mode='sym'):
     if len(coeffs) != 2 or len(coeffs[1]) != 3:
         raise ValueError("Invalid coeffs param")
     
-    
     # L -low-pass data, H - high-pass data
     LL, (LH, HL, HH) = coeffs
 
@@ -101,7 +100,6 @@ def idwt2(coeffs, wavelet, mode='sym'):
         if len(arr.shape) != 2:
             raise TypeError("All input coefficients arrays must be 2D")
     del arr
-    
     
     if not isinstance(wavelet, Wavelet):
         wavelet = Wavelet(wavelet)
@@ -114,7 +112,6 @@ def idwt2(coeffs, wavelet, mode='sym'):
     for rowL, rowH in izip(LL, LH):
         append_L(idwt(rowL, rowH, wavelet, mode, 1))
     del LL, LH
-
 
     H = []
     append_H = H.append
@@ -168,7 +165,7 @@ def swt2(data, wavelet, level, start_level=0):
             append_L(cA)
             append_H(cD)
         del data
-	
+    
         # filter columns
         H = transpose(H)
         L = transpose(L)
@@ -188,7 +185,7 @@ def swt2(data, wavelet, level, start_level=0):
             append_HL(cA)
             append_HH(cD)
         del H
-	
+    
         # build result structure
         #     (approx.,        (horizontal,    vertical,       diagonal))
         approx = transpose(LL)
