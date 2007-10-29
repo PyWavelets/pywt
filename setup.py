@@ -9,9 +9,16 @@ import util.templating
 if os.path.exists('MANIFEST'):
     os.remove('MANIFEST')
 
+compiler = "cython" # "pyrex"
 try:
-    from Pyrex.Distutils import build_ext
-    has_pyrex = True
+    if compiler == "pyrex":
+        from Pyrex.Distutils import build_ext
+        has_pyrex = True
+    elif compiler == "cython":
+        from Cython.Distutils import build_ext
+        has_pyrex = True
+    else:
+        raise ValueError("Invalid compiler '%s'." % compiler)
 except ImportError:
     has_pyrex = False
 
@@ -32,8 +39,8 @@ extra_compile_args = ['-Wall', '-finline-limit=1', '-O2']
 #extra_compile_args += ['-Wno-long-long', '-Wno-uninitialized', '-Wno-unused']
 
 macros = [('PY_EXTENSION', None),
-          ('FILTER_TYPE', 'double'),
-          #('OPT_UNROLL2', None), ('OPT_UNROLL4', None) # enable some manual unroll loop optimizations
+          #('OPT_UNROLL2', None), # enable some manual unroll loop optimizations
+          #('OPT_UNROLL4', None)  # enable more manual unroll loop optimizations
          ]
 
 dwt = Extension("pywt._pywt",
