@@ -12,51 +12,50 @@
 
 // Wavelet symmetry properties
 typedef enum {
-	UNKNOWN = -1,
-	ASYMMETRIC = 0,
-	NEAR_SYMMETRIC = 1,
-	SYMMETRIC = 2
+    UNKNOWN = -1,
+    ASYMMETRIC = 0,
+    NEAR_SYMMETRIC = 1,
+    SYMMETRIC = 2
 } SYMMETRY;
 
 
 // Wavelet structure holding pointers to filter arays and property attributes
 typedef struct {
-	
-	FILTER_TYPE* dec_hi;		// highpass decomposition
-	FILTER_TYPE* dec_lo;		// lowpass	decomposition
-	FILTER_TYPE* rec_hi;		// highpass reconstruction
-	FILTER_TYPE* rec_lo;		// lowpass	reconstruction
+        double* dec_hi_double;        // highpass decomposition
+        double* dec_lo_double;        // lowpass    decomposition
+        double* rec_hi_double;        // highpass reconstruction
+        double* rec_lo_double;        // lowpass    reconstruction
+        float* dec_hi_float;        // highpass decomposition
+        float* dec_lo_float;        // lowpass    decomposition
+        float* rec_hi_float;        // highpass reconstruction
+        float* rec_lo_float;        // lowpass    reconstruction
+    
+    index_t dec_len;                // length of decomposition filter
+    index_t rec_len;                // length of reconstruction filter
+    
+    /*
+    index_t dec_hi_offset;        // usually 0, but some filters can be zero-padded (ie. bior)
+    index_t dec_lo_offset;
+    index_t rec_hi_offset;        // - || -
+    index_t rec_lo_offset;        // - || -
+    */
+        
+    // Wavelet properties
+    int vanishing_moments_psi;
+    int vanishing_moments_phi;
+    index_t support_width;
 
-	//float* dec_hi_float;		// highpass decomposition
-	//float* dec_lo_float;		// lowpass	decomposition
-	//float* rec_hi_float;		// highpass reconstruction
-	//float* rec_lo_float;		// lowpass	reconstruction
-	
-	index_t dec_len;				// length of decomposition filter
-	index_t rec_len;				// length of reconstruction filter
-	
+    SYMMETRY symmetry;
 
-	index_t dec_hi_offset;		// usually 0, but some filters can be zero-padded (ie. bior)
-	index_t dec_lo_offset;
-	index_t rec_hi_offset;		// - || -
-	index_t rec_lo_offset;		// - || -
+    int orthogonal:1;
+    int biorthogonal:1;
+    int compact_support:1;
 
-	// Wavelet properties
-	int vanishing_moments_psi;
-	int vanishing_moments_phi;
-	index_t support_width;
+    // Set if filters arrays shouldn't be dealocated by free_wavelet(Wavelet) func
+    int _builtin:1;
 
-	SYMMETRY symmetry;
-
-	int orthogonal:1;
-	int biorthogonal:1;
-	int compact_support:1;
-
-	// Set if filters arrays shouldn't be dealocated by free_wavelet(Wavelet) func
-	int _builtin:1;
-
-	char* family_name;
-	char* short_name;
+    char* family_name;
+    char* short_name;
 
 } Wavelet;
 
@@ -87,4 +86,3 @@ Wavelet* copy_wavelet(Wavelet* base);
 void free_wavelet(Wavelet *wavelet);
 
 #endif
-

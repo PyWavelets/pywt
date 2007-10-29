@@ -6,36 +6,45 @@
 
 # Ok, not really a full-featured templating language, but good enought
 # to keep the code easier to maintain.
+# PS. For internal use only ;)
 
 import re # sounds fun, doesn't it?
 
 pattern_for = re.compile(r"""(?P<for>
-                                ^ //\#\#[ ]?
-                                    #[ \t]*? (?:/{2,})?  # optional C comment
-                                    #[ \t]*? \#{2} [ \t]*?  # two hashes
+                                ^\s*
+                                    (?:/{2,})?  # optional C comment
+                                    \s* 
+                                    \#{2}       # two hashes
+                                    \s*  
                                        
-                                    (FOR|for)
+                                    (FOR)
                                         \s+ (?P<variable>[\w$][\d\w$]*) \s+
-                                    (IN|in)
+                                    (IN)
                                         \s+ \(
                                         (?P<values>
                                             (?:
-                                                [^\s]+ \s* , \s*
+                                                \s* [^,\s]+ , \s*
                                             )+
-                                            [^\s]+\s*
+                                            (?:
+                                                [^,\s]+
+                                            ){0,1}
+                                            \s*
                                         )
                                         \)
-                                    \s* : \s*?
+                                    \s* : \s*
                              )
                              ^(?P<body>.*?)
                              (?P<endfor>
                                 ^
-                                    [ \t]*? (?:/{2,})? # optional C comment
-                                    [ \t]*? \#{2} \s*
-                                    (ENDFOR|endfor)
+                                    \s*
+                                    (?:/{2,})?  # optional C comment
+                                    \s*
+                                    \#{2}       # two hashes
+                                    \s*
+                                    (ENDFOR)
                                         \s+ (?P=variable) \s*?\n
                              )
-""", re.X | re.M | re.S)
+""", re.X | re.M | re.S | re.I)
 
 def expand_template(s):
     """
@@ -55,7 +64,7 @@ def expand_template(s):
         ... w = 9
         ... ## FOR $x$ IN (7, w):
         ...   ## FOR $y$ IN ("{", 1):
-        ... print $x$, $y$
+        ... print $x$, $y$, "$x$_$y$"
         ...   ## ENDFOR $y$
         ... ## ENDFOR $x$'''
         >>> print expand_template(s)
@@ -72,7 +81,7 @@ def expand_template(s):
             break
         
         new_body = ''
-        for value in [v.strip() for v in m.group('values').split(',')]:
+        for value in [v.strip() for v in m.group('values').split(',') if v.strip()]:
             new_body += m.group('body').replace(m.group('variable'), value)
     
         s = s[:m.start()] + new_body + s[m.end():]

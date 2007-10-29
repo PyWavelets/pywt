@@ -8,10 +8,6 @@
 #ifndef _WT_H_
 #define _WT_H_
 
-#ifdef MSVC
-	#pragma inline_depth(2)
-#endif
-
 #include <memory.h>
 #include <math.h>
 

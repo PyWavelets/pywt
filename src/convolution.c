@@ -4,10 +4,8 @@
 // $Id: convolution.c.template 81 2007-09-11 23:21:36Z filipw $
 
 #include "convolution.h"
-
-
 int double_downsampling_convolution_periodization(const double* input, const_index_t N,
-                             const FILTER_TYPE* filter, const_index_t F,
+                             const double* filter, const_index_t F,
                              double* output, const_index_t step)
 
 {
@@ -73,7 +71,7 @@ int double_downsampling_convolution_periodization(const double* input, const_ind
 
 
 int double_downsampling_convolution(const double* input, const_index_t N,
-                             const FILTER_TYPE* filter, const_index_t F,
+                             const double* filter, const_index_t F,
                              double* output,
                              const_index_t step, MODE mode)
 {
@@ -345,7 +343,7 @@ int double_downsampling_convolution(const double* input, const_index_t N,
 //
 
 int double_allocating_downsampling_convolution(const double* input, const_index_t N,
-                                        const FILTER_TYPE* filter, const_index_t F,
+                                        const double* filter, const_index_t F,
                                         double* output,
                                         const_index_t step, MODE mode)
 {
@@ -493,7 +491,7 @@ int double_allocating_downsampling_convolution(const double* input, const_index_
 // performs "normal" convolution of "upsampled" input coeffs array with filter
 
 int double_upsampling_convolution_full(const double* input, const_index_t N,
-                                const FILTER_TYPE* filter, const_index_t F,
+                                const double* filter, const_index_t F,
                                 double* output, const_index_t O){
     register index_t i;
     register index_t j;
@@ -528,12 +526,12 @@ int double_upsampling_convolution_full(const double* input, const_index_t N,
 // The input data has to be periodically extended for this mode.
 
 int double_upsampling_convolution_valid_sf_periodization(const double* input, const_index_t N,
-                                    const FILTER_TYPE* filter, const_index_t F,
+                                    const double* filter, const_index_t F,
                                     double* output, const_index_t O)
 {
     
     double *ptr_out = output;
-    FILTER_TYPE *filter_even, *filter_odd;
+    double *filter_even, *filter_odd;
     double *periodization_buf = NULL;
     double *periodization_buf_rear = NULL;
     double *ptr_base;
@@ -623,8 +621,8 @@ int double_upsampling_convolution_valid_sf_periodization(const double* input, co
     // Otherwise (N >= F_2)
 
         // Allocate memory for even and odd elements of the filter
-        filter_even = wtmalloc(F_2 * sizeof(FILTER_TYPE));
-        filter_odd = wtmalloc(F_2 * sizeof(FILTER_TYPE));
+        filter_even = wtmalloc(F_2 * sizeof(double));
+        filter_odd = wtmalloc(F_2 * sizeof(double));
 
         if(filter_odd == NULL || filter_odd == NULL){
             if(filter_odd == NULL) wtfree(filter_odd);
@@ -774,12 +772,12 @@ int double_upsampling_convolution_valid_sf_periodization(const double* input, co
 // looks much clearer now.
 
 int double_upsampling_convolution_valid_sf(const double* input, const_index_t N,
-                                    const FILTER_TYPE* filter, const_index_t F,
+                                    const double* filter, const_index_t F,
                                     double* output, const_index_t O,
                                     MODE mode){
     
     double *ptr_out = output;
-    FILTER_TYPE *filter_even, *filter_odd;
+    double *filter_even, *filter_odd;
     double *ptr_base;
     double sum_even, sum_odd;
     #ifdef OPT_UNROLL2
@@ -803,8 +801,8 @@ int double_upsampling_convolution_valid_sf(const double* input, const_index_t N,
         return -1; 
 
     // Allocate memory for even and odd elements of the filter
-    filter_even = wtmalloc(F_2 * sizeof(FILTER_TYPE));
-    filter_odd = wtmalloc(F_2 * sizeof(FILTER_TYPE));
+    filter_even = wtmalloc(F_2 * sizeof(double));
+    filter_odd = wtmalloc(F_2 * sizeof(double));
 
     if(filter_odd == NULL || filter_odd == NULL){
         if(filter_odd == NULL) wtfree(filter_odd);
@@ -909,14 +907,12 @@ int double_upsampling_convolution_valid_sf(const double* input, const_index_t N,
 }
 
 // -> swt - todo
-int double_upsampled_filter_convolution(const double* input, const_index_t N, const FILTER_TYPE* filter, const_index_t F, double* output, const_index_t step, MODE mode)
+int double_upsampled_filter_convolution(const double* input, const_index_t N, const double* filter, const_index_t F, double* output, const_index_t step, MODE mode)
 {
     return -1;
 }
-
-
 int float_downsampling_convolution_periodization(const float* input, const_index_t N,
-                             const FILTER_TYPE* filter, const_index_t F,
+                             const float* filter, const_index_t F,
                              float* output, const_index_t step)
 
 {
@@ -982,7 +978,7 @@ int float_downsampling_convolution_periodization(const float* input, const_index
 
 
 int float_downsampling_convolution(const float* input, const_index_t N,
-                             const FILTER_TYPE* filter, const_index_t F,
+                             const float* filter, const_index_t F,
                              float* output,
                              const_index_t step, MODE mode)
 {
@@ -1254,7 +1250,7 @@ int float_downsampling_convolution(const float* input, const_index_t N,
 //
 
 int float_allocating_downsampling_convolution(const float* input, const_index_t N,
-                                        const FILTER_TYPE* filter, const_index_t F,
+                                        const float* filter, const_index_t F,
                                         float* output,
                                         const_index_t step, MODE mode)
 {
@@ -1402,7 +1398,7 @@ int float_allocating_downsampling_convolution(const float* input, const_index_t 
 // performs "normal" convolution of "upsampled" input coeffs array with filter
 
 int float_upsampling_convolution_full(const float* input, const_index_t N,
-                                const FILTER_TYPE* filter, const_index_t F,
+                                const float* filter, const_index_t F,
                                 float* output, const_index_t O){
     register index_t i;
     register index_t j;
@@ -1437,12 +1433,12 @@ int float_upsampling_convolution_full(const float* input, const_index_t N,
 // The input data has to be periodically extended for this mode.
 
 int float_upsampling_convolution_valid_sf_periodization(const float* input, const_index_t N,
-                                    const FILTER_TYPE* filter, const_index_t F,
+                                    const float* filter, const_index_t F,
                                     float* output, const_index_t O)
 {
     
     float *ptr_out = output;
-    FILTER_TYPE *filter_even, *filter_odd;
+    float *filter_even, *filter_odd;
     float *periodization_buf = NULL;
     float *periodization_buf_rear = NULL;
     float *ptr_base;
@@ -1532,8 +1528,8 @@ int float_upsampling_convolution_valid_sf_periodization(const float* input, cons
     // Otherwise (N >= F_2)
 
         // Allocate memory for even and odd elements of the filter
-        filter_even = wtmalloc(F_2 * sizeof(FILTER_TYPE));
-        filter_odd = wtmalloc(F_2 * sizeof(FILTER_TYPE));
+        filter_even = wtmalloc(F_2 * sizeof(float));
+        filter_odd = wtmalloc(F_2 * sizeof(float));
 
         if(filter_odd == NULL || filter_odd == NULL){
             if(filter_odd == NULL) wtfree(filter_odd);
@@ -1683,12 +1679,12 @@ int float_upsampling_convolution_valid_sf_periodization(const float* input, cons
 // looks much clearer now.
 
 int float_upsampling_convolution_valid_sf(const float* input, const_index_t N,
-                                    const FILTER_TYPE* filter, const_index_t F,
+                                    const float* filter, const_index_t F,
                                     float* output, const_index_t O,
                                     MODE mode){
     
     float *ptr_out = output;
-    FILTER_TYPE *filter_even, *filter_odd;
+    float *filter_even, *filter_odd;
     float *ptr_base;
     float sum_even, sum_odd;
     #ifdef OPT_UNROLL2
@@ -1712,8 +1708,8 @@ int float_upsampling_convolution_valid_sf(const float* input, const_index_t N,
         return -1; 
 
     // Allocate memory for even and odd elements of the filter
-    filter_even = wtmalloc(F_2 * sizeof(FILTER_TYPE));
-    filter_odd = wtmalloc(F_2 * sizeof(FILTER_TYPE));
+    filter_even = wtmalloc(F_2 * sizeof(float));
+    filter_odd = wtmalloc(F_2 * sizeof(float));
 
     if(filter_odd == NULL || filter_odd == NULL){
         if(filter_odd == NULL) wtfree(filter_odd);
@@ -1818,8 +1814,7 @@ int float_upsampling_convolution_valid_sf(const float* input, const_index_t N,
 }
 
 // -> swt - todo
-int float_upsampled_filter_convolution(const float* input, const_index_t N, const FILTER_TYPE* filter, const_index_t F, float* output, const_index_t step, MODE mode)
+int float_upsampled_filter_convolution(const float* input, const_index_t N, const float* filter, const_index_t F, float* output, const_index_t step, MODE mode)
 {
     return -1;
 }
-

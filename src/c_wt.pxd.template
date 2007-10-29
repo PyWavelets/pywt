@@ -7,7 +7,6 @@ cdef extern from "common.h":
 
     ctypedef int index_t
     ctypedef int const_index_t
-    ctypedef float FILTER_TYPE
 
     cdef void* wtmalloc(long size)
     cdef void* wtcalloc(long len, long size)
@@ -45,11 +44,13 @@ cdef extern from "wavelets.h":
         SYMMETRIC
 
     ctypedef struct Wavelet:
-        FILTER_TYPE* dec_hi      # highpass decomposition
-        FILTER_TYPE* dec_lo      # lowpass   decomposition
-        FILTER_TYPE* rec_hi      # highpass reconstruction
-        FILTER_TYPE* rec_lo      # lowpass   reconstruction
-                
+        //## FOR $DTYPE$ IN (double, float):
+        $DTYPE$* dec_hi_$DTYPE$      # highpass decomposition
+        $DTYPE$* dec_lo_$DTYPE$      # lowpass   decomposition
+        $DTYPE$* rec_hi_$DTYPE$      # highpass reconstruction
+        $DTYPE$* rec_lo_$DTYPE$      # lowpass   reconstruction
+        //## ENDFOR $DTYPE$
+        
         index_t dec_len         # length of decomposition filter
         index_t rec_len         # length of reconstruction filter
 

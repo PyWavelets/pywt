@@ -7,7 +7,6 @@ cdef extern from "common.h":
 
     ctypedef int index_t
     ctypedef int const_index_t
-    ctypedef float FILTER_TYPE
 
     cdef void* wtmalloc(long size)
     cdef void* wtcalloc(long len, long size)
@@ -45,11 +44,15 @@ cdef extern from "wavelets.h":
         SYMMETRIC
 
     ctypedef struct Wavelet:
-        FILTER_TYPE* dec_hi      # highpass decomposition
-        FILTER_TYPE* dec_lo      # lowpass   decomposition
-        FILTER_TYPE* rec_hi      # highpass reconstruction
-        FILTER_TYPE* rec_lo      # lowpass   reconstruction
-                
+        double* dec_hi_double      # highpass decomposition
+        double* dec_lo_double      # lowpass   decomposition
+        double* rec_hi_double      # highpass reconstruction
+        double* rec_lo_double      # lowpass   reconstruction
+        float* dec_hi_float      # highpass decomposition
+        float* dec_lo_float      # lowpass   decomposition
+        float* rec_hi_float      # highpass reconstruction
+        float* rec_lo_float      # lowpass   reconstruction
+        
         index_t dec_len         # length of decomposition filter
         index_t rec_len         # length of reconstruction filter
 
@@ -81,8 +84,6 @@ cdef extern from "wavelets.h":
 
 
 cdef extern from "wt.h":
-
-
     cdef int double_dec_a(double input[], index_t input_len, Wavelet* wavelet, double output[], index_t output_len, MODE mode)
     cdef int double_dec_d(double input[], index_t input_len, Wavelet* wavelet, double output[], index_t output_len, MODE mode)
 
@@ -94,8 +95,6 @@ cdef extern from "wt.h":
 
     cdef int double_swt_a(double input[], index_t input_len, Wavelet* wavelet, double output[], index_t output_len, int level)
     cdef int double_swt_d(double input[], index_t input_len, Wavelet* wavelet, double output[], index_t output_len, int level)
-
-
     cdef int float_dec_a(float input[], index_t input_len, Wavelet* wavelet, float output[], index_t output_len, MODE mode)
     cdef int float_dec_d(float input[], index_t input_len, Wavelet* wavelet, float output[], index_t output_len, MODE mode)
 
@@ -107,5 +106,4 @@ cdef extern from "wt.h":
 
     cdef int float_swt_a(float input[], index_t input_len, Wavelet* wavelet, float output[], index_t output_len, int level)
     cdef int float_swt_d(float input[], index_t input_len, Wavelet* wavelet, float output[], index_t output_len, int level)
-
 

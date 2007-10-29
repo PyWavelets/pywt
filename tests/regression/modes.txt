@@ -52,7 +52,7 @@ Invalid mode name should rise an error:
     >>> pywt.dwt([1,2,3,4], 'db2', 'invalid')
     Traceback (most recent call last):
     ...
-    ValueError: Unknown mode name.
+    ValueError: Unknown mode name 'invalid'.
 
 
 You can also refer to modes via MODES class attributes:

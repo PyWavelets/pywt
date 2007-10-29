@@ -8,10 +8,6 @@
 #ifndef _WT_H_
 #define _WT_H_
 
-#ifdef MSVC
-	#pragma inline_depth(2)
-#endif
-
 #include <memory.h>
 #include <math.h>
 
@@ -22,8 +18,6 @@
 
 // _a suffix - wavelet transform aproximations
 // _d suffix - wavelet transform details
-
-
 // Single level decomposition
 int double_dec_a(double input[], index_t input_len,
                   Wavelet* wavelet,
@@ -61,8 +55,6 @@ int double_swt_d(double input[], index_t input_len,
                   Wavelet* wavelet,
                   double output[], index_t output_len,
                   int level);
-
-
 // Single level decomposition
 int float_dec_a(float input[], index_t input_len,
                   Wavelet* wavelet,
@@ -100,6 +92,5 @@ int float_swt_d(float input[], index_t input_len,
                   Wavelet* wavelet,
                   float output[], index_t output_len,
                   int level);
-
 
 #endif

@@ -6,8 +6,6 @@
 #include "wt.h"
 
 // Decomposition of input with lowpass filter
-
-
 int double_dec_a(double input[], index_t input_len,
                   Wavelet* wavelet,
                   double output[], index_t output_len,
@@ -18,7 +16,7 @@ int double_dec_a(double input[], index_t input_len,
         return -1;
     }
 
-    return double_downsampling_convolution(input, input_len, wavelet->dec_lo,
+    return double_downsampling_convolution(input, input_len, wavelet->dec_lo_double,
                                              wavelet->dec_len, output, 2, mode);
 }
 
@@ -34,7 +32,7 @@ int double_dec_d(double input[], index_t input_len,
     if(output_len != dwt_buffer_length(input_len, wavelet->dec_len, mode))
         return -1;
 
-    return double_downsampling_convolution(input, input_len, wavelet->dec_hi,
+    return double_downsampling_convolution(input, input_len, wavelet->dec_hi_double,
                                              wavelet->dec_len, output, 2, mode);
 }
 
@@ -49,7 +47,7 @@ int double_rec_a(double coeffs_a[], index_t coeffs_len,
     if(output_len != reconstruction_buffer_length(coeffs_len, wavelet->rec_len))
         return -1;
     
-    return double_upsampling_convolution_full(coeffs_a, coeffs_len, wavelet->rec_lo,
+    return double_upsampling_convolution_full(coeffs_a, coeffs_len, wavelet->rec_lo_double,
                                                 wavelet->rec_len, output, output_len);
 }
 
@@ -64,7 +62,7 @@ int double_rec_d(double coeffs_d[], index_t coeffs_len,
     if(output_len != reconstruction_buffer_length(coeffs_len, wavelet->rec_len))
         return -1;
     
-    return double_upsampling_convolution_full(coeffs_d, coeffs_len, wavelet->rec_hi,
+    return double_upsampling_convolution_full(coeffs_d, coeffs_len, wavelet->rec_hi_double,
                                                 wavelet->rec_len, output, output_len);
 }
 
@@ -121,14 +119,14 @@ int double_idwt(double coeffs_a[], index_t coeffs_a_len,
 
     // reconstruct approximation coeffs with lowpass reconstruction filter
     if(coeffs_a){
-        if(double_upsampling_convolution_valid_sf(coeffs_a, input_len, wavelet->rec_lo,
+        if(double_upsampling_convolution_valid_sf(coeffs_a, input_len, wavelet->rec_lo_double,
                                 wavelet->rec_len, output, output_len, mode) < 0){
             goto error;
         }
     }
     // and add reconstruction of details coeffs performed with highpass reconstruction filter
     if(coeffs_d){
-        if(double_upsampling_convolution_valid_sf(coeffs_d, input_len, wavelet->rec_hi,
+        if(double_upsampling_convolution_valid_sf(coeffs_d, input_len, wavelet->rec_hi_double,
                                 wavelet->rec_len, output, output_len, mode) < 0){
             goto error;
         }
@@ -142,12 +140,12 @@ int double_idwt(double coeffs_a[], index_t coeffs_a_len,
 
 // basic SWT step
 // TODO: optimize
-__inline int double_swt_(double input[], index_t input_len,
-                          const FILTER_TYPE filter[], index_t filter_len,
+INLINE int double_swt_(double input[], index_t input_len,
+                          const double filter[], index_t filter_len,
                           double output[], index_t output_len,
                           int level){
 
-    FILTER_TYPE* e_filter;
+    double* e_filter;
     index_t i, e_filter_len;
 
     if(level < 1)
@@ -163,7 +161,7 @@ __inline int double_swt_(double input[], index_t input_len,
     if(level > 1){
         // allocate filter first
         e_filter_len = filter_len << (level-1);
-        e_filter = wtcalloc(e_filter_len, sizeof(FILTER_TYPE));
+        e_filter = wtcalloc(e_filter_len, sizeof(double));
         if(e_filter == NULL)
             return -1;
 
@@ -183,16 +181,14 @@ __inline int double_swt_(double input[], index_t input_len,
 // Approximation at specified level
 // input    - approximation coeffs from upper level or signal if level == 1
 int double_swt_a(double input[], index_t input_len, Wavelet* wavelet, double output[], index_t output_len, int level){
-    return double_swt_(input, input_len, wavelet->dec_lo, wavelet->dec_len, output, output_len, level);
+    return double_swt_(input, input_len, wavelet->dec_lo_double, wavelet->dec_len, output, output_len, level);
 }
 
 // Details at specified level
 // input    - approximation coeffs from upper level or signal if level == 1
 int double_swt_d(double input[], index_t input_len, Wavelet* wavelet, double output[], index_t output_len, int level){
-    return double_swt_(input, input_len, wavelet->dec_hi, wavelet->dec_len, output, output_len, level);
+    return double_swt_(input, input_len, wavelet->dec_hi_double, wavelet->dec_len, output, output_len, level);
 }
-
-
 int float_dec_a(float input[], index_t input_len,
                   Wavelet* wavelet,
                   float output[], index_t output_len,
@@ -203,7 +199,7 @@ int float_dec_a(float input[], index_t input_len,
         return -1;
     }
 
-    return float_downsampling_convolution(input, input_len, wavelet->dec_lo,
+    return float_downsampling_convolution(input, input_len, wavelet->dec_lo_float,
                                              wavelet->dec_len, output, 2, mode);
 }
 
@@ -219,7 +215,7 @@ int float_dec_d(float input[], index_t input_len,
     if(output_len != dwt_buffer_length(input_len, wavelet->dec_len, mode))
         return -1;
 
-    return float_downsampling_convolution(input, input_len, wavelet->dec_hi,
+    return float_downsampling_convolution(input, input_len, wavelet->dec_hi_float,
                                              wavelet->dec_len, output, 2, mode);
 }
 
@@ -234,7 +230,7 @@ int float_rec_a(float coeffs_a[], index_t coeffs_len,
     if(output_len != reconstruction_buffer_length(coeffs_len, wavelet->rec_len))
         return -1;
     
-    return float_upsampling_convolution_full(coeffs_a, coeffs_len, wavelet->rec_lo,
+    return float_upsampling_convolution_full(coeffs_a, coeffs_len, wavelet->rec_lo_float,
                                                 wavelet->rec_len, output, output_len);
 }
 
@@ -249,7 +245,7 @@ int float_rec_d(float coeffs_d[], index_t coeffs_len,
     if(output_len != reconstruction_buffer_length(coeffs_len, wavelet->rec_len))
         return -1;
     
-    return float_upsampling_convolution_full(coeffs_d, coeffs_len, wavelet->rec_hi,
+    return float_upsampling_convolution_full(coeffs_d, coeffs_len, wavelet->rec_hi_float,
                                                 wavelet->rec_len, output, output_len);
 }
 
@@ -306,14 +302,14 @@ int float_idwt(float coeffs_a[], index_t coeffs_a_len,
 
     // reconstruct approximation coeffs with lowpass reconstruction filter
     if(coeffs_a){
-        if(float_upsampling_convolution_valid_sf(coeffs_a, input_len, wavelet->rec_lo,
+        if(float_upsampling_convolution_valid_sf(coeffs_a, input_len, wavelet->rec_lo_float,
                                 wavelet->rec_len, output, output_len, mode) < 0){
             goto error;
         }
     }
     // and add reconstruction of details coeffs performed with highpass reconstruction filter
     if(coeffs_d){
-        if(float_upsampling_convolution_valid_sf(coeffs_d, input_len, wavelet->rec_hi,
+        if(float_upsampling_convolution_valid_sf(coeffs_d, input_len, wavelet->rec_hi_float,
                                 wavelet->rec_len, output, output_len, mode) < 0){
             goto error;
         }
@@ -327,12 +323,12 @@ int float_idwt(float coeffs_a[], index_t coeffs_a_len,
 
 // basic SWT step
 // TODO: optimize
-__inline int float_swt_(float input[], index_t input_len,
-                          const FILTER_TYPE filter[], index_t filter_len,
+INLINE int float_swt_(float input[], index_t input_len,
+                          const float filter[], index_t filter_len,
                           float output[], index_t output_len,
                           int level){
 
-    FILTER_TYPE* e_filter;
+    float* e_filter;
     index_t i, e_filter_len;
 
     if(level < 1)
@@ -348,7 +344,7 @@ __inline int float_swt_(float input[], index_t input_len,
     if(level > 1){
         // allocate filter first
         e_filter_len = filter_len << (level-1);
-        e_filter = wtcalloc(e_filter_len, sizeof(FILTER_TYPE));
+        e_filter = wtcalloc(e_filter_len, sizeof(float));
         if(e_filter == NULL)
             return -1;
 
@@ -368,12 +364,11 @@ __inline int float_swt_(float input[], index_t input_len,
 // Approximation at specified level
 // input    - approximation coeffs from upper level or signal if level == 1
 int float_swt_a(float input[], index_t input_len, Wavelet* wavelet, float output[], index_t output_len, int level){
-    return float_swt_(input, input_len, wavelet->dec_lo, wavelet->dec_len, output, output_len, level);
+    return float_swt_(input, input_len, wavelet->dec_lo_float, wavelet->dec_len, output, output_len, level);
 }
 
 // Details at specified level
 // input    - approximation coeffs from upper level or signal if level == 1
 int float_swt_d(float input[], index_t input_len, Wavelet* wavelet, float output[], index_t output_len, int level){
-    return float_swt_(input, input_len, wavelet->dec_hi, wavelet->dec_len, output, output_len, level);
+    return float_swt_(input, input_len, wavelet->dec_hi_float, wavelet->dec_len, output, output_len, level);
 }
-

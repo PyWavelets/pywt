@@ -50,7 +50,7 @@ cdef int array_object_as_float_buffer(object source, Buffer* buffer, char rwmode
                 return -1
             data_len = c_array_interface.PyArrayInterface_SHAPE(array_struct, 0)
             if data_len < 1:
-                raise ValueError("Invalid data size %s" % data_len)
+                raise ValueError("invalid data size - %s." % data_len)
                 return -1
             buffer.len = data_len
 
@@ -59,10 +59,10 @@ cdef int array_object_as_float_buffer(object source, Buffer* buffer, char rwmode
             elif rwmode == c'r':
                 data = c_array_interface.PyArrayInterface_DATA_AS_FLOAT_C_ARRAY_RO(array_struct)
             else:
-                raise ValueError("rwmode value not in (c'r', c'w')")
+                raise ValueError("rwmode value not in (c'r', c'w').")
                 return -1
             
-            if data == NULL:
+            if data is NULL:
                 return -2 # not C contiguous array or data type is not double or float, fail silently
 
             buffer.data = data
@@ -74,33 +74,52 @@ cdef int array_object_as_float_buffer(object source, Buffer* buffer, char rwmode
     return -2 # no __array_struct__ attr, fail silently
 
 cdef object array_as_buffer(object input, Buffer* buffer, char mode):
-    cdef alt_input
+    cdef object alt_input
     if array_object_as_float_buffer(input, buffer, mode) < 0:
         # try to convert the input
         alt_input = contiguous_float64_array_from_any(input)
         if array_object_as_float_buffer(alt_input, buffer, mode) < 0:
-            raise TypeError("Invalid data type, 1D array or list object required.")
+            raise TypeError("Invalid data type. 1D array or list object required.")
         return alt_input # return reference to the new object. This reference must
                          # be kept until processing is finished!
     return input
 
-cdef object float_array_to_list(FILTER_TYPE* data, index_t n):
+cdef object float64_array_to_list(double* data, index_t n):
     cdef index_t i
     cdef object app
+    cdef object ret
     ret = []
     app = ret.append
     for i from 0 <= i < n:
         app(data[i])
     return ret
 
-cdef int copy_object_to_float_array(source, FILTER_TYPE* dest) except -1:
+
+#cdef int copy_object_to_float32_array(source, float* dest) except -1:
+    #cdef index_t i
+    #cdef index_t n
+    #try:
+        #n = len(source)
+        #for i from 0 <= i < n:
+            #dest[i] = source[i]
+    #except Exception, e:
+        #raise
+        #return -1
+    #return 0
+
+
+cdef void copy_object_to_float64_array(source, double* dest) except *:
     cdef index_t i
-    cdef index_t n
-    try:
-        n = len(source)
-        for i from 0 <= i < n:
-            dest[i] = source[i]
-    except Exception, e:
-        raise
-        return -1
-    return 0
+    cdef double x
+    i = 0
+    for x in source:
+        dest[i] = x
+        i = i + 1
+
+cdef void copy_object_to_float32_array(source, float* dest) except *:
+    cdef index_t i
+    cdef float x
+    i = 0
+    for x in source:
+        dest[i] = x
+        i = i + 1

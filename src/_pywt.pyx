@@ -3,6 +3,8 @@
 
 __id__ = "$Id$"
 __doc__ = """Pyrex wrapper for low-level C wavelet transform implementation."""
+__all__ = ['MODES', 'Wavelet', 'dwt', 'dwt_coeff_len', 'dwt_max_level',
+           'idwt', 'swt', 'swt_max_level', 'upcoef', 'downcoef']
 
 ###############################################################################
 # imports
@@ -14,18 +16,15 @@ cimport c_math
 
 ctypedef Py_ssize_t index_t
 
-cdef extern from "common.h":
-    ctypedef float FILTER_TYPE
-
+cdef object wavelist
 from wnames import wavelist
 
 ###############################################################################
 # array handling stuff here
-cdef contiguous_float64_array_from_any, float32_memory_buffer_object, float64_memory_buffer_object
+cdef object contiguous_float64_array_from_any, float32_memory_buffer_object, float64_memory_buffer_object
+from numerix import contiguous_float64_array_from_any, float32_memory_buffer_object, float64_memory_buffer_object
 
-from numerix import contiguous_float64_array_from_any
-from numerix import float32_memory_buffer_object
-from numerix import float64_memory_buffer_object
+cdef object concatenate, zeros, linspace, keep
 from numerix import concatenate, zeros, linspace, keep
 
 include "arraytools.pxi"
@@ -44,13 +43,13 @@ cdef c_wt.MODE c_mode_from_object(mode) except c_wt.MODE_INVALID:
             return c_wt.MODE_INVALID
     else:
         co = c_python.PyObject_GetAttrString(MODES, mode)
-        if co != NULL:
+        if co is not NULL:
             o = <object>co
             c_python.Py_DECREF(o) # decref above extra ref inc
             m = <object>co
         else:
             c_python.PyErr_Clear()
-            raise ValueError("Unknown mode name.")
+            raise ValueError("Unknown mode name '%s'." % mode)
             return c_wt.MODE_INVALID
     return m
 
@@ -174,7 +173,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
             c, nr = wname_to_code(name)
             self.w = <c_wt.Wavelet*> c_wt.wavelet(c, nr)
 
-            if self.w == NULL:
+            if self.w is NULL:
                 raise ValueError("Invalid wavelet name.")
 
             self.name = name.lower()
@@ -203,19 +202,24 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
                 raise ValueError("Filter bank can not be zero-length.")
 
             self.w = <c_wt.Wavelet*> c_wt.blank_wavelet(max_length)
-            if self.w == NULL:
+            if self.w is NULL:
                 raise MemoryError("Could not allocate memory for given filter bank.")
 
             # copy values to struct
-            copy_object_to_float_array(dec_lo, self.w.dec_lo)
-            copy_object_to_float_array(dec_hi, self.w.dec_hi)
-            copy_object_to_float_array(rec_lo, self.w.rec_lo)
-            copy_object_to_float_array(rec_hi, self.w.rec_hi)
+            copy_object_to_float32_array(dec_lo, self.w.dec_lo_float)
+            copy_object_to_float32_array(dec_hi, self.w.dec_lo_float)
+            copy_object_to_float32_array(rec_lo, self.w.dec_lo_float)
+            copy_object_to_float32_array(rec_hi, self.w.dec_lo_float)
+
+            copy_object_to_float64_array(dec_lo, self.w.dec_lo_double)
+            copy_object_to_float64_array(dec_hi, self.w.dec_lo_double)
+            copy_object_to_float64_array(rec_lo, self.w.dec_lo_double)
+            copy_object_to_float64_array(rec_hi, self.w.dec_lo_double)
             
             self.name = name
 
     def __dealloc__(self):
-        if self.w != NULL:
+        if self.w is not NULL:
             c_wt.free_wavelet(self.w) # if w._builtin is 0, it frees also the filter arrays
             self.w = NULL
 
@@ -225,22 +229,22 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
     property dec_lo:
         "Lowpass decomposition filter"
         def __get__(self):
-            return float_array_to_list(self.w.dec_lo, self.w.dec_len)
+            return float64_array_to_list(self.w.dec_lo_double, self.w.dec_len)
 
     property dec_hi:
         "Highpass decomposition filter"
         def __get__(self):
-            return float_array_to_list(self.w.dec_hi, self.w.dec_len)
+            return float64_array_to_list(self.w.dec_hi_double, self.w.dec_len)
 
     property rec_lo:
         "Lowpass reconstruction filter"
         def __get__(self):
-            return float_array_to_list(self.w.rec_lo, self.w.rec_len)
+            return float64_array_to_list(self.w.rec_lo_double, self.w.rec_len)
 
     property rec_hi:
         "Highpass reconstruction filter"
         def __get__(self):
-            return float_array_to_list(self.w.rec_hi, self.w.rec_len)
+            return float64_array_to_list(self.w.rec_hi_double, self.w.rec_len)
 
     property rec_len:
         "Reconstruction filters length"
@@ -457,7 +461,7 @@ def dwt(object data, object wavelet, object mode='sym'):
 
     Returns approximation (cA) and detail (cD) coefficients.
 
-    Length of coefficient arrays depends on the selected mode:
+    Length of coefficients arrays depends on the selected mode:
 
         for all modes except periodization:
             len(cA) == len(cD) == floor((len(data) + wavelet.dec_len - 1) / 2)
@@ -476,8 +480,10 @@ def dwt(object data, object wavelet, object mode='sym'):
     mode_ = c_mode_from_object(mode)
     
     # input as C array
-    data = array_as_buffer(data, &input, c'r')
-    #assert input.len > 0
+    try:
+        data = array_as_buffer(data, &input, c'r')
+    except Exception, e:
+        raise ValueError("Invalid input data - %s" % e)
     
     output_len = c_wt.dwt_buffer_length(input.len, w.dec_len, mode_)
     if output_len < 1:
@@ -533,7 +539,7 @@ def dwt_coeff_len(data_len, filter_len, mode):
 
 def idwt(object cA, object cD, object wavelet, object mode = 'sym', int correct_size = 0):
     """
-    A = idwt(cA, cD, wavelet, mode='sym', correct_size=0)
+    rec = idwt(cA, cD, wavelet, mode='sym', correct_size=0)
 
     Single level Inverse Discrete Wavelet Transform
 
@@ -569,22 +575,26 @@ def idwt(object cA, object cD, object wavelet, object mode = 'sym', int correct_
         
     # get data pointer and size
     if cA is not None:
-        cA = array_as_buffer(cA, &input_a, c'r')
-        assert input_a.len > 0, "Length of cA must be greater than zero."
+        try:
+            cA = array_as_buffer(cA, &input_a, c'r')
+        except Exception, e:
+            raise ValueError("Invalid cA input data - %s" % e)
     else:
         input_a.data = NULL
         input_a.len = 0
         input_a.dtype = <DTYPE>0
 
     if cD is not None:
-        cD = array_as_buffer(cD, &input_d, c'r')
-        assert input_d.len > 0, "Length of cA must be greater than zero."
+        try:
+            cD = array_as_buffer(cD, &input_d, c'r')
+        except Exception, e:
+            raise ValueError("Invalid cD input data - %s" % e)
     else:
         input_d.data = NULL
         input_d.len = 0
         input_d.dtype = <DTYPE>0
         
-    if input_a.data != NULL and input_d.data != NULL:
+    if input_a.data is not NULL and input_d.data is not NULL:
         if input_a.dtype != input_d.dtype:
             # need to upcast to common type
             if input_a.dtype == FLOAT32:
@@ -593,8 +603,8 @@ def idwt(object cA, object cD, object wavelet, object mode = 'sym', int correct_
                 cD = array_as_buffer(contiguous_float64_array_from_any(cD), &input_d, c'r')
 
     # check for sizes difference
-    if input_a.data != NULL:
-        if input_d.data != NULL:
+    if input_a.data is not NULL:
+        if input_d.data is not NULL:
             size_diff = input_a.len - input_d.len
             if size_diff:
                 if correct_size:
@@ -616,7 +626,7 @@ def idwt(object cA, object cD, object wavelet, object mode = 'sym', int correct_
         raise ValueError("Invalid coefficient arrays length for specified wavelet. Wavelet and mode must be the same as used for decomposition.")
 
     # allocate buffer
-    rec = memory_buffer_object(rec_len, <DTYPE>(input_a.dtype | input_d.dtype))
+    rec = memory_buffer_object(rec_len, <DTYPE>(input_a.dtype | input_d.dtype)) # TODO: check
     rec = array_as_buffer(rec, &output, c'w')
 
     assert output.dtype == FLOAT64 or output.dtype == FLOAT32
@@ -632,10 +642,10 @@ def idwt(object cA, object cD, object wavelet, object mode = 'sym', int correct_
     return rec
 
 ###############################################################################
-# upcoef
-
+# upcoef & downcoef
+    
 def upcoef(part, coeffs, wavelet, int level=1, take=0):
-    """upcoef(part, coeffs, wavelet, level=1, take=0)
+    """rec = upcoef(part, coeffs, wavelet, level=1, take=0)
     
     Direct reconstruction from cefficients.
 
@@ -653,12 +663,13 @@ def upcoef(part, coeffs, wavelet, int level=1, take=0):
     cdef Wavelet w
     
     cdef object data, rec
-    cdef int i, rec_a
-    cdef index_t left_bound, right_bound
+    cdef int i, do_rec_a
+    cdef index_t rec_len, left_bound, right_bound
+    rec_len = 0
 
     if part not in ('a', 'd'):
         raise ValueError("Argument 1 must be 'a' or 'd', not '%s'." % part)
-    rec_a = (part == 'a')
+    do_rec_a = (part == 'a')
 
     w = c_wavelet_from_object(wavelet)
 
@@ -666,8 +677,10 @@ def upcoef(part, coeffs, wavelet, int level=1, take=0):
         raise ValueError("Value of level must be greater than 0.")
 
     # input as array
-    coeffs = array_as_buffer(coeffs, &input, c'r')
-    assert input.len > 0, "Invalid input length (len(coeffs) < 1)."
+    try:
+        coeffs = array_as_buffer(coeffs, &input, c'r')
+    except Exception, e:
+        raise ValueError("Invalid input coeffs data - %s" % e)
 
     for i from 0 <= i < level:
         # output len
@@ -681,7 +694,7 @@ def upcoef(part, coeffs, wavelet, int level=1, take=0):
         
         assert input.dtype == output.dtype
 
-        if rec_a:
+        if do_rec_a:
             if input.dtype == FLOAT64:
                 if c_wt.double_rec_a(<double*>input.data, input.len, w.w, <double*>output.data, output.len) < 0:
                     raise RuntimeError("C rec_a failed.")
@@ -709,6 +722,76 @@ def upcoef(part, coeffs, wavelet, int level=1, take=0):
 
             return rec[left_bound:-right_bound]
     return rec
+
+def downcoef(part, object data, object wavelet, object mode='sym', int level=1):
+    """coeffs = downcoef(part, data, wavelet, mode='sym', level=1)
+    
+    Partial Discrete Wavelet Transform data decomposition.
+
+    part    - decomposition type:
+      'a' - compute approximations coefficients
+      'd' - compute details coefficients
+    data    - input signal
+    wavelet - wavelet to use (Wavelet object or name)
+    mode    - signal extension mode, see MODES
+    level   - decomposition level
+    """
+
+    cdef Buffer input, output
+    cdef object coeffs
+    cdef int i, do_dec_a
+    cdef index_t dec_len
+    
+    cdef Wavelet w
+    cdef c_wt.MODE mode_
+    
+    w = c_wavelet_from_object(wavelet)
+    mode_ = c_mode_from_object(mode)
+
+    if part not in ('a', 'd'):
+        raise ValueError("Argument 1 must be 'a' or 'd', not '%s'." % part)
+    do_dec_a = (part == 'a')
+
+    # input as array
+    try:
+        data = array_as_buffer(data, &input, c'r')
+    except Exception, e:
+        raise ValueError("Invalid input data - %s" % e)
+
+    if level < 1:
+        raise ValueError("Value of level must be greater than 0.")
+    #elif level > c_wt.dwt_max_level(input.len, w.dec_len):
+    #    raise ValueError("Value of level is higher than the max dwt level for given input lenght and wavelet. Max level is %d." % c_wt.dwt_max_level(input.len, w.dec_len))
+
+
+    for i from 0 <= i < level:
+        # output len
+        output_len = c_wt.dwt_buffer_length(input.len, w.dec_len, mode_)
+        if output_len < 1:
+            raise RuntimeError("Invalid output length.")
+        coeffs = array_as_buffer(memory_buffer_object(output_len, input.dtype), &output, c'w')
+        assert input.dtype == output.dtype
+
+        if do_dec_a:
+            if input.dtype == FLOAT64:
+                if c_wt.double_dec_a(<double*>input.data, input.len, w.w, <double*>output.data, output.len, mode_) < 0:
+                    raise RuntimeError("C dec_a failed.")
+            else:
+                if c_wt.float_dec_a(<float*>input.data, input.len, w.w, <float*>output.data, output.len, mode_) < 0:
+                    raise RuntimeError("C dec_a failed.")
+        else:
+            if input.dtype == FLOAT64:
+                if c_wt.double_dec_d(<double*>input.data, input.len, w.w, <double*>output.data, output.len, mode_) < 0:
+                    raise RuntimeError("C dec_a failed.")
+            else:
+                if c_wt.float_dec_d(<float*>input.data, input.len, w.w, <float*>output.data, output.len, mode_) < 0:
+                    raise RuntimeError("C dec_a failed.")
+
+        data = coeffs # keep reference
+        input.len = output.len
+        input.data = output.data
+
+    return coeffs
 
 ###############################################################################
 # swt
@@ -741,17 +824,16 @@ def swt(object data, object wavelet, object level=None, int start_level=0):
     
     cdef int i, end_level, level_
     
-    # input
-    data = array_as_buffer(data, &input, c'r')
-    if input.len < 1:
-        raise ValueError("Invalid input data length.")
+    try:
+        data = array_as_buffer(data, &input, c'r')
+    except Exception, e:
+        raise ValueError("Invalid input data - %s" % e)
+
     if input.len % 2:
         raise ValueError("Length of data must be even.")
 
-    # wavelet
     w = c_wavelet_from_object(wavelet)
     
-    # level
     if level is None:
         level_ = c_wt.swt_max_level(input.len)
     else:
@@ -777,8 +859,7 @@ def swt(object data, object wavelet, object level=None, int start_level=0):
     ret = []
     for i from start_level < i <= end_level:
         # alloc memory, decompose D
-        cD = memory_buffer_object(output_len, input.dtype)
-        cD = array_as_buffer(cD, &output, c'w')
+        cD = array_as_buffer(memory_buffer_object(output_len, input.dtype), &output, c'w')
         
         if input.dtype == FLOAT64:
             if c_wt.double_swt_d(<double*>input.data, input.len, w.w, <double*>output.data, output.len, i) < 0:
@@ -788,8 +869,7 @@ def swt(object data, object wavelet, object level=None, int start_level=0):
                 raise RuntimeError("C swt failed.")
         
         # alloc memory, decompose A
-        cA = memory_buffer_object(output_len, input.dtype)
-        cA = array_as_buffer(cA, &output, c'w')
+        cA = array_as_buffer(memory_buffer_object(output_len, input.dtype), &output, c'w')
 
         if input.dtype == FLOAT64:
             if c_wt.double_swt_a(<double*>input.data, input.len, w.w, <double*>output.data, output.len, i) < 0:
@@ -804,8 +884,3 @@ def swt(object data, object wavelet, object level=None, int start_level=0):
         ret.append((cA, cD))
     ret.reverse()
     return ret
-
-###############################################################################
-
-__all__ = ['MODES', 'Wavelet', 'dwt', 'dwt_coeff_len', 'dwt_max_level',
-           'idwt', 'swt', 'swt_max_level', 'upcoef', ]
