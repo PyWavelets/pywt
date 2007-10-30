@@ -9,7 +9,33 @@
 """
 Wavelet Image Blender.
 
-Blend image A with texture from image B.
+Blend image A with texture extracted from image B by selecting
+detail coefficients:
+
+	-----------------     -----------------
+	|               |     |               |
+	|               |     |               |
+	|               |     |               |
+	|       A       |     |       B       |
+	|               |     |               |
+	|               |     |               |
+	|               |     |               |
+	-----------------     -----------------
+
+			|                     |
+		DWT |                 DWT |
+			V                     V
+
+	-----------------             ---------          -----------------
+	|       |       |             |       |          |               |
+	| A(LL) | H(LH) |             | H(LH) |          |               |
+	|       |       |             |       |   IDWT   |               |
+	-----------------  +  -----------------  ----->  |       C       |
+	|       |       |     |       |       |          |               |
+	| V(HL) | D(HH) |     | V(HL) | D(HH) |          |               |
+	|       |       |     |       |       |          |               |
+	-----------------     -----------------          -----------------
+							(details only)
 """
 
 import sys, optparse
@@ -24,7 +50,7 @@ def image2array(image):
     assert image.mode in ('L', 'RGB', 'CMYK')
     arr = numpy.fromstring(image.tostring(), numpy.uint8)
     arr.shape = (image.size[1], image.size[0], len(image.getbands()))
-    return arr.swapaxes(0,2).swapaxes(1,2)
+    return arr.swapaxes(0,2).swapaxes(1,2).astype(numpy.float32)
 
 def array2image(arr, mode):
     """NumPy array to PIL Image"""
@@ -148,5 +174,4 @@ def main():
 
 if __name__ == '__main__':
     main()
-    
-    
+
