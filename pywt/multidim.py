@@ -27,9 +27,27 @@ def dwt2(data, wavelet, mode='sym'):
     mode    - signal extension mode, see MODES
         
     Returns approximaion and three details 2D coefficients arrays.
-    The result has the following form:
+
+    The result form four 2D coefficients arrays organized in tuples:
     
-        (approximation, (horizontal det., vertical det., diagonal det.))
+        (approximation,
+                (horizontal details,
+                vertical details,
+                diagonal details)
+        )
+    
+    which sometimes is also interpreted as layed out in one 2D array
+    of coefficients, where:
+
+                                -----------------
+                                |       |       |
+                                | A(LL) | H(LH) |
+                                |       |       |
+        (A, (H, V, D))  <--->   -----------------
+                                |       |       |
+                                | V(HL) | D(HH) |
+                                |       |       |
+                                -----------------
     """
     
     data = as_float_array(data)
@@ -81,9 +99,13 @@ def idwt2(coeffs, wavelet, mode='sym'):
     2D Inverse Discrete Wavelet Transform. Reconstruct data from coefficients
     arrays.
     
-    coeffs  - 2D coefficients arrays arranged in tuples:
+    coeffs  - four 2D coefficients arrays arranged as follows:
     
-        (approximation, (horizontal det., vertical det., diagonal det.))
+        (approximation,
+                (horizontal details,
+                vertical details,
+                diagonal details)
+        )
 
     wavelet - wavelet to use (Wavelet object or name string)
     mode    - signal extension mode, see MODES
@@ -140,12 +162,21 @@ def swt2(data, wavelet, level, start_level=0):
     level   - how many decomposition steps to perform
     start_level - the level at which the decomposition will start
     
-    Returns list of approximation and details coefficients
-    [(LL_n, (LH_n, HL_n, HH_n)),
-     (LL_n+1, (LH_n+1, HL_n+1, HH_n+1)),
-     ...,
-     (LL_+level, (LH_n+level, HL_n+level, HH_n+level))]
-    Where n = start_level and m = n+level
+    Returns list of approximation and details coefficients:
+		[
+			(A_n,
+				(H_n, V_n, D_n)
+			),
+			(A_n+1,
+				(H_n+1, V_n+1, D_n+1)
+			),
+			...,
+			(LL_+level,
+				(H_n+level, V_n+level, D_n+level)
+			)
+		 ]
+    Where A is approximation, H is horizontal details, V is vertical details,
+	D is diagonal details, n is start_level and m is n+level.
     """
     
     data = as_float_array(data)
@@ -194,3 +225,4 @@ def swt2(data, wavelet, level, start_level=0):
         data = approx # for next iteration
         
     return ret
+
