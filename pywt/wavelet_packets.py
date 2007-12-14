@@ -358,4 +358,4 @@ class WaveletPacket(Node):
         self.walk(collect)
         return result
 
-__all__ = [Node, WaveletPacket]
+__all__ = ['Node', 'WaveletPacket']
