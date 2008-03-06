@@ -1,4 +1,4 @@
-// Copyright (c) 2006-2007 Filip Wasilewski <filip.wasilewski@gmail.com>
+// Copyright (c) 2006-2008 Filip Wasilewski <filip.wasilewski@gmail.com>
 // See COPYING for license details.
 
 // $Id: convolution.c.template 81 2007-09-11 23:21:36Z filipw $
