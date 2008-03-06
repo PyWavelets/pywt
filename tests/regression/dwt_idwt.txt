@@ -42,7 +42,7 @@ object instead of the wavelet name and specify signal extension mode
     >>> print cD
     [-1.33068221 -2.78795192 -3.16825651 -0.67715519 -0.09722957 -0.07045258]
 
-Note that the outpu coefficients arrays lenght depends not only on the input
+Note that the output coefficients arrays lenght depends not only on the input
 data length but also on the Wavelet type (particularly on it's filters lenght
 that are used in the transformation).
 

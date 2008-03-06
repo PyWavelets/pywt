@@ -163,20 +163,22 @@ def swt2(data, wavelet, level, start_level=0):
     start_level - the level at which the decomposition will start
     
     Returns list of approximation and details coefficients:
-		[
-			(A_n,
-				(H_n, V_n, D_n)
-			),
-			(A_n+1,
-				(H_n+1, V_n+1, D_n+1)
-			),
-			...,
-			(LL_+level,
-				(H_n+level, V_n+level, D_n+level)
-			)
-		 ]
-    Where A is approximation, H is horizontal details, V is vertical details,
-	D is diagonal details, n is start_level and m is n+level.
+    
+        [
+            (cA_n,
+                (cH_n, cV_n, cD_n)
+            ),
+            (cA_n+1,
+                (cH_n+1, cV_n+1, cD_n+1)
+            ),
+            ...,
+            (cA_n+level,
+                (cH_n+level, cV_n+level, cD_n+level)
+            )
+        ]
+
+    where cA is approximation, cH is horizontal details, cV is
+    vertical details, cD is diagonal details and n is start_level.
     """
     
     data = as_float_array(data)
