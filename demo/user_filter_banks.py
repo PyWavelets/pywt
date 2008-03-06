@@ -9,8 +9,9 @@ class FilterBank(object):
     dec_hi = [-0.70710678118654757, 0.70710678118654757]
     rec_lo = [0.70710678118654757, 0.70710678118654757]
     rec_hi = [0.70710678118654757, -0.70710678118654757]
-    def get_filters_coeffs(self):
-        return self.dec_lo, self.dec_hi, self.rec_lo, self.rec_hi
+    
+    def __init__(self):
+        self.filter_bank = self.dec_lo, self.dec_hi, self.rec_lo, self.rec_hi
 
 data = [1,2,3,4,5,6]
 
@@ -33,29 +34,9 @@ print "-" * 75
 print "Case 2 (Wavelet object as filter bank - db2 wavelet)"
 
 # builtin wavelets can also be treated as filter banks with theirs
-# get_filters_coeffs() method
+# filter_bank attribute
 
 builtinWavelet = pywt.Wavelet('db2')
-myWavelet = pywt.Wavelet(name="UserSuppliedWavelet", filter_bank=builtinWavelet)
-
-print "data:", data
-a, d = pywt.dwt(data, myWavelet)
-print "a:", a
-print "d:", d
-print "rec:", pywt.idwt(a, d, myWavelet)
-
-############################################################################
-# and if you happen to have installed wavelet module from wavelets.scipy.org
-# SVN trunk you may also do this:
-try:
-    from wavelets import fwt
-except:
-    raise SystemExit
-
-print "-" * 75
-print "Case 3 (Cooperating with wavelets.scipy.org filter banks - db2 wavelet)"
-
-myBank = fwt.DaubechiesFilterBank(4) # == 'db2'
 myWavelet = pywt.Wavelet(name="UserSuppliedWavelet", filter_bank=builtinWavelet)
 
 print "data:", data

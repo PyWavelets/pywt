@@ -4,7 +4,8 @@
 __id__ = "$Id$"
 __doc__ = """Pyrex wrapper for low-level C wavelet transform implementation."""
 __all__ = ['MODES', 'Wavelet', 'dwt', 'dwt_coeff_len', 'dwt_max_level',
-           'idwt', 'swt', 'swt_max_level', 'upcoef', 'downcoef']
+           'idwt', 'swt', 'swt_max_level', 'upcoef', 'downcoef',
+           'wavelist', 'families']
 
 ###############################################################################
 # imports
@@ -16,16 +17,18 @@ cimport c_math
 
 ctypedef Py_ssize_t index_t
 
-cdef object wavelist
-from wnames import wavelist
+import warnings
 
-###############################################################################
-# array handling stuff here
-cdef object contiguous_float64_array_from_any, float32_memory_buffer_object, float64_memory_buffer_object
-from numerix import contiguous_float64_array_from_any, float32_memory_buffer_object, float64_memory_buffer_object
+cdef object as_float_array, contiguous_float64_array_from_any, \
+            float32_memory_buffer_object, float64_memory_buffer_object
+from numerix import as_float_array, contiguous_float64_array_from_any, \
+                    float32_memory_buffer_object, float64_memory_buffer_object
 
 cdef object concatenate, zeros, linspace, keep
 from numerix import concatenate, zeros, linspace, keep
+
+###############################################################################
+# array handling stuff here
 
 include "arraytools.pxi"
 
@@ -93,52 +96,51 @@ class MODES(object):
 ###############################################################################
 # Wavelet
 
+include "wavelets_list.pxi" ## __wname_to_code
+
 cdef object wname_to_code(char* name):
-    cdef object name_ "name_"
-    cdef int length "length"
-    cdef int i "i"
-    cdef number "number"
-    
-    name_ = name.lower()
-    length = len(name_)
-    
-    if length == 0:
-        raise ValueError("Invalid wavelet name.")
-
-    for n, code in (("db", c"d"), ("sym", c"s"), ("coif", c"c")):
-        i = len(n)
-        if name_[:i] == n:
-            try:
-                number = int(name_[i:])
-                return (code, number)
-            except ValueError:
-                break
-
-    if name_[:4] == "bior":
-        if length == 7 and name_[-2] == '.':
-            try:
-                number = int(name_[-3])*10 + int(name_[-1])
-                return (c'b', number)
-            except ValueError:
-                pass
-    elif name_[:4] == "rbio":
-        if length == 7 and name_[-2] == '.':
-            try:
-                number = int(name_[-3])*10 + int(name_[-1])
-                return (c'r', number)
-            except ValueError:
-                pass
-    elif name_ == "haar":
-        return c'h', 0
-
-    elif name_ == "dmey":
-        return c'm', 0
-
-    if name_ in wavelist():
-        raise RuntimeError("Wavelet '%s' does not exist but is listed on wavelist() builtin wavelets list." % name)
-    else:
+    cdef object code_number
+    try:
+        code_number = __wname_to_code[name]
+        assert len(code_number) == 2
+        assert isinstance(code_number[0], int)
+        assert isinstance(code_number[1], int)
+        return code_number
+    except KeyError:
         raise ValueError("Unknown wavelet name '%s', check wavelist() for the list of available builtin wavelets." % name)
+    
+def wavelist(family=None):
+    """
+    wavelist(family=None) -> []
+    
+    Returns list of available wavelet names for the given family name.
 
+    family - short family name ("haar", "db", "sym", "coif", "bior", "rbio" or "dmey")
+    """
+
+    cdef object wavelets, sorting_list
+    sorting_list = [] # for natural sorting order
+    wavelets = []
+    cdef object name
+    if family is None:
+        for name in __wname_to_code:
+            sorting_list.append((name[:2], len(name), name))
+    elif family in __wfamily_list_short:
+        for name in __wname_to_code:
+            if name.startswith(family):
+                sorting_list.append((name[:2], len(name), name))
+    else:
+        raise ValueError("Invalid short family name '%s'." % family)
+
+    sorting_list.sort()
+    for x, x, name in sorting_list:
+        wavelets.append(name)
+    return wavelets
+
+def families(int short=True):
+    if short:
+        return __wfamily_list_short[:]
+    return __wfamily_list_long[:]
 
 cdef public class Wavelet [type WaveletType, object WaveletObject]:
     """
@@ -146,11 +148,11 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
     a wavelet identified by name.
     
     In order to use a built-in wavelet the parameter name must be
-    a valid name from wavelist() list.
+    a valid name from the wavelist() list.
     To create a custom wavelet object, filter_bank parameter must
-    be specified. It can be either a list of four filters or
-    an object defining the `get_filters_coeffs` mehod that return
-    a list of four filters - just like the Wavelet instances.
+    be specified. It can be either a list of four filters or an object
+    that a `filter_bank` attribute which returns a list of four
+    filters - just like the Wavelet instance itself.
     """
     
     cdef c_wt.Wavelet* w
@@ -161,8 +163,10 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
     #cdef readonly properties
  
     def __new__(self, char* name="", object filter_bank=None):
-        cdef filters, c, nr, max_length
-        cdef dec_lo, dec_hi, rec_lo, rec_hi
+        cdef object family_code, family_number
+        cdef object filters
+        cdef int filter_length
+        cdef object dec_lo, dec_hi, rec_lo, rec_hi
         
         if not name and filter_bank is None:
             raise TypeError("Wavelet name or filter bank must be specified.")
@@ -170,17 +174,22 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
 
         if filter_bank is None:
             # builtin wavelet
-            c, nr = wname_to_code(name)
-            self.w = <c_wt.Wavelet*> c_wt.wavelet(c, nr)
+            self.name = name.lower()
+            family_code, family_number = wname_to_code(self.name)
+            self.w = <c_wt.Wavelet*> c_wt.wavelet(family_code, family_number)
 
             if self.w is NULL:
                 raise ValueError("Invalid wavelet name.")
-
-            self.name = name.lower()
-            self.number = nr
-
+            self.number = family_number
         else:
-            if hasattr(filter_bank, "get_filters_coeffs"):
+            if hasattr(filter_bank, "filter_bank"):
+                filters = filter_bank.filter_bank
+                if len(filters) != 4:
+                    raise ValueError("Expected filter bank with 4 filters, got filter bank with %d filters." % len(filters))
+            elif hasattr(filter_bank, "get_filters_coeffs"):
+                warnings.warn("Creating custom Wavelets using objects that define `get_filters_coeffs` method is deprecated. " \
+                              "The `filter_bank` parameter should define a `filter_bank` attribute instead of `get_filters_coeffs` method.",
+                              DeprecationWarning)
                 filters = filter_bank.get_filters_coeffs()
                 if len(filters) != 4:
                     raise ValueError("Expected filter bank with 4 filters, got filter bank with %d filters." % len(filters))
@@ -188,39 +197,41 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
                 filters = filter_bank
                 if len(filters) != 4:
                     raise ValueError("Expected list of 4 filters coefficients, got %d filters." % len(filters))
-                
             try:
-                dec_lo = map(float, filters[0])
-                dec_hi = map(float, filters[1])
-                rec_lo = map(float, filters[2])
-                rec_hi = map(float, filters[3])
-            except TypeError:
-                raise TypeError("Filter bank with float or int values required.")
+                dec_lo = as_float_array(filters[0])
+                dec_hi = as_float_array(filters[1])
+                rec_lo = as_float_array(filters[2])
+                rec_hi = as_float_array(filters[3])
+            except (TypeError, TypeError):
+                raise ValueError("Filter bank with numeric values required.")
 
-            max_length = max(len(dec_lo), len(dec_hi), len(rec_lo), len(rec_hi))
-            if max_length == 0:
-                raise ValueError("Filter bank can not be zero-length.")
+            if not 1 == len(dec_lo.shape) == len(dec_hi.shape) == len(rec_lo.shape) == len(rec_hi.shape):
+                raise ValueError("All filters in filter bank must be 1D.")
+            
+            filter_length = len(dec_lo)
+            if not 0 < filter_length == len(dec_hi) == len(rec_lo) == len(rec_hi) > 0:
+                raise ValueError("All filters in filter bank must have length greater than 0.")
 
-            self.w = <c_wt.Wavelet*> c_wt.blank_wavelet(max_length)
+            self.w = <c_wt.Wavelet*> c_wt.blank_wavelet(filter_length)
             if self.w is NULL:
                 raise MemoryError("Could not allocate memory for given filter bank.")
 
             # copy values to struct
             copy_object_to_float32_array(dec_lo, self.w.dec_lo_float)
-            copy_object_to_float32_array(dec_hi, self.w.dec_lo_float)
-            copy_object_to_float32_array(rec_lo, self.w.dec_lo_float)
-            copy_object_to_float32_array(rec_hi, self.w.dec_lo_float)
+            copy_object_to_float32_array(dec_hi, self.w.dec_hi_float)
+            copy_object_to_float32_array(rec_lo, self.w.rec_lo_float)
+            copy_object_to_float32_array(rec_hi, self.w.rec_hi_float)
 
             copy_object_to_float64_array(dec_lo, self.w.dec_lo_double)
-            copy_object_to_float64_array(dec_hi, self.w.dec_lo_double)
-            copy_object_to_float64_array(rec_lo, self.w.dec_lo_double)
-            copy_object_to_float64_array(rec_hi, self.w.dec_lo_double)
+            copy_object_to_float64_array(dec_hi, self.w.dec_hi_double)
+            copy_object_to_float64_array(rec_lo, self.w.rec_lo_double)
+            copy_object_to_float64_array(rec_hi, self.w.rec_hi_double)
             
             self.name = name
 
     def __dealloc__(self):
         if self.w is not NULL:
-            c_wt.free_wavelet(self.w) # if w._builtin is 0, it frees also the filter arrays
+            c_wt.free_wavelet(self.w) # if w._builtin is 0 then it frees the memory for the filter arrays
             self.w = NULL
 
     def __len__(self): #assume
@@ -309,25 +320,29 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
         def __get__(self):
             return bool(self.w._builtin)
 
-    property filters_coeffs:
-        def __get__(self):
-            return self.get_filters_coeffs()
-            
-    def get_filters_coeffs(self):
+    property filter_bank:
         """Returns tuple of wavelet filters coefficients
         (dec_lo, dec_hi, rec_lo, rec_hi)
         """
-        return (self.dec_lo, self.dec_hi, self.rec_lo, self.rec_hi)
-
-    property reverse_filters_coeffs:
         def __get__(self):
-            return self.get_reverse_filters_coeffs()
+            return (self.dec_lo, self.dec_hi, self.rec_lo, self.rec_hi)
+            
+    def get_filters_coeffs(self):
+        warnings.warn("The `get_filters_coeffs` method is deprecated. "\
+                      "Use `filter_bank` attribute instead.", DeprecationWarning)
+        return self.filter_bank
 
-    def get_reverse_filters_coeffs(self):
-        """Tuple of reverse wavelet filters coefficients
+    property inverse_filter_bank:
+        """Tuple of inverse wavelet filters coefficients
         (rec_lo[::-1], rec_hi[::-1], dec_lo[::-1], dec_hi[::-1])
         """
-        return (self.rec_lo[::-1], self.rec_hi[::-1], self.dec_lo[::-1], self.dec_hi[::-1])
+        def __get__(self):
+            return (self.rec_lo[::-1], self.rec_hi[::-1], self.dec_lo[::-1], self.dec_hi[::-1])
+
+    def get_reverse_filters_coeffs(self):
+        warnings.warn("The `get_reverse_filters_coeffs` method is deprecated. "\
+                      "Use `inverse_filter_bank` attribute instead.", DeprecationWarning)
+        return self.inverse_filter_bank
 
     def wavefun(self, int level=8):
         """wavefun(int level=8)
@@ -375,7 +390,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
                 if (self.w.vanishing_moments_psi % 4) != 1:
                     mul = -1
 
-            other = Wavelet(filter_bank=self.reverse_filters_coeffs)
+            other = Wavelet(filter_bank=self.inverse_filter_bank)
             
             filter_length  = other.w.dec_len
             output_length = <index_t> ((filter_length-1) * p)

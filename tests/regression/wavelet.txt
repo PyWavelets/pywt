@@ -82,15 +82,12 @@ filters respectively.
     >>> w.rec_hi
     [0.035226291882100656, 0.085441273882241486, -0.13501102001039084, -0.45987750211933132, 0.80689150931333875, -0.33267055295095688]
 
-Another way to get the filters data is to use the `get_filters_coeffs` method
-or simplier the `filters_coeffs` attribute, which returns all four filters
-in a tuple:
+Another way to get the filters data is to use the `filter_bank` attribute,
+which returns all four filters in a tuple:
 
-    >>> w.get_filters_coeffs() == (w.dec_lo, w.dec_hi, w.rec_lo, w.rec_hi)
+    >>> w.filter_bank == (w.dec_lo, w.dec_hi, w.rec_lo, w.rec_hi)
     True
 
-    >>> w.filters_coeffs == (w.dec_lo, w.dec_hi, w.rec_lo, w.rec_hi)
-    True
 
 Other Wavelet's properties are:
 
@@ -133,14 +130,16 @@ Other Wavelet's properties are:
 Now when we know a bit about the builtin Wavelets, les't see how to create
 custom Wavelets objects. These can be done in two ways:
 
-    1) Passing the filter bank object that implements the get_filters_coeffs
-       method. The method must return four filters' coefficients.
+    1) Passing the filter bank object that implements the `filter_bank`
+       attribute. The attribute must return four filters coefficients.
 
 
        >>> class MyHaarFilterBank(object):
-       ...     def get_filters_coeffs(self):
+       ...     @property
+       ...     def filter_bank(self):
        ...         from math import sqrt
-       ...         return ([sqrt(2), sqrt(2)], [-sqrt(2), sqrt(2)], [sqrt(2), sqrt(2)], [sqrt(2), -sqrt(2)])
+       ...         return ([sqrt(2)/2, sqrt(2)/2], [-sqrt(2)/2, sqrt(2)/2],
+       ...                 [sqrt(2)/2, sqrt(2)/2], [sqrt(2)/2, -sqrt(2)/2])
 
     
        >>> my_wavelet = pywt.Wavelet('My Haar Wavelet', filter_bank=MyHaarFilterBank())
@@ -149,7 +148,8 @@ custom Wavelets objects. These can be done in two ways:
     2) Passing the filters coefficients directly as the filter_bank parameter.
     
        >>> from math import sqrt
-       >>> my_filter_bank = ([sqrt(2), sqrt(2)], [-sqrt(2), sqrt(2)], [sqrt(2), sqrt(2)], [sqrt(2), -sqrt(2)])
+       >>> my_filter_bank = ([sqrt(2)/2, sqrt(2)/2], [-sqrt(2)/2, sqrt(2)/2],
+       ...                   [sqrt(2)/2, sqrt(2)/2], [sqrt(2)/2, -sqrt(2)/2])
        >>> my_wavelet = pywt.Wavelet('My Haar Wavelet', filter_bank=my_filter_bank)
 
 
