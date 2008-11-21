@@ -11,7 +11,7 @@
 
 __all__ = ['dwt2', 'idwt2', 'swt2']
 
-from itertools import izip
+from itertools import izip, cycle
 
 from _pywt import Wavelet, MODES
 from _pywt import dwt, idwt, swt
@@ -21,21 +21,21 @@ from numerix import transpose, array, as_float_array, default_dtype
 def dwt2(data, wavelet, mode='sym'):
     """
     2D Discrete Wavelet Transform.
-    
-    data    - 2D array with input data 
+
+    data    - 2D array with input data
     wavelet - wavelet to use (Wavelet object or name string)
     mode    - signal extension mode, see MODES
-        
+
     Returns approximaion and three details 2D coefficients arrays.
 
     The result form four 2D coefficients arrays organized in tuples:
-    
+
         (approximation,
                 (horizontal details,
                 vertical details,
                 diagonal details)
         )
-    
+
     which sometimes is also interpreted as layed out in one 2D array
     of coefficients, where:
 
@@ -49,16 +49,16 @@ def dwt2(data, wavelet, mode='sym'):
                                 |       |       |
                                 -----------------
     """
-    
+
     data = as_float_array(data)
     if len(data.shape) != 2:
         raise ValueError("Expected 2D data array")
-    
+
     if not isinstance(wavelet, Wavelet):
         wavelet = Wavelet(wavelet)
 
     mode = MODES.from_object(mode)
-    
+
     # filter rows
     H, L = [], []
     append_L = L.append; append_H = H.append
@@ -67,11 +67,11 @@ def dwt2(data, wavelet, mode='sym'):
         append_L(cA)
         append_H(cD)
     del data
-    
+
     # filter columns
     H = transpose(H)
     L = transpose(L)
- 
+
     LL, LH = [], []
     append_LL = LL.append; append_LH = LH.append
     for row in L:
@@ -79,7 +79,7 @@ def dwt2(data, wavelet, mode='sym'):
         append_LL(cA)
         append_LH(cD)
     del L
-    
+
     HL, HH = [], []
     append_HL = HL.append; append_HH = HH.append
     for row in H:
@@ -87,20 +87,20 @@ def dwt2(data, wavelet, mode='sym'):
         append_HL(cA)
         append_HH(cD)
     del H
-    
+
     # build result structure
     #     (approx.,        (horizontal,    vertical,       diagonal))
-    ret = (transpose(LL), (transpose(LH), transpose(HL), transpose(HH)))  
-        
+    ret = (transpose(LL), (transpose(LH), transpose(HL), transpose(HH)))
+
     return ret
 
 def idwt2(coeffs, wavelet, mode='sym'):
     """
     2D Inverse Discrete Wavelet Transform. Reconstruct data from coefficients
     arrays.
-    
+
     coeffs  - four 2D coefficients arrays arranged as follows:
-    
+
         (approximation,
                 (horizontal details,
                 vertical details,
@@ -110,43 +110,65 @@ def idwt2(coeffs, wavelet, mode='sym'):
     wavelet - wavelet to use (Wavelet object or name string)
     mode    - signal extension mode, see MODES
     """
-    
+
     if len(coeffs) != 2 or len(coeffs[1]) != 3:
         raise ValueError("Invalid coeffs param")
-    
+
     # L -low-pass data, H - high-pass data
     LL, (LH, HL, HH) = coeffs
 
-    (LL, LH, HL, HH) = (transpose(LL), transpose(LH), transpose(HL), transpose(HH))
+    if not LL is None: LL = transpose(LL)
+    if not LH is None: LH = transpose(LH)
+    if not HL is None: HL = transpose(HL)
+    if not HH is None: HH = transpose(HH)
+
+    all_none = True
     for arr in (LL, LH, HL, HH):
-        if len(arr.shape) != 2:
-            raise TypeError("All input coefficients arrays must be 2D")
+        if arr is not None:
+            all_none = False
+            if len(arr.shape) != 2:
+                raise TypeError("All input coefficients arrays must be 2D.")
     del arr
-    
+    if all_none:
+        raise ValueError("At least one input coefficients array must not be None.")
+
     if not isinstance(wavelet, Wavelet):
         wavelet = Wavelet(wavelet)
 
     mode = MODES.from_object(mode)
-    
+
     # idwt columns
-    L = []
-    append_L = L.append
-    for rowL, rowH in izip(LL, LH):
-        append_L(idwt(rowL, rowH, wavelet, mode, 1))
+    L = []; append_L = L.append
+    if LL is None and LH is None:
+        L = None
+    else:
+        if LL is None: LL = cycle([None]) # IDWT can handle None input values - equals to zero-array
+        if LH is None: LH = cycle([None]) # IDWT can handle None input values - equals to zero-array
+        for rowL, rowH in izip(LL, LH):
+            append_L(idwt(rowL, rowH, wavelet, mode, 1))
     del LL, LH
 
     H = []
     append_H = H.append
-    for rowL, rowH in izip(HL, HH):
-        append_H(idwt(rowL, rowH, wavelet, mode, 1))
+    if HL is None and HH is None:
+        H = None
+    else:
+        if HL is None: HL = cycle([None]) # IDWT can handle None input values - equals to zero-array
+        if HH is None: HH = cycle([None]) # IDWT can handle None input values - equals to zero-array
+        for rowL, rowH in izip(HL, HH):
+            append_H(idwt(rowL, rowH, wavelet, mode, 1))
     del HL, HH
 
-    L = transpose(L)
-    H = transpose(H)
+    if L is not None:
+        L = transpose(L)
+    if H is not None:
+        H = transpose(H)
 
     # idwt rows
     data = []
     append_data = data.append
+    if L is None: L = cycle([None]) # IDWT can handle None input values - equals to zero-array
+    if H is None: H = cycle([None]) # IDWT can handle None input values - equals to zero-array
     for rowL, rowH in izip(L, H):
         append_data(idwt(rowL, rowH, wavelet, mode, 1))
 
@@ -156,14 +178,14 @@ def idwt2(coeffs, wavelet, mode='sym'):
 def swt2(data, wavelet, level, start_level=0):
     """
     2D Stationary Wavelet Transform.
-    
-    data    - 2D array with input data 
+
+    data    - 2D array with input data
     wavelet - wavelet to use (Wavelet object or name string)
     level   - how many decomposition steps to perform
     start_level - the level at which the decomposition will start
-    
+
     Returns list of approximation and details coefficients:
-    
+
         [
             (cA_n,
                 (cH_n, cV_n, cD_n)
@@ -180,11 +202,11 @@ def swt2(data, wavelet, level, start_level=0):
     where cA is approximation, cH is horizontal details, cV is
     vertical details, cD is diagonal details and n is start_level.
     """
-    
+
     data = as_float_array(data)
     if len(data.shape) != 2:
         raise ValueError("Expected 2D data array")
-    
+
     if not isinstance(wavelet, Wavelet):
         wavelet = Wavelet(wavelet)
 
@@ -198,11 +220,11 @@ def swt2(data, wavelet, level, start_level=0):
             append_L(cA)
             append_H(cD)
         del data
-    
+
         # filter columns
         H = transpose(H)
         L = transpose(L)
- 
+
         LL, LH = [], []
         append_LL = LL.append; append_LH = LH.append
         for row in L:
@@ -210,7 +232,7 @@ def swt2(data, wavelet, level, start_level=0):
             append_LL(cA)
             append_LH(cD)
         del L
-    
+
         HL, HH = [], []
         append_HL = HL.append; append_HH = HH.append
         for row in H:
@@ -218,13 +240,12 @@ def swt2(data, wavelet, level, start_level=0):
             append_HL(cA)
             append_HH(cD)
         del H
-    
+
         # build result structure
         #     (approx.,        (horizontal,    vertical,       diagonal))
         approx = transpose(LL)
         ret.append((approx, (transpose(LH), transpose(HL), transpose(HH))))
-        
-        data = approx # for next iteration
-        
-    return ret
 
+        data = approx # for next iteration
+
+    return ret
