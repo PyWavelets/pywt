@@ -79,14 +79,14 @@ Accessing subnodes:
         >>> print wp['aaaa'].data
         Traceback (most recent call last):
         ...
-        IndexError: Path length out of range.
+        IndexError: Path length is out of range.
 
     Now try some invalid path:
         
         >>> print wp['ac']
         Traceback (most recent call last):
         ...
-        ValueError: Subnode name must be in [a, d], not 'c'
+        ValueError: Subnode name must be in ['a', 'd'], not 'c'.
 
 
 Accessing Node's attributes:
@@ -193,7 +193,7 @@ Lazy eveluation:
        >>> print wp.a
        None
         
-       Remember that you schould not rely on the attribute access.
+       Remember that you should not rely on the attribute access.
     
     2) At first attempt to access the node it is computed via decomposition
        of it's parent node (the wp object itself).
