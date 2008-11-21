@@ -723,7 +723,7 @@ def upcoef(part, coeffs, wavelet, int level=1, take=0):
             else:
                 if c_wt.float_rec_d(<float*>input.data, input.len, w.w, <float*>output.data, output.len) < 0:
                     raise RuntimeError("C rec_a failed.")
-            rec_a = 1
+            do_rec_a = 1
 
         data = rec # keep reference
         input.len = output.len
