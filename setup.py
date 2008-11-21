@@ -1,33 +1,27 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
 
+import glob, os, os.path, sys, warnings
 from distutils.core import setup
 from distutils.extension import Extension
-import glob, os, os.path
 import util.templating
+
 
 if os.path.exists('MANIFEST'):
     os.remove('MANIFEST')
 
 compiler = "cython" # "pyrex"
 try:
-    if compiler == "pyrex":
-        from Pyrex.Distutils import build_ext
-        has_pyrex = True
-    elif compiler == "cython":
+    if compiler == "cython":
         from Cython.Distutils import build_ext
-        has_pyrex = True
+    elif compiler == "pyrex":
+        warnings.warn('It is recommended to use Cython instead of Pyrex.', UserWarning)
+        from Pyrex.Distutils import build_ext
     else:
         raise ValueError("Invalid compiler '%s'." % compiler)
 except ImportError:
-    has_pyrex = False
-
-if has_pyrex:
-    source_ext = '.pyx'
-    cmdclass    = {'build_ext': build_ext}
-else:
-    source_ext = '.c'
-    cmdclass    = {}
+    print "A recent version of Cython is required to build PyWavelets. Get Cython from http://www.cython.org/!"
+    sys.exit(1)
 
 # gather the release details
 release = {}
@@ -43,23 +37,27 @@ macros = [('PY_EXTENSION', None),
           #('OPT_UNROLL4', None)  # enable more manual unroll loop optimizations
          ]
 
+source_ext = '.pyx'
+cmdclass    = {'build_ext': build_ext}
+
 dwt = Extension("pywt._pywt",
-        sources = [(n + source_ext) for n in ['src/_pywt']] + ["src/common.c", "src/convolution.c", "src/wavelets.c", "src/wt.c"], 
+        sources = [(n + source_ext) for n in ['src/_pywt']] + \
+            ["src/common.c", "src/convolution.c", "src/wavelets.c", "src/wt.c"],
         include_dirs = ['src'],
         library_dirs = [],
         runtime_library_dirs = [],
         libraries = [],
         define_macros = macros,
         extra_compile_args = extra_compile_args,
-		extra_link_args = [],
-		export_symbols = [],
+        extra_link_args = [],
+        export_symbols = [],
 )
- 
-ext_modules = [dwt]
-packages =  ['pywt']
-package_dir = {'pywt':'pywt'}
 
-    
+ext_modules = [dwt]
+packages =  ['pywt',]
+package_dir = {'pywt':'pywt',}
+
+
 def do_setup(**extra_kwds):
     util.templating.expand_files('src/*.template', True)
 
@@ -69,20 +67,20 @@ def do_setup(**extra_kwds):
         description = release["description"],
         long_description = release["long_description"],
         author = release["author"],
-        author_email = release["author_email"], 
+        author_email = release["author_email"],
         url = release["url"],
         download_url = release["download_url"],
         license = release["license"],
         keywords = release["keywords"],
         platforms = release["platforms"],
         classifiers = release["classifiers"],
-        
+
         ext_modules = ext_modules,
-        
+
         packages = packages,
         package_dir = package_dir,
         #script_args = ["build_ext"],
-        
+
         cmdclass = cmdclass,
         **extra_kwds
     )
