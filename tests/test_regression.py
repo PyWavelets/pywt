@@ -1,8 +1,10 @@
+#!/usr/bin/env python
+
 import doctest
-doctest.testfile("regression/multilevel.txt")
-doctest.testfile("regression/modes.txt")
-doctest.testfile("regression/wavelet.txt")
-doctest.testfile("regression/dwt_idwt.txt")
-doctest.testfile("regression/wp.txt")
-doctest.testfile("regression/wp2d.txt")
-doctest.testfile("regression/gotchas.txt")
+import glob
+
+files = glob.glob("./regression/*.txt")
+
+for path in files:
+    print "testing %s" % path
+    doctest.testfile(path)
