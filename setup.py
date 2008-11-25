@@ -28,7 +28,7 @@ release = {}
 execfile(os.path.join(os.path.dirname(__file__), 'pywt','release_details.py'), {}, release)
 
 # tune the C compiler settings
-extra_compile_args = ['-Wall', '-finline-limit=1', '-O2']
+extra_compile_args = ['-fwrapv', '-O2', '-Wall', '-fno-strict-aliasing', '-finline-limit=1']
 #extra_compile_args += ['-march=pentium4',  '-mtune=pentium4']
 #extra_compile_args += ['-Wno-long-long', '-Wno-uninitialized', '-Wno-unused']
 
