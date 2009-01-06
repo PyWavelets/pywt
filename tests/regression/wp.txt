@@ -181,6 +181,55 @@ Otherwise, the `data` attribute will be set to the reconstructed value.
 >>> print [n.path for n in new_wp.get_leaf_nodes(True)]
 ['aaa', 'aad', 'ada', 'add', 'daa', 'dad', 'dda', 'ddd']
 
+Removing nodes from Wavelet Packet tree:
+----------------------------------------
+
+Let's create a sample data:
+
+>>> x = [1, 2, 3, 4, 5, 6, 7, 8]
+>>> wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='sym')
+
+First, start with tree decomposition at level 2. Leaf nodes in the tree are:
+>>> dummy = wp.get_level(2)
+>>> for n in wp.get_leaf_nodes(False):
+...     print n.path, n.data
+aa [  5.  13.]
+ad [-2. -2.]
+da [-1. -1.]
+dd [ -1.11022302e-16   0.00000000e+00]
+
+>>> node = wp['ad']
+>>> print node
+ad: [-2. -2.]
+
+To remove a node from the WP tree, use Python's `del`:
+>>> del wp['ad']
+
+The leaf nodes that left in the tree are:
+>>> for n in wp.get_leaf_nodes():
+...     print n.path, n.data
+aa [  5.  13.]
+da [-1. -1.]
+dd [ -1.11022302e-16   0.00000000e+00]
+
+And the reconstruction is:
+>>> print wp.reconstruct()
+[ 2.  3.  2.  3.  6.  7.  6.  7.]
+
+Now restore the deleted node value.
+>>> wp['ad'].data = node.data
+
+Printing leaf nodes and tree reconstruction confirms the original state of the tree:
+>>> for n in wp.get_leaf_nodes(False):
+...     print n.path, n.data
+aa [  5.  13.]
+ad [-2. -2.]
+da [-1. -1.]
+dd [ -1.11022302e-16   0.00000000e+00]
+
+>>> print wp.reconstruct()
+[ 1.  2.  3.  4.  5.  6.  7.  8.]
+
 
 Lazy eveluation:
 ----------------

@@ -206,14 +206,16 @@ class BaseNode(object):
 
     def __delitem__(self, path):
         """
-        Delete node and all subnodes.
+        Remove node from the tree.
         """
         node = self[path]
-        node._init_subnodes()
-        node.data = None
+        # don't clear node value and subnodes (node may still exist outside the tree)
+        ## node._init_subnodes()
+        ## node.data = None
         parent = node.parent
-        if parent and self.node_name:
-            parent._delete_node(self.node_name)
+        node.parent = None # TODO
+        if parent and node.node_name:
+            parent._delete_node(node.node_name)
 
     def is_empty(self):
         return self.data is None
