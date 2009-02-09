@@ -19,6 +19,7 @@ from numpy import cumsum, cos, diff, exp, sinc
 from numpy import argmax, mean
 from numpy import convolve
 from numpy import where, less, greater
+from numpy import apply_along_axis
 from numpy.fft import fft
 
 default_dtype = float64
@@ -27,10 +28,6 @@ def as_float_array(source):
     if isinstance(source, ndarray) and (source.dtype == float64 or source.dtype == float32):
         return source
     return array(source, default_dtype)
-
-def contiguous_array_from_any(source):
-    raise DeprecationWarning()
-    return contiguous_float64_array_from_any(source)
 
 def contiguous_float64_array_from_any(source):
     return array(source, float64) # ensure contiguous

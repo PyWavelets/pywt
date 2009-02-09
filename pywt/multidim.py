@@ -9,13 +9,13 @@
 2D Discrete Wavelet Transform and Inverse Discrete Wavelet Transform.
 """
 
-__all__ = ['dwt2', 'idwt2', 'swt2']
+__all__ = ['dwt2', 'idwt2', 'swt2', 'dwtn']
 
 from itertools import izip, cycle
 
 from _pywt import Wavelet, MODES
-from _pywt import dwt, idwt, swt
-from numerix import transpose, array, as_float_array, default_dtype
+from _pywt import dwt, idwt, swt, downcoef
+from numerix import transpose, array, as_float_array, default_dtype, apply_along_axis
 
 
 def dwt2(data, wavelet, mode='sym'):
@@ -99,7 +99,8 @@ def idwt2(coeffs, wavelet, mode='sym'):
     2D Inverse Discrete Wavelet Transform. Reconstruct data from coefficients
     arrays.
 
-    coeffs  - four 2D coefficients arrays arranged as follows:
+    coeffs  - four 2D coefficients arrays arranged as follows (in the same way
+              as dwt2 output -- see dwt2 description for details):
 
         (approximation,
                 (horizontal details,
@@ -173,6 +174,50 @@ def idwt2(coeffs, wavelet, mode='sym'):
         append_data(idwt(rowL, rowH, wavelet, mode, 1))
 
     return array(data, default_dtype)
+
+
+def _downcoef(data, wavelet, mode, type):
+   """Adapts pywt.downcoef call for apply_along_axis"""
+   return downcoef(type, data, wavelet, mode, level=1)
+
+def dwtn(data, wavelet, mode='sym'):
+    """
+    Single-level n-dimensional Discrete Wavelet Transform.
+
+    data     - n-dimensional array
+    wavelet - wavelet to use (Wavelet object or name string)
+    mode    - signal extension mode, see MODES
+
+    Results are arranged in a dictionary, where key specifies
+    the transform type on each dimension and value is a n-dimensional
+    coefficients array.
+    
+    For example, for a 2D case the result will look something like this:
+        {
+            'aa': <coeffs>  # A(LL) - approx. on 1st dim, approx. on 2nd dim
+            'ad': <coeffs>  # H(LH) - approx. on 1st dim, det. on 2nd dim
+            'da': <coeffs>  # V(HL) - det. on 1st dim, approx. on 2nd dim
+            'dd': <coeffs>  # D(HH) - det. on 1st dim, det. on 2nd dim
+        }
+    """
+    import warnings
+    warnings.warn("Name of this function and result format may change in the future.",
+                  UserWarning)
+
+    data = as_float_array(data)
+    dim = len(data.shape)
+    coeffs = [('', data)]
+    for axis in range(dim):
+        new_coeffs = []
+        for subband, x in coeffs:
+            new_coeffs.extend([
+                (subband+'a', apply_along_axis(_downcoef, axis,
+                                               x, wavelet, mode, 'a')),
+                (subband+'d', apply_along_axis(_downcoef, axis,
+                                               x, wavelet, mode, 'd'))
+            ])
+        coeffs = new_coeffs
+    return dict(coeffs)
 
 
 def swt2(data, wavelet, level, start_level=0):
