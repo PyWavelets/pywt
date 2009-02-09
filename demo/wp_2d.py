@@ -37,4 +37,13 @@ for p1 in path:
         pylab.imshow(mod(wp2[p1p2].data), origin='image', interpolation="nearest", cmap=pylab.cm.gray)
         pylab.title(p1p2)
 
+pylab.figure()
+i = 1
+for row in wp2.get_level(2, 'freq'):
+    for node in row:
+        pylab.subplot(len(row),len(row),i)
+        pylab.title("%s=(%s row, %s col)" % ((node.path,)+ wp2.expand_2d_path(node.path)))
+        pylab.imshow(mod(node.data), origin='image', interpolation="nearest", cmap=pylab.cm.gray)
+        i += 1
+
 pylab.show()

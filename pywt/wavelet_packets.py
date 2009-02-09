@@ -14,6 +14,14 @@ from _pywt import Wavelet, dwt, idwt, dwt_max_level
 from multidim import dwt2, idwt2
 
 
+def get_graycode_order(level, x='a', y='d'):
+    graycode_order = [x, y]
+    for i in range(level-1):
+        graycode_order = [x + path for path in graycode_order] + \
+                         [y + path for path in graycode_order[::-1]]
+    return graycode_order
+
+
 class MustOverride(object):
     def __init__(self, message): self.message= message
     def __get__(self, obj, cls): raise NotImplementedError(self.message % {'cls': cls.__name__})
@@ -378,6 +386,16 @@ class Node2D(BaseNode):
                 self.data = rec
             return rec
 
+    def expand_2d_path(self, path):
+        expanded_paths = {
+            self.HH: 'hh',
+            self.HL: 'hl',
+            self.LH: 'lh',
+            self.LL: 'll'
+        }
+        return (''.join([expanded_paths[p][0] for p in path]),
+                ''.join([expanded_paths[p][1] for p in path]))
+
 
 class WaveletPacket(Node):
     """
@@ -424,13 +442,14 @@ class WaveletPacket(Node):
             return data
         return self.data # return original data
 
-    def get_level(self, level, order="natural"):
+    def get_level(self, level, order="natural", decompose=True):
         """
         Returns all nodes on the specified level.
 
         order - "natural" - left to right in tree
               - "freq" - band ordered
         """
+        assert order in ["natural", "freq"]
         if level > self.maxlevel:
             raise ValueError("The level cannot be greater than the maximum"
                              " decomposition level value (%d)" % self.maxlevel)
@@ -443,15 +462,13 @@ class WaveletPacket(Node):
                 return False
             return True
 
-        self.walk(collect, decompose=True)
+        self.walk(collect, decompose=decompose)
         if order == "natural":
             return result
         elif order == "freq":
-            graycode = ["0", "1"]
-            for i in range(level-1):
-                graycode = [("0" + c) for c in graycode] + \
-                                [("1" + c) for c in graycode[::-1]]
-            return [result[int(c, 2)] for c in graycode]
+            result = dict((node.path, node) for node in result)
+            graycode_order = get_graycode_order(level)
+            return [result[path] for path in graycode_order if path in result]
         else:
             raise ValueError("Invalid order name - %s." % order)
 
@@ -500,10 +517,17 @@ class WaveletPacket2D(Node2D):
             return data
         return self.data # return original data
 
-    def get_level(self, level):
+    def get_level(self, level, order="natural", decompose=True):
         """
         Returns all nodes from specified level.
+        
+        If order is `natural`, a flat list is returned.
+        
+        If order is `freq`, a 2d structure with rows and cols
+        sorted by corresponding dimension frequency of 2d
+        coefficient array (adapted from 1d case).
         """
+        assert order in ["natural", "freq"]
         if level > self.maxlevel:
             raise ValueError("The level cannot be greater than the maximum"
                              " decomposition level value (%d)" % self.maxlevel)
@@ -516,5 +540,19 @@ class WaveletPacket2D(Node2D):
                 return False
             return True
 
-        self.walk(collect)
+        self.walk(collect, decompose=decompose)
+        
+        if order == "freq":
+            nodes = {}
+            for (row_path, col_path), node in [(self.expand_2d_path(node.path), node)
+                                               for node in result]:
+                nodes.setdefault(row_path, {})[col_path] = node
+            graycode_order = get_graycode_order(level, x='l', y='h')
+            nodes = [nodes[path] for path in graycode_order if path in nodes]
+            result = []
+            for row in nodes:
+                result.append(
+                    [row[path] for path in graycode_order if path in row]
+                )
         return result
+
