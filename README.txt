@@ -1,22 +1,25 @@
 PyWavelets Intro
 ----------------
 
-PyWavelets is a Python wavelet transforms module that can perform:
+PyWavelets is a Python wavelet transforms module that can do:
 
-  * Discrete Wavelet Transform (1D and 2D)
-  * Inverse Discrete Wavelet Transform (1D and 2D)
-  * Stationary Wavelet Transform
-  * Wavelet Packets decomposition and reconstruction
+  * 1D and 2D Forward and Inverse Discrete Wavelet Transform (DWT and IDWT)
+  * 1D and 2D Stationary Wavelet Transform (Undecimated Wavelet Transform)
+  * 1D and 2D Wavelet Packet decomposition and reconstruction
+  * Computing Approximations of wavelet and scaling functions
+  * Over seventy built-in wavelet filters and support for custom wavelets
+  * Single and double precision calculations
+  * Results compatibility with Matlab Wavelet Toolbox (tm)
 
 
 Download
 --------
 
-This package can be downloaded from Cheese Shop repository:
+This package can be downloaded from Python Package Index at:
 
-    http://cheeseshop.python.org/pypi/PyWavelets
+    http://pypi.python.org/pypi/PyWavelets
 
-Latest development version is available from SVN source code repository:
+Latest development version is available from the SVN source code repository:
 
     ``svn co http://wavelets.scipy.org/svn/multiresolution/pywt/trunk pywt``
 
@@ -44,29 +47,22 @@ are two possibilities:
 .. note::
 
     If you want to install PyWavelets from SVN repository source code
-    or made changes to the Pyrex wrapper code you need an updated version
-    of Pyrex from http://codespeak.net/svn/lxml/pyrex/ in order to
+    or made changes to the Pyrex/Cython wrapper code you need a current
+    version of Cython from http://www.cython.org/ in order to
     rebuild the project.
 
 
 Documentation
 -------------
 
-Documentation is available in `doc` directory as well as
-online at 
+Documentation is available in online at http://www.pybytes.com/pywavelets/,
+as well as in the project's source code `doc` directory.
 
-  http://www.pybytes.com/pywavelets/
-
-Project wiki and trac system are located at
-
-  http://wavelets.scipy.org/
+Project wiki and trac system are hosted at http://wavelets.scipy.org/.
 
 For examples see `demo` and `tests` directories.
-
 
 License
 -------
 
 PyWavelets is distributed under MIT license (see COPYING).
-
-

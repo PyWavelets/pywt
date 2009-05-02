@@ -8,23 +8,25 @@ version      = "0.1.7"
 author       = "Filip Wasilewski"
 author_email = "filip.wasilewski@gmail.com"
 url          = "http://www.pybytes.com/pywavelets/"
-download_url = "http://cheeseshop.python.org/pypi/PyWavelets/"
+download_url = "http://pypi.python.org/pypi/PyWavelets/"
 license      = "MIT"
 description  = "PyWavelets, wavelet transform module."
-keywords     = ['wavelets', 'scientific', 'NumPy']
+keywords     = ['wavelets', 'wavelet transform', 'DWT', 'SWT', 'scientific', 'NumPy']
 platforms    = ['Linux', 'Mac OSX', 'Windows XP/2000/NT']
 svn          = "http://wavelets.scipy.org/svn/multiresolution/pywt/trunk"
 
 
 long_description = \
 """
-PyWavelets is a Python wavelet transforms module that can perform:
+PyWavelets is a Python wavelet transforms module that can do:
 
-  * Discrete Wavelet Transform (1D and 2D)
-  * Inverse Discrete Wavelet Transform (1D and 2D)
-  * Stationary Wavelet Transform
-  * Wavelet Packets decomposition and reconstruction
-
+  * 1D and 2D Forward and Inverse Discrete Wavelet Transform (DWT and IDWT)
+  * 1D and 2D Stationary Wavelet Transform (Undecimated Wavelet Transform)
+  * 1D and 2D Wavelet Packet decomposition and reconstruction
+  * Computing Approximations of wavelet and scaling functions
+  * Over seventy built-in wavelet filters and support for custom wavelets
+  * Single and double precision calculations
+  * Results compatibility with Matlab Wavelet Toolbox (tm)
 """
 
 classifiers = [
