@@ -7,7 +7,7 @@
 
 // Decomposition of input with lowpass filter
 
-//## FOR $DTYPE$ IN (double, float):
+//## FOR $DTYPE$ IN (double, float, short):
 
 int $DTYPE$_dec_a($DTYPE$ input[], index_t input_len,
                   Wavelet* wavelet,

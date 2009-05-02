@@ -41,14 +41,14 @@ Wavelet* wavelet(char name, int order)
         w->rec_lo_offset = wtmp->dec_lo_offset;
         */
         for(i = 0; i < w->rec_len; ++i){
-            //## FOR $DTYPE$ IN (double, float):
+            //## FOR $DTYPE$ IN (double, float, short):
                 w->rec_lo_$DTYPE$[i] = wtmp->dec_lo_$DTYPE$[wtmp->dec_len-1-i];
                 w->rec_hi_$DTYPE$[i] = wtmp->dec_hi_$DTYPE$[wtmp->dec_len-1-i];
             //## ENDFOR $DTYPE$
         }
 
         for(i = 0; i < w->dec_len; ++i){
-            //## FOR $DTYPE$ IN (double, float):
+            //## FOR $DTYPE$ IN (double, float, short):
                 w->dec_hi_$DTYPE$[i] = wtmp->rec_hi_$DTYPE$[wtmp->rec_len-1-i];
                 w->dec_lo_$DTYPE$[i] = wtmp->rec_lo_$DTYPE$[wtmp->rec_len-1-i];
             //## ENDFOR $DTYPE$
@@ -93,7 +93,7 @@ Wavelet* wavelet(char name, int order)
             switch (order) {
                 //## FOR $ORDER$ IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20):
                 case $ORDER$:
-                    //## FOR $DTYPE$ IN (double, float):
+                    //## FOR $DTYPE$ IN (double, float, short):
                     w->dec_lo_$DTYPE$ = db$ORDER$_$DTYPE$[0];
                     w->dec_hi_$DTYPE$ = db$ORDER$_$DTYPE$[1];
                     w->rec_lo_$DTYPE$ = db$ORDER$_$DTYPE$[2];
@@ -126,7 +126,7 @@ Wavelet* wavelet(char name, int order)
             switch (order) {
                 //## FOR $ORDER$ IN (2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20):
                 case $ORDER$:
-                   //## FOR $DTYPE$ IN (double, float):
+                   //## FOR $DTYPE$ IN (double, float, short):
                     w->dec_lo_$DTYPE$ = sym$ORDER$_$DTYPE$[0];
                     w->dec_hi_$DTYPE$ = sym$ORDER$_$DTYPE$[1];
                     w->rec_lo_$DTYPE$ = sym$ORDER$_$DTYPE$[2];
@@ -159,7 +159,7 @@ Wavelet* wavelet(char name, int order)
             switch (order) {
                 //## FOR $ORDER$ IN (1, 2, 3, 4, 5):
                 case $ORDER$:
-                    //## FOR $DTYPE$ IN (double, float):
+                    //## FOR $DTYPE$ IN (double, float, short):
                     w->dec_lo_$DTYPE$ = coif$ORDER$_$DTYPE$[0];
                     w->dec_hi_$DTYPE$ = coif$ORDER$_$DTYPE$[1];
                     w->rec_lo_$DTYPE$ = coif$ORDER$_$DTYPE$[2];
@@ -191,7 +191,7 @@ Wavelet* wavelet(char name, int order)
                 switch (order) {
                     //## FOR $M$ IN (1, 3, 5):
                         case 1$M$:
-                            //## FOR $DTYPE$ IN (double, float):
+                            //## FOR $DTYPE$ IN (double, float, short):
                                 w->dec_lo_$DTYPE$ = bior1_$M$_$DTYPE$[0];
                                 w->dec_hi_$DTYPE$ = bior1_$M$_$DTYPE$[1];
                                 w->rec_lo_$DTYPE$ = bior1_$M$_$DTYPE$[2];
@@ -203,7 +203,7 @@ Wavelet* wavelet(char name, int order)
 
                     //## FOR $M$ IN (2, 4, 6, 8):
                         case 2$M$:
-                            //## FOR $DTYPE$ IN (double, float):
+                            //## FOR $DTYPE$ IN (double, float, short):
                                 w->dec_lo_$DTYPE$ = bior2_$M$_$DTYPE$[0];
                                 w->dec_hi_$DTYPE$ = bior2_$M$_$DTYPE$[1];
                                 w->rec_lo_$DTYPE$ = bior2_$M$_$DTYPE$[2];
@@ -215,7 +215,7 @@ Wavelet* wavelet(char name, int order)
 
                     //## FOR $M$ IN (1, 3, 5, 7, 9):
                         case 3$M$:
-                            //## FOR $DTYPE$ IN (double, float):
+                            //## FOR $DTYPE$ IN (double, float, short):
                                 w->dec_lo_$DTYPE$ = bior3_$M$_$DTYPE$[0];
                                 w->dec_hi_$DTYPE$ = bior3_$M$_$DTYPE$[1];
                                 w->rec_lo_$DTYPE$ = bior3_$M$_$DTYPE$[2];
@@ -227,7 +227,7 @@ Wavelet* wavelet(char name, int order)
 
                     //## FOR $M$ IN (4,):
                         case 4$M$:
-                            //## FOR $DTYPE$ IN (double, float):
+                            //## FOR $DTYPE$ IN (double, float, short):
                                 w->dec_lo_$DTYPE$ = bior4_$M$_$DTYPE$[0];
                                 w->dec_hi_$DTYPE$ = bior4_$M$_$DTYPE$[1];
                                 w->rec_lo_$DTYPE$ = bior4_$M$_$DTYPE$[2];
@@ -239,7 +239,7 @@ Wavelet* wavelet(char name, int order)
 
                     //## FOR $M$ IN (5,):
                         case 5$M$:
-                            //## FOR $DTYPE$ IN (double, float):
+                            //## FOR $DTYPE$ IN (double, float, short):
                                 w->dec_lo_$DTYPE$ = bior5_$M$_$DTYPE$[0];
                                 w->dec_hi_$DTYPE$ = bior5_$M$_$DTYPE$[1];
                                 w->rec_lo_$DTYPE$ = bior5_$M$_$DTYPE$[2];
@@ -251,7 +251,7 @@ Wavelet* wavelet(char name, int order)
 
                     //## FOR $M$ IN (8,):
                         case 6$M$:
-                            //## FOR $DTYPE$ IN (double, float):
+                            //## FOR $DTYPE$ IN (double, float, short):
                                 w->dec_lo_$DTYPE$ = bior6_$M$_$DTYPE$[0];
                                 w->dec_hi_$DTYPE$ = bior6_$M$_$DTYPE$[1];
                                 w->rec_lo_$DTYPE$ = bior6_$M$_$DTYPE$[2];
@@ -282,7 +282,7 @@ Wavelet* wavelet(char name, int order)
             w->family_name = "Discrete Meyer (FIR Approximation)";
             w->short_name = "dmey";
 
-            //## FOR $DTYPE$ IN (double, float):
+            //## FOR $DTYPE$ IN (double, float, short):
                 w->dec_lo_$DTYPE$ = dmey_$DTYPE$[0];
                 w->dec_hi_$DTYPE$ = dmey_$DTYPE$[1];
                 w->rec_lo_$DTYPE$ = dmey_$DTYPE$[2];
@@ -323,7 +323,7 @@ Wavelet* blank_wavelet(index_t filters_length)
 
     w->dec_len = w->rec_len = filters_length;
 
-    //## FOR $DTYPE$ IN (double, float):
+    //## FOR $DTYPE$ IN (double, float, short):
         w->dec_lo_$DTYPE$ = wtcalloc(filters_length, sizeof($DTYPE$));
         w->dec_hi_$DTYPE$ = wtcalloc(filters_length, sizeof($DTYPE$));
         w->rec_lo_$DTYPE$ = wtcalloc(filters_length, sizeof($DTYPE$));
@@ -367,7 +367,7 @@ Wavelet* copy_wavelet(Wavelet* base)
 
     w->_builtin = 0;
 
-    //## FOR $DTYPE$ IN (double, float):
+    //## FOR $DTYPE$ IN (double, float, short):
 
         w->dec_lo_$DTYPE$ = wtcalloc(w->dec_len, sizeof($DTYPE$));
         w->dec_hi_$DTYPE$ = wtcalloc(w->dec_len, sizeof($DTYPE$));
@@ -401,7 +401,7 @@ void free_wavelet(Wavelet *w){
     if(w->_builtin == 0){
 
         // dealocate filters
-        //## FOR $DTYPE$ IN (double, float):        
+        //## FOR $DTYPE$ IN (double, float, short):        
             if(w->dec_lo_$DTYPE$ != NULL){
                 wtfree(w->dec_lo_$DTYPE$);
                 w->dec_lo_$DTYPE$ = NULL;

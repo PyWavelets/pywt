@@ -19,7 +19,7 @@
 // _a suffix - wavelet transform aproximations
 // _d suffix - wavelet transform details
 
-//## FOR $DTYPE$ IN (double, float):
+//## FOR $DTYPE$ IN (double, float, short):
 
 // Single level decomposition
 int $DTYPE$_dec_a($DTYPE$ input[], index_t input_len,

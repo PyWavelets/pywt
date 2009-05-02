@@ -92,5 +92,42 @@ int float_swt_d(float input[], index_t input_len,
                   Wavelet* wavelet,
                   float output[], index_t output_len,
                   int level);
+// Single level decomposition
+int short_dec_a(short input[], index_t input_len,
+                  Wavelet* wavelet,
+                  short output[], index_t output_len,
+                  MODE mode);
+
+int short_dec_d(short input[], index_t input_len,
+                  Wavelet* wavelet,
+                  short output[], index_t output_len,
+                  MODE mode);
+
+// Single level reconstruction
+int short_rec_a(short coeffs_a[], index_t coeffs_len,
+                  Wavelet* wavelet,
+                  short output[], index_t output_len);
+
+int short_rec_d(short coeffs_d[], index_t coeffs_len,
+                  Wavelet* wavelet,
+                  short output[], index_t output_len);
+
+// Single level IDWT reconstruction
+int short_idwt(short coeffs_a[], index_t coeffs_a_len,
+                 short coeffs_d[], index_t coeffs_d_len,
+                 Wavelet* wavelet,
+                 short output[], index_t output_len,
+                 MODE mode, int fix_size_diff);
+
+// SWT decomposition at given level
+int short_swt_a(short input[], index_t input_len,
+                  Wavelet* wavelet,
+                  short output[], index_t output_len,
+                  int level);
+
+int short_swt_d(short input[], index_t input_len,
+                  Wavelet* wavelet,
+                  short output[], index_t output_len,
+                  int level);
 
 #endif

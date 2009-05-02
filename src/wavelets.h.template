@@ -22,7 +22,7 @@ typedef enum {
 // Wavelet structure holding pointers to filter arays and property attributes
 typedef struct {
     
-    //## FOR $DTYPE$ IN (double, float):
+    //## FOR $DTYPE$ IN (double, float, short):
         $DTYPE$* dec_hi_$DTYPE$;        // highpass decomposition
         $DTYPE$* dec_lo_$DTYPE$;        // lowpass    decomposition
         $DTYPE$* rec_hi_$DTYPE$;        // highpass reconstruction

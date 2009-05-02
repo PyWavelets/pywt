@@ -51,6 +51,9 @@ cdef extern from "array_interface.h":
     cdef float* PyArrayInterface_DATA_AS_FLOAT32_C_ARRAY(PyGenericArrayInterface* )
     cdef float* PyArrayInterface_DATA_AS_FLOAT32_C_ARRAY_RO(PyGenericArrayInterface* )
 
+    cdef short* PyArrayInterface_DATA_AS_SHORT_C_ARRAY(PyGenericArrayInterface* )
+    cdef short* PyArrayInterface_DATA_AS_SHORT_C_ARRAY_RO(PyGenericArrayInterface* )
+    
     cdef void* PyArrayInterface_DATA_AS_FLOAT_C_ARRAY(PyGenericArrayInterface* )
     cdef void* PyArrayInterface_DATA_AS_FLOAT_C_ARRAY_RO(PyGenericArrayInterface* )
 
@@ -60,6 +63,8 @@ cdef extern from "array_interface.h":
     cdef int PyArrayInterface_CHECK(PyGenericArrayInterface* )
     cdef int PyArrayInterface_CHECK_1D(PyGenericArrayInterface* )
     cdef int PyArrayInterface_CHECK_2D(PyGenericArrayInterface* )
+
+    cdef int PyArrayInterface_IS_KIND(PyGenericArrayInterface* , char)
 
     int PyArrayInterface_TWO(PyGenericArrayInterface*)            
     int PyArrayInterface_ND(PyGenericArrayInterface*)             

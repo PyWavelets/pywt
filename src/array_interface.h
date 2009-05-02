@@ -95,6 +95,13 @@ typedef struct  {
             (PyArrayInterface_IS_C_ARRAY_RO(ai) && PyArrayInterface_IS_KIND(ai, PyArrayKind_FLOAT) && (PyArrayInterface_ITEMSIZE(ai) == 4)) \
                 ? ((float*)(ai)->data) : NULL )
 
+#define PyArrayInterface_DATA_AS_SHORT_C_ARRAY(ai)     ( \
+            (PyArrayInterface_IS_C_ARRAY(ai) && PyArrayInterface_IS_KIND(ai, PyArrayKind_INT) && (PyArrayInterface_ITEMSIZE(ai) == 2)) \
+                ? ((float*)(ai)->data) : NULL )
+
+#define PyArrayInterface_DATA_AS_SHORT_C_ARRAY_RO(ai)  ( \
+            (PyArrayInterface_IS_C_ARRAY_RO(ai) && PyArrayInterface_IS_KIND(ai, PyArrayKind_INT) && (PyArrayInterface_ITEMSIZE(ai) == 2)) \
+                ? ((float*)(ai)->data) : NULL )
 
 #define PyArrayInterface_DATA_AS_FLOAT_C_ARRAY_RO(ai)  ( \
             (PyArrayInterface_IS_C_ARRAY_RO(ai) && PyArrayInterface_IS_KIND(ai, PyArrayKind_FLOAT) \

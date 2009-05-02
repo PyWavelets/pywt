@@ -29,6 +29,10 @@ typedef struct {
         float* dec_lo_float;        // lowpass    decomposition
         float* rec_hi_float;        // highpass reconstruction
         float* rec_lo_float;        // lowpass    reconstruction
+        short* dec_hi_short;        // highpass decomposition
+        short* dec_lo_short;        // lowpass    decomposition
+        short* rec_hi_short;        // highpass reconstruction
+        short* rec_lo_short;        // lowpass    reconstruction
     
     index_t dec_len;                // length of decomposition filter
     index_t rec_len;                // length of reconstruction filter

@@ -52,6 +52,10 @@ cdef extern from "wavelets.h":
         float* dec_lo_float      # lowpass   decomposition
         float* rec_hi_float      # highpass reconstruction
         float* rec_lo_float      # lowpass   reconstruction
+        short* dec_hi_short      # highpass decomposition
+        short* dec_lo_short      # lowpass   decomposition
+        short* rec_hi_short      # highpass reconstruction
+        short* rec_lo_short      # lowpass   reconstruction
         
         index_t dec_len         # length of decomposition filter
         index_t rec_len         # length of reconstruction filter
@@ -106,4 +110,15 @@ cdef extern from "wt.h":
 
     cdef int float_swt_a(float input[], index_t input_len, Wavelet* wavelet, float output[], index_t output_len, int level)
     cdef int float_swt_d(float input[], index_t input_len, Wavelet* wavelet, float output[], index_t output_len, int level)
+    cdef int short_dec_a(short input[], index_t input_len, Wavelet* wavelet, short output[], index_t output_len, MODE mode)
+    cdef int short_dec_d(short input[], index_t input_len, Wavelet* wavelet, short output[], index_t output_len, MODE mode)
+
+    cdef int short_rec_a(short coeffs_a[], index_t coeffs_len, Wavelet* wavelet, short output[], index_t output_len)
+    cdef int short_rec_d(short coeffs_d[], index_t coeffs_len, Wavelet* wavelet, short output[], index_t output_len)
+
+    cdef int short_idwt(short coeffs_a[], index_t coeffs_a_len, short coeffs_d[], index_t coeffs_d_len,
+                        Wavelet* wavelet, short output[], index_t output_len, MODE mode, int correct_size)
+
+    cdef int short_swt_a(short input[], index_t input_len, Wavelet* wavelet, short output[], index_t output_len, int level)
+    cdef int short_swt_d(short input[], index_t input_len, Wavelet* wavelet, short output[], index_t output_len, int level)
 

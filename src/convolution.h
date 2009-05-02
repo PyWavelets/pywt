@@ -25,16 +25,19 @@
 // memory efficient version
 int double_downsampling_convolution(const double* input, const_index_t N, const double* filter, const_index_t F, double* output, const_index_t step, MODE mode);
 int float_downsampling_convolution(const float* input, const_index_t N, const float* filter, const_index_t F, float* output, const_index_t step, MODE mode);
+int short_downsampling_convolution(const short* input, const_index_t N, const short* filter, const_index_t F, short* output, const_index_t step, MODE mode);
 
 // Straightfoward implementation with memory reallocation - for very short signals (shorter than filter).
 // This id called from downsampling_convolution
 int double_allocating_downsampling_convolution(const double* input, const_index_t N, const double* filter, const_index_t F, double* output, const_index_t step, MODE mode);
 int float_allocating_downsampling_convolution(const float* input, const_index_t N, const float* filter, const_index_t F, float* output, const_index_t step, MODE mode);
+int short_allocating_downsampling_convolution(const short* input, const_index_t N, const short* filter, const_index_t F, short* output, const_index_t step, MODE mode);
 
 // standard convolution
 // decimation step = 1
 // #define double_convolution(data, data_len, filter, filter_len, output) double_downsampling_convolution(data, data_len, filter, filter_len, output, 1, MODE_ZEROPAD);
 // #define float_convolution(data, data_len, filter, filter_len, output) float_downsampling_convolution(data, data_len, filter, filter_len, output, 1, MODE_ZEROPAD);
+// #define short_convolution(data, data_len, filter, filter_len, output) short_downsampling_convolution(data, data_len, filter, filter_len, output, 1, MODE_ZEROPAD);
 
 ///////////////////////////////////////////////////////////////////////////////
 // Performs normal (full) convolution of "upsampled" input coeffs array with filter
@@ -50,11 +53,13 @@ int float_allocating_downsampling_convolution(const float* input, const_index_t 
 // mode     - signal extension mode
 int double_upsampling_convolution_full(const double* input, const_index_t N, const double* filter, const_index_t F, double* output, const_index_t O);
 int float_upsampling_convolution_full(const float* input, const_index_t N, const float* filter, const_index_t F, float* output, const_index_t O);
+int short_upsampling_convolution_full(const short* input, const_index_t N, const short* filter, const_index_t F, short* output, const_index_t O);
 
 // Performs valid convolution (signals must overlap)
 // Extends (virtually) input for MODE_PERIODIZATION.
 int double_upsampling_convolution_valid_sf(const double* input, const_index_t N, const double* filter, const_index_t F, double* output, const_index_t O, MODE mode);
 int float_upsampling_convolution_valid_sf(const float* input, const_index_t N, const float* filter, const_index_t F, float* output, const_index_t O, MODE mode);
+int short_upsampling_convolution_valid_sf(const short* input, const_index_t N, const short* filter, const_index_t F, short* output, const_index_t O, MODE mode);
 
 // TODO
 // for SWT

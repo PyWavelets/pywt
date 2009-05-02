@@ -24,21 +24,21 @@
 
 // memory efficient version
 
-//##FOR $DTYPE$ in (double, float):
+//##FOR $DTYPE$ in (double, float, short):
 int $DTYPE$_downsampling_convolution(const $DTYPE$* input, const_index_t N, const $DTYPE$* filter, const_index_t F, $DTYPE$* output, const_index_t step, MODE mode);
 //##ENDFOR $DTYPE$
 
 // Straightfoward implementation with memory reallocation - for very short signals (shorter than filter).
 // This id called from downsampling_convolution
 
-//##FOR $DTYPE$ in (double, float):
+//##FOR $DTYPE$ in (double, float, short):
 int $DTYPE$_allocating_downsampling_convolution(const $DTYPE$* input, const_index_t N, const $DTYPE$* filter, const_index_t F, $DTYPE$* output, const_index_t step, MODE mode);
 //##ENDFOR $DTYPE$
 
 // standard convolution
 // decimation step = 1
 
-//##FOR $DTYPE$ in (double, float):
+//##FOR $DTYPE$ in (double, float, short):
 // #define $DTYPE$_convolution(data, data_len, filter, filter_len, output) $DTYPE$_downsampling_convolution(data, data_len, filter, filter_len, output, 1, MODE_ZEROPAD);
 //##ENDFOR $DTYPE$
 
@@ -55,14 +55,14 @@ int $DTYPE$_allocating_downsampling_convolution(const $DTYPE$* input, const_inde
 // O        - output lenght (currently not used)
 // mode     - signal extension mode
 
-//##FOR $DTYPE$ in (double, float):
+//##FOR $DTYPE$ in (double, float, short):
 int $DTYPE$_upsampling_convolution_full(const $DTYPE$* input, const_index_t N, const $DTYPE$* filter, const_index_t F, $DTYPE$* output, const_index_t O);
 //##ENDFOR $DTYPE$
 
 // Performs valid convolution (signals must overlap)
 // Extends (virtually) input for MODE_PERIODIZATION.
 
-//##FOR $DTYPE$ in (double, float):
+//##FOR $DTYPE$ in (double, float, short):
 int $DTYPE$_upsampling_convolution_valid_sf(const $DTYPE$* input, const_index_t N, const $DTYPE$* filter, const_index_t F, $DTYPE$* output, const_index_t O, MODE mode);
 //##ENDFOR $DTYPE$
 

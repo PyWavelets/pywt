@@ -13,7 +13,7 @@ Provides efficient mathematical functions and array datatypes.
 
 from numpy import ndarray, array, asarray
 from numpy import empty, zeros, linspace, arange
-from numpy import intp, float64, float32
+from numpy import intp, float64, float32, short
 from numpy import transpose, concatenate
 from numpy import cumsum, cos, diff, exp, sinc
 from numpy import argmax, mean
@@ -29,11 +29,19 @@ def as_float_array(source):
         return source
     return array(source, default_dtype)
 
+def as_float_or_int_array(source):
+    if isinstance(source, ndarray) and (source.dtype == float64 or source.dtype == float32 or source.dtype == short):
+        return source
+    return array(source, default_dtype)
+
 def contiguous_float64_array_from_any(source):
     return array(source, float64) # ensure contiguous
 
 def contiguous_float32_array_from_any(source):
     return array(source, float32) # ensure contiguous
+
+def contiguous_short_array_from_any(source):
+    return array(source, short) # ensure contiguous
 
 def astype(source, dtype):
     return asarray(source, dtype)
@@ -43,6 +51,9 @@ def float64_memory_buffer_object(size):
 
 def float32_memory_buffer_object(size):
     return zeros((size,), float32)
+
+def short_memory_buffer_object(size):
+    return zeros((size,), short)
 
 def is_array_type(arr, typ):
     return isinstance(arr, ndarray) and arr.dtype == typ

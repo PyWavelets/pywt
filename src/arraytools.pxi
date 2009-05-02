@@ -6,6 +6,7 @@
 cdef enum DTYPE: # itemsize
     FLOAT32 = 4
     FLOAT64 = 8
+    SHORT   = 2
 
 cdef struct Buffer:
     void* data
@@ -17,6 +18,8 @@ cdef object memory_buffer_object(Py_ssize_t length, DTYPE dtype):
         return float64_memory_buffer_object(length)
     elif dtype == FLOAT32:
         return float32_memory_buffer_object(length)
+    elif dtype == SHORT:
+        return short_memory_buffer_object(length)
     else:
         raise ValueError("dtype must be in (%s, %s), not %s." % (FLOAT32, FLOAT64, dtype))
 
@@ -25,7 +28,7 @@ cdef object memory_buffer_object(Py_ssize_t length, DTYPE dtype):
 
 #void** buffer_addr, index_t* buffer_len, unsigned int* itemsize
 
-cdef int array_object_as_float_buffer(object source, Buffer* buffer, char rwmode) except -1:
+cdef int array_object_as_float_or_int_buffer(object source, Buffer* buffer, char rwmode) except -1:
     # Get object buffer for reading (rwmode = 'r') or writing (rwmode = 'w')
     #
     # source      - source object exposing array interfce
@@ -60,19 +63,25 @@ cdef int array_object_as_float_buffer(object source, Buffer* buffer, char rwmode
             buffer.len = data_len
 
             if rwmode == c'w':
-                data = c_array_interface.PyArrayInterface_DATA_AS_FLOAT_C_ARRAY(array_struct)
+                if c_array_interface.PyArrayInterface_IS_KIND(array_struct, c_array_interface.PyArrayKind_INT):
+                    data = c_array_interface.PyArrayInterface_DATA_AS_SHORT_C_ARRAY(array_struct)
+                else:
+                    data = c_array_interface.PyArrayInterface_DATA_AS_FLOAT_C_ARRAY(array_struct)
             elif rwmode == c'r':
-                data = c_array_interface.PyArrayInterface_DATA_AS_FLOAT_C_ARRAY_RO(array_struct)
+                if c_array_interface.PyArrayInterface_IS_KIND(array_struct, c_array_interface.PyArrayKind_INT):
+                    data = c_array_interface.PyArrayInterface_DATA_AS_SHORT_C_ARRAY_RO(array_struct)
+                else:
+                    data = c_array_interface.PyArrayInterface_DATA_AS_FLOAT_C_ARRAY_RO(array_struct)
             else:
                 raise ValueError("rwmode value not in (c'r', c'w').")
                 return -1
             
             if data is NULL:
-                return -2 # not C contiguous array or data type is not double or float, fail silently
+                return -2 # not C contiguous array or data type is not double or float or short, fail silently
 
             buffer.data = data
             buffer.dtype = <DTYPE> c_array_interface.PyArrayInterface_ITEMSIZE(array_struct)
-            assert buffer.dtype == FLOAT32 or buffer.dtype == FLOAT64
+            assert buffer.dtype == FLOAT32 or buffer.dtype == FLOAT64 or buffer.dtype == SHORT
             
             return 0 # ok
         return -2 # not cobject, fail silently
@@ -80,10 +89,10 @@ cdef int array_object_as_float_buffer(object source, Buffer* buffer, char rwmode
 
 cdef object array_as_buffer(object input, Buffer* buffer, char mode):
     cdef object alt_input
-    if array_object_as_float_buffer(input, buffer, mode) < 0:
+    if array_object_as_float_or_int_buffer(input, buffer, mode) < 0:
         # try to convert the input
         alt_input = contiguous_float64_array_from_any(input)
-        if array_object_as_float_buffer(alt_input, buffer, mode) < 0:
+        if array_object_as_float_or_int_buffer(alt_input, buffer, mode) < 0:
             raise TypeError("Invalid data type. 1D array or list object required.")
         return alt_input # return reference to the new object. This reference must
                          # be kept until processing is finished!
@@ -124,6 +133,14 @@ cdef void copy_object_to_float64_array(source, double* dest) except *:
 cdef void copy_object_to_float32_array(source, float* dest) except *:
     cdef index_t i
     cdef float x
+    i = 0
+    for x in source:
+        dest[i] = x
+        i = i + 1
+
+cdef void copy_object_to_short_array(source, short* dest) except *:
+    cdef index_t i
+    cdef short x
     i = 0
     for x in source:
         dest[i] = x
