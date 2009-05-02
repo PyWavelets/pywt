@@ -1,3 +1,8 @@
+# Copyright (c) 2006-2009 Filip Wasilewski <http://filipwasilewski.pl/>
+# See COPYING for license details.
+
+# $Id$
+
 cdef enum DTYPE: # itemsize
     FLOAT32 = 4
     FLOAT64 = 8

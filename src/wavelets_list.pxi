@@ -1,6 +1,9 @@
-##
+# Copyright (c) 2006-2009 Filip Wasilewski <http://filipwasilewski.pl/>
+# See COPYING for license details.
+
+# $Id$
+
 ## Mapping of wavelet names to the C backend codes
-##
 
 cdef __wname_to_code
 __wname_to_code = {

@@ -1,7 +1,7 @@
-// Copyright (c) 2006-2008 Filip Wasilewski <filip.wasilewski@gmail.com>
+// Copyright (c) 2006-2009 Filip Wasilewski <http://filipwasilewski.pl/>
 // See COPYING for license details.
 
-// $Id: wt.c.template 81 2007-09-11 23:21:36Z filipw $
+// $Id$
 
 #include "wt.h"
 

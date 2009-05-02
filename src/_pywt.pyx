@@ -1,5 +1,7 @@
-# Copyright (c) 2006-2008 Filip Wasilewski <filip.wasilewski@gmail.com>
+# Copyright (c) 2006-2009 Filip Wasilewski <http://filipwasilewski.pl/>
 # See COPYING for license details.
+
+# $Id$
 
 __id__ = "$Id$"
 __doc__ = """Pyrex wrapper for low-level C wavelet transform implementation."""

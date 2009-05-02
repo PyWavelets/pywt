@@ -1,7 +1,7 @@
-// Copyright (c) 2006-2008 Filip Wasilewski <filip.wasilewski@gmail.com>
+// Copyright (c) 2006-2009 Filip Wasilewski <http://filipwasilewski.pl/>
 // See COPYING for license details.
 
-// $Id: convolution.h.template 81 2007-09-11 23:21:36Z filipw $
+// $Id$
 
 #ifndef _CONVOLUTION_H_
 #define _CONVOLUTION_H_
