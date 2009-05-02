@@ -1,4 +1,9 @@
 #!/usr/bin/env python
 
 import doctest
-doctest.testfile("../doc/index.rst")
+import glob
+
+files = glob.glob("../doc/*.rst")
+for path in files:
+    print "testing %s" % path
+    doctest.testfile(path)
