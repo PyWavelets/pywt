@@ -4,7 +4,7 @@
 # Author: Filip Wasilewski
 # Date: $Date$
 
-# Ok, not really a full-featured templating language, but good enought
+# Ok, not really a full-featured templating language, but good enough
 # to keep the code easier to maintain.
 # PS. For internal use only ;)
 
@@ -54,7 +54,7 @@ def expand_template(s):
         ... start block ...
         $variable$
         ... end block ...
-    ENDFOR
+    ENDFOR $variable$
     
     The above will repeat the block for every value from the list each time
     substituting the $variable$ with the current value.
