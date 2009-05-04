@@ -1,0 +1,289 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Inverse Discrete Wavelet Transform (IDWT) &mdash; PyWavelets Documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyWavelets Documentation" href="../index.html" />
+    <link rel="up" title="API Reference" href="index.html" />
+    <link rel="next" title="Signal extension modes" href="modes.html" />
+    <link rel="prev" title="Discrete Wavelet Transform (DWT)" href="dwt.html" />
+     
+    <meta name="description" content="PyWavelets is a scientific Python module for Wavelet Transform calculations." />
+    <meta name="keywords" content="PyWavelets, wavelets, Python, wavelet transform, discrete wavelet transform, dwt, idwt, swt, wavelet packets, stationary wavelet transform, pywt, Filip Wasilewski" />
+	<meta name="author" content="Filip Wasilewski" />
+	<meta name="Distribution" content="Global" />
+	<meta name="Robots" content="INDEX,FOLLOW" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="modes.html" title="Signal extension modes"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="dwt.html" title="Discrete Wavelet Transform (DWT)"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">PyWavelets Documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">API Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="ref-idwt"></span><div class="section" id="inverse-discrete-wavelet-transform-idwt">
+<h1>Inverse Discrete Wavelet Transform (IDWT)<a class="headerlink" href="#inverse-discrete-wavelet-transform-idwt" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="single-level-idwt">
+<h2>Single level <tt class="docutils literal"><span class="pre">idwt</span></tt><a class="headerlink" href="#single-level-idwt" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pywt.idwt">
+<tt class="descclassname">pywt.</tt><tt class="descname">idwt</tt><big>(</big><em>cA</em>, <em>cD</em>, <em>wavelet</em><span class="optional">[</span>, <em>mode='sym'</em><span class="optional">[</span>, <em>correct_size=0</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#pywt.idwt" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a title="pywt.idwt" class="reference internal" href="#pywt.idwt"><tt class="xref docutils literal"><span class="pre">idwt()</span></tt></a> function reconstructs data from the given coefficients by
+performing single level Inverse Discrete Wavelet Transform.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>cA</em> &#8211; Approximation coefficients.</li>
+<li><em>cD</em> &#8211; Detail coefficients.</li>
+<li><em>wavelet</em> &#8211; Wavelet to use in the transform. This can be a name of the wavelet from the <cite>pywt.wavelist</cite> list or a <cite>Wavelet</cite> object instance.</li>
+<li><em>mode</em> &#8211; Signal extension mode to deal with the border distortion problem. See <cite>MODES</cite> for details. This is only important when DWT was performed in
+<a class="reference external" href="modes.html#modes-per"><em>periodization</em></a> mode.</li>
+<li><em>correct_size</em> &#8211; Typically, <em>cA</em> and <em>cD</em> coefficients lists must have
+equal lengths in order to perform IDWT. Setting
+<em>correct_size</em> to <cite>True</cite> allows <em>cA</em> to be greater in
+size by one element compared to the <em>cD</em> size. This
+option is very useful when doing multilevel decomposition
+and reconstruction (as for example with the
+<a title="pywt.wavedec" class="reference external" href="dwt.html#pywt.wavedec"><tt class="xref docutils literal"><span class="pre">wavedec()</span></tt></a> function) of non-dyadic length signals
+when such minor differences can occur at various levels
+of IDWT.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example:</strong></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pywt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">cA</span><span class="p">,</span> <span class="n">cD</span><span class="p">)</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">dwt</span><span class="p">([</span><span class="mf">1</span><span class="p">,</span><span class="mf">2</span><span class="p">,</span><span class="mf">3</span><span class="p">,</span><span class="mf">4</span><span class="p">,</span><span class="mf">5</span><span class="p">,</span><span class="mf">6</span><span class="p">],</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="s">&#39;sp1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">pywt</span><span class="o">.</span><span class="n">idwt</span><span class="p">(</span><span class="n">cA</span><span class="p">,</span> <span class="n">cD</span><span class="p">,</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="s">&#39;sp1&#39;</span><span class="p">)</span>
+<span class="go">[ 1.  2.  3.  4.  5.  6.]</span>
+</pre></div>
+</div>
+<p>One of the neat features of <a title="pywt.idwt" class="reference internal" href="#pywt.idwt"><tt class="xref docutils literal"><span class="pre">idwt()</span></tt></a> is that one of the <em>cA</em> and <em>cD</em>
+arguments can be set to <tt class="xref docutils literal"><span class="pre">None</span></tt>. In that situation the reconstruction will be
+performed using only the other one. Mathematically speaking, this is
+equivalent to passing a zero-filled array as one of the arguments.</p>
+<p><strong>Example:</strong></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pywt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">cA</span><span class="p">,</span> <span class="n">cD</span><span class="p">)</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">dwt</span><span class="p">([</span><span class="mf">1</span><span class="p">,</span><span class="mf">2</span><span class="p">,</span><span class="mf">3</span><span class="p">,</span><span class="mf">4</span><span class="p">,</span><span class="mf">5</span><span class="p">,</span><span class="mf">6</span><span class="p">],</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="s">&#39;sp1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">idwt</span><span class="p">(</span><span class="n">cA</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="s">&#39;sp1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">D</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">idwt</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="n">cD</span><span class="p">,</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="s">&#39;sp1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">A</span> <span class="o">+</span> <span class="n">D</span>
+<span class="go">[ 1.  2.  3.  4.  5.  6.]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<div class="section" id="multilevel-reconstruction-using-waverec">
+<h3>Multilevel reconstruction using <tt class="docutils literal"><span class="pre">waverec</span></tt><a class="headerlink" href="#multilevel-reconstruction-using-waverec" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="pywt.waverec">
+<tt class="descclassname">pywt.</tt><tt class="descname">waverec</tt><big>(</big><em>coeffs</em>, <em>wavelet</em><span class="optional">[</span>, <em>mode='sym'</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#pywt.waverec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs multilevel reconstruction of signal from the given list of
+coefficients.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>coeffs</em> &#8211; <p>Coefficients list must be in the form like returned by <a title="pywt.wavedec" class="reference external" href="dwt.html#pywt.wavedec"><tt class="xref docutils literal"><span class="pre">wavedec()</span></tt></a> decomposition function, which is:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">[</span><span class="n">cAn</span><span class="p">,</span> <span class="n">cDn</span><span class="p">,</span> <span class="n">cDn</span><span class="o">-</span><span class="mf">1</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="n">cD2</span><span class="p">,</span> <span class="n">cD1</span><span class="p">]</span>
+</pre></div>
+</div>
+</li>
+<li><em>wavelet</em> &#8211; Wavelet to use in the transform. This can be a name of the wavelet from the <cite>pywt.wavelist</cite> list or a <cite>Wavelet</cite> object instance.</li>
+<li><em>mode</em> &#8211; Signal extension mode to deal with the border distortion problem. See <cite>MODES</cite> for details.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example:</strong></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pywt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coeffs</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">wavedec</span><span class="p">([</span><span class="mf">1</span><span class="p">,</span><span class="mf">2</span><span class="p">,</span><span class="mf">3</span><span class="p">,</span><span class="mf">4</span><span class="p">,</span><span class="mf">5</span><span class="p">,</span><span class="mf">6</span><span class="p">,</span><span class="mf">7</span><span class="p">,</span><span class="mf">8</span><span class="p">],</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mf">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">pywt</span><span class="o">.</span><span class="n">waverec</span><span class="p">(</span><span class="n">coeffs</span><span class="p">,</span> <span class="s">&#39;db2&#39;</span><span class="p">)</span>
+<span class="go">[ 1.  2.  3.  4.  5.  6.  7.  8.]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="direct-reconstruction-with-upcoef">
+<h3>Direct reconstruction with <tt class="docutils literal"><span class="pre">upcoef</span></tt><a class="headerlink" href="#direct-reconstruction-with-upcoef" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="pywt.upcoef">
+<tt class="descclassname">pywt.</tt><tt class="descname">upcoef</tt><big>(</big><em>part</em>, <em>coeffs</em>, <em>wavelet</em><span class="optional">[</span>, <em>level=1</em><span class="optional">[</span>, <em>take=0</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#pywt.upcoef" title="Permalink to this definition">¶</a></dt>
+<dd><p>Direct reconstruction from coefficients.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>part</em> &#8211; <p>Defines the input coefficients type:</p>
+<ul>
+<li><strong>&#8216;a&#8217;</strong> - approximations reconstruction is performed</li>
+<li><strong>&#8216;d&#8217;</strong> - details reconstruction is performed</li>
+</ul>
+</li>
+<li><em>coeffs</em> &#8211; Coefficients array to reconstruct.</li>
+<li><em>wavelet</em> &#8211; Wavelet to use in the transform. This can be a name of the wavelet from the <cite>pywt.wavelist</cite> list or a <cite>Wavelet</cite> object instance.</li>
+<li><em>level</em> &#8211; If <em>level</em> value is specified then a multilevel reconstruction is
+performed (first reconstruction is of type specified by <em>part</em>
+and all the following ones with <em>part</em> type <tt class="docutils literal"><span class="pre">a</span></tt>)</li>
+<li><em>take</em> &#8211; If <em>take</em> is specified then only the central part of length equal
+to the <em>take</em> parameter value is returned.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example:</strong></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pywt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1</span><span class="p">,</span><span class="mf">2</span><span class="p">,</span><span class="mf">3</span><span class="p">,</span><span class="mf">4</span><span class="p">,</span><span class="mf">5</span><span class="p">,</span><span class="mf">6</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">cA</span><span class="p">,</span> <span class="n">cD</span><span class="p">)</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">dwt</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="s">&#39;sp1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">pywt</span><span class="o">.</span><span class="n">upcoef</span><span class="p">(</span><span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="n">cA</span><span class="p">,</span> <span class="s">&#39;db2&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">pywt</span><span class="o">.</span><span class="n">upcoef</span><span class="p">(</span><span class="s">&#39;d&#39;</span><span class="p">,</span> <span class="n">cD</span><span class="p">,</span> <span class="s">&#39;db2&#39;</span><span class="p">)</span>
+<span class="go">[-0.25       -0.4330127   1.          2.          3.          4.          5.</span>
+<span class="go">  6.          1.78589838 -1.03108891]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">pywt</span><span class="o">.</span><span class="n">upcoef</span><span class="p">(</span><span class="s">&#39;a&#39;</span><span class="p">,</span><span class="n">cA</span><span class="p">,</span><span class="s">&#39;db2&#39;</span><span class="p">,</span><span class="n">take</span><span class="o">=</span><span class="n">n</span><span class="p">)</span> <span class="o">+</span> <span class="n">pywt</span><span class="o">.</span><span class="n">upcoef</span><span class="p">(</span><span class="s">&#39;d&#39;</span><span class="p">,</span><span class="n">cD</span><span class="p">,</span><span class="s">&#39;db2&#39;</span><span class="p">,</span><span class="n">take</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+<span class="go">[ 1.  2.  3.  4.  5.  6.]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="">Inverse Discrete Wavelet Transform (IDWT)</a><ul>
+<li><a class="reference external" href="#single-level-idwt">Single level <tt class="docutils literal"><span class="pre">idwt</span></tt></a><ul>
+<li><a class="reference external" href="#multilevel-reconstruction-using-waverec">Multilevel reconstruction using <tt class="docutils literal"><span class="pre">waverec</span></tt></a></li>
+<li><a class="reference external" href="#direct-reconstruction-with-upcoef">Direct reconstruction with <tt class="docutils literal"><span class="pre">upcoef</span></tt></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="dwt.html"
+                                  title="previous chapter">Discrete Wavelet Transform (DWT)</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="modes.html"
+                                  title="next chapter">Signal extension modes</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/ref/idwt.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+<div>
+<h3>Quick links</h3>
+<ul>
+<li><a href="http://groups.google.com/group/pywavelets"><img src="../_static/comments.png" height="16" width="16" alt="" /> Visit Discussion Group</a></li>
+<li><a href="http://wavelets.scipy.org/moin/"><img src="../_static/page_edit.png" height="16" width="16" alt="" /> View Wiki Page</a></li>
+<li><a href="http://projects.scipy.org/wavelets/browser/pywt/trunk/"><img src="../_static/cog.png" height="16" width="16" alt="" /> Browse Source Code</a></li>
+<li><a href="http://wavelets.pybytes.com/"><img src="../_static/wave.png" height="16" width="16" alt="" /> Explore Wavelets</a></li>
+<li><a href="http://delicious.com/save" onclick="window.open('http://delicious.com/save?v=5&amp;noui&amp;jump=close&amp;url='+encodeURIComponent('http://www.pybytes.com/pywavelets/')+'&amp;title='+encodeURIComponent('PyWavelets - Discrete Wavelet Transform in Python'), 'delicious','toolbar=no,width=550,height=550'); return false;"><img src="http://static.delicious.com/img/delicious.small.gif" height="12" width="12" alt="Delicious" style="margin: 0 2px 0 2px;" /> Bookmark with Delicious</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="modes.html" title="Signal extension modes"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="dwt.html" title="Discrete Wavelet Transform (DWT)"
+             >previous</a> |</li>
+        <li><a href="../index.html">PyWavelets Documentation</a> &raquo;</li>
+          <li><a href="index.html" >API Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    
+    <div class="footer">
+      &copy; Copyright 2006-2009, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
+      Last updated on May 05, 2009.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.1.
+    </div>
+    <script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+    <script type="text/javascript">
+    var pageTracker = _gat._getTracker("UA-3396395-3");
+    pageTracker._initData();
+    pageTracker._trackPageview();
+    </script>
+
+  </body>
+</html>

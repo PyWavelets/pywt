@@ -1,0 +1,222 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Signal extension modes &mdash; PyWavelets Documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyWavelets Documentation" href="../index.html" />
+    <link rel="up" title="API Reference" href="index.html" />
+    <link rel="next" title="2D Forward and Inverse Discrete Wavelet Transform" href="2d-dwt-and-idwt.html" />
+    <link rel="prev" title="Inverse Discrete Wavelet Transform (IDWT)" href="idwt.html" />
+     
+    <meta name="description" content="PyWavelets is a scientific Python module for Wavelet Transform calculations." />
+    <meta name="keywords" content="PyWavelets, wavelets, Python, wavelet transform, discrete wavelet transform, dwt, idwt, swt, wavelet packets, stationary wavelet transform, pywt, Filip Wasilewski" />
+	<meta name="author" content="Filip Wasilewski" />
+	<meta name="Distribution" content="Global" />
+	<meta name="Robots" content="INDEX,FOLLOW" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="2d-dwt-and-idwt.html" title="2D Forward and Inverse Discrete Wavelet Transform"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="idwt.html" title="Inverse Discrete Wavelet Transform (IDWT)"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">PyWavelets Documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">API Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="ref-modes"></span><div class="section" id="signal-extension-modes">
+<h1>Signal extension modes<a class="headerlink" href="#signal-extension-modes" title="Permalink to this headline">¶</a></h1>
+<p id="modes">Because the most common and practical way of representing digital signals
+in computer science is with finite arrays of values, some extrapolation
+of the input data has to be performed in order to extend the signal before
+computing the <a class="reference external" href="dwt.html#ref-dwt"><em>Discrete Wavelet Transform</em></a> using the cascading
+filter banks algorithm.</p>
+<p>Depending on the extrapolation method, significant artifacts at the signal&#8217;s
+borders can be introduced during that process, which in turn may lead to
+inaccurate computations of the <a class="reference external" href="dwt.html#ref-dwt"><em>DWT</em></a> at the signal&#8217;s ends.</p>
+<p><cite>PyWavelets</cite> provides several methods of signal extrapolation that can be used to
+minimize this negative effect:</p>
+<blockquote>
+<ul id="modes-zpd">
+<li><p class="first"><tt class="docutils literal"><span class="pre">zpd</span></tt> - <strong>zero-padding</strong> - signal is extended by adding zero samples:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="o">...</span> <span class="mf">0</span>  <span class="mf">0</span> <span class="o">|</span> <span class="n">x1</span> <span class="n">x2</span> <span class="o">...</span> <span class="n">xn</span> <span class="o">|</span> <span class="mf">0</span>  <span class="mf">0</span> <span class="o">...</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<ul id="modes-cpd">
+<li><p class="first"><tt class="docutils literal"><span class="pre">cpd</span></tt> - <strong>constant-padding</strong> - border values are replicated:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="o">...</span> <span class="n">x1</span> <span class="n">x1</span> <span class="o">|</span> <span class="n">x1</span> <span class="n">x2</span> <span class="o">...</span> <span class="n">xn</span> <span class="o">|</span> <span class="n">xn</span> <span class="n">xn</span> <span class="o">...</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<ul id="modes-sym">
+<li><p class="first"><tt class="docutils literal"><span class="pre">sym</span></tt> - <strong>symmetric-padding</strong> - signal is extended by <em>mirroring</em>
+samples:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="o">...</span> <span class="n">x2</span> <span class="n">x1</span> <span class="o">|</span> <span class="n">x1</span> <span class="n">x2</span> <span class="o">...</span> <span class="n">xn</span> <span class="o">|</span> <span class="n">xn</span> <span class="n">xn</span><span class="o">-</span><span class="mf">1</span> <span class="o">...</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<ul id="periodic-padding">
+<span id="modes-ppd"></span><li><p class="first"><tt class="docutils literal"><span class="pre">ppd</span></tt> - <strong>periodic-padding</strong> - signal is treated as a periodic one:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="o">...</span> <span class="n">xn</span><span class="o">-</span><span class="mf">1</span> <span class="n">xn</span> <span class="o">|</span> <span class="n">x1</span> <span class="n">x2</span> <span class="o">...</span> <span class="n">xn</span> <span class="o">|</span> <span class="n">x1</span> <span class="n">x2</span> <span class="o">...</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<ul class="simple" id="modes-sp1">
+<li><tt class="docutils literal"><span class="pre">sp1</span></tt> - <strong>smooth-padding</strong> - signal is extended according to the first
+derivatives calculated on the edges (straight line)</li>
+</ul>
+</blockquote>
+<p><a class="reference external" href="dwt.html#ref-dwt"><em>DWT</em></a> performed for these extension modes is slightly redundant, but ensures
+perfect reconstruction. To receive the smallest possible number of coefficients,
+computations can be performed with the <a class="reference internal" href="#periodization">periodization</a> mode:</p>
+<blockquote>
+<ul class="simple" id="modes-per">
+<span id="periodization"></span><li><tt class="docutils literal"><span class="pre">per</span></tt> - <strong>periodization</strong> - is like <a class="reference internal" href="#periodic-padding">periodic-padding</a> but gives the
+smallest possible number of decomposition coefficients. <a class="reference external" href="idwt.html#ref-idwt"><em>IDWT</em></a> must be
+performed with the same mode.</li>
+</ul>
+<p><strong>Example:</strong></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pywt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">pywt</span><span class="o">.</span><span class="n">MODES</span><span class="o">.</span><span class="n">modes</span>
+<span class="go">[&#39;zpd&#39;, &#39;cpd&#39;, &#39;sym&#39;, &#39;ppd&#39;, &#39;sp1&#39;, &#39;per&#39;]</span>
+</pre></div>
+</div>
+</blockquote>
+<p>Notice that you can use any of the following ways of passing wavelet and mode
+parameters:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pywt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">dwt</span><span class="p">([</span><span class="mf">1</span><span class="p">,</span><span class="mf">2</span><span class="p">,</span><span class="mf">3</span><span class="p">,</span><span class="mf">4</span><span class="p">,</span><span class="mf">5</span><span class="p">,</span><span class="mf">6</span><span class="p">],</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="s">&#39;sp1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">dwt</span><span class="p">([</span><span class="mf">1</span><span class="p">,</span><span class="mf">2</span><span class="p">,</span><span class="mf">3</span><span class="p">,</span><span class="mf">4</span><span class="p">,</span><span class="mf">5</span><span class="p">,</span><span class="mf">6</span><span class="p">],</span> <span class="n">pywt</span><span class="o">.</span><span class="n">Wavelet</span><span class="p">(</span><span class="s">&#39;db2&#39;</span><span class="p">),</span> <span class="n">pywt</span><span class="o">.</span><span class="n">MODES</span><span class="o">.</span><span class="n">sp1</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Extending data in context of <cite>PyWavelets</cite> does not mean reallocation of the data
+in computer&#8217;s physical memory and copying values, but rather computing
+the extra values only when they are needed.
+This feature saves extra memory and CPU resources and helps to avoid page
+swapping when handling relatively big data arrays on computers with low
+physical memory.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="idwt.html"
+                                  title="previous chapter">Inverse Discrete Wavelet Transform (IDWT)</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="2d-dwt-and-idwt.html"
+                                  title="next chapter">2D Forward and Inverse Discrete Wavelet Transform</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/ref/modes.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+<div>
+<h3>Quick links</h3>
+<ul>
+<li><a href="http://groups.google.com/group/pywavelets"><img src="../_static/comments.png" height="16" width="16" alt="" /> Visit Discussion Group</a></li>
+<li><a href="http://wavelets.scipy.org/moin/"><img src="../_static/page_edit.png" height="16" width="16" alt="" /> View Wiki Page</a></li>
+<li><a href="http://projects.scipy.org/wavelets/browser/pywt/trunk/"><img src="../_static/cog.png" height="16" width="16" alt="" /> Browse Source Code</a></li>
+<li><a href="http://wavelets.pybytes.com/"><img src="../_static/wave.png" height="16" width="16" alt="" /> Explore Wavelets</a></li>
+<li><a href="http://delicious.com/save" onclick="window.open('http://delicious.com/save?v=5&amp;noui&amp;jump=close&amp;url='+encodeURIComponent('http://www.pybytes.com/pywavelets/')+'&amp;title='+encodeURIComponent('PyWavelets - Discrete Wavelet Transform in Python'), 'delicious','toolbar=no,width=550,height=550'); return false;"><img src="http://static.delicious.com/img/delicious.small.gif" height="12" width="12" alt="Delicious" style="margin: 0 2px 0 2px;" /> Bookmark with Delicious</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="2d-dwt-and-idwt.html" title="2D Forward and Inverse Discrete Wavelet Transform"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="idwt.html" title="Inverse Discrete Wavelet Transform (IDWT)"
+             >previous</a> |</li>
+        <li><a href="../index.html">PyWavelets Documentation</a> &raquo;</li>
+          <li><a href="index.html" >API Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    
+    <div class="footer">
+      &copy; Copyright 2006-2009, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
+      Last updated on May 05, 2009.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.1.
+    </div>
+    <script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+    <script type="text/javascript">
+    var pageTracker = _gat._getTracker("UA-3396395-3");
+    pageTracker._initData();
+    pageTracker._trackPageview();
+    </script>
+
+  </body>
+</html>

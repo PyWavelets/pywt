@@ -1,0 +1,187 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>PyWavelets - Discrete Wavelet Transform in Python &mdash; PyWavelets Documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="PyWavelets Documentation" href="" />
+    <link rel="next" title="Overview" href="overview.html" />
+     
+    <meta name="description" content="PyWavelets is a scientific Python module for Wavelet Transform calculations." />
+    <meta name="keywords" content="PyWavelets, wavelets, Python, wavelet transform, discrete wavelet transform, dwt, idwt, swt, wavelet packets, stationary wavelet transform, pywt, Filip Wasilewski" />
+	<meta name="author" content="Filip Wasilewski" />
+	<meta name="Distribution" content="Global" />
+	<meta name="Robots" content="INDEX,FOLLOW" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="overview.html" title="Overview"
+             accesskey="N">next</a> |</li>
+        <li><a href="">PyWavelets Documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="pywavelets-discrete-wavelet-transform-in-python">
+<h1>PyWavelets - Discrete Wavelet Transform in Python<a class="headerlink" href="#pywavelets-discrete-wavelet-transform-in-python" title="Permalink to this headline">¶</a></h1>
+<p>Contents:</p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="overview.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference external" href="overview.html#main-features">Main features</a></li>
+<li class="toctree-l2"><a class="reference external" href="overview.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference external" href="overview.html#download">Download</a></li>
+<li class="toctree-l2"><a class="reference external" href="overview.html#install">Install</a></li>
+<li class="toctree-l2"><a class="reference external" href="overview.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference external" href="overview.html#contact">Contact</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="ref/index.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference external" href="ref/wavelets.html">Wavelets</a></li>
+<li class="toctree-l2"><a class="reference external" href="ref/dwt.html">Discrete Wavelet Transform (DWT)</a></li>
+<li class="toctree-l2"><a class="reference external" href="ref/idwt.html">Inverse Discrete Wavelet Transform (IDWT)</a></li>
+<li class="toctree-l2"><a class="reference external" href="ref/modes.html">Signal extension modes</a></li>
+<li class="toctree-l2"><a class="reference external" href="ref/2d-dwt-and-idwt.html">2D Forward and Inverse Discrete Wavelet Transform</a></li>
+<li class="toctree-l2"><a class="reference external" href="ref/swt.html">Stationary Wavelet Transform</a></li>
+<li class="toctree-l2"><a class="reference external" href="ref/other-functions.html">Other functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="regression/index.html">Tests and usage examples</a><ul>
+<li class="toctree-l2"><a class="reference external" href="regression/wavelet.html">The Wavelet object</a></li>
+<li class="toctree-l2"><a class="reference external" href="regression/modes.html">Modes test</a></li>
+<li class="toctree-l2"><a class="reference external" href="regression/dwt-idwt.html">DWT and IDWT test</a></li>
+<li class="toctree-l2"><a class="reference external" href="regression/multilevel.html">Multilevel DWT, IDWT and SWT</a></li>
+<li class="toctree-l2"><a class="reference external" href="regression/wp.html">Wavelet Packets</a></li>
+<li class="toctree-l2"><a class="reference external" href="regression/wp2d.html">2D Wavelet Packets</a></li>
+<li class="toctree-l2"><a class="reference external" href="regression/gotchas.html">Gotchas</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="resources.html">Resources</a><ul>
+<li class="toctree-l2"><a class="reference external" href="resources.html#discussion-group">Discussion group</a></li>
+<li class="toctree-l2"><a class="reference external" href="resources.html#wiki">Wiki</a></li>
+<li class="toctree-l2"><a class="reference external" href="resources.html#code-repository">Code repository</a></li>
+<li class="toctree-l2"><a class="reference external" href="resources.html#wavelet-properties-browser">Wavelet Properties Browser</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference external" href="genindex.html"><em>Index</em></a></li>
+<li><a class="reference external" href="modindex.html"><em>Module Index</em></a></li>
+<li><a class="reference external" href="search.html"><em>Search Page</em></a></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="">PyWavelets - Discrete Wavelet Transform in Python</a><ul>
+</ul>
+</li>
+<li><a class="reference external" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+
+            <h4>Next topic</h4>
+            <p class="topless"><a href="overview.html"
+                                  title="next chapter">Overview</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/index.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+<div>
+<h3>Quick links</h3>
+<ul>
+<li><a href="http://groups.google.com/group/pywavelets"><img src="_static/comments.png" height="16" width="16" alt="" /> Visit Discussion Group</a></li>
+<li><a href="http://wavelets.scipy.org/moin/"><img src="_static/page_edit.png" height="16" width="16" alt="" /> View Wiki Page</a></li>
+<li><a href="http://projects.scipy.org/wavelets/browser/pywt/trunk/"><img src="_static/cog.png" height="16" width="16" alt="" /> Browse Source Code</a></li>
+<li><a href="http://wavelets.pybytes.com/"><img src="_static/wave.png" height="16" width="16" alt="" /> Explore Wavelets</a></li>
+<li><a href="http://delicious.com/save" onclick="window.open('http://delicious.com/save?v=5&amp;noui&amp;jump=close&amp;url='+encodeURIComponent('http://www.pybytes.com/pywavelets/')+'&amp;title='+encodeURIComponent('PyWavelets - Discrete Wavelet Transform in Python'), 'delicious','toolbar=no,width=550,height=550'); return false;"><img src="http://static.delicious.com/img/delicious.small.gif" height="12" width="12" alt="Delicious" style="margin: 0 2px 0 2px;" /> Bookmark with Delicious</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="overview.html" title="Overview"
+             >next</a> |</li>
+        <li><a href="">PyWavelets Documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    
+    <div class="footer">
+      &copy; Copyright 2006-2009, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
+      Last updated on May 05, 2009.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.1.
+    </div>
+    <script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+    <script type="text/javascript">
+    var pageTracker = _gat._getTracker("UA-3396395-3");
+    pageTracker._initData();
+    pageTracker._trackPageview();
+    </script>
+
+  </body>
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Stationary Wavelet Transform &mdash; PyWavelets Documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyWavelets Documentation" href="../index.html" />
+    <link rel="up" title="API Reference" href="index.html" />
+    <link rel="next" title="Other functions" href="other-functions.html" />
+    <link rel="prev" title="2D Forward and Inverse Discrete Wavelet Transform" href="2d-dwt-and-idwt.html" />
+     
+    <meta name="description" content="PyWavelets is a scientific Python module for Wavelet Transform calculations." />
+    <meta name="keywords" content="PyWavelets, wavelets, Python, wavelet transform, discrete wavelet transform, dwt, idwt, swt, wavelet packets, stationary wavelet transform, pywt, Filip Wasilewski" />
+	<meta name="author" content="Filip Wasilewski" />
+	<meta name="Distribution" content="Global" />
+	<meta name="Robots" content="INDEX,FOLLOW" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="other-functions.html" title="Other functions"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="2d-dwt-and-idwt.html" title="2D Forward and Inverse Discrete Wavelet Transform"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">PyWavelets Documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">API Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="ref-swt"></span><div class="section" id="stationary-wavelet-transform">
+<h1>Stationary Wavelet Transform<a class="headerlink" href="#stationary-wavelet-transform" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="multilevel-swt">
+<h2>Multilevel <tt class="docutils literal"><span class="pre">swt</span></tt><a class="headerlink" href="#multilevel-swt" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pywt.swt">
+<tt class="descclassname">pywt.</tt><tt class="descname">swt</tt><big>(</big><em>data</em>, <em>wavelet</em>, <em>level</em><span class="optional">[</span>, <em>start_level=0</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#pywt.swt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs multilevel Stationary Wavelet Transform.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>data</em> &#8211; Input signal can be NumPy array, Python list or other iterable object. Both <em>single</em> and <em>double</em> precision floating-point data types are supported and the output type depends on the input type. If the input data is not in one of these types it will be converted to the default <em>double</em> precision data format before performing computations.</li>
+<li><em>wavelet</em> &#8211; Wavelet to use in the transform. This can be a name of the wavelet from the <cite>pywt.wavelist</cite> list or a <cite>Wavelet</cite> object instance.</li>
+<li><em>level</em> &#8211; Required transform level. See the <a title="pywt.swt_max_level" class="reference internal" href="#pywt.swt_max_level"><tt class="xref docutils literal"><span class="pre">swt_max_level()</span></tt></a> function.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="compound">
+<p class="compound-first">Returned list of coefficient pairs is in the form:</p>
+<div class="compound-middle highlight-python"><div class="highlight"><pre><span class="p">[(</span><span class="n">cA1</span><span class="p">,</span> <span class="n">cD1</span><span class="p">),</span> <span class="p">(</span><span class="n">cA2</span><span class="p">,</span> <span class="n">cD2</span><span class="p">),</span> <span class="o">...</span><span class="p">,</span> <span class="p">(</span><span class="n">cAn</span><span class="p">,</span> <span class="n">cDn</span><span class="p">)]</span>
+</pre></div>
+</div>
+<p class="compound-last">where <em>n</em> is the <em>level</em> value.</p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="multilevel-swt2">
+<h2>Multilevel <tt class="docutils literal"><span class="pre">swt2</span></tt><a class="headerlink" href="#multilevel-swt2" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pywt.swt2">
+<tt class="descclassname">pywt.</tt><tt class="descname">swt2</tt><big>(</big><em>data</em>, <em>wavelet</em>, <em>level</em><span class="optional">[</span>, <em>start_level=0</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#pywt.swt2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs multilevel 2D Stationary Wavelet Transform.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>data</em> &#8211; 2D array with input data.</li>
+<li><em>wavelet</em> &#8211; Wavelet to use in the transform. This can be a name of the wavelet from the <cite>pywt.wavelist</cite> list or a <cite>Wavelet</cite> object instance.</li>
+<li><em>level</em> &#8211; Number of decomposition steps to perform.</li>
+<li><em>start_level</em> &#8211; The level at which the decomposition will begin.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="compound">
+<p class="compound-first">The result is a set of coefficients arrays over the range of decomposition
+levels:</p>
+<div class="compound-middle highlight-python"><div class="highlight"><pre><span class="p">[</span>
+    <span class="p">(</span><span class="n">cA_n</span><span class="p">,</span>
+        <span class="p">(</span><span class="n">cH_n</span><span class="p">,</span> <span class="n">cV_n</span><span class="p">,</span> <span class="n">cD_n</span><span class="p">)</span>
+    <span class="p">),</span>
+    <span class="p">(</span><span class="n">cA_n</span><span class="o">+</span><span class="mf">1</span><span class="p">,</span>
+        <span class="p">(</span><span class="n">cH_n</span><span class="o">+</span><span class="mf">1</span><span class="p">,</span> <span class="n">cV_n</span><span class="o">+</span><span class="mf">1</span><span class="p">,</span> <span class="n">cD_n</span><span class="o">+</span><span class="mf">1</span><span class="p">)</span>
+    <span class="p">),</span>
+    <span class="o">...</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">cA_n</span><span class="o">+</span><span class="n">level</span><span class="p">,</span>
+        <span class="p">(</span><span class="n">cH_n</span><span class="o">+</span><span class="n">level</span><span class="p">,</span> <span class="n">cV_n</span><span class="o">+</span><span class="n">level</span><span class="p">,</span> <span class="n">cD_n</span><span class="o">+</span><span class="n">level</span><span class="p">)</span>
+    <span class="p">)</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p class="compound-last">where <em>cA</em> is approximation, <em>cH</em> is horizontal details, <em>cV</em> is vertical
+details, <em>cD</em> is diagonal details, <em>n</em> is <em>start_level</em> and <em>m</em> equals
+<em>n+level</em>.</p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="maximum-decomposition-level-swt-max-level">
+<h2>Maximum decomposition level - <tt class="docutils literal"><span class="pre">swt_max_level</span></tt><a class="headerlink" href="#maximum-decomposition-level-swt-max-level" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pywt.swt_max_level">
+<tt class="descclassname">pywt.</tt><tt class="descname">swt_max_level</tt><big>(</big><em>input_len</em><big>)</big><a class="headerlink" href="#pywt.swt_max_level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the maximum level of Stationary Wavelet Transform for data of
+given length.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>input_len</em> &#8211; Input data length.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="">Stationary Wavelet Transform</a><ul>
+<li><a class="reference external" href="#multilevel-swt">Multilevel <tt class="docutils literal"><span class="pre">swt</span></tt></a></li>
+<li><a class="reference external" href="#multilevel-swt2">Multilevel <tt class="docutils literal"><span class="pre">swt2</span></tt></a></li>
+<li><a class="reference external" href="#maximum-decomposition-level-swt-max-level">Maximum decomposition level - <tt class="docutils literal"><span class="pre">swt_max_level</span></tt></a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="2d-dwt-and-idwt.html"
+                                  title="previous chapter">2D Forward and Inverse Discrete Wavelet Transform</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="other-functions.html"
+                                  title="next chapter">Other functions</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/ref/swt.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+<div>
+<h3>Quick links</h3>
+<ul>
+<li><a href="http://groups.google.com/group/pywavelets"><img src="../_static/comments.png" height="16" width="16" alt="" /> Visit Discussion Group</a></li>
+<li><a href="http://wavelets.scipy.org/moin/"><img src="../_static/page_edit.png" height="16" width="16" alt="" /> View Wiki Page</a></li>
+<li><a href="http://projects.scipy.org/wavelets/browser/pywt/trunk/"><img src="../_static/cog.png" height="16" width="16" alt="" /> Browse Source Code</a></li>
+<li><a href="http://wavelets.pybytes.com/"><img src="../_static/wave.png" height="16" width="16" alt="" /> Explore Wavelets</a></li>
+<li><a href="http://delicious.com/save" onclick="window.open('http://delicious.com/save?v=5&amp;noui&amp;jump=close&amp;url='+encodeURIComponent('http://www.pybytes.com/pywavelets/')+'&amp;title='+encodeURIComponent('PyWavelets - Discrete Wavelet Transform in Python'), 'delicious','toolbar=no,width=550,height=550'); return false;"><img src="http://static.delicious.com/img/delicious.small.gif" height="12" width="12" alt="Delicious" style="margin: 0 2px 0 2px;" /> Bookmark with Delicious</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="other-functions.html" title="Other functions"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="2d-dwt-and-idwt.html" title="2D Forward and Inverse Discrete Wavelet Transform"
+             >previous</a> |</li>
+        <li><a href="../index.html">PyWavelets Documentation</a> &raquo;</li>
+          <li><a href="index.html" >API Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    
+    <div class="footer">
+      &copy; Copyright 2006-2009, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
+      Last updated on May 05, 2009.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.1.
+    </div>
+    <script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+    <script type="text/javascript">
+    var pageTracker = _gat._getTracker("UA-3396395-3");
+    pageTracker._initData();
+    pageTracker._trackPageview();
+    </script>
+
+  </body>
+</html>
