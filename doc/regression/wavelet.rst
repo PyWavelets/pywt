@@ -1,14 +1,18 @@
+.. _reg-wavelet:
+
+.. currentmodule:: pywt
+
 The Wavelet object
 ==================
 
-Wavelet families and builtin Wavelets' names
---------------------------------------------
+Wavelet families and builtin Wavelets names
+-------------------------------------------
 
-Wavelet objects are really a handy carriers of a bunch of DWT specific data
-like 4 Quadrature Mirror Filters and some general properties associated with
-them.
+:class:`Wavelet` objects are really a handy carriers of a bunch of DWT-specific
+data like *quadrature mirror filters* and some general properties associated
+with them.
 
-At first let's go through the methods of creating a Wavelet object.
+At first let's go through the methods of creating a :class:`Wavelet` object.
 The easiest and the most convenient way is to use builtin named Wavelets.
 
 These wavelets are organized into groups called wavelet families. The most
@@ -18,7 +22,7 @@ commonly used families are:
     >>> pywt.families()
     ['haar', 'db', 'sym', 'coif', 'bior', 'rbio', 'dmey']
 
-The `wavelist` function with family name passed as an argument is used to
+The :func:`wavelist` function with family name passed as an argument is used to
 obtain the list of wavelet names in each family.
 
     >>> for family in pywt.families():
@@ -31,8 +35,8 @@ obtain the list of wavelet names in each family.
     rbio family: rbio1.1, rbio1.3, rbio1.5, rbio2.2, rbio2.4, rbio2.6, rbio2.8, rbio3.1, rbio3.3, rbio3.5, rbio3.7, rbio3.9, rbio4.4, rbio5.5, rbio6.8
     dmey family: dmey
 
-To get the full list of builtin wavelets' names just use the `wavelist` with
-no argument. As you can see currently there are 76 builtin wavelets.
+To get the full list of builtin wavelets' names just use the :func:`wavelist`
+with no argument. As you can see currently there are 76 builtin wavelets.
 
     >>> len(pywt.wavelist())
     76
@@ -41,22 +45,22 @@ no argument. As you can see currently there are 76 builtin wavelets.
 Creating Wavelet objects
 ------------------------
 
-Now when we know all the names let's finnally create a Wavelet object:
+Now when we know all the names let's finnally create a :class:`Wavelet` object:
 
     >>> w = pywt.Wavelet('db3')
 
-Erm, that's really it..
+So.. that's it.
 
 
 Wavelet properties
 ------------------
 
-But what can we do with Wavelet objects? Well, they carry some
+But what can we do with :class:`Wavelet` objects? Well, they carry some
 interresting information.
 
-First, let's try printing a Wavelet object. This shows a brief information
-about it's name, it's family name and some properties like orthogonality
-and symmetry.
+First, let's try printing a :class:`Wavelet` object. This shows a brief
+information about it's name, it's family name and some properties like
+orthogonality and symmetry.
 
     >>> print w
     Wavelet db3
@@ -67,11 +71,12 @@ and symmetry.
       Biorthogonal:   True
       Symmetry:       asymmetric
 
-But the most important information are the wavelet filters coefficients, which are
-used in Discrete Wavelet Transform. These coefficients can be obtained
-via the `dec_lo`, `dec_hi`, `rec_lo` and `rec_hi` attributes, which corresponds
-to lowpass and highpass decomposition filters and lowpass and highpass reconstruction
-filters respectively.
+But the most important information are the wavelet filters coefficients, which
+are used in :ref:`Discrete Wavelet Transform <ref-dwt>`. These coefficients can
+be obtained via the :attr:`~Wavelet.dec_lo`, :attr:`Wavelet.dec_hi`,
+:attr:`~Wavelet.rec_lo` and :attr:`~Wavelet.rec_hi` attributes, which
+corresponds to lowpass and highpass decomposition filters and lowpass and
+highpass reconstruction filters respectively:
 
     >>> w.dec_lo
     [0.035226291882100656, -0.085441273882241486, -0.13501102001039084, 0.45987750211933132, 0.80689150931333875, 0.33267055295095688]
@@ -82,8 +87,8 @@ filters respectively.
     >>> w.rec_hi
     [0.035226291882100656, 0.085441273882241486, -0.13501102001039084, -0.45987750211933132, 0.80689150931333875, -0.33267055295095688]
 
-Another way to get the filters data is to use the `filter_bank` attribute,
-which returns all four filters in a tuple:
+Another way to get the filters data is to use the :attr:`~Wavelet.filter_bank`
+attribute, which returns all four filters in a tuple:
 
     >>> w.filter_bank == (w.dec_lo, w.dec_hi, w.rec_lo, w.rec_hi)
     True
@@ -91,8 +96,8 @@ which returns all four filters in a tuple:
 
 Other Wavelet's properties are:
 
-    - Wavelet name and short and full family names
-    
+    Wavelet :attr:`~Wavelet.name`, :attr:`~Wavelet.short_family_name` and :attr:`~Wavelet.family_name`:
+
         >>> print w.name
         db3
         >>> print w.short_family_name
@@ -100,35 +105,37 @@ Other Wavelet's properties are:
         >>> print w.family_name
         Daubechies
 
-    - Decomposition and reconstruction filters' lengths
-    
+    - Decomposition (:attr:`~Wavelet.dec_len`) and reconstruction
+      (:attr:`~.Wavelet.rec_len`) filter lengths:
+
         >>> w.dec_len
         6
         >>> w.rec_len
         6
-    
-    - Orthogonality and biorthogonality:
-    
+
+    - Orthogonality (:attr:`~Wavelet.orthogonal`) and biorthogonality (:attr:`~Wavelet.biorthogonal`):
+
         >>> w.orthogonal
         True
         >>> w.biorthogonal
         True
-    
-    - Symmetry
-    
+
+    - Symmetry (:attr:`~Wavelet.symmetry`):
+
         >>> print w.symmetry
         asymmetric
-    
-    - Number of vanishing moments for the scaling function (*phi*) and the
-      wavelet function (*psi*) associated with the filters.
-      
+
+    - Number of vanishing moments for the scaling function *phi*
+      (:attr:`~Wavelet.vanishing_moments_phi`) and the wavelet function *psi*
+      (:attr:`~Wavelet.vanishing_moments_psi`) associated with the filters:
+
         >>> w.vanishing_moments_phi
         0
         >>> w.vanishing_moments_psi
         3
 
 Now when we know a bit about the builtin Wavelets, les't see how to create
-custom Wavelets objects. These can be done in two ways:
+:ref:`custom Wavelets <custom-wavelets>` objects. These can be done in two ways:
 
     1) Passing the filter bank object that implements the `filter_bank`
        attribute. The attribute must return four filters coefficients.
@@ -141,41 +148,43 @@ custom Wavelets objects. These can be done in two ways:
        ...         return ([sqrt(2)/2, sqrt(2)/2], [-sqrt(2)/2, sqrt(2)/2],
        ...                 [sqrt(2)/2, sqrt(2)/2], [sqrt(2)/2, -sqrt(2)/2])
 
-    
+
        >>> my_wavelet = pywt.Wavelet('My Haar Wavelet', filter_bank=MyHaarFilterBank())
 
 
-    2) Passing the filters coefficients directly as the filter_bank parameter.
-    
-       >>> from math import sqrt
-       >>> my_filter_bank = ([sqrt(2)/2, sqrt(2)/2], [-sqrt(2)/2, sqrt(2)/2],
-       ...                   [sqrt(2)/2, sqrt(2)/2], [sqrt(2)/2, -sqrt(2)/2])
-       >>> my_wavelet = pywt.Wavelet('My Haar Wavelet', filter_bank=my_filter_bank)
+    2) Passing the filters coefficients directly as the *filter_bank* parameter.
+
+        >>> from math import sqrt
+        >>> my_filter_bank = ([sqrt(2)/2, sqrt(2)/2], [-sqrt(2)/2, sqrt(2)/2],
+        ...                   [sqrt(2)/2, sqrt(2)/2], [sqrt(2)/2, -sqrt(2)/2])
+        >>> my_wavelet = pywt.Wavelet('My Haar Wavelet', filter_bank=my_filter_bank)
 
 
-       Note that such custom wavelets will _not_ have all the properties set to correct values:
+Note that such custom wavelets **will not** have all the properties set
+to correct values:
 
-       >>> print my_wavelet
-       Wavelet My Haar Wavelet
-         Family name:    
-         Short name:     
-         Filters length: 2
-         Orthogonal:     False
-         Biorthogonal:   False
-         Symmetry:       unknown
+    >>> print my_wavelet
+    Wavelet My Haar Wavelet
+      Family name:    
+      Short name:     
+      Filters length: 2
+      Orthogonal:     False
+      Biorthogonal:   False
+      Symmetry:       unknown
 
-       You can hovewer set a few of them on your own:
-       >>> my_wavelet.orthogonal = True
-       >>> my_wavelet.biorthogonal = True
-       
-       >>> print my_wavelet
-       Wavelet My Haar Wavelet
-         Family name:    
-         Short name:     
-         Filters length: 2
-         Orthogonal:     True
-         Biorthogonal:   True
-         Symmetry:       unknown
+    You can hovewer set a few of them on your own:
+
+    >>> my_wavelet.orthogonal = True
+    >>> my_wavelet.biorthogonal = True
+
+    >>> print my_wavelet
+    Wavelet My Haar Wavelet
+      Family name:    
+      Short name:     
+      Filters length: 2
+      Orthogonal:     True
+      Biorthogonal:   True
+      Symmetry:       unknown
 
 
 And now... the `wavefun`!
@@ -185,9 +194,9 @@ We all know that the fun with wavelets is in wavelet functions.
 Now what would be this package without a tool to compute wavelet
 and scaling functions approximations?
 
-This is the purpose of the `wavefun` method, which is used to
-approximate scaling function (*phi*) and wavelet function (*psi*)
-at the given level of refinement, based on the filters coefficients.
+This is the purpose of the :meth:`~Wavelet.wavefun` method, which is used to
+approximate scaling function (*phi*) and wavelet function (*psi*) at the given
+level of refinement, based on the filters coefficients.
 
 The number of returned values varies depending on the wavelet's
 orthogonality property. For orthogonal wavelets the result is tuple
@@ -197,7 +206,7 @@ with scaling function, wavelet function and xgrid coordinates.
     >>> w.orthogonal
     True
     >>> (phi, psi, x) = w.wavefun(level=5)
-    
+
 For biorthogonal (non-orthogonal) wavelets different scaling and wavelet
 functions are used for decomposition and reconstruction, and thus five
 elements are returned: decomposition scaling and wavelet functions
@@ -209,3 +218,6 @@ and the xgrid.
     False
     >>> (phi_d, psi_d, phi_r, psi_r, x) = w.wavefun(level=5)
 
+.. seealso:: You can find live examples of :meth:`~Wavelet.wavefun` usage and
+             images of all the built-in wavelets on the
+             `Wavelet Properties Browser <http://wavelets.pybytes.com>`_ page.

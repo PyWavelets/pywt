@@ -8,6 +8,7 @@ Contents:
 
    overview
    ref/index
+   regression/index
    resources
 
 Indices and tables

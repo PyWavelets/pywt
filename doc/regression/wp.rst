@@ -1,5 +1,9 @@
-Test Wavelet Packets
-====================
+.. _reg-wp:
+
+.. currentmodule:: pywt
+
+Wavelet Packets
+===============
 
 Import pywt
 -----------
@@ -10,31 +14,32 @@ Import pywt
 Create Wavelet Packet structure
 -------------------------------
 
-Ok, let's create a sample WaveletPacket:
+Ok, let's create a sample :class:`WaveletPacket`:
 
     >>> x = [1, 2, 3, 4, 5, 6, 7, 8]
     >>> wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='sym')
 
-The input data and decomposition coefficients are stored in the `data`
-attribute:
+The input *data* and decomposition coefficients are stored in the
+:attr:`WaveletPacket.data` attribute:
 
     >>> print wp.data
     [1, 2, 3, 4, 5, 6, 7, 8]
 
-Nodes are identified by paths. For the root node the path is '' and the
-decomposition level is 0.
+:class:`Nodes <Node>` are identified by :attr:`paths <~Node.path>`. For the root
+node the path is ``''`` and the decomposition level is ``0``.
 
     >>> print repr(wp.path)
     ''
     >>> print wp.level
     0
 
-The maxlevel, if not given in the constructor, is automatically computed:
+The *maxlevel*, if not given as param in the constructor, is automatically
+computed:
 
     >>> print wp['ad'].maxlevel
     3
 
-    
+
 Traversing WP tree:
 -------------------
 
@@ -44,53 +49,65 @@ Accessing subnodes:
 >>> x = [1, 2, 3, 4, 5, 6, 7, 8]
 >>> wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='sym')
 
-Check what's the maximum level of decomposition first
+First check what is the maximum level of decomposition:
 
     >>> print wp.maxlevel
     3
 
-Now try accessing subnodes.
+and try accessing subnodes of the WP tree:
 
-First level:
+    * 1st level:
 
-    >>> print wp['a'].data
-    [  2.12132034   4.94974747   7.77817459  10.60660172]
-    >>> print wp['a'].path
-    a
+        >>> print wp['a'].data
+        [  2.12132034   4.94974747   7.77817459  10.60660172]
+        >>> print wp['a'].path
+        a
 
-Second level:
+    * 2nd level:
 
-    >>> print wp['aa'].data
-    [  5.  13.]
-    >>> print wp['aa'].path
-    aa
-
-
-Third level:
-
-    >>> print wp['aaa'].data
-    [ 12.72792206]
-    >>> print wp['aaa'].path
-    aaa
+        >>> print wp['aa'].data
+        [  5.  13.]
+        >>> print wp['aa'].path
+        aa
 
 
-Ups, we have reached the maximum level of decomposition:
+    * 3rd level:
 
-    >>> print wp['aaaa'].data
-    Traceback (most recent call last):
-    ...
-    IndexError: Path length is out of range.
+        >>> print wp['aaa'].data
+        [ 12.72792206]
+        >>> print wp['aaa'].path
+        aaa
+
+
+      Ups, we have reached the maximum level of decomposition and got an
+      :exc:`IndexError`:
+
+        >>> print wp['aaaa'].data
+        Traceback (most recent call last):
+        ...
+        IndexError: Path length is out of range.
 
 Now try some invalid path:
-    
+
     >>> print wp['ac']
     Traceback (most recent call last):
     ...
     ValueError: Subnode name must be in ['a', 'd'], not 'c'.
 
+which just yielded a :exc:`ValueError`.
+
 
 Accessing Node's attributes:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:class:`WaveletPacket` object is a tree data structure, which evaluates to a set
+of :class:`Node` objects. :class:`WaveletPacket` is just a special subclass
+of the :class:`Node` class (which in turn inherits from the :class:`BaseNode`).
+
+Tree nodes can be accessed using the *obj[x]* (:meth:`Node.__getitem__`) operator.
+Each tree node has a set of attributes: :attr:`~Node.data`, :attr:`~Node.path`,
+:attr:`~Node.node_name`, :attr:`~Node.parent`, :attr:`~Node.level`,
+:attr:`~Node.maxlevel` and :attr:`~Node.mode`.
 
 >>> x = [1, 2, 3, 4, 5, 6, 7, 8]
 >>> wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='sym')
@@ -124,18 +141,18 @@ Collecting nodes
 >>> wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='sym')
 
 
-We can get all nodes on the particular level either in 'natural' order:
+We can get all nodes on the particular level either in ``natural`` order:
 
     >>> print [node.path for node in wp.get_level(3, 'natural')]
     ['aaa', 'aad', 'ada', 'add', 'daa', 'dad', 'dda', 'ddd']
 
-or sorted based on the band frequency:
+or sorted based on the band frequency (``freq``):
 
     >>> print [node.path for node in wp.get_level(3, 'freq')]
     ['aaa', 'aad', 'add', 'ada', 'dda', 'ddd', 'dad', 'daa']
 
-Note that `get_level` also performs automatic decomposition until it
-reaches the given level.
+Note that :meth:`WaveletPacket.get_level` also performs automatic decomposition
+until it reaches the specified *level*.
 
 
 Reconstructing data from Wavelet Packets:
@@ -145,30 +162,33 @@ Reconstructing data from Wavelet Packets:
 >>> wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='sym')
 
 
-Now create a new Wavelet Packet and set it's node values with some data.
+Now create a new :class:`Wavelet Packet <WaveletPacket>` and set it's nodes with
+some data.
 
     >>> new_wp = pywt.WaveletPacket(data=None, wavelet='db1', mode='sym')
-    
+
     >>> new_wp['aa'] = wp['aa'].data
     >>> new_wp['ad'] = [-2., -2.]
-    
-For convenience, 'data' gets automatically extracted from the Node object:
-    
+
+For convenience, :attr:`~Node.data` gets automatically extracted from the
+:class:`Node` object:
+
     >>> new_wp['d'] = wp['d']
 
-And reconstruct the data from the `aa`, `ad` and `d` packets.
+And reconstruct the data from the ``aa``, ``ad`` and ``d`` packets.
 
     >>> print new_wp.reconstruct(update=False)
     [ 1.  2.  3.  4.  5.  6.  7.  8.]
 
-If the `update` param in the reconstruct method is set to False, the node's
-`data` will not be updated.
+If the *update* param in the reconstruct method is set to ``False``, the node's
+:attr:`~Node.data` will not be updated.
 
     >>> print new_wp.data
     None
 
-Otherwise, the `data` attribute will be set to the reconstructed value.
-    
+Otherwise, the :attr:`~Node.data` attribute will be set to the reconstructed
+value.
+
     >>> print new_wp.reconstruct(update=True)
     [ 1.  2.  3.  4.  5.  6.  7.  8.]
     >>> print new_wp.data
@@ -181,6 +201,7 @@ Otherwise, the `data` attribute will be set to the reconstructed value.
 >>> print [n.path for n in new_wp.get_leaf_nodes(True)]
 ['aaa', 'aad', 'ada', 'add', 'daa', 'dad', 'dda', 'ddd']
 
+
 Removing nodes from Wavelet Packet tree:
 ----------------------------------------
 
@@ -189,7 +210,7 @@ Let's create a sample data:
     >>> x = [1, 2, 3, 4, 5, 6, 7, 8]
     >>> wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='sym')
 
-First, start with tree decomposition at level 2. Leaf nodes in the tree are:
+First, start with a tree decomposition at level 2. Leaf nodes in the tree are:
 
     >>> dummy = wp.get_level(2)
     >>> for n in wp.get_leaf_nodes(False):
@@ -203,7 +224,8 @@ First, start with tree decomposition at level 2. Leaf nodes in the tree are:
     >>> print node
     ad: [-2. -2.]
 
-To remove a node from the WP tree, use Python's `del`:
+To remove a node from the WP tree, use Python's `del obj[x]`
+(:class:`Node.__delitem__`):
 
     >>> del wp['ad']
 
@@ -224,7 +246,8 @@ Now restore the deleted node value.
 
     >>> wp['ad'].data = node.data
 
-Printing leaf nodes and tree reconstruction confirms the original state of the tree:
+Printing leaf nodes and tree reconstruction confirms the original state of the
+tree:
 
     >>> for n in wp.get_leaf_nodes(False):
     ...     print n.path, n.data
@@ -241,8 +264,8 @@ Lazy eveluation:
 ----------------
 
 .. note:: This section is for demonstration of pywt internals purposes
-    only. Do not rely on the attribute access to nodes as presented in this
-    example.
+          only. Do not rely on the attribute access to nodes as presented in
+          this example.
 
 >>> x = [1, 2, 3, 4, 5, 6, 7, 8]
 >>> wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='sym')
@@ -251,8 +274,8 @@ Lazy eveluation:
 
    >>> print wp.a
    None
-    
-   Remember that you should not rely on the attribute access.
+
+   **Remember that you should not rely on the attribute access.**
 
 2) At first attempt to access the node it is computed via decomposition
    of it's parent node (the wp object itself).
@@ -264,9 +287,8 @@ Lazy eveluation:
 
    >>> print wp.a
    a: [  2.12132034   4.94974747   7.77817459  10.60660172]
-    
-   And so is `wp.d`: 
-    
+
+   And so is `wp.d`:
+
    >>> print wp.d
    d: [-0.70710678 -0.70710678 -0.70710678 -0.70710678]
-

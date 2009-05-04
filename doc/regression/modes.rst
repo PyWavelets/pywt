@@ -1,17 +1,22 @@
+.. _reg-modes:
+
+.. currentmodule:: pywt
+
+
 Modes test
 ==========
 
-Import pywt first
+Import :mod:`pywt` first
 
     >>> import pywt
 
-List of availble signal extension modes:
+List of availble signal extension :ref:`modes <MODES>`:
 
     >>> print pywt.MODES.modes
     ['zpd', 'cpd', 'sym', 'ppd', 'sp1', 'per']
 
 
-Test that dwt and idwt can be performed using every mode:
+Test that :func:`dwt` and :func:`idwt` can be performed using every mode:
 
     >>> x = [1,2,1,5,-1,8,4,6]
     >>> for mode in pywt.MODES.modes:
@@ -47,7 +52,7 @@ Test that dwt and idwt can be performed using every mode:
     Reconstruction: [ 1.  2.  1.  5. -1.  8.  4.  6.]
 
 
-Invalid mode name should rise an error:
+Invalid mode name should rise a :exc:`ValueError`:
 
     >>> pywt.dwt([1,2,3,4], 'db2', 'invalid')
     Traceback (most recent call last):
@@ -55,7 +60,7 @@ Invalid mode name should rise an error:
     ValueError: Unknown mode name 'invalid'.
 
 
-You can also refer to modes via MODES class attributes:
+You can also refer to modes via :ref:`MODES <MODES>` class attributes:
 
     >>> for mode_name in ['zpd', 'cpd', 'sym', 'ppd', 'sp1', 'per']:
     ...     mode = getattr(pywt.MODES, mode_name)
@@ -100,14 +105,14 @@ Some invalid mode values:
     Traceback (most recent call last):
     ...
     ValueError: Invalid mode.
-    
+
     >>> pywt.dwt(x, 'db2', None)
     Traceback (most recent call last):
     ...
     TypeError: expected string or Unicode object, NoneType found
 
 
-The default mode is 'sym':
+The default mode is :ref:`sym <MODES.sym>`:
 
     >>> cA, cD = pywt.dwt(x, 'db2')
     >>> print cA
@@ -127,5 +132,3 @@ And using a keyword argument:
     [-0.61237244 -2.15599552 -5.95034847 -1.21545369  1.22474487]
     >>> print pywt.idwt(cA, cD, 'db2')
     [ 1.  2.  1.  5. -1.  8.  4.  6.]
- 
- 

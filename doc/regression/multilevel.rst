@@ -1,3 +1,7 @@
+.. _reg-multilevel:
+
+.. currentmodule:: pywt
+
 Multilevel DWT, IDWT and SWT
 ============================
 
@@ -16,10 +20,10 @@ Multilevel DWT decomposition
     [ 4.  -3.5]
     >>> print cD1
     [-2.82842712  0.         -4.94974747 -1.41421356]
-    
+
     >>> pywt.dwt_max_level(len(x), db1)
     3
-    
+
     >>> cA2, cD2, cD1 = pywt.wavedec(x, db1, mode='cpd', level=2)
 
 
@@ -29,10 +33,15 @@ Multilevel IDWT reconstruction
     >>> coeffs = pywt.wavedec(x, db1)
     >>> print pywt.waverec(coeffs, db1)
     [ 3.  7.  1.  1. -2.  5.  4.  6.]
-    
+
 
 upcoef
 ------
+
+#TODO
+
+downcoef
+--------
 
 #TODO
 
