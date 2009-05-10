@@ -27,42 +27,32 @@ Latest development version is available from the SVN source code repository:
 Install
 -------
 
-The most convenient way to install PyWavelets is to use Easy Install
-packet manager, which will connect to Cheese Shop repository and
-automatically download PyWavelets::
+The most convenient way to install PyWavelets is to use the
+Easy Install manager from setuptools:
 
-    easy_install PyWavelets
+    easy_install -U PyWavelets
 
-If you want to build and install the project from source code there
-are two possibilities:
+In order to build PyWavelets from source, a working C compiler and a recent version
+of Cython is required.
 
-  * using setuptools Eggs system::
-  
-      python setupegg.py install 
+After completing the build environment, open the shell prompt, go to the
+PyWavelets source code directory and type::
 
-  * or with standard distutils manager::
-  
-      python setup.py install
-
-.. note::
-
-    If you want to install PyWavelets from SVN repository source code
-    or made changes to the Pyrex/Cython wrapper code you need a current
-    version of Cython from http://www.cython.org/ in order to
-    rebuild the project.
+    python setup.py install
 
 
 Documentation
 -------------
 
-Documentation is available in online at http://www.pybytes.com/pywavelets/,
-as well as in the project's source code `doc` directory.
+Documentation and links to more resources is available online
+at http://www.pybytes.com/pywavelets/.
 
 Project wiki and trac system are hosted at http://wavelets.scipy.org/.
 
-For examples see `demo` and `tests` directories.
+For examples see `demo` directories.
+
 
 License
 -------
 
-PyWavelets is distributed under MIT license (see COPYING).
+PyWavelets is distributed under MIT license terms (see COPYING).
