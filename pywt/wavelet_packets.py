@@ -7,7 +7,7 @@
 
 """1D and 2D Wavelet packet transform module."""
 
-__all__ = ["Node", "WaveletPacket", "Node2D", "WaveletPacket2D"]
+__all__ = ["BaseNode", "Node", "WaveletPacket", "Node2D", "WaveletPacket2D"]
 
 import numerix
 from _pywt import Wavelet, dwt, idwt, dwt_max_level
@@ -40,6 +40,8 @@ class BaseNode(object):
             self._maxlevel = parent.maxlevel
             self.path = parent.path + node_name
         else:
+            self.wavelet = None
+            self.mode = None
             self.path = ""
             self.level = 0
 
@@ -121,7 +123,7 @@ class BaseNode(object):
 
     def decompose(self):
         """
-        Decompose node data creating two subnodes DWT coefficients."
+        Decompose node data creating DWT coefficients subnodes."
         """
         if self.level < self.maxlevel:
             return self._decompose()
@@ -252,36 +254,36 @@ class BaseNode(object):
         self.walk(collect, decompose=decompose)
         return result
 
-    def walk(self, func, args=(), kwds={}, decompose=True):
+    def walk(self, func, args=(), kwargs={}, decompose=True):
         """
         Walk tree and call func on every node -> func(node, *args)
         If func returns True, descending to subnodes will continue.
 
         func - callable
         args - func parms
-        kwds - func keyword params
+        kwargs - func keyword params
         """
-        if func(self, *args, **kwds) and self.level < self.maxlevel:
+        if func(self, *args, **kwargs) and self.level < self.maxlevel:
             for part in self.PARTS:
                 subnode = self.get_subnode(part, decompose)
                 if subnode is not None:
-                    subnode.walk(func, args, kwds, decompose)
+                    subnode.walk(func, args, kwargs, decompose)
 
-    def walk_depth(self, func, args=(), kwds={}, decompose=False):
+    def walk_depth(self, func, args=(), kwargs={}, decompose=False):
         """
         Walk tree and call func on every node starting from the bottom-most
         nodes.
 
         func - callable
         args - func parms
-        kwds - func keyword params
+        kwargs - func keyword params
         """
         if self.level < self.maxlevel:
             for part in self.PARTS:
                 subnode = self.get_subnode(part, decompose)
                 if subnode is not None:
-                    subnode.walk_depth(func, args, kwds, decompose)
-        func(self, *args, **kwds)
+                    subnode.walk_depth(func, args, kwargs, decompose)
+        func(self, *args, **kwargs)
 
     def __str__(self):
         return self.path + ": " + str(self.data)
@@ -291,7 +293,7 @@ class Node(BaseNode):
     """
     WaveletPacket tree node.
 
-    Subnodes are called 'a' and 'd', just like approximation
+    Subnodes are called ``a`` and ``d``, just like approximation
     and detail coefficients in the Discrete Wavelet Transform.
     """
 
