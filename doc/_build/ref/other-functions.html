@@ -21,8 +21,8 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="PyWavelets Documentation" href="../index.html" />
     <link rel="up" title="API Reference" href="index.html" />
-    <link rel="next" title="Tests and usage examples" href="../regression/index.html" />
-    <link rel="prev" title="Stationary Wavelet Transform" href="swt.html" />
+    <link rel="next" title="Usage examples" href="../regression/index.html" />
+    <link rel="prev" title="Thresholding functions" href="thresholding-functions.html" />
      
     <meta name="description" content="PyWavelets is a scientific Python module for Wavelet Transform calculations." />
     <meta name="keywords" content="PyWavelets, wavelets, Python, wavelet transform, discrete wavelet transform, dwt, idwt, swt, wavelet packets, stationary wavelet transform, pywt, Filip Wasilewski" />
@@ -42,10 +42,10 @@
           <a href="../modindex.html" title="Global Module Index"
              accesskey="M">modules</a> |</li>
         <li class="right" >
-          <a href="../regression/index.html" title="Tests and usage examples"
+          <a href="../regression/index.html" title="Usage examples"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="swt.html" title="Stationary Wavelet Transform"
+          <a href="thresholding-functions.html" title="Thresholding functions"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">PyWavelets Documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">API Reference</a> &raquo;</li> 
@@ -59,15 +59,45 @@
             
   <span class="target" id="ref-other"></span><div class="section" id="other-functions">
 <h1>Other functions<a class="headerlink" href="#other-functions" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="single-level-n-dimensional-discrete-wavelet-transform">
+<h2>Single-level n-dimensional Discrete Wavelet Transform.<a class="headerlink" href="#single-level-n-dimensional-discrete-wavelet-transform" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pywt.dwtn">
+<tt class="descclassname">pywt.</tt><tt class="descname">dwtn</tt><big>(</big><em>data</em>, <em>wavelet</em><span class="optional">[</span>, <em>mode='sym'</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#pywt.dwtn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs single-level n-dimensional Discrete Wavelet Transform.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>data</em> &#8211; n-dimensional array</li>
+<li><em>wavelet</em> &#8211; wavelet to use (Wavelet object or name string)</li>
+<li><em>mode</em> &#8211; signal extension mode, see MODES</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Results are arranged in a dictionary, where key specifies
+the transform type on each dimension and value is a n-dimensional
+coefficients array.</p>
+<p>For example, for a 2D case the result will look something like this:</p>
+<div class="highlight-python"><pre>{
+    'aa': &lt;coeffs&gt;  # A(LL) - approx. on 1st dim, approx. on 2nd dim
+    'ad': &lt;coeffs&gt;  # H(LH) - approx. on 1st dim, det. on 2nd dim
+    'da': &lt;coeffs&gt;  # V(HL) - det. on 1st dim, approx. on 2nd dim
+    'dd': &lt;coeffs&gt;  # D(HH) - det. on 1st dim, det. on 2nd dim
+}</pre>
+</div>
+</dd></dl>
+
+</div>
 <div class="section" id="integrating-wavelet-functions-intwave">
-<h2>Integrating wavelet functions - <tt class="docutils literal"><span class="pre">intwave()</span></tt><a class="headerlink" href="#integrating-wavelet-functions-intwave" title="Permalink to this headline">¶</a></h2>
-<blockquote>
+<h2>Integrating wavelet functions - <a title="pywt.intwave" class="reference internal" href="#pywt.intwave"><tt class="xref docutils literal"><span class="pre">intwave()</span></tt></a><a class="headerlink" href="#integrating-wavelet-functions-intwave" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="pywt.intwave">
 <tt class="descclassname">pywt.</tt><tt class="descname">intwave</tt><big>(</big><em>wavelet</em><span class="optional">[</span>, <em>precision=8</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#pywt.intwave" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<p>Integration of wavelet function approximations as well as any other signals
+<dd><p>Integration of wavelet function approximations as well as any other signals
 can be performed using the <a title="pywt.intwave" class="reference internal" href="#pywt.intwave"><tt class="xref docutils literal"><span class="pre">pywt.intwave()</span></tt></a> function.</p>
 <p>The result of the call depends on the <em>wavelet</em> argument:</p>
 <ul>
@@ -98,7 +128,33 @@ and the given x-grid is returned (the x-grid is used for computations).:</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">int_psi_d</span><span class="p">,</span> <span class="n">int_psi_r</span><span class="p">,</span> <span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">intwave</span><span class="p">(</span><span class="n">wavelet</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mf">5</span><span class="p">)</span>
 </pre></div>
 </div>
-</blockquote>
+</dd></dl>
+
+</div>
+<div class="section" id="central-frequency-of-psi-wavelet-function">
+<h2>Central frequency of <em>psi</em> wavelet function<a class="headerlink" href="#central-frequency-of-psi-wavelet-function" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pywt.centfrq">
+<tt class="descclassname">pywt.</tt><tt class="descname">centfrq</tt><big>(</big><em>wavelet</em><span class="optional">[</span>, <em>precision=8</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#pywt.centfrq" title="Permalink to this definition">¶</a></dt>
+<dt>
+<tt class="descclassname">pywt.</tt><tt class="descname">centfrq</tt><big>(</big><em>(function_aprox</em>, <em>x)</em><big>)</big></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>wavelet</em> &#8211; <a title="pywt.Wavelet" class="reference external" href="wavelets.html#pywt.Wavelet"><tt class="xref docutils literal"><span class="pre">Wavelet</span></tt></a>, wavelet name string or
+<cite>(wavelet function approx., x grid)</cite> pair</li>
+<li><em>precision</em> &#8211; Precision that will be used for wavelet function
+approximation computed with the <a title="pywt.Wavelet.wavefun" class="reference external" href="wavelets.html#pywt.Wavelet.wavefun"><tt class="xref docutils literal"><span class="pre">Wavelet.wavefun()</span></tt></a>
+method.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 </div>
 
@@ -111,17 +167,19 @@ and the given x-grid is returned (the x-grid is used for computations).:</p>
             <h3><a href="../index.html">Table Of Contents</a></h3>
             <ul>
 <li><a class="reference external" href="">Other functions</a><ul>
+<li><a class="reference external" href="#single-level-n-dimensional-discrete-wavelet-transform">Single-level n-dimensional Discrete Wavelet Transform.</a></li>
 <li><a class="reference external" href="#integrating-wavelet-functions-intwave">Integrating wavelet functions - <tt class="docutils literal"><span class="pre">intwave()</span></tt></a></li>
+<li><a class="reference external" href="#central-frequency-of-psi-wavelet-function">Central frequency of <em>psi</em> wavelet function</a></li>
 </ul>
 </li>
 </ul>
 
             <h4>Previous topic</h4>
-            <p class="topless"><a href="swt.html"
-                                  title="previous chapter">Stationary Wavelet Transform</a></p>
+            <p class="topless"><a href="thresholding-functions.html"
+                                  title="previous chapter">Thresholding functions</a></p>
             <h4>Next topic</h4>
             <p class="topless"><a href="../regression/index.html"
-                                  title="next chapter">Tests and usage examples</a></p>
+                                  title="next chapter">Usage examples</a></p>
             <h3>This Page</h3>
             <ul class="this-page-menu">
               <li><a href="../_sources/ref/other-functions.txt"
@@ -147,7 +205,7 @@ and the given x-grid is returned (the x-grid is used for computations).:</p>
 <li><a href="http://wavelets.scipy.org/moin/"><img src="../_static/page_edit.png" height="16" width="16" alt="" /> View Wiki Page</a></li>
 <li><a href="http://projects.scipy.org/wavelets/browser/pywt/trunk/"><img src="../_static/cog.png" height="16" width="16" alt="" /> Browse Source Code</a></li>
 <li><a href="http://wavelets.pybytes.com/"><img src="../_static/wave.png" height="16" width="16" alt="" /> Explore Wavelets</a></li>
-<li><a href="http://delicious.com/save" onclick="window.open('http://delicious.com/save?v=5&amp;noui&amp;jump=close&amp;url='+encodeURIComponent('http://www.pybytes.com/pywavelets/')+'&amp;title='+encodeURIComponent('PyWavelets - Discrete Wavelet Transform in Python'), 'delicious','toolbar=no,width=550,height=550'); return false;"><img src="http://static.delicious.com/img/delicious.small.gif" height="12" width="12" alt="Delicious" style="margin: 0 2px 0 2px;" /> Bookmark with Delicious</a></li>
+<li><a href="http://delicious.com/save" onclick="window.open('http://delicious.com/save?v=5&amp;noui&amp;jump=close&amp;url='+encodeURIComponent('http://www.pybytes.com/pywavelets/')+'&amp;title='+encodeURIComponent('PyWavelets - Discrete Wavelet Transform in Python'), 'delicious','toolbar=no,width=550,height=550'); return false;"><img src="../_static/delicious.png" height="12" width="12" alt="Delicious" style="margin: 0 2px 0 2px;" /> Bookmark with Delicious</a></li>
 </ul>
 </div>
 
@@ -165,10 +223,10 @@ and the given x-grid is returned (the x-grid is used for computations).:</p>
           <a href="../modindex.html" title="Global Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../regression/index.html" title="Tests and usage examples"
+          <a href="../regression/index.html" title="Usage examples"
              >next</a> |</li>
         <li class="right" >
-          <a href="swt.html" title="Stationary Wavelet Transform"
+          <a href="thresholding-functions.html" title="Thresholding functions"
              >previous</a> |</li>
         <li><a href="../index.html">PyWavelets Documentation</a> &raquo;</li>
           <li><a href="index.html" >API Reference</a> &raquo;</li> 
@@ -177,7 +235,7 @@ and the given x-grid is returned (the x-grid is used for computations).:</p>
     
     <div class="footer">
       &copy; Copyright 2006-2009, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
-      Last updated on May 05, 2009.
+      Last updated on May 10, 2009.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.1.
     </div>
     <script type="text/javascript">

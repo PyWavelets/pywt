@@ -33,8 +33,8 @@ Single level ``dwt``
   The transform coefficients are returned as two arrays containing
   approximation (*cA*) and detail (*cD*) coefficients respectively. Length
   of returned arrays depends on the selected signal extension *mode* - see
-  the :ref:`signal extension modes <ref-modes>` section for the list of available
-  options and the :func:`dwt_coeff_len` function for information on
+  the :ref:`signal extension modes <ref-modes>` section for the list of
+  available options and the :func:`dwt_coeff_len` function for information on
   getting the expected result length:
 
   * for all :ref:`modes <ref-modes>` except :ref:`periodization <MODES.per>`::
@@ -80,7 +80,10 @@ Multilevel decomposition using ``wavedec``
 
   :param mode: |mode|
 
-  :param level: Number of decomposition steps to performe. If the level is ``None``, then the full decomposition up to the level computed with :func:dwt_max_level` function for the given data and wavelet lengths is performed.
+  :param level: Number of decomposition steps to performe. If the level is
+                ``None``, then the full decomposition up to the level computed
+                with :func:`dwt_max_level` function for the given data and
+                wavelet lengths is performed.
 
   **Example:**
 
@@ -95,6 +98,26 @@ Multilevel decomposition using ``wavedec``
     [-2. -2.]
     >>> print cA2
     [  5.  13.]
+
+
+Partial Discrete Wavelet Transform data decomposition ``downcoef``
+------------------------------------------------------------------
+
+.. function:: downcoef(part, data, wavelet[, mode='sym'[, level=1]])
+
+   :param part: decomposition type. For ``a`` computes approximation
+                coefficients, for ``d`` - details coefficients.
+
+   :param data: |data|
+
+   :param wavelet: |wavelet_arg|
+
+   :param mode: |mode|
+
+   :param level: Number of decomposition steps to performe. 
+
+   # TODO
+
 
 Maximum decomposition level - ``dwt_max_level``
 -----------------------------------------------
@@ -135,9 +158,9 @@ Result coefficients length - ``dwt_coeff_len``
 .. function:: dwt_coeff_len(data_len, filter_len, mode)
 
 Based on the given *input data length*, Wavelet *decomposition filter length*
-and signal extension :ref:mode, the :func:`dwt_coeff_len` function calculates
-length of resulting coefficients arrays that would be created while performing
-:func:`dwt` transform.
+and :ref:`signal extension mode <MODES>`, the :func:`dwt_coeff_len` function
+calculates length of resulting coefficients arrays that would be created while
+performing :func:`dwt` transform.
 
 For :ref:`periodization <MODES.per>` mode this equals::
 
@@ -149,4 +172,5 @@ For other :ref:`modes <ref-modes>`::
 
   floor((data_len + filter_len - 1) / 2)
 
-The *filter_len* can be either an *int* or :class:`Wavelet` object for convenience.
+The *filter_len* can be either an *int* or :class:`Wavelet` object for
+convenience.

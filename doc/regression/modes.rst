@@ -3,8 +3,8 @@
 .. currentmodule:: pywt
 
 
-Modes test
-==========
+Signal Extension Modes
+======================
 
 Import :mod:`pywt` first
 

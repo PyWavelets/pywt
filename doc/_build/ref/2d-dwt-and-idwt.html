@@ -21,8 +21,8 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="PyWavelets Documentation" href="../index.html" />
     <link rel="up" title="API Reference" href="index.html" />
-    <link rel="next" title="Stationary Wavelet Transform" href="swt.html" />
-    <link rel="prev" title="Signal extension modes" href="modes.html" />
+    <link rel="next" title="Stationary Wavelet Transform" href="swt-stationary-wavelet-transform.html" />
+    <link rel="prev" title="Inverse Discrete Wavelet Transform (IDWT)" href="idwt-inverse-discrete-wavelet-transform.html" />
      
     <meta name="description" content="PyWavelets is a scientific Python module for Wavelet Transform calculations." />
     <meta name="keywords" content="PyWavelets, wavelets, Python, wavelet transform, discrete wavelet transform, dwt, idwt, swt, wavelet packets, stationary wavelet transform, pywt, Filip Wasilewski" />
@@ -42,10 +42,10 @@
           <a href="../modindex.html" title="Global Module Index"
              accesskey="M">modules</a> |</li>
         <li class="right" >
-          <a href="swt.html" title="Stationary Wavelet Transform"
+          <a href="swt-stationary-wavelet-transform.html" title="Stationary Wavelet Transform"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="modes.html" title="Signal extension modes"
+          <a href="idwt-inverse-discrete-wavelet-transform.html" title="Inverse Discrete Wavelet Transform (IDWT)"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">PyWavelets Documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">API Reference</a> &raquo;</li> 
@@ -73,7 +73,7 @@
 <li><em>data</em> &#8211; 2D input data.</li>
 <li><em>wavelet</em> &#8211; Wavelet to use in the transform. This can be a name of the wavelet from the <cite>pywt.wavelist</cite> list or a <cite>Wavelet</cite> object instance.</li>
 <li><em>mode</em> &#8211; Signal extension mode to deal with the border distortion problem. See <cite>MODES</cite> for details. This is only important when DWT was performed
-in <a class="reference external" href="modes.html#modes-per"><em>periodization</em></a> mode.</li>
+in <a class="reference external" href="signal-extension-modes.html#modes-per"><em>periodization</em></a> mode.</li>
 </ul>
 </td>
 </tr>
@@ -143,8 +143,8 @@ coefficients 2D arrays like from <a title="pywt.dwt2" class="reference internal"
 </div>
 </li>
 <li><em>wavelet</em> &#8211; Wavelet to use in the transform. This can be a name of the wavelet from the <cite>pywt.wavelist</cite> list or a <cite>Wavelet</cite> object instance.</li>
-<li><em>mode</em> &#8211; Signal extension mode to deal with the border distortion problem. See <cite>MODES</cite> for details. This is only important when the <a title="pywt.dwt" class="reference external" href="dwt.html#pywt.dwt"><tt class="xref docutils literal"><span class="pre">dwt()</span></tt></a> was performed
-in the <a class="reference external" href="modes.html#modes-per"><em>periodization</em></a> mode.</li>
+<li><em>mode</em> &#8211; Signal extension mode to deal with the border distortion problem. See <cite>MODES</cite> for details. This is only important when the <a title="pywt.dwt" class="reference external" href="dwt-discrete-wavelet-transform.html#pywt.dwt"><tt class="xref docutils literal"><span class="pre">dwt()</span></tt></a> was performed
+in the <a class="reference external" href="signal-extension-modes.html#modes-per"><em>periodization</em></a> mode.</li>
 </ul>
 </td>
 </tr>
@@ -186,7 +186,7 @@ coefficients arrays respectively.</p>
 <li><em>wavelet</em> &#8211; Wavelet to use in the transform. This can be a name of the wavelet from the <cite>pywt.wavelist</cite> list or a <cite>Wavelet</cite> object instance.</li>
 <li><em>mode</em> &#8211; Signal extension mode to deal with the border distortion problem. See <cite>MODES</cite> for details.</li>
 <li><em>level</em> &#8211; Decomposition level. This should not be greater than the
-reasonable maximum value computed with the <a title="pywt.dwt_max_level" class="reference external" href="dwt.html#pywt.dwt_max_level"><tt class="xref docutils literal"><span class="pre">dwt_max_level()</span></tt></a>
+reasonable maximum value computed with the <a title="pywt.dwt_max_level" class="reference external" href="dwt-discrete-wavelet-transform.html#pywt.dwt_max_level"><tt class="xref docutils literal"><span class="pre">dwt_max_level()</span></tt></a>
 function for the smaller dimension of the input data.</li>
 </ul>
 </td>
@@ -264,10 +264,10 @@ from <a title="pywt.wavedec2" class="reference internal" href="#pywt.wavedec2"><
 </ul>
 
             <h4>Previous topic</h4>
-            <p class="topless"><a href="modes.html"
-                                  title="previous chapter">Signal extension modes</a></p>
+            <p class="topless"><a href="idwt-inverse-discrete-wavelet-transform.html"
+                                  title="previous chapter">Inverse Discrete Wavelet Transform (IDWT)</a></p>
             <h4>Next topic</h4>
-            <p class="topless"><a href="swt.html"
+            <p class="topless"><a href="swt-stationary-wavelet-transform.html"
                                   title="next chapter">Stationary Wavelet Transform</a></p>
             <h3>This Page</h3>
             <ul class="this-page-menu">
@@ -294,7 +294,7 @@ from <a title="pywt.wavedec2" class="reference internal" href="#pywt.wavedec2"><
 <li><a href="http://wavelets.scipy.org/moin/"><img src="../_static/page_edit.png" height="16" width="16" alt="" /> View Wiki Page</a></li>
 <li><a href="http://projects.scipy.org/wavelets/browser/pywt/trunk/"><img src="../_static/cog.png" height="16" width="16" alt="" /> Browse Source Code</a></li>
 <li><a href="http://wavelets.pybytes.com/"><img src="../_static/wave.png" height="16" width="16" alt="" /> Explore Wavelets</a></li>
-<li><a href="http://delicious.com/save" onclick="window.open('http://delicious.com/save?v=5&amp;noui&amp;jump=close&amp;url='+encodeURIComponent('http://www.pybytes.com/pywavelets/')+'&amp;title='+encodeURIComponent('PyWavelets - Discrete Wavelet Transform in Python'), 'delicious','toolbar=no,width=550,height=550'); return false;"><img src="http://static.delicious.com/img/delicious.small.gif" height="12" width="12" alt="Delicious" style="margin: 0 2px 0 2px;" /> Bookmark with Delicious</a></li>
+<li><a href="http://delicious.com/save" onclick="window.open('http://delicious.com/save?v=5&amp;noui&amp;jump=close&amp;url='+encodeURIComponent('http://www.pybytes.com/pywavelets/')+'&amp;title='+encodeURIComponent('PyWavelets - Discrete Wavelet Transform in Python'), 'delicious','toolbar=no,width=550,height=550'); return false;"><img src="../_static/delicious.png" height="12" width="12" alt="Delicious" style="margin: 0 2px 0 2px;" /> Bookmark with Delicious</a></li>
 </ul>
 </div>
 
@@ -312,10 +312,10 @@ from <a title="pywt.wavedec2" class="reference internal" href="#pywt.wavedec2"><
           <a href="../modindex.html" title="Global Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="swt.html" title="Stationary Wavelet Transform"
+          <a href="swt-stationary-wavelet-transform.html" title="Stationary Wavelet Transform"
              >next</a> |</li>
         <li class="right" >
-          <a href="modes.html" title="Signal extension modes"
+          <a href="idwt-inverse-discrete-wavelet-transform.html" title="Inverse Discrete Wavelet Transform (IDWT)"
              >previous</a> |</li>
         <li><a href="../index.html">PyWavelets Documentation</a> &raquo;</li>
           <li><a href="index.html" >API Reference</a> &raquo;</li> 
@@ -324,7 +324,7 @@ from <a title="pywt.wavedec2" class="reference internal" href="#pywt.wavedec2"><
     
     <div class="footer">
       &copy; Copyright 2006-2009, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
-      Last updated on May 05, 2009.
+      Last updated on May 10, 2009.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.1.
     </div>
     <script type="text/javascript">

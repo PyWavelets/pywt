@@ -268,7 +268,8 @@ values with known data from the previous examples:
     >>> new_wp['d'] = [[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0],
     ...                [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]]
 
-    For convenience, 'data' gets automatically extracted from the base Node object:
+    For convenience, :attr:`Node2D.data` gets automatically extracted from the
+    base :class:`Node2D` object:
 
     >>> new_wp['h'] = wp['h'] # all zeros
 

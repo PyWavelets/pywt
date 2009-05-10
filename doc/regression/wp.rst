@@ -170,7 +170,7 @@ some data.
     >>> new_wp['aa'] = wp['aa'].data
     >>> new_wp['ad'] = [-2., -2.]
 
-For convenience, :attr:`~Node.data` gets automatically extracted from the
+For convenience, :attr:`Node.data` gets automatically extracted from the
 :class:`Node` object:
 
     >>> new_wp['d'] = wp['d']

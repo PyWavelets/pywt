@@ -65,9 +65,8 @@ manager::
 
     easy_install -U PyWavelets
 
-Please note that in order to build |pywt| from the source code, a working C
-compiler is required. In case of source code modifications you will also
-need a recent version of `Cython <http://www.cython.org/>`_ (fork of Pyrex):
+In order to build |pywt| from source, a working C compiler and a recent version
+of `Cython <http://www.cython.org/>`_ (fork of Pyrex) is required.
 
 After completing the build environment, open the shell prompt, go to the
 |pywt| source code directory and type::

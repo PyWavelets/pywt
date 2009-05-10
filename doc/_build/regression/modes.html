@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Modes test &mdash; PyWavelets Documentation</title>
+    <title>Signal Extension Modes &mdash; PyWavelets Documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -20,8 +20,8 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="PyWavelets Documentation" href="../index.html" />
-    <link rel="up" title="Tests and usage examples" href="index.html" />
-    <link rel="next" title="DWT and IDWT test" href="dwt-idwt.html" />
+    <link rel="up" title="Usage examples" href="index.html" />
+    <link rel="next" title="DWT and IDWT" href="dwt-idwt.html" />
     <link rel="prev" title="The Wavelet object" href="wavelet.html" />
      
     <meta name="description" content="PyWavelets is a scientific Python module for Wavelet Transform calculations." />
@@ -42,13 +42,13 @@
           <a href="../modindex.html" title="Global Module Index"
              accesskey="M">modules</a> |</li>
         <li class="right" >
-          <a href="dwt-idwt.html" title="DWT and IDWT test"
+          <a href="dwt-idwt.html" title="DWT and IDWT"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="wavelet.html" title="The Wavelet object"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">PyWavelets Documentation</a> &raquo;</li>
-          <li><a href="index.html" accesskey="U">Tests and usage examples</a> &raquo;</li> 
+          <li><a href="index.html" accesskey="U">Usage examples</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -57,18 +57,18 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="modes-test">
-<span id="reg-modes"></span><h1>Modes test<a class="headerlink" href="#modes-test" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="signal-extension-modes">
+<span id="reg-modes"></span><h1>Signal Extension Modes<a class="headerlink" href="#signal-extension-modes" title="Permalink to this headline">¶</a></h1>
 <p>Import <a title="" class="reference external" href="../overview.html#module-pywt"><tt class="xref docutils literal"><span class="pre">pywt</span></tt></a> first</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pywt</span>
 </pre></div>
 </div>
-<p>List of availble signal extension <a class="reference external" href="../ref/modes.html#modes"><em>modes</em></a>:</p>
+<p>List of availble signal extension <a class="reference external" href="../ref/signal-extension-modes.html#modes"><em>modes</em></a>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">pywt</span><span class="o">.</span><span class="n">MODES</span><span class="o">.</span><span class="n">modes</span>
 <span class="go">[&#39;zpd&#39;, &#39;cpd&#39;, &#39;sym&#39;, &#39;ppd&#39;, &#39;sp1&#39;, &#39;per&#39;]</span>
 </pre></div>
 </div>
-<p>Test that <a title="pywt.dwt" class="reference external" href="../ref/dwt.html#pywt.dwt"><tt class="xref docutils literal"><span class="pre">dwt()</span></tt></a> and <a title="pywt.idwt" class="reference external" href="../ref/idwt.html#pywt.idwt"><tt class="xref docutils literal"><span class="pre">idwt()</span></tt></a> can be performed using every mode:</p>
+<p>Test that <a title="pywt.dwt" class="reference external" href="../ref/dwt-discrete-wavelet-transform.html#pywt.dwt"><tt class="xref docutils literal"><span class="pre">dwt()</span></tt></a> and <a title="pywt.idwt" class="reference external" href="../ref/idwt-inverse-discrete-wavelet-transform.html#pywt.idwt"><tt class="xref docutils literal"><span class="pre">idwt()</span></tt></a> can be performed using every mode:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1</span><span class="p">,</span><span class="mf">2</span><span class="p">,</span><span class="mf">1</span><span class="p">,</span><span class="mf">5</span><span class="p">,</span><span class="o">-</span><span class="mf">1</span><span class="p">,</span><span class="mf">8</span><span class="p">,</span><span class="mf">4</span><span class="p">,</span><span class="mf">6</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">mode</span> <span class="ow">in</span> <span class="n">pywt</span><span class="o">.</span><span class="n">MODES</span><span class="o">.</span><span class="n">modes</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">cA</span><span class="p">,</span> <span class="n">cD</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">dwt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
@@ -109,7 +109,7 @@
 <span class="go">ValueError: Unknown mode name &#39;invalid&#39;.</span>
 </pre></div>
 </div>
-<p>You can also refer to modes via <a class="reference external" href="../ref/modes.html#modes"><em>MODES</em></a> class attributes:</p>
+<p>You can also refer to modes via <a class="reference external" href="../ref/signal-extension-modes.html#modes"><em>MODES</em></a> class attributes:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">mode_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;zpd&#39;</span><span class="p">,</span> <span class="s">&#39;cpd&#39;</span><span class="p">,</span> <span class="s">&#39;sym&#39;</span><span class="p">,</span> <span class="s">&#39;ppd&#39;</span><span class="p">,</span> <span class="s">&#39;sp1&#39;</span><span class="p">,</span> <span class="s">&#39;per&#39;</span><span class="p">]:</span>
 <span class="gp">... </span>    <span class="n">mode</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">pywt</span><span class="o">.</span><span class="n">MODES</span><span class="p">,</span> <span class="n">mode_name</span><span class="p">)</span>
 <span class="gp">... </span>    <span class="n">cA</span><span class="p">,</span> <span class="n">cD</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">dwt</span><span class="p">([</span><span class="mf">1</span><span class="p">,</span><span class="mf">2</span><span class="p">,</span><span class="mf">1</span><span class="p">,</span><span class="mf">5</span><span class="p">,</span><span class="o">-</span><span class="mf">1</span><span class="p">,</span><span class="mf">8</span><span class="p">,</span><span class="mf">4</span><span class="p">,</span><span class="mf">6</span><span class="p">],</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
@@ -160,7 +160,7 @@
 </pre></div>
 </div>
 </blockquote>
-<p>The default mode is <a class="reference external" href="../ref/modes.html#modes-sym"><em>sym</em></a>:</p>
+<p>The default mode is <a class="reference external" href="../ref/signal-extension-modes.html#modes-sym"><em>sym</em></a>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">cA</span><span class="p">,</span> <span class="n">cD</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">dwt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s">&#39;db2&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">cA</span>
 <span class="go">[ 1.76776695  1.73309178  3.40612438  6.32928585  7.77817459]</span>
@@ -193,7 +193,7 @@
                                   title="previous chapter">The Wavelet object</a></p>
             <h4>Next topic</h4>
             <p class="topless"><a href="dwt-idwt.html"
-                                  title="next chapter">DWT and IDWT test</a></p>
+                                  title="next chapter">DWT and IDWT</a></p>
             <h3>This Page</h3>
             <ul class="this-page-menu">
               <li><a href="../_sources/regression/modes.txt"
@@ -219,7 +219,7 @@
 <li><a href="http://wavelets.scipy.org/moin/"><img src="../_static/page_edit.png" height="16" width="16" alt="" /> View Wiki Page</a></li>
 <li><a href="http://projects.scipy.org/wavelets/browser/pywt/trunk/"><img src="../_static/cog.png" height="16" width="16" alt="" /> Browse Source Code</a></li>
 <li><a href="http://wavelets.pybytes.com/"><img src="../_static/wave.png" height="16" width="16" alt="" /> Explore Wavelets</a></li>
-<li><a href="http://delicious.com/save" onclick="window.open('http://delicious.com/save?v=5&amp;noui&amp;jump=close&amp;url='+encodeURIComponent('http://www.pybytes.com/pywavelets/')+'&amp;title='+encodeURIComponent('PyWavelets - Discrete Wavelet Transform in Python'), 'delicious','toolbar=no,width=550,height=550'); return false;"><img src="http://static.delicious.com/img/delicious.small.gif" height="12" width="12" alt="Delicious" style="margin: 0 2px 0 2px;" /> Bookmark with Delicious</a></li>
+<li><a href="http://delicious.com/save" onclick="window.open('http://delicious.com/save?v=5&amp;noui&amp;jump=close&amp;url='+encodeURIComponent('http://www.pybytes.com/pywavelets/')+'&amp;title='+encodeURIComponent('PyWavelets - Discrete Wavelet Transform in Python'), 'delicious','toolbar=no,width=550,height=550'); return false;"><img src="../_static/delicious.png" height="12" width="12" alt="Delicious" style="margin: 0 2px 0 2px;" /> Bookmark with Delicious</a></li>
 </ul>
 </div>
 
@@ -237,19 +237,19 @@
           <a href="../modindex.html" title="Global Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="dwt-idwt.html" title="DWT and IDWT test"
+          <a href="dwt-idwt.html" title="DWT and IDWT"
              >next</a> |</li>
         <li class="right" >
           <a href="wavelet.html" title="The Wavelet object"
              >previous</a> |</li>
         <li><a href="../index.html">PyWavelets Documentation</a> &raquo;</li>
-          <li><a href="index.html" >Tests and usage examples</a> &raquo;</li> 
+          <li><a href="index.html" >Usage examples</a> &raquo;</li> 
       </ul>
     </div>
     
     <div class="footer">
       &copy; Copyright 2006-2009, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
-      Last updated on May 05, 2009.
+      Last updated on May 10, 2009.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.1.
     </div>
     <script type="text/javascript">

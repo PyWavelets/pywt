@@ -1,0 +1,667 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Wavelet Packets &mdash; PyWavelets Documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyWavelets Documentation" href="../index.html" />
+    <link rel="up" title="API Reference" href="index.html" />
+    <link rel="next" title="Thresholding functions" href="thresholding-functions.html" />
+    <link rel="prev" title="Stationary Wavelet Transform" href="swt-stationary-wavelet-transform.html" />
+     
+    <meta name="description" content="PyWavelets is a scientific Python module for Wavelet Transform calculations." />
+    <meta name="keywords" content="PyWavelets, wavelets, Python, wavelet transform, discrete wavelet transform, dwt, idwt, swt, wavelet packets, stationary wavelet transform, pywt, Filip Wasilewski" />
+	<meta name="author" content="Filip Wasilewski" />
+	<meta name="Distribution" content="Global" />
+	<meta name="Robots" content="INDEX,FOLLOW" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="thresholding-functions.html" title="Thresholding functions"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="swt-stationary-wavelet-transform.html" title="Stationary Wavelet Transform"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">PyWavelets Documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">API Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="ref-wp"></span><div class="section" id="wavelet-packets">
+<h1>Wavelet Packets<a class="headerlink" href="#wavelet-packets" title="Permalink to this headline">¶</a></h1>
+<p>
+<span class="versionmodified">New in version 0.2.</span></p>
+<p>Version <cite>0.2</cite> of <cite>PyWavelets</cite> includes many new features and improvements. One of such
+new feature is a two-dimansional wavelet packet transform structure that is
+almost completely sharing programming interface with the one-dimensional tree
+structure.</p>
+<p>In order to achieve this simplification, a new inheritance scheme was used
+in which a <a title="pywt.BaseNode" class="reference internal" href="#pywt.BaseNode"><tt class="xref docutils literal"><span class="pre">BaseNode</span></tt></a> base node class is a superclass for both
+<a title="pywt.Node" class="reference internal" href="#pywt.Node"><tt class="xref docutils literal"><span class="pre">Node</span></tt></a> and <a title="pywt.Node2D" class="reference internal" href="#pywt.Node2D"><tt class="xref docutils literal"><span class="pre">Node2D</span></tt></a> node classes.</p>
+<p>The node classes are used as data wrappers and can be organized in trees (binary
+trees for 1D transform case and quad-trees for the 2D one). They are also
+superclasses to the <a title="pywt.WaveletPacket" class="reference internal" href="#pywt.WaveletPacket"><tt class="xref docutils literal"><span class="pre">WaveletPacket</span></tt></a> class and
+<a title="pywt.WaveletPacket2D" class="reference internal" href="#pywt.WaveletPacket2D"><tt class="xref docutils literal"><span class="pre">WaveletPacket2D</span></tt></a> class that are used as the decomposition tree
+roots and contain a couple additional methods.</p>
+<p>The below diagram ilustrates the inheritance tree:</p>
+<blockquote>
+<ul class="simple">
+<li><a title="pywt.BaseNode" class="reference internal" href="#pywt.BaseNode"><tt class="xref docutils literal"><span class="pre">BaseNode</span></tt></a> - common interface for 1D and 2D nodes:<ul>
+<li><a title="pywt.Node" class="reference internal" href="#pywt.Node"><tt class="xref docutils literal"><span class="pre">Node</span></tt></a> - data carrier node in a 1D decomposition tree<ul>
+<li><a title="pywt.WaveletPacket" class="reference internal" href="#pywt.WaveletPacket"><tt class="xref docutils literal"><span class="pre">WaveletPacket</span></tt></a> - 1D decomposition tree root node</li>
+</ul>
+</li>
+<li><a title="pywt.Node2D" class="reference internal" href="#pywt.Node2D"><tt class="xref docutils literal"><span class="pre">Node2D</span></tt></a> - data carrier node in a 2D decomposition tree<ul>
+<li><a title="pywt.WaveletPacket2D" class="reference internal" href="#pywt.WaveletPacket2D"><tt class="xref docutils literal"><span class="pre">WaveletPacket2D</span></tt></a> - 2D decomposition tree root node</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<div class="section" id="basenode-a-common-interface-of-waveletpacket-and-waveletpacket2d">
+<h2>BaseNode - a common interface of WaveletPacket and WaveletPacket2D<a class="headerlink" href="#basenode-a-common-interface-of-waveletpacket-and-waveletpacket2d" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pywt.BaseNode">
+<em class="property">
+class </em><tt class="descclassname">pywt.</tt><tt class="descname">BaseNode</tt><a class="headerlink" href="#pywt.BaseNode" title="Permalink to this definition">¶</a></dt>
+<dt id="pywt.Node">
+<em class="property">
+class </em><tt class="descclassname">pywt.</tt><tt class="descname">Node</tt><big>(</big><em>BaseNode</em><big>)</big><a class="headerlink" href="#pywt.Node" title="Permalink to this definition">¶</a></dt>
+<dt id="pywt.WaveletPacket">
+<em class="property">
+class </em><tt class="descclassname">pywt.</tt><tt class="descname">WaveletPacket</tt><big>(</big><em>Node</em><big>)</big><a class="headerlink" href="#pywt.WaveletPacket" title="Permalink to this definition">¶</a></dt>
+<dt id="pywt.Node2D">
+<em class="property">
+class </em><tt class="descclassname">pywt.</tt><tt class="descname">Node2D</tt><big>(</big><em>BaseNode</em><big>)</big><a class="headerlink" href="#pywt.Node2D" title="Permalink to this definition">¶</a></dt>
+<dt id="pywt.WaveletPacket2D">
+<em class="property">
+class </em><tt class="descclassname">pywt.</tt><tt class="descname">WaveletPacket2D</tt><big>(</big><em>Node2D</em><big>)</big><a class="headerlink" href="#pywt.WaveletPacket2D" title="Permalink to this definition">¶</a></dt>
+<dd><div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The BaseNode is a base class for <a title="pywt.Node" class="reference internal" href="#pywt.Node"><tt class="xref docutils literal"><span class="pre">Node</span></tt></a> and <a title="pywt.Node2D" class="reference internal" href="#pywt.Node2D"><tt class="xref docutils literal"><span class="pre">Node2D</span></tt></a>.
+It should not be used directly unless creating a new transformation
+type. It is included here to documentat the common interface of 1D
+and 2D node an wavelet packet transform classes.</p>
+</div>
+<dl class="method">
+<dt id="pywt.BaseNode.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>parent</em>, <em>data</em>, <em>node_name</em><big>)</big><a class="headerlink" href="#pywt.BaseNode.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>parent</em> &#8211; parent node. If parent is <tt class="xref docutils literal"><span class="pre">None</span></tt> then the node is
+considered detached.</li>
+<li><em>data</em> &#8211; data associated with the node. 1D or 2D numeric array,
+depending on the transform type.</li>
+<li><em>node_name</em> &#8211; a name identifying the coefficients type.
+See <a title="pywt.Node.node_name" class="reference internal" href="#pywt.Node.node_name"><tt class="xref docutils literal"><span class="pre">Node.node_name</span></tt></a> and <a title="pywt.Node2D.node_name" class="reference internal" href="#pywt.Node2D.node_name"><tt class="xref docutils literal"><span class="pre">Node2D.node_name</span></tt></a>
+for information on the accepted subnodes names.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pywt.BaseNode.data">
+<tt class="descname">data</tt><a class="headerlink" href="#pywt.BaseNode.data" title="Permalink to this definition">¶</a></dt>
+<dd>Data associated with the node. 1D or 2D numeric array (depends on the
+transform type).</dd></dl>
+
+<dl class="attribute">
+<dt id="pywt.BaseNode.parent">
+<tt class="descname">parent</tt><a class="headerlink" href="#pywt.BaseNode.parent" title="Permalink to this definition">¶</a></dt>
+<dd>Parent node. Used in tree navigation. <tt class="xref docutils literal"><span class="pre">None</span></tt> for root node.</dd></dl>
+
+<dl class="attribute">
+<dt id="pywt.BaseNode.wavelet">
+<tt class="descname">wavelet</tt><a class="headerlink" href="#pywt.BaseNode.wavelet" title="Permalink to this definition">¶</a></dt>
+<dd><a title="pywt.Wavelet" class="reference external" href="wavelets.html#pywt.Wavelet"><tt class="xref docutils literal"><span class="pre">Wavelet</span></tt></a> used for decomposition and reconstruction. Inherited
+from parent node.</dd></dl>
+
+<dl class="attribute">
+<dt id="pywt.BaseNode.mode">
+<tt class="descname">mode</tt><a class="headerlink" href="#pywt.BaseNode.mode" title="Permalink to this definition">¶</a></dt>
+<dd>Signal extension <a class="reference external" href="signal-extension-modes.html#ref-modes"><em>mode</em></a> for the <a title="pywt.dwt" class="reference external" href="dwt-discrete-wavelet-transform.html#pywt.dwt"><tt class="xref docutils literal"><span class="pre">dwt()</span></tt></a> (<a title="pywt.dwt2" class="reference external" href="2d-dwt-and-idwt.html#pywt.dwt2"><tt class="xref docutils literal"><span class="pre">dwt2()</span></tt></a>)
+and <a title="pywt.idwt" class="reference external" href="idwt-inverse-discrete-wavelet-transform.html#pywt.idwt"><tt class="xref docutils literal"><span class="pre">idwt()</span></tt></a> (<a title="pywt.idwt2" class="reference external" href="2d-dwt-and-idwt.html#pywt.idwt2"><tt class="xref docutils literal"><span class="pre">idwt2()</span></tt></a>) decomposition and reconstruction
+functions. Inherited from parent node.</dd></dl>
+
+<dl class="attribute">
+<dt id="pywt.BaseNode.level">
+<tt class="descname">level</tt><a class="headerlink" href="#pywt.BaseNode.level" title="Permalink to this definition">¶</a></dt>
+<dd>Decomposition level of the current node. <tt class="docutils literal"><span class="pre">0</span></tt> for root (original data),
+<tt class="docutils literal"><span class="pre">1</span></tt> for the first decomposition level, etc.</dd></dl>
+
+<dl class="attribute">
+<dt id="pywt.BaseNode.path">
+<tt class="descname">path</tt><a class="headerlink" href="#pywt.BaseNode.path" title="Permalink to this definition">¶</a></dt>
+<dd>Path string defining position of the node in the decopmosition tree.</dd></dl>
+
+<dl class="attribute">
+<dt id="pywt.BaseNode.node_name">
+<tt class="descname">node_name</tt><a class="headerlink" href="#pywt.BaseNode.node_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Node name describing <a title="pywt.BaseNode.data" class="reference internal" href="#pywt.BaseNode.data"><tt class="xref docutils literal"><span class="pre">data</span></tt></a> coefficients type of the
+current subnode.</p>
+<p>See <a title="pywt.Node.node_name" class="reference internal" href="#pywt.Node.node_name"><tt class="xref docutils literal"><span class="pre">Node.node_name</span></tt></a> and <a title="pywt.Node2D.node_name" class="reference internal" href="#pywt.Node2D.node_name"><tt class="xref docutils literal"><span class="pre">Node2D.node_name</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pywt.BaseNode.maxlevel">
+<tt class="descname">maxlevel</tt><a class="headerlink" href="#pywt.BaseNode.maxlevel" title="Permalink to this definition">¶</a></dt>
+<dd>Maximum allowed level of decomposition. Evaluated from parent or child
+nodes.</dd></dl>
+
+<dl class="attribute">
+<dt id="pywt.BaseNode.is_empty">
+<tt class="descname">is_empty</tt><a class="headerlink" href="#pywt.BaseNode.is_empty" title="Permalink to this definition">¶</a></dt>
+<dd>Checks if <a title="pywt.BaseNode.data" class="reference internal" href="#pywt.BaseNode.data"><tt class="xref docutils literal"><span class="pre">data</span></tt></a> attribute is <tt class="xref docutils literal"><span class="pre">None</span></tt>.</dd></dl>
+
+<dl class="attribute">
+<dt id="pywt.BaseNode.has_any_subnode">
+<tt class="descname">has_any_subnode</tt><a class="headerlink" href="#pywt.BaseNode.has_any_subnode" title="Permalink to this definition">¶</a></dt>
+<dd>Checks if node has any subnodes (is not a leaf node).</dd></dl>
+
+<dl class="method">
+<dt id="pywt.BaseNode.decompose">
+<tt class="descname">decompose</tt><big>(</big><big>)</big><a class="headerlink" href="#pywt.BaseNode.decompose" title="Permalink to this definition">¶</a></dt>
+<dd>Performs Discrete Wavelet Transform on the <a title="pywt.BaseNode.data" class="reference internal" href="#pywt.BaseNode.data"><tt class="xref docutils literal"><span class="pre">data</span></tt></a> and
+returns transform coefficients.</dd></dl>
+
+<dl class="method">
+<dt id="pywt.BaseNode.reconstruct">
+<tt class="descname">reconstruct</tt><big>(</big><span class="optional">[</span><em>update=False</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#pywt.BaseNode.reconstruct" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs Inverse Discrete Wavelet Transform on subnodes coefficients and
+returns reconstructed data for the current level.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>update</em> &#8211; If set, the <a title="pywt.BaseNode.data" class="reference internal" href="#pywt.BaseNode.data"><tt class="xref docutils literal"><span class="pre">data</span></tt></a> attribute will be
+updated with the reconstructed value.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Descends to subnodes and recursively calls
+<a title="pywt.BaseNode.reconstruct" class="reference internal" href="#pywt.BaseNode.reconstruct"><tt class="xref docutils literal"><span class="pre">reconstruct()</span></tt></a> on them.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywt.BaseNode.get_subnode">
+<tt class="descname">get_subnode</tt><big>(</big><em>part</em><span class="optional">[</span>, <em>decompose=True</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#pywt.BaseNode.get_subnode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns subnode or None (see <em>decomposition</em> flag description).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>part</em> &#8211; Subnode name</li>
+<li><em>decompose</em> &#8211; If True and subnode does not exist, it will be created
+using coefficients from the DWT decomposition of the
+current node.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywt.BaseNode.__getitem__">
+<tt class="descname">__getitem__</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#pywt.BaseNode.__getitem__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to access nodes in the decomposition tree by string <em>path</em>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>path</em> &#8211; Path string composed from valid node names. See
+<a title="pywt.Node.node_name" class="reference internal" href="#pywt.Node.node_name"><tt class="xref docutils literal"><span class="pre">Node.node_name</span></tt></a> and <a title="pywt.Node2D.node_name" class="reference internal" href="#pywt.Node2D.node_name"><tt class="xref docutils literal"><span class="pre">Node2D.node_name</span></tt></a> for node
+naming convention.</td>
+</tr>
+</tbody>
+</table>
+<p>Similar to <a title="pywt.BaseNode.get_subnode" class="reference internal" href="#pywt.BaseNode.get_subnode"><tt class="xref docutils literal"><span class="pre">get_subnode()</span></tt></a> method with <cite>decompose=True</cite>, but
+can access nodes on any level in the decomposition tree.</p>
+<p>If node does not exist yet, it will be created by decomposition of its
+parent node.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywt.BaseNode.__setitem__">
+<tt class="descname">__setitem__</tt><big>(</big><em>path</em>, <em>data</em><big>)</big><a class="headerlink" href="#pywt.BaseNode.__setitem__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to set node or node&#8217;s data in the decomposition tree. Nodes are
+identified by string <em>path</em>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>path</em> &#8211; Path string composed from valid node names.
+See <a title="pywt.Node.node_name" class="reference internal" href="#pywt.Node.node_name"><tt class="xref docutils literal"><span class="pre">Node.node_name</span></tt></a> and <a title="pywt.Node2D.node_name" class="reference internal" href="#pywt.Node2D.node_name"><tt class="xref docutils literal"><span class="pre">Node2D.node_name</span></tt></a> for
+node naming convention.</li>
+<li><em>data</em> &#8211; numeric array or <a title="pywt.BaseNode" class="reference internal" href="#pywt.BaseNode"><tt class="xref docutils literal"><span class="pre">BaseNode</span></tt></a> subclass.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywt.BaseNode.__delitem__">
+<tt class="descname">__delitem__</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#pywt.BaseNode.__delitem__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to delete node from the decomposition tree.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>path</em> &#8211; Path string composed from valid node names.
+See <a title="pywt.Node.node_name" class="reference internal" href="#pywt.Node.node_name"><tt class="xref docutils literal"><span class="pre">Node.node_name</span></tt></a> and <a title="pywt.Node2D.node_name" class="reference internal" href="#pywt.Node2D.node_name"><tt class="xref docutils literal"><span class="pre">Node2D.node_name</span></tt></a> for
+node naming convention.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywt.BaseNode.get_leaf_nodes">
+<tt class="descname">get_leaf_nodes</tt><big>(</big><span class="optional">[</span><em>decompose=False</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#pywt.BaseNode.get_leaf_nodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Traverses through the decomposition tree and collects leaf nodes (nodes
+without any subnodes).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>decompose</em> &#8211; If <em>decompose</em> is <tt class="xref docutils literal"><span class="pre">True</span></tt>, the method will try to
+decompose the tree up to the
+<a title="pywt.BaseNode.maxlevel" class="reference internal" href="#pywt.BaseNode.maxlevel"><tt class="xref docutils literal"><span class="pre">maximum</span> <span class="pre">level</span></tt></a>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywt.BaseNode.walk">
+<tt class="descname">walk</tt><big>(</big><em>self</em>, <em>func</em><span class="optional">[</span>, <em>args=()</em><span class="optional">[</span>, <em>kwargs={}</em><span class="optional">[</span>, <em>decompose=True</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#pywt.BaseNode.walk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Traverses the decomposition tree and calls <tt class="docutils literal"><span class="pre">func(node,</span> <span class="pre">*args,</span> <span class="pre">**kwargs)</span></tt>
+on every node. If <cite>func</cite> returns <tt class="xref docutils literal"><span class="pre">True</span></tt>, descending to subnodes will
+continue.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><em>func</em> &#8211; <p>callable accepting <a title="pywt.BaseNode" class="reference internal" href="#pywt.BaseNode"><tt class="xref docutils literal"><span class="pre">BaseNode</span></tt></a> as the first param and
+optional positional and keyword arguments:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">func</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><em>decompose</em> &#8211; If <em>decompose</em> is <tt class="xref docutils literal"><span class="pre">True</span></tt> (default), the method will
+also try to decompose the tree up to the
+<a title="pywt.BaseNode.maxlevel" class="reference internal" href="#pywt.BaseNode.maxlevel"><tt class="xref docutils literal"><span class="pre">maximum</span> <span class="pre">level</span></tt></a>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Args:</th><td class="field-body"><p class="first">arguments to pass to the <em>func</em></p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Kwargs:</th><td class="field-body"><p class="first last">keyword arguments to pass to the <em>func</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywt.BaseNode.walk_depth">
+<tt class="descname">walk_depth</tt><big>(</big><em>self</em>, <em>func</em><span class="optional">[</span>, <em>args=()</em><span class="optional">[</span>, <em>kwargs={}</em><span class="optional">[</span>, <em>decompose=False</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#pywt.BaseNode.walk_depth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Similar to <a title="pywt.BaseNode.walk" class="reference internal" href="#pywt.BaseNode.walk"><tt class="xref docutils literal"><span class="pre">walk()</span></tt></a> but traverses the tree in depth-first
+order.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><em>func</em> &#8211; <p>callable accepting <a title="pywt.BaseNode" class="reference internal" href="#pywt.BaseNode"><tt class="xref docutils literal"><span class="pre">BaseNode</span></tt></a> as the first param and
+optional positional and keyword arguments:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">func</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><em>decompose</em> &#8211; If <em>decompose</em> is <tt class="xref docutils literal"><span class="pre">True</span></tt>, the method will also try to
+decompose the tree up to the
+<a title="pywt.BaseNode.maxlevel" class="reference internal" href="#pywt.BaseNode.maxlevel"><tt class="xref docutils literal"><span class="pre">maximum</span> <span class="pre">level</span></tt></a>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Args:</th><td class="field-body"><p class="first">arguments to pass to the <em>func</em></p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Kwargs:</th><td class="field-body"><p class="first last">keyword arguments to pass to the <em>func</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="waveletpacket-and-waveletpacket-tree-node">
+<h2>WaveletPacket and WaveletPacket tree Node<a class="headerlink" href="#waveletpacket-and-waveletpacket-tree-node" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt>
+<em class="property">
+class </em><tt class="descclassname">pywt.</tt><tt class="descname">Node</tt><big>(</big><em>BaseNode</em><big>)</big></dt>
+<dt>
+<em class="property">
+class </em><tt class="descclassname">pywt.</tt><tt class="descname">WaveletPacket</tt><big>(</big><em>Node</em><big>)</big></dt>
+<dd><dl class="attribute">
+<dt id="pywt.Node.node_name">
+<tt class="descname">node_name</tt><a class="headerlink" href="#pywt.Node.node_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Node name describing <a title="pywt.BaseNode.data" class="reference internal" href="#pywt.BaseNode.data"><tt class="xref docutils literal"><span class="pre">data</span></tt></a> coefficients type of the
+current subnode.</p>
+<dl class="docutils">
+<dt>For <a title="pywt.WaveletPacket" class="reference internal" href="#pywt.WaveletPacket"><tt class="xref docutils literal"><span class="pre">WaveletPacket</span></tt></a> case it is just as in <a title="pywt.dwt" class="reference external" href="dwt-discrete-wavelet-transform.html#pywt.dwt"><tt class="xref docutils literal"><span class="pre">dwt()</span></tt></a>:</dt>
+<dd><ul class="first last simple">
+<li><tt class="docutils literal"><span class="pre">a</span></tt> - approximation coefficients</li>
+<li><tt class="docutils literal"><span class="pre">d</span></tt> - details coefficients</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywt.Node.decompose">
+<tt class="descname">decompose</tt><big>(</big><big>)</big><a class="headerlink" href="#pywt.Node.decompose" title="Permalink to this definition">¶</a></dt>
+<dd><div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<ul class="last simple">
+<li><a title="pywt.dwt" class="reference external" href="dwt-discrete-wavelet-transform.html#pywt.dwt"><tt class="xref docutils literal"><span class="pre">dwt()</span></tt></a> for 1D Discrete Wavelet Transform output coefficients.</li>
+</ul>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">
+class </em><tt class="descclassname">pywt.</tt><tt class="descname">WaveletPacket</tt><big>(</big><em>Node</em><big>)</big></dt>
+<dd><dl class="method">
+<dt id="pywt.WaveletPacket.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>data</em>, <em>wavelet</em><span class="optional">[</span>, <em>mode='sym'</em><span class="optional">[</span>, <em>maxlevel=None</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#pywt.WaveletPacket.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>data</em> &#8211; data associated with the node. 1D numeric array.</li>
+<li><em>wavelet</em> &#8211; <a title="pywt.Wavelet" class="reference external" href="wavelets.html#pywt.Wavelet"><tt class="xref docutils literal"><span class="pre">Wavelet</span></tt></a> to use for decomposition and
+reconstruction.</li>
+<li><em>mode</em> &#8211; Signal extension <a class="reference external" href="signal-extension-modes.html#ref-modes"><em>mode</em></a> for the <a title="pywt.dwt" class="reference external" href="dwt-discrete-wavelet-transform.html#pywt.dwt"><tt class="xref docutils literal"><span class="pre">dwt()</span></tt></a>
+and <a title="pywt.idwt" class="reference external" href="idwt-inverse-discrete-wavelet-transform.html#pywt.idwt"><tt class="xref docutils literal"><span class="pre">idwt()</span></tt></a> decomposition and reconstruction functions.</li>
+<li><em>maxlevel</em> &#8211; Maximum allowed level of decomposition. If not specified
+it will be calculated based on the <em>wavelet</em> and <em>data</em>
+length using <a title="pywt.dwt_max_level" class="reference external" href="dwt-discrete-wavelet-transform.html#pywt.dwt_max_level"><tt class="xref docutils literal"><span class="pre">pywt.dwt_max_level()</span></tt></a>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywt.WaveletPacket.get_level">
+<tt class="descname">get_level</tt><big>(</big><em>level</em><span class="optional">[</span>, <em>order=&quot;natural&quot;</em><span class="optional">[</span>, <em>decompose=True</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#pywt.WaveletPacket.get_level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Collects nodes from the given level of decomposition.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>level</em> &#8211; Specifies decomposition <em>level</em> from which the nodes will be
+collected.</li>
+<li><em>order</em> &#8211; Specifies nodes order - natural (<tt class="docutils literal"><span class="pre">natural</span></tt>) or frequency
+(<tt class="docutils literal"><span class="pre">freq</span></tt>).</li>
+<li><em>decompose</em> &#8211; If set then the method will try to decompose the data up
+to the specified <em>level</em>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>If nodes at the given level are missing (i.e. the tree is partially
+decomposed) and the <em>decompose</em> is set to <tt class="xref docutils literal"><span class="pre">False</span></tt>, only existing nodes
+will be returned.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="waveletpacket2d-and-waveletpacket2d-tree-node2d">
+<h2>WaveletPacket2D and WaveletPacket2D tree Node2D<a class="headerlink" href="#waveletpacket2d-and-waveletpacket2d-tree-node2d" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt>
+<em class="property">
+class </em><tt class="descclassname">pywt.</tt><tt class="descname">Node2D</tt><big>(</big><em>BaseNode</em><big>)</big></dt>
+<dt>
+<em class="property">
+class </em><tt class="descclassname">pywt.</tt><tt class="descname">WaveletPacket2D</tt><big>(</big><em>Node2D</em><big>)</big></dt>
+<dd><dl class="attribute">
+<dt id="pywt.Node2D.node_name">
+<tt class="descname">node_name</tt><a class="headerlink" href="#pywt.Node2D.node_name" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>For <a title="pywt.WaveletPacket2D" class="reference internal" href="#pywt.WaveletPacket2D"><tt class="xref docutils literal"><span class="pre">WaveletPacket2D</span></tt></a> case it is just as in <a title="pywt.dwt2" class="reference external" href="2d-dwt-and-idwt.html#pywt.dwt2"><tt class="xref docutils literal"><span class="pre">dwt2()</span></tt></a>:</dt>
+<dd><ul class="first last simple">
+<li><tt class="docutils literal"><span class="pre">a</span></tt> - approximation coefficients (<cite>LL</cite>)</li>
+<li><tt class="docutils literal"><span class="pre">h</span></tt> - horizontal detail coefficients (<cite>LH</cite>)</li>
+<li><tt class="docutils literal"><span class="pre">v</span></tt> - vertical detail coefficients (<cite>HL</cite>)</li>
+<li><tt class="docutils literal"><span class="pre">d</span></tt> - diagonal detail coefficients (<cite>HH</cite>)</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywt.Node2D.decompose">
+<tt class="descname">decompose</tt><big>(</big><big>)</big><a class="headerlink" href="#pywt.Node2D.decompose" title="Permalink to this definition">¶</a></dt>
+<dd><div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a title="pywt.dwt2" class="reference external" href="2d-dwt-and-idwt.html#pywt.dwt2"><tt class="xref docutils literal"><span class="pre">dwt2()</span></tt></a> for 2D Discrete Wavelet Transform output coefficients.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">expand_2d_path(self, path):</tt></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">
+class </em><tt class="descclassname">pywt.</tt><tt class="descname">WaveletPacket2D</tt><big>(</big><em>Node2D</em><big>)</big></dt>
+<dd><dl class="method">
+<dt id="pywt.WaveletPacket2D.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>data</em>, <em>wavelet</em><span class="optional">[</span>, <em>mode='sym'</em><span class="optional">[</span>, <em>maxlevel=None</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#pywt.WaveletPacket2D.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>data</em> &#8211; data associated with the node. 2D numeric array.</li>
+<li><em>wavelet</em> &#8211; <a title="pywt.Wavelet" class="reference external" href="wavelets.html#pywt.Wavelet"><tt class="xref docutils literal"><span class="pre">Wavelet</span></tt></a> to use for decomposition and
+reconstruction.</li>
+<li><em>mode</em> &#8211; Signal extension <a class="reference external" href="signal-extension-modes.html#ref-modes"><em>mode</em></a> for the <a title="pywt.dwt" class="reference external" href="dwt-discrete-wavelet-transform.html#pywt.dwt"><tt class="xref docutils literal"><span class="pre">dwt()</span></tt></a>
+and <a title="pywt.idwt" class="reference external" href="idwt-inverse-discrete-wavelet-transform.html#pywt.idwt"><tt class="xref docutils literal"><span class="pre">idwt()</span></tt></a> decomposition and reconstruction functions.</li>
+<li><em>maxlevel</em> &#8211; Maximum allowed level of decomposition. If not specified
+it will be calculated based on the <em>wavelet</em> and <em>data</em>
+length using <a title="pywt.dwt_max_level" class="reference external" href="dwt-discrete-wavelet-transform.html#pywt.dwt_max_level"><tt class="xref docutils literal"><span class="pre">pywt.dwt_max_level()</span></tt></a>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywt.WaveletPacket2D.get_level">
+<tt class="descname">get_level</tt><big>(</big><em>level</em><span class="optional">[</span>, <em>order=&quot;natural&quot;</em><span class="optional">[</span>, <em>decompose=True</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#pywt.WaveletPacket2D.get_level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Collects nodes from the given level of decomposition.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>level</em> &#8211; Specifies decomposition <em>level</em> from which the nodes will be
+collected.</li>
+<li><em>order</em> &#8211; Specifies nodes order - natural (<tt class="docutils literal"><span class="pre">natural</span></tt>) or frequency
+(<tt class="docutils literal"><span class="pre">freq</span></tt>).</li>
+<li><em>decompose</em> &#8211; If set then the method will try to decompose the data up
+to the specified <em>level</em>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>If nodes at the given level are missing (i.e. the tree is partially
+decomposed) and the <em>decompose</em> is set to <tt class="xref docutils literal"><span class="pre">False</span></tt>, only existing nodes
+will be returned.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="">Wavelet Packets</a><ul>
+<li><a class="reference external" href="#basenode-a-common-interface-of-waveletpacket-and-waveletpacket2d">BaseNode - a common interface of WaveletPacket and WaveletPacket2D</a></li>
+<li><a class="reference external" href="#waveletpacket-and-waveletpacket-tree-node">WaveletPacket and WaveletPacket tree Node</a></li>
+<li><a class="reference external" href="#waveletpacket2d-and-waveletpacket2d-tree-node2d">WaveletPacket2D and WaveletPacket2D tree Node2D</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="swt-stationary-wavelet-transform.html"
+                                  title="previous chapter">Stationary Wavelet Transform</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="thresholding-functions.html"
+                                  title="next chapter">Thresholding functions</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/ref/wavelet-packets.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+<div>
+<h3>Quick links</h3>
+<ul>
+<li><a href="http://groups.google.com/group/pywavelets"><img src="../_static/comments.png" height="16" width="16" alt="" /> Visit Discussion Group</a></li>
+<li><a href="http://wavelets.scipy.org/moin/"><img src="../_static/page_edit.png" height="16" width="16" alt="" /> View Wiki Page</a></li>
+<li><a href="http://projects.scipy.org/wavelets/browser/pywt/trunk/"><img src="../_static/cog.png" height="16" width="16" alt="" /> Browse Source Code</a></li>
+<li><a href="http://wavelets.pybytes.com/"><img src="../_static/wave.png" height="16" width="16" alt="" /> Explore Wavelets</a></li>
+<li><a href="http://delicious.com/save" onclick="window.open('http://delicious.com/save?v=5&amp;noui&amp;jump=close&amp;url='+encodeURIComponent('http://www.pybytes.com/pywavelets/')+'&amp;title='+encodeURIComponent('PyWavelets - Discrete Wavelet Transform in Python'), 'delicious','toolbar=no,width=550,height=550'); return false;"><img src="../_static/delicious.png" height="12" width="12" alt="Delicious" style="margin: 0 2px 0 2px;" /> Bookmark with Delicious</a></li>
+</ul>
+</div>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="thresholding-functions.html" title="Thresholding functions"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="swt-stationary-wavelet-transform.html" title="Stationary Wavelet Transform"
+             >previous</a> |</li>
+        <li><a href="../index.html">PyWavelets Documentation</a> &raquo;</li>
+          <li><a href="index.html" >API Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    
+    <div class="footer">
+      &copy; Copyright 2006-2009, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
+      Last updated on May 10, 2009.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.1.
+    </div>
+    <script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+    <script type="text/javascript">
+    var pageTracker = _gat._getTracker("UA-3396395-3");
+    pageTracker._initData();
+    pageTracker._trackPageview();
+    </script>
+
+  </body>
+</html>

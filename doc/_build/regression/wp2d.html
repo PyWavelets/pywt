@@ -20,7 +20,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="PyWavelets Documentation" href="../index.html" />
-    <link rel="up" title="Tests and usage examples" href="index.html" />
+    <link rel="up" title="Usage examples" href="index.html" />
     <link rel="next" title="Gotchas" href="gotchas.html" />
     <link rel="prev" title="Wavelet Packets" href="wp.html" />
      
@@ -48,7 +48,7 @@
           <a href="wp.html" title="Wavelet Packets"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">PyWavelets Documentation</a> &raquo;</li>
-          <li><a href="index.html" accesskey="U">Tests and usage examples</a> &raquo;</li> 
+          <li><a href="index.html" accesskey="U">Usage examples</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -81,7 +81,7 @@
 <span class="go"> [ 1.  2.  3.  4.  5.  6.  7.  8.]]</span>
 </pre></div>
 </div>
-<p>Now create a <tt class="xref docutils literal"><span class="pre">2D</span> <span class="pre">Wavelet</span> <span class="pre">Packet</span></tt> object:</p>
+<p>Now create a <a title="pywt.WaveletPacket2D" class="reference external" href="../ref/wavelet-packets.html#pywt.WaveletPacket2D"><tt class="xref docutils literal"><span class="pre">2D</span> <span class="pre">Wavelet</span> <span class="pre">Packet</span></tt></a> object:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">wp</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">WaveletPacket2D</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">wavelet</span><span class="o">=</span><span class="s">&#39;db1&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;sym&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -98,7 +98,7 @@
 <span class="go"> [ 1.  2.  3.  4.  5.  6.  7.  8.]]</span>
 </pre></div>
 </div>
-<p><tt class="xref docutils literal"><span class="pre">Nodes</span></tt> are identified by paths. For the root node the path is
+<p><a title="pywt.Node2D" class="reference external" href="../ref/wavelet-packets.html#pywt.Node2D"><tt class="xref docutils literal"><span class="pre">Nodes</span></tt></a> are identified by paths. For the root node the path is
 <tt class="docutils literal"><span class="pre">''</span></tt> and the decomposition level is <tt class="docutils literal"><span class="pre">0</span></tt>.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="nb">repr</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
 <span class="go">&#39;&#39;</span>
@@ -115,9 +115,9 @@ automatically computed based on the data size:</p>
 </div>
 <div class="section" id="traversing-wp-tree">
 <h2>Traversing WP tree:<a class="headerlink" href="#traversing-wp-tree" title="Permalink to this headline">¶</a></h2>
-<p>Wavelet Packet <tt class="xref docutils literal"><span class="pre">nodes</span></tt> are arranged in a tree. Each node in a WP
+<p>Wavelet Packet <a title="pywt.Node2D" class="reference external" href="../ref/wavelet-packets.html#pywt.Node2D"><tt class="xref docutils literal"><span class="pre">nodes</span></tt></a> are arranged in a tree. Each node in a WP
 tree is uniquely identified and addressed by a <tt class="xref docutils literal"><span class="pre">path</span></tt> string.</p>
-<p>In the 1D <tt class="xref docutils literal"><span class="pre">WaveletPacket</span></tt> case nodes were accessed using <tt class="docutils literal"><span class="pre">'a'</span></tt>
+<p>In the 1D <a title="pywt.WaveletPacket" class="reference external" href="../ref/wavelet-packets.html#pywt.WaveletPacket"><tt class="xref docutils literal"><span class="pre">WaveletPacket</span></tt></a> case nodes were accessed using <tt class="docutils literal"><span class="pre">'a'</span></tt>
 (approximation) and <tt class="docutils literal"><span class="pre">'d'</span></tt> (details) path names (each node has two 1D
 children).</p>
 <p>Because now we deal with a bit more complex structure (each node has four
@@ -175,7 +175,7 @@ operator <cite>obj[x]</cite> (<tt class="xref docutils literal"><span class="pre
 <span class="go"> [ 10.  26.]]</span>
 </pre></div>
 </div>
-<p>Indexing base <tt class="xref docutils literal"><span class="pre">WaveletPacket2D</span></tt> (as well as 1D <tt class="xref docutils literal"><span class="pre">WaveletPacket</span></tt>)
+<p>Indexing base <a title="pywt.WaveletPacket2D" class="reference external" href="../ref/wavelet-packets.html#pywt.WaveletPacket2D"><tt class="xref docutils literal"><span class="pre">WaveletPacket2D</span></tt></a> (as well as 1D <a title="pywt.WaveletPacket" class="reference external" href="../ref/wavelet-packets.html#pywt.WaveletPacket"><tt class="xref docutils literal"><span class="pre">WaveletPacket</span></tt></a>)
 using compound path is just the same as indexing WP subnode:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">node</span> <span class="o">=</span> <span class="n">wp</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">node</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
@@ -207,10 +207,10 @@ which btw. was:</p>
 </div>
 <div class="section" id="accessing-node2d-s-attributes">
 <h3>Accessing Node2D&#8217;s attributes:<a class="headerlink" href="#accessing-node2d-s-attributes" title="Permalink to this headline">¶</a></h3>
-<p><tt class="xref docutils literal"><span class="pre">WaveletPacket2D</span></tt> is a tree data structure, which evaluates to a set
-of <tt class="xref docutils literal"><span class="pre">Node2D</span></tt> objects. <tt class="xref docutils literal"><span class="pre">WaveletPacket2D</span></tt> is just a special subclass
-of the <tt class="xref docutils literal"><span class="pre">Node2D</span></tt> class (which in turn inherits from a <tt class="xref docutils literal"><span class="pre">BaseNode</span></tt>,
-just like with <tt class="xref docutils literal"><span class="pre">Node</span></tt> and <tt class="xref docutils literal"><span class="pre">WaveletPacket</span></tt> for the 1D case.).</p>
+<p><a title="pywt.WaveletPacket2D" class="reference external" href="../ref/wavelet-packets.html#pywt.WaveletPacket2D"><tt class="xref docutils literal"><span class="pre">WaveletPacket2D</span></tt></a> is a tree data structure, which evaluates to a set
+of <a title="pywt.Node2D" class="reference external" href="../ref/wavelet-packets.html#pywt.Node2D"><tt class="xref docutils literal"><span class="pre">Node2D</span></tt></a> objects. <a title="pywt.WaveletPacket2D" class="reference external" href="../ref/wavelet-packets.html#pywt.WaveletPacket2D"><tt class="xref docutils literal"><span class="pre">WaveletPacket2D</span></tt></a> is just a special subclass
+of the <a title="pywt.Node2D" class="reference external" href="../ref/wavelet-packets.html#pywt.Node2D"><tt class="xref docutils literal"><span class="pre">Node2D</span></tt></a> class (which in turn inherits from a <a title="pywt.BaseNode" class="reference external" href="../ref/wavelet-packets.html#pywt.BaseNode"><tt class="xref docutils literal"><span class="pre">BaseNode</span></tt></a>,
+just like with <a title="pywt.Node" class="reference external" href="../ref/wavelet-packets.html#pywt.Node"><tt class="xref docutils literal"><span class="pre">Node</span></tt></a> and <a title="pywt.WaveletPacket" class="reference external" href="../ref/wavelet-packets.html#pywt.WaveletPacket"><tt class="xref docutils literal"><span class="pre">WaveletPacket</span></tt></a> for the 1D case.).</p>
 <blockquote>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">wp</span><span class="p">[</span><span class="s">&#39;av&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
 <span class="go">[[-4. -4.]</span>
@@ -253,7 +253,7 @@ just like with <tt class="xref docutils literal"><span class="pre">Node</span></
 <div class="section" id="collecting-nodes">
 <h3>Collecting nodes<a class="headerlink" href="#collecting-nodes" title="Permalink to this headline">¶</a></h3>
 <p>We can get all nodes on the particular level using the
-<tt class="xref docutils literal"><span class="pre">WaveletPacket2D.get_level()</span></tt> method:</p>
+<a title="pywt.WaveletPacket2D.get_level" class="reference external" href="../ref/wavelet-packets.html#pywt.WaveletPacket2D.get_level"><tt class="xref docutils literal"><span class="pre">WaveletPacket2D.get_level()</span></tt></a> method:</p>
 <blockquote>
 <ul>
 <li><p class="first">0 level - the root <cite>wp</cite> node:</p>
@@ -306,7 +306,7 @@ just like with <tt class="xref docutils literal"><span class="pre">Node</span></
 </li>
 </ul>
 </blockquote>
-<p>Note that <tt class="xref docutils literal"><span class="pre">WaveletPacket2D.get_level()</span></tt> performs automatic decomposition
+<p>Note that <a title="pywt.WaveletPacket2D.get_level" class="reference external" href="../ref/wavelet-packets.html#pywt.WaveletPacket2D.get_level"><tt class="xref docutils literal"><span class="pre">WaveletPacket2D.get_level()</span></tt></a> performs automatic decomposition
 until it reaches the given level.</p>
 </div>
 </div>
@@ -329,7 +329,8 @@ values with known data from the previous examples:</p>
 <span class="gp">... </span>               <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]]</span>
 </pre></div>
 </div>
-<p>For convenience, &#8216;data&#8217; gets automatically extracted from the base Node object:</p>
+<p>For convenience, <tt class="xref docutils literal"><span class="pre">Node2D.data</span></tt> gets automatically extracted from the
+base <a title="pywt.Node2D" class="reference external" href="../ref/wavelet-packets.html#pywt.Node2D"><tt class="xref docutils literal"><span class="pre">Node2D</span></tt></a> object:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">new_wp</span><span class="p">[</span><span class="s">&#39;h&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">wp</span><span class="p">[</span><span class="s">&#39;h&#39;</span><span class="p">]</span> <span class="c"># all zeros</span>
 </pre></div>
 </div>
@@ -540,7 +541,7 @@ via decomposition of its parent node (the wp object itself).</p>
 <li><a href="http://wavelets.scipy.org/moin/"><img src="../_static/page_edit.png" height="16" width="16" alt="" /> View Wiki Page</a></li>
 <li><a href="http://projects.scipy.org/wavelets/browser/pywt/trunk/"><img src="../_static/cog.png" height="16" width="16" alt="" /> Browse Source Code</a></li>
 <li><a href="http://wavelets.pybytes.com/"><img src="../_static/wave.png" height="16" width="16" alt="" /> Explore Wavelets</a></li>
-<li><a href="http://delicious.com/save" onclick="window.open('http://delicious.com/save?v=5&amp;noui&amp;jump=close&amp;url='+encodeURIComponent('http://www.pybytes.com/pywavelets/')+'&amp;title='+encodeURIComponent('PyWavelets - Discrete Wavelet Transform in Python'), 'delicious','toolbar=no,width=550,height=550'); return false;"><img src="http://static.delicious.com/img/delicious.small.gif" height="12" width="12" alt="Delicious" style="margin: 0 2px 0 2px;" /> Bookmark with Delicious</a></li>
+<li><a href="http://delicious.com/save" onclick="window.open('http://delicious.com/save?v=5&amp;noui&amp;jump=close&amp;url='+encodeURIComponent('http://www.pybytes.com/pywavelets/')+'&amp;title='+encodeURIComponent('PyWavelets - Discrete Wavelet Transform in Python'), 'delicious','toolbar=no,width=550,height=550'); return false;"><img src="../_static/delicious.png" height="12" width="12" alt="Delicious" style="margin: 0 2px 0 2px;" /> Bookmark with Delicious</a></li>
 </ul>
 </div>
 
@@ -564,13 +565,13 @@ via decomposition of its parent node (the wp object itself).</p>
           <a href="wp.html" title="Wavelet Packets"
              >previous</a> |</li>
         <li><a href="../index.html">PyWavelets Documentation</a> &raquo;</li>
-          <li><a href="index.html" >Tests and usage examples</a> &raquo;</li> 
+          <li><a href="index.html" >Usage examples</a> &raquo;</li> 
       </ul>
     </div>
     
     <div class="footer">
       &copy; Copyright 2006-2009, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
-      Last updated on May 05, 2009.
+      Last updated on May 10, 2009.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.1.
     </div>
     <script type="text/javascript">

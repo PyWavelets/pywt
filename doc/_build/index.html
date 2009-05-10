@@ -53,6 +53,14 @@
             
   <div class="section" id="pywavelets-discrete-wavelet-transform-in-python">
 <h1>PyWavelets - Discrete Wavelet Transform in Python<a class="headerlink" href="#pywavelets-discrete-wavelet-transform-in-python" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>This is a documetation preview for the upcoming 0.2 release
+of PyWavelets, currantly available from the SVN repository
+at <a class="reference external" href="http://wavelets.scipy.org/svn/multiresolution/pywt/trunk/">http://wavelets.scipy.org/svn/multiresolution/pywt/trunk/</a>.</p>
+<p class="last">Documetation for the 0.1.6 release is still available at
+<a class="reference external" href="http://www.pybytes.com/pywavelets/0.1.6/">http://www.pybytes.com/pywavelets/0.1.6/</a>.</p>
+</div>
 <p>Contents:</p>
 <ul>
 <li class="toctree-l1"><a class="reference external" href="overview.html">Overview</a><ul>
@@ -66,18 +74,20 @@
 </li>
 <li class="toctree-l1"><a class="reference external" href="ref/index.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference external" href="ref/wavelets.html">Wavelets</a></li>
-<li class="toctree-l2"><a class="reference external" href="ref/dwt.html">Discrete Wavelet Transform (DWT)</a></li>
-<li class="toctree-l2"><a class="reference external" href="ref/idwt.html">Inverse Discrete Wavelet Transform (IDWT)</a></li>
-<li class="toctree-l2"><a class="reference external" href="ref/modes.html">Signal extension modes</a></li>
+<li class="toctree-l2"><a class="reference external" href="ref/signal-extension-modes.html">Signal extension modes</a></li>
+<li class="toctree-l2"><a class="reference external" href="ref/dwt-discrete-wavelet-transform.html">Discrete Wavelet Transform (DWT)</a></li>
+<li class="toctree-l2"><a class="reference external" href="ref/idwt-inverse-discrete-wavelet-transform.html">Inverse Discrete Wavelet Transform (IDWT)</a></li>
 <li class="toctree-l2"><a class="reference external" href="ref/2d-dwt-and-idwt.html">2D Forward and Inverse Discrete Wavelet Transform</a></li>
-<li class="toctree-l2"><a class="reference external" href="ref/swt.html">Stationary Wavelet Transform</a></li>
+<li class="toctree-l2"><a class="reference external" href="ref/swt-stationary-wavelet-transform.html">Stationary Wavelet Transform</a></li>
+<li class="toctree-l2"><a class="reference external" href="ref/wavelet-packets.html">Wavelet Packets</a></li>
+<li class="toctree-l2"><a class="reference external" href="ref/thresholding-functions.html">Thresholding functions</a></li>
 <li class="toctree-l2"><a class="reference external" href="ref/other-functions.html">Other functions</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference external" href="regression/index.html">Tests and usage examples</a><ul>
+<li class="toctree-l1"><a class="reference external" href="regression/index.html">Usage examples</a><ul>
 <li class="toctree-l2"><a class="reference external" href="regression/wavelet.html">The Wavelet object</a></li>
-<li class="toctree-l2"><a class="reference external" href="regression/modes.html">Modes test</a></li>
-<li class="toctree-l2"><a class="reference external" href="regression/dwt-idwt.html">DWT and IDWT test</a></li>
+<li class="toctree-l2"><a class="reference external" href="regression/modes.html">Signal Extension Modes</a></li>
+<li class="toctree-l2"><a class="reference external" href="regression/dwt-idwt.html">DWT and IDWT</a></li>
 <li class="toctree-l2"><a class="reference external" href="regression/multilevel.html">Multilevel DWT, IDWT and SWT</a></li>
 <li class="toctree-l2"><a class="reference external" href="regression/wp.html">Wavelet Packets</a></li>
 <li class="toctree-l2"><a class="reference external" href="regression/wp2d.html">2D Wavelet Packets</a></li>
@@ -144,7 +154,7 @@
 <li><a href="http://wavelets.scipy.org/moin/"><img src="_static/page_edit.png" height="16" width="16" alt="" /> View Wiki Page</a></li>
 <li><a href="http://projects.scipy.org/wavelets/browser/pywt/trunk/"><img src="_static/cog.png" height="16" width="16" alt="" /> Browse Source Code</a></li>
 <li><a href="http://wavelets.pybytes.com/"><img src="_static/wave.png" height="16" width="16" alt="" /> Explore Wavelets</a></li>
-<li><a href="http://delicious.com/save" onclick="window.open('http://delicious.com/save?v=5&amp;noui&amp;jump=close&amp;url='+encodeURIComponent('http://www.pybytes.com/pywavelets/')+'&amp;title='+encodeURIComponent('PyWavelets - Discrete Wavelet Transform in Python'), 'delicious','toolbar=no,width=550,height=550'); return false;"><img src="http://static.delicious.com/img/delicious.small.gif" height="12" width="12" alt="Delicious" style="margin: 0 2px 0 2px;" /> Bookmark with Delicious</a></li>
+<li><a href="http://delicious.com/save" onclick="window.open('http://delicious.com/save?v=5&amp;noui&amp;jump=close&amp;url='+encodeURIComponent('http://www.pybytes.com/pywavelets/')+'&amp;title='+encodeURIComponent('PyWavelets - Discrete Wavelet Transform in Python'), 'delicious','toolbar=no,width=550,height=550'); return false;"><img src="_static/delicious.png" height="12" width="12" alt="Delicious" style="margin: 0 2px 0 2px;" /> Bookmark with Delicious</a></li>
 </ul>
 </div>
 
@@ -170,7 +180,7 @@
     
     <div class="footer">
       &copy; Copyright 2006-2009, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
-      Last updated on May 05, 2009.
+      Last updated on May 10, 2009.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.1.
     </div>
     <script type="text/javascript">

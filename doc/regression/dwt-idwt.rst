@@ -2,8 +2,8 @@
 
 .. currentmodule:: pywt
 
-DWT and IDWT test
-=================
+DWT and IDWT
+============
 
 Discrete Wavelet Transform
 --------------------------

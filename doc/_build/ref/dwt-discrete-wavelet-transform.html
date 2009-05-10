@@ -21,8 +21,8 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="PyWavelets Documentation" href="../index.html" />
     <link rel="up" title="API Reference" href="index.html" />
-    <link rel="next" title="Inverse Discrete Wavelet Transform (IDWT)" href="idwt.html" />
-    <link rel="prev" title="Wavelets" href="wavelets.html" />
+    <link rel="next" title="Inverse Discrete Wavelet Transform (IDWT)" href="idwt-inverse-discrete-wavelet-transform.html" />
+    <link rel="prev" title="Signal extension modes" href="signal-extension-modes.html" />
      
     <meta name="description" content="PyWavelets is a scientific Python module for Wavelet Transform calculations." />
     <meta name="keywords" content="PyWavelets, wavelets, Python, wavelet transform, discrete wavelet transform, dwt, idwt, swt, wavelet packets, stationary wavelet transform, pywt, Filip Wasilewski" />
@@ -42,10 +42,10 @@
           <a href="../modindex.html" title="Global Module Index"
              accesskey="M">modules</a> |</li>
         <li class="right" >
-          <a href="idwt.html" title="Inverse Discrete Wavelet Transform (IDWT)"
+          <a href="idwt-inverse-discrete-wavelet-transform.html" title="Inverse Discrete Wavelet Transform (IDWT)"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="wavelets.html" title="Wavelets"
+          <a href="signal-extension-modes.html" title="Signal extension modes"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">PyWavelets Documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">API Reference</a> &raquo;</li> 
@@ -88,16 +88,16 @@ Discrete Wavelet Transform.</p>
 <p>The transform coefficients are returned as two arrays containing
 approximation (<em>cA</em>) and detail (<em>cD</em>) coefficients respectively. Length
 of returned arrays depends on the selected signal extension <em>mode</em> - see
-the <a class="reference external" href="modes.html#ref-modes"><em>signal extension modes</em></a> section for the list of available
-options and the <a title="pywt.dwt_coeff_len" class="reference internal" href="#pywt.dwt_coeff_len"><tt class="xref docutils literal"><span class="pre">dwt_coeff_len()</span></tt></a> function for information on
+the <a class="reference external" href="signal-extension-modes.html#ref-modes"><em>signal extension modes</em></a> section for the list of
+available options and the <a title="pywt.dwt_coeff_len" class="reference internal" href="#pywt.dwt_coeff_len"><tt class="xref docutils literal"><span class="pre">dwt_coeff_len()</span></tt></a> function for information on
 getting the expected result length:</p>
 <ul>
-<li><p class="first">for all <a class="reference external" href="modes.html#ref-modes"><em>modes</em></a> except <a class="reference external" href="modes.html#modes-per"><em>periodization</em></a>:</p>
+<li><p class="first">for all <a class="reference external" href="signal-extension-modes.html#ref-modes"><em>modes</em></a> except <a class="reference external" href="signal-extension-modes.html#modes-per"><em>periodization</em></a>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="nb">len</span><span class="p">(</span><span class="n">cA</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">cD</span><span class="p">)</span> <span class="o">==</span> <span class="n">floor</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">+</span> <span class="n">wavelet</span><span class="o">.</span><span class="n">dec_len</span> <span class="o">-</span> <span class="mf">1</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>
-<li><p class="first">for <a class="reference external" href="modes.html#modes-per"><em>periodization</em></a> mode (<tt class="docutils literal"><span class="pre">&quot;per&quot;</span></tt>):</p>
+<li><p class="first">for <a class="reference external" href="signal-extension-modes.html#modes-per"><em>periodization</em></a> mode (<tt class="docutils literal"><span class="pre">&quot;per&quot;</span></tt>):</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="nb">len</span><span class="p">(</span><span class="n">cA</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">cD</span><span class="p">)</span> <span class="o">==</span> <span class="n">ceil</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -128,7 +128,10 @@ getting the expected result length:</p>
 <li><em>data</em> &#8211; Input signal can be NumPy array, Python list or other iterable object. Both <em>single</em> and <em>double</em> precision floating-point data types are supported and the output type depends on the input type. If the input data is not in one of these types it will be converted to the default <em>double</em> precision data format before performing computations.</li>
 <li><em>wavelet</em> &#8211; Wavelet to use in the transform. This can be a name of the wavelet from the <cite>pywt.wavelist</cite> list or a <cite>Wavelet</cite> object instance.</li>
 <li><em>mode</em> &#8211; Signal extension mode to deal with the border distortion problem. See <cite>MODES</cite> for details.</li>
-<li><em>level</em> &#8211; Number of decomposition steps to performe. If the level is <tt class="xref docutils literal"><span class="pre">None</span></tt>, then the full decomposition up to the level computed with :func:dwt_max_level` function for the given data and wavelet lengths is performed.</li>
+<li><em>level</em> &#8211; Number of decomposition steps to performe. If the level is
+<tt class="xref docutils literal"><span class="pre">None</span></tt>, then the full decomposition up to the level computed
+with <a title="pywt.dwt_max_level" class="reference internal" href="#pywt.dwt_max_level"><tt class="xref docutils literal"><span class="pre">dwt_max_level()</span></tt></a> function for the given data and
+wavelet lengths is performed.</li>
 </ul>
 </td>
 </tr>
@@ -146,6 +149,31 @@ getting the expected result length:</p>
 <span class="go">[  5.  13.]</span>
 </pre></div>
 </div>
+</dd></dl>
+
+</div>
+<div class="section" id="partial-discrete-wavelet-transform-data-decomposition-downcoef">
+<h2>Partial Discrete Wavelet Transform data decomposition <tt class="docutils literal"><span class="pre">downcoef</span></tt><a class="headerlink" href="#partial-discrete-wavelet-transform-data-decomposition-downcoef" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pywt.downcoef">
+<tt class="descclassname">pywt.</tt><tt class="descname">downcoef</tt><big>(</big><em>part</em>, <em>data</em>, <em>wavelet</em><span class="optional">[</span>, <em>mode='sym'</em><span class="optional">[</span>, <em>level=1</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#pywt.downcoef" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>part</em> &#8211; decomposition type. For <tt class="docutils literal"><span class="pre">a</span></tt> computes approximation
+coefficients, for <tt class="docutils literal"><span class="pre">d</span></tt> - details coefficients.</li>
+<li><em>data</em> &#8211; Input signal can be NumPy array, Python list or other iterable object. Both <em>single</em> and <em>double</em> precision floating-point data types are supported and the output type depends on the input type. If the input data is not in one of these types it will be converted to the default <em>double</em> precision data format before performing computations.</li>
+<li><em>wavelet</em> &#8211; Wavelet to use in the transform. This can be a name of the wavelet from the <cite>pywt.wavelist</cite> list or a <cite>Wavelet</cite> object instance.</li>
+<li><em>mode</em> &#8211; Signal extension mode to deal with the border distortion problem. See <cite>MODES</cite> for details.</li>
+<li><em>level</em> &#8211; Number of decomposition steps to performe.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p># TODO</p>
 </dd></dl>
 
 </div>
@@ -185,19 +213,20 @@ convenience.</p>
 <dd></dd></dl>
 
 <p>Based on the given <em>input data length</em>, Wavelet <em>decomposition filter length</em>
-and signal extension :ref:mode, the <a title="pywt.dwt_coeff_len" class="reference internal" href="#pywt.dwt_coeff_len"><tt class="xref docutils literal"><span class="pre">dwt_coeff_len()</span></tt></a> function calculates
-length of resulting coefficients arrays that would be created while performing
-<a title="pywt.dwt" class="reference internal" href="#pywt.dwt"><tt class="xref docutils literal"><span class="pre">dwt()</span></tt></a> transform.</p>
-<p>For <a class="reference external" href="modes.html#modes-per"><em>periodization</em></a> mode this equals:</p>
+and <a class="reference external" href="signal-extension-modes.html#modes"><em>signal extension mode</em></a>, the <a title="pywt.dwt_coeff_len" class="reference internal" href="#pywt.dwt_coeff_len"><tt class="xref docutils literal"><span class="pre">dwt_coeff_len()</span></tt></a> function
+calculates length of resulting coefficients arrays that would be created while
+performing <a title="pywt.dwt" class="reference internal" href="#pywt.dwt"><tt class="xref docutils literal"><span class="pre">dwt()</span></tt></a> transform.</p>
+<p>For <a class="reference external" href="signal-extension-modes.html#modes-per"><em>periodization</em></a> mode this equals:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">ceil</span><span class="p">(</span><span class="n">data_len</span> <span class="o">/</span> <span class="mf">2</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>which is the lowest possible length guaranteeing perfect reconstruction.</p>
-<p>For other <a class="reference external" href="modes.html#ref-modes"><em>modes</em></a>:</p>
+<p>For other <a class="reference external" href="signal-extension-modes.html#ref-modes"><em>modes</em></a>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">floor</span><span class="p">((</span><span class="n">data_len</span> <span class="o">+</span> <span class="n">filter_len</span> <span class="o">-</span> <span class="mf">1</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The <em>filter_len</em> can be either an <em>int</em> or <a title="pywt.Wavelet" class="reference external" href="wavelets.html#pywt.Wavelet"><tt class="xref docutils literal"><span class="pre">Wavelet</span></tt></a> object for convenience.</p>
+<p>The <em>filter_len</em> can be either an <em>int</em> or <a title="pywt.Wavelet" class="reference external" href="wavelets.html#pywt.Wavelet"><tt class="xref docutils literal"><span class="pre">Wavelet</span></tt></a> object for
+convenience.</p>
 </div>
 </div>
 
@@ -212,6 +241,7 @@ length of resulting coefficients arrays that would be created while performing
 <li><a class="reference external" href="">Discrete Wavelet Transform (DWT)</a><ul>
 <li><a class="reference external" href="#single-level-dwt">Single level <tt class="docutils literal"><span class="pre">dwt</span></tt></a></li>
 <li><a class="reference external" href="#multilevel-decomposition-using-wavedec">Multilevel decomposition using <tt class="docutils literal"><span class="pre">wavedec</span></tt></a></li>
+<li><a class="reference external" href="#partial-discrete-wavelet-transform-data-decomposition-downcoef">Partial Discrete Wavelet Transform data decomposition <tt class="docutils literal"><span class="pre">downcoef</span></tt></a></li>
 <li><a class="reference external" href="#maximum-decomposition-level-dwt-max-level">Maximum decomposition level - <tt class="docutils literal"><span class="pre">dwt_max_level</span></tt></a></li>
 <li><a class="reference external" href="#result-coefficients-length-dwt-coeff-len">Result coefficients length - <tt class="docutils literal"><span class="pre">dwt_coeff_len</span></tt></a></li>
 </ul>
@@ -219,14 +249,14 @@ length of resulting coefficients arrays that would be created while performing
 </ul>
 
             <h4>Previous topic</h4>
-            <p class="topless"><a href="wavelets.html"
-                                  title="previous chapter">Wavelets</a></p>
+            <p class="topless"><a href="signal-extension-modes.html"
+                                  title="previous chapter">Signal extension modes</a></p>
             <h4>Next topic</h4>
-            <p class="topless"><a href="idwt.html"
+            <p class="topless"><a href="idwt-inverse-discrete-wavelet-transform.html"
                                   title="next chapter">Inverse Discrete Wavelet Transform (IDWT)</a></p>
             <h3>This Page</h3>
             <ul class="this-page-menu">
-              <li><a href="../_sources/ref/dwt.txt"
+              <li><a href="../_sources/ref/dwt-discrete-wavelet-transform.txt"
                      rel="nofollow">Show Source</a></li>
             </ul>
           <div id="searchbox" style="display: none">
@@ -249,7 +279,7 @@ length of resulting coefficients arrays that would be created while performing
 <li><a href="http://wavelets.scipy.org/moin/"><img src="../_static/page_edit.png" height="16" width="16" alt="" /> View Wiki Page</a></li>
 <li><a href="http://projects.scipy.org/wavelets/browser/pywt/trunk/"><img src="../_static/cog.png" height="16" width="16" alt="" /> Browse Source Code</a></li>
 <li><a href="http://wavelets.pybytes.com/"><img src="../_static/wave.png" height="16" width="16" alt="" /> Explore Wavelets</a></li>
-<li><a href="http://delicious.com/save" onclick="window.open('http://delicious.com/save?v=5&amp;noui&amp;jump=close&amp;url='+encodeURIComponent('http://www.pybytes.com/pywavelets/')+'&amp;title='+encodeURIComponent('PyWavelets - Discrete Wavelet Transform in Python'), 'delicious','toolbar=no,width=550,height=550'); return false;"><img src="http://static.delicious.com/img/delicious.small.gif" height="12" width="12" alt="Delicious" style="margin: 0 2px 0 2px;" /> Bookmark with Delicious</a></li>
+<li><a href="http://delicious.com/save" onclick="window.open('http://delicious.com/save?v=5&amp;noui&amp;jump=close&amp;url='+encodeURIComponent('http://www.pybytes.com/pywavelets/')+'&amp;title='+encodeURIComponent('PyWavelets - Discrete Wavelet Transform in Python'), 'delicious','toolbar=no,width=550,height=550'); return false;"><img src="../_static/delicious.png" height="12" width="12" alt="Delicious" style="margin: 0 2px 0 2px;" /> Bookmark with Delicious</a></li>
 </ul>
 </div>
 
@@ -267,10 +297,10 @@ length of resulting coefficients arrays that would be created while performing
           <a href="../modindex.html" title="Global Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="idwt.html" title="Inverse Discrete Wavelet Transform (IDWT)"
+          <a href="idwt-inverse-discrete-wavelet-transform.html" title="Inverse Discrete Wavelet Transform (IDWT)"
              >next</a> |</li>
         <li class="right" >
-          <a href="wavelets.html" title="Wavelets"
+          <a href="signal-extension-modes.html" title="Signal extension modes"
              >previous</a> |</li>
         <li><a href="../index.html">PyWavelets Documentation</a> &raquo;</li>
           <li><a href="index.html" >API Reference</a> &raquo;</li> 
@@ -279,7 +309,7 @@ length of resulting coefficients arrays that would be created while performing
     
     <div class="footer">
       &copy; Copyright 2006-2009, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
-      Last updated on May 05, 2009.
+      Last updated on May 10, 2009.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.1.
     </div>
     <script type="text/javascript">
