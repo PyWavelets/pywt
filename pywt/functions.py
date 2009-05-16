@@ -14,8 +14,6 @@ __all__ = ["intwave", "centfrq", "scal2frq", "qmf", "orthfilt"]
 from math import sqrt
 
 from _pywt import Wavelet
-#from cwt import CWavelet
-#from helpers import wavelet_for_name
 
 from numerix import asarray, array, float64
 from numerix import integrate
@@ -23,6 +21,17 @@ from numerix import argmax, mean
 from numerix import fft
 
 WAVELET_CLASSES = (Wavelet)
+
+
+def wavelet_for_name(name):
+    if not isinstance(name, basestring):
+        raise TypeError("Wavelet name must be of string type, not %s" % type(name))
+    try:
+        wavelet = Wavelet(name)
+    except ValueError:
+        raise
+        #raise ValueError("Invalid wavelet name - %s." % name)
+    return wavelet
 
 
 def intwave(wavelet, precision=8):
