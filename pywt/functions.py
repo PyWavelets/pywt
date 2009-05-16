@@ -15,7 +15,7 @@ from math import sqrt
 
 from _pywt import Wavelet
 #from cwt import CWavelet
-from helpers import wavelet_for_name
+#from helpers import wavelet_for_name
 
 from numerix import asarray, array, float64
 from numerix import integrate
