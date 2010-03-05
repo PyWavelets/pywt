@@ -111,7 +111,7 @@ access to particular type of the output coefficients.</p>
 <blockquote>
 <p><strong>Example:</strong></p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pywt</span><span class="o">,</span> <span class="nn">numpy</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mf">4</span><span class="p">,</span><span class="mf">4</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">coeffs</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">dwt2</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s">&#39;haar&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cA</span><span class="p">,</span> <span class="p">(</span><span class="n">cH</span><span class="p">,</span> <span class="n">cV</span><span class="p">,</span> <span class="n">cD</span><span class="p">)</span> <span class="o">=</span> <span class="n">coeffs</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">cA</span>
@@ -152,7 +152,7 @@ in the <a class="reference external" href="signal-extension-modes.html#modes-per
 </table>
 <p><strong>Example:</strong></p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pywt</span><span class="o">,</span> <span class="nn">numpy</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1</span><span class="p">,</span><span class="mf">2</span><span class="p">],</span> <span class="p">[</span><span class="mf">3</span><span class="p">,</span><span class="mf">4</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">coeffs</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">dwt2</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s">&#39;haar&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">pywt</span><span class="o">.</span><span class="n">idwt2</span><span class="p">(</span><span class="n">coeffs</span><span class="p">,</span> <span class="s">&#39;haar&#39;</span><span class="p">)</span>
 <span class="go">[[ 1.  2.]</span>
@@ -195,7 +195,7 @@ function for the smaller dimension of the input data.</li>
 </table>
 <p><strong>Example:</strong></p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pywt</span><span class="o">,</span> <span class="nn">numpy</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">coeffs</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">wavedec2</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mf">8</span><span class="p">,</span><span class="mf">8</span><span class="p">)),</span> <span class="s">&#39;db1&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mf">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coeffs</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">wavedec2</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">8</span><span class="p">,</span><span class="mi">8</span><span class="p">)),</span> <span class="s">&#39;db1&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cA2</span><span class="p">,</span> <span class="p">(</span><span class="n">cH2</span><span class="p">,</span> <span class="n">cV2</span><span class="p">,</span> <span class="n">cD2</span><span class="p">),</span> <span class="p">(</span><span class="n">cH1</span><span class="p">,</span> <span class="n">cV1</span><span class="p">,</span> <span class="n">cD1</span><span class="p">)</span> <span class="o">=</span> <span class="n">coeffs</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">cA2</span>
 <span class="go">[[ 4.  4.]</span>
@@ -231,8 +231,8 @@ from <a title="pywt.wavedec2" class="reference internal" href="#pywt.wavedec2"><
 </table>
 <p><strong>Example:</strong></p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pywt</span><span class="o">,</span> <span class="nn">numpy</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">coeffs</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">wavedec2</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mf">4</span><span class="p">,</span><span class="mf">4</span><span class="p">)),</span> <span class="s">&#39;db1&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="s">&quot;levels:&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">coeffs</span><span class="p">)</span><span class="o">-</span><span class="mf">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coeffs</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">wavedec2</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">)),</span> <span class="s">&#39;db1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="s">&quot;levels:&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">coeffs</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
 <span class="go">levels: 2</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">pywt</span><span class="o">.</span><span class="n">waverec2</span><span class="p">(</span><span class="n">coeffs</span><span class="p">,</span> <span class="s">&#39;db1&#39;</span><span class="p">)</span>
 <span class="go">[[ 1.  1.  1.  1.]</span>
@@ -254,7 +254,7 @@ from <a title="pywt.wavedec2" class="reference internal" href="#pywt.wavedec2"><
         <div class="sphinxsidebarwrapper">
             <h3><a href="../index.html">Table Of Contents</a></h3>
             <ul>
-<li><a class="reference external" href="">2D Forward and Inverse Discrete Wavelet Transform</a><ul>
+<li><a class="reference external" href="#">2D Forward and Inverse Discrete Wavelet Transform</a><ul>
 <li><a class="reference external" href="#single-level-dwt2">Single level <tt class="docutils literal"><span class="pre">dwt2</span></tt></a></li>
 <li><a class="reference external" href="#single-level-idwt2">Single level <tt class="docutils literal"><span class="pre">idwt2</span></tt></a></li>
 <li><a class="reference external" href="#d-multilevel-decomposition-using-wavedec2">2D multilevel decomposition using <tt class="docutils literal"><span class="pre">wavedec2</span></tt></a></li>
@@ -323,9 +323,9 @@ from <a title="pywt.wavedec2" class="reference internal" href="#pywt.wavedec2"><
     </div>
     
     <div class="footer">
-      &copy; Copyright 2006-2009, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
-      Last updated on May 15, 2009.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.1.
+      &copy; Copyright 2006-2010, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
+      Last updated on Mar 05, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
     </div>
     <script type="text/javascript">
     var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");

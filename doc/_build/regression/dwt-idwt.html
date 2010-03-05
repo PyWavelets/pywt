@@ -64,7 +64,7 @@
 <p>Let&#8217;s do a <a title="pywt.dwt" class="reference external" href="../ref/dwt-discrete-wavelet-transform.html#pywt.dwt"><tt class="xref docutils literal"><span class="pre">Discrete</span> <span class="pre">Wavelet</span> <span class="pre">Transform</span></tt></a> of a sample data <em>x</em> using
 the <tt class="docutils literal"><span class="pre">db2</span></tt> wavelet. It&#8217;s simple..</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pywt</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mf">3</span><span class="p">,</span> <span class="mf">7</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="o">-</span><span class="mf">2</span><span class="p">,</span> <span class="mf">5</span><span class="p">,</span> <span class="mf">4</span><span class="p">,</span> <span class="mf">6</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cA</span><span class="p">,</span> <span class="n">cD</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">dwt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s">&#39;db2&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -155,27 +155,28 @@ doing <a title="pywt.dwt" class="reference external" href="../ref/dwt-discrete-w
 parameters is similar to passing a <em>zero-filled</em> array. The results are simply
 the same:</p>
 <blockquote>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">pywt</span><span class="o">.</span><span class="n">idwt</span><span class="p">([</span><span class="mf">1</span><span class="p">,</span><span class="mf">2</span><span class="p">,</span><span class="mf">0</span><span class="p">,</span><span class="mf">1</span><span class="p">],</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="s">&#39;sym&#39;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">pywt</span><span class="o">.</span><span class="n">idwt</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="s">&#39;sym&#39;</span><span class="p">)</span>
 <span class="go">[ 1.19006969  1.54362308  0.44828774 -0.25881905  0.48296291  0.8365163 ]</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">pywt</span><span class="o">.</span><span class="n">idwt</span><span class="p">([</span><span class="mf">1</span><span class="p">,</span> <span class="mf">2</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">1</span><span class="p">],</span> <span class="p">[</span><span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">],</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="s">&#39;sym&#39;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">pywt</span><span class="o">.</span><span class="n">idwt</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="s">&#39;sym&#39;</span><span class="p">)</span>
 <span class="go">[ 1.19006969  1.54362308  0.44828774 -0.25881905  0.48296291  0.8365163 ]</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">pywt</span><span class="o">.</span><span class="n">idwt</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="p">[</span><span class="mf">1</span><span class="p">,</span> <span class="mf">2</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">1</span><span class="p">],</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="s">&#39;sym&#39;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">pywt</span><span class="o">.</span><span class="n">idwt</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="s">&#39;sym&#39;</span><span class="p">)</span>
 <span class="go">[ 0.57769726 -0.93125065  1.67303261 -0.96592583 -0.12940952 -0.22414387]</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">pywt</span><span class="o">.</span><span class="n">idwt</span><span class="p">([</span><span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">],</span> <span class="p">[</span><span class="mf">1</span><span class="p">,</span> <span class="mf">2</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">1</span><span class="p">],</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="s">&#39;sym&#39;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">pywt</span><span class="o">.</span><span class="n">idwt</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="s">&#39;sym&#39;</span><span class="p">)</span>
 <span class="go">[ 0.57769726 -0.93125065  1.67303261 -0.96592583 -0.12940952 -0.22414387]</span>
 </pre></div>
 </div>
 </blockquote>
 <p>Remember that only one argument at a time can be <tt class="xref docutils literal"><span class="pre">None</span></tt>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">pywt</span><span class="o">.</span><span class="n">idwt</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="s">&#39;sym&#39;</span><span class="p">)</span>
-<span class="gp">...</span>
-<span class="go">ValueError: At least one coefficient parameter must be specified.</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="c">...</span>
+<span class="nc">ValueError</span>: <span class="n-Identifier">At least one coefficient parameter must be specified.</span>
 </pre></div>
 </div>
 </div>
@@ -183,9 +184,10 @@ the same:</p>
 <h3>Coefficients data size in <a title="pywt.idwt" class="reference external" href="../ref/idwt-inverse-discrete-wavelet-transform.html#pywt.idwt"><tt class="xref docutils literal"><span class="pre">idwt</span></tt></a><a class="headerlink" href="#coefficients-data-size-in-idwt" title="Permalink to this headline">¶</a></h3>
 <p>When doing the <a title="pywt.idwt" class="reference external" href="../ref/idwt-inverse-discrete-wavelet-transform.html#pywt.idwt"><tt class="xref docutils literal"><span class="pre">IDWT</span></tt></a> transform, usually the coefficient arrays
 must have the same size.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">pywt</span><span class="o">.</span><span class="n">idwt</span><span class="p">([</span><span class="mf">1</span><span class="p">,</span> <span class="mf">2</span><span class="p">,</span> <span class="mf">3</span><span class="p">,</span> <span class="mf">4</span><span class="p">,</span> <span class="mf">5</span><span class="p">],</span> <span class="p">[</span><span class="mf">1</span><span class="p">,</span> <span class="mf">2</span><span class="p">,</span> <span class="mf">3</span><span class="p">,</span> <span class="mf">4</span><span class="p">],</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="s">&#39;sym&#39;</span><span class="p">)</span>
-<span class="gp">...</span>
-<span class="go">ValueError: Coefficients arrays must have the same size.</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">pywt</span><span class="o">.</span><span class="n">idwt</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="s">&#39;sym&#39;</span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="c">...</span>
+<span class="nc">ValueError</span>: <span class="n-Identifier">Coefficients arrays must have the same size.</span>
 </pre></div>
 </div>
 <p>But for some applications like multilevel DWT and IDWT it is sometimes conveniet
@@ -193,13 +195,14 @@ to allow for a small departure from this behaviour. When the <em>correct_size</e
 is set, the approximation coefficients array can be larger from the details
 coefficient array by one element:</p>
 <blockquote>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">pywt</span><span class="o">.</span><span class="n">idwt</span><span class="p">([</span><span class="mf">1</span><span class="p">,</span> <span class="mf">2</span><span class="p">,</span> <span class="mf">3</span><span class="p">,</span> <span class="mf">4</span><span class="p">,</span> <span class="mf">5</span><span class="p">],</span> <span class="p">[</span><span class="mf">1</span><span class="p">,</span> <span class="mf">2</span><span class="p">,</span> <span class="mf">3</span><span class="p">,</span> <span class="mf">4</span><span class="p">],</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="s">&#39;sym&#39;</span><span class="p">,</span> <span class="n">correct_size</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">pywt</span><span class="o">.</span><span class="n">idwt</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="s">&#39;sym&#39;</span><span class="p">,</span> <span class="n">correct_size</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="go">[ 1.76776695  0.61237244  3.18198052  0.61237244  4.59619408  0.61237244]</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">pywt</span><span class="o">.</span><span class="n">idwt</span><span class="p">([</span><span class="mf">1</span><span class="p">,</span> <span class="mf">2</span><span class="p">,</span> <span class="mf">3</span><span class="p">,</span> <span class="mf">4</span><span class="p">],</span> <span class="p">[</span><span class="mf">1</span><span class="p">,</span> <span class="mf">2</span><span class="p">,</span> <span class="mf">3</span><span class="p">,</span> <span class="mf">4</span><span class="p">,</span> <span class="mf">5</span><span class="p">],</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="s">&#39;sym&#39;</span><span class="p">,</span> <span class="n">correct_size</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="gp">...</span>
-<span class="go">ValueError: Coefficients arrays must satisfy (0 &lt;= len(cA) - len(cD) &lt;= 1).</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">pywt</span><span class="o">.</span><span class="n">idwt</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="s">&#39;sym&#39;</span><span class="p">,</span> <span class="n">correct_size</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="c">...</span>
+<span class="nc">ValueError</span>: <span class="n-Identifier">Coefficients arrays must satisfy (0 &lt;= len(cA) - len(cD) &lt;= 1).</span>
 </pre></div>
 </div>
 </blockquote>
@@ -209,12 +212,13 @@ couldn&#8217;t be created as a result of <a title="pywt.dwt" class="reference ex
 length for dwt using <tt class="docutils literal"><span class="pre">db4</span></tt> wavelet and the <a class="reference external" href="../ref/signal-extension-modes.html#modes-sym"><em>sym</em></a> mode is
 <tt class="docutils literal"><span class="pre">4</span></tt>, not <tt class="docutils literal"><span class="pre">3</span></tt>:</p>
 <blockquote>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">pywt</span><span class="o">.</span><span class="n">idwt</span><span class="p">([</span><span class="mf">1</span><span class="p">,</span><span class="mf">2</span><span class="p">,</span><span class="mf">4</span><span class="p">],</span> <span class="p">[</span><span class="mf">4</span><span class="p">,</span><span class="mf">1</span><span class="p">,</span><span class="mf">3</span><span class="p">],</span> <span class="s">&#39;db4&#39;</span><span class="p">,</span> <span class="s">&#39;sym&#39;</span><span class="p">)</span>
-<span class="gp">...</span>
-<span class="go">ValueError: Invalid coefficient arrays length for specified wavelet. Wavelet and mode must be the same as used for decomposition.</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">pywt</span><span class="o">.</span><span class="n">idwt</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="s">&#39;db4&#39;</span><span class="p">,</span> <span class="s">&#39;sym&#39;</span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="c">...</span>
+<span class="nc">ValueError</span>: <span class="n-Identifier">Invalid coefficient arrays length for specified wavelet. Wavelet and mode must be the same as used for decomposition.</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">pywt</span><span class="o">.</span><span class="n">dwt_coeff_len</span><span class="p">(</span><span class="mf">1</span><span class="p">,</span> <span class="n">pywt</span><span class="o">.</span><span class="n">Wavelet</span><span class="p">(</span><span class="s">&#39;db4&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">dec_len</span><span class="p">,</span> <span class="s">&#39;sym&#39;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">pywt</span><span class="o">.</span><span class="n">dwt_coeff_len</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">pywt</span><span class="o">.</span><span class="n">Wavelet</span><span class="p">(</span><span class="s">&#39;db4&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">dec_len</span><span class="p">,</span> <span class="s">&#39;sym&#39;</span><span class="p">)</span>
 <span class="go">4</span>
 </pre></div>
 </div>
@@ -231,7 +235,7 @@ length for dwt using <tt class="docutils literal"><span class="pre">db4</span></
         <div class="sphinxsidebarwrapper">
             <h3><a href="../index.html">Table Of Contents</a></h3>
             <ul>
-<li><a class="reference external" href="">DWT and IDWT</a><ul>
+<li><a class="reference external" href="#">DWT and IDWT</a><ul>
 <li><a class="reference external" href="#discrete-wavelet-transform">Discrete Wavelet Transform</a></li>
 <li><a class="reference external" href="#inverse-discrete-wavelet-transform">Inverse Discrete Wavelet Transform</a></li>
 <li><a class="reference external" href="#more-examples">More Examples</a></li>
@@ -304,9 +308,9 @@ length for dwt using <tt class="docutils literal"><span class="pre">db4</span></
     </div>
     
     <div class="footer">
-      &copy; Copyright 2006-2009, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
-      Last updated on May 15, 2009.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.1.
+      &copy; Copyright 2006-2010, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
+      Last updated on Mar 05, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
     </div>
     <script type="text/javascript">
     var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");

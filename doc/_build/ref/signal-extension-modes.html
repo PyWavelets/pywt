@@ -72,7 +72,7 @@ minimize this negative effect:</p>
 <blockquote>
 <ul id="modes-zpd">
 <li><p class="first"><tt class="docutils literal"><span class="pre">zpd</span></tt> - <strong>zero-padding</strong> - signal is extended by adding zero samples:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="o">...</span> <span class="mf">0</span>  <span class="mf">0</span> <span class="o">|</span> <span class="n">x1</span> <span class="n">x2</span> <span class="o">...</span> <span class="n">xn</span> <span class="o">|</span> <span class="mf">0</span>  <span class="mf">0</span> <span class="o">...</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="o">...</span> <span class="mi">0</span>  <span class="mi">0</span> <span class="o">|</span> <span class="n">x1</span> <span class="n">x2</span> <span class="o">...</span> <span class="n">xn</span> <span class="o">|</span> <span class="mi">0</span>  <span class="mi">0</span> <span class="o">...</span>
 </pre></div>
 </div>
 </li>
@@ -87,14 +87,14 @@ minimize this negative effect:</p>
 <ul id="modes-sym">
 <li><p class="first"><tt class="docutils literal"><span class="pre">sym</span></tt> - <strong>symmetric-padding</strong> - signal is extended by <em>mirroring</em>
 samples:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="o">...</span> <span class="n">x2</span> <span class="n">x1</span> <span class="o">|</span> <span class="n">x1</span> <span class="n">x2</span> <span class="o">...</span> <span class="n">xn</span> <span class="o">|</span> <span class="n">xn</span> <span class="n">xn</span><span class="o">-</span><span class="mf">1</span> <span class="o">...</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="o">...</span> <span class="n">x2</span> <span class="n">x1</span> <span class="o">|</span> <span class="n">x1</span> <span class="n">x2</span> <span class="o">...</span> <span class="n">xn</span> <span class="o">|</span> <span class="n">xn</span> <span class="n">xn</span><span class="o">-</span><span class="mi">1</span> <span class="o">...</span>
 </pre></div>
 </div>
 </li>
 </ul>
 <ul id="periodic-padding">
 <span id="modes-ppd"></span><li><p class="first"><tt class="docutils literal"><span class="pre">ppd</span></tt> - <strong>periodic-padding</strong> - signal is treated as a periodic one:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="o">...</span> <span class="n">xn</span><span class="o">-</span><span class="mf">1</span> <span class="n">xn</span> <span class="o">|</span> <span class="n">x1</span> <span class="n">x2</span> <span class="o">...</span> <span class="n">xn</span> <span class="o">|</span> <span class="n">x1</span> <span class="n">x2</span> <span class="o">...</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="o">...</span> <span class="n">xn</span><span class="o">-</span><span class="mi">1</span> <span class="n">xn</span> <span class="o">|</span> <span class="n">x1</span> <span class="n">x2</span> <span class="o">...</span> <span class="n">xn</span> <span class="o">|</span> <span class="n">x1</span> <span class="n">x2</span> <span class="o">...</span>
 </pre></div>
 </div>
 </li>
@@ -123,8 +123,8 @@ performed with the same mode.</li>
 <p>Notice that you can use any of the following ways of passing wavelet and mode
 parameters:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pywt</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">dwt</span><span class="p">([</span><span class="mf">1</span><span class="p">,</span><span class="mf">2</span><span class="p">,</span><span class="mf">3</span><span class="p">,</span><span class="mf">4</span><span class="p">,</span><span class="mf">5</span><span class="p">,</span><span class="mf">6</span><span class="p">],</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="s">&#39;sp1&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">dwt</span><span class="p">([</span><span class="mf">1</span><span class="p">,</span><span class="mf">2</span><span class="p">,</span><span class="mf">3</span><span class="p">,</span><span class="mf">4</span><span class="p">,</span><span class="mf">5</span><span class="p">,</span><span class="mf">6</span><span class="p">],</span> <span class="n">pywt</span><span class="o">.</span><span class="n">Wavelet</span><span class="p">(</span><span class="s">&#39;db2&#39;</span><span class="p">),</span> <span class="n">pywt</span><span class="o">.</span><span class="n">MODES</span><span class="o">.</span><span class="n">sp1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">dwt</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">],</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="s">&#39;sp1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">dwt</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">],</span> <span class="n">pywt</span><span class="o">.</span><span class="n">Wavelet</span><span class="p">(</span><span class="s">&#39;db2&#39;</span><span class="p">),</span> <span class="n">pywt</span><span class="o">.</span><span class="n">MODES</span><span class="o">.</span><span class="n">sp1</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -204,9 +204,9 @@ physical memory.</p>
     </div>
     
     <div class="footer">
-      &copy; Copyright 2006-2009, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
-      Last updated on May 15, 2009.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.1.
+      &copy; Copyright 2006-2010, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
+      Last updated on Mar 05, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
     </div>
     <script type="text/javascript">
     var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");

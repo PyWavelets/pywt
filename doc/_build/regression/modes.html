@@ -69,7 +69,7 @@
 </pre></div>
 </div>
 <p>Test that <a title="pywt.dwt" class="reference external" href="../ref/dwt-discrete-wavelet-transform.html#pywt.dwt"><tt class="xref docutils literal"><span class="pre">dwt()</span></tt></a> and <a title="pywt.idwt" class="reference external" href="../ref/idwt-inverse-discrete-wavelet-transform.html#pywt.idwt"><tt class="xref docutils literal"><span class="pre">idwt()</span></tt></a> can be performed using every mode:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1</span><span class="p">,</span><span class="mf">2</span><span class="p">,</span><span class="mf">1</span><span class="p">,</span><span class="mf">5</span><span class="p">,</span><span class="o">-</span><span class="mf">1</span><span class="p">,</span><span class="mf">8</span><span class="p">,</span><span class="mf">4</span><span class="p">,</span><span class="mf">6</span><span class="p">]</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">mode</span> <span class="ow">in</span> <span class="n">pywt</span><span class="o">.</span><span class="n">MODES</span><span class="o">.</span><span class="n">modes</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">cA</span><span class="p">,</span> <span class="n">cD</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">dwt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
 <span class="gp">... </span>    <span class="k">print</span> <span class="s">&quot;Mode:&quot;</span><span class="p">,</span> <span class="n">mode</span>
@@ -104,15 +104,16 @@
 </pre></div>
 </div>
 <p>Invalid mode name should rise a <tt class="xref docutils literal"><span class="pre">ValueError</span></tt>:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">pywt</span><span class="o">.</span><span class="n">dwt</span><span class="p">([</span><span class="mf">1</span><span class="p">,</span><span class="mf">2</span><span class="p">,</span><span class="mf">3</span><span class="p">,</span><span class="mf">4</span><span class="p">],</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="s">&#39;invalid&#39;</span><span class="p">)</span>
-<span class="gp">...</span>
-<span class="go">ValueError: Unknown mode name &#39;invalid&#39;.</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">pywt</span><span class="o">.</span><span class="n">dwt</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="s">&#39;invalid&#39;</span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="c">...</span>
+<span class="nc">ValueError</span>: <span class="n-Identifier">Unknown mode name &#39;invalid&#39;.</span>
 </pre></div>
 </div>
 <p>You can also refer to modes via <a class="reference external" href="../ref/signal-extension-modes.html#modes"><em>MODES</em></a> class attributes:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">mode_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;zpd&#39;</span><span class="p">,</span> <span class="s">&#39;cpd&#39;</span><span class="p">,</span> <span class="s">&#39;sym&#39;</span><span class="p">,</span> <span class="s">&#39;ppd&#39;</span><span class="p">,</span> <span class="s">&#39;sp1&#39;</span><span class="p">,</span> <span class="s">&#39;per&#39;</span><span class="p">]:</span>
 <span class="gp">... </span>    <span class="n">mode</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">pywt</span><span class="o">.</span><span class="n">MODES</span><span class="p">,</span> <span class="n">mode_name</span><span class="p">)</span>
-<span class="gp">... </span>    <span class="n">cA</span><span class="p">,</span> <span class="n">cD</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">dwt</span><span class="p">([</span><span class="mf">1</span><span class="p">,</span><span class="mf">2</span><span class="p">,</span><span class="mf">1</span><span class="p">,</span><span class="mf">5</span><span class="p">,</span><span class="o">-</span><span class="mf">1</span><span class="p">,</span><span class="mf">8</span><span class="p">,</span><span class="mf">4</span><span class="p">,</span><span class="mf">6</span><span class="p">],</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">cA</span><span class="p">,</span> <span class="n">cD</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">dwt</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">],</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
 <span class="gp">... </span>    <span class="k">print</span> <span class="s">&quot;Mode:&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="s">&quot;(</span><span class="si">%s</span><span class="s">)&quot;</span> <span class="o">%</span> <span class="n">mode_name</span>
 <span class="gp">... </span>    <span class="k">print</span> <span class="s">&quot;cA:&quot;</span><span class="p">,</span> <span class="n">cA</span>
 <span class="gp">... </span>    <span class="k">print</span> <span class="s">&quot;cD:&quot;</span><span class="p">,</span> <span class="n">cD</span>
@@ -146,17 +147,20 @@
 </div>
 <p>Some invalid mode values:</p>
 <blockquote>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">pywt</span><span class="o">.</span><span class="n">dwt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mf">1</span><span class="p">)</span>
-<span class="gp">...</span>
-<span class="go">ValueError: Invalid mode.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">pywt</span><span class="o">.</span><span class="n">dwt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="mf">7</span><span class="p">)</span>
-<span class="gp">...</span>
-<span class="go">ValueError: Invalid mode.</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">pywt</span><span class="o">.</span><span class="n">dwt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="c">...</span>
+<span class="nc">ValueError</span>: <span class="n-Identifier">Invalid mode.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pywt</span><span class="o">.</span><span class="n">dwt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="c">...</span>
+<span class="nc">ValueError</span>: <span class="n-Identifier">Invalid mode.</span>
 </pre></div>
 </div>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">pywt</span><span class="o">.</span><span class="n">dwt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
-<span class="gp">...</span>
-<span class="go">TypeError: expected string or Unicode object, NoneType found</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="c">...</span>
+<span class="nc">TypeError</span>: <span class="n-Identifier">expected string or Unicode object, NoneType found</span>
 </pre></div>
 </div>
 </blockquote>
@@ -248,9 +252,9 @@
     </div>
     
     <div class="footer">
-      &copy; Copyright 2006-2009, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
-      Last updated on May 15, 2009.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.1.
+      &copy; Copyright 2006-2010, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
+      Last updated on Mar 05, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
     </div>
     <script type="text/javascript">
     var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");

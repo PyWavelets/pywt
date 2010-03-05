@@ -20,6 +20,15 @@ div.document {
     background-color: #1c4e63;
 }
 
+div.documentwrapper {
+    float: left;
+    width: 100%;
+}
+
+div.bodywrapper {
+    margin: 0 0 0 230px;
+}
+
 div.body {
     background-color: #ffffff;
     color: #000000;
@@ -157,6 +166,18 @@ div.admonition p.admonition-title + p {
     display: inline;
 }
 
+div.admonition p {
+    margin-bottom: 5px;
+}
+
+div.admonition pre {
+    margin-bottom: 5px;
+}
+
+div.admonition ul, div.admonition ol {
+    margin-bottom: 5px;
+}
+
 div.note {
     background-color: #eee;
     border: 1px solid #ccc;
@@ -198,4 +219,12 @@ tt {
     background-color: #ecf0f3;
     padding: 0 1px 0 1px;
     font-size: 0.95em;
+}
+
+.warning tt {
+    background: #efc2c2;
+}
+
+.note tt {
+    background: #d6d6d6;
 }

@@ -69,7 +69,7 @@
 <div class="section" id="create-2d-wavelet-packet-structure">
 <h2>Create 2D Wavelet Packet structure<a class="headerlink" href="#create-2d-wavelet-packet-structure" title="Permalink to this headline">¶</a></h2>
 <p>Start with preparing test data:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1</span><span class="p">,</span> <span class="mf">2</span><span class="p">,</span> <span class="mf">3</span><span class="p">,</span> <span class="mf">4</span><span class="p">,</span> <span class="mf">5</span><span class="p">,</span> <span class="mf">6</span><span class="p">,</span> <span class="mf">7</span><span class="p">,</span> <span class="mf">8</span><span class="p">]]</span> <span class="o">*</span> <span class="mf">8</span><span class="p">,</span> <span class="s">&#39;d&#39;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]]</span> <span class="o">*</span> <span class="mi">8</span><span class="p">,</span> <span class="s">&#39;d&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">x</span>
 <span class="go">[[ 1.  2.  3.  4.  5.  6.  7.  8.]</span>
 <span class="go"> [ 1.  2.  3.  4.  5.  6.  7.  8.]</span>
@@ -189,8 +189,9 @@ using compound path is just the same as indexing WP subnode:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">wp</span><span class="p">[</span><span class="s">&#39;aaa&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
 <span class="go">[[ 36.]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">wp</span><span class="p">[</span><span class="s">&#39;aaaa&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
-<span class="gp">...</span>
-<span class="go">IndexError: Path length is out of range.</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="c">...</span>
+<span class="nc">IndexError</span>: <span class="n-Identifier">Path length is out of range.</span>
 </pre></div>
 </div>
 <p>Ups, we have reached the maximum level of decomposition for the <tt class="docutils literal"><span class="pre">'aaaa'</span></tt> path,
@@ -201,8 +202,9 @@ which btw. was:</p>
 </div>
 <p>Now try some invalid path:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">wp</span><span class="p">[</span><span class="s">&#39;f&#39;</span><span class="p">]</span>
-<span class="gp">...</span>
-<span class="go">ValueError: Subnode name must be in [&#39;a&#39;, &#39;h&#39;, &#39;v&#39;, &#39;d&#39;], not &#39;f&#39;.</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="c">...</span>
+<span class="nc">ValueError</span>: <span class="n-Identifier">Subnode name must be in [&#39;a&#39;, &#39;h&#39;, &#39;v&#39;, &#39;d&#39;], not &#39;f&#39;.</span>
 </pre></div>
 </div>
 <div class="section" id="accessing-node2d-s-attributes">
@@ -257,28 +259,28 @@ just like with <a title="pywt.Node" class="reference external" href="../ref/wave
 <blockquote>
 <ul>
 <li><p class="first">0 level - the root <cite>wp</cite> node:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">get_level</span><span class="p">(</span><span class="mf">0</span><span class="p">))</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">get_level</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
 <span class="go">1</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">path</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">wp</span><span class="o">.</span><span class="n">get_level</span><span class="p">(</span><span class="mf">0</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">path</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">wp</span><span class="o">.</span><span class="n">get_level</span><span class="p">(</span><span class="mi">0</span><span class="p">)]</span>
 <span class="go">[&#39;&#39;]</span>
 </pre></div>
 </div>
 </li>
 <li><p class="first">1st level of decomposition:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">get_level</span><span class="p">(</span><span class="mf">1</span><span class="p">))</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">get_level</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
 <span class="go">4</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">path</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">wp</span><span class="o">.</span><span class="n">get_level</span><span class="p">(</span><span class="mf">1</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">path</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">wp</span><span class="o">.</span><span class="n">get_level</span><span class="p">(</span><span class="mi">1</span><span class="p">)]</span>
 <span class="go">[&#39;a&#39;, &#39;h&#39;, &#39;v&#39;, &#39;d&#39;]</span>
 </pre></div>
 </div>
 </li>
 <li><p class="first">2nd level of decomposition:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">get_level</span><span class="p">(</span><span class="mf">2</span><span class="p">))</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">get_level</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
 <span class="go">16</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">path</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">wp</span><span class="o">.</span><span class="n">get_level</span><span class="p">(</span><span class="mf">2</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">path</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">wp</span><span class="o">.</span><span class="n">get_level</span><span class="p">(</span><span class="mi">2</span><span class="p">)]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">path</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">paths</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="k">print</span> <span class="n">path</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="k">if</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mf">1</span><span class="p">)</span> <span class="o">%</span> <span class="mf">4</span> <span class="o">==</span> <span class="mf">0</span><span class="p">:</span> <span class="k">print</span>
+<span class="gp">... </span>    <span class="k">if</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">4</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="k">print</span>
 <span class="go">aa ah av ad</span>
 <span class="go">ha hh hv hd</span>
 <span class="go">va vh vv vd</span>
@@ -287,12 +289,12 @@ just like with <a title="pywt.Node" class="reference external" href="../ref/wave
 </div>
 </li>
 <li><p class="first">3rd level of decomposition:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="nb">len</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">get_level</span><span class="p">(</span><span class="mf">3</span><span class="p">))</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="nb">len</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">get_level</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
 <span class="go">64</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">path</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">wp</span><span class="o">.</span><span class="n">get_level</span><span class="p">(</span><span class="mf">3</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">path</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">wp</span><span class="o">.</span><span class="n">get_level</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">path</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">paths</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="k">print</span> <span class="n">path</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="k">if</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mf">1</span><span class="p">)</span> <span class="o">%</span> <span class="mf">8</span> <span class="o">==</span> <span class="mf">0</span><span class="p">:</span> <span class="k">print</span>
+<span class="gp">... </span>    <span class="k">if</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">8</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="k">print</span>
 <span class="go">aaa aah aav aad aha ahh ahv ahd</span>
 <span class="go">ava avh avv avd ada adh adv add</span>
 <span class="go">haa hah hav had hha hhh hhv hhd</span>
@@ -425,7 +427,7 @@ to do a full decomposition up to the <em>maximum level</em> of decomposition:</p
 <span class="go">64</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">path</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">paths</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="k">print</span> <span class="n">path</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="k">if</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mf">1</span><span class="p">)</span> <span class="o">%</span> <span class="mf">8</span> <span class="o">==</span> <span class="mf">0</span><span class="p">:</span> <span class="k">print</span>
+<span class="gp">... </span>    <span class="k">if</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">8</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="k">print</span>
 <span class="go">aaa aah aav aad aha ahh ahv ahd</span>
 <span class="go">ava avh avv avd ada adh adv add</span>
 <span class="go">haa hah hav had hha hhh hhv hhd</span>
@@ -445,7 +447,7 @@ to do a full decomposition up to the <em>maximum level</em> of decomposition:</p
 only. Do not rely on the attribute access to nodes as presented in
 this example.</p>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1</span><span class="p">,</span> <span class="mf">2</span><span class="p">,</span> <span class="mf">3</span><span class="p">,</span> <span class="mf">4</span><span class="p">,</span> <span class="mf">5</span><span class="p">,</span> <span class="mf">6</span><span class="p">,</span> <span class="mf">7</span><span class="p">,</span> <span class="mf">8</span><span class="p">]]</span> <span class="o">*</span> <span class="mf">8</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]]</span> <span class="o">*</span> <span class="mi">8</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">wp</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">WaveletPacket2D</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">wavelet</span><span class="o">=</span><span class="s">&#39;db1&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;sym&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -496,7 +498,7 @@ via decomposition of its parent node (the wp object itself).</p>
         <div class="sphinxsidebarwrapper">
             <h3><a href="../index.html">Table Of Contents</a></h3>
             <ul>
-<li><a class="reference external" href="">2D Wavelet Packets</a><ul>
+<li><a class="reference external" href="#">2D Wavelet Packets</a><ul>
 <li><a class="reference external" href="#import-pywt">Import pywt</a></li>
 <li><a class="reference external" href="#create-2d-wavelet-packet-structure">Create 2D Wavelet Packet structure</a></li>
 <li><a class="reference external" href="#traversing-wp-tree">Traversing WP tree:</a><ul>
@@ -570,9 +572,9 @@ via decomposition of its parent node (the wp object itself).</p>
     </div>
     
     <div class="footer">
-      &copy; Copyright 2006-2009, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
-      Last updated on May 15, 2009.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.1.
+      &copy; Copyright 2006-2010, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
+      Last updated on Mar 05, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
     </div>
     <script type="text/javascript">
     var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");

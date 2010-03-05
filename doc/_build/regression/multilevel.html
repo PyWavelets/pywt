@@ -63,7 +63,7 @@
 <h2>Multilevel DWT decomposition<a class="headerlink" href="#multilevel-dwt-decomposition" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pywt</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mf">3</span><span class="p">,</span> <span class="mf">7</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="o">-</span><span class="mf">2</span><span class="p">,</span> <span class="mf">5</span><span class="p">,</span> <span class="mf">4</span><span class="p">,</span> <span class="mf">6</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">db1</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">Wavelet</span><span class="p">(</span><span class="s">&#39;db1&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cA3</span><span class="p">,</span> <span class="n">cD3</span><span class="p">,</span> <span class="n">cD2</span><span class="p">,</span> <span class="n">cD1</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">wavedec</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">db1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">cA3</span>
@@ -80,7 +80,7 @@
 <span class="go">3</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">cA2</span><span class="p">,</span> <span class="n">cD2</span><span class="p">,</span> <span class="n">cD1</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">wavedec</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">db1</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;cpd&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mf">2</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">cA2</span><span class="p">,</span> <span class="n">cD2</span><span class="p">,</span> <span class="n">cD1</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">wavedec</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">db1</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;cpd&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
 </blockquote>
@@ -104,8 +104,8 @@
 <div class="section" id="multilevel-swt-decomposition">
 <h2>Multilevel SWT decomposition<a class="headerlink" href="#multilevel-swt-decomposition" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mf">3</span><span class="p">,</span> <span class="mf">7</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="mf">3</span><span class="p">,</span> <span class="o">-</span><span class="mf">2</span><span class="p">,</span> <span class="mf">6</span><span class="p">,</span> <span class="mf">4</span><span class="p">,</span> <span class="mf">6</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">cA2</span><span class="p">,</span> <span class="n">cD2</span><span class="p">),</span> <span class="p">(</span><span class="n">cA1</span><span class="p">,</span> <span class="n">cD1</span><span class="p">)</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">swt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">db1</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mf">2</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">cA2</span><span class="p">,</span> <span class="n">cD2</span><span class="p">),</span> <span class="p">(</span><span class="n">cA1</span><span class="p">,</span> <span class="n">cD1</span><span class="p">)</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">swt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">db1</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">cA1</span>
 <span class="go">[ 7.07106781  5.65685425  2.82842712  0.70710678  2.82842712  7.07106781</span>
 <span class="go">  7.07106781  6.36396103]</span>
@@ -118,7 +118,7 @@
 <span class="go">[ 3.   3.5  0.  -4.5 -3.   0.5  0.   0.5]</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="p">[(</span><span class="n">cA2</span><span class="p">,</span> <span class="n">cD2</span><span class="p">)]</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">swt</span><span class="p">(</span><span class="n">cA1</span><span class="p">,</span> <span class="n">db1</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mf">1</span><span class="p">,</span> <span class="n">start_level</span><span class="o">=</span><span class="mf">1</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="p">[(</span><span class="n">cA2</span><span class="p">,</span> <span class="n">cD2</span><span class="p">)]</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">swt</span><span class="p">(</span><span class="n">cA1</span><span class="p">,</span> <span class="n">db1</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">start_level</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">cA2</span>
 <span class="go">[  7.    4.5   4.    5.5   7.    9.5  10.    8.5]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">cD2</span>
@@ -144,7 +144,7 @@
         <div class="sphinxsidebarwrapper">
             <h3><a href="../index.html">Table Of Contents</a></h3>
             <ul>
-<li><a class="reference external" href="">Multilevel DWT, IDWT and SWT</a><ul>
+<li><a class="reference external" href="#">Multilevel DWT, IDWT and SWT</a><ul>
 <li><a class="reference external" href="#multilevel-dwt-decomposition">Multilevel DWT decomposition</a></li>
 <li><a class="reference external" href="#multilevel-idwt-reconstruction">Multilevel IDWT reconstruction</a></li>
 <li><a class="reference external" href="#upcoef">upcoef</a></li>
@@ -214,9 +214,9 @@
     </div>
     
     <div class="footer">
-      &copy; Copyright 2006-2009, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
-      Last updated on May 15, 2009.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.1.
+      &copy; Copyright 2006-2010, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
+      Last updated on Mar 05, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
     </div>
     <script type="text/javascript">
     var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");

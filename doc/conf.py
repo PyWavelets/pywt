@@ -36,8 +36,9 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General substitutions.
+import datetime
 project = u'PyWavelets'
-copyright = jinja2.filters.do_mark_safe(u'2006-2009, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>')
+copyright = jinja2.filters.do_mark_safe(u'2006-%s, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>' % datetime.date.today().year)
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.

@@ -62,11 +62,13 @@ Multilevel decomposition using ``wavedec``
 
 .. function:: wavedec(data, wavelet, mode='sym', level=None)
 
-  .. compound:
+  .. compound::
 
     The :func:`wavedec` function performs 1D multilevel Discrete Wavelet
     Transform decomposition of given signal and returns ordered list of
-    coefficients arrays in the form::
+    coefficients arrays in the form:
+
+      ::
 
       [cA_n, cD_n, cD_n-1, ..., cD2, cD1],
 

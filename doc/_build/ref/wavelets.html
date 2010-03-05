@@ -109,8 +109,7 @@ constructor as described below.</p>
 <h2><tt class="docutils literal"><span class="pre">Wavelet</span></tt> object<a class="headerlink" href="#wavelet-object" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="pywt.Wavelet">
-<em class="property">
-class </em><tt class="descclassname">pywt.</tt><tt class="descname">Wavelet</tt><big>(</big><em>name</em><span class="optional">[</span>, <em>filter_bank=None</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#pywt.Wavelet" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">pywt.</tt><tt class="descname">Wavelet</tt><big>(</big><em>name</em><span class="optional">[</span>, <em>filter_bank=None</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#pywt.Wavelet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Describes properties of a wavelet identified by the specified wavelet <em>name</em>.
 In order to use a built-in wavelet the <em>name</em> parameter must be a valid
 wavelet name from the <a title="pywt.wavelist" class="reference internal" href="#pywt.wavelist"><tt class="xref docutils literal"><span class="pre">pywt.wavelist()</span></tt></a> list.</p>
@@ -202,7 +201,7 @@ of the package.</p>
 <tt class="descname">inverse_filter_bank</tt><a class="headerlink" href="#pywt.Wavelet.inverse_filter_bank" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns list of reverse wavelet filters coefficients. The mapping from the
 <cite>filter_coeffs</cite> list is as follows:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="p">[</span><span class="n">rec_lo</span><span class="p">[::</span><span class="o">-</span><span class="mf">1</span><span class="p">],</span> <span class="n">rec_hi</span><span class="p">[::</span><span class="o">-</span><span class="mf">1</span><span class="p">],</span> <span class="n">dec_lo</span><span class="p">[::</span><span class="o">-</span><span class="mf">1</span><span class="p">],</span> <span class="n">dec_hi</span><span class="p">[::</span><span class="o">-</span><span class="mf">1</span><span class="p">]]</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">[</span><span class="n">rec_lo</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">rec_hi</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">dec_lo</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">dec_hi</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
 </pre></div>
 </div>
 <p>The <tt class="xref docutils literal"><span class="pre">get_reverse_filters_coeffs()</span></tt> method is deprecated.</p>
@@ -281,7 +280,7 @@ scaling function and wavelet function with corresponding x-grid coordinates:</p>
 <p><strong>Example:</strong></p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pywt</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">wavelet</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">Wavelet</span><span class="p">(</span><span class="s">&#39;db2&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span><span class="p">,</span> <span class="n">psi</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">wavelet</span><span class="o">.</span><span class="n">wavefun</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mf">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span><span class="p">,</span> <span class="n">psi</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">wavelet</span><span class="o">.</span><span class="n">wavefun</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>For other (<a title="pywt.Wavelet.biorthogonal" class="reference internal" href="#pywt.Wavelet.biorthogonal"><tt class="xref docutils literal"><span class="pre">biorthogonal</span></tt></a> but not
@@ -294,7 +293,7 @@ corresponding x-grid coordinates:</p>
 <p><strong>Example:</strong></p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pywt</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">wavelet</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">Wavelet</span><span class="p">(</span><span class="s">&#39;bior3.5&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">phi_d</span><span class="p">,</span> <span class="n">psi_d</span><span class="p">,</span> <span class="n">phi_r</span><span class="p">,</span> <span class="n">psi_r</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">wavelet</span><span class="o">.</span><span class="n">wavefun</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mf">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phi_d</span><span class="p">,</span> <span class="n">psi_d</span><span class="p">,</span> <span class="n">phi_r</span><span class="p">,</span> <span class="n">psi_r</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">wavelet</span><span class="o">.</span><span class="n">wavefun</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="admonition-see-also admonition seealso">
@@ -334,7 +333,7 @@ from plain Python lists of filter coefficients and a <em>filter bank-like</em> o
 <blockquote>
 <p><strong>Example:</strong></p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pywt</span><span class="o">,</span> <span class="nn">math</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2</span><span class="p">)</span><span class="o">/</span><span class="mf">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dec_lo</span><span class="p">,</span> <span class="n">dec_hi</span><span class="p">,</span> <span class="n">rec_lo</span><span class="p">,</span> <span class="n">rec_hi</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="p">,</span> <span class="n">c</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="n">c</span><span class="p">,</span> <span class="n">c</span><span class="p">],</span> <span class="p">[</span><span class="n">c</span><span class="p">,</span> <span class="n">c</span><span class="p">],</span> <span class="p">[</span><span class="n">c</span><span class="p">,</span> <span class="o">-</span><span class="n">c</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">filter_bank</span> <span class="o">=</span> <span class="p">[</span><span class="n">dec_lo</span><span class="p">,</span> <span class="n">dec_hi</span><span class="p">,</span> <span class="n">rec_lo</span><span class="p">,</span> <span class="n">rec_hi</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">myWavelet</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">Wavelet</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;myHaarWavelet&quot;</span><span class="p">,</span> <span class="n">filter_bank</span><span class="o">=</span><span class="n">filter_bank</span><span class="p">)</span>
@@ -342,7 +341,7 @@ from plain Python lists of filter coefficients and a <em>filter bank-like</em> o
 <span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">HaarFilterBank</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="nd">@property</span>
 <span class="gp">... </span>    <span class="k">def</span> <span class="nf">filter_bank</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="gp">... </span>        <span class="n">c</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2</span><span class="p">)</span><span class="o">/</span><span class="mf">2</span>
+<span class="gp">... </span>        <span class="n">c</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
 <span class="gp">... </span>        <span class="n">dec_lo</span><span class="p">,</span> <span class="n">dec_hi</span><span class="p">,</span> <span class="n">rec_lo</span><span class="p">,</span> <span class="n">rec_hi</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="p">,</span> <span class="n">c</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="n">c</span><span class="p">,</span> <span class="n">c</span><span class="p">],</span> <span class="p">[</span><span class="n">c</span><span class="p">,</span> <span class="n">c</span><span class="p">],</span> <span class="p">[</span><span class="n">c</span><span class="p">,</span> <span class="o">-</span><span class="n">c</span><span class="p">]</span>
 <span class="gp">... </span>        <span class="k">return</span> <span class="p">[</span><span class="n">dec_lo</span><span class="p">,</span> <span class="n">dec_hi</span><span class="p">,</span> <span class="n">rec_lo</span><span class="p">,</span> <span class="n">rec_hi</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">filter_bank</span> <span class="o">=</span> <span class="n">HaarFilterBank</span><span class="p">()</span>
@@ -361,7 +360,7 @@ from plain Python lists of filter coefficients and a <em>filter bank-like</em> o
         <div class="sphinxsidebarwrapper">
             <h3><a href="../index.html">Table Of Contents</a></h3>
             <ul>
-<li><a class="reference external" href="">Wavelets</a><ul>
+<li><a class="reference external" href="#">Wavelets</a><ul>
 <li><a class="reference external" href="#wavelet-families">Wavelet <tt class="docutils literal"><span class="pre">families()</span></tt></a></li>
 <li><a class="reference external" href="#built-in-wavelets-wavelist">Built-in wavelets - <tt class="docutils literal"><span class="pre">wavelist()</span></tt></a></li>
 <li><a class="reference external" href="#wavelet-object"><tt class="docutils literal"><span class="pre">Wavelet</span></tt> object</a><ul>
@@ -433,9 +432,9 @@ from plain Python lists of filter coefficients and a <em>filter bank-like</em> o
     </div>
     
     <div class="footer">
-      &copy; Copyright 2006-2009, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
-      Last updated on May 15, 2009.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.1.
+      &copy; Copyright 2006-2010, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
+      Last updated on Mar 05, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
     </div>
     <script type="text/javascript">
     var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");

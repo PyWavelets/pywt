@@ -68,7 +68,7 @@
 <div class="section" id="create-wavelet-packet-structure">
 <h2>Create Wavelet Packet structure<a class="headerlink" href="#create-wavelet-packet-structure" title="Permalink to this headline">¶</a></h2>
 <p>Ok, let&#8217;s create a sample <a title="pywt.WaveletPacket" class="reference external" href="../ref/wavelet-packets.html#pywt.WaveletPacket"><tt class="xref docutils literal"><span class="pre">WaveletPacket</span></tt></a>:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1</span><span class="p">,</span> <span class="mf">2</span><span class="p">,</span> <span class="mf">3</span><span class="p">,</span> <span class="mf">4</span><span class="p">,</span> <span class="mf">5</span><span class="p">,</span> <span class="mf">6</span><span class="p">,</span> <span class="mf">7</span><span class="p">,</span> <span class="mf">8</span><span class="p">]</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">wp</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">WaveletPacket</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">wavelet</span><span class="o">=</span><span class="s">&#39;db1&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;sym&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -97,7 +97,7 @@ computed:</p>
 <h2>Traversing WP tree:<a class="headerlink" href="#traversing-wp-tree" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="accessing-subnodes">
 <h3>Accessing subnodes:<a class="headerlink" href="#accessing-subnodes" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1</span><span class="p">,</span> <span class="mf">2</span><span class="p">,</span> <span class="mf">3</span><span class="p">,</span> <span class="mf">4</span><span class="p">,</span> <span class="mf">5</span><span class="p">,</span> <span class="mf">6</span><span class="p">,</span> <span class="mf">7</span><span class="p">,</span> <span class="mf">8</span><span class="p">]</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">wp</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">WaveletPacket</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">wavelet</span><span class="o">=</span><span class="s">&#39;db1&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;sym&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -135,8 +135,9 @@ computed:</p>
 <p>Ups, we have reached the maximum level of decomposition and got an
 <tt class="xref docutils literal"><span class="pre">IndexError</span></tt>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">wp</span><span class="p">[</span><span class="s">&#39;aaaa&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
-<span class="gp">...</span>
-<span class="go">IndexError: Path length is out of range.</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="c">...</span>
+<span class="nc">IndexError</span>: <span class="n-Identifier">Path length is out of range.</span>
 </pre></div>
 </div>
 </li>
@@ -144,8 +145,9 @@ computed:</p>
 </blockquote>
 <p>Now try some invalid path:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">wp</span><span class="p">[</span><span class="s">&#39;ac&#39;</span><span class="p">]</span>
-<span class="gp">...</span>
-<span class="go">ValueError: Subnode name must be in [&#39;a&#39;, &#39;d&#39;], not &#39;c&#39;.</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="c">...</span>
+<span class="nc">ValueError</span>: <span class="n-Identifier">Subnode name must be in [&#39;a&#39;, &#39;d&#39;], not &#39;c&#39;.</span>
 </pre></div>
 </div>
 <p>which just yielded a <tt class="xref docutils literal"><span class="pre">ValueError</span></tt>.</p>
@@ -159,7 +161,7 @@ of the <a title="pywt.Node" class="reference external" href="../ref/wavelet-pack
 Each tree node has a set of attributes: <tt class="xref docutils literal"><span class="pre">data</span></tt>, <tt class="xref docutils literal"><span class="pre">path</span></tt>,
 <a title="pywt.Node.node_name" class="reference external" href="../ref/wavelet-packets.html#pywt.Node.node_name"><tt class="xref docutils literal"><span class="pre">node_name</span></tt></a>, <tt class="xref docutils literal"><span class="pre">parent</span></tt>, <tt class="xref docutils literal"><span class="pre">level</span></tt>,
 <tt class="xref docutils literal"><span class="pre">maxlevel</span></tt> and <tt class="xref docutils literal"><span class="pre">mode</span></tt>.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1</span><span class="p">,</span> <span class="mf">2</span><span class="p">,</span> <span class="mf">3</span><span class="p">,</span> <span class="mf">4</span><span class="p">,</span> <span class="mf">5</span><span class="p">,</span> <span class="mf">6</span><span class="p">,</span> <span class="mf">7</span><span class="p">,</span> <span class="mf">8</span><span class="p">]</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">wp</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">WaveletPacket</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">wavelet</span><span class="o">=</span><span class="s">&#39;db1&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;sym&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -194,17 +196,17 @@ Each tree node has a set of attributes: <tt class="xref docutils literal"><span 
 </div>
 <div class="section" id="collecting-nodes">
 <h3>Collecting nodes<a class="headerlink" href="#collecting-nodes" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1</span><span class="p">,</span> <span class="mf">2</span><span class="p">,</span> <span class="mf">3</span><span class="p">,</span> <span class="mf">4</span><span class="p">,</span> <span class="mf">5</span><span class="p">,</span> <span class="mf">6</span><span class="p">,</span> <span class="mf">7</span><span class="p">,</span> <span class="mf">8</span><span class="p">]</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">wp</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">WaveletPacket</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">wavelet</span><span class="o">=</span><span class="s">&#39;db1&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;sym&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>We can get all nodes on the particular level either in <tt class="docutils literal"><span class="pre">natural</span></tt> order:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">path</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">wp</span><span class="o">.</span><span class="n">get_level</span><span class="p">(</span><span class="mf">3</span><span class="p">,</span> <span class="s">&#39;natural&#39;</span><span class="p">)]</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">path</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">wp</span><span class="o">.</span><span class="n">get_level</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s">&#39;natural&#39;</span><span class="p">)]</span>
 <span class="go">[&#39;aaa&#39;, &#39;aad&#39;, &#39;ada&#39;, &#39;add&#39;, &#39;daa&#39;, &#39;dad&#39;, &#39;dda&#39;, &#39;ddd&#39;]</span>
 </pre></div>
 </div>
 <p>or sorted based on the band frequency (<tt class="docutils literal"><span class="pre">freq</span></tt>):</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">path</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">wp</span><span class="o">.</span><span class="n">get_level</span><span class="p">(</span><span class="mf">3</span><span class="p">,</span> <span class="s">&#39;freq&#39;</span><span class="p">)]</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">path</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">wp</span><span class="o">.</span><span class="n">get_level</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s">&#39;freq&#39;</span><span class="p">)]</span>
 <span class="go">[&#39;aaa&#39;, &#39;aad&#39;, &#39;add&#39;, &#39;ada&#39;, &#39;dda&#39;, &#39;ddd&#39;, &#39;dad&#39;, &#39;daa&#39;]</span>
 </pre></div>
 </div>
@@ -214,7 +216,7 @@ until it reaches the specified <em>level</em>.</p>
 </div>
 <div class="section" id="reconstructing-data-from-wavelet-packets">
 <h2>Reconstructing data from Wavelet Packets:<a class="headerlink" href="#reconstructing-data-from-wavelet-packets" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1</span><span class="p">,</span> <span class="mf">2</span><span class="p">,</span> <span class="mf">3</span><span class="p">,</span> <span class="mf">4</span><span class="p">,</span> <span class="mf">5</span><span class="p">,</span> <span class="mf">6</span><span class="p">,</span> <span class="mf">7</span><span class="p">,</span> <span class="mf">8</span><span class="p">]</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">wp</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">WaveletPacket</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">wavelet</span><span class="o">=</span><span class="s">&#39;db1&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;sym&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -265,13 +267,13 @@ value.</p>
 <div class="section" id="removing-nodes-from-wavelet-packet-tree">
 <h2>Removing nodes from Wavelet Packet tree:<a class="headerlink" href="#removing-nodes-from-wavelet-packet-tree" title="Permalink to this headline">¶</a></h2>
 <p>Let&#8217;s create a sample data:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1</span><span class="p">,</span> <span class="mf">2</span><span class="p">,</span> <span class="mf">3</span><span class="p">,</span> <span class="mf">4</span><span class="p">,</span> <span class="mf">5</span><span class="p">,</span> <span class="mf">6</span><span class="p">,</span> <span class="mf">7</span><span class="p">,</span> <span class="mf">8</span><span class="p">]</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">wp</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">WaveletPacket</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">wavelet</span><span class="o">=</span><span class="s">&#39;db1&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;sym&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>First, start with a tree decomposition at level 2. Leaf nodes in the tree are:</p>
 <blockquote>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">dummy</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">get_level</span><span class="p">(</span><span class="mf">2</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">dummy</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">get_level</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">wp</span><span class="o">.</span><span class="n">get_leaf_nodes</span><span class="p">(</span><span class="bp">False</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="k">print</span> <span class="n">n</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">n</span><span class="o">.</span><span class="n">data</span>
 <span class="go">aa [  5.  13.]</span>
@@ -333,7 +335,7 @@ tree:</p>
 only. Do not rely on the attribute access to nodes as presented in
 this example.</p>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1</span><span class="p">,</span> <span class="mf">2</span><span class="p">,</span> <span class="mf">3</span><span class="p">,</span> <span class="mf">4</span><span class="p">,</span> <span class="mf">5</span><span class="p">,</span> <span class="mf">6</span><span class="p">,</span> <span class="mf">7</span><span class="p">,</span> <span class="mf">8</span><span class="p">]</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">wp</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">WaveletPacket</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">wavelet</span><span class="o">=</span><span class="s">&#39;db1&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;sym&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -375,7 +377,7 @@ of it&#8217;s parent node (the wp object itself).</p>
         <div class="sphinxsidebarwrapper">
             <h3><a href="../index.html">Table Of Contents</a></h3>
             <ul>
-<li><a class="reference external" href="">Wavelet Packets</a><ul>
+<li><a class="reference external" href="#">Wavelet Packets</a><ul>
 <li><a class="reference external" href="#import-pywt">Import pywt</a></li>
 <li><a class="reference external" href="#create-wavelet-packet-structure">Create Wavelet Packet structure</a></li>
 <li><a class="reference external" href="#traversing-wp-tree">Traversing WP tree:</a><ul>
@@ -451,9 +453,9 @@ of it&#8217;s parent node (the wp object itself).</p>
     </div>
     
     <div class="footer">
-      &copy; Copyright 2006-2009, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
-      Last updated on May 15, 2009.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.1.
+      &copy; Copyright 2006-2010, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
+      Last updated on Mar 05, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
     </div>
     <script type="text/javascript">
     var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");

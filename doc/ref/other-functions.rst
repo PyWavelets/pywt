@@ -67,7 +67,7 @@ Integrating wavelet functions - :func:`intwave`
     >>> wavelet1 = pywt.Wavelet('db2')
     >>> [int_psi, x] = pywt.intwave(wavelet1, precision=5)
     >>> wavelet2 = pywt.Wavelet('bior1.3')
-    >>> [int_psi_d, int_psi_r, x] = pywt.intwave(wavelet, precision=5)
+    >>> [int_psi_d, int_psi_r, x] = pywt.intwave(wavelet2, precision=5)
 
 
 Central frequency of *psi* wavelet function
