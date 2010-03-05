@@ -1,6 +1,14 @@
 Changelog
 
-0.1.7 - maintenance release
+
+0.2.0
+
+    changes:
+      - 2D Wavelet Packet and Inverse Wavelet Packet Transforms
+      - 2D Stationary Wavelet Transform
+      - Single and double precision computations
+      - DWT and IDWT optimizations
+      - refactored Wavelet Packet code
 
 0.1.6
     changes:

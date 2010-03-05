@@ -3,8 +3,7 @@
 # Release details for package
 
 name         = "PyWavelets"
-version      = "0.1.7"
-#revision     = "$Revision$".split()[1]
+version      = "0.2.0b1"
 author       = "Filip Wasilewski"
 author_email = "filip.wasilewski@gmail.com"
 url          = "http://www.pybytes.com/pywavelets/"
