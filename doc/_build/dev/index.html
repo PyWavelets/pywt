@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Gotchas &mdash; PyWavelets Documentation</title>
+    <title>Development &mdash; PyWavelets Documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -20,9 +20,8 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="PyWavelets Documentation" href="../index.html" />
-    <link rel="up" title="Usage examples" href="index.html" />
-    <link rel="next" title="Resources" href="../resources.html" />
-    <link rel="prev" title="2D Wavelet Packets" href="wp2d.html" />
+    <link rel="next" title="Building on Windows" href="building_on_windows.html" />
+    <link rel="prev" title="Resources" href="../resources.html" />
      
     <meta name="description" content="PyWavelets is a scientific Python module for Wavelet Transform calculations." />
     <meta name="keywords" content="PyWavelets, wavelets, Python, wavelet transform, discrete wavelet transform, dwt, idwt, swt, wavelet packets, stationary wavelet transform, pywt, Filip Wasilewski" />
@@ -42,13 +41,12 @@
           <a href="../modindex.html" title="Global Module Index"
              accesskey="M">modules</a> |</li>
         <li class="right" >
-          <a href="../resources.html" title="Resources"
+          <a href="building_on_windows.html" title="Building on Windows"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="wp2d.html" title="2D Wavelet Packets"
+          <a href="../resources.html" title="Resources"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">PyWavelets Documentation</a> &raquo;</li>
-          <li><a href="index.html" accesskey="U">Usage examples</a> &raquo;</li> 
+        <li><a href="../index.html">PyWavelets Documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -57,25 +55,22 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="gotchas">
-<span id="reg-gotchas"></span><h1>Gotchas<a class="headerlink" href="#gotchas" title="Permalink to this headline">¶</a></h1>
-<p>PyWavelets utilizes <tt class="docutils literal"><span class="pre">NumPy</span></tt> under the hood. That&#8217;s why handling the data
-containing <tt class="xref docutils literal"><span class="pre">None</span></tt> values can be surprising. <tt class="xref docutils literal"><span class="pre">None</span></tt> values are converted to
-&#8216;not a number&#8217; (<tt class="docutils literal"><span class="pre">numpy.NaN</span></tt>) values:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span><span class="o">,</span> <span class="nn">pywt</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mode</span> <span class="o">=</span> <span class="s">&#39;sym&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">wavelet</span> <span class="o">=</span> <span class="s">&#39;db1&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cA</span><span class="p">,</span> <span class="n">cD</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">dwt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">wavelet</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">cA</span><span class="p">))</span>
-<span class="go">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">cD</span><span class="p">))</span>
-<span class="go">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">rec</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">idwt</span><span class="p">(</span><span class="n">cA</span><span class="p">,</span> <span class="n">cD</span><span class="p">,</span> <span class="n">wavelet</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">rec</span><span class="p">))</span>
-<span class="go">True</span>
-</pre></div>
-</div>
+  <div class="section" id="development">
+<span id="dev-index"></span><h1>Development<a class="headerlink" href="#development" title="Permalink to this headline">¶</a></h1>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="building_on_windows.html">Building on Windows</a><ul>
+<li class="toctree-l2"><a class="reference external" href="building_on_windows.html#prepare-build-environment">Prepare build environment</a></li>
+<li class="toctree-l2"><a class="reference external" href="building_on_windows.html#install-python">Install Python</a></li>
+<li class="toctree-l2"><a class="reference external" href="building_on_windows.html#install-mingw-c-compiler">Install MinGW C compiler</a></li>
+<li class="toctree-l2"><a class="reference external" href="building_on_windows.html#configure-distutils">Configure Distutils</a></li>
+<li class="toctree-l2"><a class="reference external" href="building_on_windows.html#install-cython">Install Cython</a></li>
+<li class="toctree-l2"><a class="reference external" href="building_on_windows.html#install-numpy">Install Numpy</a></li>
+<li class="toctree-l2"><a class="reference external" href="building_on_windows.html#install-sphinx">Install Sphinx</a></li>
+<li class="toctree-l2"><a class="reference external" href="building_on_windows.html#ready-to-go">Ready to go</a></li>
+<li class="toctree-l2"><a class="reference external" href="building_on_windows.html#something-not-working">Something not working?</a></li>
+</ul>
+</li>
+</ul>
 </div>
 
 
@@ -85,14 +80,14 @@ containing <tt class="xref docutils literal"><span class="pre">None</span></tt> 
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
             <h4>Previous topic</h4>
-            <p class="topless"><a href="wp2d.html"
-                                  title="previous chapter">2D Wavelet Packets</a></p>
-            <h4>Next topic</h4>
             <p class="topless"><a href="../resources.html"
-                                  title="next chapter">Resources</a></p>
+                                  title="previous chapter">Resources</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="building_on_windows.html"
+                                  title="next chapter">Building on Windows</a></p>
             <h3>This Page</h3>
             <ul class="this-page-menu">
-              <li><a href="../_sources/regression/gotchas.txt"
+              <li><a href="../_sources/dev/index.txt"
                      rel="nofollow">Show Source</a></li>
             </ul>
           <div id="searchbox" style="display: none">
@@ -133,13 +128,12 @@ containing <tt class="xref docutils literal"><span class="pre">None</span></tt> 
           <a href="../modindex.html" title="Global Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../resources.html" title="Resources"
+          <a href="building_on_windows.html" title="Building on Windows"
              >next</a> |</li>
         <li class="right" >
-          <a href="wp2d.html" title="2D Wavelet Packets"
+          <a href="../resources.html" title="Resources"
              >previous</a> |</li>
-        <li><a href="../index.html">PyWavelets Documentation</a> &raquo;</li>
-          <li><a href="index.html" >Usage examples</a> &raquo;</li> 
+        <li><a href="../index.html">PyWavelets Documentation</a> &raquo;</li> 
       </ul>
     </div>
     

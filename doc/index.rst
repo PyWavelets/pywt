@@ -3,10 +3,7 @@ PyWavelets - Discrete Wavelet Transform in Python
 
 .. note:: 
 
-    This is a documetation preview for the upcoming 0.2 release
-    of PyWavelets, currently available from the SVN repository
-    at http://wavelets.scipy.org/svn/multiresolution/pywt/trunk/.
-
+    This documetation covers PyWavelets 0.2 release.
     Documetation for the 0.1.6 release is still available at
     http://www.pybytes.com/pywavelets/0.1.6/.
 
@@ -19,6 +16,7 @@ Contents:
    ref/index
    regression/index
    resources
+   dev/index
 
 Indices and tables
 ==================
