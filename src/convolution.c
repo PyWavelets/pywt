@@ -381,8 +381,6 @@ int double_allocating_downsampling_convolution(const double* input, const_index_
         memcpy(buffer+F/2-1, input, sizeof(double) * N);
 
         start -= 1;
-        
-        // TODO : sprawdziæ siê jeszcze wiesza dla swt
 
         if(step == 1)
             stop = N_extended_len-1;
@@ -1288,8 +1286,6 @@ int float_allocating_downsampling_convolution(const float* input, const_index_t 
         memcpy(buffer+F/2-1, input, sizeof(float) * N);
 
         start -= 1;
-        
-        // TODO : sprawdziæ siê jeszcze wiesza dla swt
 
         if(step == 1)
             stop = N_extended_len-1;

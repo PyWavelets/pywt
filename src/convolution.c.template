@@ -384,8 +384,6 @@ int $DTYPE$_allocating_downsampling_convolution(const $DTYPE$* input, const_inde
         memcpy(buffer+F/2-1, input, sizeof($DTYPE$) * N);
 
         start -= 1;
-        
-        // TODO : sprawdziæ siê jeszcze wiesza dla swt
 
         if(step == 1)
             stop = N_extended_len-1;
