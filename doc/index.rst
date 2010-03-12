@@ -15,8 +15,8 @@ Contents:
    overview
    ref/index
    regression/index
-   resources
    dev/index
+   resources
 
 Indices and tables
 ==================

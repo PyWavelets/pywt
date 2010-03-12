@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Building on Windows &mdash; PyWavelets Documentation</title>
+    <title>Building on Linux &mdash; PyWavelets Documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -21,8 +21,8 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="PyWavelets Documentation" href="../index.html" />
     <link rel="up" title="Development" href="index.html" />
-    <link rel="next" title="Building on Linux" href="building_on_linux.html" />
-    <link rel="prev" title="Development" href="index.html" />
+    <link rel="next" title="Resources" href="../resources.html" />
+    <link rel="prev" title="Building on Windows" href="building_on_windows.html" />
      
     <meta name="description" content="PyWavelets is a scientific Python module for Wavelet Transform calculations." />
     <meta name="keywords" content="PyWavelets, wavelets, Python, wavelet transform, discrete wavelet transform, dwt, idwt, swt, wavelet packets, stationary wavelet transform, pywt, Filip Wasilewski" />
@@ -42,10 +42,10 @@
           <a href="../modindex.html" title="Global Module Index"
              accesskey="M">modules</a> |</li>
         <li class="right" >
-          <a href="building_on_linux.html" title="Building on Linux"
+          <a href="../resources.html" title="Resources"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="Development"
+          <a href="building_on_windows.html" title="Building on Windows"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">PyWavelets Documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">Development</a> &raquo;</li> 
@@ -57,51 +57,63 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <span class="target" id="dev-building-on-windows"></span><span class="target" id="module-pywt"></span><div class="section" id="building-on-windows">
-<h1>Building on Windows<a class="headerlink" href="#building-on-windows" title="Permalink to this headline">¶</a></h1>
+  <span class="target" id="dev-building-on-linux"></span><span class="target" id="module-pywt"></span><div class="section" id="building-on-linux">
+<h1>Building on Linux<a class="headerlink" href="#building-on-linux" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="prepare-build-environment">
 <h2>Prepare build environment<a class="headerlink" href="#prepare-build-environment" title="Permalink to this headline">¶</a></h2>
-<p>To start developing <cite>PyWavelets</cite> code on Windows you will have to prepare build
-environment first. This will include installing a couple components like
-Python, MinGW C compiler, Cython, Numpy and Sphinx.</p>
+<p>There is a good chance that you already have a working build envoronment.
+Just skip steps that you don&#8217;t need to execute.</p>
+<p>Note that the examples below use <tt class="docutils literal"><span class="pre">aptitude</span></tt> package manager, which might
+be specific to only some Linux distributions like Ubuntu. Use your
+favourite package manager to install these packages on your OS.</p>
 </div>
-<div class="section" id="install-python">
-<h2>Install Python<a class="headerlink" href="#install-python" title="Permalink to this headline">¶</a></h2>
-<p>Go to the Python download site <a class="reference external" href="http://python.org/download/">http://python.org/download/</a> and get
-the recent 2.x Python for Windows version (Python 2.6 recommended).
-Install it.</p>
-</div>
-<div class="section" id="install-mingw-c-compiler">
-<h2>Install MinGW C compiler<a class="headerlink" href="#install-mingw-c-compiler" title="Permalink to this headline">¶</a></h2>
-<p>Take a look at <a class="reference external" href="http://www.mingw.org/wiki/Getting_Started">http://www.mingw.org/wiki/Getting_Started</a>
-and <a class="reference external" href="http://www.mingw.org/wiki/HOWTO_Install_the_MinGW_GCC_Compiler_Suite">http://www.mingw.org/wiki/HOWTO_Install_the_MinGW_GCC_Compiler_Suite</a>.
-Follow the instructions there to set up the compiler.</p>
-<p>You can also take a look at Cython&#8217;s &#8220;Installing MinGW on Windows&#8221;
-page at <a class="reference external" href="http://docs.cython.org/src/tutorial/appendix.html">http://docs.cython.org/src/tutorial/appendix.html</a>.</p>
-</div>
-<div class="section" id="configure-distutils">
-<h2>Configure Distutils<a class="headerlink" href="#configure-distutils" title="Permalink to this headline">¶</a></h2>
-<p>Distutils is a standard Python build system. By default it relies
-on Microsoft Visual C compiler, but it is recommended to use
-MinGW GCC compiler instead (<cite>PyWavelets</cite> is developed and tested using GCC).</p>
-<p>In order to change the settings and use MinGW as the default compiler,
-edit or create a Distutils configuration file
-<tt class="docutils literal"><span class="pre">c:\Python26\Lib\distutils\distutils.cfg</span></tt> and place the following
-entry in it:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="p">[</span><span class="n">build</span><span class="p">]</span>
-<span class="n">compiler</span> <span class="o">=</span> <span class="n">mingw32</span>
-</pre></div>
+<div class="section" id="install-basic-build-tools">
+<h2>Install basic build tools<a class="headerlink" href="#install-basic-build-tools" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><pre>aptitude install build-essential gcc</pre>
 </div>
 </div>
-<div class="section" id="install-cython">
-<h2>Install Cython<a class="headerlink" href="#install-cython" title="Permalink to this headline">¶</a></h2>
-<p>Instructions on installing recent Cython version are
-on <a class="reference external" href="http://docs.cython.org/src/quickstart/install.html">http://docs.cython.org/src/quickstart/install.html</a>.</p>
+<div class="section" id="setup-python-environment">
+<h2>Setup Python environment<a class="headerlink" href="#setup-python-environment" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><pre>aptitude install python python-dev python-setuptools</pre>
 </div>
-<div class="section" id="install-numpy">
-<h2>Install Numpy<a class="headerlink" href="#install-numpy" title="Permalink to this headline">¶</a></h2>
-<p>Fetch and install a recent Numpy binary
-from <a class="reference external" href="http://new.scipy.org/download.html">http://new.scipy.org/download.html</a>.</p>
+</div>
+<div class="section" id="setup-python-virtualenv-optional">
+<h2>Setup Python virtualenv (optional)<a class="headerlink" href="#setup-python-virtualenv-optional" title="Permalink to this headline">¶</a></h2>
+<p>If you wish to create a completely separate Python environment
+for the development purposes, you can use virtualenv
+(<a class="reference external" href="http://pypi.python.org/pypi/virtualenv">http://pypi.python.org/pypi/virtualenv</a>).</p>
+<p>Just install it from the OS package repository:</p>
+<div class="highlight-python"><pre>aptitude install python-virtualenv</pre>
+</div>
+<p>or get it from PyPI:</p>
+<div class="highlight-python"><pre>easy_install -U virtualenv</pre>
+</div>
+<p>Now in the directory where you want to store the build environment execute:</p>
+<div class="highlight-python"><pre>virtualenv --no-site-packages &lt;name_of_the_venv&gt;</pre>
+</div>
+<p>To activate the newly created environment type:</p>
+<div class="highlight-python"><pre>source ./&lt;name_of_the_venv&gt;/bin/activate</pre>
+</div>
+</div>
+<div class="section" id="setup-build-dependencies">
+<h2>Setup build dependencies<a class="headerlink" href="#setup-build-dependencies" title="Permalink to this headline">¶</a></h2>
+<p>If you have created a virtual Python environment in the previus step
+remember to activate it before executing the following commands.</p>
+<p>Use <tt class="docutils literal"><span class="pre">pip</span></tt> (<a class="reference external" href="http://pypi.python.org/pypi/pip">http://pypi.python.org/pypi/pip</a>) or <tt class="docutils literal"><span class="pre">easy_install</span></tt> to install
+Python packages:</p>
+<div class="highlight-python"><pre>pip install Cython numpy</pre>
+</div>
+<p>or:</p>
+<div class="highlight-python"><pre>easy_install -U Cython
+easy_install numpy</pre>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In case you want to use the OS package manager to install <tt class="docutils literal"><span class="pre">numpy</span></tt>,
+don&#8217;t specify the <tt class="docutils literal"><span class="pre">--no-site-packages</span></tt> virtualenv option.
+Otherwise the global package won&#8217;t be visible to the Python
+interpreter in the development environment.</p>
+</div>
 </div>
 <div class="section" id="install-sphinx">
 <h2>Install Sphinx<a class="headerlink" href="#install-sphinx" title="Permalink to this headline">¶</a></h2>
@@ -113,21 +125,15 @@ or install it with:</p>
 <div class="highlight-python"><pre>easy_install -U Sphinx</pre>
 </div>
 </div>
-<div class="section" id="ready-to-go">
-<h2>Ready to go<a class="headerlink" href="#ready-to-go" title="Permalink to this headline">¶</a></h2>
-<p>At this point you should be ready to go. Open command line and go to
-<cite>PyWavelets</cite> source code directory.</p>
-<p>To build the project issue:</p>
-<div class="highlight-python"><pre>python setup.py build</pre>
+<div class="section" id="build-pywavelets">
+<h2>Build PyWavelets<a class="headerlink" href="#build-pywavelets" title="Permalink to this headline">¶</a></h2>
+<p>Activate your Python virtual env, go to the pywt source directory
+and type the following to build and install the package:</p>
+<div class="highlight-python"><pre>python setup.py build
+python setup.py install</pre>
 </div>
-<p>To install:</p>
-<div class="highlight-python"><pre>python setup.py install</pre>
-</div>
-<p>To build docs:</p>
-<div class="highlight-python"><pre>cd doc
-doc2html.bat</pre>
-</div>
-<p>To run some tests:</p>
+<p>Go to the <tt class="docutils literal"><span class="pre">tests</span></tt> directory and run some tests to verify
+the installation:</p>
 <div class="highlight-python"><pre>cd tests
 python test_regression.py
 python test_doc.py
@@ -144,28 +150,27 @@ python test_perfect_reconstruction.py</pre>
         <div class="sphinxsidebarwrapper">
             <h3><a href="../index.html">Table Of Contents</a></h3>
             <ul>
-<li><a class="reference external" href="#">Building on Windows</a><ul>
+<li><a class="reference external" href="#">Building on Linux</a><ul>
 <li><a class="reference external" href="#prepare-build-environment">Prepare build environment</a></li>
-<li><a class="reference external" href="#install-python">Install Python</a></li>
-<li><a class="reference external" href="#install-mingw-c-compiler">Install MinGW C compiler</a></li>
-<li><a class="reference external" href="#configure-distutils">Configure Distutils</a></li>
-<li><a class="reference external" href="#install-cython">Install Cython</a></li>
-<li><a class="reference external" href="#install-numpy">Install Numpy</a></li>
+<li><a class="reference external" href="#install-basic-build-tools">Install basic build tools</a></li>
+<li><a class="reference external" href="#setup-python-environment">Setup Python environment</a></li>
+<li><a class="reference external" href="#setup-python-virtualenv-optional">Setup Python virtualenv (optional)</a></li>
+<li><a class="reference external" href="#setup-build-dependencies">Setup build dependencies</a></li>
 <li><a class="reference external" href="#install-sphinx">Install Sphinx</a></li>
-<li><a class="reference external" href="#ready-to-go">Ready to go</a></li>
+<li><a class="reference external" href="#build-pywavelets">Build PyWavelets</a></li>
 </ul>
 </li>
 </ul>
 
             <h4>Previous topic</h4>
-            <p class="topless"><a href="index.html"
-                                  title="previous chapter">Development</a></p>
+            <p class="topless"><a href="building_on_windows.html"
+                                  title="previous chapter">Building on Windows</a></p>
             <h4>Next topic</h4>
-            <p class="topless"><a href="building_on_linux.html"
-                                  title="next chapter">Building on Linux</a></p>
+            <p class="topless"><a href="../resources.html"
+                                  title="next chapter">Resources</a></p>
             <h3>This Page</h3>
             <ul class="this-page-menu">
-              <li><a href="../_sources/dev/building_on_windows.txt"
+              <li><a href="../_sources/dev/building_on_linux.txt"
                      rel="nofollow">Show Source</a></li>
             </ul>
           <div id="searchbox" style="display: none">
@@ -206,10 +211,10 @@ python test_perfect_reconstruction.py</pre>
           <a href="../modindex.html" title="Global Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="building_on_linux.html" title="Building on Linux"
+          <a href="../resources.html" title="Resources"
              >next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="Development"
+          <a href="building_on_windows.html" title="Building on Windows"
              >previous</a> |</li>
         <li><a href="../index.html">PyWavelets Documentation</a> &raquo;</li>
           <li><a href="index.html" >Development</a> &raquo;</li> 

@@ -103,12 +103,3 @@ To run some tests::
     python test_regression.py
     python test_doc.py
     python test_perfect_reconstruction.py
-
-
-Something not working?
-~~~~~~~~~~~~~~~~~~~~~~
-
-If these instructions are not clear or you need help setting up your
-development environment, ask at the |pywt| discussion 
-group - http://groups.google.com/group/pywavelets
-or pywavelets@googlegroups.com.
