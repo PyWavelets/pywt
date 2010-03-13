@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2006-2008 Filip Wasilewski <filip.wasilewski@gmail.com>
+# Copyright (c) 2006-2010 Filip Wasilewski <filip.wasilewski@gmail.com>
 # See COPYING for license details.
 
 # $Id$

@@ -17,7 +17,7 @@ svn          = "http://wavelets.scipy.org/svn/multiresolution/pywt/trunk"
 
 long_description = \
 """
-PyWavelets is a Python wavelet transforms module that can do:
+PyWavelets is a Python wavelet transforms module that includes:
 
   * 1D and 2D Forward and Inverse Discrete Wavelet Transform (DWT and IDWT)
   * 1D and 2D Stationary Wavelet Transform (Undecimated Wavelet Transform)
@@ -29,7 +29,7 @@ PyWavelets is a Python wavelet transforms module that can do:
 """
 
 classifiers = [
-    'Development Status :: 3 - Alpha',
+    'Development Status :: 4 - Beta',
     'Intended Audience :: Developers',
     'Intended Audience :: Education',
     'Intended Audience :: Science/Research',

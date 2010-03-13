@@ -1,4 +1,4 @@
-# Copyright (c) 2006-2009 Filip Wasilewski <http://filipwasilewski.pl/>
+# Copyright (c) 2006-2010 Filip Wasilewski <http://filipwasilewski.pl/>
 # See COPYING for license details.
 
 # see http://numeric.scipy.org/array_interface.html
@@ -60,6 +60,8 @@ cdef extern from "array_interface.h":
     cdef int PyArrayInterface_CHECK(PyGenericArrayInterface* )
     cdef int PyArrayInterface_CHECK_1D(PyGenericArrayInterface* )
     cdef int PyArrayInterface_CHECK_2D(PyGenericArrayInterface* )
+
+    cdef int PyArrayInterface_IS_KIND(PyGenericArrayInterface* , char)
 
     int PyArrayInterface_TWO(PyGenericArrayInterface*)            
     int PyArrayInterface_ND(PyGenericArrayInterface*)             
