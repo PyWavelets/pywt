@@ -8,10 +8,14 @@ Wavelet Packets
 Import pywt
 -----------
 
->>> import pywt
+    >>> import pywt
 
->>> def format_array(a):
-...     return "[%s]" % ' '.join([("%.6g" % round(c, 6)) for c in a])
+    >>> def format_array(a):
+    ...     """Consistent array representation across different systems"""
+    ...     import numpy
+    ...     a = numpy.where(numpy.abs(a) < 1e-5, 0, a)
+    ...     return numpy.array2string(a, precision=5, separator=' ', suppress_small=True)
+
 
 Create Wavelet Packet structure
 -------------------------------
@@ -217,10 +221,10 @@ First, start with a tree decomposition at level 2. Leaf nodes in the tree are:
     >>> dummy = wp.get_level(2)
     >>> for n in wp.get_leaf_nodes(False):
     ...     print n.path, format_array(n.data)
-    aa [5 13]
-    ad [-2 -2]
-    da [-1 -1]
-    dd [-0 0]
+    aa [  5.  13.]
+    ad [-2. -2.]
+    da [-1. -1.]
+    dd [ 0.  0.]
 
     >>> node = wp['ad']
     >>> print node
@@ -235,9 +239,9 @@ The leaf nodes that left in the tree are:
 
     >>> for n in wp.get_leaf_nodes():
     ...     print n.path, format_array(n.data)
-    aa [5 13]
-    da [-1 -1]
-    dd [-0 0]
+    aa [  5.  13.]
+    da [-1. -1.]
+    dd [ 0.  0.]
 
 And the reconstruction is:
 
@@ -253,10 +257,10 @@ tree:
 
     >>> for n in wp.get_leaf_nodes(False):
     ...     print n.path, format_array(n.data)
-    aa [5 13]
-    ad [-2 -2]
-    da [-1 -1]
-    dd [-0 0]
+    aa [  5.  13.]
+    ad [-2. -2.]
+    da [-1. -1.]
+    dd [ 0.  0.]
 
     >>> print wp.reconstruct()
     [ 1.  2.  3.  4.  5.  6.  7.  8.]
