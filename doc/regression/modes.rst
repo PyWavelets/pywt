@@ -11,7 +11,7 @@ Import :mod:`pywt` first
     >>> import pywt
 
     >>> def format_array(a):
-    ...     return "[%s]" % ' '.join([("%.6g" % c) for c in a])
+    ...     return "[%s]" % ' '.join([("%.6g" % round(c, 6)) for c in a])
 
 List of availble signal extension :ref:`modes <MODES>`:
 
@@ -29,7 +29,7 @@ Test that :func:`dwt` and :func:`idwt` can be performed using every mode:
     ...     print "cD:", format_array(cD)
     ...     print "Reconstruction:", pywt.idwt(cA, cD, 'db2', mode)
     Mode: zpd
-    cA: [-0.0346752 1.73309 3.40612 6.32929 6.95095]
+    cA: [-0.034675 1.73309 3.40612 6.32929 6.95095]
     cD: [-0.12941 -2.156 -5.95035 -1.21545 -1.8625]
     Reconstruction: [ 1.  2.  1.  5. -1.  8.  4.  6.]
     Mode: cpd
@@ -37,8 +37,8 @@ Test that :func:`dwt` and :func:`idwt` can be performed using every mode:
     cD: [-0.482963 -2.156 -5.95035 -1.21545 0.258819]
     Reconstruction: [ 1.  2.  1.  5. -1.  8.  4.  6.]
     Mode: sym
-    cA: [1.76777 1.73309 3.40612 6.32929 7.77817]
-    cD: [-0.612372 -2.156 -5.95035 -1.21545 1.22474]
+    cA: [1.76777 1.73309 3.40612 6.32929 7.77818]
+    cD: [-0.612372 -2.156 -5.95035 -1.21545 1.22475]
     Reconstruction: [ 1.  2.  1.  5. -1.  8.  4.  6.]
     Mode: ppd
     cA: [6.91627 1.73309 3.40612 6.32929 6.91627]
@@ -46,11 +46,11 @@ Test that :func:`dwt` and :func:`idwt` can be performed using every mode:
     Reconstruction: [ 1.  2.  1.  5. -1.  8.  4.  6.]
     Mode: sp1
     cA: [-0.517638 1.73309 3.40612 6.32929 7.45001]
-    cD: [-9.90069e-13 -2.156 -5.95035 -1.21545 -1.98064e-12]
+    cD: [-0 -2.156 -5.95035 -1.21545 -0]
     Reconstruction: [ 1.  2.  1.  5. -1.  8.  4.  6.]
     Mode: per
     cA: [4.05317 3.05257 2.85381 8.42522]
-    cD: [0.189469 4.18258 4.33738 2.60428]
+    cD: [0.189469 4.18258 4.33737 2.60428]
     Reconstruction: [ 1.  2.  1.  5. -1.  8.  4.  6.]
 
 
@@ -72,7 +72,7 @@ You can also refer to modes via :ref:`MODES <MODES>` class attributes:
     ...     print "cD:", format_array(cD)
     ...     print "Reconstruction:", pywt.idwt(cA, cD, 'db2', mode)
     Mode: 0 (zpd)
-    cA: [-0.0346752 1.73309 3.40612 6.32929 6.95095]
+    cA: [-0.034675 1.73309 3.40612 6.32929 6.95095]
     cD: [-0.12941 -2.156 -5.95035 -1.21545 -1.8625]
     Reconstruction: [ 1.  2.  1.  5. -1.  8.  4.  6.]
     Mode: 2 (cpd)
@@ -80,8 +80,8 @@ You can also refer to modes via :ref:`MODES <MODES>` class attributes:
     cD: [-0.482963 -2.156 -5.95035 -1.21545 0.258819]
     Reconstruction: [ 1.  2.  1.  5. -1.  8.  4.  6.]
     Mode: 1 (sym)
-    cA: [1.76777 1.73309 3.40612 6.32929 7.77817]
-    cD: [-0.612372 -2.156 -5.95035 -1.21545 1.22474]
+    cA: [1.76777 1.73309 3.40612 6.32929 7.77818]
+    cD: [-0.612372 -2.156 -5.95035 -1.21545 1.22475]
     Reconstruction: [ 1.  2.  1.  5. -1.  8.  4.  6.]
     Mode: 4 (ppd)
     cA: [6.91627 1.73309 3.40612 6.32929 6.91627]
@@ -89,11 +89,11 @@ You can also refer to modes via :ref:`MODES <MODES>` class attributes:
     Reconstruction: [ 1.  2.  1.  5. -1.  8.  4.  6.]
     Mode: 3 (sp1)
     cA: [-0.517638 1.73309 3.40612 6.32929 7.45001]
-    cD: [-9.90069e-13 -2.156 -5.95035 -1.21545 -1.98064e-12]
+    cD: [-0 -2.156 -5.95035 -1.21545 -0]
     Reconstruction: [ 1.  2.  1.  5. -1.  8.  4.  6.]
     Mode: 5 (per)
     cA: [4.05317 3.05257 2.85381 8.42522]
-    cD: [0.189469 4.18258 4.33738 2.60428]
+    cD: [0.189469 4.18258 4.33737 2.60428]
     Reconstruction: [ 1.  2.  1.  5. -1.  8.  4.  6.]
 
 

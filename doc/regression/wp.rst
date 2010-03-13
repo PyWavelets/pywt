@@ -11,7 +11,7 @@ Import pywt
 >>> import pywt
 
 >>> def format_array(a):
-...     return "[%s]" % ' '.join([("%.6g" % c) for c in a])
+...     return "[%s]" % ' '.join([("%.6g" % round(c, 6)) for c in a])
 
 Create Wavelet Packet structure
 -------------------------------
@@ -220,7 +220,7 @@ First, start with a tree decomposition at level 2. Leaf nodes in the tree are:
     aa [5 13]
     ad [-2 -2]
     da [-1 -1]
-    dd [-1.11022e-16 0]
+    dd [-0 0]
 
     >>> node = wp['ad']
     >>> print node
@@ -237,7 +237,7 @@ The leaf nodes that left in the tree are:
     ...     print n.path, format_array(n.data)
     aa [5 13]
     da [-1 -1]
-    dd [-1.11022e-16 0]
+    dd [-0 0]
 
 And the reconstruction is:
 
@@ -256,7 +256,7 @@ tree:
     aa [5 13]
     ad [-2 -2]
     da [-1 -1]
-    dd [-1.11022e-16 0]
+    dd [-0 0]
 
     >>> print wp.reconstruct()
     [ 1.  2.  3.  4.  5.  6.  7.  8.]
