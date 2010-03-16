@@ -415,14 +415,19 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
             return  [phi_d, psi_d, phi_r, psi_r, linspace(0.0,(output_length-1)/p, output_length)]
 
     def __str__(self):
-        return "Wavelet %s\n" \
-        "  Family name:    %s\n" \
-        "  Short name:     %s\n" \
-        "  Filters length: %d\n" \
-        "  Orthogonal:     %s\n" \
-        "  Biorthogonal:   %s\n" \
-        "  Symmetry:       %s" % \
-        (self.name, self.family_name, self.short_family_name, self.dec_len, self.orthogonal, self.biorthogonal, self.symmetry)
+        s = []
+        for x in [
+            u"Wavelet %s" % self.name,
+            u"  Family name:    %s" % self.family_name,
+            u"  Short name:     %s" % self.short_family_name,
+            u"  Filters length: %d" % self.dec_len,
+            u"  Orthogonal:     %s" % self.orthogonal,
+            u"  Biorthogonal:   %s" % self.biorthogonal,
+            u"  Symmetry:       %s" % self.symmetry
+        ]:
+            s.append(x.rstrip())
+        return u'\n'.join(s)
+
 
 cdef index_t get_keep_length(index_t output_length, int level, index_t filter_length):
     cdef index_t lplus "lplus"

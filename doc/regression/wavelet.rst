@@ -165,8 +165,8 @@ to correct values:
 
     >>> print my_wavelet
     Wavelet My Haar Wavelet
-      Family name:    
-      Short name:     
+      Family name:
+      Short name:
       Filters length: 2
       Orthogonal:     False
       Biorthogonal:   False
@@ -179,8 +179,8 @@ to correct values:
 
     >>> print my_wavelet
     Wavelet My Haar Wavelet
-      Family name:    
-      Short name:     
+      Family name:
+      Short name:
       Filters length: 2
       Orthogonal:     True
       Biorthogonal:   True
