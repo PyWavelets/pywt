@@ -19,6 +19,7 @@
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="top" title="PyWavelets Documentation" href="../index.html" />
     <link rel="up" title="API Reference" href="index.html" />
     <link rel="next" title="Inverse Discrete Wavelet Transform (IDWT)" href="idwt-inverse-discrete-wavelet-transform.html" />
@@ -170,7 +171,9 @@ wavelet lengths is performed.</li>
 <dl class="function">
 <dt id="pywt.downcoef">
 <tt class="descclassname">pywt.</tt><tt class="descname">downcoef</tt><big>(</big><em>part</em>, <em>data</em>, <em>wavelet</em><span class="optional">[</span>, <em>mode='sym'</em><span class="optional">[</span>, <em>level=1</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#pywt.downcoef" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dd><p>Similar to <a title="pywt.dwt" class="reference internal" href="#pywt.dwt"><tt class="xref docutils literal"><span class="pre">dwt()</span></tt></a>, but computes only one set of coefficients.
+Useful when you need only approximation or only details at the given level.</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
@@ -180,13 +183,12 @@ coefficients, for <tt class="docutils literal"><span class="pre">d</span></tt> -
 <li><em>data</em> &#8211; Input signal can be NumPy array, Python list or other iterable object. Both <em>single</em> and <em>double</em> precision floating-point data types are supported and the output type depends on the input type. If the input data is not in one of these types it will be converted to the default <em>double</em> precision data format before performing computations.</li>
 <li><em>wavelet</em> &#8211; Wavelet to use in the transform. This can be a name of the wavelet from the <cite>pywt.wavelist</cite> list or a <cite>Wavelet</cite> object instance.</li>
 <li><em>mode</em> &#8211; Signal extension mode to deal with the border distortion problem. See <cite>MODES</cite> for details.</li>
-<li><em>level</em> &#8211; Number of decomposition steps to performe.</li>
+<li><em>level</em> &#8211; Number of decomposition steps to perform.</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
-<p># TODO</p>
 </dd></dl>
 
 </div>

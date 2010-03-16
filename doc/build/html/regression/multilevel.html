@@ -19,6 +19,7 @@
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="top" title="PyWavelets Documentation" href="../index.html" />
     <link rel="up" title="Usage examples" href="index.html" />
     <link rel="next" title="Wavelet Packets" href="wp.html" />
@@ -61,7 +62,6 @@
 <span id="reg-multilevel"></span><h1>Multilevel DWT, IDWT and SWT<a class="headerlink" href="#multilevel-dwt-idwt-and-swt" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="multilevel-dwt-decomposition">
 <h2>Multilevel DWT decomposition<a class="headerlink" href="#multilevel-dwt-decomposition" title="Permalink to this headline">¶</a></h2>
-<blockquote>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pywt</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">db1</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">Wavelet</span><span class="p">(</span><span class="s">&#39;db1&#39;</span><span class="p">)</span>
@@ -83,7 +83,6 @@
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">cA2</span><span class="p">,</span> <span class="n">cD2</span><span class="p">,</span> <span class="n">cD1</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">wavedec</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">db1</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;cpd&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
-</blockquote>
 </div>
 <div class="section" id="multilevel-idwt-reconstruction">
 <h2>Multilevel IDWT reconstruction<a class="headerlink" href="#multilevel-idwt-reconstruction" title="Permalink to this headline">¶</a></h2>
@@ -93,17 +92,8 @@
 </pre></div>
 </div>
 </div>
-<div class="section" id="upcoef">
-<h2>upcoef<a class="headerlink" href="#upcoef" title="Permalink to this headline">¶</a></h2>
-<p>#TODO</p>
-</div>
-<div class="section" id="downcoef">
-<h2>downcoef<a class="headerlink" href="#downcoef" title="Permalink to this headline">¶</a></h2>
-<p>#TODO</p>
-</div>
 <div class="section" id="multilevel-swt-decomposition">
 <h2>Multilevel SWT decomposition<a class="headerlink" href="#multilevel-swt-decomposition" title="Permalink to this headline">¶</a></h2>
-<blockquote>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">cA2</span><span class="p">,</span> <span class="n">cD2</span><span class="p">),</span> <span class="p">(</span><span class="n">cA1</span><span class="p">,</span> <span class="n">cD1</span><span class="p">)</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">swt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">db1</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">cA1</span>
@@ -132,7 +122,6 @@
 <span class="go">3</span>
 </pre></div>
 </div>
-</blockquote>
 </div>
 </div>
 
@@ -147,8 +136,6 @@
 <li><a class="reference external" href="#">Multilevel DWT, IDWT and SWT</a><ul>
 <li><a class="reference external" href="#multilevel-dwt-decomposition">Multilevel DWT decomposition</a></li>
 <li><a class="reference external" href="#multilevel-idwt-reconstruction">Multilevel IDWT reconstruction</a></li>
-<li><a class="reference external" href="#upcoef">upcoef</a></li>
-<li><a class="reference external" href="#downcoef">downcoef</a></li>
 <li><a class="reference external" href="#multilevel-swt-decomposition">Multilevel SWT decomposition</a></li>
 </ul>
 </li>
