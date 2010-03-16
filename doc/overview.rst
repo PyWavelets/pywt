@@ -66,7 +66,7 @@ manager::
     easy_install -U PyWavelets
 
 In order to build |pywt| from source, a working C compiler and a recent version
-of `Cython <http://www.cython.org/>`_ (fork of Pyrex) is required.
+of `Cython <http://www.cython.org/>`_ is required.
 
 After completing the build environment, open the shell prompt, go to the
 |pywt| source code directory and type::
@@ -106,7 +106,7 @@ Contact
 Post your suggestions and guestions to
 `PyWavelets discussions group <http://groups.google.com/group/pywavelets>`_
 (pywavelets@googlegroups.com). You can also contact me directly
-at filip@wasilewski.it. Comments, bug reports and fixes are welcome.
+at en@ig.ma. Comments, bug reports and fixes are welcome.
 
 There's also a wiki and trac system available at the `wavelets.scipy.org <http://wavelets.scipy.org>`_
 site to improve documentation, post cookbook recipes or submit

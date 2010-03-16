@@ -74,7 +74,7 @@ Install
 The most convenient way to install PyWavelets is to use setuptools_
 `Easy Install`_ manager::
 
-    easy_install PyWavelets
+    easy_install PyWavelets==0.1.6
 
 .. _setuptools: http://peak.telecommunity.com/DevCenter/setuptools
 .. _`Easy Install`: http://peak.telecommunity.com/DevCenter/EasyInstall#using-easy-install

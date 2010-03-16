@@ -11,7 +11,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2',
+        VERSION:     '0.2.0',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -60,9 +60,18 @@
   <div class="section" id="signal-extension-modes">
 <span id="reg-modes"></span><h1>Signal Extension Modes<a class="headerlink" href="#signal-extension-modes" title="Permalink to this headline">¶</a></h1>
 <p>Import <a title="" class="reference external" href="../overview.html#module-pywt"><tt class="xref docutils literal"><span class="pre">pywt</span></tt></a> first</p>
+<blockquote>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pywt</span>
 </pre></div>
 </div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">format_array</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="sd">&quot;&quot;&quot;Consistent array representation across different systems&quot;&quot;&quot;</span>
+<span class="gp">... </span>    <span class="kn">import</span> <span class="nn">numpy</span>
+<span class="gp">... </span>    <span class="n">a</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array2string</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="s">&#39; &#39;</span><span class="p">,</span> <span class="n">suppress_small</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</blockquote>
 <p>List of availble signal extension <a class="reference external" href="../ref/signal-extension-modes.html#modes"><em>modes</em></a>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">pywt</span><span class="o">.</span><span class="n">MODES</span><span class="o">.</span><span class="n">modes</span>
 <span class="go">[&#39;zpd&#39;, &#39;cpd&#39;, &#39;sym&#39;, &#39;ppd&#39;, &#39;sp1&#39;, &#39;per&#39;]</span>
@@ -73,33 +82,32 @@
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">mode</span> <span class="ow">in</span> <span class="n">pywt</span><span class="o">.</span><span class="n">MODES</span><span class="o">.</span><span class="n">modes</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">cA</span><span class="p">,</span> <span class="n">cD</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">dwt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
 <span class="gp">... </span>    <span class="k">print</span> <span class="s">&quot;Mode:&quot;</span><span class="p">,</span> <span class="n">mode</span>
-<span class="gp">... </span>    <span class="k">print</span> <span class="s">&quot;cA:&quot;</span><span class="p">,</span> <span class="n">cA</span>
-<span class="gp">... </span>    <span class="k">print</span> <span class="s">&quot;cD:&quot;</span><span class="p">,</span> <span class="n">cD</span>
+<span class="gp">... </span>    <span class="k">print</span> <span class="s">&quot;cA:&quot;</span><span class="p">,</span> <span class="n">format_array</span><span class="p">(</span><span class="n">cA</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="k">print</span> <span class="s">&quot;cD:&quot;</span><span class="p">,</span> <span class="n">format_array</span><span class="p">(</span><span class="n">cD</span><span class="p">)</span>
 <span class="gp">... </span>    <span class="k">print</span> <span class="s">&quot;Reconstruction:&quot;</span><span class="p">,</span> <span class="n">pywt</span><span class="o">.</span><span class="n">idwt</span><span class="p">(</span><span class="n">cA</span><span class="p">,</span> <span class="n">cD</span><span class="p">,</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
 <span class="go">Mode: zpd</span>
-<span class="go">cA: [-0.03467518  1.73309178  3.40612438  6.32928585  6.95094948]</span>
-<span class="go">cD: [-0.12940952 -2.15599552 -5.95034847 -1.21545369 -1.8625013 ]</span>
+<span class="go">cA: [-0.03468  1.73309  3.40612  6.32929  6.95095]</span>
+<span class="go">cD: [-0.12941 -2.156   -5.95035 -1.21545 -1.8625 ]</span>
 <span class="go">Reconstruction: [ 1.  2.  1.  5. -1.  8.  4.  6.]</span>
 <span class="go">Mode: cpd</span>
-<span class="go">cA: [ 1.28480404  1.73309178  3.40612438  6.32928585  7.51935555]</span>
-<span class="go">cD: [-0.48296291 -2.15599552 -5.95034847 -1.21545369  0.25881905]</span>
+<span class="go">cA: [ 1.2848   1.73309  3.40612  6.32929  7.51936]</span>
+<span class="go">cD: [-0.48296 -2.156   -5.95035 -1.21545  0.25882]</span>
 <span class="go">Reconstruction: [ 1.  2.  1.  5. -1.  8.  4.  6.]</span>
 <span class="go">Mode: sym</span>
-<span class="go">cA: [ 1.76776695  1.73309178  3.40612438  6.32928585  7.77817459]</span>
-<span class="go">cD: [-0.61237244 -2.15599552 -5.95034847 -1.21545369  1.22474487]</span>
+<span class="go">cA: [ 1.76777  1.73309  3.40612  6.32929  7.77817]</span>
+<span class="go">cD: [-0.61237 -2.156   -5.95035 -1.21545  1.22474]</span>
 <span class="go">Reconstruction: [ 1.  2.  1.  5. -1.  8.  4.  6.]</span>
 <span class="go">Mode: ppd</span>
-<span class="go">cA: [ 6.9162743   1.73309178  3.40612438  6.32928585  6.9162743 ]</span>
-<span class="go">cD: [-1.99191082 -2.15599552 -5.95034847 -1.21545369 -1.99191082]</span>
+<span class="go">cA: [ 6.91627  1.73309  3.40612  6.32929  6.91627]</span>
+<span class="go">cD: [-1.99191 -2.156   -5.95035 -1.21545 -1.99191]</span>
 <span class="go">Reconstruction: [ 1.  2.  1.  5. -1.  8.  4.  6.]</span>
 <span class="go">Mode: sp1</span>
-<span class="go">cA: [-0.51763809  1.73309178  3.40612438  6.32928585  7.45000519]</span>
-<span class="go">cD: [ -9.90069138e-13  -2.15599552e+00  -5.95034847e+00  -1.21545369e+00</span>
-<span class="go">  -1.98063788e-12]</span>
+<span class="go">cA: [-0.51764  1.73309  3.40612  6.32929  7.45001]</span>
+<span class="go">cD: [ 0.      -2.156   -5.95035 -1.21545  0.     ]</span>
 <span class="go">Reconstruction: [ 1.  2.  1.  5. -1.  8.  4.  6.]</span>
 <span class="go">Mode: per</span>
-<span class="go">cA: [ 4.053172    3.05257099  2.85381112  8.42522221]</span>
-<span class="go">cD: [ 0.18946869  4.18258152  4.33737503  2.60428326]</span>
+<span class="go">cA: [ 4.05317  3.05257  2.85381  8.42522]</span>
+<span class="go">cD: [ 0.18947  4.18258  4.33738  2.60428]</span>
 <span class="go">Reconstruction: [ 1.  2.  1.  5. -1.  8.  4.  6.]</span>
 </pre></div>
 </div>
@@ -115,33 +123,32 @@
 <span class="gp">... </span>    <span class="n">mode</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">pywt</span><span class="o">.</span><span class="n">MODES</span><span class="p">,</span> <span class="n">mode_name</span><span class="p">)</span>
 <span class="gp">... </span>    <span class="n">cA</span><span class="p">,</span> <span class="n">cD</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">dwt</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">],</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
 <span class="gp">... </span>    <span class="k">print</span> <span class="s">&quot;Mode:&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="s">&quot;(</span><span class="si">%s</span><span class="s">)&quot;</span> <span class="o">%</span> <span class="n">mode_name</span>
-<span class="gp">... </span>    <span class="k">print</span> <span class="s">&quot;cA:&quot;</span><span class="p">,</span> <span class="n">cA</span>
-<span class="gp">... </span>    <span class="k">print</span> <span class="s">&quot;cD:&quot;</span><span class="p">,</span> <span class="n">cD</span>
+<span class="gp">... </span>    <span class="k">print</span> <span class="s">&quot;cA:&quot;</span><span class="p">,</span> <span class="n">format_array</span><span class="p">(</span><span class="n">cA</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="k">print</span> <span class="s">&quot;cD:&quot;</span><span class="p">,</span> <span class="n">format_array</span><span class="p">(</span><span class="n">cD</span><span class="p">)</span>
 <span class="gp">... </span>    <span class="k">print</span> <span class="s">&quot;Reconstruction:&quot;</span><span class="p">,</span> <span class="n">pywt</span><span class="o">.</span><span class="n">idwt</span><span class="p">(</span><span class="n">cA</span><span class="p">,</span> <span class="n">cD</span><span class="p">,</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
 <span class="go">Mode: 0 (zpd)</span>
-<span class="go">cA: [-0.03467518  1.73309178  3.40612438  6.32928585  6.95094948]</span>
-<span class="go">cD: [-0.12940952 -2.15599552 -5.95034847 -1.21545369 -1.8625013 ]</span>
+<span class="go">cA: [-0.03468  1.73309  3.40612  6.32929  6.95095]</span>
+<span class="go">cD: [-0.12941 -2.156   -5.95035 -1.21545 -1.8625 ]</span>
 <span class="go">Reconstruction: [ 1.  2.  1.  5. -1.  8.  4.  6.]</span>
 <span class="go">Mode: 2 (cpd)</span>
-<span class="go">cA: [ 1.28480404  1.73309178  3.40612438  6.32928585  7.51935555]</span>
-<span class="go">cD: [-0.48296291 -2.15599552 -5.95034847 -1.21545369  0.25881905]</span>
+<span class="go">cA: [ 1.2848   1.73309  3.40612  6.32929  7.51936]</span>
+<span class="go">cD: [-0.48296 -2.156   -5.95035 -1.21545  0.25882]</span>
 <span class="go">Reconstruction: [ 1.  2.  1.  5. -1.  8.  4.  6.]</span>
 <span class="go">Mode: 1 (sym)</span>
-<span class="go">cA: [ 1.76776695  1.73309178  3.40612438  6.32928585  7.77817459]</span>
-<span class="go">cD: [-0.61237244 -2.15599552 -5.95034847 -1.21545369  1.22474487]</span>
+<span class="go">cA: [ 1.76777  1.73309  3.40612  6.32929  7.77817]</span>
+<span class="go">cD: [-0.61237 -2.156   -5.95035 -1.21545  1.22474]</span>
 <span class="go">Reconstruction: [ 1.  2.  1.  5. -1.  8.  4.  6.]</span>
 <span class="go">Mode: 4 (ppd)</span>
-<span class="go">cA: [ 6.9162743   1.73309178  3.40612438  6.32928585  6.9162743 ]</span>
-<span class="go">cD: [-1.99191082 -2.15599552 -5.95034847 -1.21545369 -1.99191082]</span>
+<span class="go">cA: [ 6.91627  1.73309  3.40612  6.32929  6.91627]</span>
+<span class="go">cD: [-1.99191 -2.156   -5.95035 -1.21545 -1.99191]</span>
 <span class="go">Reconstruction: [ 1.  2.  1.  5. -1.  8.  4.  6.]</span>
 <span class="go">Mode: 3 (sp1)</span>
-<span class="go">cA: [-0.51763809  1.73309178  3.40612438  6.32928585  7.45000519]</span>
-<span class="go">cD: [ -9.90069138e-13  -2.15599552e+00  -5.95034847e+00  -1.21545369e+00</span>
-<span class="go">  -1.98063788e-12]</span>
+<span class="go">cA: [-0.51764  1.73309  3.40612  6.32929  7.45001]</span>
+<span class="go">cD: [ 0.      -2.156   -5.95035 -1.21545  0.     ]</span>
 <span class="go">Reconstruction: [ 1.  2.  1.  5. -1.  8.  4.  6.]</span>
 <span class="go">Mode: 5 (per)</span>
-<span class="go">cA: [ 4.053172    3.05257099  2.85381112  8.42522221]</span>
-<span class="go">cD: [ 0.18946869  4.18258152  4.33737503  2.60428326]</span>
+<span class="go">cA: [ 4.05317  3.05257  2.85381  8.42522]</span>
+<span class="go">cD: [ 0.18947  4.18258  4.33738  2.60428]</span>
 <span class="go">Reconstruction: [ 1.  2.  1.  5. -1.  8.  4.  6.]</span>
 </pre></div>
 </div>
@@ -224,6 +231,7 @@
 <li><a href="http://projects.scipy.org/wavelets/browser/pywt/trunk/"><img src="../_static/cog.png" height="16" width="16" alt="" /> Browse Source Code</a></li>
 <li><a href="http://wavelets.pybytes.com/"><img src="../_static/wave.png" height="16" width="16" alt="" /> Explore Wavelets</a></li>
 <li><a href="http://delicious.com/save" onclick="window.open('http://delicious.com/save?v=5&amp;noui&amp;jump=close&amp;url='+encodeURIComponent('http://www.pybytes.com/pywavelets/')+'&amp;title='+encodeURIComponent('PyWavelets - Discrete Wavelet Transform in Python'), 'delicious','toolbar=no,width=550,height=550'); return false;"><img src="../_static/delicious.png" height="12" width="12" alt="Delicious" style="margin: 0 2px 0 2px;" /> Bookmark with Delicious</a></li>
+<li><a href="http://twitter.com/filipwasilewski"><img src="../_static/twitter.png" height="16" width="16" alt="" /> Follow on Twitter</a></li>
 </ul>
 </div>
 
@@ -253,7 +261,7 @@
     
     <div class="footer">
       &copy; Copyright 2006-2010, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
-      Last updated on Mar 12, 2010.
+      Last updated on Mar 16, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
     </div>
     <script type="text/javascript">

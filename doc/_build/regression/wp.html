@@ -11,7 +11,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2',
+        VERSION:     '0.2.0',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -61,9 +61,18 @@
 <span id="reg-wp"></span><h1>Wavelet Packets<a class="headerlink" href="#wavelet-packets" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="import-pywt">
 <h2>Import pywt<a class="headerlink" href="#import-pywt" title="Permalink to this headline">¶</a></h2>
+<blockquote>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pywt</span>
 </pre></div>
 </div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">format_array</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="sd">&quot;&quot;&quot;Consistent array representation across different systems&quot;&quot;&quot;</span>
+<span class="gp">... </span>    <span class="kn">import</span> <span class="nn">numpy</span>
+<span class="gp">... </span>    <span class="n">a</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array2string</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="s">&#39; &#39;</span><span class="p">,</span> <span class="n">suppress_small</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</blockquote>
 </div>
 <div class="section" id="create-wavelet-packet-structure">
 <h2>Create Wavelet Packet structure<a class="headerlink" href="#create-wavelet-packet-structure" title="Permalink to this headline">¶</a></h2>
@@ -275,11 +284,11 @@ value.</p>
 <blockquote>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">dummy</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">get_level</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">wp</span><span class="o">.</span><span class="n">get_leaf_nodes</span><span class="p">(</span><span class="bp">False</span><span class="p">):</span>
-<span class="gp">... </span>    <span class="k">print</span> <span class="n">n</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">n</span><span class="o">.</span><span class="n">data</span>
+<span class="gp">... </span>    <span class="k">print</span> <span class="n">n</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">format_array</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 <span class="go">aa [  5.  13.]</span>
 <span class="go">ad [-2. -2.]</span>
 <span class="go">da [-1. -1.]</span>
-<span class="go">dd [ -1.11022302e-16   0.00000000e+00]</span>
+<span class="go">dd [ 0.  0.]</span>
 </pre></div>
 </div>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">node</span> <span class="o">=</span> <span class="n">wp</span><span class="p">[</span><span class="s">&#39;ad&#39;</span><span class="p">]</span>
@@ -295,10 +304,10 @@ value.</p>
 </div>
 <p>The leaf nodes that left in the tree are:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">wp</span><span class="o">.</span><span class="n">get_leaf_nodes</span><span class="p">():</span>
-<span class="gp">... </span>    <span class="k">print</span> <span class="n">n</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">n</span><span class="o">.</span><span class="n">data</span>
+<span class="gp">... </span>    <span class="k">print</span> <span class="n">n</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">format_array</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 <span class="go">aa [  5.  13.]</span>
 <span class="go">da [-1. -1.]</span>
-<span class="go">dd [ -1.11022302e-16   0.00000000e+00]</span>
+<span class="go">dd [ 0.  0.]</span>
 </pre></div>
 </div>
 <p>And the reconstruction is:</p>
@@ -314,11 +323,11 @@ value.</p>
 tree:</p>
 <blockquote>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">wp</span><span class="o">.</span><span class="n">get_leaf_nodes</span><span class="p">(</span><span class="bp">False</span><span class="p">):</span>
-<span class="gp">... </span>    <span class="k">print</span> <span class="n">n</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">n</span><span class="o">.</span><span class="n">data</span>
+<span class="gp">... </span>    <span class="k">print</span> <span class="n">n</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">format_array</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 <span class="go">aa [  5.  13.]</span>
 <span class="go">ad [-2. -2.]</span>
 <span class="go">da [-1. -1.]</span>
-<span class="go">dd [ -1.11022302e-16   0.00000000e+00]</span>
+<span class="go">dd [ 0.  0.]</span>
 </pre></div>
 </div>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">wp</span><span class="o">.</span><span class="n">reconstruct</span><span class="p">()</span>
@@ -425,6 +434,7 @@ of it&#8217;s parent node (the wp object itself).</p>
 <li><a href="http://projects.scipy.org/wavelets/browser/pywt/trunk/"><img src="../_static/cog.png" height="16" width="16" alt="" /> Browse Source Code</a></li>
 <li><a href="http://wavelets.pybytes.com/"><img src="../_static/wave.png" height="16" width="16" alt="" /> Explore Wavelets</a></li>
 <li><a href="http://delicious.com/save" onclick="window.open('http://delicious.com/save?v=5&amp;noui&amp;jump=close&amp;url='+encodeURIComponent('http://www.pybytes.com/pywavelets/')+'&amp;title='+encodeURIComponent('PyWavelets - Discrete Wavelet Transform in Python'), 'delicious','toolbar=no,width=550,height=550'); return false;"><img src="../_static/delicious.png" height="12" width="12" alt="Delicious" style="margin: 0 2px 0 2px;" /> Bookmark with Delicious</a></li>
+<li><a href="http://twitter.com/filipwasilewski"><img src="../_static/twitter.png" height="16" width="16" alt="" /> Follow on Twitter</a></li>
 </ul>
 </div>
 
@@ -454,7 +464,7 @@ of it&#8217;s parent node (the wp object itself).</p>
     
     <div class="footer">
       &copy; Copyright 2006-2010, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
-      Last updated on Mar 12, 2010.
+      Last updated on Mar 16, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
     </div>
     <script type="text/javascript">
