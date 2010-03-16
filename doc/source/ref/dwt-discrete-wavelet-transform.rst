@@ -107,6 +107,9 @@ Partial Discrete Wavelet Transform data decomposition ``downcoef``
 
 .. function:: downcoef(part, data, wavelet[, mode='sym'[, level=1]])
 
+   Similar to :func:`~pywt.dwt`, but computes only one set of coefficients.
+   Useful when you need only approximation or only details at the given level.
+
    :param part: decomposition type. For ``a`` computes approximation
                 coefficients, for ``d`` - details coefficients.
 
@@ -116,9 +119,8 @@ Partial Discrete Wavelet Transform data decomposition ``downcoef``
 
    :param mode: |mode|
 
-   :param level: Number of decomposition steps to performe. 
+   :param level: Number of decomposition steps to perform.
 
-   # TODO
 
 
 Maximum decomposition level - ``dwt_max_level``

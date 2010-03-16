@@ -19,7 +19,7 @@ the Python interactive shell and type:
     >>> import pywt
     >>> cA, cD = pywt.dwt([1, 2, 3, 4], 'db1')
 
-Violla! Computing wavelet transforms never before has been so simple :)
+Voilà! Computing wavelet transforms never before has been so simple :)
 
 Main features
 -------------
@@ -73,6 +73,9 @@ After completing the build environment, open the shell prompt, go to the
 
     python setup.py install
 
+.. seealso::  :ref:`Development notes <dev-index>` section contains more
+              information on building from source code.
+
 For Windows users there is a standard binary installer available for
 download from the `Python Package Index <http://pypi.python.org/pypi/PyWavelets/>`_.
 Just execute it to install the package on your computer.
@@ -98,7 +101,7 @@ License
 -------
 
 |pywt| is a free Open Source software available under the
-:download:`MIT license terms <../COPYING.txt>`.
+:download:`MIT license terms <COPYING.txt>`.
 
 Contact
 -------

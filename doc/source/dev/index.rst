@@ -3,8 +3,8 @@
 .. module:: pywt
 .. include:: ../substitutions.rst
 
-Development
-===========
+Development notes
+=================
 
 .. toctree::
    :maxdepth: 2
