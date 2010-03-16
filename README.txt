@@ -40,7 +40,6 @@ PyWavelets source code directory and type::
 
     python setup.py install
 
-
 Documentation
 -------------
 
@@ -49,7 +48,7 @@ at http://www.pybytes.com/pywavelets/.
 
 Project wiki and trac system are hosted at http://wavelets.scipy.org/.
 
-For examples see `demo` directories.
+For examples see `demo` directories in the source package.
 
 
 License

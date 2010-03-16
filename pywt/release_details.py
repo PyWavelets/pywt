@@ -3,7 +3,7 @@
 # Release details for package
 
 name         = "PyWavelets"
-version      = "0.2.0b1"
+version      = "0.2.0"
 author       = "Filip Wasilewski"
 author_email = "filip.wasilewski@gmail.com"
 url          = "http://www.pybytes.com/pywavelets/"
@@ -29,7 +29,7 @@ PyWavelets is a Python wavelet transforms module that includes:
 """
 
 classifiers = [
-    'Development Status :: 4 - Beta',
+    'Development Status :: 5 - Production/Stable',
     'Intended Audience :: Developers',
     'Intended Audience :: Education',
     'Intended Audience :: Science/Research',
