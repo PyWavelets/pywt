@@ -10,15 +10,8 @@ import util.templating
 if os.path.exists('MANIFEST'):
     os.remove('MANIFEST')
 
-compiler = "cython" # "pyrex"
 try:
-    if compiler == "cython":
-        from Cython.Distutils import build_ext
-    elif compiler == "pyrex":
-        warnings.warn('It is recommended to use Cython instead of Pyrex.', UserWarning)
-        from Pyrex.Distutils import build_ext
-    else:
-        raise ValueError("Invalid compiler '%s'." % compiler)
+    from Cython.Distutils import build_ext
 except ImportError:
     print "A recent version of Cython is required to build PyWavelets. Get Cython from http://www.cython.org/!"
     sys.exit(1)
@@ -59,7 +52,7 @@ package_dir = {'pywt':'pywt',}
 
 
 def do_setup(**extra_kwds):
-    util.templating.expand_files('src/*.template', True)
+    util.templating.expand_files('src/*.template', False)
 
     setup(
         name = release["name"],
