@@ -3,7 +3,7 @@
 import doctest
 import glob
 
-files = glob.glob("../doc/regression/*.rst")
+files = glob.glob("../doc/source/regression/*.rst")
 
 for path in files:
     print "testing %s" % path
