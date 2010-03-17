@@ -5,7 +5,7 @@ include MANIFEST.in
 recursive-include doc *.rst *.css *.html *txt *.js *.png *.ico *.bat
 recursive-include doc/source *
 recursive-include doc/build/html *
-include source/Makefile
+include doc/Makefile
 
 exclude doc/build/html/.doctrees/*
 exclude doc/0.1.6/html/demo/*
