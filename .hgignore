@@ -1,0 +1,6 @@
+glob:build/
+glob:*.pyc
+glob:src/_pywt.c
+glob:src/_pywt.h
+glob:PyWavelets.egg-info/
+glob:dist/
