@@ -164,7 +164,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
 
     #cdef readonly properties
 
-    def __new__(self, char* name="", object filter_bank=None):
+    def __cinit__(self, char* name="", object filter_bank=None):
         cdef object family_code, family_number
         cdef object filters
         cdef int filter_length
