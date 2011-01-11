@@ -15,30 +15,30 @@ PyWavelets is a Python wavelet transforms module that can do:
 Download
 --------
 
-This package can be downloaded from Python Package Index at:
+The most recent *development* version can be found in Git and Hg repositories at:
 
-    http://pypi.python.org/pypi/PyWavelets
+  * Github - https://github.com/nigma/pywt
+  * Bitbucket - https://bitbucket.org/nigma/pywt
 
-Latest development version is available from the SVN source code repository:
+Latest release (not always up-to-date), including source and binary package for Windows,
+is available for download from the Python Package Index at http://pypi.python.org/pypi/PyWavelets.
 
-    ``svn co http://wavelets.scipy.org/svn/multiresolution/pywt/trunk pywt``
-
+Note: The old SVN repository at http://wavelets.scipy.org/svn/multiresolution/pywt/trunk is
+not updated anymore and you should switch to one of the new ones.
 
 Install
 -------
 
-The most convenient way to install PyWavelets is to use the
-Easy Install manager from setuptools:
-
-    easy_install -U PyWavelets
-
-In order to build PyWavelets from source, a working C compiler and a recent version
-of Cython is required.
+In order to build PyWavelets from source, a working C compiler (GCC or MinGW) 
+and a recent version of Cython (http://cython.org/) is required.
 
 After completing the build environment, open the shell prompt, go to the
 PyWavelets source code directory and type::
 
     python setup.py install
+
+Prebuilt Windows binaries and source code packages are also
+available from http://pypi.python.org/pypi/PyWavelets.
 
 Documentation
 -------------
