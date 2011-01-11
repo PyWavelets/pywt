@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -12,12 +14,13 @@
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
         VERSION:     '0.2.0',
-        COLLAPSE_MODINDEX: false,
+        COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="top" title="PyWavelets Documentation" href="../index.html" />
@@ -40,8 +43,8 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="../modindex.html" title="Global Module Index"
-             accesskey="M">modules</a> |</li>
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="2d-dwt-and-idwt.html" title="2D Forward and Inverse Discrete Wavelet Transform"
              accesskey="N">next</a> |</li>
@@ -65,25 +68,25 @@
 <dl class="function">
 <dt id="pywt.idwt">
 <tt class="descclassname">pywt.</tt><tt class="descname">idwt</tt><big>(</big><em>cA</em>, <em>cD</em>, <em>wavelet</em><span class="optional">[</span>, <em>mode='sym'</em><span class="optional">[</span>, <em>correct_size=0</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#pywt.idwt" title="Permalink to this definition">¶</a></dt>
-<dd><p>The <a title="pywt.idwt" class="reference internal" href="#pywt.idwt"><tt class="xref docutils literal"><span class="pre">idwt()</span></tt></a> function reconstructs data from the given coefficients by
+<dd><p>The <a class="reference internal" href="#pywt.idwt" title="pywt.idwt"><tt class="xref py py-func docutils literal"><span class="pre">idwt()</span></tt></a> function reconstructs data from the given coefficients by
 performing single level Inverse Discrete Wavelet Transform.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><em>cA</em> &#8211; Approximation coefficients.</li>
-<li><em>cD</em> &#8211; Detail coefficients.</li>
-<li><em>wavelet</em> &#8211; Wavelet to use in the transform. This can be a name of the wavelet from the <cite>pywt.wavelist</cite> list or a <cite>Wavelet</cite> object instance.</li>
-<li><em>mode</em> &#8211; Signal extension mode to deal with the border distortion problem. See <cite>MODES</cite> for details. This is only important when DWT was performed in
-<a class="reference external" href="signal-extension-modes.html#modes-per"><em>periodization</em></a> mode.</li>
-<li><em>correct_size</em> &#8211; Typically, <em>cA</em> and <em>cD</em> coefficients lists must have
+<li><strong>cA</strong> &#8211; Approximation coefficients.</li>
+<li><strong>cD</strong> &#8211; Detail coefficients.</li>
+<li><strong>wavelet</strong> &#8211; Wavelet to use in the transform. This can be a name of the wavelet from the <cite>pywt.wavelist</cite> list or a <cite>Wavelet</cite> object instance.</li>
+<li><strong>mode</strong> &#8211; Signal extension mode to deal with the border distortion problem. See <cite>MODES</cite> for details. This is only important when DWT was performed in
+<a class="reference internal" href="signal-extension-modes.html#modes-per"><em>periodization</em></a> mode.</li>
+<li><strong>correct_size</strong> &#8211; Typically, <em>cA</em> and <em>cD</em> coefficients lists must have
 equal lengths in order to perform IDWT. Setting
 <em>correct_size</em> to <cite>True</cite> allows <em>cA</em> to be greater in
 size by one element compared to the <em>cD</em> size. This
 option is very useful when doing multilevel decomposition
 and reconstruction (as for example with the
-<a title="pywt.wavedec" class="reference external" href="dwt-discrete-wavelet-transform.html#pywt.wavedec"><tt class="xref docutils literal"><span class="pre">wavedec()</span></tt></a> function) of non-dyadic length signals
+<a class="reference internal" href="dwt-discrete-wavelet-transform.html#pywt.wavedec" title="pywt.wavedec"><tt class="xref py py-func docutils literal"><span class="pre">wavedec()</span></tt></a> function) of non-dyadic length signals
 when such minor differences can occur at various levels
 of IDWT.</li>
 </ul>
@@ -98,7 +101,7 @@ of IDWT.</li>
 <span class="go">[ 1.  2.  3.  4.  5.  6.]</span>
 </pre></div>
 </div>
-<p>One of the neat features of <a title="pywt.idwt" class="reference internal" href="#pywt.idwt"><tt class="xref docutils literal"><span class="pre">idwt()</span></tt></a> is that one of the <em>cA</em> and <em>cD</em>
+<p>One of the neat features of <a class="reference internal" href="#pywt.idwt" title="pywt.idwt"><tt class="xref py py-func docutils literal"><span class="pre">idwt()</span></tt></a> is that one of the <em>cA</em> and <em>cD</em>
 arguments can be set to <tt class="xref docutils literal"><span class="pre">None</span></tt>. In that situation the reconstruction will be
 performed using only the other one. Mathematically speaking, this is
 equivalent to passing a zero-filled array as one of the arguments.</p>
@@ -125,13 +128,13 @@ coefficients.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><em>coeffs</em> &#8211; <p>Coefficients list must be in the form like returned by <a title="pywt.wavedec" class="reference external" href="dwt-discrete-wavelet-transform.html#pywt.wavedec"><tt class="xref docutils literal"><span class="pre">wavedec()</span></tt></a> decomposition function, which is:</p>
+<li><strong>coeffs</strong> &#8211; <p>Coefficients list must be in the form like returned by <a class="reference internal" href="dwt-discrete-wavelet-transform.html#pywt.wavedec" title="pywt.wavedec"><tt class="xref py py-func docutils literal"><span class="pre">wavedec()</span></tt></a> decomposition function, which is:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="p">[</span><span class="n">cAn</span><span class="p">,</span> <span class="n">cDn</span><span class="p">,</span> <span class="n">cDn</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="n">cD2</span><span class="p">,</span> <span class="n">cD1</span><span class="p">]</span>
 </pre></div>
 </div>
 </li>
-<li><em>wavelet</em> &#8211; Wavelet to use in the transform. This can be a name of the wavelet from the <cite>pywt.wavelist</cite> list or a <cite>Wavelet</cite> object instance.</li>
-<li><em>mode</em> &#8211; Signal extension mode to deal with the border distortion problem. See <cite>MODES</cite> for details.</li>
+<li><strong>wavelet</strong> &#8211; Wavelet to use in the transform. This can be a name of the wavelet from the <cite>pywt.wavelist</cite> list or a <cite>Wavelet</cite> object instance.</li>
+<li><strong>mode</strong> &#8211; Signal extension mode to deal with the border distortion problem. See <cite>MODES</cite> for details.</li>
 </ul>
 </td>
 </tr>
@@ -158,18 +161,18 @@ coefficients.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><em>part</em> &#8211; <p>Defines the input coefficients type:</p>
+<li><strong>part</strong> &#8211; <p>Defines the input coefficients type:</p>
 <ul>
 <li><strong>&#8216;a&#8217;</strong> - approximations reconstruction is performed</li>
 <li><strong>&#8216;d&#8217;</strong> - details reconstruction is performed</li>
 </ul>
 </li>
-<li><em>coeffs</em> &#8211; Coefficients array to reconstruct.</li>
-<li><em>wavelet</em> &#8211; Wavelet to use in the transform. This can be a name of the wavelet from the <cite>pywt.wavelist</cite> list or a <cite>Wavelet</cite> object instance.</li>
-<li><em>level</em> &#8211; If <em>level</em> value is specified then a multilevel reconstruction is
+<li><strong>coeffs</strong> &#8211; Coefficients array to reconstruct.</li>
+<li><strong>wavelet</strong> &#8211; Wavelet to use in the transform. This can be a name of the wavelet from the <cite>pywt.wavelist</cite> list or a <cite>Wavelet</cite> object instance.</li>
+<li><strong>level</strong> &#8211; If <em>level</em> value is specified then a multilevel reconstruction is
 performed (first reconstruction is of type specified by <em>part</em>
 and all the following ones with <em>part</em> type <tt class="docutils literal"><span class="pre">a</span></tt>)</li>
-<li><em>take</em> &#8211; If <em>take</em> is specified then only the central part of length equal
+<li><strong>take</strong> &#8211; If <em>take</em> is specified then only the central part of length equal
 to the <em>take</em> parameter value is returned.</li>
 </ul>
 </td>
@@ -200,48 +203,48 @@ to the <em>take</em> parameter value is returned.</li>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <h3><a href="../index.html">Table Of Contents</a></h3>
-            <ul>
-<li><a class="reference external" href="#">Inverse Discrete Wavelet Transform (IDWT)</a><ul>
-<li><a class="reference external" href="#single-level-idwt">Single level <tt class="docutils literal"><span class="pre">idwt</span></tt></a><ul>
-<li><a class="reference external" href="#multilevel-reconstruction-using-waverec">Multilevel reconstruction using <tt class="docutils literal"><span class="pre">waverec</span></tt></a></li>
-<li><a class="reference external" href="#direct-reconstruction-with-upcoef">Direct reconstruction with <tt class="docutils literal"><span class="pre">upcoef</span></tt></a></li>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Inverse Discrete Wavelet Transform (IDWT)</a><ul>
+<li><a class="reference internal" href="#single-level-idwt">Single level <tt class="docutils literal"><span class="pre">idwt</span></tt></a><ul>
+<li><a class="reference internal" href="#multilevel-reconstruction-using-waverec">Multilevel reconstruction using <tt class="docutils literal"><span class="pre">waverec</span></tt></a></li>
+<li><a class="reference internal" href="#direct-reconstruction-with-upcoef">Direct reconstruction with <tt class="docutils literal"><span class="pre">upcoef</span></tt></a></li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
 
-            <h4>Previous topic</h4>
-            <p class="topless"><a href="dwt-discrete-wavelet-transform.html"
-                                  title="previous chapter">Discrete Wavelet Transform (DWT)</a></p>
-            <h4>Next topic</h4>
-            <p class="topless"><a href="2d-dwt-and-idwt.html"
-                                  title="next chapter">2D Forward and Inverse Discrete Wavelet Transform</a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="../_sources/ref/idwt-inverse-discrete-wavelet-transform.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="../search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <input type="submit" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="dwt-discrete-wavelet-transform.html"
+                        title="previous chapter">Discrete Wavelet Transform (DWT)</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="2d-dwt-and-idwt.html"
+                        title="next chapter">2D Forward and Inverse Discrete Wavelet Transform</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/ref/idwt-inverse-discrete-wavelet-transform.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
 <div>
 <h3>Quick links</h3>
 <ul>
 <li><a href="http://groups.google.com/group/pywavelets"><img src="../_static/comments.png" height="16" width="16" alt="" /> Visit Discussion Group</a></li>
-<li><a href="http://wavelets.scipy.org/moin/"><img src="../_static/page_edit.png" height="16" width="16" alt="" /> View Wiki Page</a></li>
-<li><a href="http://projects.scipy.org/wavelets/browser/pywt/trunk/"><img src="../_static/cog.png" height="16" width="16" alt="" /> Browse Source Code</a></li>
+<li><a href="https://github.com/nigma/pywt"><img src="../_static/cog.png" height="16" width="16" alt="" /> Code on Github</a></li>
+<li><a href="https://bitbucket.org/nigma/pywt"><img src="../_static/cog.png" height="16" width="16" alt="" /> Code on Bitbucket</a></li>
 <li><a href="http://wavelets.pybytes.com/"><img src="../_static/wave.png" height="16" width="16" alt="" /> Explore Wavelets</a></li>
 <li><a href="http://delicious.com/save" onclick="window.open('http://delicious.com/save?v=5&amp;noui&amp;jump=close&amp;url='+encodeURIComponent('http://www.pybytes.com/pywavelets/')+'&amp;title='+encodeURIComponent('PyWavelets - Discrete Wavelet Transform in Python'), 'delicious','toolbar=no,width=550,height=550'); return false;"><img src="../_static/delicious.png" height="12" width="12" alt="Delicious" style="margin: 0 2px 0 2px;" /> Bookmark with Delicious</a></li>
 <li><a href="http://twitter.com/filipwasilewski"><img src="../_static/twitter.png" height="16" width="16" alt="" /> Follow on Twitter</a></li>
@@ -259,7 +262,7 @@ to the <em>take</em> parameter value is returned.</li>
           <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="../modindex.html" title="Global Module Index"
+          <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
           <a href="2d-dwt-and-idwt.html" title="2D Forward and Inverse Discrete Wavelet Transform"
@@ -273,9 +276,9 @@ to the <em>take</em> parameter value is returned.</li>
     </div>
     
     <div class="footer">
-      &copy; Copyright 2006-2010, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
-      Last updated on Mar 16, 2010.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+        &copy; Copyright 2006-2011, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
+      Last updated on Jan 11, 2011.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.6.
     </div>
     <script type="text/javascript">
     var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");

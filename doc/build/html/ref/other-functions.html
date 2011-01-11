@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -12,12 +14,13 @@
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
         VERSION:     '0.2.0',
-        COLLAPSE_MODINDEX: false,
+        COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="top" title="PyWavelets Documentation" href="../index.html" />
@@ -40,8 +43,8 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="../modindex.html" title="Global Module Index"
-             accesskey="M">modules</a> |</li>
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="../regression/index.html" title="Usage examples"
              accesskey="N">next</a> |</li>
@@ -71,9 +74,9 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><em>data</em> &#8211; n-dimensional array</li>
-<li><em>wavelet</em> &#8211; wavelet to use (Wavelet object or name string)</li>
-<li><em>mode</em> &#8211; signal extension mode, see MODES</li>
+<li><strong>data</strong> &#8211; n-dimensional array</li>
+<li><strong>wavelet</strong> &#8211; wavelet to use (Wavelet object or name string)</li>
+<li><strong>mode</strong> &#8211; signal extension mode, see MODES</li>
 </ul>
 </td>
 </tr>
@@ -94,12 +97,12 @@ coefficients array.</p>
 
 </div>
 <div class="section" id="integrating-wavelet-functions-intwave">
-<h2>Integrating wavelet functions - <a title="pywt.intwave" class="reference internal" href="#pywt.intwave"><tt class="xref docutils literal"><span class="pre">intwave()</span></tt></a><a class="headerlink" href="#integrating-wavelet-functions-intwave" title="Permalink to this headline">¶</a></h2>
+<h2>Integrating wavelet functions - <a class="reference internal" href="#pywt.intwave" title="pywt.intwave"><tt class="xref py py-func docutils literal"><span class="pre">intwave()</span></tt></a><a class="headerlink" href="#integrating-wavelet-functions-intwave" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="pywt.intwave">
 <tt class="descclassname">pywt.</tt><tt class="descname">intwave</tt><big>(</big><em>wavelet</em><span class="optional">[</span>, <em>precision=8</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#pywt.intwave" title="Permalink to this definition">¶</a></dt>
 <dd><p>Integration of wavelet function approximations as well as any other signals
-can be performed using the <a title="pywt.intwave" class="reference internal" href="#pywt.intwave"><tt class="xref docutils literal"><span class="pre">pywt.intwave()</span></tt></a> function.</p>
+can be performed using the <a class="reference internal" href="#pywt.intwave" title="pywt.intwave"><tt class="xref py py-func docutils literal"><span class="pre">pywt.intwave()</span></tt></a> function.</p>
 <p>The result of the call depends on the <em>wavelet</em> argument:</p>
 <ul>
 <li><p class="first">for orthogonal wavelets - an integral of the wavelet function specified
@@ -144,10 +147,10 @@ and the given x-grid is returned (the x-grid is used for computations).:</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><em>wavelet</em> &#8211; <a title="pywt.Wavelet" class="reference external" href="wavelets.html#pywt.Wavelet"><tt class="xref docutils literal"><span class="pre">Wavelet</span></tt></a>, wavelet name string or
+<li><strong>wavelet</strong> &#8211; <a class="reference internal" href="wavelets.html#pywt.Wavelet" title="pywt.Wavelet"><tt class="xref py py-class docutils literal"><span class="pre">Wavelet</span></tt></a>, wavelet name string or
 <cite>(wavelet function approx., x grid)</cite> pair</li>
-<li><em>precision</em> &#8211; Precision that will be used for wavelet function
-approximation computed with the <a title="pywt.Wavelet.wavefun" class="reference external" href="wavelets.html#pywt.Wavelet.wavefun"><tt class="xref docutils literal"><span class="pre">Wavelet.wavefun()</span></tt></a>
+<li><strong>precision</strong> &#8211; Precision that will be used for wavelet function
+approximation computed with the <a class="reference internal" href="wavelets.html#pywt.Wavelet.wavefun" title="pywt.Wavelet.wavefun"><tt class="xref py py-meth docutils literal"><span class="pre">Wavelet.wavefun()</span></tt></a>
 method.</li>
 </ul>
 </td>
@@ -165,46 +168,46 @@ method.</li>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <h3><a href="../index.html">Table Of Contents</a></h3>
-            <ul>
-<li><a class="reference external" href="#">Other functions</a><ul>
-<li><a class="reference external" href="#single-level-n-dimensional-discrete-wavelet-transform">Single-level n-dimensional Discrete Wavelet Transform.</a></li>
-<li><a class="reference external" href="#integrating-wavelet-functions-intwave">Integrating wavelet functions - <tt class="docutils literal"><span class="pre">intwave()</span></tt></a></li>
-<li><a class="reference external" href="#central-frequency-of-psi-wavelet-function">Central frequency of <em>psi</em> wavelet function</a></li>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Other functions</a><ul>
+<li><a class="reference internal" href="#single-level-n-dimensional-discrete-wavelet-transform">Single-level n-dimensional Discrete Wavelet Transform.</a></li>
+<li><a class="reference internal" href="#integrating-wavelet-functions-intwave">Integrating wavelet functions - <tt class="docutils literal"><span class="pre">intwave()</span></tt></a></li>
+<li><a class="reference internal" href="#central-frequency-of-psi-wavelet-function">Central frequency of <em>psi</em> wavelet function</a></li>
 </ul>
 </li>
 </ul>
 
-            <h4>Previous topic</h4>
-            <p class="topless"><a href="thresholding-functions.html"
-                                  title="previous chapter">Thresholding functions</a></p>
-            <h4>Next topic</h4>
-            <p class="topless"><a href="../regression/index.html"
-                                  title="next chapter">Usage examples</a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="../_sources/ref/other-functions.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="../search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <input type="submit" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="thresholding-functions.html"
+                        title="previous chapter">Thresholding functions</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../regression/index.html"
+                        title="next chapter">Usage examples</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/ref/other-functions.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
 <div>
 <h3>Quick links</h3>
 <ul>
 <li><a href="http://groups.google.com/group/pywavelets"><img src="../_static/comments.png" height="16" width="16" alt="" /> Visit Discussion Group</a></li>
-<li><a href="http://wavelets.scipy.org/moin/"><img src="../_static/page_edit.png" height="16" width="16" alt="" /> View Wiki Page</a></li>
-<li><a href="http://projects.scipy.org/wavelets/browser/pywt/trunk/"><img src="../_static/cog.png" height="16" width="16" alt="" /> Browse Source Code</a></li>
+<li><a href="https://github.com/nigma/pywt"><img src="../_static/cog.png" height="16" width="16" alt="" /> Code on Github</a></li>
+<li><a href="https://bitbucket.org/nigma/pywt"><img src="../_static/cog.png" height="16" width="16" alt="" /> Code on Bitbucket</a></li>
 <li><a href="http://wavelets.pybytes.com/"><img src="../_static/wave.png" height="16" width="16" alt="" /> Explore Wavelets</a></li>
 <li><a href="http://delicious.com/save" onclick="window.open('http://delicious.com/save?v=5&amp;noui&amp;jump=close&amp;url='+encodeURIComponent('http://www.pybytes.com/pywavelets/')+'&amp;title='+encodeURIComponent('PyWavelets - Discrete Wavelet Transform in Python'), 'delicious','toolbar=no,width=550,height=550'); return false;"><img src="../_static/delicious.png" height="12" width="12" alt="Delicious" style="margin: 0 2px 0 2px;" /> Bookmark with Delicious</a></li>
 <li><a href="http://twitter.com/filipwasilewski"><img src="../_static/twitter.png" height="16" width="16" alt="" /> Follow on Twitter</a></li>
@@ -222,7 +225,7 @@ method.</li>
           <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="../modindex.html" title="Global Module Index"
+          <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
           <a href="../regression/index.html" title="Usage examples"
@@ -236,9 +239,9 @@ method.</li>
     </div>
     
     <div class="footer">
-      &copy; Copyright 2006-2010, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
-      Last updated on Mar 16, 2010.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+        &copy; Copyright 2006-2011, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
+      Last updated on Jan 11, 2011.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.6.
     </div>
     <script type="text/javascript">
     var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");

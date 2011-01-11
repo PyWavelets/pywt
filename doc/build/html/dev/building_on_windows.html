@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -12,12 +14,13 @@
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
         VERSION:     '0.2.0',
-        COLLAPSE_MODINDEX: false,
+        COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="top" title="PyWavelets Documentation" href="../index.html" />
@@ -40,8 +43,8 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="../modindex.html" title="Global Module Index"
-             accesskey="M">modules</a> |</li>
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="building_on_linux.html" title="Building on Linux"
              accesskey="N">next</a> |</li>
@@ -58,7 +61,7 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <span class="target" id="dev-building-on-windows"></span><span class="target" id="module-pywt"></span><div class="section" id="building-on-windows">
+  <span class="target" id="module-pywt"><span id="dev-building-on-windows"></span></span><div class="section" id="building-on-windows">
 <h1>Building on Windows<a class="headerlink" href="#building-on-windows" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="prepare-build-environment">
 <h2>Prepare build environment<a class="headerlink" href="#prepare-build-environment" title="Permalink to this headline">¶</a></h2>
@@ -143,51 +146,51 @@ python test_perfect_reconstruction.py</pre>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <h3><a href="../index.html">Table Of Contents</a></h3>
-            <ul>
-<li><a class="reference external" href="#">Building on Windows</a><ul>
-<li><a class="reference external" href="#prepare-build-environment">Prepare build environment</a></li>
-<li><a class="reference external" href="#install-python">Install Python</a></li>
-<li><a class="reference external" href="#install-mingw-c-compiler">Install MinGW C compiler</a></li>
-<li><a class="reference external" href="#configure-distutils">Configure Distutils</a></li>
-<li><a class="reference external" href="#install-cython">Install Cython</a></li>
-<li><a class="reference external" href="#install-numpy">Install Numpy</a></li>
-<li><a class="reference external" href="#install-sphinx">Install Sphinx</a></li>
-<li><a class="reference external" href="#ready-to-go">Ready to go</a></li>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Building on Windows</a><ul>
+<li><a class="reference internal" href="#prepare-build-environment">Prepare build environment</a></li>
+<li><a class="reference internal" href="#install-python">Install Python</a></li>
+<li><a class="reference internal" href="#install-mingw-c-compiler">Install MinGW C compiler</a></li>
+<li><a class="reference internal" href="#configure-distutils">Configure Distutils</a></li>
+<li><a class="reference internal" href="#install-cython">Install Cython</a></li>
+<li><a class="reference internal" href="#install-numpy">Install Numpy</a></li>
+<li><a class="reference internal" href="#install-sphinx">Install Sphinx</a></li>
+<li><a class="reference internal" href="#ready-to-go">Ready to go</a></li>
 </ul>
 </li>
 </ul>
 
-            <h4>Previous topic</h4>
-            <p class="topless"><a href="index.html"
-                                  title="previous chapter">Development notes</a></p>
-            <h4>Next topic</h4>
-            <p class="topless"><a href="building_on_linux.html"
-                                  title="next chapter">Building on Linux</a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="../_sources/dev/building_on_windows.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="../search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <input type="submit" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Development notes</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="building_on_linux.html"
+                        title="next chapter">Building on Linux</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/dev/building_on_windows.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
 <div>
 <h3>Quick links</h3>
 <ul>
 <li><a href="http://groups.google.com/group/pywavelets"><img src="../_static/comments.png" height="16" width="16" alt="" /> Visit Discussion Group</a></li>
-<li><a href="http://wavelets.scipy.org/moin/"><img src="../_static/page_edit.png" height="16" width="16" alt="" /> View Wiki Page</a></li>
-<li><a href="http://projects.scipy.org/wavelets/browser/pywt/trunk/"><img src="../_static/cog.png" height="16" width="16" alt="" /> Browse Source Code</a></li>
+<li><a href="https://github.com/nigma/pywt"><img src="../_static/cog.png" height="16" width="16" alt="" /> Code on Github</a></li>
+<li><a href="https://bitbucket.org/nigma/pywt"><img src="../_static/cog.png" height="16" width="16" alt="" /> Code on Bitbucket</a></li>
 <li><a href="http://wavelets.pybytes.com/"><img src="../_static/wave.png" height="16" width="16" alt="" /> Explore Wavelets</a></li>
 <li><a href="http://delicious.com/save" onclick="window.open('http://delicious.com/save?v=5&amp;noui&amp;jump=close&amp;url='+encodeURIComponent('http://www.pybytes.com/pywavelets/')+'&amp;title='+encodeURIComponent('PyWavelets - Discrete Wavelet Transform in Python'), 'delicious','toolbar=no,width=550,height=550'); return false;"><img src="../_static/delicious.png" height="12" width="12" alt="Delicious" style="margin: 0 2px 0 2px;" /> Bookmark with Delicious</a></li>
 <li><a href="http://twitter.com/filipwasilewski"><img src="../_static/twitter.png" height="16" width="16" alt="" /> Follow on Twitter</a></li>
@@ -205,7 +208,7 @@ python test_perfect_reconstruction.py</pre>
           <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="../modindex.html" title="Global Module Index"
+          <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
           <a href="building_on_linux.html" title="Building on Linux"
@@ -219,9 +222,9 @@ python test_perfect_reconstruction.py</pre>
     </div>
     
     <div class="footer">
-      &copy; Copyright 2006-2010, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
-      Last updated on Mar 16, 2010.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+        &copy; Copyright 2006-2011, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
+      Last updated on Jan 11, 2011.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.6.
     </div>
     <script type="text/javascript">
     var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");

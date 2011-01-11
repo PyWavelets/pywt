@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -12,12 +14,13 @@
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
         VERSION:     '0.2.0',
-        COLLAPSE_MODINDEX: false,
+        COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="top" title="PyWavelets Documentation" href="../index.html" />
@@ -40,8 +43,8 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="../modindex.html" title="Global Module Index"
-             accesskey="M">modules</a> |</li>
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="../dev/index.html" title="Development notes"
              accesskey="N">next</a> |</li>
@@ -85,36 +88,36 @@ containing <tt class="xref docutils literal"><span class="pre">None</span></tt> 
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <h4>Previous topic</h4>
-            <p class="topless"><a href="wp2d.html"
-                                  title="previous chapter">2D Wavelet Packets</a></p>
-            <h4>Next topic</h4>
-            <p class="topless"><a href="../dev/index.html"
-                                  title="next chapter">Development notes</a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="../_sources/regression/gotchas.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="../search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <input type="submit" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="wp2d.html"
+                        title="previous chapter">2D Wavelet Packets</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../dev/index.html"
+                        title="next chapter">Development notes</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/regression/gotchas.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
 <div>
 <h3>Quick links</h3>
 <ul>
 <li><a href="http://groups.google.com/group/pywavelets"><img src="../_static/comments.png" height="16" width="16" alt="" /> Visit Discussion Group</a></li>
-<li><a href="http://wavelets.scipy.org/moin/"><img src="../_static/page_edit.png" height="16" width="16" alt="" /> View Wiki Page</a></li>
-<li><a href="http://projects.scipy.org/wavelets/browser/pywt/trunk/"><img src="../_static/cog.png" height="16" width="16" alt="" /> Browse Source Code</a></li>
+<li><a href="https://github.com/nigma/pywt"><img src="../_static/cog.png" height="16" width="16" alt="" /> Code on Github</a></li>
+<li><a href="https://bitbucket.org/nigma/pywt"><img src="../_static/cog.png" height="16" width="16" alt="" /> Code on Bitbucket</a></li>
 <li><a href="http://wavelets.pybytes.com/"><img src="../_static/wave.png" height="16" width="16" alt="" /> Explore Wavelets</a></li>
 <li><a href="http://delicious.com/save" onclick="window.open('http://delicious.com/save?v=5&amp;noui&amp;jump=close&amp;url='+encodeURIComponent('http://www.pybytes.com/pywavelets/')+'&amp;title='+encodeURIComponent('PyWavelets - Discrete Wavelet Transform in Python'), 'delicious','toolbar=no,width=550,height=550'); return false;"><img src="../_static/delicious.png" height="12" width="12" alt="Delicious" style="margin: 0 2px 0 2px;" /> Bookmark with Delicious</a></li>
 <li><a href="http://twitter.com/filipwasilewski"><img src="../_static/twitter.png" height="16" width="16" alt="" /> Follow on Twitter</a></li>
@@ -132,7 +135,7 @@ containing <tt class="xref docutils literal"><span class="pre">None</span></tt> 
           <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="../modindex.html" title="Global Module Index"
+          <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
           <a href="../dev/index.html" title="Development notes"
@@ -146,9 +149,9 @@ containing <tt class="xref docutils literal"><span class="pre">None</span></tt> 
     </div>
     
     <div class="footer">
-      &copy; Copyright 2006-2010, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
-      Last updated on Mar 16, 2010.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+        &copy; Copyright 2006-2011, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
+      Last updated on Jan 11, 2011.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.6.
     </div>
     <script type="text/javascript">
     var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");

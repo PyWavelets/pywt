@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -12,12 +14,13 @@
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
         VERSION:     '0.2.0',
-        COLLAPSE_MODINDEX: false,
+        COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="top" title="PyWavelets Documentation" href="../index.html" />
@@ -40,8 +43,8 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="../modindex.html" title="Global Module Index"
-             accesskey="M">modules</a> |</li>
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="other-functions.html" title="Other functions"
              accesskey="N">next</a> |</li>
@@ -58,9 +61,9 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <span class="target" id="ref-thresholding"></span><span class="target" id="module-pywt.thresholding"></span><div class="section" id="thresholding-functions">
+  <span class="target" id="module-pywt.thresholding"><span id="ref-thresholding"></span></span><div class="section" id="thresholding-functions">
 <h1>Thresholding functions<a class="headerlink" href="#thresholding-functions" title="Permalink to this headline">¶</a></h1>
-<p>The <tt class="xref docutils literal"><span class="pre">thresholding</span></tt> helper module implements the most popular signal
+<p>The <a class="reference internal" href="#module-pywt.thresholding" title="pywt.thresholding"><tt class="xref py py-mod docutils literal"><span class="pre">thresholding</span></tt></a> helper module implements the most popular signal
 thresholding functions.</p>
 <div class="section" id="hard-thresholding">
 <h2>Hard thresholding<a class="headerlink" href="#hard-thresholding" title="Permalink to this headline">¶</a></h2>
@@ -76,9 +79,9 @@ absolute value is less than the <em>value</em> param.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><em>data</em> &#8211; numeric data</li>
-<li><em>value</em> &#8211; thresholding value</li>
-<li><em>substitute</em> &#8211; substitute value</li>
+<li><strong>data</strong> &#8211; numeric data</li>
+<li><strong>value</strong> &#8211; thresholding value</li>
+<li><strong>substitute</strong> &#8211; substitute value</li>
 </ul>
 </td>
 </tr>
@@ -101,9 +104,9 @@ absolute value is less than the <em>value</em> param.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><em>data</em> &#8211; numeric data</li>
-<li><em>value</em> &#8211; thresholding value</li>
-<li><em>substitute</em> &#8211; substitute value</li>
+<li><strong>data</strong> &#8211; numeric data</li>
+<li><strong>value</strong> &#8211; thresholding value</li>
+<li><strong>substitute</strong> &#8211; substitute value</li>
 </ul>
 </td>
 </tr>
@@ -128,9 +131,9 @@ absolute value is less than the <em>value</em> param.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><em>data</em> &#8211; numeric data</li>
-<li><em>value</em> &#8211; thresholding value</li>
-<li><em>substitute</em> &#8211; substitute value</li>
+<li><strong>data</strong> &#8211; numeric data</li>
+<li><strong>value</strong> &#8211; thresholding value</li>
+<li><strong>substitute</strong> &#8211; substitute value</li>
 </ul>
 </td>
 </tr>
@@ -155,9 +158,9 @@ absolute value is less than the <em>value</em> param.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><em>data</em> &#8211; numeric data</li>
-<li><em>value</em> &#8211; thresholding value</li>
-<li><em>substitute</em> &#8211; substitute value</li>
+<li><strong>data</strong> &#8211; numeric data</li>
+<li><strong>value</strong> &#8211; thresholding value</li>
+<li><strong>substitute</strong> &#8211; substitute value</li>
 </ul>
 </td>
 </tr>
@@ -177,47 +180,47 @@ absolute value is less than the <em>value</em> param.</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <h3><a href="../index.html">Table Of Contents</a></h3>
-            <ul>
-<li><a class="reference external" href="#">Thresholding functions</a><ul>
-<li><a class="reference external" href="#hard-thresholding">Hard thresholding</a></li>
-<li><a class="reference external" href="#soft-thresholding">Soft thresholding</a></li>
-<li><a class="reference external" href="#greater">Greater</a></li>
-<li><a class="reference external" href="#less">Less</a></li>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Thresholding functions</a><ul>
+<li><a class="reference internal" href="#hard-thresholding">Hard thresholding</a></li>
+<li><a class="reference internal" href="#soft-thresholding">Soft thresholding</a></li>
+<li><a class="reference internal" href="#greater">Greater</a></li>
+<li><a class="reference internal" href="#less">Less</a></li>
 </ul>
 </li>
 </ul>
 
-            <h4>Previous topic</h4>
-            <p class="topless"><a href="wavelet-packets.html"
-                                  title="previous chapter">Wavelet Packets</a></p>
-            <h4>Next topic</h4>
-            <p class="topless"><a href="other-functions.html"
-                                  title="next chapter">Other functions</a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="../_sources/ref/thresholding-functions.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="../search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <input type="submit" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="wavelet-packets.html"
+                        title="previous chapter">Wavelet Packets</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="other-functions.html"
+                        title="next chapter">Other functions</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/ref/thresholding-functions.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
 <div>
 <h3>Quick links</h3>
 <ul>
 <li><a href="http://groups.google.com/group/pywavelets"><img src="../_static/comments.png" height="16" width="16" alt="" /> Visit Discussion Group</a></li>
-<li><a href="http://wavelets.scipy.org/moin/"><img src="../_static/page_edit.png" height="16" width="16" alt="" /> View Wiki Page</a></li>
-<li><a href="http://projects.scipy.org/wavelets/browser/pywt/trunk/"><img src="../_static/cog.png" height="16" width="16" alt="" /> Browse Source Code</a></li>
+<li><a href="https://github.com/nigma/pywt"><img src="../_static/cog.png" height="16" width="16" alt="" /> Code on Github</a></li>
+<li><a href="https://bitbucket.org/nigma/pywt"><img src="../_static/cog.png" height="16" width="16" alt="" /> Code on Bitbucket</a></li>
 <li><a href="http://wavelets.pybytes.com/"><img src="../_static/wave.png" height="16" width="16" alt="" /> Explore Wavelets</a></li>
 <li><a href="http://delicious.com/save" onclick="window.open('http://delicious.com/save?v=5&amp;noui&amp;jump=close&amp;url='+encodeURIComponent('http://www.pybytes.com/pywavelets/')+'&amp;title='+encodeURIComponent('PyWavelets - Discrete Wavelet Transform in Python'), 'delicious','toolbar=no,width=550,height=550'); return false;"><img src="../_static/delicious.png" height="12" width="12" alt="Delicious" style="margin: 0 2px 0 2px;" /> Bookmark with Delicious</a></li>
 <li><a href="http://twitter.com/filipwasilewski"><img src="../_static/twitter.png" height="16" width="16" alt="" /> Follow on Twitter</a></li>
@@ -235,7 +238,7 @@ absolute value is less than the <em>value</em> param.</p>
           <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="../modindex.html" title="Global Module Index"
+          <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
           <a href="other-functions.html" title="Other functions"
@@ -249,9 +252,9 @@ absolute value is less than the <em>value</em> param.</p>
     </div>
     
     <div class="footer">
-      &copy; Copyright 2006-2010, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
-      Last updated on Mar 16, 2010.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+        &copy; Copyright 2006-2011, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
+      Last updated on Jan 11, 2011.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.6.
     </div>
     <script type="text/javascript">
     var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");

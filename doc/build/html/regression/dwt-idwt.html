@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -12,12 +14,13 @@
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
         VERSION:     '0.2.0',
-        COLLAPSE_MODINDEX: false,
+        COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="top" title="PyWavelets Documentation" href="../index.html" />
@@ -40,8 +43,8 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="../modindex.html" title="Global Module Index"
-             accesskey="M">modules</a> |</li>
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="multilevel.html" title="Multilevel DWT, IDWT and SWT"
              accesskey="N">next</a> |</li>
@@ -62,7 +65,7 @@
 <span id="reg-dwt-idwt"></span><h1>DWT and IDWT<a class="headerlink" href="#dwt-and-idwt" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="discrete-wavelet-transform">
 <h2>Discrete Wavelet Transform<a class="headerlink" href="#discrete-wavelet-transform" title="Permalink to this headline">¶</a></h2>
-<p>Let&#8217;s do a <a title="pywt.dwt" class="reference external" href="../ref/dwt-discrete-wavelet-transform.html#pywt.dwt"><tt class="xref docutils literal"><span class="pre">Discrete</span> <span class="pre">Wavelet</span> <span class="pre">Transform</span></tt></a> of a sample data <em>x</em> using
+<p>Let&#8217;s do a <a class="reference internal" href="../ref/dwt-discrete-wavelet-transform.html#pywt.dwt" title="pywt.dwt"><tt class="xref py py-func docutils literal"><span class="pre">Discrete</span> <span class="pre">Wavelet</span> <span class="pre">Transform</span></tt></a> of a sample data <em>x</em> using
 the <tt class="docutils literal"><span class="pre">db2</span></tt> wavelet. It&#8217;s simple..</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pywt</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
@@ -81,7 +84,7 @@ respectively:</p>
 <div class="section" id="inverse-discrete-wavelet-transform">
 <h2>Inverse Discrete Wavelet Transform<a class="headerlink" href="#inverse-discrete-wavelet-transform" title="Permalink to this headline">¶</a></h2>
 <p>Now let&#8217;s do an opposite operation
-- <a title="pywt.idwt" class="reference external" href="../ref/idwt-inverse-discrete-wavelet-transform.html#pywt.idwt"><tt class="xref docutils literal"><span class="pre">Inverse</span> <span class="pre">Discrete</span> <span class="pre">Wavelet</span> <span class="pre">Transform</span></tt></a>:</p>
+- <a class="reference internal" href="../ref/idwt-inverse-discrete-wavelet-transform.html#pywt.idwt" title="pywt.idwt"><tt class="xref py py-func docutils literal"><span class="pre">Inverse</span> <span class="pre">Discrete</span> <span class="pre">Wavelet</span> <span class="pre">Transform</span></tt></a>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">pywt</span><span class="o">.</span><span class="n">idwt</span><span class="p">(</span><span class="n">cA</span><span class="p">,</span> <span class="n">cD</span><span class="p">,</span> <span class="s">&#39;db2&#39;</span><span class="p">)</span>
 <span class="go">[ 3.  7.  1.  1. -2.  5.  4.  6.]</span>
 </pre></div>
@@ -90,9 +93,9 @@ respectively:</p>
 </div>
 <div class="section" id="more-examples">
 <h2>More Examples<a class="headerlink" href="#more-examples" title="Permalink to this headline">¶</a></h2>
-<p>Now let&#8217;s experiment with the <a title="pywt.dwt" class="reference external" href="../ref/dwt-discrete-wavelet-transform.html#pywt.dwt"><tt class="xref docutils literal"><span class="pre">dwt()</span></tt></a> some more. For example let&#8217;s pass a
-<a title="pywt.Wavelet" class="reference external" href="../ref/wavelets.html#pywt.Wavelet"><tt class="xref docutils literal"><span class="pre">Wavelet</span></tt></a> object instead of the wavelet name and specify signal extension
-mode (the default is <a class="reference external" href="../ref/signal-extension-modes.html#modes-sym"><em>sym</em></a>) for the border effect handling:</p>
+<p>Now let&#8217;s experiment with the <a class="reference internal" href="../ref/dwt-discrete-wavelet-transform.html#pywt.dwt" title="pywt.dwt"><tt class="xref py py-func docutils literal"><span class="pre">dwt()</span></tt></a> some more. For example let&#8217;s pass a
+<a class="reference internal" href="../ref/wavelets.html#pywt.Wavelet" title="pywt.Wavelet"><tt class="xref py py-class docutils literal"><span class="pre">Wavelet</span></tt></a> object instead of the wavelet name and specify signal extension
+mode (the default is <a class="reference internal" href="../ref/signal-extension-modes.html#modes-sym"><em>sym</em></a>) for the border effect handling:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">Wavelet</span><span class="p">(</span><span class="s">&#39;sym3&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cA</span><span class="p">,</span> <span class="n">cD</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">dwt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">wavelet</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;cpd&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">cA</span>
@@ -103,8 +106,8 @@ mode (the default is <a class="reference external" href="../ref/signal-extension
 </div>
 <p>Note that the output coefficients arrays lenght depends not only on the input
 data length but also on the :class:Wavelet type (particularly on it&#8217;s
-<tt class="xref docutils literal"><span class="pre">filters</span> <span class="pre">lenght</span></tt> that are used in the transformation).</p>
-<p>To find out what will be the output data size use the <a title="pywt.dwt_coeff_len" class="reference external" href="../ref/dwt-discrete-wavelet-transform.html#pywt.dwt_coeff_len"><tt class="xref docutils literal"><span class="pre">dwt_coeff_len()</span></tt></a>
+<tt class="xref py py-attr docutils literal"><span class="pre">filters</span> <span class="pre">lenght</span></tt> that are used in the transformation).</p>
+<p>To find out what will be the output data size use the <a class="reference internal" href="../ref/dwt-discrete-wavelet-transform.html#pywt.dwt_coeff_len" title="pywt.dwt_coeff_len"><tt class="xref py py-func docutils literal"><span class="pre">dwt_coeff_len()</span></tt></a>
 function:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">pywt</span><span class="o">.</span><span class="n">dwt_coeff_len</span><span class="p">(</span><span class="n">data_len</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">filter_len</span><span class="o">=</span><span class="n">w</span><span class="o">.</span><span class="n">dec_len</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;sym&#39;</span><span class="p">)</span>
 <span class="go">6</span>
@@ -117,11 +120,10 @@ function:</p>
 <p>Looks fine. (And if you expected that the output length would be a half of the
 input data length, well, that&#8217;s the tradeoff that allows for the perfect
 reconstruction...).</p>
-<p>The third argument of the <a title="pywt.dwt_coeff_len" class="reference external" href="../ref/dwt-discrete-wavelet-transform.html#pywt.dwt_coeff_len"><tt class="xref docutils literal"><span class="pre">dwt_coeff_len()</span></tt></a> is the already mentioned signal
+<p>The third argument of the <a class="reference internal" href="../ref/dwt-discrete-wavelet-transform.html#pywt.dwt_coeff_len" title="pywt.dwt_coeff_len"><tt class="xref py py-func docutils literal"><span class="pre">dwt_coeff_len()</span></tt></a> is the already mentioned signal
 extension mode (please refer to the PyWavelets&#8217; documentation for the
-<a class="reference external" href="../ref/signal-extension-modes.html#modes"><em>modes</em></a> description). Currently there are six
-<a class="reference external" href="../ref/signal-extension-modes.html#modes"><em>extension modes</em></a> available:</p>
-<blockquote>
+<a class="reference internal" href="../ref/signal-extension-modes.html#modes"><em>modes</em></a> description). Currently there are six
+<a class="reference internal" href="../ref/signal-extension-modes.html#modes"><em>extension modes</em></a> available:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">pywt</span><span class="o">.</span><span class="n">MODES</span><span class="o">.</span><span class="n">modes</span>
 <span class="go">[&#39;zpd&#39;, &#39;cpd&#39;, &#39;sym&#39;, &#39;ppd&#39;, &#39;sp1&#39;, &#39;per&#39;]</span>
 </pre></div>
@@ -130,13 +132,12 @@ extension mode (please refer to the PyWavelets&#8217; documentation for the
 <span class="go">[6, 6, 6, 6, 6, 4]</span>
 </pre></div>
 </div>
-</blockquote>
-<p>As you see in the above example, the <a class="reference external" href="../ref/signal-extension-modes.html#modes-per"><em>per</em></a> (periodization) mode
-is slightly different from the others. It&#8217;s aim when doing the <a title="pywt.dwt" class="reference external" href="../ref/dwt-discrete-wavelet-transform.html#pywt.dwt"><tt class="xref docutils literal"><span class="pre">DWT</span></tt></a>
+<p>As you see in the above example, the <a class="reference internal" href="../ref/signal-extension-modes.html#modes-per"><em>per</em></a> (periodization) mode
+is slightly different from the others. It&#8217;s aim when doing the <a class="reference internal" href="../ref/dwt-discrete-wavelet-transform.html#pywt.dwt" title="pywt.dwt"><tt class="xref py py-func docutils literal"><span class="pre">DWT</span></tt></a>
 transform is to output coefficients arrays that are half of the length of the
 input data.</p>
 <p>Knowing that, you should never mix the periodization mode with other modes when
-doing <a title="pywt.dwt" class="reference external" href="../ref/dwt-discrete-wavelet-transform.html#pywt.dwt"><tt class="xref docutils literal"><span class="pre">DWT</span></tt></a> and <a title="pywt.idwt" class="reference external" href="../ref/idwt-inverse-discrete-wavelet-transform.html#pywt.idwt"><tt class="xref docutils literal"><span class="pre">IDWT</span></tt></a>. Otherwise, it will produce
+doing <a class="reference internal" href="../ref/dwt-discrete-wavelet-transform.html#pywt.dwt" title="pywt.dwt"><tt class="xref py py-func docutils literal"><span class="pre">DWT</span></tt></a> and <a class="reference internal" href="../ref/idwt-inverse-discrete-wavelet-transform.html#pywt.idwt" title="pywt.idwt"><tt class="xref py py-func docutils literal"><span class="pre">IDWT</span></tt></a>. Otherwise, it will produce
 <strong>invalid results</strong>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span>
 <span class="go">[3, 7, 1, 1, -2, 5, 4, 6]</span>
@@ -151,11 +152,10 @@ doing <a title="pywt.dwt" class="reference external" href="../ref/dwt-discrete-w
 <div class="section" id="tips-tricks">
 <h2>Tips &amp; tricks<a class="headerlink" href="#tips-tricks" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="passing-none-instead-of-coefficients-data-to-idwt">
-<h3>Passing <tt class="xref docutils literal"><span class="pre">None</span></tt> instead of coefficients data to <a title="pywt.idwt" class="reference external" href="../ref/idwt-inverse-discrete-wavelet-transform.html#pywt.idwt"><tt class="xref docutils literal"><span class="pre">idwt()</span></tt></a><a class="headerlink" href="#passing-none-instead-of-coefficients-data-to-idwt" title="Permalink to this headline">¶</a></h3>
+<h3>Passing <tt class="xref docutils literal"><span class="pre">None</span></tt> instead of coefficients data to <a class="reference internal" href="../ref/idwt-inverse-discrete-wavelet-transform.html#pywt.idwt" title="pywt.idwt"><tt class="xref py py-func docutils literal"><span class="pre">idwt()</span></tt></a><a class="headerlink" href="#passing-none-instead-of-coefficients-data-to-idwt" title="Permalink to this headline">¶</a></h3>
 <p>Now some tips &amp; tricks. Passing <tt class="xref docutils literal"><span class="pre">None</span></tt> as one of the coefficient arrays
 parameters is similar to passing a <em>zero-filled</em> array. The results are simply
 the same:</p>
-<blockquote>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">pywt</span><span class="o">.</span><span class="n">idwt</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="s">&#39;sym&#39;</span><span class="p">)</span>
 <span class="go">[ 1.19006969  1.54362308  0.44828774 -0.25881905  0.48296291  0.8365163 ]</span>
 </pre></div>
@@ -172,30 +172,28 @@ the same:</p>
 <span class="go">[ 0.57769726 -0.93125065  1.67303261 -0.96592583 -0.12940952 -0.22414387]</span>
 </pre></div>
 </div>
-</blockquote>
 <p>Remember that only one argument at a time can be <tt class="xref docutils literal"><span class="pre">None</span></tt>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">pywt</span><span class="o">.</span><span class="n">idwt</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="s">&#39;sym&#39;</span><span class="p">)</span>
 <span class="gt">Traceback (most recent call last):</span>
 <span class="c">...</span>
-<span class="nc">ValueError</span>: <span class="n-Identifier">At least one coefficient parameter must be specified.</span>
+<span class="gr">ValueError</span>: <span class="n">At least one coefficient parameter must be specified.</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="coefficients-data-size-in-idwt">
-<h3>Coefficients data size in <a title="pywt.idwt" class="reference external" href="../ref/idwt-inverse-discrete-wavelet-transform.html#pywt.idwt"><tt class="xref docutils literal"><span class="pre">idwt</span></tt></a><a class="headerlink" href="#coefficients-data-size-in-idwt" title="Permalink to this headline">¶</a></h3>
-<p>When doing the <a title="pywt.idwt" class="reference external" href="../ref/idwt-inverse-discrete-wavelet-transform.html#pywt.idwt"><tt class="xref docutils literal"><span class="pre">IDWT</span></tt></a> transform, usually the coefficient arrays
+<h3>Coefficients data size in <a class="reference internal" href="../ref/idwt-inverse-discrete-wavelet-transform.html#pywt.idwt" title="pywt.idwt"><tt class="xref py py-attr docutils literal"><span class="pre">idwt</span></tt></a><a class="headerlink" href="#coefficients-data-size-in-idwt" title="Permalink to this headline">¶</a></h3>
+<p>When doing the <a class="reference internal" href="../ref/idwt-inverse-discrete-wavelet-transform.html#pywt.idwt" title="pywt.idwt"><tt class="xref py py-func docutils literal"><span class="pre">IDWT</span></tt></a> transform, usually the coefficient arrays
 must have the same size.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">pywt</span><span class="o">.</span><span class="n">idwt</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="s">&#39;sym&#39;</span><span class="p">)</span>
 <span class="gt">Traceback (most recent call last):</span>
 <span class="c">...</span>
-<span class="nc">ValueError</span>: <span class="n-Identifier">Coefficients arrays must have the same size.</span>
+<span class="gr">ValueError</span>: <span class="n">Coefficients arrays must have the same size.</span>
 </pre></div>
 </div>
 <p>But for some applications like multilevel DWT and IDWT it is sometimes conveniet
 to allow for a small departure from this behaviour. When the <em>correct_size</em> flag
 is set, the approximation coefficients array can be larger from the details
 coefficient array by one element:</p>
-<blockquote>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">pywt</span><span class="o">.</span><span class="n">idwt</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="s">&#39;sym&#39;</span><span class="p">,</span> <span class="n">correct_size</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="go">[ 1.76776695  0.61237244  3.18198052  0.61237244  4.59619408  0.61237244]</span>
 </pre></div>
@@ -203,27 +201,24 @@ coefficient array by one element:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">pywt</span><span class="o">.</span><span class="n">idwt</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="s">&#39;db2&#39;</span><span class="p">,</span> <span class="s">&#39;sym&#39;</span><span class="p">,</span> <span class="n">correct_size</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="gt">Traceback (most recent call last):</span>
 <span class="c">...</span>
-<span class="nc">ValueError</span>: <span class="n-Identifier">Coefficients arrays must satisfy (0 &lt;= len(cA) - len(cD) &lt;= 1).</span>
+<span class="gr">ValueError</span>: <span class="n">Coefficients arrays must satisfy (0 &lt;= len(cA) - len(cD) &lt;= 1).</span>
 </pre></div>
 </div>
-</blockquote>
-<p>Not every coefficient array can be used in <a title="pywt.idwt" class="reference external" href="../ref/idwt-inverse-discrete-wavelet-transform.html#pywt.idwt"><tt class="xref docutils literal"><span class="pre">IDWT</span></tt></a>. In the following
-example the <a title="pywt.idwt" class="reference external" href="../ref/idwt-inverse-discrete-wavelet-transform.html#pywt.idwt"><tt class="xref docutils literal"><span class="pre">idwt()</span></tt></a> will fail because the input arrays are invalid - they
-couldn&#8217;t be created as a result of <a title="pywt.dwt" class="reference external" href="../ref/dwt-discrete-wavelet-transform.html#pywt.dwt"><tt class="xref docutils literal"><span class="pre">DWT</span></tt></a>, beacuse the minimal output
-length for dwt using <tt class="docutils literal"><span class="pre">db4</span></tt> wavelet and the <a class="reference external" href="../ref/signal-extension-modes.html#modes-sym"><em>sym</em></a> mode is
+<p>Not every coefficient array can be used in <a class="reference internal" href="../ref/idwt-inverse-discrete-wavelet-transform.html#pywt.idwt" title="pywt.idwt"><tt class="xref py py-func docutils literal"><span class="pre">IDWT</span></tt></a>. In the following
+example the <a class="reference internal" href="../ref/idwt-inverse-discrete-wavelet-transform.html#pywt.idwt" title="pywt.idwt"><tt class="xref py py-func docutils literal"><span class="pre">idwt()</span></tt></a> will fail because the input arrays are invalid - they
+couldn&#8217;t be created as a result of <a class="reference internal" href="../ref/dwt-discrete-wavelet-transform.html#pywt.dwt" title="pywt.dwt"><tt class="xref py py-func docutils literal"><span class="pre">DWT</span></tt></a>, beacuse the minimal output
+length for dwt using <tt class="docutils literal"><span class="pre">db4</span></tt> wavelet and the <a class="reference internal" href="../ref/signal-extension-modes.html#modes-sym"><em>sym</em></a> mode is
 <tt class="docutils literal"><span class="pre">4</span></tt>, not <tt class="docutils literal"><span class="pre">3</span></tt>:</p>
-<blockquote>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">pywt</span><span class="o">.</span><span class="n">idwt</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="s">&#39;db4&#39;</span><span class="p">,</span> <span class="s">&#39;sym&#39;</span><span class="p">)</span>
 <span class="gt">Traceback (most recent call last):</span>
 <span class="c">...</span>
-<span class="nc">ValueError</span>: <span class="n-Identifier">Invalid coefficient arrays length for specified wavelet. Wavelet and mode must be the same as used for decomposition.</span>
+<span class="gr">ValueError</span>: <span class="n">Invalid coefficient arrays length for specified wavelet. Wavelet and mode must be the same as used for decomposition.</span>
 </pre></div>
 </div>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">pywt</span><span class="o">.</span><span class="n">dwt_coeff_len</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">pywt</span><span class="o">.</span><span class="n">Wavelet</span><span class="p">(</span><span class="s">&#39;db4&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">dec_len</span><span class="p">,</span> <span class="s">&#39;sym&#39;</span><span class="p">)</span>
 <span class="go">4</span>
 </pre></div>
 </div>
-</blockquote>
 </div>
 </div>
 </div>
@@ -234,51 +229,51 @@ length for dwt using <tt class="docutils literal"><span class="pre">db4</span></
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <h3><a href="../index.html">Table Of Contents</a></h3>
-            <ul>
-<li><a class="reference external" href="#">DWT and IDWT</a><ul>
-<li><a class="reference external" href="#discrete-wavelet-transform">Discrete Wavelet Transform</a></li>
-<li><a class="reference external" href="#inverse-discrete-wavelet-transform">Inverse Discrete Wavelet Transform</a></li>
-<li><a class="reference external" href="#more-examples">More Examples</a></li>
-<li><a class="reference external" href="#tips-tricks">Tips &amp; tricks</a><ul>
-<li><a class="reference external" href="#passing-none-instead-of-coefficients-data-to-idwt">Passing <tt class="xref docutils literal"><span class="pre">None</span></tt> instead of coefficients data to <tt class="docutils literal"><span class="pre">idwt()</span></tt></a></li>
-<li><a class="reference external" href="#coefficients-data-size-in-idwt">Coefficients data size in <tt class="docutils literal"><span class="pre">idwt</span></tt></a></li>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">DWT and IDWT</a><ul>
+<li><a class="reference internal" href="#discrete-wavelet-transform">Discrete Wavelet Transform</a></li>
+<li><a class="reference internal" href="#inverse-discrete-wavelet-transform">Inverse Discrete Wavelet Transform</a></li>
+<li><a class="reference internal" href="#more-examples">More Examples</a></li>
+<li><a class="reference internal" href="#tips-tricks">Tips &amp; tricks</a><ul>
+<li><a class="reference internal" href="#passing-none-instead-of-coefficients-data-to-idwt">Passing <tt class="xref docutils literal"><span class="pre">None</span></tt> instead of coefficients data to <tt class="docutils literal"><span class="pre">idwt()</span></tt></a></li>
+<li><a class="reference internal" href="#coefficients-data-size-in-idwt">Coefficients data size in <tt class="docutils literal"><span class="pre">idwt</span></tt></a></li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
 
-            <h4>Previous topic</h4>
-            <p class="topless"><a href="modes.html"
-                                  title="previous chapter">Signal Extension Modes</a></p>
-            <h4>Next topic</h4>
-            <p class="topless"><a href="multilevel.html"
-                                  title="next chapter">Multilevel DWT, IDWT and SWT</a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="../_sources/regression/dwt-idwt.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="../search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <input type="submit" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="modes.html"
+                        title="previous chapter">Signal Extension Modes</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="multilevel.html"
+                        title="next chapter">Multilevel DWT, IDWT and SWT</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/regression/dwt-idwt.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
 <div>
 <h3>Quick links</h3>
 <ul>
 <li><a href="http://groups.google.com/group/pywavelets"><img src="../_static/comments.png" height="16" width="16" alt="" /> Visit Discussion Group</a></li>
-<li><a href="http://wavelets.scipy.org/moin/"><img src="../_static/page_edit.png" height="16" width="16" alt="" /> View Wiki Page</a></li>
-<li><a href="http://projects.scipy.org/wavelets/browser/pywt/trunk/"><img src="../_static/cog.png" height="16" width="16" alt="" /> Browse Source Code</a></li>
+<li><a href="https://github.com/nigma/pywt"><img src="../_static/cog.png" height="16" width="16" alt="" /> Code on Github</a></li>
+<li><a href="https://bitbucket.org/nigma/pywt"><img src="../_static/cog.png" height="16" width="16" alt="" /> Code on Bitbucket</a></li>
 <li><a href="http://wavelets.pybytes.com/"><img src="../_static/wave.png" height="16" width="16" alt="" /> Explore Wavelets</a></li>
 <li><a href="http://delicious.com/save" onclick="window.open('http://delicious.com/save?v=5&amp;noui&amp;jump=close&amp;url='+encodeURIComponent('http://www.pybytes.com/pywavelets/')+'&amp;title='+encodeURIComponent('PyWavelets - Discrete Wavelet Transform in Python'), 'delicious','toolbar=no,width=550,height=550'); return false;"><img src="../_static/delicious.png" height="12" width="12" alt="Delicious" style="margin: 0 2px 0 2px;" /> Bookmark with Delicious</a></li>
 <li><a href="http://twitter.com/filipwasilewski"><img src="../_static/twitter.png" height="16" width="16" alt="" /> Follow on Twitter</a></li>
@@ -296,7 +291,7 @@ length for dwt using <tt class="docutils literal"><span class="pre">db4</span></
           <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="../modindex.html" title="Global Module Index"
+          <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
           <a href="multilevel.html" title="Multilevel DWT, IDWT and SWT"
@@ -310,9 +305,9 @@ length for dwt using <tt class="docutils literal"><span class="pre">db4</span></
     </div>
     
     <div class="footer">
-      &copy; Copyright 2006-2010, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
-      Last updated on Mar 16, 2010.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+        &copy; Copyright 2006-2011, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>.
+      Last updated on Jan 11, 2011.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.6.
     </div>
     <script type="text/javascript">
     var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
