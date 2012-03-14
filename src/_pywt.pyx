@@ -167,7 +167,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
     def __cinit__(self, char* name="", object filter_bank=None):
         cdef object family_code, family_number
         cdef object filters
-        cdef int filter_length
+        cdef index_t filter_length
         cdef object dec_lo, dec_hi, rec_lo, rec_hi
 
         if not name and filter_bank is None:

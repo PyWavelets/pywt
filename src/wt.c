@@ -78,7 +78,7 @@ int double_idwt(double coeffs_a[], index_t coeffs_a_len,
                  double output[], index_t output_len,
                  MODE mode, int fix_size_diff){
 
-    int input_len;
+    index_t input_len;
     
     // If one of coeffs array is NULL then the reconstruction will be performed
     // using the other one
@@ -147,6 +147,7 @@ INLINE int double_swt_(double input[], index_t input_len,
 
     double* e_filter;
     index_t i, e_filter_len;
+    int ret;
 
     if(level < 1)
         return -1;
@@ -169,9 +170,9 @@ INLINE int double_swt_(double input[], index_t input_len,
         for(i = 0; i < filter_len; ++i){
             e_filter[i << (level-1)] = filter[i];
         }
-        i = double_downsampling_convolution(input, input_len, e_filter, e_filter_len, output, 1, MODE_PERIODIZATION);
+        ret = double_downsampling_convolution(input, input_len, e_filter, e_filter_len, output, 1, MODE_PERIODIZATION);
         wtfree(e_filter);
-        return i;
+        return ret;
 
     } else {
         return double_downsampling_convolution(input, input_len, filter, filter_len, output, 1, MODE_PERIODIZATION);
@@ -261,7 +262,7 @@ int float_idwt(float coeffs_a[], index_t coeffs_a_len,
                  float output[], index_t output_len,
                  MODE mode, int fix_size_diff){
 
-    int input_len;
+    index_t input_len;
     
     // If one of coeffs array is NULL then the reconstruction will be performed
     // using the other one
@@ -330,6 +331,7 @@ INLINE int float_swt_(float input[], index_t input_len,
 
     float* e_filter;
     index_t i, e_filter_len;
+    int ret;
 
     if(level < 1)
         return -1;
@@ -352,9 +354,9 @@ INLINE int float_swt_(float input[], index_t input_len,
         for(i = 0; i < filter_len; ++i){
             e_filter[i << (level-1)] = filter[i];
         }
-        i = float_downsampling_convolution(input, input_len, e_filter, e_filter_len, output, 1, MODE_PERIODIZATION);
+        ret = float_downsampling_convolution(input, input_len, e_filter, e_filter_len, output, 1, MODE_PERIODIZATION);
         wtfree(e_filter);
-        return i;
+        return ret;
 
     } else {
         return float_downsampling_convolution(input, input_len, filter, filter_len, output, 1, MODE_PERIODIZATION);

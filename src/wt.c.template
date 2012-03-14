@@ -81,7 +81,7 @@ int $DTYPE$_idwt($DTYPE$ coeffs_a[], index_t coeffs_a_len,
                  $DTYPE$ output[], index_t output_len,
                  MODE mode, int fix_size_diff){
 
-    int input_len;
+    index_t input_len;
     
     // If one of coeffs array is NULL then the reconstruction will be performed
     // using the other one
@@ -150,6 +150,7 @@ INLINE int $DTYPE$_swt_($DTYPE$ input[], index_t input_len,
 
     $DTYPE$* e_filter;
     index_t i, e_filter_len;
+    int ret;
 
     if(level < 1)
         return -1;
@@ -172,9 +173,9 @@ INLINE int $DTYPE$_swt_($DTYPE$ input[], index_t input_len,
         for(i = 0; i < filter_len; ++i){
             e_filter[i << (level-1)] = filter[i];
         }
-        i = $DTYPE$_downsampling_convolution(input, input_len, e_filter, e_filter_len, output, 1, MODE_PERIODIZATION);
+        ret = $DTYPE$_downsampling_convolution(input, input_len, e_filter, e_filter_len, output, 1, MODE_PERIODIZATION);
         wtfree(e_filter);
-        return i;
+        return ret;
 
     } else {
         return $DTYPE$_downsampling_convolution(input, input_len, filter, filter_len, output, 1, MODE_PERIODIZATION);
