@@ -12,17 +12,6 @@
 #include <math.h>
 #include <memory.h>
 
-#ifdef __GNUC__
-    #define INLINE __inline__
-#elif _WIN32
-    #define INLINE __inline
-#else
-    #define INLINE
-#endif
-
-#ifdef MSVC
-    #pragma inline_depth(1)
-#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 // Typedefs
