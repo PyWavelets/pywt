@@ -125,8 +125,8 @@ BaseNode - a common interface of WaveletPacket and WaveletPacket2D
      :param update: If set, the :attr:`~BaseNode.data` attribute will be
                     updated with the reconstructed value.
 
-     .. note:: Descends to subnodes and recursively calls
-               :meth:`~BaseNode.reconstruct` on them.
+     .. note:: Descends to subnodes and recursively
+               calls :meth:`~BaseNode.reconstruct` on them.
 
   .. method:: get_subnode(part[, decompose=True])
 
