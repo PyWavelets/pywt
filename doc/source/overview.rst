@@ -82,13 +82,6 @@ directories included in the source distribution.
 Note that most of the examples relies on the
 `matplotlib <http://matplotlib.sourceforge.net>`_ plotting package.
 
-.. note:: You can also try to use `easy_insall <http://pypi.python.org/pypi/setuptools>`_
-          or `pip <http://pypi.python.org/pypi/pip>`_ Python package manager to install
-          |pywt|, however this not always works in conjunction with setup scripts using Cython::
-
-              easy_install -U PyWavelets
-              pip install -U PyWavelets
-
 License
 -------
 
