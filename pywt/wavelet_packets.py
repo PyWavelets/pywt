@@ -22,14 +22,15 @@ def get_graycode_order(level, x='a', y='d'):
     return graycode_order
 
 
-class MustOverride(object):
-    def __init__(self, message): self.message= message
-    def __get__(self, obj, cls): raise NotImplementedError(self.message % {'cls': cls.__name__})
-
-
 class BaseNode(object):
-    PART_LEN = MustOverride("BaseNode.PART_LEN must be redefined in subclass %(cls)s.")
-    PARTS = MustOverride("BaseNode.PARTS must be redefined in subclass %(cls)s.")
+    """
+    BaseNode for wavelet packet 1D and 2D tree nodes.
+    """
+
+    # PART_LEN and PARTS attributes that define path tokens for 
+    # node[] lookup must be defined in subclasses.
+    PART_LEN = None
+    PARTS = None
 
     def __init__(self, parent, data, node_name):
         self.parent = parent
@@ -341,6 +342,7 @@ class Node(BaseNode):
 class Node2D(BaseNode):
     """
     WaveletPacket tree node.
+
     Subnodes are called 'a' (LL), 'h' (LH), 'v' (HL) and  'd' (HH), like approximation and
     detail coefficients in 2D Discrete Wavelet Transform
     """
