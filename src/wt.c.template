@@ -143,7 +143,7 @@ int $DTYPE$_idwt($DTYPE$ coeffs_a[], index_t coeffs_a_len,
 
 // basic SWT step
 // TODO: optimize
-INLINE int $DTYPE$_swt_($DTYPE$ input[], index_t input_len,
+int $DTYPE$_swt_($DTYPE$ input[], index_t input_len,
                           const $DTYPE$ filter[], index_t filter_len,
                           $DTYPE$ output[], index_t output_len,
                           int level){

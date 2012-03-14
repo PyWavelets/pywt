@@ -140,7 +140,7 @@ int double_idwt(double coeffs_a[], index_t coeffs_a_len,
 
 // basic SWT step
 // TODO: optimize
-INLINE int double_swt_(double input[], index_t input_len,
+int double_swt_(double input[], index_t input_len,
                           const double filter[], index_t filter_len,
                           double output[], index_t output_len,
                           int level){
@@ -324,7 +324,7 @@ int float_idwt(float coeffs_a[], index_t coeffs_a_len,
 
 // basic SWT step
 // TODO: optimize
-INLINE int float_swt_(float input[], index_t input_len,
+int float_swt_(float input[], index_t input_len,
                           const float filter[], index_t filter_len,
                           float output[], index_t output_len,
                           int level){
