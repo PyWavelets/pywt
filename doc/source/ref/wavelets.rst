@@ -174,6 +174,9 @@ Built-in wavelets - ``wavelist()``
 
   .. sourcecode:: python
 
+    >>> def format_array(arr):
+    ...     return "[%s]" % ", ".join(["%.14f" % x for x in arr])
+
     >>> import pywt
     >>> wavelet = pywt.Wavelet('db1')
     >>> print wavelet
@@ -184,10 +187,10 @@ Built-in wavelets - ``wavelist()``
       Orthogonal:     True
       Biorthogonal:   True
       Symmetry:       asymmetric
-    >>> print wavelet.dec_lo, wavelet.dec_hi
-    [0.70710678118654757, 0.70710678118654757] [-0.70710678118654757, 0.70710678118654757]
-    >>> print wavelet.rec_lo, wavelet.rec_hi
-    [0.70710678118654757, 0.70710678118654757] [0.70710678118654757, -0.70710678118654757]
+    >>> print format_array(wavelet.dec_lo), format_array(wavelet.dec_hi)
+    [0.70710678118655, 0.70710678118655] [-0.70710678118655, 0.70710678118655]
+    >>> print format_array(wavelet.rec_lo), format_array(wavelet.rec_hi)
+    [0.70710678118655, 0.70710678118655] [0.70710678118655, -0.70710678118655]
 
 
 Approximating wavelet and scaling functions - ``Wavelet.wavefun()``
