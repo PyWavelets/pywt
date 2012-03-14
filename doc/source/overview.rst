@@ -52,9 +52,6 @@ The most recent *development* version can be found in Git and Hg repositories at
 Latest release (not always up-to-date), including source and binary package for Windows,
 is available for download from the Python Package Index at http://pypi.python.org/pypi/PyWavelets/.
 
-.. note:: The old SVN repository at http://wavelets.scipy.org/svn/multiresolution/pywt/trunk
-          is not updated anymore and you should switch to one of the new ones.
-
 Install
 -------
 
