@@ -111,9 +111,9 @@ Other Wavelet's properties are:
     - Decomposition (:attr:`~Wavelet.dec_len`) and reconstruction
       (:attr:`~.Wavelet.rec_len`) filter lengths:
 
-        >>> w.dec_len
+        >>> int(w.dec_len) # int() is for normalizing longs and ints for doctest
         6
-        >>> w.rec_len
+        >>> int(w.rec_len)
         6
 
     - Orthogonality (:attr:`~Wavelet.orthogonal`) and biorthogonality (:attr:`~Wavelet.biorthogonal`):

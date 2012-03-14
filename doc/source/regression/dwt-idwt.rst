@@ -55,9 +55,10 @@ data length but also on the :class:Wavelet type (particularly on it's
 To find out what will be the output data size use the :func:`dwt_coeff_len`
 function:
 
-    >>> pywt.dwt_coeff_len(data_len=len(x), filter_len=w.dec_len, mode='sym')
+    >>> # int() is for normalizing Python integers and long integers for documentation tests
+    >>> int(pywt.dwt_coeff_len(data_len=len(x), filter_len=w.dec_len, mode='sym'))
     6
-    >>> pywt.dwt_coeff_len(len(x), w, 'sym')
+    >>> int(pywt.dwt_coeff_len(len(x), w, 'sym'))
     6
     >>> len(cA)
     6
@@ -74,7 +75,7 @@ extension mode (please refer to the PyWavelets' documentation for the
     >>> pywt.MODES.modes
     ['zpd', 'cpd', 'sym', 'ppd', 'sp1', 'per']
 
-    >>> [pywt.dwt_coeff_len(len(x), w.dec_len, mode) for mode in pywt.MODES.modes]
+    >>> [int(pywt.dwt_coeff_len(len(x), w.dec_len, mode)) for mode in pywt.MODES.modes]
     [6, 6, 6, 6, 6, 4]
 
 As you see in the above example, the :ref:`per <MODES.per>` (periodization) mode
@@ -161,5 +162,5 @@ length for dwt using ``db4`` wavelet and the :ref:`sym <MODES.sym>` mode is
     ...
     ValueError: Invalid coefficient arrays length for specified wavelet. Wavelet and mode must be the same as used for decomposition.
 
-    >>> pywt.dwt_coeff_len(1, pywt.Wavelet('db4').dec_len, 'sym')
+    >>> int(pywt.dwt_coeff_len(1, pywt.Wavelet('db4').dec_len, 'sym'))
     4
