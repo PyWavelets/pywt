@@ -13,6 +13,10 @@
 //                    3.1, 3.3, 3.5, 3.7, 3.9,
 //                    4.4, 5.5, 6.8
 // Discrete Meyer wavelet *approximation*: dmey
+
+#ifdef _MSC_VER
+    #pragma warning (disable:4305) // ignore warning about initializing floats from double values
+#endif
 static double db1_double[][2] = {
     {0.70710678118654757, 0.70710678118654757},
     {-0.70710678118654757, 0.70710678118654757},
