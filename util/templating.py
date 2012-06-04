@@ -94,9 +94,14 @@ def expand_files(glob_pattern, force_update=False):
     files = glob.glob(glob_pattern)
 
     for name in files:
-        new_name = splitext(name)[0]
+        new_name, ext = splitext(name) # main extension
+        while "." in new_name:
+            # remove .template extension for files like file.template.c
+            new_name = splitext(new_name)[0]
+        new_name = new_name + ext
         if not exists(new_name) or force_update or getmtime(new_name) < getmtime(name):
             print "expanding template: %s -> %s" % (name, new_name)
-            new_file = open(new_name, 'w')
-            new_file.write(expand_template(open(name).read()))
+            content = expand_template(open(name, "rb").read())
+            new_file = open(new_name, "wb")
+            new_file.write(content)
             new_file.close()
