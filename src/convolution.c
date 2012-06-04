@@ -14,7 +14,7 @@ int double_downsampling_convolution_periodization(const double* input, const_ind
     index_t start;
     double sum;
     double* ptr_w = output;
-    
+
     i = step-1; // first element taken from input is input[step-1]
     //extending by (F-2)/2 elements
     start = F_2 = F/2;
@@ -42,19 +42,19 @@ int double_downsampling_convolution_periodization(const double* input, const_ind
 
     // F - N-1        - filter in input range
     // most time is spent in this loop
-    for(; i < N; i+=step){                    // input elements, 
+    for(; i < N; i+=step){                    // input elements,
         sum = 0;
-        for(j = 0; j < F; ++j)                
+        for(j = 0; j < F; ++j)
             sum += input[i-j]*filter[j];
         *(ptr_w++) = sum;
-    }  
-    
+    }
+
     for(; i < N-step + (F/2)+1 + N%2; i += step){    // input elements
         sum = 0;
         k = i-N+1;
         for(j = k; j < F; ++j)                // overlapped elements
             sum += filter[j]*input[i-j];
-        
+
         if(N%2 == 0){
             for(j = 0; j < k; ++j){            // out of boundary (filter elements [0, k-1])
                 sum += filter[j]*input[k-1-j];
@@ -104,7 +104,7 @@ int double_downsampling_convolution(const double* input, const_index_t N,
     #endif
 
     double* ptr_w = output;
-    
+
     i = start = step-1; // first element taken from input is input[step-1]
 
     if(F <= N){
@@ -128,7 +128,7 @@ int double_downsampling_convolution(const double* input, const_index_t N,
                         for(j = i+1; j < F; ++j)
                             sum += filter[j] * input[j-k];
                         *(ptr_w++) = sum;
-                    }  
+                    }
                     break;
 
                 case MODE_ASYMMETRIC:
@@ -140,7 +140,7 @@ int double_downsampling_convolution(const double* input, const_index_t N,
                         for(j = i+1; j < F; ++j)
                             sum += filter[j] * (input[0] - input[j-k]); // -=
                         *(ptr_w++) = sum;
-                    }  
+                    }
                     break;
 
                 case MODE_CONSTANT_EDGE:
@@ -148,13 +148,13 @@ int double_downsampling_convolution(const double* input, const_index_t N,
                         sum = 0;
                         for(j = 0; j <= i; ++j)
                             sum += filter[j]*input[i-j];
-                    
+
                         k = i+1;
                         for(j = i+1; j < F; ++j)
                             sum += filter[j] * input[0];
 
                         *(ptr_w++) = sum;
-                    }  
+                    }
                     break;
 
                 case MODE_SMOOTH:
@@ -164,10 +164,10 @@ int double_downsampling_convolution(const double* input, const_index_t N,
                             sum += filter[j]*input[i-j];
                         tmp = input[0]-input[1];
                         for(j = i+1; j < F; ++j){
-                            sum += filter[j] * (input[0] + tmp * (j-i)); 
+                            sum += filter[j] * (input[0] + tmp * (j-i));
                         }
                         *(ptr_w++) = sum;
-                    }  
+                    }
                     break;
 
                 case MODE_PERIODIC:
@@ -175,13 +175,13 @@ int double_downsampling_convolution(const double* input, const_index_t N,
                         sum = 0;
                         for(j = 0; j <= i; ++j)
                             sum += filter[j]*input[i-j];
-                    
+
                         k = N+i;
                         for(j = i+1; j < F; ++j)
                             sum += filter[j] * input[k-j];
 
                         *(ptr_w++) = sum;
-                    }  
+                    }
                     break;
 
                 case MODE_ZEROPAD:
@@ -191,7 +191,7 @@ int double_downsampling_convolution(const double* input, const_index_t N,
                         for(j = 0; j <= i; ++j)
                             sum += filter[j]*input[i-j];
                         *(ptr_w++) = sum;
-                    }  
+                    }
                     break;
             }
 
@@ -203,13 +203,13 @@ int double_downsampling_convolution(const double* input, const_index_t N,
             // manually unroll the loop a bit
             //printf("F: %d, N: %d, i: %d\n", F, N, i);
             if((N - F)/step > 4) {
-                for(; i < (N - (3*step)); i += 4*step){                    // input elements, 
+                for(; i < (N - (3*step)); i += 4*step){                    // input elements,
                     //printf("EO4 iter: %d\n", i);
                     sum  = input[i]          * filter[0];
                     sum2 = input[i+step]     * filter[0];
                     sum3 = input[i+(2*step)] * filter[0];
                     sum4 = input[i+(3*step)] * filter[0];
-                    for(j = 1; j < F; ++j){                
+                    for(j = 1; j < F; ++j){
                         sum += input[i-j]           * filter[j];
                         sum2 += input[(step+i)-j]   * filter[j];
                         sum3 += input[(2*step+i)-j] * filter[j];
@@ -222,14 +222,14 @@ int double_downsampling_convolution(const double* input, const_index_t N,
                 }
             }
             #endif
-            
+
             #ifdef OPT_UNROLL2
             if((N - F)/step > 2) {
-                for(; i < (N - step); i += 2*step){                    // input elements, 
+                for(; i < (N - step); i += 2*step){                    // input elements,
                     //printf("EO2 iter: %d\n", i);
                     sum  = input[i]   * filter[0];
                     sum2 = input[i+step] * filter[0];
-                    for(j = 1; j < F; ++j){                
+                    for(j = 1; j < F; ++j){
                         sum += input[i-j]         * filter[j];
                         sum2 += input[(step+i)-j] * filter[j];
                     }
@@ -238,8 +238,8 @@ int double_downsampling_convolution(const double* input, const_index_t N,
                 }
             }
             #endif
-            
-            for(; i < N; i+=step){                    // input elements, 
+
+            for(; i < N; i+=step){                    // input elements,
                 sum = input[i] * filter[0];
                 for(j = 1; j < F; ++j){
                     //printf("EO1 iter: %d\n", i);
@@ -262,7 +262,7 @@ int double_downsampling_convolution(const double* input, const_index_t N,
                             sum += filter[j]*input[N-k+j]; // j-i-1            0*(N-1), 0*(N-2) 1*(N-1)
 
                         *(ptr_w++) = sum;
-                    }  
+                    }
                     break;
 
                 case MODE_ASYMMETRIC:
@@ -273,9 +273,9 @@ int double_downsampling_convolution(const double* input, const_index_t N,
                             sum += filter[j]*input[i-j];
 
                         for(j = 0; j < k; ++j)        // out of boundary
-                            sum += filter[j]*(input[N-1]-input[N-k-1+j]); // -=    j-i-1 
+                            sum += filter[j]*(input[N-1]-input[N-k-1+j]); // -=    j-i-1
                         *(ptr_w++) = sum;
-                    }  
+                    }
                     break;
 
                 case MODE_CONSTANT_EDGE:
@@ -289,7 +289,7 @@ int double_downsampling_convolution(const double* input, const_index_t N,
                             sum += filter[j]*input[N-1]; // input[N-1] = const
 
                         *(ptr_w++) = sum;
-                    }  
+                    }
                     break;
 
                 case MODE_SMOOTH:
@@ -315,7 +315,7 @@ int double_downsampling_convolution(const double* input, const_index_t N,
                         for(j = 0; j < k; ++j)        // out of boundary (filter elements [0, k-1])
                             sum += filter[j]*input[k-1-j];
                         *(ptr_w++) = sum;
-                    }  
+                    }
                     break;
 
                 case MODE_ZEROPAD:
@@ -325,9 +325,9 @@ int double_downsampling_convolution(const double* input, const_index_t N,
                         for(j = i-(N-1); j < F; ++j)
                             sum += input[i-j]*filter[j];
                         *(ptr_w++) = sum;
-                    }  
+                    }
                     break;
-            }        
+            }
         }
         return 0;
 
@@ -352,7 +352,7 @@ int double_allocating_downsampling_convolution(const double* input, const_index_
     double sum, tmp;
     double *buffer;
     double* ptr_w = output;
-    
+
     F_minus_1 = F - 1;
     start = F_minus_1+step-1;
 
@@ -399,7 +399,7 @@ int double_allocating_downsampling_convolution(const double* input, const_index_
                 for(j = 0; j < F/2-1; ++j)                                  // copy from 'buffer' to left
                     buffer[F/2-2-j] =  buffer[N_extended_right_start-j];
             } else {
-                for(j = 0; j < F/2; ++j)        
+                for(j = 0; j < F/2; ++j)
                     buffer[N_extended_right_start+j] = input[j%N]; // copy from begining of `input` to right
                 for(j = 0; j < F/2-1; ++j)                           // copy from 'buffer' to left
                     buffer[F/2-2-j] =  buffer[N_extended_right_start-1-j];
@@ -445,17 +445,17 @@ int double_allocating_downsampling_convolution(const double* input, const_index_
 
         case MODE_CONSTANT_EDGE:
             for(j = 0; j < F_minus_1; ++j){
-                buffer[j] = input[0];            
+                buffer[j] = input[0];
                 buffer[N_extended_right_start+j] = input[N-1];
             }
             break;
 
         case MODE_PERIODIC:
-            for(j = 0; j < F_minus_1; ++j)        
+            for(j = 0; j < F_minus_1; ++j)
                 buffer[N_extended_right_start+j] = input[j%N]; // copy from beggining of `input` to right
-            
+
             for(j = 0; j < F_minus_1; ++j)                       // copy from 'buffer' to left
-                buffer[F_minus_1-1-j] =  buffer[N_extended_right_start-1-j];            
+                buffer[F_minus_1-1-j] =  buffer[N_extended_right_start-1-j];
             break;
 
         case MODE_ZEROPAD:
@@ -476,7 +476,7 @@ int double_allocating_downsampling_convolution(const double* input, const_index_
             sum += buffer[i-j]*filter[j];
         }
         *(ptr_w++) = sum;
-    }  
+    }
 
     // free memory
     wtfree(buffer);
@@ -507,7 +507,7 @@ int double_upsampling_convolution_full(const double* input, const_index_t N,
         //             f1 f2 -> o2
         //          f1 f2 f3 -> o3
 
-        for(j = 0; j < F; ++j)        
+        for(j = 0; j < F; ++j)
             ptr_out[j] += input[i] * filter[j]; // input[i] - const in loop
         ptr_out -= 2;
     }
@@ -517,7 +517,7 @@ int double_upsampling_convolution_full(const double* input, const_index_t N,
 ///////////////////////////////////////////////////////////////////////////////
 // performs IDWT for PERIODIZATION mode only
 // (refactored from the upsamplind_convolution_valid_sf function)
-// 
+//
 // The upsampling is performed by splitting filters to even and odd elements
 // and performing 2 convolutions
 //
@@ -527,7 +527,7 @@ int double_upsampling_convolution_valid_sf_periodization(const double* input, co
                                     const double* filter, const_index_t F,
                                     double* output, const_index_t O)
 {
-    
+
     double *ptr_out = output;
     double *filter_even, *filter_odd;
     double *periodization_buf = NULL;
@@ -550,17 +550,17 @@ int double_upsampling_convolution_valid_sf_periodization(const double* input, co
         // Input data for periodization mode has to be periodically extended
 
         // New length for temporary input
-        N_p = F_2-1 +N; 
+        N_p = F_2-1 +N;
 
         // periodization_buf will hold periodically copied input coeffs values
         periodization_buf = wtcalloc(N_p, sizeof(double));
-        
+
         if(periodization_buf == NULL)
             return -1;
 
         // Copy input data to it's place in the periodization_buf
         // -> [0 0 0 i1 i2 i3 0 0 0]
-        k = (F_2-1)/2; 
+        k = (F_2-1)/2;
         for(i=k; i < k+N; ++i)
             periodization_buf[i] = input[(i-k)%N];
 
@@ -584,11 +584,11 @@ int double_upsampling_convolution_valid_sf_periodization(const double* input, co
             periodization_buf[i] = periodization_buf_rear[j];
             --j;
         }
-        
+
         // Now perform the valid convolution
         if(F_2%2){
             double_upsampling_convolution_valid_sf(periodization_buf, N_p, filter, F, output, O, MODE_ZEROPAD);
-        
+
         // The F_2%2==0 case needs special result fix (oh my, another one..)
         } else {
 
@@ -642,7 +642,7 @@ int double_upsampling_convolution_valid_sf_periodization(const double* input, co
 
         // Check if extending is really needed
         N_p = F_2-1 + (index_t) ceil(k/2.); /*split filter len correct. +  extra samples*/
-        
+
         // ok, if is then do:
         // 1. Allocate buffers for front and rear parts of extended input
         // 2. Copy periodically appriopriate elements from input to the buffers
@@ -666,22 +666,22 @@ int double_upsampling_convolution_valid_sf_periodization(const double* input, co
                 wtfree(filter_even);
                 return -1;
             }
-        
+
             // Fill buffers with appriopriate elements
             memcpy(periodization_buf + N_p - k, input, k * sizeof(double));        // copy from beginning of input to end of buffer
-            for(i = 1; i <= (N_p - k); ++i)                                        // kopiowanie 'cykliczne' od koñca input 
+            for(i = 1; i <= (N_p - k); ++i)                                        // kopiowanie 'cykliczne' od koÅ„ca input
                 periodization_buf[(N_p - k) - i] = input[N - (i%N)];
 
             memcpy(periodization_buf_rear, input + N - k, k * sizeof(double));    // copy from end of input to begginning of buffer
-            for(i = 0; i < (N_p - k); ++i)                                        // kopiowanie 'cykliczne' od pocz¹tku input
+            for(i = 0; i < (N_p - k); ++i)                                        // kopiowanie 'cykliczne' od poczÄ…tku input
                 periodization_buf_rear[k + i] = input[i%N];
-        
+
             ///////////////////////////////////////////////////////////////////
             // Convolve filters with the (front) periodization_buf and compute
             // the first part of output
 
             ptr_base = periodization_buf + F_2 - 1;
-            
+
             if(k%2 == 1){
                 sum_odd = 0;
 
@@ -692,9 +692,9 @@ int double_upsampling_convolution_valid_sf_periodization(const double* input, co
                 --k;
                 if(k)
                     double_upsampling_convolution_valid_sf(periodization_buf + 1, N_p-1, filter, F, ptr_out, O-1, MODE_ZEROPAD);
-                
+
                 ptr_out += k; // k0 - 1 // really move backward by 1
-            
+
             } else if(k){
                 double_upsampling_convolution_valid_sf(periodization_buf, N_p, filter, F, ptr_out, O, MODE_ZEROPAD);
                 ptr_out += k;
@@ -709,16 +709,16 @@ int double_upsampling_convolution_valid_sf_periodization(const double* input, co
 
         ptr_base = (double*)input + F_2 - 1;
         for(i = 0; i < N-(F_2-1); ++i){    // sliding over signal from left to right
-            
+
             sum_even = 0;
             sum_odd = 0;
-            
+
             for(j = 0; j < F_2; ++j){
                 sum_even += filter_even[j] * ptr_base[i-j];
                 sum_odd += filter_odd[j] * ptr_base[i-j];
             }
 
-            *(ptr_out++) += sum_even; 
+            *(ptr_out++) += sum_even;
             *(ptr_out++) += sum_odd;
         }
         //
@@ -737,7 +737,7 @@ int double_upsampling_convolution_valid_sf_periodization(const double* input, co
 
                 if(F_2%2 == 0){ // remaining one element
                     ptr_base = periodization_buf_rear + N_p - 1;
-                
+
                     sum_even = 0;
                     for(j = 0; j < F_2; ++j){
                         sum_even += filter_even[j] * ptr_base[-j];
@@ -752,7 +752,7 @@ int double_upsampling_convolution_valid_sf_periodization(const double* input, co
         }
         if(periodization_buf != NULL) wtfree(periodization_buf);
         if(periodization_buf_rear != NULL) wtfree(periodization_buf_rear);
-        
+
         wtfree(filter_even);
         wtfree(filter_odd);
 
@@ -763,7 +763,7 @@ int double_upsampling_convolution_valid_sf_periodization(const double* input, co
 
 ///////////////////////////////////////////////////////////////////////////////
 // performs IDWT for all modes
-// 
+//
 // The upsampling is performed by splitting filters to even and odd elements
 // and performing 2 convolutions.
 // After refactoring the PERIODIZATION mode case to separate function this
@@ -773,7 +773,7 @@ int double_upsampling_convolution_valid_sf(const double* input, const_index_t N,
                                     const double* filter, const_index_t F,
                                     double* output, const_index_t O,
                                     MODE mode){
-    
+
     double *ptr_out = output;
     double *filter_even, *filter_odd;
     double *ptr_base;
@@ -794,9 +794,9 @@ int double_upsampling_convolution_valid_sf(const double* input, const_index_t N,
 
     if(mode == MODE_PERIODIZATION) // Special case
         return double_upsampling_convolution_valid_sf_periodization(input, N, filter, F, output, O);
-        
+
     if((F%2) || (N < F_2)) // Filter must have even length.
-        return -1; 
+        return -1;
 
     // Allocate memory for even and odd elements of the filter
     filter_even = wtmalloc(F_2 * sizeof(double));
@@ -830,12 +830,12 @@ int double_upsampling_convolution_valid_sf(const double* input, const_index_t N,
         sum_even2 = filter_even[0] * ptr_base[i+1];
         sum_even3 = filter_even[0] * ptr_base[i+2];
         sum_even4 = filter_even[0] * ptr_base[i+3];
-        
+
         sum_odd   = filter_odd[0] * ptr_base[i];
         sum_odd2  = filter_odd[0] * ptr_base[i+1];
         sum_odd3  = filter_odd[0] * ptr_base[i+2];
         sum_odd4  = filter_odd[0] * ptr_base[i+3];
-        
+
         for(j = 1; j < F_2; ++j){
             sum_even  += filter_even[j] * ptr_base[i-j];
             sum_even2 += filter_even[j] * ptr_base[(i+1)-j];
@@ -864,10 +864,10 @@ int double_upsampling_convolution_valid_sf(const double* input, const_index_t N,
     for(; i < N-(F_2+1); i+=2){    // sliding over signal from left to right
         sum_even = filter_even[0] * ptr_base[i];
         sum_even2 = filter_even[0] * ptr_base[i+1];
-        
+
         sum_odd  = filter_odd[0] * ptr_base[i];
         sum_odd2  = filter_odd[0] * ptr_base[i+1];
-        
+
         for(j = 1; j < F_2; ++j){
             sum_even += filter_even[j] * ptr_base[i-j];
             sum_even2 += filter_even[j] * ptr_base[(i+1)-j];
@@ -882,17 +882,17 @@ int double_upsampling_convolution_valid_sf(const double* input, const_index_t N,
         *(ptr_out++) += sum_odd2;
     }
     #endif
-    
+
     for(; i < N-(F_2-1); ++i){    // sliding over signal from left to right
         sum_even = filter_even[0] * ptr_base[i];
         sum_odd  = filter_odd[0] * ptr_base[i];
-        
+
         for(j = 1; j < F_2; ++j){
             sum_even += filter_even[j] * ptr_base[i-j];
             sum_odd += filter_odd[j] * ptr_base[i-j];
         }
 
-        *(ptr_out++) += sum_even; 
+        *(ptr_out++) += sum_even;
         *(ptr_out++) += sum_odd;
     }
 
@@ -919,7 +919,7 @@ int float_downsampling_convolution_periodization(const float* input, const_index
     index_t start;
     float sum;
     float* ptr_w = output;
-    
+
     i = step-1; // first element taken from input is input[step-1]
     //extending by (F-2)/2 elements
     start = F_2 = F/2;
@@ -947,19 +947,19 @@ int float_downsampling_convolution_periodization(const float* input, const_index
 
     // F - N-1        - filter in input range
     // most time is spent in this loop
-    for(; i < N; i+=step){                    // input elements, 
+    for(; i < N; i+=step){                    // input elements,
         sum = 0;
-        for(j = 0; j < F; ++j)                
+        for(j = 0; j < F; ++j)
             sum += input[i-j]*filter[j];
         *(ptr_w++) = sum;
-    }  
-    
+    }
+
     for(; i < N-step + (F/2)+1 + N%2; i += step){    // input elements
         sum = 0;
         k = i-N+1;
         for(j = k; j < F; ++j)                // overlapped elements
             sum += filter[j]*input[i-j];
-        
+
         if(N%2 == 0){
             for(j = 0; j < k; ++j){            // out of boundary (filter elements [0, k-1])
                 sum += filter[j]*input[k-1-j];
@@ -1009,7 +1009,7 @@ int float_downsampling_convolution(const float* input, const_index_t N,
     #endif
 
     float* ptr_w = output;
-    
+
     i = start = step-1; // first element taken from input is input[step-1]
 
     if(F <= N){
@@ -1033,7 +1033,7 @@ int float_downsampling_convolution(const float* input, const_index_t N,
                         for(j = i+1; j < F; ++j)
                             sum += filter[j] * input[j-k];
                         *(ptr_w++) = sum;
-                    }  
+                    }
                     break;
 
                 case MODE_ASYMMETRIC:
@@ -1045,7 +1045,7 @@ int float_downsampling_convolution(const float* input, const_index_t N,
                         for(j = i+1; j < F; ++j)
                             sum += filter[j] * (input[0] - input[j-k]); // -=
                         *(ptr_w++) = sum;
-                    }  
+                    }
                     break;
 
                 case MODE_CONSTANT_EDGE:
@@ -1053,13 +1053,13 @@ int float_downsampling_convolution(const float* input, const_index_t N,
                         sum = 0;
                         for(j = 0; j <= i; ++j)
                             sum += filter[j]*input[i-j];
-                    
+
                         k = i+1;
                         for(j = i+1; j < F; ++j)
                             sum += filter[j] * input[0];
 
                         *(ptr_w++) = sum;
-                    }  
+                    }
                     break;
 
                 case MODE_SMOOTH:
@@ -1069,10 +1069,10 @@ int float_downsampling_convolution(const float* input, const_index_t N,
                             sum += filter[j]*input[i-j];
                         tmp = input[0]-input[1];
                         for(j = i+1; j < F; ++j){
-                            sum += filter[j] * (input[0] + tmp * (j-i)); 
+                            sum += filter[j] * (input[0] + tmp * (j-i));
                         }
                         *(ptr_w++) = sum;
-                    }  
+                    }
                     break;
 
                 case MODE_PERIODIC:
@@ -1080,13 +1080,13 @@ int float_downsampling_convolution(const float* input, const_index_t N,
                         sum = 0;
                         for(j = 0; j <= i; ++j)
                             sum += filter[j]*input[i-j];
-                    
+
                         k = N+i;
                         for(j = i+1; j < F; ++j)
                             sum += filter[j] * input[k-j];
 
                         *(ptr_w++) = sum;
-                    }  
+                    }
                     break;
 
                 case MODE_ZEROPAD:
@@ -1096,7 +1096,7 @@ int float_downsampling_convolution(const float* input, const_index_t N,
                         for(j = 0; j <= i; ++j)
                             sum += filter[j]*input[i-j];
                         *(ptr_w++) = sum;
-                    }  
+                    }
                     break;
             }
 
@@ -1108,13 +1108,13 @@ int float_downsampling_convolution(const float* input, const_index_t N,
             // manually unroll the loop a bit
             //printf("F: %d, N: %d, i: %d\n", F, N, i);
             if((N - F)/step > 4) {
-                for(; i < (N - (3*step)); i += 4*step){                    // input elements, 
+                for(; i < (N - (3*step)); i += 4*step){                    // input elements,
                     //printf("EO4 iter: %d\n", i);
                     sum  = input[i]          * filter[0];
                     sum2 = input[i+step]     * filter[0];
                     sum3 = input[i+(2*step)] * filter[0];
                     sum4 = input[i+(3*step)] * filter[0];
-                    for(j = 1; j < F; ++j){                
+                    for(j = 1; j < F; ++j){
                         sum += input[i-j]           * filter[j];
                         sum2 += input[(step+i)-j]   * filter[j];
                         sum3 += input[(2*step+i)-j] * filter[j];
@@ -1127,14 +1127,14 @@ int float_downsampling_convolution(const float* input, const_index_t N,
                 }
             }
             #endif
-            
+
             #ifdef OPT_UNROLL2
             if((N - F)/step > 2) {
-                for(; i < (N - step); i += 2*step){                    // input elements, 
+                for(; i < (N - step); i += 2*step){                    // input elements,
                     //printf("EO2 iter: %d\n", i);
                     sum  = input[i]   * filter[0];
                     sum2 = input[i+step] * filter[0];
-                    for(j = 1; j < F; ++j){                
+                    for(j = 1; j < F; ++j){
                         sum += input[i-j]         * filter[j];
                         sum2 += input[(step+i)-j] * filter[j];
                     }
@@ -1143,8 +1143,8 @@ int float_downsampling_convolution(const float* input, const_index_t N,
                 }
             }
             #endif
-            
-            for(; i < N; i+=step){                    // input elements, 
+
+            for(; i < N; i+=step){                    // input elements,
                 sum = input[i] * filter[0];
                 for(j = 1; j < F; ++j){
                     //printf("EO1 iter: %d\n", i);
@@ -1167,7 +1167,7 @@ int float_downsampling_convolution(const float* input, const_index_t N,
                             sum += filter[j]*input[N-k+j]; // j-i-1            0*(N-1), 0*(N-2) 1*(N-1)
 
                         *(ptr_w++) = sum;
-                    }  
+                    }
                     break;
 
                 case MODE_ASYMMETRIC:
@@ -1178,9 +1178,9 @@ int float_downsampling_convolution(const float* input, const_index_t N,
                             sum += filter[j]*input[i-j];
 
                         for(j = 0; j < k; ++j)        // out of boundary
-                            sum += filter[j]*(input[N-1]-input[N-k-1+j]); // -=    j-i-1 
+                            sum += filter[j]*(input[N-1]-input[N-k-1+j]); // -=    j-i-1
                         *(ptr_w++) = sum;
-                    }  
+                    }
                     break;
 
                 case MODE_CONSTANT_EDGE:
@@ -1194,7 +1194,7 @@ int float_downsampling_convolution(const float* input, const_index_t N,
                             sum += filter[j]*input[N-1]; // input[N-1] = const
 
                         *(ptr_w++) = sum;
-                    }  
+                    }
                     break;
 
                 case MODE_SMOOTH:
@@ -1220,7 +1220,7 @@ int float_downsampling_convolution(const float* input, const_index_t N,
                         for(j = 0; j < k; ++j)        // out of boundary (filter elements [0, k-1])
                             sum += filter[j]*input[k-1-j];
                         *(ptr_w++) = sum;
-                    }  
+                    }
                     break;
 
                 case MODE_ZEROPAD:
@@ -1230,9 +1230,9 @@ int float_downsampling_convolution(const float* input, const_index_t N,
                         for(j = i-(N-1); j < F; ++j)
                             sum += input[i-j]*filter[j];
                         *(ptr_w++) = sum;
-                    }  
+                    }
                     break;
-            }        
+            }
         }
         return 0;
 
@@ -1257,7 +1257,7 @@ int float_allocating_downsampling_convolution(const float* input, const_index_t 
     float sum, tmp;
     float *buffer;
     float* ptr_w = output;
-    
+
     F_minus_1 = F - 1;
     start = F_minus_1+step-1;
 
@@ -1304,7 +1304,7 @@ int float_allocating_downsampling_convolution(const float* input, const_index_t 
                 for(j = 0; j < F/2-1; ++j)                                  // copy from 'buffer' to left
                     buffer[F/2-2-j] =  buffer[N_extended_right_start-j];
             } else {
-                for(j = 0; j < F/2; ++j)        
+                for(j = 0; j < F/2; ++j)
                     buffer[N_extended_right_start+j] = input[j%N]; // copy from begining of `input` to right
                 for(j = 0; j < F/2-1; ++j)                           // copy from 'buffer' to left
                     buffer[F/2-2-j] =  buffer[N_extended_right_start-1-j];
@@ -1350,17 +1350,17 @@ int float_allocating_downsampling_convolution(const float* input, const_index_t 
 
         case MODE_CONSTANT_EDGE:
             for(j = 0; j < F_minus_1; ++j){
-                buffer[j] = input[0];            
+                buffer[j] = input[0];
                 buffer[N_extended_right_start+j] = input[N-1];
             }
             break;
 
         case MODE_PERIODIC:
-            for(j = 0; j < F_minus_1; ++j)        
+            for(j = 0; j < F_minus_1; ++j)
                 buffer[N_extended_right_start+j] = input[j%N]; // copy from beggining of `input` to right
-            
+
             for(j = 0; j < F_minus_1; ++j)                       // copy from 'buffer' to left
-                buffer[F_minus_1-1-j] =  buffer[N_extended_right_start-1-j];            
+                buffer[F_minus_1-1-j] =  buffer[N_extended_right_start-1-j];
             break;
 
         case MODE_ZEROPAD:
@@ -1381,7 +1381,7 @@ int float_allocating_downsampling_convolution(const float* input, const_index_t 
             sum += buffer[i-j]*filter[j];
         }
         *(ptr_w++) = sum;
-    }  
+    }
 
     // free memory
     wtfree(buffer);
@@ -1412,7 +1412,7 @@ int float_upsampling_convolution_full(const float* input, const_index_t N,
         //             f1 f2 -> o2
         //          f1 f2 f3 -> o3
 
-        for(j = 0; j < F; ++j)        
+        for(j = 0; j < F; ++j)
             ptr_out[j] += input[i] * filter[j]; // input[i] - const in loop
         ptr_out -= 2;
     }
@@ -1422,7 +1422,7 @@ int float_upsampling_convolution_full(const float* input, const_index_t N,
 ///////////////////////////////////////////////////////////////////////////////
 // performs IDWT for PERIODIZATION mode only
 // (refactored from the upsamplind_convolution_valid_sf function)
-// 
+//
 // The upsampling is performed by splitting filters to even and odd elements
 // and performing 2 convolutions
 //
@@ -1432,7 +1432,7 @@ int float_upsampling_convolution_valid_sf_periodization(const float* input, cons
                                     const float* filter, const_index_t F,
                                     float* output, const_index_t O)
 {
-    
+
     float *ptr_out = output;
     float *filter_even, *filter_odd;
     float *periodization_buf = NULL;
@@ -1455,17 +1455,17 @@ int float_upsampling_convolution_valid_sf_periodization(const float* input, cons
         // Input data for periodization mode has to be periodically extended
 
         // New length for temporary input
-        N_p = F_2-1 +N; 
+        N_p = F_2-1 +N;
 
         // periodization_buf will hold periodically copied input coeffs values
         periodization_buf = wtcalloc(N_p, sizeof(float));
-        
+
         if(periodization_buf == NULL)
             return -1;
 
         // Copy input data to it's place in the periodization_buf
         // -> [0 0 0 i1 i2 i3 0 0 0]
-        k = (F_2-1)/2; 
+        k = (F_2-1)/2;
         for(i=k; i < k+N; ++i)
             periodization_buf[i] = input[(i-k)%N];
 
@@ -1489,11 +1489,11 @@ int float_upsampling_convolution_valid_sf_periodization(const float* input, cons
             periodization_buf[i] = periodization_buf_rear[j];
             --j;
         }
-        
+
         // Now perform the valid convolution
         if(F_2%2){
             float_upsampling_convolution_valid_sf(periodization_buf, N_p, filter, F, output, O, MODE_ZEROPAD);
-        
+
         // The F_2%2==0 case needs special result fix (oh my, another one..)
         } else {
 
@@ -1547,7 +1547,7 @@ int float_upsampling_convolution_valid_sf_periodization(const float* input, cons
 
         // Check if extending is really needed
         N_p = F_2-1 + (index_t) ceil(k/2.); /*split filter len correct. +  extra samples*/
-        
+
         // ok, if is then do:
         // 1. Allocate buffers for front and rear parts of extended input
         // 2. Copy periodically appriopriate elements from input to the buffers
@@ -1571,22 +1571,22 @@ int float_upsampling_convolution_valid_sf_periodization(const float* input, cons
                 wtfree(filter_even);
                 return -1;
             }
-        
+
             // Fill buffers with appriopriate elements
             memcpy(periodization_buf + N_p - k, input, k * sizeof(float));        // copy from beginning of input to end of buffer
-            for(i = 1; i <= (N_p - k); ++i)                                        // kopiowanie 'cykliczne' od koñca input 
+            for(i = 1; i <= (N_p - k); ++i)                                        // kopiowanie 'cykliczne' od koÅ„ca input
                 periodization_buf[(N_p - k) - i] = input[N - (i%N)];
 
             memcpy(periodization_buf_rear, input + N - k, k * sizeof(float));    // copy from end of input to begginning of buffer
-            for(i = 0; i < (N_p - k); ++i)                                        // kopiowanie 'cykliczne' od pocz¹tku input
+            for(i = 0; i < (N_p - k); ++i)                                        // kopiowanie 'cykliczne' od poczÄ…tku input
                 periodization_buf_rear[k + i] = input[i%N];
-        
+
             ///////////////////////////////////////////////////////////////////
             // Convolve filters with the (front) periodization_buf and compute
             // the first part of output
 
             ptr_base = periodization_buf + F_2 - 1;
-            
+
             if(k%2 == 1){
                 sum_odd = 0;
 
@@ -1597,9 +1597,9 @@ int float_upsampling_convolution_valid_sf_periodization(const float* input, cons
                 --k;
                 if(k)
                     float_upsampling_convolution_valid_sf(periodization_buf + 1, N_p-1, filter, F, ptr_out, O-1, MODE_ZEROPAD);
-                
+
                 ptr_out += k; // k0 - 1 // really move backward by 1
-            
+
             } else if(k){
                 float_upsampling_convolution_valid_sf(periodization_buf, N_p, filter, F, ptr_out, O, MODE_ZEROPAD);
                 ptr_out += k;
@@ -1614,16 +1614,16 @@ int float_upsampling_convolution_valid_sf_periodization(const float* input, cons
 
         ptr_base = (float*)input + F_2 - 1;
         for(i = 0; i < N-(F_2-1); ++i){    // sliding over signal from left to right
-            
+
             sum_even = 0;
             sum_odd = 0;
-            
+
             for(j = 0; j < F_2; ++j){
                 sum_even += filter_even[j] * ptr_base[i-j];
                 sum_odd += filter_odd[j] * ptr_base[i-j];
             }
 
-            *(ptr_out++) += sum_even; 
+            *(ptr_out++) += sum_even;
             *(ptr_out++) += sum_odd;
         }
         //
@@ -1642,7 +1642,7 @@ int float_upsampling_convolution_valid_sf_periodization(const float* input, cons
 
                 if(F_2%2 == 0){ // remaining one element
                     ptr_base = periodization_buf_rear + N_p - 1;
-                
+
                     sum_even = 0;
                     for(j = 0; j < F_2; ++j){
                         sum_even += filter_even[j] * ptr_base[-j];
@@ -1657,7 +1657,7 @@ int float_upsampling_convolution_valid_sf_periodization(const float* input, cons
         }
         if(periodization_buf != NULL) wtfree(periodization_buf);
         if(periodization_buf_rear != NULL) wtfree(periodization_buf_rear);
-        
+
         wtfree(filter_even);
         wtfree(filter_odd);
 
@@ -1668,7 +1668,7 @@ int float_upsampling_convolution_valid_sf_periodization(const float* input, cons
 
 ///////////////////////////////////////////////////////////////////////////////
 // performs IDWT for all modes
-// 
+//
 // The upsampling is performed by splitting filters to even and odd elements
 // and performing 2 convolutions.
 // After refactoring the PERIODIZATION mode case to separate function this
@@ -1678,7 +1678,7 @@ int float_upsampling_convolution_valid_sf(const float* input, const_index_t N,
                                     const float* filter, const_index_t F,
                                     float* output, const_index_t O,
                                     MODE mode){
-    
+
     float *ptr_out = output;
     float *filter_even, *filter_odd;
     float *ptr_base;
@@ -1699,9 +1699,9 @@ int float_upsampling_convolution_valid_sf(const float* input, const_index_t N,
 
     if(mode == MODE_PERIODIZATION) // Special case
         return float_upsampling_convolution_valid_sf_periodization(input, N, filter, F, output, O);
-        
+
     if((F%2) || (N < F_2)) // Filter must have even length.
-        return -1; 
+        return -1;
 
     // Allocate memory for even and odd elements of the filter
     filter_even = wtmalloc(F_2 * sizeof(float));
@@ -1735,12 +1735,12 @@ int float_upsampling_convolution_valid_sf(const float* input, const_index_t N,
         sum_even2 = filter_even[0] * ptr_base[i+1];
         sum_even3 = filter_even[0] * ptr_base[i+2];
         sum_even4 = filter_even[0] * ptr_base[i+3];
-        
+
         sum_odd   = filter_odd[0] * ptr_base[i];
         sum_odd2  = filter_odd[0] * ptr_base[i+1];
         sum_odd3  = filter_odd[0] * ptr_base[i+2];
         sum_odd4  = filter_odd[0] * ptr_base[i+3];
-        
+
         for(j = 1; j < F_2; ++j){
             sum_even  += filter_even[j] * ptr_base[i-j];
             sum_even2 += filter_even[j] * ptr_base[(i+1)-j];
@@ -1769,10 +1769,10 @@ int float_upsampling_convolution_valid_sf(const float* input, const_index_t N,
     for(; i < N-(F_2+1); i+=2){    // sliding over signal from left to right
         sum_even = filter_even[0] * ptr_base[i];
         sum_even2 = filter_even[0] * ptr_base[i+1];
-        
+
         sum_odd  = filter_odd[0] * ptr_base[i];
         sum_odd2  = filter_odd[0] * ptr_base[i+1];
-        
+
         for(j = 1; j < F_2; ++j){
             sum_even += filter_even[j] * ptr_base[i-j];
             sum_even2 += filter_even[j] * ptr_base[(i+1)-j];
@@ -1787,17 +1787,17 @@ int float_upsampling_convolution_valid_sf(const float* input, const_index_t N,
         *(ptr_out++) += sum_odd2;
     }
     #endif
-    
+
     for(; i < N-(F_2-1); ++i){    // sliding over signal from left to right
         sum_even = filter_even[0] * ptr_base[i];
         sum_odd  = filter_odd[0] * ptr_base[i];
-        
+
         for(j = 1; j < F_2; ++j){
             sum_even += filter_even[j] * ptr_base[i-j];
             sum_odd += filter_odd[j] * ptr_base[i-j];
         }
 
-        *(ptr_out++) += sum_even; 
+        *(ptr_out++) += sum_even;
         *(ptr_out++) += sum_odd;
     }
 
