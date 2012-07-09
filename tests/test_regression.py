@@ -1,9 +1,13 @@
 #!/usr/bin/env python
 
-import doctest
+import os
 import glob
+import doctest
 
-files = glob.glob("../doc/source/regression/*.rst")
+docs_base = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, "doc", "source"))
+files = glob.glob(os.path.join(docs_base, "regression", "*.rst"))
+
+assert files
 
 for path in files:
     print "testing %s" % path
