@@ -90,15 +90,16 @@ def expand_template(s):
 
 def expand_files(glob_pattern, force_update=False):
     import glob
-    from os.path import splitext, exists, getmtime
+    from os.path import splitext, exists, getmtime, basename, dirname, join, extsep
     files = glob.glob(glob_pattern)
 
     for name in files:
-        new_name, ext = splitext(name) # main extension
-        while "." in new_name:
+        directory = dirname(name)
+        new_name, ext = splitext(basename(name)) # main extension
+        while extsep in new_name:
             # remove .template extension for files like file.template.c
             new_name = splitext(new_name)[0]
-        new_name = new_name + ext
+        new_name = join(directory, new_name + ext)
         if not exists(new_name) or force_update or getmtime(new_name) < getmtime(name):
             print "expanding template: %s -> %s" % (name, new_name)
             content = expand_template(open(name, "rb").read())
