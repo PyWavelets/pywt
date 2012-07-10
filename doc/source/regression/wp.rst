@@ -266,7 +266,7 @@ tree:
     [ 1.  2.  3.  4.  5.  6.  7.  8.]
 
 
-Lazy eveluation:
+Lazy evaluation:
 ----------------
 
 .. note:: This section is for demonstration of pywt internals purposes

@@ -16,7 +16,7 @@
 #include "wavelets.h"
 
 
-// _a suffix - wavelet transform aproximations
+// _a suffix - wavelet transform approximations
 // _d suffix - wavelet transform details
 
 //## FOR $DTYPE$ IN (double, float):

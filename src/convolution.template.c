@@ -398,12 +398,12 @@ int $DTYPE$_allocating_downsampling_convolution(const $DTYPE$* input, const_inde
             if(N%2){ // odd - repeat last element
                 buffer[N_extended_right_start] = input[N-1];
                 for(j = 1; j < F/2; ++j)
-                    buffer[N_extended_right_start+j] = buffer[F/2-2 + j]; // copy from begining of `input` to right
+                    buffer[N_extended_right_start+j] = buffer[F/2-2 + j]; // copy from beginning of `input` to right
                 for(j = 0; j < F/2-1; ++j)                                  // copy from 'buffer' to left
                     buffer[F/2-2-j] =  buffer[N_extended_right_start-j];
             } else {
                 for(j = 0; j < F/2; ++j)
-                    buffer[N_extended_right_start+j] = input[j%N]; // copy from begining of `input` to right
+                    buffer[N_extended_right_start+j] = input[j%N]; // copy from beginning of `input` to right
                 for(j = 0; j < F/2-1; ++j)                           // copy from 'buffer' to left
                     buffer[F/2-2-j] =  buffer[N_extended_right_start-1-j];
             }
@@ -455,7 +455,7 @@ int $DTYPE$_allocating_downsampling_convolution(const $DTYPE$* input, const_inde
 
         case MODE_PERIODIC:
             for(j = 0; j < F_minus_1; ++j)
-                buffer[N_extended_right_start+j] = input[j%N]; // copy from beggining of `input` to right
+                buffer[N_extended_right_start+j] = input[j%N]; // copy from beginning of `input` to right
 
             for(j = 0; j < F_minus_1; ++j)                       // copy from 'buffer' to left
                 buffer[F_minus_1-1-j] =  buffer[N_extended_right_start-1-j];
@@ -519,7 +519,7 @@ int $DTYPE$_upsampling_convolution_full(const $DTYPE$* input, const_index_t N,
 
 ///////////////////////////////////////////////////////////////////////////////
 // performs IDWT for PERIODIZATION mode only
-// (refactored from the upsamplind_convolution_valid_sf function)
+// (refactored from the upsampling_convolution_valid_sf function)
 //
 // The upsampling is performed by splitting filters to even and odd elements
 // and performing 2 convolutions
@@ -648,7 +648,7 @@ int $DTYPE$_upsampling_convolution_valid_sf_periodization(const $DTYPE$* input, 
 
         // ok, if is then do:
         // 1. Allocate buffers for front and rear parts of extended input
-        // 2. Copy periodically appriopriate elements from input to the buffers
+        // 2. Copy periodically appropriate elements from input to the buffers
         // 3. Convolve front buffer, input and rear buffer with even and odd
         //    elements of the filter (this results in upsampling)
         // 4. Free memory
@@ -670,12 +670,12 @@ int $DTYPE$_upsampling_convolution_valid_sf_periodization(const $DTYPE$* input, 
                 return -1;
             }
 
-            // Fill buffers with appriopriate elements
+            // Fill buffers with appropriate elements
             memcpy(periodization_buf + N_p - k, input, k * sizeof($DTYPE$));        // copy from beginning of input to end of buffer
             for(i = 1; i <= (N_p - k); ++i)                                        // kopiowanie 'cykliczne' od końca input
                 periodization_buf[(N_p - k) - i] = input[N - (i%N)];
 
-            memcpy(periodization_buf_rear, input + N - k, k * sizeof($DTYPE$));    // copy from end of input to begginning of buffer
+            memcpy(periodization_buf_rear, input + N - k, k * sizeof($DTYPE$));    // copy from end of input to beginning of buffer
             for(i = 0; i < (N_p - k); ++i)                                        // kopiowanie 'cykliczne' od początku input
                 periodization_buf_rear[k + i] = input[i%N];
 

@@ -376,7 +376,7 @@ to do a full decomposition up to the *maximum level* of decomposition:
     daa dah dav dad dha dhh dhv dhd
     dva dvh dvv dvd dda ddh ddv ddd
 
-Lazy eveluation:
+Lazy evaluation:
 ----------------
 
 .. note:: This section is for demonstration of pywt internals purposes

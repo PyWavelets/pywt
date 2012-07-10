@@ -925,7 +925,7 @@ void free_wavelet(Wavelet *w){
 
     if(w->_builtin == 0){
 
-        // dealocate filters
+        // deallocate filters
             if(w->dec_lo_double != NULL){
                 wtfree(w->dec_lo_double);
                 w->dec_lo_double = NULL;

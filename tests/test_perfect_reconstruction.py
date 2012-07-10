@@ -57,7 +57,7 @@ if __name__ == '__main__':
 
     families = ('db', 'sym', 'coif', 'bior', 'rbio')
     wavelets = sum([pywt.wavelist(name) for name in families], [])
-    # list of mode names in pywt and matalb
+    # list of mode names in pywt and matlab
     modes = [('zpd', 'zpd'), ('cpd', 'sp0'), ('sym', 'sym'),
              ('ppd', 'ppd'), ('sp1', 'sp1'), ('per', 'per')]
 

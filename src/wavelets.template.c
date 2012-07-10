@@ -400,7 +400,7 @@ void free_wavelet(Wavelet *w){
 
     if(w->_builtin == 0){
 
-        // dealocate filters
+        // deallocate filters
         //## FOR $DTYPE$ IN (double, float):        
             if(w->dec_lo_$DTYPE$ != NULL){
                 wtfree(w->dec_lo_$DTYPE$);

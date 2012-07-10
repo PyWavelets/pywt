@@ -28,7 +28,7 @@ cdef object memory_buffer_object(Py_ssize_t length, DTYPE dtype):
 cdef int array_object_as_float_buffer(object source, Buffer* buffer, char rwmode) except -1:
     # Get object buffer for reading (rwmode = 'r') or writing (rwmode = 'w')
     #
-    # source      - source object exposing array interfce
+    # source      - source object exposing array interface
     # buffer_addr - will be set on success to 
     # buffer_len  - set to buffer length
     # itemsize    - set to item size (4 for float32, 8 for float 64)

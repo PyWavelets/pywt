@@ -26,7 +26,7 @@
 int double_downsampling_convolution(const double* input, const_index_t N, const double* filter, const_index_t F, double* output, const_index_t step, MODE mode);
 int float_downsampling_convolution(const float* input, const_index_t N, const float* filter, const_index_t F, float* output, const_index_t step, MODE mode);
 
-// Straightfoward implementation with memory reallocation - for very short signals (shorter than filter).
+// Straightforward implementation with memory reallocation - for very short signals (shorter than filter).
 // This id called from downsampling_convolution
 int double_allocating_downsampling_convolution(const double* input, const_index_t N, const double* filter, const_index_t F, double* output, const_index_t step, MODE mode);
 int float_allocating_downsampling_convolution(const float* input, const_index_t N, const float* filter, const_index_t F, float* output, const_index_t step, MODE mode);

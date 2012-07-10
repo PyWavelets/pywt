@@ -26,7 +26,7 @@ def dwt2(data, wavelet, mode='sym'):
     wavelet - wavelet to use (Wavelet object or name string)
     mode    - signal extension mode, see MODES
 
-    Returns approximaion and three details 2D coefficients arrays.
+    Returns approximation and three details 2D coefficients arrays.
 
     The result form four 2D coefficients arrays organized in tuples:
 
@@ -36,7 +36,7 @@ def dwt2(data, wavelet, mode='sym'):
                 diagonal details)
         )
 
-    which sometimes is also interpreted as layed out in one 2D array
+    which sometimes is also interpreted as laid out in one 2D array
     of coefficients, where:
 
                                 -----------------

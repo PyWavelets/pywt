@@ -91,7 +91,7 @@ License
 Contact
 -------
 
-Post your suggestions and guestions to `PyWavelets discussions
+Post your suggestions and questions to `PyWavelets discussions
 group <http://groups.google.com/group/pywavelets>`_ (pywavelets@googlegroups.com).
 
 Comments, bug reports and fixes are welcome through `Github <https://github.com/nigma/pywt>`_ and `Bitbucket <https://bitbucket.org/nigma/pywt>`_ project sites.

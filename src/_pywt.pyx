@@ -68,7 +68,7 @@ class MODES(object):
 
     To reduce this effect the signal or image can be extended by adding extra samples.
 
-    zpd - zero-padpadding                0  0 | x1 x2 ... xn | 0  0
+    zpd - zero-padding                   0  0 | x1 x2 ... xn | 0  0
     cpd - constant-padding              x1 x1 | x1 x2 ... xn | xn xn
     sym - symmetric-padding             x2 x1 | x1 x2 ... xn | xn xn-1
     ppd - periodic-padding            xn-1 xn | x1 x2 ... xn | x1 x2
@@ -349,7 +349,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
     def wavefun(self, int level=8):
         """wavefun(int level=8)
 
-        Calculates aproximations of scaling function (*phi*) and wavelet
+        Calculates approximations of scaling function (*phi*) and wavelet
         function (*psi*) on xgrid (*x*) at a given level of refinement.
 
         For orthogonal wavelets returns scaling function, wavelet function
@@ -463,7 +463,7 @@ def dwt_max_level(data_len, filter_len):
     """
     dwt_max_level(int data_len, int filter_len) -> int
 
-    Compute the maximum usefull level of decomposition
+    Compute the maximum useful level of decomposition
     for given input data length and wavelet filter length.
     """
     if c_python.PyObject_IsInstance(filter_len, Wavelet):
@@ -674,7 +674,7 @@ def idwt(object cA, object cD, object wavelet, object mode = 'sym', int correct_
 def upcoef(part, coeffs, wavelet, int level=1, take=0):
     """rec = upcoef(part, coeffs, wavelet, level=1, take=0)
 
-    Direct reconstruction from cefficients.
+    Direct reconstruction from coefficients.
 
     part    - coefficients type:
       'a' - approximations reconstruction is performed

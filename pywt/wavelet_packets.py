@@ -261,7 +261,7 @@ class BaseNode(object):
         If func returns True, descending to subnodes will continue.
 
         func - callable
-        args - func parms
+        args - func params
         kwargs - func keyword params
         """
         if func(self, *args, **kwargs) and self.level < self.maxlevel:
@@ -276,7 +276,7 @@ class BaseNode(object):
         nodes.
 
         func - callable
-        args - func parms
+        args - func params
         kwargs - func keyword params
         """
         if self.level < self.maxlevel:

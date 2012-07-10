@@ -81,7 +81,7 @@ def intwave(wavelet, precision=8):
 def centfrq(wavelet, precision=8):
     """
     centfrq(wavelet, precision=8) -> float                  - for orthogonal wavelets
-    centfrq((function_aprox, x), precision=8) -> float      - for (function approx., x grid) pair
+    centfrq((function_approx, x), precision=8) -> float      - for (function approx., x grid) pair
 
     Computes the central frequency of the *psi* wavelet function.
 

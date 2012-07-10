@@ -32,7 +32,7 @@ Now let's do an opposite operation
     >>> print pywt.idwt(cA, cD, 'db2')
     [ 3.  7.  1.  1. -2.  5.  4.  6.]
 
-Violla! That's it!
+Voilà! That's it!
 
 More Examples
 -------------
@@ -48,7 +48,7 @@ mode (the default is :ref:`sym <MODES.sym>`) for the border effect handling:
     >>> print cD
     [-1.33068221 -2.78795192 -3.16825651 -0.67715519 -0.09722957 -0.07045258]
 
-Note that the output coefficients arrays lenght depends not only on the input
+Note that the output coefficients arrays length depends not only on the input
 data length but also on the :class:Wavelet type (particularly on it's
 :attr:`filters lenght <~Wavelet.dec_len>` that are used in the transformation).
 
@@ -64,7 +64,7 @@ function:
     6
 
 Looks fine. (And if you expected that the output length would be a half of the
-input data length, well, that's the tradeoff that allows for the perfect
+input data length, well, that's the trade-off that allows for the perfect
 reconstruction...).
 
 The third argument of the :func:`dwt_coeff_len` is the already mentioned signal
@@ -137,7 +137,7 @@ must have the same size.
     ...
     ValueError: Coefficients arrays must have the same size.
 
-But for some applications like multilevel DWT and IDWT it is sometimes conveniet
+But for some applications like multilevel DWT and IDWT it is sometimes convenient
 to allow for a small departure from this behaviour. When the *correct_size* flag
 is set, the approximation coefficients array can be larger from the details
 coefficient array by one element:
@@ -153,7 +153,7 @@ coefficient array by one element:
 
 Not every coefficient array can be used in :func:`IDWT <idwt>`. In the following
 example the :func:`idwt` will fail because the input arrays are invalid - they
-couldn't be created as a result of :func:`DWT <dwt>`, beacuse the minimal output
+couldn't be created as a result of :func:`DWT <dwt>`, because the minimal output
 length for dwt using ``db4`` wavelet and the :ref:`sym <MODES.sym>` mode is
 ``4``, not ``3``:
 

@@ -13,7 +13,7 @@
 
 #include "Python.h"
 
-#define __PY_ARRAY_INTERFACE_VERSION__ 0x0002 // TODO: update for SVN's 0x0003 compatlibility
+#define __PY_ARRAY_INTERFACE_VERSION__ 0x0002 // TODO: update for SVN's 0x0003 compatibility
 
 typedef Py_intptr_t intp;
 

@@ -7,7 +7,7 @@ Usage examples
 ==============
 
 The following examples are used as doc-tests regression tests written using reST markup.
-They are included in the docummentation since they contain various useful examples
+They are included in the documentation since they contain various useful examples
 illustrating how to use and how to not use |pywt|.
 
 .. toctree::

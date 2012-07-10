@@ -3,8 +3,8 @@ PyWavelets - Discrete Wavelet Transform in Python
 
 .. note:: 
 
-    This documetation covers PyWavelets 0.2 release.
-    Documetation for the 0.1.6 release is still available at
+    This documentation covers PyWavelets 0.2 release.
+    Documentation for the 0.1.6 release is still available at
     http://www.pybytes.com/pywavelets/0.1.6/.
 
 Contents:

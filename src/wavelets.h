@@ -19,7 +19,7 @@ typedef enum {
 } SYMMETRY;
 
 
-// Wavelet structure holding pointers to filter arays and property attributes
+// Wavelet structure holding pointers to filter arrays and property attributes
 typedef struct {
         double* dec_hi_double;        // highpass decomposition
         double* dec_lo_double;        // lowpass    decomposition
@@ -51,7 +51,7 @@ typedef struct {
     int biorthogonal:1;
     int compact_support:1;
 
-    // Set if filters arrays shouldn't be dealocated by free_wavelet(Wavelet) func
+    // Set if filters arrays shouldn't be deallocated by free_wavelet(Wavelet) func
     int _builtin:1;
 
     char* family_name;

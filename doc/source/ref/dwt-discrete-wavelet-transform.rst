@@ -82,7 +82,7 @@ Multilevel decomposition using ``wavedec``
 
   :param mode: |mode|
 
-  :param level: Number of decomposition steps to performe. If the level is
+  :param level: Number of decomposition steps to perform. If the level is
                 ``None``, then the full decomposition up to the level computed
                 with :func:`dwt_max_level` function for the given data and
                 wavelet lengths is performed.

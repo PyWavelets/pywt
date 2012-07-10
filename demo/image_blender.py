@@ -97,7 +97,7 @@ def blend_images(base, texture, wavelet, level, mode='sp1', base_gain=None, text
             output_band_coeffs = [base_band_coeffs[0]] # cA
             del base_band_coeffs[0], texture_band_coeffs[0]
             
-            # blend details coefficints
+            # blend details coefficients
             for n, (base_band_details, texture_band_details) in enumerate(zip(base_band_coeffs, texture_band_coeffs)):
                 
                 blended_details = []
