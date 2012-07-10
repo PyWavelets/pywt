@@ -5,6 +5,8 @@ from __future__ import print_function
 
 import os
 import sys
+from distutils import dir_util
+from distutils.cmd import Command
 from distutils.command.build_ext import build_ext as build_ext_distutils
 from distutils.command.sdist import sdist as sdist_distutils
 from distutils.errors import DistutilsClassError
@@ -19,6 +21,36 @@ def replace_extension(path, newext):
 
 def is_newer(file, than_file):
     return os.path.getmtime(file) > os.path.getmtime(than_file)
+
+
+class CleanCommand(Command):
+    user_options = []
+
+    def initialize_options(self):
+        self.base_roots = ["demo", "doc", "pywt", "src", "tests", "util"]
+        self.files = []
+        self.dirs = ["build", "dist"]
+
+    def finalize_options(self):
+        for base_root in self.base_roots:
+            if os.path.exists(base_root):
+                for root, dirs, files in os.walk(base_root):
+                    for f in files:
+                        if os.path.splitext(f)[-1] in (".pyc", ".so", ".o", ".pyd"):
+                            self.files.append(os.path.join(root, f))
+
+                    for d in dirs:
+                        if d == "__pycache__":
+                            self.dirs.append(os.path.join(root, d))
+
+    def run(self):
+        for path in self.files:
+            print("removing '{0}'".format(path))
+            if not self.dry_run:
+                os.remove(path)
+
+        for d in self.dirs:
+            dir_util.remove_tree(d, dry_run=self.dry_run)
 
 
 class SdistCommand(sdist_distutils):

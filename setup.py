@@ -25,6 +25,7 @@ package_dir = {"pywt": "pywt"}
 cmdclass={
     "build_ext": commands.BuildExtCommand,
     "sdist": commands.SdistCommand,
+    "clean_build": commands.CleanCommand,
 }
 
 setup(
