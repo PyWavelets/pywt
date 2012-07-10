@@ -11,20 +11,15 @@ PyWavelets is a Python wavelet transforms module that can do:
   * Single and double precision calculations
   * Results compatibility with Matlab Wavelet Toolbox (tm)
 
-
 Download
 --------
 
-The most recent *development* version can be found in Git and Hg repositories at:
-
-  * Github - https://github.com/nigma/pywt
-  * Bitbucket - https://bitbucket.org/nigma/pywt
+The most recent *development* version can be found on GitHub at
+https://github.com/nigma/pywt.
 
 Latest release (not always up-to-date), including source and binary package for Windows,
-is available for download from the Python Package Index at http://pypi.python.org/pypi/PyWavelets.
-
-Note: The old SVN repository at http://wavelets.scipy.org/svn/multiresolution/pywt/trunk is
-not updated anymore and you should switch to one of the new ones.
+is available for download from the
+`Python Package Index <http://pypi.python.org/pypi/PyWavelets>`_.
 
 Install
 -------
@@ -32,10 +27,15 @@ Install
 In order to build PyWavelets from source, a working C compiler (GCC or MinGW) 
 and a recent version of Cython (http://cython.org/) is required.
 
-After completing the build environment, open the shell prompt, go to the
-PyWavelets source code directory and type::
+ - To install PyWavelets open shell prompt and type ``pip install PyWavelets``
+   or ``easy_install PyWavelets``.
 
-    python setup.py install
+ - To build and install from source, navigate to downloaded PyWavelets source
+   code directory and type ``python setup.py install``.
+
+ - The `in-development version <https://github.com/nigma/pywt/tarball/develop#egg=PyWavelets-dev>`_
+   of PyWavelets can be installed with ``pip install PyWavelets==dev``
+   or ``easy_install PyWavelets==dev``.
 
 Prebuilt Windows binaries and source code packages are also
 available from http://pypi.python.org/pypi/PyWavelets.
@@ -46,10 +46,8 @@ Documentation
 Documentation and links to more resources is available online
 at http://www.pybytes.com/pywavelets/.
 
-Project wiki and trac system are hosted at http://wavelets.scipy.org/.
-
-For examples see `demo` directories in the source package.
-
+For more usage examples see `demo <https://github.com/nigma/pywt/tree/master/demo>`_
+directory in the source package.
 
 License
 -------
