@@ -16,6 +16,10 @@ def replace_extension(path, newext):
     return os.path.splitext(path)[0] + newext
 
 
+def is_newer(file, than_file):
+    return os.path.getmtime(file) > os.path.getmtime(than_file)
+
+
 class SdistCommand(sdist_distutils):
     def run(self):
         self.force_manifest = 1
@@ -23,13 +27,36 @@ class SdistCommand(sdist_distutils):
 
 
 class BuildExtCommand(build_ext_distutils):
-    templates_force_update = False
     templates_glob = os.path.join(base_dir, "src", "*.template.*")
 
-    pyx_compile = True # enable Cython files compilation
-    pyx_force_compile = False # always compile Cython files
+    extra_compile_flags = {
+        #"msvc": ["/W4", "/wd4127", "/wd4702", "/wd4100"]
+    }
 
-    extra_compile_flags = {}
+    user_options = build_ext_distutils.user_options + [
+        ("pyx-compile", None, "enable Cython files compilation"),
+        ("force-pyx-compile", None, "always compile Cython files"),
+        ("force-template-update", None, "always expand templates"),
+    ]
+
+    boolean_options = build_ext_distutils.boolean_options + [
+        "pyx_compile", "pyx_force_compile", "templates_force_update"
+    ]
+
+    def initialize_options(self):
+        build_ext_distutils.initialize_options(self)
+        self.templates_force_update = False
+        self.pyx_compile = True
+        self.pyx_force_compile = True
+
+    def finalize_options(self):
+        build_ext_distutils.finalize_options(self)
+
+        self.set_undefined_options("build",
+            ("pyx_compile", "pyx_compile"),
+            ("pyx_force_compile", "pyx_force_compile"),
+            ("templates_force_update", "templates_force_update")
+        )
 
     def get_extra_compile_args(self):
         compiler_type = self.compiler.compiler_type
@@ -40,7 +67,7 @@ class BuildExtCommand(build_ext_distutils):
             return True
         if not os.path.exists(compiled_file):
             return True
-        if os.path.getmtime(source_file) > os.path.getmtime(compiled_file):
+        if is_newer(source_file, compiled_file):
             return True
         return False
 
@@ -48,13 +75,15 @@ class BuildExtCommand(build_ext_distutils):
         c_source_file = replace_extension(pyx_source_file, ".c")
 
         if not self.pyx_compile:
-            print("Cython compilation disabled. Using compiled file:", c_source_file)
+            print("Cython compilation disabled. Using compiled file:",
+                c_source_file)
             return c_source_file
 
         try:
             from Cython.Compiler.Main import compile
         except ImportError:
-            print("Cython is not installed. Using compiled file:", pyx_source_file)
+            print("Cython is not installed. Using compiled file:",
+                pyx_source_file)
             return c_source_file
 
         if not self.should_compile(pyx_source_file, c_source_file):
