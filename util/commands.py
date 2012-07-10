@@ -7,6 +7,7 @@ import os
 import sys
 from distutils.command.build_ext import build_ext as build_ext_distutils
 from distutils.command.sdist import sdist as sdist_distutils
+from distutils.errors import DistutilsClassError
 
 from util import templating
 
@@ -21,8 +22,29 @@ def is_newer(file, than_file):
 
 
 class SdistCommand(sdist_distutils):
+
+    def initialize_options(self):
+        sdist_distutils.initialize_options(self)
+        self._pyx = []
+        for root, dirs, files in os.walk("src"):
+            for f in files:
+                if f.endswith(".pyx"):
+                    self._pyx.append(os.path.join(root, f))
+
     def run(self):
         self.force_manifest = 1
+        for pyx_file in self._pyx:
+            c_file = replace_extension(pyx_file, ".c")
+
+            if not os.path.exists(c_file):
+                raise DistutilsClassError(
+                    "C-source file '{0}' not found.".format(c_file))
+
+            if is_newer(pyx_file, c_file):
+                raise DistutilsClassError(
+                    "C-source file '{0}' seems out of date compared to '{1}'.".format(
+                        c_file, pyx_file))
+
         sdist_distutils.run(self)
 
 
