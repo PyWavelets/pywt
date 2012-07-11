@@ -88,28 +88,26 @@ class BuildExtCommand(build_ext_distutils):
     }
 
     user_options = build_ext_distutils.user_options + [
-        ("pyx-compile", None, "enable Cython files compilation"),
         ("force-pyx-compile", None, "always compile Cython files"),
         ("force-template-update", None, "always expand templates"),
     ]
 
     boolean_options = build_ext_distutils.boolean_options + [
-        "pyx_compile", "pyx_force_compile", "templates_force_update"
+        "force-pyx-compile", "force-template-update"
     ]
 
     def initialize_options(self):
         build_ext_distutils.initialize_options(self)
-        self.templates_force_update = False
         self.pyx_compile = True
-        self.pyx_force_compile = True
+        self.force_pyx_compile = False
+        self.force_template_update = False
 
     def finalize_options(self):
         build_ext_distutils.finalize_options(self)
 
         self.set_undefined_options("build",
-            ("pyx_compile", "pyx_compile"),
-            ("pyx_force_compile", "pyx_force_compile"),
-            ("templates_force_update", "templates_force_update")
+            ("force_pyx_compile", "force_pyx_compile"),
+            ("force_template_update", "force_template_update")
         )
 
     def get_extra_compile_args(self):
@@ -117,7 +115,7 @@ class BuildExtCommand(build_ext_distutils):
         return self.extra_compile_flags.get(compiler_type, [])
 
     def should_compile(self, source_file, compiled_file):
-        if self.pyx_force_compile:
+        if self.force_pyx_compile:
             return True
         if not os.path.exists(compiled_file):
             return True
@@ -169,7 +167,7 @@ class BuildExtCommand(build_ext_distutils):
 
     def build_extensions(self):
         templating.expand_files(self.templates_glob,
-            force_update=self.templates_force_update)
+            force_update=self.force_template_update)
         build_ext_distutils.build_extensions(self)
 
     def build_extension(self, ext):
