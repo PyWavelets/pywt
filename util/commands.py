@@ -174,3 +174,18 @@ class BuildExtCommand(build_ext_distutils):
         ext.extra_compile_args += self.get_extra_compile_args()
         self.compile_sources(ext, ext.sources)
         build_ext_distutils.build_extension(self, ext)
+
+
+class TestCommand(Command):
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        import subprocess
+        raise SystemExit(
+            subprocess.call([sys.executable, "tests/test_doc.py"]))

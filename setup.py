@@ -37,6 +37,9 @@ cmdclass={
 setup_args = {}
 if has_setuptools:
     setup_args["zip_safe"] = False
+    setup_args["test_suite"] = "tests.test_doc.suite"
+else:
+    cmdclass["test"] = commands.TestCommand
 
 setup(
     name="PyWavelets",
