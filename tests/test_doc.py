@@ -15,7 +15,7 @@ files = glob.glob(os.path.join(docs_base, "*.rst"))\
 
 assert files
 
-suite = doctest.DocFileSuite(*files, encoding="utf-8")
+suite = doctest.DocFileSuite(*files, module_relative=False, encoding="utf-8")
 
 if __name__ == "__main__":
     unittest.TextTestRunner().run(suite)
