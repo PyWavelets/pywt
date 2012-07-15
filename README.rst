@@ -29,7 +29,7 @@ is available for download from the
 Install
 -------
 
-In order to build PyWavelets from source, a working C compiler (GCC or MinGW) 
+In order to build PyWavelets from source, a working C compiler (GCC or MSVC)
 and a recent version of Cython (http://cython.org/) is required.
 
  - To install PyWavelets open shell prompt and type ``pip install PyWavelets``
@@ -53,6 +53,14 @@ at http://www.pybytes.com/pywavelets/.
 
 For more usage examples see `demo <https://github.com/nigma/pywt/tree/master/demo>`_
 directory in the source package.
+
+Python 3
+--------
+
+Python 3 development branch is at https://github.com/nigma/pywt/tree/py-3.
+Check out the `changelog <https://github.com/nigma/pywt/commits/py-3>`_ for
+info. Currently the code and examples are ported to work on Python 2.7 and 3.2
+from the same codebase.
 
 License
 -------
