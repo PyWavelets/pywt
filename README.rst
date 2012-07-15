@@ -11,6 +11,11 @@ PyWavelets is a Python wavelet transforms module that can do:
   * Single and double precision calculations
   * Results compatibility with Matlab Wavelet Toolbox (tm)
 
+.. image::
+    https://secure.travis-ci.org/nigma/pywt.png?branch=develop
+    :alt: Build Status
+        :target: https://secure.travis-ci.org/nigma/pywt
+
 Download
 --------
 
