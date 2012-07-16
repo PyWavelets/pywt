@@ -11,7 +11,7 @@ from distutils.command.build_ext import build_ext as build_ext_distutils
 from distutils.command.sdist import sdist as sdist_distutils
 from distutils.errors import DistutilsClassError
 
-from util import templating
+import templating
 
 base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "..")
 
@@ -28,6 +28,7 @@ class CleanCommand(Command):
 
     def initialize_options(self):
         self.base_roots = ["demo", "doc", "pywt", "src", "tests", "util"]
+        self.dirty = [".pyc", ".so", ".o", ".pyd"]
         self.files = []
         self.dirs = ["build", "dist"]
 
@@ -36,7 +37,7 @@ class CleanCommand(Command):
             if os.path.exists(base_root):
                 for root, dirs, files in os.walk(base_root):
                     for f in files:
-                        if os.path.splitext(f)[-1] in (".pyc", ".so", ".o", ".pyd"):
+                        if os.path.splitext(f)[-1] in self.dirty:
                             self.files.append(os.path.join(root, f))
 
                     for d in dirs:
@@ -58,25 +59,47 @@ class SdistCommand(sdist_distutils):
     def initialize_options(self):
         sdist_distutils.initialize_options(self)
         self._pyx = []
+        self._templates = []
         for root, dirs, files in os.walk("src"):
             for f in files:
                 if f.endswith(".pyx"):
                     self._pyx.append(os.path.join(root, f))
+                elif ".template" in f:
+                    self._templates.append(os.path.join(root, f))
 
-    def run(self):
-        self.force_manifest = 1
+    def validate_templates_expanded(self):
+        for template_file in self._templates:
+            destination_file = templating.get_destination_filepath(
+                template_file)
+
+            if not os.path.exists(destination_file):
+                raise DistutilsClassError(
+                    "Expanded file '{0}' not found. " \
+                    "Run build first.".format(destination_file))
+
+            if templating.needs_update(template_file, destination_file):
+                raise DistutilsClassError(
+                    "Expanded file '{0}' seems out of date compared to '{1}'. "\
+                    "Run build first.".format(destination_file, template_file))
+
+    def validate_pyx_expanded(self):
         for pyx_file in self._pyx:
             c_file = replace_extension(pyx_file, ".c")
 
             if not os.path.exists(c_file):
                 raise DistutilsClassError(
-                    "C-source file '{0}' not found.".format(c_file))
+                    "C-source file '{0}' not found. " \
+                    "Run build first.".format(c_file))
 
             if is_newer(pyx_file, c_file):
                 raise DistutilsClassError(
-                    "C-source file '{0}' seems out of date compared to '{1}'.".format(
-                        c_file, pyx_file))
+                    "C-source file '{0}' seems out of date compared to '{1}'. "\
+                    "Run build first.".format(c_file, pyx_file))
 
+    def run(self):
+        self.force_manifest = 1
+        self.validate_templates_expanded()
+        self.validate_pyx_expanded()
         sdist_distutils.run(self)
 
 
