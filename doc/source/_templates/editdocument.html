@@ -1,0 +1,42 @@
+{% set repo="nigma/pywt" %}
+{% set branch="develop" %}
+
+<div id="edit-instructions">
+    <h3>Edit this document</h3>
+    <p>
+        <a href="#" id="toggle-edit-info">
+        <img src="{{ pathto("_static/page_edit.png", 1) }}" height="16" width="16" alt="" />
+        The source code of this file is hosted on GitHub. Everyone can
+        update and fix errors in this document with few clicks -
+        no downloads needed.
+        </a>
+    </p>
+    <ol id="edit-info" style="display: none;">
+        <li>
+            Go to
+            <i><a href="https://github.com/{{ repo }}/blob/{{ branch }}/doc/source/{{ pagename }}.rst" target="_blank">
+                {{ title }}
+            </a></i> on GitHub.
+        </li>
+        <li>
+            Press <b>Edit this file</b> button.
+        </li>
+        <li>
+            Edit file contents using GitHub's text editor in your web browser
+        </li>
+        <li>
+            Fill in the <b>Commit message</b> text box at the end of the page
+            telling <i>why</i> you did the changes.
+            Press <b>Propose file change</b> button next to it when done.
+        </li>
+        <li>
+            On <i>Send a pull request</i> page you don't need to fill in text
+            anymore. Just press <b>Send pull request</b> button.
+        </li>
+        <li>
+            Your changes are now queued for review under project's
+            <a href="https://github.com/{{ repo }}/pulls" target="_blank">Pull requests</a> tab
+            on Github.
+        </li>
+    </ol>
+</div>
