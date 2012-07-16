@@ -1,10 +1,10 @@
-include setup.py setupegg.py setup.cfg
+include setup.py setup.cfg
 include README.rst CHANGES.txt COPYING.txt THANKS.txt
 include MANIFEST.in
 
-recursive-include doc *.rst *.css *.html *txt *.js *.png *.ico *.bat
+recursive-include doc *.rst *.css *.html *txt *.js *.png *.ico *.bat Makefile
 recursive-include doc/source *
-recursive-include doc/build/html *
+recursive-exclude doc/build *
 include doc/Makefile
 
 include demo/*.py
