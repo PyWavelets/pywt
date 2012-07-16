@@ -1,7 +1,5 @@
 .. _ref-resources:
 
-.. include:: substitutions.rst
-
 =========
 Resources
 =========
@@ -9,28 +7,35 @@ Resources
 Code
 ----
 
-The `GitHub repository <https://github.com/nigma/pywt>` is now the main
+The `GitHub repository`_ is now the main
 code repository.
 
-The `Mercurial repository <https://bitbucket.org/nigma/pywt>` is going to be
-phased out. Please follow GitHub for development updates.
+If you are using the Mercurial repository at Bitbucket, please switch
+to Git/GitHub and follow  for development updates.
 
 
-Discussion group
-----------------
+Questions and bug reports
+-------------------------
 
-`PyWavelets discussions group <http://groups.google.com/group/pywavelets>`_
-(pywavelets@googlegroups.com)
+Use `GitHub Issues`_ or `PyWavelets discussions group`_ to post questions
+and open tickets.
 
 
 Wavelet Properties Browser
 --------------------------
 
-`wavelets.pybytes.com <http://wavelets.pybytes.com/>`_
+Browse properties and graphs of wavelets included in PyWavelets on
+`wavelets.pybytes.com`_.
 
 
 Articles
 --------
 
- - `Denoising: wavelet thresholding <http://blancosilva.wordpress.com/teaching/mathematical-imaging/denoising-wavelet-thresholding/>`
- - `Wavelet Regression in Python <http://jseabold.net/blog/2012/02/wavelet-regression-in-python.html>`
+ - `Denoising: wavelet thresholding <http://blancosilva.wordpress.com/teaching/mathematical-imaging/denoising-wavelet-thresholding/>`_
+ - `Wavelet Regression in Python <http://jseabold.net/blog/2012/02/wavelet-regression-in-python.html>`_
+
+
+.. _GitHub repository: https://github.com/nigma/pywt
+.. _GitHub Issues: https://github.com/nigma/pywt/issues
+.. _PyWavelets discussions group: http://groups.google.com/group/pywavelets
+.. _wavelets.pybytes.com: http://wavelets.pybytes.com/
