@@ -13,8 +13,5 @@ recursive-include  util *.py *.conf *.bat *.sh
 
 recursive-include pywt *.py
 recursive-include src *.c *.h *.pxi *.pxd *.pyx *.template.*
-exclude src/_pywt.c
-exclude src/_pywt.h
-exclude src/_pywt.pxi
 
 recursive-include tests *.py *.txt
