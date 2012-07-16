@@ -17,7 +17,7 @@ Single level ``dwt2``
 
   :param data: 2D input data.
 
-  :param wavelet: |wavelet_arg|
+  :param wavelet: |wavelet|
 
   :param mode: |mode| This is only important when DWT was performed
                in :ref:`periodization <MODES.per>` mode.
@@ -49,7 +49,7 @@ details coefficients are stored in one big 2D array is as follows:
                                 |        |        |
                                 -------------------
 
-|pywt| does not follow this pattern because of pure practical reasons of simple
+PyWavelets does not follow this pattern because of pure practical reasons of simple
 access to particular type of the output coefficients.
 
   **Example:**
@@ -81,7 +81,7 @@ Single level ``idwt2``
 
                     (cA, (cH, cV, cD))
 
-  :param wavelet: |wavelet_arg|
+  :param wavelet: |wavelet|
 
   :param mode: |mode| This is only important when the :func:`dwt` was performed
                in the :ref:`periodization <MODES.per>` mode.
@@ -116,7 +116,7 @@ Single level ``idwt2``
 
   :param data: |data|
 
-  :param wavelet: |wavelet_arg|
+  :param wavelet: |wavelet|
 
   :param mode: |mode|
 
@@ -148,7 +148,7 @@ Single level ``idwt2``
 
                     [cAn, (cHn, cVn, cDn), ..., (cH1, cV1, cD1)]
 
-  :param wavelet: |wavelet_arg|
+  :param wavelet: |wavelet|
 
   :param mode: |mode|
 

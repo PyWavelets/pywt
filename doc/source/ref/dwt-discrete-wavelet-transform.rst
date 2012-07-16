@@ -26,7 +26,7 @@ Single level ``dwt``
 
   :param data: |data|
 
-  :param wavelet: |wavelet_arg|
+  :param wavelet: |wavelet|
 
   :param mode: |mode|
 
@@ -78,7 +78,7 @@ Multilevel decomposition using ``wavedec``
 
   :param data: |data|
 
-  :param wavelet: |wavelet_arg|
+  :param wavelet: |wavelet|
 
   :param mode: |mode|
 
@@ -115,7 +115,7 @@ Partial Discrete Wavelet Transform data decomposition ``downcoef``
 
    :param data: |data|
 
-   :param wavelet: |wavelet_arg|
+   :param wavelet: |wavelet|
 
    :param mode: |mode|
 

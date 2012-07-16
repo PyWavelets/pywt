@@ -20,7 +20,7 @@ Single level ``idwt``
 
   :param cD: Detail coefficients.
 
-  :param wavelet: |wavelet_arg|
+  :param wavelet: |wavelet|
 
   :param mode: |mode| This is only important when DWT was performed in
                :ref:`periodization <MODES.per>` mode.
@@ -74,7 +74,7 @@ Multilevel reconstruction using ``waverec``
 
       [cAn, cDn, cDn-1, ..., cD2, cD1]
 
-  :param wavelet: |wavelet_arg|
+  :param wavelet: |wavelet|
 
   :param mode: |mode|
 
@@ -102,7 +102,7 @@ Direct reconstruction with ``upcoef``
 
   :param coeffs: Coefficients array to reconstruct.
 
-  :param wavelet: |wavelet_arg|
+  :param wavelet: |wavelet|
 
   :param level: If *level* value is specified then a multilevel reconstruction is
                 performed (first reconstruction is of type specified by *part*

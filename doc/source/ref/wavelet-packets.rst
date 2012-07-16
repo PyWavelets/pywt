@@ -9,7 +9,7 @@ Wavelet Packets
 
 .. versionadded:: 0.2
 
-Version `0.2` of |pywt| includes many new features and improvements. One of such
+Version `0.2` of PyWavelets includes many new features and improvements. One of such
 new feature is a two-dimensional wavelet packet transform structure that is
 almost completely sharing programming interface with the one-dimensional tree
 structure.
@@ -246,8 +246,7 @@ WaveletPacket and WaveletPacket tree Node
 
      :param data: data associated with the node. 1D numeric array.
 
-     :param wavelet: :class:`~pywt.Wavelet` to use for decomposition and
-                     reconstruction.
+     :param wavelet: |wavelet|
 
      :param mode: Signal extension :ref:`mode <ref-modes>` for the :func:`dwt`
                   and :func:`idwt` decomposition and reconstruction functions.
@@ -302,8 +301,7 @@ WaveletPacket2D and WaveletPacket2D tree Node2D
 
      :param data: data associated with the node. 2D numeric array.
 
-     :param wavelet: :class:`~pywt.Wavelet` to use for decomposition and
-                     reconstruction.
+     :param wavelet: |wavelet|
 
      :param mode: Signal extension :ref:`mode <ref-modes>` for the :func:`dwt`
                   and :func:`idwt` decomposition and reconstruction functions.
