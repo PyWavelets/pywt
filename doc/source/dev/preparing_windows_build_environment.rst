@@ -1,7 +1,5 @@
 .. _dev-building-on-windows:
 
-.. module:: pywt
-.. include:: ../substitutions.rst
 
 Preparing Windows build environment
 ===================================
@@ -49,7 +47,7 @@ For 64-bit use ``util/setenv_build64.bat``:
 See also http://wiki.cython.org/64BitCythonExtensionsOnWindows.
 
 MinGW C/C++ compiler
-~~~~~~~~~~~~~~~~~~~~
+--------------------
 
 MinGW distribution can be downloaded from http://sourceforge.net/projects/mingwbuilds/.
 

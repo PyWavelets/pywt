@@ -1,7 +1,5 @@
 .. _dev-index:
 
-.. module:: pywt
-.. include:: ../substitutions.rst
 
 Development notes
 =================
