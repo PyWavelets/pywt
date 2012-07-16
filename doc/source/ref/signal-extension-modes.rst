@@ -1,7 +1,6 @@
 .. _ref-modes:
 
 .. currentmodule:: pywt
-.. include:: ../substitutions.rst
 
 
 ======================
@@ -20,7 +19,7 @@ Depending on the extrapolation method, significant artifacts at the signal's
 borders can be introduced during that process, which in turn may lead to
 inaccurate computations of the :ref:`DWT <ref-dwt>` at the signal's ends.
 
-|pywt| provides several methods of signal extrapolation that can be used to
+PyWavelets provides several methods of signal extrapolation that can be used to
 minimize this negative effect:
 
   .. _`MODES.zpd`:
@@ -84,7 +83,7 @@ parameters:
   >>> (a, d) = pywt.dwt([1,2,3,4,5,6], pywt.Wavelet('db2'), pywt.MODES.sp1)
 
 .. note::
-    Extending data in context of |pywt| does not mean reallocation of the data
+    Extending data in context of PyWavelets does not mean reallocation of the data
     in computer's physical memory and copying values, but rather computing
     the extra values only when they are needed.
     This feature saves extra memory and CPU resources and helps to avoid page

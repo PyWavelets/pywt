@@ -16,8 +16,8 @@ Single-level n-dimensional Discrete Wavelet Transform.
    Performs single-level n-dimensional Discrete Wavelet Transform.
 
    :param data: n-dimensional array
-   :param wavelet: wavelet to use (Wavelet object or name string)
-   :param mode: signal extension mode, see MODES
+   :param wavelet: |wavelet|
+   :param mode: |mode|
 
    Results are arranged in a dictionary, where key specifies
    the transform type on each dimension and value is a n-dimensional

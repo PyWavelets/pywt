@@ -24,7 +24,7 @@ import jinja2.filters
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.doctest', 'sphinx.ext.autodoc', 'sphinx.ext.todo', 'sphinx.ext.coverage', 'sphinx.ext.pngmath']
+extensions = ['sphinx.ext.doctest', 'sphinx.ext.autodoc', 'sphinx.ext.todo', 'sphinx.ext.extlinks']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -39,8 +39,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'PyWavelets'
-copyright = jinja2.filters.do_mark_safe(u'2006-%s, <a href="http://filipwasilewski.pl/">Filip Wasilewski</a>' % datetime.date.today().year)
+project = 'PyWavelets'
+copyright = jinja2.filters.do_mark_safe('2006-%s, <a href="http://en.ig.ma/">Filip Wasilewski</a>' % datetime.date.today().year)
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -62,11 +62,11 @@ release = '0.2.0'
 #today_fmt = '%B %d, %Y'
 
 # List of documents that shouldn't be included in the build.
-unused_docs = ['substitutions']
+unused_docs = ['substitutions', 'overview']
 
 # List of directories, relative to source directory, that shouldn't be searched
 # for source files.
-exclude_trees = ['_build', '0.1.6']
+exclude_trees = ['_build']
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 #default_role = None
@@ -86,14 +86,14 @@ exclude_trees = ['_build', '0.1.6']
 pygments_style = 'sphinx'
 
 # A list of ignored prefixes for module index sorting.
-#modindex_common_prefix = []
+modindex_common_prefix = ['pywt.']
 
 
 # -- Options for HTML output ---------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  Major themes that come with
 # Sphinx are currently 'default' and 'sphinxdoc'.
-html_theme = 'default'
+html_theme = 'nature'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -134,6 +134,9 @@ html_last_updated_fmt = '%b %d, %Y'
 
 # Custom sidebar templates, maps document names to template names.
 #html_sidebars = {}
+html_sidebars = {
+   '**': ['localtoc.html', "relations.html", 'quicklinks.html', 'searchbox.html', 'editdocument.html'],
+}
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
@@ -149,12 +152,12 @@ html_last_updated_fmt = '%b %d, %Y'
 #html_split_index = False
 
 # If true, links to the reST sources are added to the pages.
-#html_show_sourcelink = True
+html_show_sourcelink = False
 
 # If true, an OpenSearch description file will be output, and all pages will
 # contain a <link> tag referring to it.  The value of this option must be the
 # base URL from which the finished HTML is served.
-#html_use_opensearch = ''
+html_use_opensearch = 'http://pybytes.com/pywavelets'
 
 # If nonempty, this is the file name suffix for HTML files (e.g. ".xhtml").
 #html_file_suffix = ''
@@ -174,8 +177,8 @@ htmlhelp_basename = 'PyWaveletsdoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'PyWavelets.tex', u'PyWavelets Documentation',
-   u'Filip Wasilewski', 'manual'),
+  ('index', 'PyWavelets.tex', 'PyWavelets Documentation',
+   'Filip Wasilewski', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of

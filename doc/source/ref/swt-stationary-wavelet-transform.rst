@@ -21,7 +21,7 @@ Multilevel ``swt``
 
   :param data: |data|
 
-  :param wavelet: |wavelet_arg|
+  :param wavelet: |wavelet|
 
   :param level: Required transform level. See the :func:`swt_max_level` function.
 
@@ -43,7 +43,7 @@ Multilevel ``swt2``
 
   :param data: 2D array with input data.
 
-  :param wavelet: |wavelet_arg|
+  :param wavelet: |wavelet|
 
   :param level: Number of decomposition steps to perform.
 

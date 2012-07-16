@@ -1,7 +1,6 @@
 .. _ref-wavelets:
 
 .. currentmodule:: pywt
-.. include:: ../substitutions.rst
 
 ========
 Wavelets
@@ -77,12 +76,6 @@ Built-in wavelets - ``wavelist()``
 
     [dec_lo, dec_hi, rec_lo, rec_hi]
 
-  .. note::
-
-    The :meth:`~Wavelet.get_filters_coeffs` method is kept for compatibility
-    with the previous versions of |pywt|, but may be removed in a future version
-    of the package.
-
   Wavelet objects can also be used as a base filter banks. See section on
   :ref:`using custom wavelets <custom-wavelets>` for more information.
 
@@ -131,16 +124,12 @@ Built-in wavelets - ``wavelist()``
 
         [dec_lo, dec_hi, rec_lo, rec_hi]
 
-      The :meth:`~Wavelet.get_filters_coeffs` method is deprecated.
-
   .. attribute:: inverse_filter_bank
 
       Returns list of reverse wavelet filters coefficients. The mapping from the
       `filter_coeffs` list is as follows::
 
         [rec_lo[::-1], rec_hi[::-1], dec_lo[::-1], dec_hi[::-1]]
-
-      The :meth:`~Wavelet.get_reverse_filters_coeffs` method is deprecated.
 
   .. attribute:: short_family_name
 
@@ -250,7 +239,7 @@ Approximating wavelet and scaling functions - ``Wavelet.wavefun()``
 Using custom wavelets
 ---------------------
 
-|pywt| comes with a :func:`long list <pywt.wavelist>` of the most popular
+PyWavelets comes with a :func:`long list <pywt.wavelist>` of the most popular
 wavelets built-in and ready to use. If you need to use a specific wavelet which
 is not included in the list it is very easy to do so. Just pass a list of four
 filters or an object with a :attr:`~Wavelet.filter_bank` attribute as a
