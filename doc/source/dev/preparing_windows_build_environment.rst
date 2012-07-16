@@ -10,17 +10,39 @@ a C compiler and prepare the build environment.
 Installing Windows SDK C/C++ compiler
 -------------------------------------
 
-Download Microsoft Windows SDK for Windows 7 and .NET Framework 3.5 SP1
-from http://www.microsoft.com/downloads/en/details.aspx?familyid=71DEB800-C591-4F97-A900-BEA146E4FAE1&displaylang=en.
-Download, extract and install the version that is suitable for your platform:
+Microsoft Visual C++ 2008 (Microsoft Visual Studio 9.0) is the compiler that
+is suitable for building extensions for Python 2.6, 2.7, 3.0, 3.1 and 3.2
+(both 32 and 64 bit).
+
+.. note:: For reference:
+
+     - the *MSC v.1500* in the Python version string is Microsoft Visual
+       C++ 2008 (Microsoft Visual Studio 9.0 with msvcr90.dll runtime)
+     - *MSC v.1600* is MSVC 2010 (10.0 with msvcr100.dll runtime)
+     - *MSC v.1700* is MSVC 2011 (11.0)
+
+     ::
+
+        Python 2.7.3 (default, Apr 10 2012, 23:31:26) [MSC v.1500 32 bit (Intel)] on win32
+        Python 3.2 (r32:88445, Feb 20 2011, 21:30:00) [MSC v.1500 64 bit (AMD64)] on win32
+
+
+To get started first download, extract and install *Microsoft Windows SDK for
+Windows 7 and .NET Framework 3.5 SP1* from
+http://www.microsoft.com/downloads/en/details.aspx?familyid=71DEB800-C591-4F97-A900-BEA146E4FAE1&displaylang=en.
+
+There are several ISO images on the site, so just grab the one that is suitable
+for your platform:
 
   - ``GRMSDK_EN_DVD.iso`` for 32-bit x86 platform
-  - ``GRMSDKX_EN_DVD.iso`` for 64-bit AMD64 platform
+  - ``GRMSDKX_EN_DVD.iso`` for 64-bit AMD64 platform (AMD64 is the codename for
+    64-bit CPU architecture, not the processor manufacturer)
 
-Before compiling a Python extension you have to configure some environment
-variables.
+After installing the SDK and before compiling the extension you have
+to configure some environment variables.
 
-For 32-bit build execute ``util/setenv_build32.bat`` script in the cmd window:
+For 32-bit build execute the ``util/setenv_build32.bat`` script in the cmd
+window:
 
   .. sourcecode:: bat
 
@@ -49,7 +71,8 @@ See also http://wiki.cython.org/64BitCythonExtensionsOnWindows.
 MinGW C/C++ compiler
 --------------------
 
-MinGW distribution can be downloaded from http://sourceforge.net/projects/mingwbuilds/.
+MinGW distribution can be downloaded from
+http://sourceforge.net/projects/mingwbuilds/.
 
 In order to change the settings and use MinGW as the default compiler,
 edit or create a Distutils configuration file
@@ -65,8 +88,9 @@ page at http://wiki.cython.org/InstallingOnWindows for more info.
 
 .. note::
 
-    Python 2.7/3.2 distutils package is incompatible with current version
-    of MinGW (4.7+) after MinGW dropped the `-mno-cygwin` flag.
+    Python 2.7/3.2 distutils package is incompatible with the current version
+    (4.7+) of MinGW (MinGW dropped the ``-mno-cygwin`` flag, which is still
+    passed by distutils).
 
     To use MinGW to compile Python extensions you have to patch the
     ``distutils/cygwinccompiler.py`` library module and remove every occurrence
