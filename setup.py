@@ -28,16 +28,18 @@ ext_modules = [dwt]
 packages = ["pywt"]
 package_dir = {"pywt": "pywt"}
 
-cmdclass={
+cmdclass = {
     "build_ext": commands.BuildExtCommand,
     "sdist": commands.SdistCommand,
     "clean_build": commands.CleanCommand,
 }
-
 setup_args = {}
+
 if has_setuptools:
     setup_args["zip_safe"] = False
     setup_args["test_suite"] = "tests.test_doc.suite"
+    if not os.path.exists(os.path.join("src", "_pywt.c")):
+        setup_args["setup_requires"] = ["Cython>=0.16"]
 else:
     cmdclass["test"] = commands.TestCommand
 
