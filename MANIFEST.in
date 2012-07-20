@@ -2,16 +2,13 @@ include setup.py setup.cfg
 include README.rst CHANGES.txt COPYING.txt THANKS.txt
 include MANIFEST.in
 
-recursive-include doc *.rst *.css *.html *txt *.js *.png *.ico *.bat Makefile
-recursive-include doc/source *
-recursive-exclude doc/build *
-include doc/Makefile
+graft demo
+graft doc
+graft src
+graft tests
+graft util
 
-include demo/*.py
-include demo/data/*
-recursive-include  util *.py *.conf *.bat *.sh
+prune build
+prune doc/build
 
-recursive-include pywt *.py
-recursive-include src *.c *.h *.pxi *.pxd *.pyx *.template.*
-
-recursive-include tests *.py *.txt
+global-exclude *.py[cod] *.egg *.egg-info
