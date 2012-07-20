@@ -561,7 +561,7 @@ int $DTYPE$_upsampling_convolution_valid_sf_periodization(const $DTYPE$* input, 
         if(periodization_buf == NULL)
             return -1;
 
-        // Copy input data to it's place in the periodization_buf
+        // Copy input data to its place in the periodization_buf
         // -> [0 0 0 i1 i2 i3 0 0 0]
         k = (F_2-1)/2;
         for(i=k; i < k+N; ++i)

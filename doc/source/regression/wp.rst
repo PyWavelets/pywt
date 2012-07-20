@@ -168,7 +168,7 @@ Reconstructing data from Wavelet Packets:
 >>> wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='sym')
 
 
-Now create a new :class:`Wavelet Packet <WaveletPacket>` and set it's nodes with
+Now create a new :class:`Wavelet Packet <WaveletPacket>` and set its nodes with
 some data.
 
     >>> new_wp = pywt.WaveletPacket(data=None, wavelet='db1', mode='sym')
@@ -284,7 +284,7 @@ Lazy evaluation:
    **Remember that you should not rely on the attribute access.**
 
 2) At first attempt to access the node it is computed via decomposition
-   of it's parent node (the wp object itself).
+   of its parent node (the wp object itself).
 
    >>> print wp['a']
    a: [  2.12132034   4.94974747   7.77817459  10.60660172]

@@ -59,7 +59,7 @@ But what can we do with :class:`Wavelet` objects? Well, they carry some
 interesting information.
 
 First, let's try printing a :class:`Wavelet` object. This shows a brief
-information about it's name, it's family name and some properties like
+information about its name, its family name and some properties like
 orthogonality and symmetry.
 
     >>> print w

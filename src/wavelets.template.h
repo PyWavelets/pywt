@@ -60,7 +60,7 @@ typedef struct {
 } Wavelet;
 
 
-// Allocate Wavelet struct and set it's attributes
+// Allocate Wavelet struct and set its attributes
 // name - (currently) a character codename of a wavelet family
 // order - order of the wavelet (ie. coif3 has order 3)
 //

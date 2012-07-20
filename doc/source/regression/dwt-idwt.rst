@@ -49,7 +49,7 @@ mode (the default is :ref:`sym <MODES.sym>`) for the border effect handling:
     [-1.33068221 -2.78795192 -3.16825651 -0.67715519 -0.09722957 -0.07045258]
 
 Note that the output coefficients arrays length depends not only on the input
-data length but also on the :class:Wavelet type (particularly on it's
+data length but also on the :class:Wavelet type (particularly on its
 :attr:`filters lenght <~Wavelet.dec_len>` that are used in the transformation).
 
 To find out what will be the output data size use the :func:`dwt_coeff_len`
