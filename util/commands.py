@@ -51,7 +51,8 @@ class CleanCommand(Command):
                 os.remove(path)
 
         for d in self.dirs:
-            dir_util.remove_tree(d, dry_run=self.dry_run)
+            if os.path.exists(d):
+                dir_util.remove_tree(d, dry_run=self.dry_run)
 
 
 class SdistCommand(sdist_distutils):
