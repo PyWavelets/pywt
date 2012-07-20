@@ -26,7 +26,7 @@ dwt = Extension("pywt._pywt",
 
 ext_modules = [dwt]
 packages = ["pywt"]
-package_dir = {"pywt": "pywt"}
+package_dir = {"pywt": "src/pywt"}
 
 cmdclass = {
     "build_ext": commands.BuildExtCommand,
