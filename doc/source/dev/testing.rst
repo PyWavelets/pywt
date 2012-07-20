@@ -14,7 +14,7 @@ Current build status is:
 .. image::
     https://secure.travis-ci.org/nigma/pywt.png?branch=develop
     :alt: Build Status
-        :target: https://secure.travis-ci.org/nigma/pywt
+    :target: https://secure.travis-ci.org/nigma/pywt
 
 
 If you are submitting a patch or pull request please make sure it

@@ -18,7 +18,7 @@ PyWavelets is very easy to start with and use, and currently is capable of:
 .. image::
     https://secure.travis-ci.org/nigma/pywt.png?branch=develop
     :alt: Build Status
-        :target: https://secure.travis-ci.org/nigma/pywt
+    :target: https://secure.travis-ci.org/nigma/pywt
 
 
 Requirements
