@@ -3,17 +3,18 @@
 
 import pywt
 
+
 class FilterBank(object):
     """Sample filter bank with Quadrature Mirror Filters for Haar wavelet"""
     dec_lo = [0.70710678118654757, 0.70710678118654757]
     dec_hi = [-0.70710678118654757, 0.70710678118654757]
     rec_lo = [0.70710678118654757, 0.70710678118654757]
     rec_hi = [0.70710678118654757, -0.70710678118654757]
-    
+
     def __init__(self):
         self.filter_bank = self.dec_lo, self.dec_hi, self.rec_lo, self.rec_hi
 
-data = [1,2,3,4,5,6]
+data = [1, 2, 3, 4, 5, 6]
 
 ############################################################################
 print "Case 1 (custom filter bank - Haar wavelet)"
@@ -37,7 +38,10 @@ print "Case 2 (Wavelet object as filter bank - db2 wavelet)"
 # filter_bank attribute
 
 builtinWavelet = pywt.Wavelet('db2')
-myWavelet = pywt.Wavelet(name="UserSuppliedWavelet", filter_bank=builtinWavelet)
+myWavelet = pywt.Wavelet(
+    name="UserSuppliedWavelet",
+    filter_bank=builtinWavelet
+)
 
 print "data:", data
 a, d = pywt.dwt(data, myWavelet)

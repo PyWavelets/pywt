@@ -1,8 +1,15 @@
-import sys, os.path
-import pywt
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import os
+import sys
+
 import pylab
 
-usage = """Usage:\n %s wavelet [refinement level]""" % os.path.basename(sys.argv[0])
+import pywt
+
+usage = """Usage:\n %s wavelet [refinement level]""" % os.path.basename(
+    sys.argv[0])
 
 try:
     wavelet = pywt.Wavelet(sys.argv[1])
@@ -22,17 +29,20 @@ print wavelet
 data = wavelet.wavefun(level)
 funcs, x = data[:-1], data[-1]
 
-n = (len(data)-1) // 2
-labels = ("scaling function (phi)", "wavelet function (psi)", "r. scaling function (phi)", "r. wavelet function (psi)")
+n = (len(data) - 1) // 2
+labels = [
+    "scaling function (phi)", "wavelet function (psi)",
+    "r. scaling function (phi)", "r. wavelet function (psi)"
+]
 colours = ("r", "g", "r", "g")
 for i, (d, label, colour) in enumerate(zip(funcs, labels, colours)):
     mi, ma = d.min(), d.max()
-    margin = (ma - mi)*0.05
-    ax = pylab.subplot(n, 2, 1+i)
-    
+    margin = (ma - mi) * 0.05
+    ax = pylab.subplot(n, 2, 1 + i)
+
     pylab.plot(x, d, colour)
     pylab.title(label)
-    pylab.ylim(mi-margin, ma+margin)
+    pylab.ylim(mi - margin, ma + margin)
     pylab.xlim(x[0], x[-1])
-    
+
 pylab.show()
