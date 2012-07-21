@@ -17,7 +17,7 @@ from _pywt import Wavelet
 
 from numerix import asarray, array, float64
 from numerix import integrate
-from numerix import argmax, mean
+from numerix import argmax
 from numerix import fft
 
 WAVELET_CLASSES = (Wavelet)
@@ -25,7 +25,8 @@ WAVELET_CLASSES = (Wavelet)
 
 def wavelet_for_name(name):
     if not isinstance(name, basestring):
-        raise TypeError("Wavelet name must be of string type, not %s" % type(name))
+        raise TypeError(
+            "Wavelet name must be of string type, not %s" % type(name))
     try:
         wavelet = Wavelet(name)
     except ValueError:
@@ -36,9 +37,14 @@ def wavelet_for_name(name):
 
 def intwave(wavelet, precision=8):
     """
-    intwave(wavelet, precision=8) -> [int_psi, x]                   - for orthogonal wavelets
-    intwave(wavelet, precision=8) -> [int_psi_d, int_psi_r, x]      - for other wavelets
-    intwave((function_approx, x), precision=8) -> [int_function, x] - for (function approx., x grid) pair
+    intwave(wavelet, precision=8) -> [int_psi, x]
+        - for orthogonal wavelets
+
+    intwave(wavelet, precision=8) -> [int_psi_d, int_psi_r, x]
+        - for other wavelets
+
+    intwave((function_approx, x), precision=8) -> [int_function, x]
+        - for (function approx., x grid) pair
 
     Integrate *psi* wavelet function from -Inf to x using the rectangle
     integration method.
@@ -50,8 +56,8 @@ def intwave(wavelet, precision=8):
                       approximation computed with the wavefun(level=precision)
                       Wavelet's method.
 
-    (function_approx, x)   - Function to integrate on the x grid. Used instead
-                             of Wavelet object to allow custom wavelet functions.
+    (function_approx, x) - Function to integrate on the x grid. Used instead
+                           of Wavelet object to allow custom wavelet functions.
     """
 
     if isinstance(wavelet, tuple):
@@ -72,7 +78,7 @@ def intwave(wavelet, precision=8):
             phi, psi, x = functions_approximations
             step = x[1] - x[0]
             return integrate(psi, step), x
-        else: # biorthogonal wavelet
+        else:                                       # biorthogonal wavelet
             phi_d, psi_d, phi_r, psi_r, x = functions_approximations
             step = x[1] - x[0]
             return integrate(psi_d, step), integrate(psi_r, step), x
@@ -80,8 +86,11 @@ def intwave(wavelet, precision=8):
 
 def centfrq(wavelet, precision=8):
     """
-    centfrq(wavelet, precision=8) -> float                  - for orthogonal wavelets
-    centfrq((function_approx, x), precision=8) -> float      - for (function approx., x grid) pair
+    centfrq(wavelet, precision=8) -> float
+        - for orthogonal wavelets
+
+    centfrq((function_approx, x), precision=8) -> float
+        - for (function approx., x grid) pair
 
     Computes the central frequency of the *psi* wavelet function.
 
@@ -91,8 +100,8 @@ def centfrq(wavelet, precision=8):
                       approximation computed with the wavefun(level=precision)
                       Wavelet's method.
 
-    (function_approx, xgrid)   - Function defined on xgrid. Used instead
-                                 of Wavelet object to allow custom wavelet functions.
+    (function_approx, xgrid) - Function defined on xgrid. Used instead
+                      of Wavelet object to allow custom wavelet functions.
     """
 
     if isinstance(wavelet, tuple):
@@ -105,28 +114,33 @@ def centfrq(wavelet, precision=8):
         if len(functions_approximations) == 2:
             psi, x = functions_approximations
         else:
-            psi, x = functions_approximations[1], functions_approximations[-1] # (psi, x) for (phi, psi, x) and (psi_d, x) for (phi_d, psi_d, phi_r, psi_r, x)
+            # (psi, x)   for (phi, psi, x)
+            # (psi_d, x) for (phi_d, psi_d, phi_r, psi_r, x)
+            psi, x = functions_approximations[1], functions_approximations[-1]
 
     domain = float(x[-1] - x[0])
     assert domain > 0
 
-    index = argmax(abs(fft(psi)[1:]))+2
-    if index > len(psi)/2:
-        index = len(psi)-index+2
+    index = argmax(abs(fft(psi)[1:])) + 2
+    if index > len(psi) / 2:
+        index = len(psi) - index + 2
 
-    return 1.0/(domain/(index-1))
+    return 1.0 / (domain / (index - 1))
 
 
 def scal2frq(wavelet, scale, delta, precision=8):
     """
-    scal2frq(wavelet, scale, delta, precision=8) -> float   - for orthogonal wavelets
-    scal2frq(wavelet, scale, delta, precision=8) -> float   - for (function approx., x grid) pair
+    scal2frq(wavelet, scale, delta, precision=8) -> float
+        - for orthogonal wavelets
+
+    scal2frq(wavelet, scale, delta, precision=8) -> float
+        - for (function approx., x grid) pair
 
     wavelet
     scale
     delta   - sampling
     """
-    return centfrq(wavelet, precision=precision)/(scale*delta)
+    return centfrq(wavelet, precision=precision) / (scale * delta)
 
 
 def qmf(filter):
