@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
 
-import os, sys
+import os
+import sys
 
 try:
     from setuptools import setup, Extension
     has_setuptools = True
 except ImportError:
-    from distutils.core import setup, Extension
+    from distutils.core import setup, Extension # noqa
     has_setuptools = False
 
 from util import commands
@@ -45,7 +46,7 @@ else:
 
 setup(
     name="PyWavelets",
-    version="0.2.0",
+    version="0.2.0.post1",
     author="Filip Wasilewski",
     author_email="filip.wasilewski@gmail.com",
     url="http://www.pybytes.com/pywavelets/",
