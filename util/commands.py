@@ -15,6 +15,7 @@ import templating
 
 base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "..")
 
+
 def replace_extension(path, newext):
     return os.path.splitext(path)[0] + newext
 
@@ -75,12 +76,12 @@ class SdistCommand(sdist_distutils):
 
             if not os.path.exists(destination_file):
                 raise DistutilsClassError(
-                    "Expanded file '{0}' not found. " \
+                    "Expanded file '{0}' not found. "
                     "Run build first.".format(destination_file))
 
             if templating.needs_update(template_file, destination_file):
                 raise DistutilsClassError(
-                    "Expanded file '{0}' seems out of date compared to '{1}'. "\
+                    "Expanded file '{0}' seems out of date compared to '{1}'. "
                     "Run build first.".format(destination_file, template_file))
 
     def validate_pyx_expanded(self):
@@ -89,12 +90,12 @@ class SdistCommand(sdist_distutils):
 
             if not os.path.exists(c_file):
                 raise DistutilsClassError(
-                    "C-source file '{0}' not found. " \
+                    "C-source file '{0}' not found. "
                     "Run build first.".format(c_file))
 
             if is_newer(pyx_file, c_file):
                 raise DistutilsClassError(
-                    "C-source file '{0}' seems out of date compared to '{1}'. "\
+                    "C-source file '{0}' seems out of date compared to '{1}'. "
                     "Run build first.".format(c_file, pyx_file))
 
     def run(self):
