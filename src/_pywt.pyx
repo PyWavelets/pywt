@@ -841,16 +841,27 @@ def swt_max_level(input_len):
 
 def swt(object data, object wavelet, object level=None, int start_level=0):
     """
-    swt(object data, object wavelet, int level)
+    swt(object data, object wavelet, int level=None, start_level=0)
 
     Performs multilevel Stationary Wavelet Transform.
 
     data    - input signal
     wavelet - wavelet to use (Wavelet object or name)
     level   - transform level
+    start_level - the level at which the decomposition will begin (it allows to
+                  skip a given number of transform steps and compute
+                  coefficients starting from start_level)
 
-    Returns list of approximation and details coefficients pairs in form
-        [(cAn, cDn), ..., (cA2, cD2), (cA1, cD1)], where n = level
+    Returns list of approximation and details coefficients pairs in order
+    similar to wavedec function::
+
+        [(cAn, cDn), ..., (cA2, cD2), (cA1, cD1)]
+
+    where *n* = *level*.
+
+    If *m* = *start_level* is given, then the beginning *m* steps are skipped::
+
+        [(cAm+n, cDm+n), ..., (cAm+1, cDm+1), (cAm, cDm)]
     """
     cdef Buffer input, output
     cdef object cA, cD

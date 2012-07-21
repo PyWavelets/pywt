@@ -18,13 +18,15 @@ def plot(data, w, title):
     a = data
     ca = []
     cd = []
+
     if DWT:
         for i in xrange(5):
             (a, d) = pywt.dwt(a, w, mode)
             ca.append(a)
             cd.append(d)
     else:
-        for a, d in pywt.swt(data, w, 5):
+        coeffs = pywt.swt(data, w, 5)  # [(cA5, cD5), ..., (cA1, cD1)]
+        for a, d in reversed(coeffs):
             ca.append(a)
             cd.append(d)
 

@@ -23,15 +23,24 @@ Multilevel ``swt``
 
   :param wavelet: |wavelet|
 
-  :param level: Required transform level. See the :func:`swt_max_level` function.
+  :param int level: Required transform level. See the :func:`swt_max_level` function.
+
+  :param int start_level: The level at which the decomposition will begin (it
+      allows to skip a given number of transform steps and compute coefficients
+      starting directly from the *start_level*)
 
   .. compound::
 
-      Returned list of coefficient pairs is in the form::
+      Returns list of coefficient pairs in the form::
 
-        [(cA1, cD1), (cA2, cD2), ..., (cAn, cDn)]
+        [(cAn, cDn), ..., (cA2, cD2), (cA1, cD1)]
 
       where *n* is the *level* value.
+
+      If *m* = *start_level* is given, then the beginning *m* steps are
+      skipped::
+
+        [(cAm+n, cDm+n), ..., (cAm+1, cDm+1), (cAm, cDm)]
 
 
 Multilevel ``swt2``
