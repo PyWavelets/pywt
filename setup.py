@@ -5,10 +5,10 @@ import os
 import sys
 
 try:
-    from setuptools import setup, Extension
+    from setuptools import setup
     has_setuptools = True
 except ImportError:
-    from distutils.core import setup, Extension # noqa
+    from distutils.core import setup
     has_setuptools = False
 
 from util import commands
@@ -18,7 +18,7 @@ if sys.platform == "darwin":
     os.environ["COPY_EXTENDED_ATTRIBUTES_DISABLE"] = "true"
     os.environ["COPYFILE_DISABLE"] = "true"
 
-dwt = Extension("pywt._pywt",
+dwt = commands.Extension("pywt._pywt",
     sources=["src/_pywt.pyx", "src/common.c", "src/convolution.c",
              "src/wavelets.c", "src/wt.c"],
     include_dirs=["src"],

@@ -5,15 +5,33 @@ from __future__ import print_function
 
 import os
 import sys
+
+try:
+    from setuptools import Command
+    from setuptools.command.build_ext import build_ext as _build_ext
+    from setuptools.command.sdist import sdist as _sdist
+    from setuptools.extension import Extension as _Extension
+    has_setuptools = True
+except ImportError:
+    from distutils.cmd import Command # noqa
+    from distutils.command.build_ext import build_ext as _build_ext
+    from distutils.command.sdist import sdist as _sdist
+    from distutils.core import Extension
+    has_setuptools = False
+
 from distutils import dir_util
-from distutils.cmd import Command
-from distutils.command.build_ext import build_ext as build_ext_distutils
-from distutils.command.sdist import sdist as sdist_distutils
 from distutils.errors import DistutilsClassError
 
 import templating
 
 base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "..")
+
+if has_setuptools:
+    # Remove special handling of .pyx files from class patched by setuptools
+    class Extension(_Extension):
+        def __init__(self, name, sources, *args, **kwargs):
+            _Extension.__init__(self, name, sources, *args, **kwargs)
+            self.sources = sources
 
 
 def replace_extension(path, newext):
@@ -56,10 +74,10 @@ class CleanCommand(Command):
                 dir_util.remove_tree(d, dry_run=self.dry_run)
 
 
-class SdistCommand(sdist_distutils):
+class SdistCommand(_sdist):
 
     def initialize_options(self):
-        sdist_distutils.initialize_options(self)
+        _sdist.initialize_options(self)
         self._pyx = []
         self._templates = []
         for root, dirs, files in os.walk("src"):
@@ -102,33 +120,33 @@ class SdistCommand(sdist_distutils):
         self.force_manifest = 1
         self.validate_templates_expanded()
         self.validate_pyx_expanded()
-        sdist_distutils.run(self)
+        _sdist.run(self)
 
 
-class BuildExtCommand(build_ext_distutils):
+class BuildExtCommand(_build_ext):
     templates_glob = os.path.join(base_dir, "src", "*.template.*")
 
     extra_compile_flags = {
         #"msvc": ["/W4", "/wd4127", "/wd4702", "/wd4100"]
     }
 
-    user_options = build_ext_distutils.user_options + [
+    user_options = _build_ext.user_options + [
         ("force-pyx-compile", None, "always compile Cython files"),
         ("force-template-update", None, "always expand templates"),
     ]
 
-    boolean_options = build_ext_distutils.boolean_options + [
+    boolean_options = _build_ext.boolean_options + [
         "force-pyx-compile", "force-template-update"
     ]
 
     def initialize_options(self):
-        build_ext_distutils.initialize_options(self)
+        _build_ext.initialize_options(self)
         self.pyx_compile = True
         self.force_pyx_compile = False
         self.force_template_update = False
 
     def finalize_options(self):
-        build_ext_distutils.finalize_options(self)
+        _build_ext.finalize_options(self)
 
         self.set_undefined_options("build",
             ("force_pyx_compile", "force_pyx_compile"),
@@ -193,12 +211,12 @@ class BuildExtCommand(build_ext_distutils):
     def build_extensions(self):
         templating.expand_files(self.templates_glob,
             force_update=self.force_template_update)
-        build_ext_distutils.build_extensions(self)
+        _build_ext.build_extensions(self)
 
     def build_extension(self, ext):
         ext.extra_compile_args += self.get_extra_compile_args()
         self.compile_sources(ext, ext.sources)
-        build_ext_distutils.build_extension(self, ext)
+        _build_ext.build_extension(self, ext)
 
 
 class TestCommand(Command):
