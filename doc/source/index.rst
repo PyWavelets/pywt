@@ -75,7 +75,8 @@ Documentation
 -------------
 
 Documentation with detailed examples and links to more resources is available
-online at http://www.pybytes.com/pywavelets/.
+online at http://www.pybytes.com/pywavelets/ and
+http://pywavelets.readthedocs.org.
 
 For more usage examples see the `demo`_ directory in the source package.
 
