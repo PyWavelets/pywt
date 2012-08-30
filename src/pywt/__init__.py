@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # flake8: noqa
 
-# Copyright (c) 2006-2010 Filip Wasilewski <http://filipwasilewski.pl/>
+# Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/>
 # See COPYING for license details.
 
 # $Id$
