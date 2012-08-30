@@ -95,12 +95,15 @@ Contact
 Use `GitHub Issues`_ or `PyWavelets discussions group`_ to post your
 comments or questions.
 
-To contact me directly email me at en@ig.ma.
-
 License
 -------
 
 PyWavelets is a free Open Source software released under the MIT license.
+
+Commercial Support
+------------------
+
+For information on commercial support and development email me at en@ig.ma.
 
 
 .. _Cython: http://cython.org/
