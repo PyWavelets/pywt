@@ -1,8 +1,6 @@
 // Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/>
 // See COPYING for license details.
 
-// $Id$
-
 // Common constants, typedefs and functions
 
 #ifndef _COMMON_H_

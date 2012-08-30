@@ -1,8 +1,6 @@
 #ifndef _WAVELETS_COEFFS_H_
 #define _WAVELETS_COEFFS_H_
 
-// $Id$
-
 // Filters coefficients for selected wavelets
 
 // Daubechies:   db1   - db20

@@ -4,8 +4,6 @@
 // Based on http://numeric.scipy.org/array_interface.html by Travis E. Oliphant
 // See http://new.scipy.org/Wiki/Cookbook/ArrayStruct_and_Pyrex 
 
-// $Id$
-
 // Array interface (__array_struct__) constants and helpers
 
 #ifndef _ARRAY_INTERFACE_H_

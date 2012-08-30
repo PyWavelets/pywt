@@ -1,8 +1,6 @@
 // Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/>
 // See COPYING for license details.
 
-// $Id$
-
 // Allocating, setting properties and destroying wavelet structs
 #include "wavelets.h"
 #include "wavelets_coeffs.h"

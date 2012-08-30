@@ -1,8 +1,6 @@
 // Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/>
 // See COPYING for license details.
 
-// $Id$
-
 #include "wt.h"
 
 // Decomposition of input with lowpass filter

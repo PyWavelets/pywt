@@ -1,8 +1,6 @@
 // Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/>
 // See COPYING for license details.
 
-// $Id$
-
 // Wavelet transforms using convolution functions defined in convolution.h
 
 #ifndef _WT_H_

@@ -4,8 +4,6 @@
 # see http://numeric.scipy.org/array_interface.html
 # see http://new.scipy.org/Wiki/Cookbook/ArrayStruct_and_Pyrex
 
-# $Id$
-
 cimport c_python
 
 cdef extern from "array_interface.h":

@@ -3,8 +3,6 @@
 # Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/>
 # See COPYING for license details.
 
-# $Id$
-
 """
 2D Discrete Wavelet Transform and Inverse Discrete Wavelet Transform.
 """

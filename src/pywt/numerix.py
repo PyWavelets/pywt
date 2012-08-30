@@ -3,8 +3,6 @@
 # Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/>
 # See COPYING for license details.
 
-# $Id$
-
 """
 Thin wrapper for NumPy module. Modify this to use wavelets with libraries
 other than NumPy.
