@@ -92,6 +92,14 @@ and documentation improvements are welcome.
 
 Go and fork on `GitHub`_ today!
 
+Python 3
+--------
+
+Python 3 development branch is at https://github.com/nigma/pywt/tree/py-3.
+Check out the `changelog <https://github.com/nigma/pywt/commits/py-3>`_ for
+info. Currently the code and examples are ported to work on Python 2.7 and 3.2
+from the same codebase.
+
 Contact
 -------
 
@@ -134,4 +142,3 @@ Contents
 .. _Python: http://python.org/
 .. _Python Package Index: http://pypi.python.org/pypi/PyWavelets/
 .. _PyWavelets discussions group: http://groups.google.com/group/pywavelets
-
