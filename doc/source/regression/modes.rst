@@ -16,7 +16,7 @@ Import :mod:`pywt` first
     ...     a = numpy.where(numpy.abs(a) < 1e-5, 0, a)
     ...     return numpy.array2string(a, precision=5, separator=' ', suppress_small=True)
 
-List of availble signal extension :ref:`modes <MODES>`:
+List of available signal extension :ref:`modes <MODES>`:
 
     >>> print pywt.MODES.modes
     ['zpd', 'cpd', 'sym', 'ppd', 'sp1', 'per']

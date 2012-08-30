@@ -1,26 +1,14 @@
-include setup.py setupegg.py setup.cfg
-include README.txt CHANGES.txt COPYING.txt THANKS.txt
+include setup.py setup.cfg
+include README.rst CHANGES.txt COPYING.txt THANKS.txt
 include MANIFEST.in
 
-recursive-include doc *.rst *.css *.html *txt *.js *.png *.ico *.bat
-recursive-include doc/source *
-recursive-include doc/build/html *
-include doc/Makefile
+graft demo
+graft doc
+graft src
+graft tests
+graft util
 
-exclude doc/build/html/.doctrees/*
-exclude doc/0.1.6/html/demo/*
-exclude doc/0.1.6/html/img/*
+prune build
+prune doc/build
 
-include ez_setup/*
-
-include demo/*.py
-include demo/data/*
-recursive-include  util *.py *.conf *.bat *.sh
-
-recursive-include pywt *.py
-recursive-include src *.c *.h *.pxi *.pxd *.pyx *.template
-exclude src/_pywt.c
-exclude src/_pywt.h
-exclude src/_pywt.pxi
-
-recursive-include tests *.py *.txt
+global-exclude *.py[cod] *.egg *.egg-info

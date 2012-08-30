@@ -16,7 +16,7 @@ from multidim import dwt2, idwt2
 
 def get_graycode_order(level, x='a', y='d'):
     graycode_order = [x, y]
-    for i in range(level-1):
+    for i in range(level - 1):
         graycode_order = [x + path for path in graycode_order] + \
                          [y + path for path in graycode_order[::-1]]
     return graycode_order
@@ -27,8 +27,8 @@ class BaseNode(object):
     BaseNode for wavelet packet 1D and 2D tree nodes.
     """
 
-    # PART_LEN and PARTS attributes that define path tokens for 
-    # node[] lookup must be defined in subclasses.
+    # PART_LEN and PARTS attributes that define path tokens for node[] lookup
+    # must be defined in subclasses.
     PART_LEN = None
     PARTS = None
 
@@ -90,8 +90,8 @@ class BaseNode(object):
         if self._maxlevel is not None:
             return self._maxlevel
         elif self.data is not None:
-            return self.level + dwt_max_level(min(self.data.shape),
-                                              self.wavelet)
+            return self.level + dwt_max_level(
+                min(self.data.shape), self.wavelet)
 
         if evaluate_from == 'parent':
             if self.parent is not None:
@@ -105,6 +105,7 @@ class BaseNode(object):
                         return level
         return None
 
+    @property
     def maxlevel(self):
         if self._maxlevel is not None:
             return self._maxlevel
@@ -116,11 +117,10 @@ class BaseNode(object):
         if self._maxlevel is None:
             self._maxlevel = self._evaluate_maxlevel(evaluate_from='subnodes')
         return self._maxlevel
-    maxlevel = property(maxlevel)
 
+    @property
     def node_name(self):
         return self.path[-self.PART_LEN:]
-    node_name = property(node_name)
 
     def decompose(self):
         """
@@ -149,15 +149,16 @@ class BaseNode(object):
         return self._reconstruct(update)
 
     def _reconstruct(self):
-        raise NotImplementedError() # override this in subclasses
+        raise NotImplementedError()  # override this in subclasses
 
     def get_subnode(self, part, decompose=True):
         """
         Returns subnode.
 
         part      - subnode name
-        decompose - if True and subnode does not exist, it will be created using
-                    coefficients from DWT decomposition of the current node.
+        decompose - if the param is True and corresponding subnode does not
+                    exist, the subnode will be created using coefficients
+                    from the DWT decomposition of the current node.
         """
         self._validate_node_name(part)
         subnode = self._get_node(part)
@@ -181,7 +182,7 @@ class BaseNode(object):
                 raise IndexError("Path length is out of range.")
             if path:
                 return self.get_subnode(path[0:self.PART_LEN], True)[
-                    path[self.PART_LEN:]]
+                       path[self.PART_LEN:]]
             else:
                 return self
         else:
@@ -197,8 +198,10 @@ class BaseNode(object):
         """
 
         if isinstance(path, basestring):
-            if (self.maxlevel is not None
-                and len(self.path) + len(path) > self.maxlevel * self.PART_LEN):
+            if (
+                self.maxlevel is not None
+                and len(self.path) + len(path) > self.maxlevel * self.PART_LEN
+            ):
                 raise IndexError("Path length out of range.")
             if path:
                 subnode = self.get_subnode(path[0:self.PART_LEN], False)
@@ -220,11 +223,12 @@ class BaseNode(object):
         Remove node from the tree.
         """
         node = self[path]
-        # don't clear node value and subnodes (node may still exist outside the tree)
+        # don't clear node value and subnodes (node may still exist outside
+        # the tree)
         ## node._init_subnodes()
         ## node.data = None
         parent = node.parent
-        node.parent = None # TODO
+        node.parent = None  # TODO
         if parent and node.node_name:
             parent._delete_node(node.node_name)
 
@@ -234,7 +238,7 @@ class BaseNode(object):
 
     def has_any_subnode(self):
         for part in self.PARTS:
-            if self._get_node(part) is not None: # and not .is_empty
+            if self._get_node(part) is not None:  # and not .is_empty
                 return True
         return False
     has_any_subnode = property(has_any_subnode)
@@ -244,6 +248,7 @@ class BaseNode(object):
         Returns leaf nodes.
         """
         result = []
+
         def collect(node):
             if node.level == node.maxlevel and not node.is_empty:
                 result.append(node)
@@ -255,30 +260,34 @@ class BaseNode(object):
         self.walk(collect, decompose=decompose)
         return result
 
-    def walk(self, func, args=(), kwargs={}, decompose=True):
+    def walk(self, func, args=(), kwargs=None, decompose=True):
         """
         Walk tree and call func on every node -> func(node, *args)
         If func returns True, descending to subnodes will continue.
 
         func - callable
-        args - func parms
+        args - func params
         kwargs - func keyword params
         """
+        if kwargs is None:
+            kwargs = {}
         if func(self, *args, **kwargs) and self.level < self.maxlevel:
             for part in self.PARTS:
                 subnode = self.get_subnode(part, decompose)
                 if subnode is not None:
                     subnode.walk(func, args, kwargs, decompose)
 
-    def walk_depth(self, func, args=(), kwargs={}, decompose=False):
+    def walk_depth(self, func, args=(), kwargs=None, decompose=False):
         """
         Walk tree and call func on every node starting from the bottom-most
         nodes.
 
         func - callable
-        args - func parms
+        args - func params
         kwargs - func keyword params
         """
+        if kwargs is None:
+            kwargs = {}
         if self.level < self.maxlevel:
             for part in self.PARTS:
                 subnode = self.get_subnode(part, decompose)
@@ -304,15 +313,16 @@ class Node(BaseNode):
     PART_LEN = 1
 
     def _create_subnode(self, part, data=None, overwrite=True):
-        return self._create_subnode_base(node_cls=Node, part=part, data=data, overwrite=overwrite)
+        return self._create_subnode_base(node_cls=Node, part=part, data=data,
+            overwrite=overwrite)
 
     def _decompose(self):
         if self.is_empty:
             data_a, data_d = None, None
             if self._get_node(self.A) is None:
                 self._create_subnode(self.A, data_a)
-            if self._get_node(self.B) is None:
-                self._create_subnode(self.B, data_b)
+            if self._get_node(self.D) is None:
+                self._create_subnode(self.D, data_d)
         else:
             data_a, data_d = dwt(self.data, self.wavelet, self.mode)
             self._create_subnode(self.A, data_a)
@@ -324,9 +334,9 @@ class Node(BaseNode):
         node_a, node_d = self._get_node(self.A), self._get_node(self.D)
 
         if node_a is not None:
-            data_a = node_a.reconstruct() # TODO: (update) ???
+            data_a = node_a.reconstruct()  # TODO: (update) ???
         if node_d is not None:
-            data_d = node_d.reconstruct() # TODO: (update) ???
+            data_d = node_d.reconstruct()  # TODO: (update) ???
 
         if data_a is None and data_d is None:
             raise ValueError("Node is a leaf node and cannot be reconstructed"
@@ -343,8 +353,8 @@ class Node2D(BaseNode):
     """
     WaveletPacket tree node.
 
-    Subnodes are called 'a' (LL), 'h' (LH), 'v' (HL) and  'd' (HH), like approximation and
-    detail coefficients in 2D Discrete Wavelet Transform
+    Subnodes are called 'a' (LL), 'h' (LH), 'v' (HL) and  'd' (HH), like
+    approximation and detail coefficients in the 2D Discrete Wavelet Transform
     """
 
     LL = 'a'
@@ -356,33 +366,44 @@ class Node2D(BaseNode):
     PART_LEN = 1
 
     def _create_subnode(self, part, data=None, overwrite=True):
-        return self._create_subnode_base(node_cls=Node2D, part=part, data=data, overwrite=overwrite)
+        return self._create_subnode_base(node_cls=Node2D, part=part, data=data,
+            overwrite=overwrite)
 
     def _decompose(self):
         if self.is_empty:
             data_ll, data_lh, data_hl, data_hh = None, None, None, None
         else:
-            data_ll, (data_lh, data_hl, data_hh) = dwt2(self.data, self.wavelet, self.mode)
+            data_ll, (data_lh, data_hl, data_hh) =\
+                dwt2(self.data, self.wavelet, self.mode)
         self._create_subnode(self.LL, data_ll)
         self._create_subnode(self.LH, data_lh)
         self._create_subnode(self.HL, data_hl)
         self._create_subnode(self.HH, data_hh)
-        return self._get_node(self.LL), self._get_node(self.LH), self._get_node(self.HL), self._get_node(self.HH)
+        return self._get_node(self.LL), self._get_node(self.LH),\
+               self._get_node(self.HL), self._get_node(self.HH)
 
     def _reconstruct(self, update):
         data_ll, data_lh, data_hl, data_hh = None, None, None, None
 
-        node_ll, node_lh, node_hl, node_hh = \
-            self._get_node(self.LL), self._get_node(self.LH), self._get_node(self.HL), self._get_node(self.HH)
+        node_ll, node_lh, node_hl, node_hh =\
+            self._get_node(self.LL), self._get_node(self.LH),\
+            self._get_node(self.HL), self._get_node(self.HH)
 
-        if node_ll is not None: data_ll = node_ll.reconstruct()
-        if node_lh is not None: data_lh = node_lh.reconstruct()
-        if node_hl is not None: data_hl = node_hl.reconstruct()
-        if node_hh is not None: data_hh = node_hh.reconstruct()
+        if node_ll is not None:
+            data_ll = node_ll.reconstruct()
+        if node_lh is not None:
+            data_lh = node_lh.reconstruct()
+        if node_hl is not None:
+            data_hl = node_hl.reconstruct()
+        if node_hh is not None:
+            data_hh = node_hh.reconstruct()
 
         if (data_ll is None and data_lh is None
             and data_hl is None and data_hh is None):
-            raise ValueError("Tree is missing data - all subnodes of `%s` node are None. Cannot reconstruct node." % self.path)
+            raise ValueError(
+                "Tree is missing data - all subnodes of `%s` node "
+                "are None. Cannot reconstruct node." % self.path
+            )
         else:
             coeffs = data_ll, (data_lh, data_hl, data_hh)
             rec = idwt2(coeffs, self.wavelet, self.mode)
@@ -444,7 +465,7 @@ class WaveletPacket(Node):
             if update:
                 self.data = data
             return data
-        return self.data # return original data
+        return self.data  # return original data
 
     def get_level(self, level, order="natural", decompose=True):
         """
@@ -519,14 +540,14 @@ class WaveletPacket2D(Node2D):
             if update:
                 self.data = data
             return data
-        return self.data # return original data
+        return self.data  # return original data
 
     def get_level(self, level, order="natural", decompose=True):
         """
         Returns all nodes from specified level.
-        
+
         If order is `natural`, a flat list is returned.
-        
+
         If order is `freq`, a 2d structure with rows and cols
         sorted by corresponding dimension frequency of 2d
         coefficient array (adapted from 1d case).
@@ -545,11 +566,12 @@ class WaveletPacket2D(Node2D):
             return True
 
         self.walk(collect, decompose=decompose)
-        
+
         if order == "freq":
             nodes = {}
-            for (row_path, col_path), node in [(self.expand_2d_path(node.path), node)
-                                               for node in result]:
+            for (row_path, col_path), node in [
+                (self.expand_2d_path(node.path), node) for node in result
+            ]:
                 nodes.setdefault(row_path, {})[col_path] = node
             graycode_order = get_graycode_order(level, x='l', y='h')
             nodes = [nodes[path] for path in graycode_order if path in nodes]
@@ -559,4 +581,3 @@ class WaveletPacket2D(Node2D):
                     [row[path] for path in graycode_order if path in row]
                 )
         return result
-

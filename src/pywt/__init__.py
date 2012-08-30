@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# flake8: noqa
 
 # Copyright (c) 2006-2010 Filip Wasilewski <http://filipwasilewski.pl/>
 # See COPYING for license details.

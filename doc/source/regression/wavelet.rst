@@ -45,7 +45,7 @@ with no argument. As you can see currently there are 76 builtin wavelets.
 Creating Wavelet objects
 ------------------------
 
-Now when we know all the names let's finnally create a :class:`Wavelet` object:
+Now when we know all the names let's finally create a :class:`Wavelet` object:
 
     >>> w = pywt.Wavelet('db3')
 
@@ -56,10 +56,10 @@ Wavelet properties
 ------------------
 
 But what can we do with :class:`Wavelet` objects? Well, they carry some
-interresting information.
+interesting information.
 
 First, let's try printing a :class:`Wavelet` object. This shows a brief
-information about it's name, it's family name and some properties like
+information about its name, its family name and some properties like
 orthogonality and symmetry.
 
     >>> print w
@@ -137,7 +137,7 @@ Other Wavelet's properties are:
         >>> w.vanishing_moments_psi
         3
 
-Now when we know a bit about the builtin Wavelets, les't see how to create
+Now when we know a bit about the builtin Wavelets, let's see how to create
 :ref:`custom Wavelets <custom-wavelets>` objects. These can be done in two ways:
 
     1) Passing the filter bank object that implements the `filter_bank`
@@ -175,7 +175,7 @@ to correct values:
       Biorthogonal:   False
       Symmetry:       unknown
 
-    You can hovewer set a few of them on your own:
+    You can however set a few of them on your own:
 
     >>> my_wavelet.orthogonal = True
     >>> my_wavelet.biorthogonal = True

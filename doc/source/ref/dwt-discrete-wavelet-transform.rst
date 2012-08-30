@@ -26,7 +26,7 @@ Single level ``dwt``
 
   :param data: |data|
 
-  :param wavelet: |wavelet_arg|
+  :param wavelet: |wavelet|
 
   :param mode: |mode|
 
@@ -78,11 +78,11 @@ Multilevel decomposition using ``wavedec``
 
   :param data: |data|
 
-  :param wavelet: |wavelet_arg|
+  :param wavelet: |wavelet|
 
   :param mode: |mode|
 
-  :param level: Number of decomposition steps to performe. If the level is
+  :param level: Number of decomposition steps to perform. If the level is
                 ``None``, then the full decomposition up to the level computed
                 with :func:`dwt_max_level` function for the given data and
                 wavelet lengths is performed.
@@ -115,7 +115,7 @@ Partial Discrete Wavelet Transform data decomposition ``downcoef``
 
    :param data: |data|
 
-   :param wavelet: |wavelet_arg|
+   :param wavelet: |wavelet|
 
    :param mode: |mode|
 

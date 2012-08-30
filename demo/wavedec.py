@@ -17,12 +17,12 @@ dec = pywt.wavedec(data, wavelet, mode, level)
 
 print "decomposition:"
 
-print "cA%d:" % (len(dec)-1)
+print "cA%d:" % (len(dec) - 1)
 print ' '.join([("%.3f" % val) for val in dec[0]])
 
-for i,d in enumerate(dec[1:]):
-	print "cD%d:" % (len(dec)-1-i)
-	print ' '.join([("%.3f" % val) for val in d])
+for i, d in enumerate(dec[1:]):
+    print "cD%d:" % (len(dec) - 1 - i)
+    print ' '.join([("%.3f" % val) for val in d])
 
 print
 print "reconstruction:"

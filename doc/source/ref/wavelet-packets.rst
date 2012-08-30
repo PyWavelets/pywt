@@ -9,8 +9,8 @@ Wavelet Packets
 
 .. versionadded:: 0.2
 
-Version `0.2` of |pywt| includes many new features and improvements. One of such
-new feature is a two-dimansional wavelet packet transform structure that is
+Version `0.2` of PyWavelets includes many new features and improvements. One of such
+new feature is a two-dimensional wavelet packet transform structure that is
 almost completely sharing programming interface with the one-dimensional tree
 structure.
 
@@ -24,7 +24,7 @@ superclasses to the :class:`~pywt.WaveletPacket` class and
 :class:`~pywt.WaveletPacket2D` class that are used as the decomposition tree
 roots and contain a couple additional methods.
 
-The below diagram ilustrates the inheritance tree:
+The below diagram illustrates the inheritance tree:
 
   - :class:`~pywt.BaseNode` - common interface for 1D and 2D nodes:
 
@@ -48,7 +48,7 @@ BaseNode - a common interface of WaveletPacket and WaveletPacket2D
 
   .. note:: The BaseNode is a base class for :class:`Node` and :class:`Node2D`.
             It should not be used directly unless creating a new transformation
-            type. It is included here to documentat the common interface of 1D
+            type. It is included here to document the common interface of 1D
             and 2D node an wavelet packet transform classes.
 
   .. method:: __init__(parent, data, node_name)
@@ -90,7 +90,7 @@ BaseNode - a common interface of WaveletPacket and WaveletPacket2D
 
   .. attribute:: path
 
-     Path string defining position of the node in the decopmosition tree.
+     Path string defining position of the node in the decomposition tree.
 
   .. attribute:: node_name
 
@@ -246,8 +246,7 @@ WaveletPacket and WaveletPacket tree Node
 
      :param data: data associated with the node. 1D numeric array.
 
-     :param wavelet: :class:`~pywt.Wavelet` to use for decomposition and
-                     reconstruction.
+     :param wavelet: |wavelet|
 
      :param mode: Signal extension :ref:`mode <ref-modes>` for the :func:`dwt`
                   and :func:`idwt` decomposition and reconstruction functions.
@@ -302,8 +301,7 @@ WaveletPacket2D and WaveletPacket2D tree Node2D
 
      :param data: data associated with the node. 2D numeric array.
 
-     :param wavelet: :class:`~pywt.Wavelet` to use for decomposition and
-                     reconstruction.
+     :param wavelet: |wavelet|
 
      :param mode: Signal extension :ref:`mode <ref-modes>` for the :func:`dwt`
                   and :func:`idwt` decomposition and reconstruction functions.

@@ -1,8 +1,5 @@
 .. _ref-thresholding:
 
-.. module:: pywt.thresholding
-.. include:: ../substitutions.rst
-
 
 Thresholding functions
 ======================

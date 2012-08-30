@@ -28,7 +28,7 @@
 int $DTYPE$_downsampling_convolution(const $DTYPE$* input, const_index_t N, const $DTYPE$* filter, const_index_t F, $DTYPE$* output, const_index_t step, MODE mode);
 //##ENDFOR $DTYPE$
 
-// Straightfoward implementation with memory reallocation - for very short signals (shorter than filter).
+// Straightforward implementation with memory reallocation - for very short signals (shorter than filter).
 // This id called from downsampling_convolution
 
 //##FOR $DTYPE$ in (double, float):

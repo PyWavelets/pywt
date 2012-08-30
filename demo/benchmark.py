@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import time, gc, sys, csv, warnings
-import pywt
+import gc
+import sys
+import time
+
 import numpy
 import pylab
 
-#sys.stderr = sys.stdout
-#gc.set_debug(gc.DEBUG_LEAK)
+import pywt
 
 if sys.platform == 'win32':
     clock = time.clock
@@ -40,12 +41,12 @@ for j, size in enumerate(sizes):
 
     data = numpy.ones((size,), dtype)
 
-    print ("%d/%d" % (j+1, len(sizes))).rjust(6), str(size).rjust(9),
+    print ("%d/%d" % (j + 1, len(sizes))).rjust(6), str(size).rjust(9),
     for i, w in enumerate(wavelets):
         min_t1, min_t2 = 9999., 9999.
         for _ in xrange(repeat):
             t1 = clock()
-            (a,d) = pywt.dwt(data, w, mode)
+            (a, d) = pywt.dwt(data, w, mode)
             t1 = clock() - t1
             min_t1 = min(t1, min_t1)
 
@@ -53,18 +54,17 @@ for j, size in enumerate(sizes):
             a0 = pywt.idwt(a, d, w, mode)
             t2 = clock() - t2
             min_t2 = min(t2, min_t2)
-            
+
         times_dwt[i].append(min_t1)
         times_idwt[i].append(min_t2)
         print '.',
     print
     gc.collect()
 
-
-for j, (times,name) in enumerate([(times_dwt, 'dwt'), (times_idwt, 'idwt')]):
+for j, (times, name) in enumerate([(times_dwt, 'dwt'), (times_idwt, 'idwt')]):
     pylab.figure(j)
     pylab.title(name)
-    
+
     for i, n in enumerate(wavelet_names):
         pylab.loglog(sizes, times[i], label=n)
 

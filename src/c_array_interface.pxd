@@ -13,7 +13,7 @@ cdef extern from "array_interface.h":
     ctypedef c_python.Py_intptr_t intp
 
     ctypedef struct PyGenericArrayInterface:
-        int two                         # contains array interace version number (min. 2)
+        int two                         # contains array interface version number (min. 2)
         int nd                          # number of dimensions
         char typekind                   # kind in array --- character code of typestr
         int itemsize                    # size of each element
