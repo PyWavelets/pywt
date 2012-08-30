@@ -1,5 +1,11 @@
 Changelog
 
+0.2.2
+    maintenance release:
+      - resolved setup and build issues
+      - support for compilation using MSVC compiler
+      - updated documentation
+      - moved main repository to GitHub (https://github.com/nigma/pywt)
 
 0.2.0
 
