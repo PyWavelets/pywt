@@ -48,13 +48,14 @@ setup(
     name="PyWavelets",
     version="0.2.0.post1",
     author="Filip Wasilewski",
-    author_email="filip.wasilewski@gmail.com",
+    author_email="en@ig.ma",
     url="http://www.pybytes.com/pywavelets/",
     download_url="http://pypi.python.org/pypi/PyWavelets/",
     license="MIT",
-    description="PyWavelets, wavelet transform module.",
+    description="PyWavelets, wavelet transform module",
     long_description="""\
     PyWavelets is a Python wavelet transforms module that includes:
+
     * 1D and 2D Forward and Inverse Discrete Wavelet Transform (DWT and IDWT)
     * 1D and 2D Stationary Wavelet Transform (Undecimated Wavelet Transform)
     * 1D and 2D Wavelet Packet decomposition and reconstruction
@@ -74,6 +75,8 @@ setup(
         "Operating System :: OS Independent",
         "Programming Language :: C",
         "Programming Language :: Python",
+        "Programming Language :: Python :: 2.6",
+        "Programming Language :: Python :: 2.7",
         "Topic :: Software Development :: Libraries :: Python Modules"
     ],
     ext_modules=ext_modules,
