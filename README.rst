@@ -16,9 +16,9 @@ PyWavelets is very easy to start with and use, and currently is capable of:
   * Results compatibility with Matlab Wavelet Toolbox (tm)
 
 .. image::
-    https://secure.travis-ci.org/nigma/pywt.png?branch=develop
+    https://secure.travis-ci.org/rgommers/pywt.png?branch=master
     :alt: Build Status
-    :target: https://secure.travis-ci.org/nigma/pywt
+    :target: https://secure.travis-ci.org/rgommers/pywt
 
 
 Requirements
