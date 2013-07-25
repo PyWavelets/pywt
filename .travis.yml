@@ -4,16 +4,11 @@ python:
   - 2.6
   - 2.7
 
-branches:
-  only:
-    - develop
-    - master
-
 before_install:
   - pip install -q --use-mirrors Cython numpy
 
 install:
   - pip install .
 
-script: 
+script:
   - python setup.py test
