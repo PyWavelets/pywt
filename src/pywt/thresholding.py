@@ -83,14 +83,6 @@ def hard(data, value, substitute=0):
     """
     mvalue = -value
 
-    cond_less = numerix.less(data, value)
-    cond_greater = numerix.greater(data, mvalue)
-
-    data = numerix.where(cond_less & cond_greater, substitute, data)
-    data = numerix.where(cond_less, data + value, data)
-    data = numerix.where(cond_greater, data - value, data)
-    mvalue = -value
-
     cond = numerix.less(data, value)
     cond &= numerix.greater(data, mvalue)
 
