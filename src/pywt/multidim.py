@@ -221,9 +221,9 @@ def dwtn(data, wavelet, mode='sym'):
         for subband, x in coeffs:
             new_coeffs.extend([
                 (subband + 'a', apply_along_axis(_downcoef, axis,
-                    x, wavelet, mode, 'a')),
+                 x, wavelet, mode, 'a')),
                 (subband + 'd', apply_along_axis(_downcoef, axis,
-                    x, wavelet, mode, 'd'))
+                 x, wavelet, mode, 'd'))
             ])
         coeffs = new_coeffs
     return dict(coeffs)
