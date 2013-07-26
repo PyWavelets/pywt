@@ -21,32 +21,33 @@ def dwt2(data, wavelet, mode='sym'):
     """
     2D Discrete Wavelet Transform.
 
-    data    - 2D array with input data
-    wavelet - wavelet to use (Wavelet object or name string)
-    mode    - signal extension mode, see MODES
+    Parameters
+    ----------
+    data : array
+        2D array with input data
+    wavelet : Wavelet object or name string
+        Wavelet to use
+    mode : str, optional (default: 'sym')
+        Signal extension mode, see MODES
 
-    Returns approximation and three details 2D coefficients arrays.
+    Returns
+    -------
+    (cA, (cH, cV, cD)) : tuple
+        approximation, horizontal detail, vertical detail and diagonal
+        detail coefficients respectively.
 
-    The result form four 2D coefficients arrays organized in tuples:
-
-        (approximation,
-                (horizontal details,
-                vertical details,
-                diagonal details)
-        )
-
-    which sometimes is also interpreted as laid out in one 2D array
-    of coefficients, where:
-
-                                -----------------
-                                |       |       |
-                                | A(LL) | H(LH) |
-                                |       |       |
-        (A, (H, V, D))  <--->   -----------------
-                                |       |       |
-                                | V(HL) | D(HH) |
-                                |       |       |
-                                -----------------
+    Examples
+    --------
+    >>> import numpy as np
+    >>> data = np.ones((4,4), dtype=np.float64)
+    >>> coeffs = dwt2(data, 'haar')
+    >>> cA, (cH, cV, cD) = coeffs
+    >>> print(cA)
+    [[ 2.  2.]
+     [ 2.  2.]]
+    >>> print(cV)
+    [[ 0.  0.]
+     [ 0.  0.]]
     """
 
     data = as_float_array(data)
@@ -96,17 +97,24 @@ def idwt2(coeffs, wavelet, mode='sym'):
     2D Inverse Discrete Wavelet Transform. Reconstruct data from coefficients
     arrays.
 
-    coeffs  - four 2D coefficients arrays arranged as follows (in the same way
-              as dwt2 output -- see dwt2 description for details):
+    Parameters
+    ----------
+    coeffs : tuple
+        (cA, (cH, cV, cD)) A tuple with approximation coefficients and three
+        details coefficients 2D arrays like from `dwt2()`
+    wavelet : Wavelet object or name string
+        Wavelet to use
+    mode : str, optional (default: 'sym')
+        Signal extension mode, see MODES
 
-        (approximation,
-                (horizontal details,
-                vertical details,
-                diagonal details)
-        )
-
-    wavelet - wavelet to use (Wavelet object or name string)
-    mode    - signal extension mode, see MODES
+    Examples
+    --------
+    >>> import numpy as np
+    >>> data = np.array([[1,2], [3,4]], dtype=np.float64)
+    >>> coeffs = dwt2(data, 'haar')
+    >>> print(idwt2(coeffs, 'haar'))
+    [[ 1.  2.]
+     [ 3.  4.]]
     """
 
     if len(coeffs) != 2 or len(coeffs[1]) != 3:
@@ -197,10 +205,33 @@ def dwtn(data, wavelet, mode='sym'):
     """
     Single-level n-dimensional Discrete Wavelet Transform.
 
-    data     - n-dimensional array
-    wavelet - wavelet to use (Wavelet object or name string)
-    mode    - signal extension mode, see MODES
+    Parameters
+    ----------
+    data : array
+        nD array with input data
+    wavelet : Wavelet object or name string
+        Wavelet to use
+    mode : str, optional (default: 'sym')
+        Signal extension mode, see MODES
 
+    Returns
+    -------
+    [cAn, (cHn, cVn, cDn), ..., (cH1, cV1, cD1)] : array
+    where n denotes the level of decomposition and cA, cH, cV and cD are
+    approximation, horizontal detail, vertical detail and diagonal detail
+    coefficients arrays respectively.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> coeffs = wavedec2(np.ones((8,8)), 'db1', level=2)
+    >>> cA2, (cH2, cV2, cD2), (cH1, cV1, cD1) = coeffs
+    >>> print(cA2)
+    [[ 4.  4.]
+     [ 4.  4.]]
+
+    Notes
+    -----
     Results are arranged in a dictionary, where key specifies
     the transform type on each dimension and value is a n-dimensional
     coefficients array.
@@ -233,10 +264,16 @@ def swt2(data, wavelet, level, start_level=0):
     """
     2D Stationary Wavelet Transform.
 
-    data    - 2D array with input data
-    wavelet - wavelet to use (Wavelet object or name string)
-    level   - how many decomposition steps to perform
-    start_level - the level at which the decomposition will start
+    Parameters
+    ----------
+    data : array
+        2D array with input data
+    wavelet : Wavelet object or name string
+        Wavelet to use
+    level : int
+        How many decomposition steps to perform
+    start_level : int
+        The level at which the decomposition will start
 
     Returns list of approximation and details coefficients:
 
