@@ -5,7 +5,7 @@ import pylab
 
 import pywt
 
-data1 = pylab.array(range(1, 400) + range(398, 600) + range(601, 1024))
+data1 = pylab.array(list(range(1, 400)) + list(range(398, 600)) + list(range(601, 1024)))
 x = pylab.arange(612 - 80, 20, -0.5) / 250.
 data2 = pylab.sin(40 * pylab.log(x)) * pylab.sign((pylab.log(x)))
 
@@ -20,7 +20,7 @@ def plot(data, w, title):
     a = data
     ca = []
     cd = []
-    for i in xrange(5):
+    for i in range(5):
         (a, d) = pywt.dwt(a, w, mode)
         ca.append(a)
         cd.append(d)

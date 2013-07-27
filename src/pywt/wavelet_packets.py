@@ -176,7 +176,7 @@ class BaseNode(object):
         If node does not exist yet, it will be created by decomposition of its
         parent node.
         """
-        if isinstance(path, basestring):
+        if isinstance(path, str):
             if (self.maxlevel is not None
                 and len(path) > self.maxlevel * self.PART_LEN):
                 raise IndexError("Path length is out of range.")
@@ -197,7 +197,7 @@ class BaseNode(object):
         data - array or BaseNode subclass.
         """
 
-        if isinstance(path, basestring):
+        if isinstance(path, str):
             if (
                 self.maxlevel is not None
                 and len(self.path) + len(path) > self.maxlevel * self.PART_LEN

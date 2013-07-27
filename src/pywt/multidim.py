@@ -11,7 +11,7 @@ from __future__ import division, print_function, absolute_import
 
 __all__ = ['dwt2', 'idwt2', 'swt2', 'dwtn']
 
-from itertools import izip, cycle
+from itertools import cycle
 
 from _pywt import Wavelet, MODES
 from _pywt import dwt, idwt, swt, downcoef
@@ -153,7 +153,7 @@ def idwt2(coeffs, wavelet, mode='sym'):
         if LH is None:
             # IDWT can handle None input values - equals to zero-array
             LH = cycle([None])
-        for rowL, rowH in izip(LL, LH):
+        for rowL, rowH in zip(LL, LH):
             L.append(idwt(rowL, rowH, wavelet, mode, 1))
     del LL, LH
 
@@ -167,7 +167,7 @@ def idwt2(coeffs, wavelet, mode='sym'):
         if HH is None:
             # IDWT can handle None input values - equals to zero-array
             HH = cycle([None])
-        for rowL, rowH in izip(HL, HH):
+        for rowL, rowH in zip(HL, HH):
             H.append(idwt(rowL, rowH, wavelet, mode, 1))
     del HL, HH
 
@@ -184,7 +184,7 @@ def idwt2(coeffs, wavelet, mode='sym'):
     if H is None:
         # IDWT can handle None input values - equals to zero-array
         H = cycle([None])
-    for rowL, rowH in izip(L, H):
+    for rowL, rowH in zip(L, H):
         data.append(idwt(rowL, rowH, wavelet, mode, 1))
 
     return array(data, default_dtype)

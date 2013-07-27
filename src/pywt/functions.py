@@ -24,7 +24,7 @@ WAVELET_CLASSES = (Wavelet)
 
 
 def wavelet_for_name(name):
-    if not isinstance(name, basestring):
+    if not isinstance(name, str):
         raise TypeError(
             "Wavelet name must be of string type, not %s" % type(name))
     try:

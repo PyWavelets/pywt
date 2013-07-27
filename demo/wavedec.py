@@ -3,7 +3,7 @@
 
 import pywt
 
-data = range(16)
+data = list(range(16))
 wavelet = 'db4'
 level = 2
 mode = 'cpd'

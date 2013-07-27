@@ -22,7 +22,7 @@ except ImportError:
 from distutils import dir_util
 from distutils.errors import DistutilsClassError
 
-import templating
+from . import templating
 
 base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "..")
 
