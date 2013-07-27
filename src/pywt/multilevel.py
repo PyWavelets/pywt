@@ -49,11 +49,11 @@ def wavedec(data, wavelet, mode='sym', level=None):
     >>> coeffs = multilevel.wavedec([1,2,3,4,5,6,7,8], 'db1', level=2)
     >>> cA2, cD2, cD1 = coeffs
     >>> cD1
-    [-0.70710678 -0.70710678 -0.70710678 -0.70710678]
+    array([-0.70710678, -0.70710678, -0.70710678, -0.70710678])
     >>> cD2
-    [-2. -2.]
+    array([-2., -2.])
     >>> cA2
-    [  5.  13.]
+    array([  5.,  13.])
 
     """
 
@@ -96,8 +96,8 @@ def waverec(coeffs, wavelet, mode='sym'):
     --------
     >>> from pywt import multilevel
     >>> coeffs = multilevel.wavedec([1,2,3,4,5,6,7,8], 'db2', level=2)
-    >>> pywt.waverec(coeffs, 'db2')
-    [ 1.  2.  3.  4.  5.  6.  7.  8.]
+    >>> multilevel.waverec(coeffs, 'db2')
+    array([ 1.,  2.,  3.,  4.,  5.,  6.,  7.,  8.])
     """
 
     if not isinstance(coeffs, (list, tuple)):
@@ -144,11 +144,10 @@ def wavedec2(data, wavelet, mode='sym', level=None):
     >>> len(coeffs)-1
     2
     >>> multilevel.waverec2(coeffs, 'db1')
-    [[ 1.  1.  1.  1.]
-     [ 1.  1.  1.  1.]
-     [ 1.  1.  1.  1.]
-     [ 1.  1.  1.  1.]]
-
+    array([[ 1.,  1.,  1.,  1.],
+           [ 1.,  1.,  1.,  1.],
+           [ 1.,  1.,  1.,  1.],
+           [ 1.,  1.,  1.,  1.]])
     """
 
     data = np.asarray(data, np.float64)
@@ -202,10 +201,10 @@ def waverec2(coeffs, wavelet, mode='sym'):
     >>> len(coeffs)-1
     2
     >>> multilevel.waverec2(coeffs, 'db1')
-    [[ 1.  1.  1.  1.]
-     [ 1.  1.  1.  1.]
-     [ 1.  1.  1.  1.]
-     [ 1.  1.  1.  1.]]
+    array([[ 1.,  1.,  1.,  1.],
+           [ 1.,  1.,  1.,  1.],
+           [ 1.,  1.,  1.,  1.],
+           [ 1.,  1.,  1.,  1.]])
     """
 
     if not isinstance(coeffs, (list, tuple)):
