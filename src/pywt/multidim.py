@@ -23,12 +23,12 @@ def dwt2(data, wavelet, mode='sym'):
 
     Parameters
     ----------
-    data : array
+    data : ndarray
         2D array with input data
     wavelet : Wavelet object or name string
         Wavelet to use
-    mode : str, optional (default: 'sym')
-        Signal extension mode, see MODES
+    mode : str, optional
+        Signal extension mode, see MODES (default: 'sym')
 
     Returns
     -------
@@ -38,9 +38,9 @@ def dwt2(data, wavelet, mode='sym'):
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from pywt import multidim
     >>> data = np.ones((4,4), dtype=np.float64)
-    >>> coeffs = dwt2(data, 'haar')
+    >>> coeffs = multidim.dwt2(data, 'haar')
     >>> cA, (cH, cV, cD) = coeffs
     >>> print(cA)
     [[ 2.  2.]
@@ -104,15 +104,15 @@ def idwt2(coeffs, wavelet, mode='sym'):
         details coefficients 2D arrays like from `dwt2()`
     wavelet : Wavelet object or name string
         Wavelet to use
-    mode : str, optional (default: 'sym')
-        Signal extension mode, see MODES
+    mode : str, optional
+        Signal extension mode, see MODES (default: 'sym')
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from pywt import multidim
     >>> data = np.array([[1,2], [3,4]], dtype=np.float64)
-    >>> coeffs = dwt2(data, 'haar')
-    >>> print(idwt2(coeffs, 'haar'))
+    >>> coeffs = multidim.dwt2(data, 'haar')
+    >>> print(multidim.idwt2(coeffs, 'haar'))
     [[ 1.  2.]
      [ 3.  4.]]
     """
@@ -207,42 +207,27 @@ def dwtn(data, wavelet, mode='sym'):
 
     Parameters
     ----------
-    data : array
+    data : ndarray
         nD array with input data
     wavelet : Wavelet object or name string
         Wavelet to use
-    mode : str, optional (default: 'sym')
-        Signal extension mode, see MODES
+    mode : str, optional
+        Signal extension mode, see MODES (default: 'sym')
 
     Returns
     -------
-    [cAn, (cHn, cVn, cDn), ..., (cH1, cV1, cD1)] : array
-    where n denotes the level of decomposition and cA, cH, cV and cD are
-    approximation, horizontal detail, vertical detail and diagonal detail
-    coefficients arrays respectively.
+    coeffs : dict
+        Results are arranged in a dictionary, where key specifies
+        the transform type on each dimension and value is a n-dimensional
+        coefficients array.
 
-    Examples
-    --------
-    >>> import numpy as np
-    >>> coeffs = wavedec2(np.ones((8,8)), 'db1', level=2)
-    >>> cA2, (cH2, cV2, cD2), (cH1, cV1, cD1) = coeffs
-    >>> print(cA2)
-    [[ 4.  4.]
-     [ 4.  4.]]
-
-    Notes
-    -----
-    Results are arranged in a dictionary, where key specifies
-    the transform type on each dimension and value is a n-dimensional
-    coefficients array.
-
-    For example, for a 2D case the result will look something like this:
-        {
-            'aa': <coeffs>  # A(LL) - approx. on 1st dim, approx. on 2nd dim
-            'ad': <coeffs>  # H(LH) - approx. on 1st dim, det. on 2nd dim
-            'da': <coeffs>  # V(HL) - det. on 1st dim, approx. on 2nd dim
-            'dd': <coeffs>  # D(HH) - det. on 1st dim, det. on 2nd dim
-        }
+        For example, for a 2D case the result will look something like this:
+            {
+                'aa': <coeffs>  # A(LL) - approx. on 1st dim, approx. on 2nd dim
+                'ad': <coeffs>  # H(LH) - approx. on 1st dim, det. on 2nd dim
+                'da': <coeffs>  # V(HL) - det. on 1st dim, approx. on 2nd dim
+                'dd': <coeffs>  # D(HH) - det. on 1st dim, det. on 2nd dim
+            }
     """
     data = as_float_array(data)
     dim = len(data.shape)
@@ -266,16 +251,19 @@ def swt2(data, wavelet, level, start_level=0):
 
     Parameters
     ----------
-    data : array
+    data : ndarray
         2D array with input data
     wavelet : Wavelet object or name string
         Wavelet to use
     level : int
         How many decomposition steps to perform
-    start_level : int
-        The level at which the decomposition will start
+    start_level : int, optional
+        The level at which the decomposition will start (default: 0)
 
-    Returns list of approximation and details coefficients:
+    Returns
+    -------
+    coeffs : list
+        Approximation and details coefficients:
 
         [
             (cA_n,
@@ -290,8 +278,8 @@ def swt2(data, wavelet, level, start_level=0):
             )
         ]
 
-    where cA is approximation, cH is horizontal details, cV is
-    vertical details, cD is diagonal details and n is start_level.
+        where cA is approximation, cH is horizontal details, cV is
+        vertical details, cD is diagonal details and n is start_level.
     """
 
     data = as_float_array(data)
