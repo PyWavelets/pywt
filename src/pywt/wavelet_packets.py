@@ -9,7 +9,8 @@ from __future__ import division, print_function, absolute_import
 
 __all__ = ["BaseNode", "Node", "WaveletPacket", "Node2D", "WaveletPacket2D"]
 
-from . import numerix
+import numpy as np
+
 from ._pywt import Wavelet, dwt, idwt, dwt_max_level
 from .multidim import dwt2, idwt2
 
@@ -211,9 +212,9 @@ class BaseNode(object):
                 subnode[path[self.PART_LEN:]] = data
             else:
                 if isinstance(data, BaseNode):
-                    self.data = numerix.as_float_array(data.data)
+                    self.data = np.asarray(data.data, dtype=np.float64)
                 else:
-                    self.data = numerix.as_float_array(data)
+                    self.data = np.asarray(data, dtype=np.float64)
         else:
             raise TypeError("Invalid path parameter type - expected string but"
                             " got %s." % type(path))
@@ -441,7 +442,7 @@ class WaveletPacket(Node):
         self.mode = mode
 
         if data is not None:
-            data = numerix.as_float_array(data)
+            data = np.asarray(data, dtype=np.float64)
             assert len(data.shape) == 1
             self.data_size = data.shape[0]
             if maxlevel is None:
@@ -517,7 +518,7 @@ class WaveletPacket2D(Node2D):
         self.mode = mode
 
         if data is not None:
-            data = numerix.as_float_array(data)
+            data = np.asarray(data, dtype=np.float64)
             assert len(data.shape) == 2
             self.data_size = data.shape
             if maxlevel is None:

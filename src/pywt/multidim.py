@@ -13,10 +13,10 @@ __all__ = ['dwt2', 'idwt2', 'swt2', 'dwtn']
 
 from itertools import cycle
 
+import numpy as np
+
 from ._pywt import Wavelet, MODES
 from ._pywt import dwt, idwt, swt, downcoef
-from .numerix import (transpose, array, as_float_array, default_dtype,
-    apply_along_axis)
 
 
 def dwt2(data, wavelet, mode='sym'):
@@ -51,7 +51,7 @@ def dwt2(data, wavelet, mode='sym'):
                                 -----------------
     """
 
-    data = as_float_array(data)
+    data = np.asarray(data)
     if len(data.shape) != 2:
         raise ValueError("Expected 2D data array")
 
@@ -69,26 +69,26 @@ def dwt2(data, wavelet, mode='sym'):
     del data
 
     # filter columns
-    H = transpose(H)
-    L = transpose(L)
+    H = np.transpose(H)
+    L = np.transpose(L)
 
     LL, LH = [], []
     for row in L:
-        cA, cD = dwt(array(row, default_dtype), wavelet, mode)
+        cA, cD = dwt(np.array(row, np.float64), wavelet, mode)
         LL.append(cA)
         LH.append(cD)
     del L
 
     HL, HH = [], []
     for row in H:
-        cA, cD = dwt(array(row, default_dtype), wavelet, mode)
+        cA, cD = dwt(np.array(row, np.float64), wavelet, mode)
         HL.append(cA)
         HH.append(cD)
     del H
 
     # build result structure
     #     (approx.,        (horizontal,    vertical,       diagonal))
-    ret = (transpose(LL), (transpose(LH), transpose(HL), transpose(HH)))
+    ret = (np.transpose(LL), (np.transpose(LH), np.transpose(HL), np.transpose(HH)))
 
     return ret
 
@@ -118,13 +118,13 @@ def idwt2(coeffs, wavelet, mode='sym'):
     LL, (LH, HL, HH) = coeffs
 
     if LL is not None:
-        LL = transpose(LL)
+        LL = np.transpose(LL)
     if LH is not None:
-        LH = transpose(LH)
+        LH = np.transpose(LH)
     if HL is not None:
-        HL = transpose(HL)
+        HL = np.transpose(HL)
     if HH is not None:
-        HH = transpose(HH)
+        HH = np.transpose(HH)
 
     all_none = True
     for arr in (LL, LH, HL, HH):
@@ -172,9 +172,9 @@ def idwt2(coeffs, wavelet, mode='sym'):
     del HL, HH
 
     if L is not None:
-        L = transpose(L)
+        L = np.transpose(L)
     if H is not None:
-        H = transpose(H)
+        H = np.transpose(H)
 
     # idwt rows
     data = []
@@ -187,7 +187,7 @@ def idwt2(coeffs, wavelet, mode='sym'):
     for rowL, rowH in zip(L, H):
         data.append(idwt(rowL, rowH, wavelet, mode, 1))
 
-    return array(data, default_dtype)
+    return np.array(data, np.float64)
 
 
 def _downcoef(data, wavelet, mode, type):
@@ -215,16 +215,16 @@ def dwtn(data, wavelet, mode='sym'):
             'dd': <coeffs>  # D(HH) - det. on 1st dim, det. on 2nd dim
         }
     """
-    data = as_float_array(data)
+    data = np.asarray(data)
     dim = len(data.shape)
     coeffs = [('', data)]
     for axis in range(dim):
         new_coeffs = []
         for subband, x in coeffs:
             new_coeffs.extend([
-                (subband + 'a', apply_along_axis(_downcoef, axis,
+                (subband + 'a', np.apply_along_axis(_downcoef, axis,
                     x, wavelet, mode, 'a')),
-                (subband + 'd', apply_along_axis(_downcoef, axis,
+                (subband + 'd', np.apply_along_axis(_downcoef, axis,
                     x, wavelet, mode, 'd'))
             ])
         coeffs = new_coeffs
@@ -259,7 +259,7 @@ def swt2(data, wavelet, level, start_level=0):
     vertical details, cD is diagonal details and n is start_level.
     """
 
-    data = as_float_array(data)
+    data = np.asarray(data)
     if len(data.shape) != 2:
         raise ValueError("Expected 2D data array")
 
@@ -277,13 +277,13 @@ def swt2(data, wavelet, level, start_level=0):
         del data
 
         # filter columns
-        H = transpose(H)
-        L = transpose(L)
+        H = np.transpose(H)
+        L = np.transpose(L)
 
         LL, LH = [], []
         for row in L:
             cA, cD = swt(
-                array(row, default_dtype), wavelet, level=1, start_level=i
+                np.array(row, np.float64), wavelet, level=1, start_level=i
             )[0]
             LL.append(cA)
             LH.append(cD)
@@ -292,7 +292,7 @@ def swt2(data, wavelet, level, start_level=0):
         HL, HH = [], []
         for row in H:
             cA, cD = swt(
-                array(row, default_dtype), wavelet, level=1, start_level=i
+                np.array(row, np.float64), wavelet, level=1, start_level=i
             )[0]
             HL.append(cA)
             HH.append(cD)
@@ -300,8 +300,8 @@ def swt2(data, wavelet, level, start_level=0):
 
         # build result structure
         #     (approx.,        (horizontal,    vertical,       diagonal))
-        approx = transpose(LL)
-        ret.append((approx, (transpose(LH), transpose(HL), transpose(HH))))
+        approx = np.transpose(LL)
+        ret.append((approx, (np.transpose(LH), np.transpose(HL), np.transpose(HH))))
 
         # for next iteration
         data = approx  # noqa
