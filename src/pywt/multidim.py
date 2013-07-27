@@ -52,7 +52,6 @@ def dwt2(data, wavelet, mode='sym'):
            [ 0.,  0.]])
 
     """
-
     data = np.asarray(data)
     if len(data.shape) != 2:
         raise ValueError("Expected 2D data array")
@@ -68,7 +67,6 @@ def dwt2(data, wavelet, mode='sym'):
         cA, cD = dwt(row, wavelet, mode)
         L.append(cA)
         H.append(cD)
-    del data
 
     # filter columns
     H = np.transpose(H)
@@ -79,17 +77,14 @@ def dwt2(data, wavelet, mode='sym'):
         cA, cD = dwt(np.array(row, np.float64), wavelet, mode)
         LL.append(cA)
         LH.append(cD)
-    del L
 
     HL, HH = [], []
     for row in H:
         cA, cD = dwt(np.array(row, np.float64), wavelet, mode)
         HL.append(cA)
         HH.append(cD)
-    del H
 
-    # build result structure
-    #     (approx.,        (horizontal,    vertical,       diagonal))
+    # build result structure: (approx, (horizontal, vertical, diagonal))
     ret = (np.transpose(LL), (np.transpose(LH), np.transpose(HL), np.transpose(HH)))
 
     return ret
@@ -141,7 +136,7 @@ def idwt2(coeffs, wavelet, mode='sym'):
             all_none = False
             if len(arr.shape) != 2:
                 raise TypeError("All input coefficients arrays must be 2D.")
-    del arr
+
     if all_none:
         raise ValueError(
             "At least one input coefficients array must not be None.")
@@ -164,7 +159,6 @@ def idwt2(coeffs, wavelet, mode='sym'):
             LH = cycle([None])
         for rowL, rowH in zip(LL, LH):
             L.append(idwt(rowL, rowH, wavelet, mode, 1))
-    del LL, LH
 
     H = []
     if HL is None and HH is None:
@@ -178,7 +172,6 @@ def idwt2(coeffs, wavelet, mode='sym'):
             HH = cycle([None])
         for rowL, rowH in zip(HL, HH):
             H.append(idwt(rowL, rowH, wavelet, mode, 1))
-    del HL, HH
 
     if L is not None:
         L = np.transpose(L)
@@ -285,8 +278,8 @@ def swt2(data, wavelet, level, start_level=0):
 
         where cA is approximation, cH is horizontal details, cV is
         vertical details, cD is diagonal details and n is start_level.
-    """
 
+    """
     data = np.asarray(data)
     if len(data.shape) != 2:
         raise ValueError("Expected 2D data array")
@@ -302,7 +295,6 @@ def swt2(data, wavelet, level, start_level=0):
             cA, cD = swt(row, wavelet, level=1, start_level=i)[0]
             L.append(cA)
             H.append(cD)
-        del data
 
         # filter columns
         H = np.transpose(H)
@@ -315,7 +307,6 @@ def swt2(data, wavelet, level, start_level=0):
             )[0]
             LL.append(cA)
             LH.append(cD)
-        del L
 
         HL, HH = [], []
         for row in H:
@@ -324,14 +315,12 @@ def swt2(data, wavelet, level, start_level=0):
             )[0]
             HL.append(cA)
             HH.append(cD)
-        del H
 
-        # build result structure
-        #     (approx.,        (horizontal,    vertical,       diagonal))
+        # build result structure: (approx, (horizontal, vertical, diagonal))
         approx = np.transpose(LL)
         ret.append((approx, (np.transpose(LH), np.transpose(HL), np.transpose(HH))))
 
         # for next iteration
-        data = approx  # noqa
+        data = approx
 
     return ret
