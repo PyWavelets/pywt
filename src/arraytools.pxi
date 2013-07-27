@@ -12,9 +12,9 @@ cdef struct Buffer:
     
 cdef object memory_buffer_object(Py_ssize_t length, DTYPE dtype):
     if dtype == FLOAT64:
-        return float64_memory_buffer_object(length)
+        return np.zeros(length, np.float64)
     elif dtype == FLOAT32:
-        return float32_memory_buffer_object(length)
+        return np.zeros(length, np.float32)
     else:
         raise ValueError("dtype must be in (%s, %s), not %s." % (FLOAT32, FLOAT64, dtype))
 
@@ -80,7 +80,7 @@ cdef object array_as_buffer(object input, Buffer* buffer, char mode):
     cdef object alt_input
     if array_object_as_float_buffer(input, buffer, mode) < 0:
         # try to convert the input
-        alt_input = contiguous_float64_array_from_any(input)
+        alt_input = np.array(input, np.float64)
         if array_object_as_float_buffer(alt_input, buffer, mode) < 0:
             raise TypeError("Invalid data type. 1D array or list object required.")
         return alt_input # return reference to the new object. This reference must

@@ -13,12 +13,10 @@ __all__ = ["intwave", "centfrq", "scal2frq", "qmf", "orthfilt"]
 
 from math import sqrt
 
-from ._pywt import Wavelet
+import numpy as np
+from numpy.fft import fft
 
-from .numerix import asarray, array, float64
-from .numerix import integrate
-from .numerix import argmax
-from .numerix import fft
+from ._pywt import Wavelet
 
 WAVELET_CLASSES = (Wavelet)
 
@@ -34,6 +32,11 @@ def wavelet_for_name(name):
         #raise ValueError("Invalid wavelet name - %s." % name)
     return wavelet
 
+
+def _integrate(arr, step):
+    integral = np.cumsum(arr)
+    integral *= step
+    return integral
 
 def intwave(wavelet, precision=8):
     """
@@ -61,9 +64,9 @@ def intwave(wavelet, precision=8):
     """
 
     if isinstance(wavelet, tuple):
-        psi, x = asarray(wavelet[0]), asarray(wavelet[1])
+        psi, x = np.asarray(wavelet[0]), np.asarray(wavelet[1])
         step = x[1] - x[0]
-        return integrate(psi, step), x
+        return _integrate(psi, step), x
 
     else:
         if not isinstance(wavelet, WAVELET_CLASSES):
@@ -73,15 +76,15 @@ def intwave(wavelet, precision=8):
         if len(functions_approximations) == 2:      # continuous wavelet
             psi, x = functions_approximations
             step = x[1] - x[0]
-            return integrate(psi, step), x
+            return _integrate(psi, step), x
         elif len(functions_approximations) == 3:    # orthogonal wavelet
             phi, psi, x = functions_approximations
             step = x[1] - x[0]
-            return integrate(psi, step), x
+            return _integrate(psi, step), x
         else:                                       # biorthogonal wavelet
             phi_d, psi_d, phi_r, psi_r, x = functions_approximations
             step = x[1] - x[0]
-            return integrate(psi_d, step), integrate(psi_r, step), x
+            return _integrate(psi_d, step), _integrate(psi_r, step), x
 
 
 def centfrq(wavelet, precision=8):
@@ -105,7 +108,7 @@ def centfrq(wavelet, precision=8):
     """
 
     if isinstance(wavelet, tuple):
-        psi, x = asarray(wavelet[0]), asarray(wavelet[1])
+        psi, x = np.asarray(wavelet[0]), np.asarray(wavelet[1])
     else:
         if not isinstance(wavelet, WAVELET_CLASSES):
             wavelet = wavelet_for_name(wavelet)
@@ -121,7 +124,7 @@ def centfrq(wavelet, precision=8):
     domain = float(x[-1] - x[0])
     assert domain > 0
 
-    index = argmax(abs(fft(psi)[1:])) + 2
+    index = np.argmax(abs(fft(psi)[1:])) + 2
     if index > len(psi) / 2:
         index = len(psi) - index + 2
 
@@ -144,7 +147,7 @@ def scal2frq(wavelet, scale, delta, precision=8):
 
 
 def qmf(filter):
-    filter = array(filter)[::-1]
+    filter = np.array(filter)[::-1]
     filter[1::2] = -filter[1::2]
     return filter
 
@@ -152,7 +155,7 @@ def qmf(filter):
 def orthfilt(scaling_filter):
     assert len(scaling_filter) % 2 == 0
 
-    scaling_filter = asarray(scaling_filter, dtype=float64)
+    scaling_filter = np.asarray(scaling_filter, dtype=np.float64)
 
     rec_lo = sqrt(2) * scaling_filter / sum(scaling_filter)
     dec_lo = rec_lo[::-1]
