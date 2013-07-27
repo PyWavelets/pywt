@@ -107,12 +107,26 @@ cdef object wname_to_code(char* name):
 
 def wavelist(family=None):
     """
-    wavelist(family=None) -> []
-
     Returns list of available wavelet names for the given family name.
 
-    family - short family name ("haar", "db", "sym", "coif", "bior",
-                                "rbio" or "dmey")
+    Parameters
+    ----------
+    family : {'haar', 'db', 'sym', 'coif', 'bior', 'rbio', 'dmey'}
+        Short family name.
+        If the family name is ``None`` (default) then names of all the built-in wavelets
+        are returned. Otherwise the function returns names of wavelets that belong
+        to the given family.
+
+    Returns
+    -------
+    wavelist : list
+        List of available wavelet names
+
+    Examples
+    --------
+    >>> import pywt
+    >>> pywt.wavelist('coif')
+    ['coif1', 'coif2', 'coif3', 'coif4', 'coif5']
     """
 
     cdef object wavelets, sorting_list
@@ -135,6 +149,35 @@ def wavelist(family=None):
     return wavelets
 
 def families(int short=True):
+    """
+    Returns a list of available built-in wavelet families.
+
+    Currently the built-in families are:
+
+    * Haar (``haar``)
+    * Daubechies (``db``)
+    * Symlets (``sym``)
+    * Coiflets (``coif``)
+    * Biorthogonal (``bior``)
+    * Reverse biorthogonal (``rbio``)
+    * `"Discrete"` FIR approximation of Meyer wavelet (``dmey``)
+
+    Parameters
+    ----------
+    short : bool, optional
+        Use short names (default: True).
+
+    Returns
+    -------
+    families : list
+        List of available wavelet families.
+
+    Examples
+    --------
+    >>> import pywt
+    >>> pywt.families()
+    ['haar', 'db', 'sym', 'coif', 'bior', 'rbio', 'dmey']
+    """
     if short:
         return __wfamily_list_short[:]
     return __wfamily_list_long[:]
@@ -359,17 +402,34 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
         return self.inverse_filter_bank
 
     def wavefun(self, int level=8):
-        """wavefun(int level=8)
+        """
+        Calculates approximations of scaling function (`phi`) and wavelet
+        function (`psi`) on xgrid (`x`) at a given level of refinement.
 
-        Calculates approximations of scaling function (*phi*) and wavelet
-        function (*psi*) on xgrid (*x*) at a given level of refinement.
+        Parameters
+        ----------
+        level : int, optional
+            Level of refinement (default: 8).
 
-        For orthogonal wavelets returns scaling function, wavelet function
-        and xgrid - [phi, psi, x].
+        Returns
+        -------
+        [phi, psi, x] : array_like
+            For orthogonal wavelets returns scaling function, wavelet function
+            and xgrid - [phi, psi, x].
 
-        For biorthogonal wavelets returns scaling and wavelet function both
-        for decomposition and reconstruction and xgrid
-        - [phi_d, psi_d, phi_r, psi_r, x].
+        [phi_d, psi_d, phi_r, psi_r, x] : array_like
+            For biorthogonal wavelets returns scaling and wavelet function both
+            for decomposition and reconstruction and xgrid
+
+        Examples
+        --------
+        >>> import pywt
+        >>> # Orthogonal
+        >>> wavelet = pywt.Wavelet('db2')
+        >>> phi, psi, x = wavelet.wavefun(level=5)
+        >>> # Biorthogonal
+        >>> wavelet = pywt.Wavelet('bior3.5')
+        >>> phi_d, psi_d, phi_r, psi_r, x = wavelet.wavefun(level=5)
         """
 
         cdef index_t filter_length "filter_length"
@@ -483,10 +543,28 @@ cdef c_wavelet_from_object(wavelet):
 
 def dwt_max_level(data_len, filter_len):
     """
-    dwt_max_level(int data_len, int filter_len) -> int
+    Compute the maximum useful level of decomposition.
 
-    Compute the maximum useful level of decomposition
-    for given input data length and wavelet filter length.
+    Parameters
+    ----------
+    data_len : int
+        Input data length.
+    filter_len : int
+        Wavelet filter length.
+
+    Returns
+    -------
+    max_level : int
+        Maximum level.
+
+    Examples
+    --------
+    >>> import pywt
+    >>> w = pywt.Wavelet('sym5')
+    >>> pywt.dwt_max_level(data_len=1000, filter_len=w.dec_len)
+    6
+    >>> pywt.dwt_max_level(1000, w)
+    6
     """
     if c_python.PyObject_IsInstance(filter_len, Wavelet):
         return c_wt.dwt_max_level(data_len, filter_len.dec_len)
@@ -499,19 +577,36 @@ def dwt(object data, object wavelet, object mode='sym'):
 
     Single level Discrete Wavelet Transform
 
-    data    - input signal
-    wavelet - wavelet to use (Wavelet object or name)
-    mode    - signal extension mode, see MODES
+    Parameters
+    ----------
+    data : array_like
+        input signal
+    wavelet : Wavelet object or name
+        wavelet to use
+    mode : str, optional (default: 'sym')
+        signal extension mode, see MODES
 
-    Returns approximation (cA) and detail (cD) coefficients.
+    Returns
+    -------
+    (cA, cD) : tuple
+        Approximation and detail coefficients.
 
+    Notes
+    -----
     Length of coefficients arrays depends on the selected mode:
+    for all modes except periodization:
+        len(cA) == len(cD) == floor((len(data) + wavelet.dec_len - 1) / 2)
+    for periodization mode ("per"):
+        len(cA) == len(cD) == ceil(len(data) / 2)
 
-        for all modes except periodization:
-            len(cA) == len(cD) == floor((len(data) + wavelet.dec_len - 1) / 2)
-
-        for periodization mode ("per"):
-            len(cA) == len(cD) == ceil(len(data) / 2)
+    Examples
+    --------
+    >>> import pywt
+    >>> (cA, cD) = pywt.dwt([1, 2, 3, 4, 5, 6], 'db1')
+    >>> cA
+    [ 2.12132034  4.94974747  7.77817459]
+    >>> cD
+    [-0.70710678 -0.70710678 -0.70710678]
     """
 
     cdef Buffer input, output_a, output_d
@@ -560,17 +655,31 @@ def dwt(object data, object wavelet, object mode='sym'):
     return (cA, cD)
 
 
-def dwt_coeff_len(data_len, filter_len, mode):
+def dwt_coeff_len(data_len, filter_len, mode='sym'):
     """
-    dwt_coeff_len(int data_len, int filter_len, mode) -> int
+    Returns length of dwt output for given data length, filter length and mode
 
-    Returns length of dwt output for given data length, filter length and mode:
+    Parameters
+    ----------
+    data_len : int
+        Data length.
+    filter_len : int
+        Filter length.
+    mode : str, optional (default: 'sym')
+        signal extension mode, see MODES
 
-        * for all modes except periodization:
-            len(cA) == len(cD) == floor((len(data) + wavelet.dec_len - 1) / 2)
+    Returns
+    -------
+    len : int
+        Length of dwt output.
 
-        * for periodization mode ("per"):
-            len(cA) == len(cD) == ceil(len(data) / 2)
+    Notes
+    -----
+    for all modes except periodization:
+      len(cA) == len(cD) == floor((len(data) + wavelet.dec_len - 1) / 2)
+
+    for periodization mode ("per"):
+      len(cA) == len(cD) == ceil(len(data) / 2)
     """
     cdef index_t filter_len_
     if c_python.PyObject_IsInstance(filter_len, Wavelet):
@@ -592,23 +701,29 @@ def dwt_coeff_len(data_len, filter_len, mode):
 def idwt(object cA, object cD, object wavelet, object mode = 'sym',
          int correct_size = 0):
     """
-    rec = idwt(cA, cD, wavelet, mode='sym', correct_size=0)
-
     Single level Inverse Discrete Wavelet Transform
 
-    cA      - approximation coefficients
-    cD      - detail coefficients
-    wavelet - wavelet to use (Wavelet object or name)
-    mode    - signal extension mode, see MODES
+    Parameters
+    ----------
+    cA : array_like
+        Approximation coefficients
+    cD : array_like
+        Detail coefficients
+    wavelet : Wavelet object or name
+        Wavelet to use
+    mode : str, optional (default: 'sym')
+        Signal extension mode, see MODES
+    correct_size : int, optional (default: 0)
+        Under normal conditions (all data lengths dyadic) `cA` and `cD`
+        coefficients lists must have the same lengths. With `correct_size`
+        set to True, length of cA may be greater by one than length of `cA`.
+        Useful when doing multilevel decomposition and reconstruction of
+        non-dyadic length signals.
 
-    correct_size - under normal conditions (all data lengths dyadic) Ca and cD
-                   coefficients lists must have the same lengths. With
-                   correct_size set to True, length of cA may be greater by one
-                   than length of cA.  Useful when doing multilevel
-                   decomposition and reconstruction of non-dyadic length
-                   signals.
-
-    Returns single level reconstruction of signal from given coefficients.
+    Returns
+    -------
+    rec: array_like
+        Single level reconstruction of signal from given coefficients.
     """
 
     cdef Buffer input_a, input_d, output
@@ -718,17 +833,39 @@ def idwt(object cA, object cD, object wavelet, object mode = 'sym',
 # upcoef & downcoef
 
 def upcoef(part, coeffs, wavelet, int level=1, take=0):
-    """rec = upcoef(part, coeffs, wavelet, level=1, take=0)
-
+    """
     Direct reconstruction from coefficients.
 
-    part    - coefficients type:
-      'a' - approximations reconstruction is performed
-      'd' - details reconstruction is performed
-    coeffs  - coefficients array
-    wavelet - wavelet to use (Wavelet object or name)
-    level   - multilevel reconstruction level
-    take    - take central part of length equal to 'take' from the result
+    Parameters
+    ----------
+    part : str
+        coefficients type:
+        * 'a' - approximations reconstruction is performed
+        * 'd' - details reconstruction is performed
+    coeffs : array_like
+        Coefficients array to recontruct
+    wavelet : Wavelet object or name
+        wavelet to use
+    level : int, optional (default: 1)
+        multilevel reconstruction level
+    take : , optional (default: 0)
+        take central part of length equal to 'take' from the result
+
+    Returns
+    -------
+    rec : array_like
+
+    Examples
+    --------
+    >>> import pywt
+    >>> data = [1,2,3,4,5,6]
+    >>> (cA, cD) = pywt.dwt(data, 'db2', 'sp1')
+    >>> pywt.upcoef('a', cA, 'db2') + pywt.upcoef('d', cD, 'db2')
+    [-0.25       -0.4330127   1.          2.          3.          4.          5.
+      6.          1.78589838 -1.03108891]
+    >>> n = len(data)
+    >>> pywt.upcoef('a', cA, 'db2', take=n) + pywt.upcoef('d', cD, 'db2', take=n)
+    [ 1.  2.  3.  4.  5.  6.]
     """
     cdef Buffer input
     cdef Buffer output
@@ -805,17 +942,30 @@ def upcoef(part, coeffs, wavelet, int level=1, take=0):
     return rec
 
 def downcoef(part, object data, object wavelet, object mode='sym', int level=1):
-    """coeffs = downcoef(part, data, wavelet, mode='sym', level=1)
-
+    """
     Partial Discrete Wavelet Transform data decomposition.
 
-    part    - decomposition type:
-      'a' - compute approximations coefficients
-      'd' - compute details coefficients
-    data    - input signal
-    wavelet - wavelet to use (Wavelet object or name)
-    mode    - signal extension mode, see MODES
-    level   - decomposition level
+    Similar to `pywt.dwt`, but computes only one set of coefficients.
+    Useful when you need only approximation or only details at the given level.
+
+    Parameters
+    ----------
+    part : str
+        coefficients type:
+        * 'a' - approximations reconstruction is performed
+        * 'd' - details reconstruction is performed
+    data :
+        Input signal
+    mode : str, optional
+        signal extension mode, see MODES (default: 'sym')
+    wavelet : Wavelet object or name
+        wavelet to use
+    level : int, optional
+        decomposition level (default: 1)
+
+    Returns
+    -------
+    coeffs :
     """
 
     cdef Buffer input, output
@@ -887,37 +1037,51 @@ def downcoef(part, object data, object wavelet, object mode='sym', int level=1):
 
 def swt_max_level(input_len):
     """
-    swt_max_level(int input_len)
+    Calculates the maximum level of Stationary Wavelet Transform for data of
+    given length.
 
-    Returns maximum level of Stationary Wavelet Transform for data of given
-    length.
+    Parameters
+    ----------
+    input_len : int
+        Input data length
+
+    Returns
+    -------
+    max_level : int
+        Maximum level of Stationary Wavelet Transform for data of given length.
     """
     return c_wt.swt_max_level(input_len)
 
 def swt(object data, object wavelet, object level=None, int start_level=0):
     """
-    swt(object data, object wavelet, int level=None, start_level=0)
-
     Performs multilevel Stationary Wavelet Transform.
 
-    data    - input signal
-    wavelet - wavelet to use (Wavelet object or name)
-    level   - transform level
-    start_level - the level at which the decomposition will begin (it allows to
-                  skip a given number of transform steps and compute
-                  coefficients starting from start_level)
+    Parameters
+    ----------
+    data :
+        Input signal
+    wavelet :
+        Wavelet to use (Wavelet object or name)
+    level :
+        Transform level
+    start_level : int, optional
+        The level at which the decomposition will begin (it allows to
+        skip a given number of transform steps and compute
+        coefficients starting from start_level) (default: 0)
 
-    Returns list of approximation and details coefficients pairs in order
-    similar to wavedec function::
+    Returns
+    -------
+    coeffs : list
+        list of approximation and details coefficients pairs in order
+        similar to wavedec function::
 
-        [(cAn, cDn), ..., (cA2, cD2), (cA1, cD1)]
+            [(cAn, cDn), ..., (cA2, cD2), (cA1, cD1)]
 
-    where *n* = *level*.
+        where *n* = *level*.
 
-    If *m* = *start_level* is given, then the beginning *m* steps are skipped::
+        If *m* = *start_level* is given, then the beginning *m* steps are skipped::
 
-        [(cAm+n, cDm+n), ..., (cAm+1, cDm+1), (cAm, cDm)]
-
+            [(cAm+n, cDm+n), ..., (cAm+1, cDm+1), (cAm, cDm)]
     """
     cdef Buffer input, output
     cdef object cA, cD
