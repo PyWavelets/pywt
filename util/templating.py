@@ -67,16 +67,16 @@ def expand_template(s):
         ... w = 9
         ... ## FOR $x$ IN (7, w):
         ...   ## FOR $y$ IN ("{", 1):
-        ... print $x$, $y$, "$x$_$y$"
+        ... print($x$, $y$, "$x$_$y$")
         ...   ## ENDFOR $y$
         ... ## ENDFOR $x$'''
-        >>> print expand_template(s)
+        >>> print(expand_template(s))
 
         w = 9
-        print 7, "{"
-        print 7, 1
-        print w, "{"
-        print w, 1
+        print(7, "{")
+        print(7, 1)
+        print(w, "{")
+        print(w, 1)
     """
     while True:
         m = pattern_for.search(s)
@@ -119,8 +119,8 @@ def expand_files(glob_pattern, force_update=False):
     for template_path in files:
         destination_path = get_destination_filepath(template_path)
         if force_update or needs_update(template_path, destination_path):
-            print "expanding template: %s -> %s" % (
-                template_path, destination_path)
+            print("expanding template: %s -> %s" % (
+                template_path, destination_path))
             content = expand_template(open(template_path, "rb").read())
             new_file = open(destination_path, "wb")
             new_file.write(content)
