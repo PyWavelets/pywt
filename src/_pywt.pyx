@@ -34,7 +34,7 @@ cdef c_wt.MODE c_mode_from_object(mode) except c_wt.MODE_INVALID:
     cdef c_wt.MODE m
     cdef c_python.PyObject* co
     cdef object o
-    if c_python.PyInt_Check(mode):
+    if isinstance(mode, int):
         m = mode
         if m <= c_wt.MODE_INVALID or m >= c_wt.MODE_MAX:
             raise ValueError("Invalid mode.")
@@ -474,7 +474,7 @@ def wavelet_from_object(wavelet):
     return c_wavelet_from_object(wavelet)
 
 cdef c_wavelet_from_object(wavelet):
-    if c_python.PyObject_IsInstance(wavelet, Wavelet):
+    if isinstance(wavelet, Wavelet):
         return wavelet
     else:
         return Wavelet(wavelet)
@@ -489,7 +489,7 @@ def dwt_max_level(data_len, filter_len):
     Compute the maximum useful level of decomposition
     for given input data length and wavelet filter length.
     """
-    if c_python.PyObject_IsInstance(filter_len, Wavelet):
+    if isinstance(filter_len, Wavelet):
         return c_wt.dwt_max_level(data_len, filter_len.dec_len)
     else:
         return c_wt.dwt_max_level(data_len, filter_len)
@@ -574,7 +574,7 @@ def dwt_coeff_len(data_len, filter_len, mode):
             len(cA) == len(cD) == ceil(len(data) / 2)
     """
     cdef index_t filter_len_
-    if c_python.PyObject_IsInstance(filter_len, Wavelet):
+    if isinstance(filter_len, Wavelet):
         filter_len_ = filter_len.dec_len
     else:
         filter_len_ = filter_len
