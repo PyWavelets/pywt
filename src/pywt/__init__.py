@@ -26,3 +26,6 @@ __all__ += functions.__all__
 __all__ += ['thresholding']
 
 del multilevel, multidim, wavelet_packets, functions
+
+from numpy.testing import Tester
+test = Tester().test
