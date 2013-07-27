@@ -121,7 +121,8 @@ def expand_files(glob_pattern, force_update=False):
         if force_update or needs_update(template_path, destination_path):
             print("expanding template: %s -> %s" % (
                 template_path, destination_path))
-            content = expand_template(open(template_path, "rb").read())
+            content = expand_template(open(template_path,
+                                      "rb").read().decode('utf-8'))
             new_file = open(destination_path, "wb")
-            new_file.write(content)
+            new_file.write(content.encode('utf-8'))
             new_file.close()
