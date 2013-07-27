@@ -22,13 +22,39 @@ from .multidim import dwt2, idwt2
 def wavedec(data, wavelet, mode='sym', level=None):
     """
     Multilevel 1D Discrete Wavelet Transform of data.
-    Returns coefficients list - [cAn, cDn, cDn-1, ..., cD2, cD1]
 
-    data    - input data
-    wavelet - wavelet to use (Wavelet object or name string)
-    mode    - signal extension mode, see MODES
-    level   - decomposition level. If level is None then it will be
+    Parameters
+    ----------
+    data: array_like
+        input data
+    wavelet : Wavelet object or name string
+        wavelet to use
+    mode : str, optional
+        signal extension mode, see MODES (default: 'sym')
+    level : int, optional
+        decomposition level. If level is `None` (default) then it will be
               calculated using `dwt_max_level` function.
+
+    Returns
+    -------
+    [cA_n, cD_n, cD_n-1, ..., cD2, cD1] : list
+        ordered list of coefficients arrays
+        where `n` denotes the level of decomposition. The first element (`cA_n`) of
+        the result is approximation coefficients array and the following elements
+        (`cD_n` - `cD_1`) are details coefficients arrays.
+
+    Examples
+    --------
+    >>> from pywt import multilevel
+    >>> coeffs = multilevel.wavedec([1,2,3,4,5,6,7,8], 'db1', level=2)
+    >>> cA2, cD2, cD1 = coeffs
+    >>> cD1
+    array([-0.70710678, -0.70710678, -0.70710678, -0.70710678])
+    >>> cD2
+    array([-2., -2.])
+    >>> cA2
+    array([  5.,  13.])
+
     """
 
     if not isinstance(wavelet, Wavelet):
@@ -57,9 +83,21 @@ def waverec(coeffs, wavelet, mode='sym'):
     """
     Multilevel 1D Inverse Discrete Wavelet Transform.
 
-    coeffs  - coefficients list [cAn, cDn, cDn-1, ..., cD2, cD1]
-    wavelet - wavelet to use (Wavelet object or name string)
-    mode    - signal extension mode, see MODES
+    Parameters
+    ----------
+    coeffs : array_like
+        coefficients list [cAn, cDn, cDn-1, ..., cD2, cD1]
+    wavelet : Wavelet object or name string
+        wavelet to use
+    mode : str, optional
+        signal extension mode, see MODES (default: 'sym')
+
+    Examples
+    --------
+    >>> from pywt import multilevel
+    >>> coeffs = multilevel.wavedec([1,2,3,4,5,6,7,8], 'db2', level=2)
+    >>> multilevel.waverec(coeffs, 'db2')
+    array([ 1.,  2.,  3.,  4.,  5.,  6.,  7.,  8.])
     """
 
     if not isinstance(coeffs, (list, tuple)):
@@ -81,13 +119,35 @@ def wavedec2(data, wavelet, mode='sym', level=None):
     """
     Multilevel 2D Discrete Wavelet Transform.
 
-    data    - 2D input data
-    wavelet - wavelet to use (Wavelet object or name string)
-    mode    - signal extension mode, see MODES
-    level   - decomposition level. If level is None then it will be
-              calculated using `dwt_max_level` function .
+    Parameters
+    ----------
+    data : ndarray
+        2D input data
+    wavelet : Wavelet object or name string
+        wavelet to use
+    mode : str, optional
+        signal extension mode, see MODES (default: 'sym')
+    level : int, optional
+        decomposition level. If level is `None` (default) then it will be
+        calculated using `dwt_max_level` function.
 
-    Returns coefficients list - [cAn, (cHn, cVn, cDn), ... (cH1, cV1, cD1)]
+    Returns
+    -------
+    [cAn, (cHn, cVn, cDn), ... (cH1, cV1, cD1)] : list
+        coefficients list
+
+    Examples
+    --------
+    >>> from pywt import multilevel
+    >>> coeffs = multilevel.wavedec2(np.ones((4,4)), 'db1')
+    >>> # Levels:
+    >>> len(coeffs)-1
+    2
+    >>> multilevel.waverec2(coeffs, 'db1')
+    array([[ 1.,  1.,  1.,  1.],
+           [ 1.,  1.,  1.,  1.],
+           [ 1.,  1.,  1.,  1.],
+           [ 1.,  1.,  1.,  1.]])
     """
 
     data = np.asarray(data, np.float64)
@@ -122,11 +182,29 @@ def waverec2(coeffs, wavelet, mode='sym'):
     """
     Multilevel 2D Inverse Discrete Wavelet Transform.
 
-    coeffs  - coefficients list [cAn, (cHn, cVn, cDn), ... (cH1, cV1, cD1)]
-    wavelet - wavelet to use (Wavelet object or name string)
-    mode    - signal extension mode, see MODES
+    coeffs : array_like
+        coefficients list [cAn, (cHn, cVn, cDn), ... (cH1, cV1, cD1)]
+    wavelet : Wavelet object or name string
+        wavelet to use
+    mode : str, optional
+        signal extension mode, see MODES (default: 'sym')
 
-    Returns 2D array of reconstructed data.
+    Returns
+    -------
+    2D array of reconstructed data.
+
+    Examples
+    --------
+    >>> from pywt import multilevel
+    >>> coeffs = multilevel.wavedec2(np.ones((4,4)), 'db1')
+    >>> # Levels:
+    >>> len(coeffs)-1
+    2
+    >>> multilevel.waverec2(coeffs, 'db1')
+    array([[ 1.,  1.,  1.,  1.],
+           [ 1.,  1.,  1.,  1.],
+           [ 1.,  1.,  1.,  1.],
+           [ 1.,  1.,  1.,  1.]])
     """
 
     if not isinstance(coeffs, (list, tuple)):
