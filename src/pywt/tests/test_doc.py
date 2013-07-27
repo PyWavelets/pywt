@@ -6,8 +6,10 @@ import glob
 import os
 import unittest
 
-docs_base = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), os.path.pardir, "doc", "source"))
+
+pdir = os.path.pardir
+docs_base = os.path.abspath(os.path.join(os.path.dirname(__file__),
+                            pdir, pdir, pdir, "doc", "source"))
 
 files = glob.glob(os.path.join(docs_base, "*.rst"))\
         + glob.glob(os.path.join(docs_base, "*", "*.rst"))
