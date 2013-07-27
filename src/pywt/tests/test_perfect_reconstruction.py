@@ -50,7 +50,7 @@ def check_reconstruction(pmode, mmode, wavelet, dtype):
     #TODO: smoke testing - more failures for different seeds
 
     if dtype == np.float32:
-        epsilon = 1.5e-7
+        epsilon = 3e-7
     else:
         #FIXME: limit was 5e-11, but gave failures.  Investigate
         epsilon = 1e-8
