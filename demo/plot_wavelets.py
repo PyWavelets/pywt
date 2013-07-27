@@ -25,7 +25,7 @@ for family, (rows, cols) in plot_data:
     colors = itertools.cycle('bgrcmyk')
 
     wnames = pywt.wavelist(family)
-    print wnames
+    print(wnames)
     i = iter(wnames)
     for col in xrange(cols):
         for row in xrange(rows):

@@ -15,7 +15,7 @@ mode = pywt.MODES.sp1
 
 
 def plot(data, w, title):
-    print title
+    print(title)
     w = pywt.Wavelet(w)
     a = data
     ca = []
@@ -57,7 +57,7 @@ def plot(data, w, title):
         pylab.ylabel("D%d" % (i + 1))
 
 
-print "Signal decomposition (S = An + Dn + Dn-1 + ... + D1)"
+print("Signal decomposition (S = An + Dn + Dn-1 + ... + D1)")
 plot(data1, 'coif5', "DWT: Signal irregularity")
 plot(data2, 'sym5', "DWT: Frequency and phase change - Symmlets5")
 plot(data3, 'sym5', "DWT: Ecg sample - Symmlets5")
