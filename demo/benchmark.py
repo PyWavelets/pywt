@@ -41,10 +41,10 @@ for j, size in enumerate(sizes):
 
     data = numpy.ones((size,), dtype)
 
-    print(("%d/%d" % (j + 1, len(sizes))).rjust(6), str(size).rjust(9), end=' ')
+    print((("%d/%d" % (j + 1, len(sizes))).rjust(6), str(size).rjust(9)))
     for i, w in enumerate(wavelets):
         min_t1, min_t2 = 9999., 9999.
-        for _ in xrange(repeat):
+        for _ in range(repeat):
             t1 = clock()
             (a, d) = pywt.dwt(data, w, mode)
             t1 = clock() - t1
@@ -57,8 +57,6 @@ for j, size in enumerate(sizes):
 
         times_dwt[i].append(min_t1)
         times_idwt[i].append(min_t2)
-        print('.', end=' ')
-    print()
     gc.collect()
 
 for j, (times, name) in enumerate([(times_dwt, 'dwt'), (times_idwt, 'idwt')]):
