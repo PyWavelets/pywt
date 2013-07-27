@@ -34,14 +34,6 @@ def as_float_array(source):
     return array(source, default_dtype)
 
 
-def contiguous_float64_array_from_any(source):
-    return array(source, float64)
-
-
-def contiguous_float32_array_from_any(source):
-    return array(source, float32)
-
-
 def astype(source, dtype):
     return asarray(source, dtype)
 
@@ -56,14 +48,6 @@ def float32_memory_buffer_object(size):
 
 def is_array_type(arr, typ):
     return isinstance(arr, ndarray) and arr.dtype == typ
-
-
-def keep(arr, keep_length):
-    length = len(arr)
-    if keep_length < length:
-        left_bound = (length - keep_length) / 2
-        return arr[left_bound:left_bound + keep_length]
-    return arr
 
 
 def integrate(arr, step):

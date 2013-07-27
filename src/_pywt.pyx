@@ -18,14 +18,6 @@ ctypedef Py_ssize_t index_t
 
 import warnings
 
-cdef object as_float_array, contiguous_float64_array_from_any, \
-            float32_memory_buffer_object, float64_memory_buffer_object
-from numerix import as_float_array, contiguous_float64_array_from_any, \
-                    float32_memory_buffer_object, float64_memory_buffer_object
-
-cdef object keep
-from numerix import keep
-
 import numpy as np
 
 
@@ -211,10 +203,10 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
                            "got %d filters." % len(filters))
                     raise ValueError(msg)
             try:
-                dec_lo = as_float_array(filters[0])
-                dec_hi = as_float_array(filters[1])
-                rec_lo = as_float_array(filters[2])
-                rec_hi = as_float_array(filters[3])
+                dec_lo = np.asarray(filters[0], dtype=np.float64)
+                dec_hi = np.asarray(filters[1], dtype=np.float64)
+                rec_lo = np.asarray(filters[2], dtype=np.float64)
+                rec_hi = np.asarray(filters[3], dtype=np.float64)
             except (TypeError, TypeError):
                 raise ValueError("Filter bank with numeric values required.")
 
@@ -660,10 +652,10 @@ def idwt(object cA, object cD, object wavelet, object mode = 'sym',
         if input_a.dtype != input_d.dtype:
             # need to upcast to common type
             if input_a.dtype != FLOAT64:
-                cA = array_as_buffer(contiguous_float64_array_from_any(cA),
+                cA = array_as_buffer(np.array(cA, np.float64),
                                      &input_a, c'r')
             if input_d.dtype != FLOAT64:
-                cD = array_as_buffer(contiguous_float64_array_from_any(cD),
+                cD = array_as_buffer(np.array(cD, np.float64),
                                      &input_d, c'r')
 
     # check for sizes difference
@@ -1007,3 +999,11 @@ def swt(object data, object wavelet, object level=None, int start_level=0):
         ret.append((cA, cD))
     ret.reverse()
     return ret
+
+
+def keep(arr, keep_length):
+    length = len(arr)
+    if keep_length < length:
+        left_bound = (length - keep_length) / 2
+        return arr[left_bound:left_bound + keep_length]
+    return arr
