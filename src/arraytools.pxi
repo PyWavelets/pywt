@@ -50,11 +50,9 @@ cdef int array_object_as_float_buffer(object source, Buffer* buffer, char rwmode
             array_struct = <c_array_interface.PyGenericArrayInterface*> c_python.PyCObject_AsVoidPtr(cobject)
             if not (c_array_interface.PyArrayInterface_CHECK_1D(array_struct)):
                 raise ValueError("1D array expected.")
-                return -1
             data_len = c_array_interface.PyArrayInterface_SHAPE(array_struct, 0)
             if data_len < 1:
                 raise ValueError("invalid data size - %s." % data_len)
-                return -1
             buffer.len = data_len
 
             if rwmode == c'w':
@@ -63,7 +61,6 @@ cdef int array_object_as_float_buffer(object source, Buffer* buffer, char rwmode
                 data = c_array_interface.PyArrayInterface_DATA_AS_FLOAT_C_ARRAY_RO(array_struct)
             else:
                 raise ValueError("rwmode value not in (c'r', c'w').")
-                return -1
             
             if data is NULL:
                 return -2 # not C contiguous array or data type is not double or float, fail silently
@@ -96,19 +93,6 @@ cdef object float64_array_to_list(double* data, index_t n):
     for i from 0 <= i < n:
         app(data[i])
     return ret
-
-
-#cdef int copy_object_to_float32_array(source, float* dest) except -1:
-    #cdef index_t i
-    #cdef index_t n
-    #try:
-        #n = len(source)
-        #for i from 0 <= i < n:
-            #dest[i] = source[i]
-    #except Exception, e:
-        #raise
-        #return -1
-    #return 0
 
 
 cdef void copy_object_to_float64_array(source, double* dest) except *:

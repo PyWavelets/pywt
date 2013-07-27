@@ -38,7 +38,6 @@ cdef c_wt.MODE c_mode_from_object(mode) except c_wt.MODE_INVALID:
         m = mode
         if m <= c_wt.MODE_INVALID or m >= c_wt.MODE_MAX:
             raise ValueError("Invalid mode.")
-            return c_wt.MODE_INVALID
     else:
         co = c_python.PyObject_GetAttrString(MODES, mode)
         if co is not NULL:
@@ -48,11 +47,13 @@ cdef c_wt.MODE c_mode_from_object(mode) except c_wt.MODE_INVALID:
         else:
             c_python.PyErr_Clear()
             raise ValueError("Unknown mode name '%s'." % mode)
-            return c_wt.MODE_INVALID
+
     return m
+
 
 def __from_object(mode):
     return c_mode_from_object(mode)
+
 
 class MODES(object):
     """
@@ -590,8 +591,8 @@ def dwt_coeff_len(data_len, filter_len, mode):
 ###############################################################################
 # idwt
 
-def idwt(object cA, object cD, object wavelet, object mode = 'sym',
-         int correct_size = 0):
+def idwt(object cA, object cD, object wavelet, object mode='sym',
+         int correct_size=0):
     """
     rec = idwt(cA, cD, wavelet, mode='sym', correct_size=0)
 
