@@ -12,10 +12,10 @@ from __future__ import division, print_function, absolute_import
 
 __all__ = ['wavedec', 'waverec', 'wavedec2', 'waverec2']
 
-from _pywt import Wavelet
-from _pywt import dwt, idwt, dwt_max_level
-from multidim import dwt2, idwt2
-from numerix import as_float_array
+from ._pywt import Wavelet
+from ._pywt import dwt, idwt, dwt_max_level
+from .multidim import dwt2, idwt2
+from .numerix import as_float_array
 
 
 def wavedec(data, wavelet, mode='sym', level=None):

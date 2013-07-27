@@ -13,10 +13,10 @@ __all__ = ['dwt2', 'idwt2', 'swt2', 'dwtn']
 
 from itertools import cycle
 
-from _pywt import Wavelet, MODES
-from _pywt import dwt, idwt, swt, downcoef
-from numerix import transpose, array, as_float_array, default_dtype,\
-    apply_along_axis
+from ._pywt import Wavelet, MODES
+from ._pywt import dwt, idwt, swt, downcoef
+from .numerix import (transpose, array, as_float_array, default_dtype,
+    apply_along_axis)
 
 
 def dwt2(data, wavelet, mode='sym'):

@@ -13,12 +13,12 @@ __all__ = ["intwave", "centfrq", "scal2frq", "qmf", "orthfilt"]
 
 from math import sqrt
 
-from _pywt import Wavelet
+from ._pywt import Wavelet
 
-from numerix import asarray, array, float64
-from numerix import integrate
-from numerix import argmax
-from numerix import fft
+from .numerix import asarray, array, float64
+from .numerix import integrate
+from .numerix import argmax
+from .numerix import fft
 
 WAVELET_CLASSES = (Wavelet)
 
