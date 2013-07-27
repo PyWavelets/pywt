@@ -10,6 +10,9 @@ other than NumPy.
 Provides efficient numeric functions and array datatypes.
 """
 
+from __future__ import division, print_function, absolute_import
+
+
 from numpy import (  # noqa
     ndarray, array, asarray,
     empty, zeros, linspace, arange,

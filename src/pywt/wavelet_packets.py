@@ -5,11 +5,13 @@
 
 """1D and 2D Wavelet packet transform module."""
 
+from __future__ import division, print_function, absolute_import
+
 __all__ = ["BaseNode", "Node", "WaveletPacket", "Node2D", "WaveletPacket2D"]
 
-import numerix
-from _pywt import Wavelet, dwt, idwt, dwt_max_level
-from multidim import dwt2, idwt2
+from . import numerix
+from ._pywt import Wavelet, dwt, idwt, dwt_max_level
+from .multidim import dwt2, idwt2
 
 
 def get_graycode_order(level, x='a', y='d'):
@@ -174,7 +176,7 @@ class BaseNode(object):
         If node does not exist yet, it will be created by decomposition of its
         parent node.
         """
-        if isinstance(path, basestring):
+        if isinstance(path, str):
             if (self.maxlevel is not None
                 and len(path) > self.maxlevel * self.PART_LEN):
                 raise IndexError("Path length is out of range.")
@@ -195,7 +197,7 @@ class BaseNode(object):
         data - array or BaseNode subclass.
         """
 
-        if isinstance(path, basestring):
+        if isinstance(path, str):
             if (
                 self.maxlevel is not None
                 and len(self.path) + len(path) > self.maxlevel * self.PART_LEN

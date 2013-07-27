@@ -5,9 +5,11 @@
 
 """Thresholding routines"""
 
+from __future__ import division, print_function, absolute_import
+
 __all__ = ['soft', 'hard', 'greater', 'less', 'zero', 'copy']
 
-import numerix
+from . import numerix
 
 
 def soft(data, value, substitute=0):

@@ -9,23 +9,19 @@ Discrete forward and inverse wavelet transform, stationary wavelet transform,
 wavelet packets signal decomposition and reconstruction module.
 """
 
-import _pywt, multilevel, multidim, wavelet_packets, functions
-from _pywt import *
-from multilevel import *
-from multidim import *
-from wavelet_packets import *
-from functions import *
-import thresholding
+from __future__ import division, print_function, absolute_import
 
-__all__ = []
-__all__ += _pywt.__all__
-__all__ += wavelet_packets.__all__
-__all__ += multilevel.__all__
-__all__ += multidim.__all__
-__all__ += functions.__all__
-__all__ += ['thresholding']
 
-del multilevel, multidim, wavelet_packets, functions
+from ._pywt import *
+from .functions import *
+from .multilevel import *
+from .multidim import *
+from . import thresholding
+from .wavelet_packets import *
+
+
+__all__ = [s for s in dir() if not s.startswith('_')]
+
 
 from numpy.testing import Tester
 test = Tester().test

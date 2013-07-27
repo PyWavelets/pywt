@@ -4,6 +4,8 @@
 Verify DWT perfect reconstruction.
 """
 
+from __future__ import division, print_function, absolute_import
+
 import math
 
 import numpy as np
@@ -42,7 +44,7 @@ def test_perfect_reconstruction():
 
 
 def check_reconstruction(pmode, mmode, wavelet, dtype):
-    data_size = range(2, 40) + [100, 200, 500, 1000, 2000, 10000,
+    data_size = list(range(2, 40)) + [100, 200, 500, 1000, 2000, 10000,
                                 50000, 100000]
     np.random.seed(12345)
     #TODO: smoke testing - more failures for different seeds

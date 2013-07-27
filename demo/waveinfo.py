@@ -15,16 +15,16 @@ try:
     wavelet = pywt.Wavelet(sys.argv[1])
     try:
         level = int(sys.argv[2])
-    except IndexError, e:
+    except IndexError as e:
         level = 10
-except ValueError, e:
-    print "Unknown wavelet"
+except ValueError as e:
+    print("Unknown wavelet")
     raise SystemExit
-except IndexError, e:
-    print usage
+except IndexError as e:
+    print(usage)
     raise SystemExit
 
-print wavelet
+print(wavelet)
 
 data = wavelet.wavefun(level)
 funcs, x = data[:-1], data[-1]

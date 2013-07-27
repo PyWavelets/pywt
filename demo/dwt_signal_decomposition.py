@@ -5,7 +5,7 @@ import pylab
 
 import pywt
 
-data1 = pylab.array(range(1, 400) + range(398, 600) + range(601, 1024))
+data1 = pylab.array(list(range(1, 400)) + list(range(398, 600)) + list(range(601, 1024)))
 x = pylab.arange(612 - 80, 20, -0.5) / 250.
 data2 = pylab.sin(40 * pylab.log(x)) * pylab.sign((pylab.log(x)))
 
@@ -15,12 +15,12 @@ mode = pywt.MODES.sp1
 
 
 def plot(data, w, title):
-    print title
+    print(title)
     w = pywt.Wavelet(w)
     a = data
     ca = []
     cd = []
-    for i in xrange(5):
+    for i in range(5):
         (a, d) = pywt.dwt(a, w, mode)
         ca.append(a)
         cd.append(d)
@@ -57,7 +57,7 @@ def plot(data, w, title):
         pylab.ylabel("D%d" % (i + 1))
 
 
-print "Signal decomposition (S = An + Dn + Dn-1 + ... + D1)"
+print("Signal decomposition (S = An + Dn + Dn-1 + ... + D1)")
 plot(data1, 'coif5', "DWT: Signal irregularity")
 plot(data2, 'sym5', "DWT: Frequency and phase change - Symmlets5")
 plot(data3, 'sym5', "DWT: Ecg sample - Symmlets5")

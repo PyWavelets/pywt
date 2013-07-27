@@ -7,22 +7,24 @@
 Other wavelet related functions.
 """
 
+from __future__ import division, print_function, absolute_import
+
 __all__ = ["intwave", "centfrq", "scal2frq", "qmf", "orthfilt"]
 
 from math import sqrt
 
-from _pywt import Wavelet
+from ._pywt import Wavelet
 
-from numerix import asarray, array, float64
-from numerix import integrate
-from numerix import argmax
-from numerix import fft
+from .numerix import asarray, array, float64
+from .numerix import integrate
+from .numerix import argmax
+from .numerix import fft
 
 WAVELET_CLASSES = (Wavelet)
 
 
 def wavelet_for_name(name):
-    if not isinstance(name, basestring):
+    if not isinstance(name, str):
         raise TypeError(
             "Wavelet name must be of string type, not %s" % type(name))
     try:
