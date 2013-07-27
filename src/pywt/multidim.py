@@ -44,12 +44,13 @@ def dwt2(data, wavelet, mode='sym'):
     >>> data = np.ones((4,4), dtype=np.float64)
     >>> coeffs = multidim.dwt2(data, 'haar')
     >>> cA, (cH, cV, cD) = coeffs
-    >>> print(cA)
-    [[ 2.  2.]
-     [ 2.  2.]]
-    >>> print(cV)
-    [[ 0.  0.]
-     [ 0.  0.]]
+    >>> cA
+    array([[ 2.,  2.],
+           [ 2.,  2.]])
+    >>> cV
+    array([[ 0.,  0.],
+           [ 0.,  0.]])
+
     """
 
     data = np.asarray(data)
@@ -114,11 +115,11 @@ def idwt2(coeffs, wavelet, mode='sym'):
     >>> from pywt import multidim
     >>> data = np.array([[1,2], [3,4]], dtype=np.float64)
     >>> coeffs = multidim.dwt2(data, 'haar')
-    >>> print(multidim.idwt2(coeffs, 'haar'))
-    [[ 1.  2.]
-     [ 3.  4.]]
-    """
+    >>> multidim.idwt2(coeffs, 'haar')
+    array([[ 1.,  2.],
+           [ 3.,  4.]])
 
+    """
     if len(coeffs) != 2 or len(coeffs[1]) != 3:
         raise ValueError("Invalid coeffs param")
 
