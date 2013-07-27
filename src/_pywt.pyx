@@ -12,7 +12,8 @@ __all__ = ['MODES', 'Wavelet', 'dwt', 'dwt_coeff_len', 'dwt_max_level',
 cimport c_python
 cimport c_wt
 cimport c_array_interface
-cimport c_math
+
+from libc.math cimport pow, sqrt
 
 ctypedef Py_ssize_t index_t
 
@@ -382,8 +383,8 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
         cdef Wavelet other "other"
         cdef phi_d, psi_d, phi_r, psi_r
 
-        n = c_math.pow(c_math.sqrt(2.), <double>level)
-        p = (c_math.pow(2., <double>level))
+        n = pow(sqrt(2.), <double>level)
+        p = (pow(2., <double>level))
 
         if self.w.orthogonal:
             filter_length = self.w.dec_len
