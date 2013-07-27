@@ -7,6 +7,8 @@
 Other wavelet related functions.
 """
 
+from __future__ import division, print_function, absolute_import
+
 __all__ = ["intwave", "centfrq", "scal2frq", "qmf", "orthfilt"]
 
 from math import sqrt

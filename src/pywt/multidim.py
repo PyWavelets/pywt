@@ -7,6 +7,8 @@
 2D Discrete Wavelet Transform and Inverse Discrete Wavelet Transform.
 """
 
+from __future__ import division, print_function, absolute_import
+
 __all__ = ['dwt2', 'idwt2', 'swt2', 'dwtn']
 
 from itertools import izip, cycle

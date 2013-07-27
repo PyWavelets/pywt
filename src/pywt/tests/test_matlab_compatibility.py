@@ -3,6 +3,8 @@ Test used to verify PyWavelets Discrete Wavelet Transform computation
 accuracy against MathWorks Wavelet Toolbox.
 """
 
+from __future__ import division, print_function, absolute_import
+
 import math
 
 import numpy as np

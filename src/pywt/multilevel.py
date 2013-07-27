@@ -8,6 +8,8 @@ Multilevel 1D and 2D Discrete Wavelet Transform
 and Inverse Discrete Wavelet Transform.
 """
 
+from __future__ import division, print_function, absolute_import
+
 __all__ = ['wavedec', 'waverec', 'wavedec2', 'waverec2']
 
 from _pywt import Wavelet

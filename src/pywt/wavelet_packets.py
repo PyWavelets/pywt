@@ -5,6 +5,8 @@
 
 """1D and 2D Wavelet packet transform module."""
 
+from __future__ import division, print_function, absolute_import
+
 __all__ = ["BaseNode", "Node", "WaveletPacket", "Node2D", "WaveletPacket2D"]
 
 import numerix
