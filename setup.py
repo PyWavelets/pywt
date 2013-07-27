@@ -38,7 +38,7 @@ setup_args = {}
 
 if has_setuptools:
     setup_args["zip_safe"] = False
-    setup_args["test_suite"] = "tests.test_doc.suite"
+    setup_args["test_suite"] = "nose.collector"
     if not os.path.exists(os.path.join("src", "_pywt.c")):
         setup_args["setup_requires"] = ["Cython>=0.16"]
 else:

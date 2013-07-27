@@ -46,7 +46,7 @@ class CleanCommand(Command):
     user_options = []
 
     def initialize_options(self):
-        self.base_roots = ["demo", "doc", "pywt", "src", "tests", "util"]
+        self.base_roots = ["demo", "doc", "pywt", "src", "util"]
         self.dirty = [".pyc", ".so", ".o", ".pyd"]
         self.files = []
         self.dirs = ["build", "dist"]
@@ -231,4 +231,4 @@ class TestCommand(Command):
     def run(self):
         import subprocess
         raise SystemExit(
-            subprocess.call([sys.executable, "tests/test_doc.py"]))
+            subprocess.call([sys.executable, "src/pywt/tests/test_doc.py"]))
