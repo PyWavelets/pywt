@@ -42,10 +42,10 @@ def dwt2(data, wavelet, mode='sym'):
     >>> data = np.ones((4,4), dtype=np.float64)
     >>> coeffs = multidim.dwt2(data, 'haar')
     >>> cA, (cH, cV, cD) = coeffs
-    >>> print(cA)
+    >>> cA
     [[ 2.  2.]
      [ 2.  2.]]
-    >>> print(cV)
+    >>> cV
     [[ 0.  0.]
      [ 0.  0.]]
     """
@@ -112,7 +112,7 @@ def idwt2(coeffs, wavelet, mode='sym'):
     >>> from pywt import multidim
     >>> data = np.array([[1,2], [3,4]], dtype=np.float64)
     >>> coeffs = multidim.dwt2(data, 'haar')
-    >>> print(multidim.idwt2(coeffs, 'haar'))
+    >>> multidim.idwt2(coeffs, 'haar')
     [[ 1.  2.]
      [ 3.  4.]]
     """
