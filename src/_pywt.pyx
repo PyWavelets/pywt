@@ -109,15 +109,16 @@ cdef object wname_to_code(char* name):
 
 def wavelist(family=None):
     """
+    wavelist(family=None)
+
     Returns list of available wavelet names for the given family name.
 
     Parameters
     ----------
     family : {'haar', 'db', 'sym', 'coif', 'bior', 'rbio', 'dmey'}
-        Short family name.
-        If the family name is ``None`` (default) then names of all the built-in wavelets
-        are returned. Otherwise the function returns names of wavelets that belong
-        to the given family.
+        Short family name.  If the family name is None (default) then names
+        of all the built-in wavelets are returned. Otherwise the function
+        returns names of wavelets that belong to the given family.
 
     Returns
     -------
@@ -129,8 +130,8 @@ def wavelist(family=None):
     >>> import pywt
     >>> pywt.wavelist('coif')
     ['coif1', 'coif2', 'coif3', 'coif4', 'coif5']
-    """
 
+    """
     cdef object wavelets, sorting_list
     sorting_list = [] # for natural sorting order
     wavelets = []
@@ -152,6 +153,8 @@ def wavelist(family=None):
 
 def families(int short=True):
     """
+    families(short=True)
+
     Returns a list of available built-in wavelet families.
 
     Currently the built-in families are:
@@ -179,6 +182,10 @@ def families(int short=True):
     >>> import pywt
     >>> pywt.families()
     ['haar', 'db', 'sym', 'coif', 'bior', 'rbio', 'dmey']
+    >>> pywt.families(short=False)
+    ['Haar', 'Daubechies', 'Symlets', 'Coiflets', 'Biorthogonal',
+     'Reverse biorthogonal', 'Discrete Meyer (FIR Approximation)']
+
     """
     if short:
         return __wfamily_list_short[:]
@@ -195,8 +202,8 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
     be specified. It can be either a list of four filters or an object
     that a `filter_bank` attribute which returns a list of four
     filters - just like the Wavelet instance itself.
-    """
 
+    """
     cdef c_wt.Wavelet* w
 
     cdef readonly name
@@ -405,6 +412,8 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
 
     def wavefun(self, int level=8):
         """
+        wavefun(self, level=8)
+
         Calculates approximations of scaling function (`phi`) and wavelet
         function (`psi`) on xgrid (`x`) at a given level of refinement.
 
@@ -432,8 +441,8 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
         >>> # Biorthogonal
         >>> wavelet = pywt.Wavelet('bior3.5')
         >>> phi_d, psi_d, phi_r, psi_r, x = wavelet.wavefun(level=5)
-        """
 
+        """
         cdef index_t filter_length "filter_length"
         cdef index_t right_extent_length "right_extent_length"
         cdef index_t output_length "output_length"
@@ -545,6 +554,8 @@ cdef c_wavelet_from_object(wavelet):
 
 def dwt_max_level(data_len, filter_len):
     """
+    dwt_max_level(data_len, filter_len)
+
     Compute the maximum useful level of decomposition.
 
     Parameters
@@ -577,7 +588,7 @@ def dwt(object data, object wavelet, object mode='sym'):
     """
     (cA, cD) = dwt(data, wavelet, mode='sym')
 
-    Single level Discrete Wavelet Transform
+    Single level Discrete Wavelet Transform.
 
     Parameters
     ----------
@@ -609,6 +620,7 @@ def dwt(object data, object wavelet, object mode='sym'):
     [ 2.12132034  4.94974747  7.77817459]
     >>> cD
     [-0.70710678 -0.70710678 -0.70710678]
+
     """
 
     cdef Buffer input, output_a, output_d
@@ -659,6 +671,8 @@ def dwt(object data, object wavelet, object mode='sym'):
 
 def dwt_coeff_len(data_len, filter_len, mode='sym'):
     """
+    dwt_coeff_len(data_len, filter_len, mode='sym')
+
     Returns length of dwt output for given data length, filter length and mode
 
     Parameters
@@ -677,13 +691,17 @@ def dwt_coeff_len(data_len, filter_len, mode='sym'):
 
     Notes
     -----
-    for all modes except periodization:
-      len(cA) == len(cD) == floor((len(data) + wavelet.dec_len - 1) / 2)
+    For all modes except periodization::
 
-    for periodization mode ("per"):
-      len(cA) == len(cD) == ceil(len(data) / 2)
+        len(cA) == len(cD) == floor((len(data) + wavelet.dec_len - 1) / 2)
+
+    for periodization mode ("per")::
+
+        len(cA) == len(cD) == ceil(len(data) / 2)
+
     """
     cdef index_t filter_len_
+
     if isinstance(filter_len, Wavelet):
         filter_len_ = filter_len.dec_len
     else:
@@ -703,6 +721,8 @@ def dwt_coeff_len(data_len, filter_len, mode='sym'):
 def idwt(object cA, object cD, object wavelet, object mode='sym',
          int correct_size=0):
     """
+    idwt(cA, cD, wavelet, mode='sym', correct_size=0)
+
     Single level Inverse Discrete Wavelet Transform
 
     Parameters
@@ -726,8 +746,8 @@ def idwt(object cA, object cD, object wavelet, object mode='sym',
     -------
     rec: array_like
         Single level reconstruction of signal from given coefficients.
-    """
 
+    """
     cdef Buffer input_a, input_d, output
     cdef index_t input_len
 
@@ -836,6 +856,8 @@ def idwt(object cA, object cD, object wavelet, object mode='sym',
 
 def upcoef(part, coeffs, wavelet, int level=1, take=0):
     """
+    upcoef(part, coeffs, wavelet, int level=1, take=0)
+
     Direct reconstruction from coefficients.
 
     Parameters
@@ -945,6 +967,8 @@ def upcoef(part, coeffs, wavelet, int level=1, take=0):
 
 def downcoef(part, object data, object wavelet, object mode='sym', int level=1):
     """
+    downcoef(part, data, wavelet, mode='sym', level=1)
+
     Partial Discrete Wavelet Transform data decomposition.
 
     Similar to `pywt.dwt`, but computes only one set of coefficients.
@@ -1039,6 +1063,8 @@ def downcoef(part, object data, object wavelet, object mode='sym', int level=1):
 
 def swt_max_level(input_len):
     """
+    swt_max_level(input_len)
+
     Calculates the maximum level of Stationary Wavelet Transform for data of
     given length.
 
@@ -1056,6 +1082,8 @@ def swt_max_level(input_len):
 
 def swt(object data, object wavelet, object level=None, int start_level=0):
     """
+    swt(data, wavelet, level=None, start_level=0)
+
     Performs multilevel Stationary Wavelet Transform.
 
     Parameters
