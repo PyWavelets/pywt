@@ -19,10 +19,6 @@ cdef extern from "Python.h":
     void PyMem_Free(void* mem) 
     void Py_DECREF(object)
 
-    # int
-    object PyInt_FromLong(long v)
-    long PyInt_AsLong(object io) 
-
     # cobject
     int PyCObject_Check(object p) 
     void* PyCObject_AsVoidPtr(object cobj)

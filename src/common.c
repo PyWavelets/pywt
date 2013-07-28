@@ -1,5 +1,5 @@
-// Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/>
-// See COPYING for license details.
+/* Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/> */
+/* See COPYING for license details. */
 
 #include "common.h"
 
@@ -12,7 +12,7 @@ void *wtcalloc(size_t len, size_t size){
 }
 #endif
 
-// buffers and max levels params
+/* buffers and max levels params */
 
 index_t dwt_buffer_length(index_t input_len, index_t filter_len, MODE mode){
     if(input_len < 1 || filter_len < 1)
@@ -65,7 +65,7 @@ int swt_max_level(index_t input_len){
     int i, j;
     i = (int) floor(log((double) input_len)/log(2.0));
 
-    // check how many times (maximum i times) input_len is divisible by 2
+    /* check how many times (maximum i times) input_len is divisible by 2 */
     for(j=0; j <= i; ++j){
         if((input_len & 0x1)==1)
             return j;
