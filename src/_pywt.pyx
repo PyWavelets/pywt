@@ -34,6 +34,7 @@ cdef c_wt.MODE c_mode_from_object(mode) except c_wt.MODE_INVALID:
         if m <= c_wt.MODE_INVALID or m >= c_wt.MODE_MAX:
             raise ValueError("Invalid mode.")
     else:
+        mode = mode.encode('utf-8')
         co = c_python.PyObject_GetAttrString(MODES, mode)
         if co is not NULL:
             o = <object>co
@@ -90,7 +91,7 @@ class MODES(object):
 
 include "wavelets_list.pxi" ## __wname_to_code
 
-cdef object wname_to_code(char* name):
+cdef object wname_to_code(name):
     cdef object code_number
     try:
         code_number = __wname_to_code[name]
@@ -206,7 +207,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
 
     #cdef readonly properties
 
-    def __cinit__(self, char* name="", object filter_bank=None):
+    def __cinit__(self, name=u"", object filter_bank=None):
         cdef object family_code, family_number
         cdef object filters
         cdef index_t filter_length
