@@ -393,8 +393,6 @@ Wavelet* copy_wavelet(Wavelet* base)
 }
 
 void free_wavelet(Wavelet *w){
-    if(wavelet == NULL)
-        return;
 
     if(w->_builtin == 0){
 
