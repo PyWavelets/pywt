@@ -1,7 +1,7 @@
-// Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/>
-// See COPYING for license details.
+/* Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/> */
+/* See COPYING for license details. */
 
-// Allocating, setting properties and destroying wavelet structs
+/* Allocating, setting properties and destroying wavelet structs */
 #include "wavelets.h"
 #include "wavelets_coeffs.h"
 
@@ -10,19 +10,19 @@ Wavelet* wavelet(char name, int order)
     Wavelet *w, *wtmp;
     index_t i;
 
-    // Haar wavelet
+    /* Haar wavelet */
     if(name == 'h' || name == 'H'){
 
-        // the same as db1
+        /* the same as db1 */
         w = wavelet('d', 1);
         w->family_name = "Haar";
         w->short_name = "haar";
         return w;
 
-    // Reverse biorthogonal wavelets family
+    /* Reverse biorthogonal wavelets family */
     } else if (name == 'r' || name == 'R') { 
 
-        // rbio is like bior, only with switched filters
+        /* rbio is like bior, only with switched filters */
         wtmp = wavelet('b', order);
         w = copy_wavelet(wtmp);
         
@@ -32,12 +32,6 @@ Wavelet* wavelet(char name, int order)
         w->dec_len = wtmp->rec_len;
         w->rec_len = wtmp->dec_len;
 
-        /*
-        w->dec_hi_offset = wtmp->rec_hi_offset;
-        w->rec_hi_offset = wtmp->dec_hi_offset;
-        w->dec_lo_offset = wtmp->rec_lo_offset;
-        w->rec_lo_offset = wtmp->dec_lo_offset;
-        */
         for(i = 0; i < w->rec_len; ++i){
             //## FOR $DTYPE$ IN (double, float):
                 w->rec_lo_$DTYPE$[i] = wtmp->dec_lo_$DTYPE$[wtmp->dec_len-1-i];
@@ -52,7 +46,7 @@ Wavelet* wavelet(char name, int order)
             //## ENDFOR $DTYPE$
         }
 
-        w->vanishing_moments_psi = order / 10; // 1st digit
+        w->vanishing_moments_psi = order / 10; /* 1st digit */
         w->vanishing_moments_phi = -1;
 
         w->family_name = "Reverse biorthogonal";
@@ -67,13 +61,11 @@ Wavelet* wavelet(char name, int order)
     if(w == NULL)
         return NULL;
 
-    //w->dec_lo_offset = w->rec_lo_offset = 0;
-    //w->dec_hi_offset = w->rec_hi_offset = 0;
     w->_builtin = 1;
 
     switch(name){
 
-        // Daubechies wavelets family
+        /* Daubechies wavelets family */
         case 'd':
         case 'D':
             w->dec_len = w->rec_len = 2*order;
@@ -106,7 +98,7 @@ Wavelet* wavelet(char name, int order)
             }
             break;
 
-        // Symlets wavelets family
+        /* Symlets wavelets family */
         case 's':
         case 'S':
             w->dec_len = w->rec_len = order << 1;
@@ -139,7 +131,7 @@ Wavelet* wavelet(char name, int order)
             }
             break;
 
-        // Coiflets wavelets family
+        /* Coiflets wavelets family */
         case 'c':
         case 'C':
             w->dec_len = w->rec_len = order * 6;
@@ -172,7 +164,7 @@ Wavelet* wavelet(char name, int order)
             }
             break;
 
-        // Biorthogonal wavelets family
+        /* Biorthogonal wavelets family */
         case 'b':
         case 'B':
 
@@ -266,7 +258,7 @@ Wavelet* wavelet(char name, int order)
             //## ENDFOR $DTYPE$
             break;
 
-        // Discrete FIR filter approximation of Meyer wavelet
+        /* Discrete FIR filter approximation of Meyer wavelet */
         case 'm':
         case 'M':
 
@@ -305,18 +297,17 @@ Wavelet* blank_wavelet(index_t filters_length)
     if(filters_length < 1)
         return NULL;
 
-    // pad to even length
+    /* pad to even length */
     if(filters_length % 2)
         ++filters_length;
 
     w = wtmalloc(sizeof(Wavelet));
     if(w == NULL) return NULL;
 
-    //w->dec_lo_offset = w->rec_lo_offset = 0;
-    //w->dec_hi_offset = w->rec_hi_offset = 0;
-
-    // Important!
-    // Otherwise filters arrays allocated here won't be deallocated by free_wavelet
+    /* 
+     * Important!
+     * Otherwise filters arrays allocated here won't be deallocated by free_wavelet
+     */
     w->_builtin = 0;
 
     w->dec_len = w->rec_len = filters_length;
@@ -333,7 +324,7 @@ Wavelet* blank_wavelet(index_t filters_length)
         }
     //## ENDFOR $DTYPE$
 
-    // set properties to "blank" values
+    /* set properties to "blank" values */
     w->vanishing_moments_psi = 0;
     w->vanishing_moments_phi = 0;
     w->support_width = -1;
@@ -396,7 +387,7 @@ void free_wavelet(Wavelet *w){
 
     if(w->_builtin == 0){
 
-        // deallocate filters
+        /* deallocate filters */
         //## FOR $DTYPE$ IN (double, float):        
             if(w->dec_lo_$DTYPE$ != NULL){
                 wtfree(w->dec_lo_$DTYPE$);
@@ -420,6 +411,6 @@ void free_wavelet(Wavelet *w){
         //## ENDFOR $DTYPE$
     }
 
-    // finally free struct
+    /* finally free struct */
     wtfree(w);
 }
