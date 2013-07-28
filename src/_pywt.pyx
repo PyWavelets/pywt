@@ -11,7 +11,6 @@ __all__ = ['MODES', 'Wavelet', 'dwt', 'dwt_coeff_len', 'dwt_max_level',
 
 cimport c_python
 cimport c_wt
-cimport c_array_interface
 
 from libc.math cimport pow, sqrt
 
