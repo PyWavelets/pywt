@@ -9,14 +9,7 @@ cdef struct Buffer:
     void* data
     index_t size
     DTYPE dtype
-    
-cdef object memory_buffer_object(Py_ssize_t length, DTYPE dtype):
-    if dtype == FLOAT64:
-        return np.zeros(length, np.float64)
-    elif dtype == FLOAT32:
-        return np.zeros(length, np.float32)
-    else:
-        raise ValueError("dtype must be in (%s, %s), not %s." % (FLOAT32, FLOAT64, dtype))
+   
 
 ###############################################################################
 # buffer objects handling

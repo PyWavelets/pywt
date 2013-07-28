@@ -27,6 +27,8 @@ import numpy as np
 
 include "arraytools.pxi"
 
+dtypes = {8 : np.float64, 4 : np.float32}
+
 ###############################################################################
 # MODES
 
@@ -641,7 +643,6 @@ def dwt(object data, object wavelet, object mode='sym'):
     if output_len < 1:
         raise RuntimeError("Invalid output length.")
 
-    dtypes = {8 : np.float64, 4 : np.float32}
     cA = np.zeros(output_len, dtype=dtypes[input.dtype])
     cD = np.zeros(output_len, dtype=dtypes[input.dtype])
 
@@ -825,9 +826,9 @@ def idwt(object cA, object cD, object wavelet, object mode='sym',
 
     # allocate buffer
     if <DTYPE>input_a.dtype != 0:
-        rec = memory_buffer_object(rec_len, <DTYPE>input_a.dtype)
+        rec = np.zeros(rec_len, dtype=dtypes[input_a.dtype])
     else:
-        rec = memory_buffer_object(rec_len, <DTYPE>input_d.dtype)
+        rec = np.zeros(rec_len, dtype=dtypes[input_d.dtype])
     rec = array_as_buffer(rec, &output, c'w')
 
     assert output.dtype == FLOAT64 or output.dtype == FLOAT32
@@ -923,7 +924,7 @@ def upcoef(part, coeffs, wavelet, int level=1, take=0):
             raise RuntimeError("Invalid output length.")
 
         # reconstruct
-        rec = memory_buffer_object(rec_len, input.dtype)
+        rec = np.zeros(rec_len, dtype=dtypes[input.dtype])
         rec = array_as_buffer(rec, &output, c'w')
 
         assert input.dtype == output.dtype
@@ -1022,7 +1023,9 @@ def downcoef(part, object data, object wavelet, object mode='sym', int level=1):
         output_len = c_wt.dwt_buffer_length(input.size, w.dec_len, mode_)
         if output_len < 1:
             raise RuntimeError("Invalid output length.")
-        coeffs = array_as_buffer(memory_buffer_object(output_len, input.dtype), &output, c'w')
+        coeffs = array_as_buffer(np.zeros(output_len, dtype=dtypes[input.dtype]),
+                                 &output, c'w')
+        np.zeros(output_len, dtype=dtypes[input.dtype])
         assert input.dtype == output.dtype
 
         if do_dec_a:
@@ -1155,7 +1158,9 @@ def swt(object data, object wavelet, object level=None, int start_level=0):
     ret = []
     for i from start_level < i <= end_level:
         # alloc memory, decompose D
-        cD = array_as_buffer(memory_buffer_object(output_len, input.dtype), &output, c'w')
+        cD = array_as_buffer(np.zeros(output_len, dtype=dtypes[input.dtype]),
+                             &output, c'w')
+        
 
         if input.dtype == FLOAT64:
             if c_wt.double_swt_d(<double*>input.data, input.size, w.w,
@@ -1169,7 +1174,7 @@ def swt(object data, object wavelet, object level=None, int start_level=0):
             raise RuntimeError("Invalid data type.")
 
         # alloc memory, decompose A
-        cA = array_as_buffer(memory_buffer_object(output_len, input.dtype),
+        cA = array_as_buffer(np.zeros(output_len, dtype=dtypes[input.dtype]),
                              &output, c'w')
 
         if input.dtype == FLOAT64:
