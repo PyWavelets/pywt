@@ -1,19 +1,22 @@
 #ifndef _WAVELETS_COEFFS_H_
 #define _WAVELETS_COEFFS_H_
 
-// Filters coefficients for selected wavelets
+/*
+ * Filters coefficients for selected wavelets
+ *
+ * Daubechies:   db1   - db20
+ * Symlets:      sym2  - sym20
+ * Coiflets:     coif1 - coif5
+ * Biorthogonal: bior 1.1, 1.3, 1.5,
+ *                    2.2, 2.4, 2.6, 2.8,
+ *                    3.1, 3.3, 3.5, 3.7, 3.9,
+ *                    4.4, 5.5, 6.8
+ * Discrete Meyer wavelet *approximation*: dmey
+ */
 
-// Daubechies:   db1   - db20
-// Symlets:      sym2  - sym20
-// Coiflets:     coif1 - coif5
-// Biorthogonal: bior 1.1, 1.3, 1.5,
-//                    2.2, 2.4, 2.6, 2.8,
-//                    3.1, 3.3, 3.5, 3.7, 3.9,
-//                    4.4, 5.5, 6.8
-// Discrete Meyer wavelet *approximation*: dmey
-
+/* ignore warning about initializing floats from double values */
 #ifdef _MSC_VER
-    #pragma warning (disable:4305) // ignore warning about initializing floats from double values
+    #pragma warning (disable:4305)
 #endif
 
 
