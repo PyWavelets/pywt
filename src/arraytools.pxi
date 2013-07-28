@@ -7,7 +7,7 @@ cdef enum DTYPE: # itemsize
 
 cdef struct Buffer:
     void* data
-    index_t len
+    index_t size
     DTYPE dtype
     
 cdef object memory_buffer_object(Py_ssize_t length, DTYPE dtype):
@@ -53,7 +53,7 @@ cdef int array_object_as_float_buffer(object source, Buffer* buffer, char rwmode
             data_len = c_array_interface.PyArrayInterface_SHAPE(array_struct, 0)
             if data_len < 1:
                 raise ValueError("invalid data size - %s." % data_len)
-            buffer.len = data_len
+            buffer.size = data_len
 
             if rwmode == c'w':
                 data = c_array_interface.PyArrayInterface_DATA_AS_FLOAT_C_ARRAY(array_struct)

@@ -219,7 +219,6 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
 
         if not name and filter_bank is None:
             raise TypeError("Wavelet name or filter bank must be specified.")
-        #print wname_to_code(name, number)
 
         if filter_bank is None:
             # builtin wavelet
@@ -259,7 +258,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
                 dec_hi = np.asarray(filters[1], dtype=np.float64)
                 rec_lo = np.asarray(filters[2], dtype=np.float64)
                 rec_hi = np.asarray(filters[3], dtype=np.float64)
-            except (TypeError, TypeError):
+            except TypeError:
                 raise ValueError("Filter bank with numeric values required.")
 
             if not (1 == len(dec_lo.shape) == len(dec_hi.shape) == 
@@ -296,7 +295,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
             c_wt.free_wavelet(self.w) 
             self.w = NULL
 
-    def __len__(self): #assume
+    def __len__(self):
         return self.w.dec_len
 
     property dec_lo:
@@ -516,7 +515,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
             u"  Orthogonal:     %s" % self.orthogonal,
             u"  Biorthogonal:   %s" % self.biorthogonal,
             u"  Symmetry:       %s" % self.symmetry
-        ]:
+            ]:
             s.append(x.rstrip())
         return u'\n'.join(s)
 
@@ -638,30 +637,31 @@ def dwt(object data, object wavelet, object mode='sym'):
     except Exception, e:
         raise ValueError("Invalid input data - %s" % e)
 
-    output_len = c_wt.dwt_buffer_length(input.len, w.dec_len, mode_)
+    output_len = c_wt.dwt_buffer_length(input.size, w.dec_len, mode_)
     if output_len < 1:
         raise RuntimeError("Invalid output length.")
 
-    cA = memory_buffer_object(output_len, input.dtype)
-    cD = memory_buffer_object(output_len, input.dtype)
+    dtypes = {8 : np.float64, 4 : np.float32}
+    cA = np.zeros(output_len, dtype=dtypes[input.dtype])
+    cD = np.zeros(output_len, dtype=dtypes[input.dtype])
 
     cA = array_as_buffer(cA, &output_a, c'w')
     cD = array_as_buffer(cD, &output_d, c'w')
 
     assert input.dtype == output_a.dtype == output_d.dtype
     if input.dtype == FLOAT64:
-        if (c_wt.double_dec_a(<double*>input.data, input.len, w.w,
-                             <double*>output_a.data, output_a.len, mode_) < 0
+        if (c_wt.double_dec_a(<double*>input.data, input.size, w.w,
+                             <double*>output_a.data, output_a.size, mode_) < 0
             or
-            c_wt.double_dec_d(<double*>input.data, input.len, w.w,
-                              <double*>output_d.data, output_d.len, mode_) < 0):
+            c_wt.double_dec_d(<double*>input.data, input.size, w.w,
+                              <double*>output_d.data, output_d.size, mode_) < 0):
             raise RuntimeError("C dwt failed.")
     elif input.dtype == FLOAT32:
-        if (c_wt.float_dec_a(<float*>input.data, input.len, w.w,
-                             <float*>output_a.data, output_a.len, mode_) < 0
+        if (c_wt.float_dec_a(<float*>input.data, input.size, w.w,
+                             <float*>output_a.data, output_a.size, mode_) < 0
             or
-            c_wt.float_dec_d(<float*>input.data, input.len, w.w,
-                             <float*>output_d.data, output_d.len, mode_) < 0):
+            c_wt.float_dec_d(<float*>input.data, input.size, w.w,
+                             <float*>output_d.data, output_d.size, mode_) < 0):
             raise RuntimeError("C dwt failed.")
     else:
         raise RuntimeError("Invalid data type.")
@@ -772,7 +772,7 @@ def idwt(object cA, object cD, object wavelet, object mode='sym',
             raise ValueError("Invalid cA input data - %s" % e)
     else:
         input_a.data = NULL
-        input_a.len = 0
+        input_a.size = 0
         input_a.dtype = <DTYPE>0
 
     if cD is not None:
@@ -782,7 +782,7 @@ def idwt(object cA, object cD, object wavelet, object mode='sym',
             raise ValueError("Invalid cD input data - %s" % e)
     else:
         input_d.data = NULL
-        input_d.len = 0
+        input_d.size = 0
         input_d.dtype = <DTYPE>0
 
     if input_a.data is not NULL and input_d.data is not NULL:
@@ -798,23 +798,23 @@ def idwt(object cA, object cD, object wavelet, object mode='sym',
     # check for sizes difference
     if input_a.data is not NULL:
         if input_d.data is not NULL:
-            size_diff = input_a.len - input_d.len
+            size_diff = input_a.size - input_d.size
             if size_diff:
                 if correct_size:
                     if size_diff < 0 or size_diff > 1:
                         msg = ("Coefficients arrays must satisfy "
                                "(0 <= len(cA) - len(cD) <= 1).")
                         raise ValueError(msg)
-                    input_len = input_a.len - size_diff
+                    input_len = input_a.size - size_diff
                 else:
                     msg = "Coefficients arrays must have the same size."
                     raise ValueError(msg)
             else:
-                input_len = input_d.len
+                input_len = input_d.size
         else:
-            input_len = input_a.len
+            input_len = input_a.size
     else:
-        input_len = input_d.len
+        input_len = input_d.size
 
     # find reconstruction buffer length
     rec_len = c_wt.idwt_buffer_length(input_len, w.rec_len, mode_)
@@ -835,15 +835,15 @@ def idwt(object cA, object cD, object wavelet, object mode='sym',
     # call idwt func.  one of input_data_a/input_data_d can be NULL, then only
     # reconstruction of non-null part will be performed
     if output.dtype == FLOAT64:
-        if c_wt.double_idwt(<double*>input_a.data, input_a.len,
-                            <double*>input_d.data, input_d.len, w.w,
-                            <double*>output.data, output.len, mode_,
+        if c_wt.double_idwt(<double*>input_a.data, input_a.size,
+                            <double*>input_d.data, input_d.size, w.w,
+                            <double*>output.data, output.size, mode_,
                             correct_size) < 0:
             raise RuntimeError("C idwt failed.")
     elif output.dtype == FLOAT32:
-        if c_wt.float_idwt(<float*>input_a.data, input_a.len,
-                           <float*>input_d.data, input_d.len, w.w,
-                           <float*>output.data, output.len, mode_,
+        if c_wt.float_idwt(<float*>input_a.data, input_a.size,
+                           <float*>input_d.data, input_d.size, w.w,
+                           <float*>output.data, output.size, mode_,
                            correct_size) < 0:
             raise RuntimeError("C idwt failed.")
     else:
@@ -918,7 +918,7 @@ def upcoef(part, coeffs, wavelet, int level=1, take=0):
 
     for i from 0 <= i < level:
         # output len
-        rec_len = c_wt.reconstruction_buffer_length(input.len, w.dec_len)
+        rec_len = c_wt.reconstruction_buffer_length(input.size, w.dec_len)
         if rec_len < 1:
             raise RuntimeError("Invalid output length.")
 
@@ -930,30 +930,30 @@ def upcoef(part, coeffs, wavelet, int level=1, take=0):
 
         if do_rec_a:
             if input.dtype == FLOAT64:
-                if c_wt.double_rec_a(<double*>input.data, input.len, w.w,
-                                     <double*>output.data, output.len) < 0:
+                if c_wt.double_rec_a(<double*>input.data, input.size, w.w,
+                                     <double*>output.data, output.size) < 0:
                     raise RuntimeError("C rec_a failed.")
             elif input.dtype == FLOAT32:
-                if c_wt.float_rec_a(<float*>input.data, input.len, w.w,
-                                    <float*>output.data, output.len) < 0:
+                if c_wt.float_rec_a(<float*>input.data, input.size, w.w,
+                                    <float*>output.data, output.size) < 0:
                     raise RuntimeError("C rec_a failed.")
             else:
                 raise RuntimeError("Invalid data type.")
         else:
             if input.dtype == FLOAT64:
-                if c_wt.double_rec_d(<double*>input.data, input.len, w.w,
-                                     <double*>output.data, output.len) < 0:
+                if c_wt.double_rec_d(<double*>input.data, input.size, w.w,
+                                     <double*>output.data, output.size) < 0:
                     raise RuntimeError("C rec_a failed.")
             elif input.dtype == FLOAT32:
-                if c_wt.float_rec_d(<float*>input.data, input.len, w.w,
-                                    <float*>output.data, output.len) < 0:
+                if c_wt.float_rec_d(<float*>input.data, input.size, w.w,
+                                    <float*>output.data, output.size) < 0:
                     raise RuntimeError("C rec_a failed.")
             else:
                 raise RuntimeError("Invalid data type.")
             do_rec_a = 1
 
         data = rec # keep reference
-        input.len = output.len
+        input.size = output.size
         input.data = output.data
 
     if take > 0:
@@ -1017,13 +1017,9 @@ def downcoef(part, object data, object wavelet, object mode='sym', int level=1):
 
     if level < 1:
         raise ValueError("Value of level must be greater than 0.")
-    #elif level > c_wt.dwt_max_level(input.len, w.dec_len):
-    #    raise ValueError("Value of level is higher than the max dwt level for given input lenght and wavelet. Max level is %d." % c_wt.dwt_max_level(input.len, w.dec_len))
-
 
     for i from 0 <= i < level:
-        # output len
-        output_len = c_wt.dwt_buffer_length(input.len, w.dec_len, mode_)
+        output_len = c_wt.dwt_buffer_length(input.size, w.dec_len, mode_)
         if output_len < 1:
             raise RuntimeError("Invalid output length.")
         coeffs = array_as_buffer(memory_buffer_object(output_len, input.dtype), &output, c'w')
@@ -1031,29 +1027,29 @@ def downcoef(part, object data, object wavelet, object mode='sym', int level=1):
 
         if do_dec_a:
             if input.dtype == FLOAT64:
-                if c_wt.double_dec_a(<double*>input.data, input.len, w.w,
-                                     <double*>output.data, output.len, mode_) < 0:
+                if c_wt.double_dec_a(<double*>input.data, input.size, w.w,
+                                     <double*>output.data, output.size, mode_) < 0:
                     raise RuntimeError("C dec_a failed.")
             elif input.dtype == FLOAT32:
-                if c_wt.float_dec_a(<float*>input.data, input.len, w.w,
-                                    <float*>output.data, output.len, mode_) < 0:
+                if c_wt.float_dec_a(<float*>input.data, input.size, w.w,
+                                    <float*>output.data, output.size, mode_) < 0:
                     raise RuntimeError("C dec_a failed.")
             else:
                 raise RuntimeError("Invalid data type.")
         else:
             if input.dtype == FLOAT64:
-                if c_wt.double_dec_d(<double*>input.data, input.len, w.w,
-                                     <double*>output.data, output.len, mode_) < 0:
+                if c_wt.double_dec_d(<double*>input.data, input.size, w.w,
+                                     <double*>output.data, output.size, mode_) < 0:
                     raise RuntimeError("C dec_a failed.")
             elif input.dtype == FLOAT32:
-                if c_wt.float_dec_d(<float*>input.data, input.len, w.w,
-                                    <float*>output.data, output.len, mode_) < 0:
+                if c_wt.float_dec_d(<float*>input.data, input.size, w.w,
+                                    <float*>output.data, output.size, mode_) < 0:
                     raise RuntimeError("C dec_a failed.")
             else:
                 raise RuntimeError("Invalid data type.")
 
         data = coeffs # keep reference
-        input.len = output.len
+        input.size = output.size
         input.data = output.data
 
     return coeffs
@@ -1125,13 +1121,13 @@ def swt(object data, object wavelet, object level=None, int start_level=0):
     except Exception, e:
         raise ValueError("Invalid input data - %s" % e)
 
-    if input.len % 2:
+    if input.size % 2:
         raise ValueError("Length of data must be even.")
 
     w = c_wavelet_from_object(wavelet)
 
     if level is None:
-        level_ = c_wt.swt_max_level(input.len)
+        level_ = c_wt.swt_max_level(input.size)
     else:
         level_ = level
 
@@ -1141,18 +1137,18 @@ def swt(object data, object wavelet, object level=None, int start_level=0):
         raise ValueError("Level value must be greater than zero.")
     if start_level < 0:
         raise ValueError("start_level must be greater than zero.")
-    if start_level >= c_wt.swt_max_level(input.len):
+    if start_level >= c_wt.swt_max_level(input.size):
         raise ValueError("start_level must be less than %d." %
-                         c_wt.swt_max_level(input.len))
+                         c_wt.swt_max_level(input.size))
 
-    if end_level > c_wt.swt_max_level(input.len):
-        msg = ("Level value too high (max level for current input len and "
-               "start_level is %d)." % (c_wt.swt_max_level(input.len) - 
+    if end_level > c_wt.swt_max_level(input.size):
+        msg = ("Level value too high (max level for current input size and "
+               "start_level is %d)." % (c_wt.swt_max_level(input.size) - 
                                         start_level))
         raise ValueError(msg)
 
     # output length
-    output_len = c_wt.swt_buffer_length(input.len)
+    output_len = c_wt.swt_buffer_length(input.size)
     if output_len < 1:
         raise RuntimeError("Invalid output length.")
 
@@ -1162,12 +1158,12 @@ def swt(object data, object wavelet, object level=None, int start_level=0):
         cD = array_as_buffer(memory_buffer_object(output_len, input.dtype), &output, c'w')
 
         if input.dtype == FLOAT64:
-            if c_wt.double_swt_d(<double*>input.data, input.len, w.w,
-                                 <double*>output.data, output.len, i) < 0:
+            if c_wt.double_swt_d(<double*>input.data, input.size, w.w,
+                                 <double*>output.data, output.size, i) < 0:
                 raise RuntimeError("C swt failed.")
         elif input.dtype == FLOAT32:
-            if c_wt.float_swt_d(<float*>input.data, input.len, w.w,
-                                <float*>output.data, output.len, i) < 0:
+            if c_wt.float_swt_d(<float*>input.data, input.size, w.w,
+                                <float*>output.data, output.size, i) < 0:
                 raise RuntimeError("C swt failed.")
         else:
             raise RuntimeError("Invalid data type.")
@@ -1177,18 +1173,18 @@ def swt(object data, object wavelet, object level=None, int start_level=0):
                              &output, c'w')
 
         if input.dtype == FLOAT64:
-            if c_wt.double_swt_a(<double*>input.data, input.len, w.w,
-                                 <double*>output.data, output.len, i) < 0:
+            if c_wt.double_swt_a(<double*>input.data, input.size, w.w,
+                                 <double*>output.data, output.size, i) < 0:
                 raise RuntimeError("C swt failed.")
         elif input.dtype == FLOAT32:
-            if c_wt.float_swt_a(<float*>input.data, input.len, w.w,
-                                <float*>output.data, output.len, i) < 0:
+            if c_wt.float_swt_a(<float*>input.data, input.size, w.w,
+                                <float*>output.data, output.size, i) < 0:
                 raise RuntimeError("C swt failed.")
         else:
             raise RuntimeError("Invalid data type.")
 
         input.data = output.data # a -> input
-        input.len = output.len
+        input.size = output.size
 
         ret.append((cA, cD))
     ret.reverse()
