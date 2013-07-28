@@ -24,13 +24,6 @@ cimport numpy as np
 
 
 ###############################################################################
-# array handling stuff here
-
-include "arraytools.pxi"
-
-dtypes = {8 : np.float64, 4 : np.float32}
-
-###############################################################################
 # MODES
 
 cdef c_wt.MODE c_mode_from_object(mode) except c_wt.MODE_INVALID:
@@ -1126,3 +1119,34 @@ def keep(arr, keep_length):
         left_bound = (length - keep_length) / 2
         return arr[left_bound:left_bound + keep_length]
     return arr
+
+
+
+# Some utility functions
+
+cdef object float64_array_to_list(double* data, index_t n):
+    cdef index_t i
+    cdef object app
+    cdef object ret
+    ret = []
+    app = ret.append
+    for i from 0 <= i < n:
+        app(data[i])
+    return ret
+
+
+cdef void copy_object_to_float64_array(source, double* dest) except *:
+    cdef index_t i
+    cdef double x
+    i = 0
+    for x in source:
+        dest[i] = x
+        i = i + 1
+
+cdef void copy_object_to_float32_array(source, float* dest) except *:
+    cdef index_t i
+    cdef float x
+    i = 0
+    for x in source:
+        dest[i] = x
+        i = i + 1
