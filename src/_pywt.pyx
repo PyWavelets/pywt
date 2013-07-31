@@ -751,11 +751,15 @@ def idwt(cA, cD, object wavelet, object mode='sym', int correct_size=0):
     """
     _check_mode_input(mode)
     # accept array_like input; make a copy to ensure a contiguous array
-    cA = np.array(cA, dtype=np.float64)
-    cD = np.array(cD, dtype=np.float64)
+    if cA is not None:
+        cA = np.array(cA, dtype=np.float64)
+    if cD is not None:
+        cD = np.array(cD, dtype=np.float64)
+
     return _idwt(cA, cD, wavelet, mode, correct_size)
     
 
+#FIXME: should take None for cA/cD
 def _idwt(np.ndarray[double, ndim=1, mode="c"] cA,
           np.ndarray[double, ndim=1, mode="c"] cD,
           object wavelet, object mode='sym', int correct_size=0):
@@ -776,15 +780,15 @@ def _idwt(np.ndarray[double, ndim=1, mode="c"] cA,
     if cA is None and cD is None:
         raise ValueError("At least one coefficient parameter must be specified.")
 
-    if cA.data is not None and cD.data is not None:
+    if cA is not None and cD is not None:
         if cA.dtype != cD.dtype:
             # need to upcast to common type
             cA = cA.astype(np.float64)
             cD = cD.astype(np.float64)
 
     # check for sizes difference
-    if cA.data is not None:
-        if cD.data is not None:
+    if cA is not None:
+        if cD is not None:
             size_diff = cA.size - cD.size
             if size_diff:
                 if correct_size:
