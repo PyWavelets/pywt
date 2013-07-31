@@ -100,23 +100,6 @@ You can also refer to modes via :ref:`MODES <MODES>` class attributes:
     Reconstruction: [ 1.  2.  1.  5. -1.  8.  4.  6.]
 
 
-Some invalid mode values:
-
-    >>> pywt.dwt(x, 'db2', -1)
-    Traceback (most recent call last):
-    ...
-    ValueError: Invalid mode.
-    >>> pywt.dwt(x, 'db2', 7)
-    Traceback (most recent call last):
-    ...
-    ValueError: Invalid mode.
-
-    >>> pywt.dwt(x, 'db2', None)
-    Traceback (most recent call last):
-    ...
-    TypeError: expected string or Unicode object, NoneType found
-
-
 The default mode is :ref:`sym <MODES.sym>`:
 
     >>> cA, cD = pywt.dwt(x, 'db2')

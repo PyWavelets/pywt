@@ -619,10 +619,7 @@ def dwt(object data, object wavelet, object mode='sym'):
     [-0.70710678 -0.70710678 -0.70710678]
 
     """
-    if not isinstance(mode, string_types):
-        print(type(mode))
-        raise TypeError("`mode` should be a string or unicode object")
-
+    _check_mode_input(mode)
     # accept array_like input; make a copy to ensure a contiguous array
     data = np.array(data, dtype=np.float64)
     return _dwt(data, wavelet, mode)
@@ -698,6 +695,7 @@ def dwt_coeff_len(data_len, filter_len, mode='sym'):
     """
     cdef index_t filter_len_
 
+    _check_mode_input(mode)
     if isinstance(filter_len, Wavelet):
         filter_len_ = filter_len.dec_len
     else:
@@ -713,6 +711,14 @@ def dwt_coeff_len(data_len, filter_len, mode='sym'):
 
 ###############################################################################
 # idwt
+
+def _check_mode_input(mode):
+    valid_ints = range(len(MODES.modes))
+    if not ((isinstance(mode, string_types)) or (mode in valid_ints)):
+        print(mode, type(mode))
+        raise TypeError("`mode` should be a string, unicode or a pywt.MODES "
+                        "object.")
+
 
 def idwt(cA, cD, object wavelet, object mode='sym', int correct_size=0):
     """
@@ -743,10 +749,7 @@ def idwt(cA, cD, object wavelet, object mode='sym', int correct_size=0):
         Single level reconstruction of signal from given coefficients.
 
     """
-    if not isinstance(mode, string_types):
-        print(type(mode))
-        raise TypeError("`mode` should be a string or unicode object")
-
+    _check_mode_input(mode)
     # accept array_like input; make a copy to ensure a contiguous array
     cA = np.array(cA, dtype=np.float64)
     cD = np.array(cD, dtype=np.float64)
@@ -970,6 +973,7 @@ def downcoef(part, np.ndarray[double, ndim=1, mode="c"] data,
     cdef Wavelet w
     cdef c_wt.MODE mode_
 
+    _check_mode_input(mode)
     w = c_wavelet_from_object(wavelet)
     mode_ = c_mode_from_object(mode)
 
