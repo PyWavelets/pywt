@@ -10,7 +10,7 @@ functions.
 
 from __future__ import division, print_function, absolute_import
 
-__all__ = ['soft', 'hard', 'greater', 'less', 'zero', 'copy']
+__all__ = ['soft', 'hard', 'greater', 'less']
 
 import numpy as np
 
@@ -154,13 +154,3 @@ def less(data, value, substitute=0):
     array([ 1. ,  1.5,  2. ,  0. ,  0. ,  0. ,  0. ])
     """
     return np.where(np.greater(data, value), substitute, data)
-
-
-def zero(data, *args):
-    if isinstance(data, np.ndarray):
-        return np.zeros(data.shape, data.dtype)
-    return np.zeros(len(data))
-
-
-def copy(data, *args):
-    return np.array(data)
