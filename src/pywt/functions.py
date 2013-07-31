@@ -38,29 +38,44 @@ def _integrate(arr, step):
     integral *= step
     return integral
 
+
 def intwave(wavelet, precision=8):
     """
-    intwave(wavelet, precision=8) -> [int_psi, x]
-        - for orthogonal wavelets
-
-    intwave(wavelet, precision=8) -> [int_psi_d, int_psi_r, x]
-        - for other wavelets
-
-    intwave((function_approx, x), precision=8) -> [int_function, x]
-        - for (function approx., x grid) pair
-
-    Integrate *psi* wavelet function from -Inf to x using the rectangle
+    Integrate `psi` wavelet function from -Inf to x using the rectangle
     integration method.
 
-    wavelet         - Wavelet to integrate (Wavelet object, wavelet name string
-                      or (wavelet function approx., x grid) pair)
+    Parameters
+    ----------
+    wavelet : Wavelet object, wavelet name string or (wavelet function approx., x grid)
+        Wavelet to integrate
+    precision : int, optional
+        Precision that will be used for wavelet function
+        approximation computed with the wavefun(level=precision)
+        Wavelet's method (default: 8).
 
-    precision = 8   - Precision that will be used for wavelet function
-                      approximation computed with the wavefun(level=precision)
-                      Wavelet's method.
+    Returns
+    -------
+    [int_psi, x] :
+        for orthogonal wavelets
+    [int_psi_d, int_psi_r, x] :
+        for other wavelets
+    [int_function, x] :
+        for (function approx., x grid) pair
 
-    (function_approx, x) - Function to integrate on the x grid. Used instead
-                           of Wavelet object to allow custom wavelet functions.
+    Notes
+    -----
+    (function_approx, x) :
+        Function to integrate on the x grid. Used instead
+        of Wavelet object to allow custom wavelet functions.
+
+    Examples
+    --------
+    >>> from pywt import functions
+    >>> import pywt
+    >>> wavelet1 = pywt.Wavelet('db2')
+    >>> [int_psi, x] = functions.intwave(wavelet1, precision=5)
+    >>> wavelet2 = pywt.Wavelet('bior1.3')
+    >>> [int_psi_d, int_psi_r, x] = functions.intwave(wavelet2, precision=5)
     """
 
     if isinstance(wavelet, tuple):
@@ -89,22 +104,26 @@ def intwave(wavelet, precision=8):
 
 def centfrq(wavelet, precision=8):
     """
-    centfrq(wavelet, precision=8) -> float
-        - for orthogonal wavelets
+    Computes the central frequency of the `psi` wavelet function.
 
-    centfrq((function_approx, x), precision=8) -> float
-        - for (function approx., x grid) pair
+    Parameters
+    ----------
+    wavelet : Wavelet object, wavelet name string or (wavelet function approx., x grid)
+        Wavelet to integrate
+    precision : int, optional
+        Precision that will be used for wavelet function
+        approximation computed with the wavefun(level=precision)
+        Wavelet's method (default: 8).
 
-    Computes the central frequency of the *psi* wavelet function.
+    Returns
+    -------
+    scalar
 
-    wavelet         - Wavelet (Wavelet object, wavelet name string
-                      or (wavelet function approx., x grid) pair)
-    precision = 8   - Precision that will be used for wavelet function
-                      approximation computed with the wavefun(level=precision)
-                      Wavelet's method.
-
-    (function_approx, xgrid) - Function defined on xgrid. Used instead
-                      of Wavelet object to allow custom wavelet functions.
+    Notes
+    -----
+    (function_approx, xgrid) :
+        Function defined on xgrid. Used instead
+        of Wavelet object to allow custom wavelet functions.
     """
 
     if isinstance(wavelet, tuple):
@@ -133,15 +152,28 @@ def centfrq(wavelet, precision=8):
 
 def scal2frq(wavelet, scale, delta, precision=8):
     """
-    scal2frq(wavelet, scale, delta, precision=8) -> float
-        - for orthogonal wavelets
 
-    scal2frq(wavelet, scale, delta, precision=8) -> float
-        - for (function approx., x grid) pair
+    Parameters
+    ----------
+    wavelet : Wavelet object, wavelet name string or (wavelet function approx., x grid)
+        Wavelet to integrate
+    scale : scalar
+    delta : scalar
+        sampling
+    precision : int, optional
+        Precision that will be used for wavelet function
+        approximation computed with the wavefun(level=precision)
+        Wavelet's method (default: 8).
 
-    wavelet
-    scale
-    delta   - sampling
+    Returns
+    -------
+    scalar
+
+    Notes
+    -----
+    (function_approx, xgrid) :
+        Function defined on xgrid. Used instead
+        of Wavelet object to allow custom wavelet functions.
     """
     return centfrq(wavelet, precision=precision) / (scale * delta)
 
