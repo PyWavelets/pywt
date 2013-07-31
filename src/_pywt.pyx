@@ -936,9 +936,6 @@ def _upcoef(part, np.ndarray[double, ndim=1, mode="c"] coeffs, wavelet,
                 raise RuntimeError("Invalid data type.")
             do_rec_a = 1
 
-        coeffs.size = rec.size
-        coeffs.data = rec.data
-
     if take > 0:
         if take < rec_len:
             left_bound = right_bound = (rec_len-take)/2
