@@ -838,9 +838,9 @@ def _idwt(np.ndarray[double, ndim=1, mode="c"] cA,
 ###############################################################################
 # upcoef & downcoef
 
-def upcoef(part, np.ndarray[double, ndim=1, mode="c"] coeffs, wavelet, int level=1, take=0):
+def upcoef(part, coeffs, wavelet, level=1, take=0):
     """
-    upcoef(part, coeffs, wavelet, int level=1, take=0)
+    upcoef(part, coeffs, wavelet, level=1, take=0)
 
     Direct reconstruction from coefficients.
 
@@ -876,6 +876,13 @@ def upcoef(part, np.ndarray[double, ndim=1, mode="c"] coeffs, wavelet, int level
     [ 1.  2.  3.  4.  5.  6.]
 
     """
+    # accept array_like input; make a copy to ensure a contiguous array
+    coeffs = np.array(coeffs, dtype=np.float64)
+    return _upcoef(part, coeffs, wavelet, level, take)
+
+
+def _upcoef(part, np.ndarray[double, ndim=1, mode="c"] coeffs, wavelet,
+            int level=1, take=0):
     cdef Wavelet w
     cdef np.ndarray[double, ndim=1, mode="c"] rec
     cdef int i, do_rec_a
