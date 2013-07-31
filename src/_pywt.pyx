@@ -21,6 +21,7 @@ import warnings
 import numpy as np
 cimport numpy as np
 
+from scipy.lib.six import string_types
 
 ###############################################################################
 # MODES
@@ -579,7 +580,8 @@ def dwt_max_level(data_len, filter_len):
     else:
         return c_wt.dwt_max_level(data_len, filter_len)
 
-def dwt(np.ndarray[double, ndim=1] data, object wavelet, object mode='sym'):
+
+def dwt(object data, object wavelet, object mode='sym'):
     """
     (cA, cD) = dwt(data, wavelet, mode='sym')
 
@@ -617,8 +619,18 @@ def dwt(np.ndarray[double, ndim=1] data, object wavelet, object mode='sym'):
     [-0.70710678 -0.70710678 -0.70710678]
 
     """
-    cdef np.ndarray[double, ndim=1, mode="c"] cA, cD
+    if not isinstance(mode, string_types):
+        print(type(mode))
+        raise TypeError("`mode` should be a string or unicode object")
 
+    # accept array_like input; make a copy to ensure a contiguous array
+    data = np.array(data, dtype=np.float64)
+    return _dwt(data, wavelet, mode)
+
+
+def _dwt(np.ndarray[double, ndim=1] data, object wavelet, object mode='sym'):
+    """See `dwt` docstring for details."""
+    cdef np.ndarray[double, ndim=1, mode="c"] cA, cD
     cdef Wavelet w
     cdef c_wt.MODE mode_
 
@@ -702,9 +714,7 @@ def dwt_coeff_len(data_len, filter_len, mode='sym'):
 ###############################################################################
 # idwt
 
-def idwt(np.ndarray[double, ndim=1, mode="c"] cA,
-         np.ndarray[double, ndim=1, mode="c"] cD,
-         object wavelet, object mode='sym', int correct_size=0):
+def idwt(cA, cD, object wavelet, object mode='sym', int correct_size=0):
     """
     idwt(cA, cD, wavelet, mode='sym', correct_size=0)
 
@@ -733,6 +743,21 @@ def idwt(np.ndarray[double, ndim=1, mode="c"] cA,
         Single level reconstruction of signal from given coefficients.
 
     """
+    if not isinstance(mode, string_types):
+        print(type(mode))
+        raise TypeError("`mode` should be a string or unicode object")
+
+    # accept array_like input; make a copy to ensure a contiguous array
+    cA = np.array(cA, dtype=np.float64)
+    cD = np.array(cD, dtype=np.float64)
+    return _idwt(cA, cD, wavelet, mode, correct_size)
+    
+
+def _idwt(np.ndarray[double, ndim=1, mode="c"] cA,
+          np.ndarray[double, ndim=1, mode="c"] cD,
+          object wavelet, object mode='sym', int correct_size=0):
+    """See `idwt` for details"""
+
     cdef index_t input_len
 
     cdef Wavelet w
@@ -748,15 +773,15 @@ def idwt(np.ndarray[double, ndim=1, mode="c"] cA,
     if cA is None and cD is None:
         raise ValueError("At least one coefficient parameter must be specified.")
 
-    if cA.data is not NULL and cD.data is not NULL:
+    if cA.data is not None and cD.data is not None:
         if cA.dtype != cD.dtype:
             # need to upcast to common type
             cA = cA.astype(np.float64)
             cD = cD.astype(np.float64)
 
     # check for sizes difference
-    if cA.data is not NULL:
-        if cD.data is not NULL:
+    if cA.data is not None:
+        if cD.data is not None:
             size_diff = cA.size - cD.size
             if size_diff:
                 if correct_size:
@@ -1008,8 +1033,7 @@ def swt_max_level(input_len):
     """
     return c_wt.swt_max_level(input_len)
 
-def swt(np.ndarray[double, ndim=1, mode="c"] data, object wavelet,
-        object level=None, int start_level=0):
+def swt(data, object wavelet, object level=None, int start_level=0):
     """
     swt(data, wavelet, level=None, start_level=0)
 
@@ -1043,6 +1067,14 @@ def swt(np.ndarray[double, ndim=1, mode="c"] data, object wavelet,
             [(cAm+n, cDm+n), ..., (cAm+1, cDm+1), (cAm, cDm)]
 
     """
+    # accept array_like input; make a copy to ensure a contiguous array
+    data = np.array(data, dtype=np.float64)
+    return _swt(data, wavelet, level, start_level)
+
+
+def _swt(np.ndarray[double, ndim=1, mode="c"] data, object wavelet,
+         object level=None, int start_level=0):
+    """See `swt` for details."""
     cdef np.ndarray[double, ndim=1, mode="c"] cA, cD
     cdef Wavelet w
     cdef int i, end_level, level_
