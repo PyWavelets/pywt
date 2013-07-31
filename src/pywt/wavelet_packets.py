@@ -138,8 +138,12 @@ class BaseNode(object):
     def reconstruct(self, update=False):
         """
         Reconstruct node from subnodes.
-        If update param is True, then reconstructed data replaces the current
-        node data.
+
+        Parameters
+        ----------
+        update : bool, optional
+            If True, then reconstructed data replaces the current
+            node data (default: False).
 
         Returns:
             - original node data if subnodes do not exist
@@ -156,10 +160,15 @@ class BaseNode(object):
         """
         Returns subnode.
 
-        part      - subnode name
-        decompose - if the param is True and corresponding subnode does not
-                    exist, the subnode will be created using coefficients
-                    from the DWT decomposition of the current node.
+        Parameters
+        ----------
+        part :
+            subnode name
+        decompose : bool, optional
+            if the param is True and corresponding subnode does not
+            exist, the subnode will be created using coefficients
+            from the DWT decomposition of the current node.
+            (default: True)
         """
         self._validate_node_name(part)
         subnode = self._get_node(part)
@@ -172,8 +181,13 @@ class BaseNode(object):
         """
         Find node represented by the given path.
 
-        path - string composed of node names.
+        Parameters
+        ----------
+        path : str
+            string composed of node names.
 
+        Notes
+        -----
         If node does not exist yet, it will be created by decomposition of its
         parent node.
         """
@@ -194,8 +208,12 @@ class BaseNode(object):
         """
         Set node represented by the given path with a new value.
 
-        path - string composed of node names.
-        data - array or BaseNode subclass.
+        Parameters
+        ----------
+        path : str
+            string composed of node names.
+        data :
+            array or BaseNode subclass.
         """
 
         if isinstance(path, str):
@@ -247,6 +265,11 @@ class BaseNode(object):
     def get_leaf_nodes(self, decompose=False):
         """
         Returns leaf nodes.
+
+        Parameters
+        ----------
+        decompose : bool, optional
+            (default: True)
         """
         result = []
 
@@ -266,9 +289,16 @@ class BaseNode(object):
         Walk tree and call func on every node -> func(node, *args)
         If func returns True, descending to subnodes will continue.
 
-        func - callable
-        args - func params
-        kwargs - func keyword params
+        Parameters
+        ----------
+        func :
+            callable
+        args :
+            func params
+        kwargs :
+            func keyword params
+        decompose : bool, optional
+            (default: True)
         """
         if kwargs is None:
             kwargs = {}
@@ -283,9 +313,16 @@ class BaseNode(object):
         Walk tree and call func on every node starting from the bottom-most
         nodes.
 
-        func - callable
-        args - func params
-        kwargs - func keyword params
+        Parameters
+        ----------
+        func :
+            callable
+        args :
+            func params
+        kwargs :
+            func keyword params
+        decompose : bool, optional
+            (default: False)
         """
         if kwargs is None:
             kwargs = {}
@@ -427,11 +464,16 @@ class WaveletPacket(Node):
     """
     Data structure representing Wavelet Packet decomposition of signal.
 
-    data     - original data (signal)
-    wavelet  - wavelet used in DWT decomposition and reconstruction
-    mode     - signal extension mode - see MODES
-    maxlevel - maximum level of decomposition (will be computed if not
-               specified)
+    Parameters
+    ----------
+    data :
+        original data (signal)
+    wavelet :
+        wavelet used in DWT decomposition and reconstruction
+    mode : str, optional
+        signal extension mode - see MODES
+    maxlevel :
+        maximum level of decomposition (will be computed if not specified)
     """
     def __init__(self, data, wavelet, mode='sym', maxlevel=None):
         super(WaveletPacket, self).__init__(None, data, "")
@@ -456,8 +498,11 @@ class WaveletPacket(Node):
         """
         Reconstruct data value using coefficients from subnodes.
 
-        If update is True, then data values will be replaced by
-        reconstruction values, also in subnodes.
+        Parameters
+        ----------
+        update : bool, optional
+            If True (default), then data values will be replaced by
+            reconstruction values, also in subnodes.
         """
         if self.has_any_subnode:
             data = super(WaveletPacket, self).reconstruct(update)
@@ -472,8 +517,14 @@ class WaveletPacket(Node):
         """
         Returns all nodes on the specified level.
 
-        order - "natural" - left to right in tree
-              - "freq" - band ordered
+        Parameters
+        ----------
+        level :
+        order : str, optional
+            - "natural" - left to right in tree (default)
+            - "freq" - band ordered
+        decompose : bool, optional
+            (default: True)
         """
         assert order in ["natural", "freq"]
         if level > self.maxlevel:
@@ -503,11 +554,16 @@ class WaveletPacket2D(Node2D):
     """
     Data structure representing 2D Wavelet Packet decomposition of signal.
 
-    data     - original data (signal)
-    wavelet  - wavelet used in DWT decomposition and reconstruction
-    mode     - signal extension mode - see MODES
-    maxlevel - maximum level of decomposition (will be computed if not
-               specified)
+    Parameters
+    ----------
+    data :
+        original data (signal)
+    wavelet :
+        wavelet used in DWT decomposition and reconstruction
+    mode :
+        signal extension mode - see MODES
+    maxlevel :
+        maximum level of decomposition (will be computed if not specified)
     """
     def __init__(self, data, wavelet, mode='sp1', maxlevel=None):
         super(WaveletPacket2D, self).__init__(None, data, "")
