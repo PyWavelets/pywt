@@ -26,6 +26,18 @@ def get_graycode_order(level, x='a', y='d'):
 class BaseNode(object):
     """
     BaseNode for wavelet packet 1D and 2D tree nodes.
+
+    Parameters
+    ----------
+    parent :
+        parent node. If parent is ``None`` then the node is considered detached.
+    data : 1D or 2D array
+        data associated with the node. 1D or 2D numeric array, depending on the transform type.
+    node_name :
+        a name identifying the coefficients type.
+        See :attr:`Node.node_name` and :attr:`Node2D.node_name`
+        for information on the accepted subnodes names.
+
     """
 
     # PART_LEN and PARTS attributes that define path tokens for node[] lookup
@@ -212,8 +224,7 @@ class BaseNode(object):
         ----------
         path : str
             string composed of node names.
-        data :
-            array or BaseNode subclass.
+        data : array or BaseNode subclass.
         """
 
         if isinstance(path, str):
@@ -286,19 +297,22 @@ class BaseNode(object):
 
     def walk(self, func, args=(), kwargs=None, decompose=True):
         """
-        Walk tree and call func on every node -> func(node, *args)
-        If func returns True, descending to subnodes will continue.
+        Traverses the decomposition tree and calls ``func(node, *args, **kwargs)``
+        on every node. If `func` returns ``True``, descending to subnodes will
+        continue.
 
         Parameters
         ----------
-        func :
-            callable
+        func : callable
+            callable accepting :class:`BaseNode` as the first param and
+            optional positional and keyword arguments
         args :
             func params
         kwargs :
             func keyword params
         decompose : bool, optional
-            (default: True)
+            If True (default), the method will also try to decompose the tree up to the
+            :attr:`maximum level <BaseNode.maxlevel>`.
         """
         if kwargs is None:
             kwargs = {}
@@ -315,8 +329,9 @@ class BaseNode(object):
 
         Parameters
         ----------
-        func :
-            callable
+        func : callable
+            callable accepting :class:`BaseNode` as the first param and
+            optional positional and keyword arguments
         args :
             func params
         kwargs :
@@ -466,13 +481,13 @@ class WaveletPacket(Node):
 
     Parameters
     ----------
-    data :
+    data : 1D ndarray
         original data (signal)
     wavelet :
         wavelet used in DWT decomposition and reconstruction
     mode : str, optional
         signal extension mode - see MODES
-    maxlevel :
+    maxlevel : int, optional
         maximum level of decomposition (will be computed if not specified)
     """
     def __init__(self, data, wavelet, mode='sym', maxlevel=None):
@@ -525,6 +540,12 @@ class WaveletPacket(Node):
             - "freq" - band ordered
         decompose : bool, optional
             (default: True)
+
+        Notes
+        -----
+        If nodes at the given level are missing (i.e. the tree is partially
+        decomposed) and the `decompose` is set to ``False``, only existing nodes
+        will be returned.
         """
         assert order in ["natural", "freq"]
         if level > self.maxlevel:
