@@ -608,8 +608,11 @@ class WaveletPacket2D(Node2D):
         """
         Reconstruct data using coefficients from subnodes.
 
-        If update is set to True then the coefficients of the current node
-        and its subnodes will be replaced with values from reconstruction.
+        Parameters
+        ----------
+        update : bool, optional
+            If True (default) then the coefficients of the current node
+            and its subnodes will be replaced with values from reconstruction.
         """
         if self.has_any_subnode:
             data = super(WaveletPacket2D, self).reconstruct(update)
@@ -624,11 +627,16 @@ class WaveletPacket2D(Node2D):
         """
         Returns all nodes from specified level.
 
-        If order is `natural`, a flat list is returned.
-
-        If order is `freq`, a 2d structure with rows and cols
-        sorted by corresponding dimension frequency of 2d
-        coefficient array (adapted from 1d case).
+        Parameters
+        ----------
+        level :
+        order : {'natural', 'freq'}, optional
+            If `natural` (default) a flat list is returned.
+            If `freq`, a 2d structure with rows and cols
+            sorted by corresponding dimension frequency of 2d
+            coefficient array (adapted from 1d case).
+        decompose : bool, optional
+            (default : True)
         """
         assert order in ["natural", "freq"]
         if level > self.maxlevel:
