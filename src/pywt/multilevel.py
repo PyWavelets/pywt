@@ -32,7 +32,7 @@ def wavedec(data, wavelet, mode='sym', level=None):
     mode : str, optional
         Signal extension mode, see MODES (default: 'sym')
     level : int, optional
-        Decomposition level. If level is `None` (default) then it will be
+        Decomposition level. If level is None (default) then it will be
         calculated using `dwt_max_level` function.
 
     Returns
