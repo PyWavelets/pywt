@@ -26,19 +26,19 @@ def wavedec(data, wavelet, mode='sym', level=None):
     Parameters
     ----------
     data: array_like
-        input data
+        Input data
     wavelet : Wavelet object or name string
-        wavelet to use
+        Wavelet to use
     mode : str, optional
-        signal extension mode, see MODES (default: 'sym')
+        Signal extension mode, see MODES (default: 'sym')
     level : int, optional
-        decomposition level. If level is `None` (default) then it will be
-              calculated using `dwt_max_level` function.
+        Decomposition level. If level is None (default) then it will be
+        calculated using `dwt_max_level` function.
 
     Returns
     -------
     [cA_n, cD_n, cD_n-1, ..., cD2, cD1] : list
-        ordered list of coefficients arrays
+        Ordered list of coefficients arrays
         where `n` denotes the level of decomposition. The first element (`cA_n`) of
         the result is approximation coefficients array and the following elements
         (`cD_n` - `cD_1`) are details coefficients arrays.
@@ -86,11 +86,11 @@ def waverec(coeffs, wavelet, mode='sym'):
     Parameters
     ----------
     coeffs : array_like
-        coefficients list [cAn, cDn, cDn-1, ..., cD2, cD1]
+        Coefficients list [cAn, cDn, cDn-1, ..., cD2, cD1]
     wavelet : Wavelet object or name string
-        wavelet to use
+        Wavelet to use
     mode : str, optional
-        signal extension mode, see MODES (default: 'sym')
+        Signal extension mode, see MODES (default: 'sym')
 
     Examples
     --------
@@ -124,17 +124,17 @@ def wavedec2(data, wavelet, mode='sym', level=None):
     data : ndarray
         2D input data
     wavelet : Wavelet object or name string
-        wavelet to use
+        Wavelet to use
     mode : str, optional
-        signal extension mode, see MODES (default: 'sym')
+        Signal extension mode, see MODES (default: 'sym')
     level : int, optional
-        decomposition level. If level is `None` (default) then it will be
+        Decomposition level. If level is None (default) then it will be
         calculated using `dwt_max_level` function.
 
     Returns
     -------
     [cAn, (cHn, cVn, cDn), ... (cH1, cV1, cD1)] : list
-        coefficients list
+        Coefficients list
 
     Examples
     --------
@@ -183,11 +183,11 @@ def waverec2(coeffs, wavelet, mode='sym'):
     Multilevel 2D Inverse Discrete Wavelet Transform.
 
     coeffs : array_like
-        coefficients list [cAn, (cHn, cVn, cDn), ... (cH1, cV1, cD1)]
+        Coefficients list [cAn, (cHn, cVn, cDn), ... (cH1, cV1, cD1)]
     wavelet : Wavelet object or name string
-        wavelet to use
+        Wavelet to use
     mode : str, optional
-        signal extension mode, see MODES (default: 'sym')
+        Signal extension mode, see MODES (default: 'sym')
 
     Returns
     -------

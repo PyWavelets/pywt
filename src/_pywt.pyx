@@ -593,11 +593,11 @@ def dwt(object data, object wavelet, object mode='sym'):
     Parameters
     ----------
     data : array_like
-        input signal
+        Input signal
     wavelet : Wavelet object or name
-        wavelet to use
+        Wavelet to use
     mode : str, optional (default: 'sym')
-        signal extension mode, see MODES
+        Signal extension mode, see MODES
 
     Returns
     -------
@@ -682,7 +682,7 @@ def dwt_coeff_len(data_len, filter_len, mode='sym'):
     filter_len : int
         Filter length.
     mode : str, optional (default: 'sym')
-        signal extension mode, see MODES
+        Signal extension mode, see MODES
 
     Returns
     -------
@@ -863,17 +863,17 @@ def upcoef(part, coeffs, wavelet, int level=1, take=0):
     Parameters
     ----------
     part : str
-        coefficients type:
+        Coefficients type:
         * 'a' - approximations reconstruction is performed
         * 'd' - details reconstruction is performed
     coeffs : array_like
         Coefficients array to recontruct
     wavelet : Wavelet object or name
-        wavelet to use
+        Wavelet to use
     level : int, optional (default: 1)
-        multilevel reconstruction level
+        Multilevel reconstruction level
     take : , optional (default: 0)
-        take central part of length equal to 'take' from the result
+        Take central part of length equal to 'take' from the result
 
     Returns
     -------
@@ -977,17 +977,17 @@ def downcoef(part, object data, object wavelet, object mode='sym', int level=1):
     Parameters
     ----------
     part : str
-        coefficients type:
+        Coefficients type:
         * 'a' - approximations reconstruction is performed
         * 'd' - details reconstruction is performed
     data :
         Input signal
     mode : str, optional
-        signal extension mode, see MODES (default: 'sym')
+        Signal extension mode, see MODES (default: 'sym')
     wavelet : Wavelet object or name
-        wavelet to use
+        Wavelet to use
     level : int, optional
-        decomposition level (default: 1)
+        Decomposition level (default: 1)
 
     Returns
     -------
@@ -1102,7 +1102,7 @@ def swt(object data, object wavelet, object level=None, int start_level=0):
     Returns
     -------
     coeffs : list
-        list of approximation and details coefficients pairs in order
+        List of approximation and details coefficients pairs in order
         similar to wavedec function::
 
             [(cAn, cDn), ..., (cA2, cD2), (cA1, cD1)]
