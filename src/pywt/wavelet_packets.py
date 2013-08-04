@@ -38,7 +38,8 @@ class BaseNode(object):
         Parent node. If parent is None then the node is considered detached
         (ie root).
     data : 1D or 2D array
-        Data associated with the node. 1D or 2D numeric array, depending on the transform type.
+        Data associated with the node. 1D or 2D numeric array, depending on the
+        transform type.
     node_name :
         A name identifying the coefficients type.
         See `Node.node_name` and `Node2D.node_name`
@@ -325,9 +326,9 @@ class BaseNode(object):
 
     def walk(self, func, args=(), kwargs=None, decompose=True):
         """
-        Traverses the decomposition tree and calls ``func(node, *args, **kwargs)``
-        on every node. If `func` returns True, descending to subnodes will
-        continue.
+        Traverses the decomposition tree and calls
+        ``func(node, *args, **kwargs)`` on every node. If `func` returns True,
+        descending to subnodes will continue.
 
         Parameters
         ----------
@@ -339,8 +340,8 @@ class BaseNode(object):
         kwargs :
             func keyword params
         decompose : bool, optional
-            If True (default), the method will also try to decompose the tree up to the
-            `maximum level <BaseNode.maxlevel>`.
+            If True (default), the method will also try to decompose the tree
+            up to the `maximum level <BaseNode.maxlevel>`.
         """
         if kwargs is None:
             kwargs = {}
