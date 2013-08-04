@@ -27,17 +27,21 @@ class BaseNode(object):
     """
     BaseNode for wavelet packet 1D and 2D tree nodes.
 
+    The BaseNode is a base class for `Node` and `Node2D`.
+    It should not be used directly unless creating a new transformation
+    type. It is included here to document the common interface of 1D
+    and 2D node an wavelet packet transform classes.
+
     Parameters
     ----------
     parent :
-        parent node. If parent is ``None`` then the node is considered detached.
+        parent node. If parent is ``None`` then the node is considered detached (ie root).
     data : 1D or 2D array
         data associated with the node. 1D or 2D numeric array, depending on the transform type.
     node_name :
         a name identifying the coefficients type.
-        See :attr:`Node.node_name` and :attr:`Node2D.node_name`
+        See `Node.node_name` and `Node2D.node_name`
         for information on the accepted subnodes names.
-
     """
 
     # PART_LEN and PARTS attributes that define path tokens for node[] lookup
@@ -97,6 +101,10 @@ class BaseNode(object):
         """
         Try to find the value of maximum decomposition level if it is not
         specified explicitly.
+
+        Parameters
+        ----------
+        evaluate_from : {'parent', 'subnodes'}
         """
         assert evaluate_from in ('parent', 'subnodes')
 
@@ -137,7 +145,16 @@ class BaseNode(object):
 
     def decompose(self):
         """
-        Decompose node data creating DWT coefficients subnodes."
+        Decompose node data creating DWT coefficients subnodes.
+
+        Performs Discrete Wavelet Transform on the `~BaseNode.data` and
+        returns transform coefficients.
+
+        Note
+        ----
+        Descends to subnodes and recursively
+        calls `~BaseNode.reconstruct` on them.
+
         """
         if self.level < self.maxlevel:
             return self._decompose()
@@ -154,7 +171,7 @@ class BaseNode(object):
         Parameters
         ----------
         update : bool, optional
-            If True, then reconstructed data replaces the current
+            If ``True``, then reconstructed data replaces the current
             node data (default: False).
 
         Returns:
@@ -170,14 +187,14 @@ class BaseNode(object):
 
     def get_subnode(self, part, decompose=True):
         """
-        Returns subnode.
+        Returns subnode or None (see `decomposition` flag description).
 
         Parameters
         ----------
         part :
             subnode name
         decompose : bool, optional
-            if the param is True and corresponding subnode does not
+            if the param is ``True`` and corresponding subnode does not
             exist, the subnode will be created using coefficients
             from the DWT decomposition of the current node.
             (default: True)
@@ -193,10 +210,15 @@ class BaseNode(object):
         """
         Find node represented by the given path.
 
+        Similar to `~BaseNode.get_subnode` method with `decompose=True`, but
+        can access nodes on any level in the decomposition tree.
+
         Parameters
         ----------
         path : str
-            string composed of node names.
+            String composed of node names See
+            `Node.node_name` and `Node2D.node_name` for node
+           naming convention.
 
         Notes
         -----
@@ -218,7 +240,8 @@ class BaseNode(object):
 
     def __setitem__(self, path, data):
         """
-        Set node represented by the given path with a new value.
+        Set node or node's data in the decomposition tree. Nodes are
+        identified by string `path`.
 
         Parameters
         ----------
@@ -251,6 +274,11 @@ class BaseNode(object):
     def __delitem__(self, path):
         """
         Remove node from the tree.
+
+        Parameters
+        ----------
+        path : str
+            string composed of node names.
         """
         node = self[path]
         # don't clear node value and subnodes (node may still exist outside
@@ -311,8 +339,8 @@ class BaseNode(object):
         kwargs :
             func keyword params
         decompose : bool, optional
-            If True (default), the method will also try to decompose the tree up to the
-            :attr:`maximum level <BaseNode.maxlevel>`.
+            If ``True`` (default), the method will also try to decompose the tree up to the
+            `maximum level <BaseNode.maxlevel>`.
         """
         if kwargs is None:
             kwargs = {}
@@ -356,7 +384,7 @@ class Node(BaseNode):
     """
     WaveletPacket tree node.
 
-    Subnodes are called ``a`` and ``d``, just like approximation
+    Subnodes are called `a` and `d`, just like approximation
     and detail coefficients in the Discrete Wavelet Transform.
     """
 
@@ -370,6 +398,12 @@ class Node(BaseNode):
             overwrite=overwrite)
 
     def _decompose(self):
+        """
+
+        See also
+        --------
+        `dwt` for 1D Discrete Wavelet Transform output coefficients.
+        """
         if self.is_empty:
             data_a, data_d = None, None
             if self._get_node(self.A) is None:
@@ -423,6 +457,11 @@ class Node2D(BaseNode):
             overwrite=overwrite)
 
     def _decompose(self):
+        """
+        See also
+        --------
+        `dwt2` for 2D Discrete Wavelet Transform output coefficients.
+        """
         if self.is_empty:
             data_ll, data_lh, data_hl, data_hh = None, None, None, None
         else:
@@ -483,12 +522,15 @@ class WaveletPacket(Node):
     ----------
     data : 1D ndarray
         original data (signal)
-    wavelet :
+    wavelet : Wavelet object or name string
         wavelet used in DWT decomposition and reconstruction
     mode : str, optional
-        signal extension mode - see MODES
+        signal extension mode for the `dwt` and `idwt` decomposition and
+        reconstruction functions.
     maxlevel : int, optional
-        maximum level of decomposition (will be computed if not specified)
+        maximum level of decomposition.
+        If None, it will be calculated based on the `wavelet` and `data`
+        length using `pywt.dwt_max_level`.
     """
     def __init__(self, data, wavelet, mode='sym', maxlevel=None):
         super(WaveletPacket, self).__init__(None, data, "")
@@ -516,7 +558,7 @@ class WaveletPacket(Node):
         Parameters
         ----------
         update : bool, optional
-            If True (default), then data values will be replaced by
+            If ``True`` (default), then data values will be replaced by
             reconstruction values, also in subnodes.
         """
         if self.has_any_subnode:
@@ -535,11 +577,14 @@ class WaveletPacket(Node):
         Parameters
         ----------
         level :
-        order : str, optional
+            Specifies decomposition `level` from which the nodes will be
+            collected.
+        order : {'natural', 'freq'}, optional
             - "natural" - left to right in tree (default)
             - "freq" - band ordered
         decompose : bool, optional
-            (default: True)
+            If set then the method will try to decompose the data up
+            to the specified `level` (default: True).
 
         Notes
         -----
@@ -577,14 +622,17 @@ class WaveletPacket2D(Node2D):
 
     Parameters
     ----------
-    data :
-        original data (signal)
-    wavelet :
+    data : 2D ndarray
+        data associated with the node.
+    wavelet : Wavelet object or name string
         wavelet used in DWT decomposition and reconstruction
-    mode :
-        signal extension mode - see MODES
+    mode : str, optional
+        signal extension mode for the `dwt` and `idwt` decomposition and
+        reconstruction functions.
     maxlevel :
-        maximum level of decomposition (will be computed if not specified)
+        maximum level of decomposition.
+        If None, it will be calculated based on the `wavelet` and `data`
+        length using `pywt.dwt_max_level`.
     """
     def __init__(self, data, wavelet, mode='sp1', maxlevel=None):
         super(WaveletPacket2D, self).__init__(None, data, "")
@@ -611,7 +659,7 @@ class WaveletPacket2D(Node2D):
         Parameters
         ----------
         update : bool, optional
-            If True (default) then the coefficients of the current node
+            If ``True`` (default) then the coefficients of the current node
             and its subnodes will be replaced with values from reconstruction.
         """
         if self.has_any_subnode:
@@ -630,13 +678,16 @@ class WaveletPacket2D(Node2D):
         Parameters
         ----------
         level :
+            Decomposition `level` from which the nodes will be
+            collected.
         order : {'natural', 'freq'}, optional
             If `natural` (default) a flat list is returned.
             If `freq`, a 2d structure with rows and cols
             sorted by corresponding dimension frequency of 2d
             coefficient array (adapted from 1d case).
         decompose : bool, optional
-            (default : True)
+            If set then the method will try to decompose the data up
+            to the specified `level` (default: True).
         """
         assert order in ["natural", "freq"]
         if level > self.maxlevel:
