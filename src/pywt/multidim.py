@@ -35,7 +35,7 @@ def dwt2(data, wavelet, mode='sym'):
     Returns
     -------
     (cA, (cH, cV, cD)) : tuple
-        approximation, horizontal detail, vertical detail and diagonal
+        Approximation, horizontal detail, vertical detail and diagonal
         detail coefficients respectively.
 
     Examples
