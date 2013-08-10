@@ -2,7 +2,7 @@
 # See COPYING for license details.
 
 __doc__ = """Pyrex wrapper for low-level C wavelet transform implementation."""
-__all__ = ['MODES', 'Wavelet', 'dwt', 'dwt_coeff_len', 'dwt_max_level',
+__all__ = ['Modes', 'Wavelet', 'dwt', 'dwt_coeff_len', 'dwt_max_level',
            'idwt', 'swt', 'swt_max_level', 'upcoef', 'downcoef',
            'wavelist', 'families']
 
@@ -28,7 +28,7 @@ import numpy as np
 include "arraytools.pxi"
 
 ###############################################################################
-# MODES
+# Modes
 
 cdef c_wt.MODE c_mode_from_object(mode) except c_wt.MODE_INVALID:
     cdef c_wt.MODE m
@@ -39,7 +39,7 @@ cdef c_wt.MODE c_mode_from_object(mode) except c_wt.MODE_INVALID:
         if m <= c_wt.MODE_INVALID or m >= c_wt.MODE_MAX:
             raise ValueError("Invalid mode.")
     else:
-        co = c_python.PyObject_GetAttrString(MODES, mode)
+        co = c_python.PyObject_GetAttrString(Modes, mode)
         if co is not NULL:
             o = <object>co
             c_python.Py_DECREF(o) # decref above extra ref inc
@@ -55,7 +55,7 @@ def __from_object(mode):
     return c_mode_from_object(mode)
 
 
-class MODES(object):
+class Modes(object):
     """
     Different ways of dealing with border distortion problem while performing
     Discrete Wavelet Transform analysis.
@@ -597,7 +597,7 @@ def dwt(object data, object wavelet, object mode='sym'):
     wavelet : Wavelet object or name
         Wavelet to use
     mode : str, optional (default: 'sym')
-        Signal extension mode, see MODES
+        Signal extension mode, see Modes
 
     Returns
     -------
@@ -682,7 +682,7 @@ def dwt_coeff_len(data_len, filter_len, mode='sym'):
     filter_len : int
         Filter length.
     mode : str, optional (default: 'sym')
-        Signal extension mode, see MODES
+        Signal extension mode, see Modes
 
     Returns
     -------
@@ -734,7 +734,7 @@ def idwt(object cA, object cD, object wavelet, object mode='sym',
     wavelet : Wavelet object or name
         Wavelet to use
     mode : str, optional (default: 'sym')
-        Signal extension mode, see MODES
+        Signal extension mode, see Modes
     correct_size : int, optional (default: 0)
         Under normal conditions (all data lengths dyadic) `cA` and `cD`
         coefficients lists must have the same lengths. With `correct_size`
@@ -983,7 +983,7 @@ def downcoef(part, object data, object wavelet, object mode='sym', int level=1):
     data :
         Input signal
     mode : str, optional
-        Signal extension mode, see MODES (default: 'sym')
+        Signal extension mode, see Modes (default: 'sym')
     wavelet : Wavelet object or name
         Wavelet to use
     level : int, optional

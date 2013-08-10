@@ -7,7 +7,7 @@
 Signal extension modes
 ======================
 
-.. _MODES:
+.. _Modes:
 
 Because the most common and practical way of representing digital signals
 in computer science is with finite arrays of values, some extrapolation
@@ -22,33 +22,33 @@ inaccurate computations of the :ref:`DWT <ref-dwt>` at the signal's ends.
 PyWavelets provides several methods of signal extrapolation that can be used to
 minimize this negative effect:
 
-  .. _`MODES.zpd`:
+  .. _`Modes.zpd`:
 
   * ``zpd`` - **zero-padding** - signal is extended by adding zero samples::
 
       ... 0  0 | x1 x2 ... xn | 0  0 ...
 
-  .. _`MODES.cpd`:
+  .. _`Modes.cpd`:
 
   * ``cpd`` - **constant-padding** - border values are replicated::
 
       ... x1 x1 | x1 x2 ... xn | xn xn ...
 
-  .. _`MODES.sym`:
+  .. _`Modes.sym`:
 
   * ``sym`` - **symmetric-padding** - signal is extended by *mirroring*
     samples::
 
       ... x2 x1 | x1 x2 ... xn | xn xn-1 ...
 
-  .. _`MODES.ppd`:
+  .. _`Modes.ppd`:
   .. _`periodic-padding`:
 
   * ``ppd`` - **periodic-padding** - signal is treated as a periodic one::
 
       ... xn-1 xn | x1 x2 ... xn | x1 x2 ...
 
-  .. _`MODES.sp1`:
+  .. _`Modes.sp1`:
 
   * ``sp1`` - **smooth-padding** - signal is extended according to the first
     derivatives calculated on the edges (straight line)
@@ -58,7 +58,7 @@ perfect reconstruction. To receive the smallest possible number of coefficients,
 computations can be performed with the `periodization`_ mode:
 
   .. _`periodization`:
-  .. _`MODES.per`:
+  .. _`Modes.per`:
 
   * ``per`` - **periodization** - is like `periodic-padding`_ but gives the
     smallest possible number of decomposition coefficients. :ref:`IDWT <ref-idwt>` must be
@@ -69,7 +69,7 @@ computations can be performed with the `periodization`_ mode:
   .. sourcecode:: python
 
     >>> import pywt
-    >>> print pywt.MODES.modes
+    >>> print pywt.Modes.modes
     ['zpd', 'cpd', 'sym', 'ppd', 'sp1', 'per']
 
 
@@ -80,7 +80,7 @@ parameters:
 
   >>> import pywt
   >>> (a, d) = pywt.dwt([1,2,3,4,5,6], 'db2', 'sp1')
-  >>> (a, d) = pywt.dwt([1,2,3,4,5,6], pywt.Wavelet('db2'), pywt.MODES.sp1)
+  >>> (a, d) = pywt.dwt([1,2,3,4,5,6], pywt.Wavelet('db2'), pywt.Modes.sp1)
 
 .. note::
     Extending data in context of PyWavelets does not mean reallocation of the data

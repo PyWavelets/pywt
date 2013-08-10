@@ -20,7 +20,7 @@ Single level ``dwt2``
   :param wavelet: |wavelet|
 
   :param mode: |mode| This is only important when DWT was performed
-               in :ref:`periodization <MODES.per>` mode.
+               in :ref:`periodization <Modes.per>` mode.
 
   .. compound::
 
@@ -84,7 +84,7 @@ Single level ``idwt2``
   :param wavelet: |wavelet|
 
   :param mode: |mode| This is only important when the :func:`dwt` was performed
-               in the :ref:`periodization <MODES.per>` mode.
+               in the :ref:`periodization <Modes.per>` mode.
 
   **Example:**
 

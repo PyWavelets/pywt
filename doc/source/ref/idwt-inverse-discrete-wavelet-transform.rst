@@ -23,7 +23,7 @@ Single level ``idwt``
   :param wavelet: |wavelet|
 
   :param mode: |mode| This is only important when DWT was performed in
-               :ref:`periodization <MODES.per>` mode.
+               :ref:`periodization <Modes.per>` mode.
 
   :param correct_size: Typically, *cA* and *cD* coefficients lists must have
                        equal lengths in order to perform IDWT. Setting

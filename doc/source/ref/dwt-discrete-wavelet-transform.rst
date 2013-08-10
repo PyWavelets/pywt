@@ -37,11 +37,11 @@ Single level ``dwt``
   available options and the :func:`dwt_coeff_len` function for information on
   getting the expected result length:
 
-  * for all :ref:`modes <ref-modes>` except :ref:`periodization <MODES.per>`::
+  * for all :ref:`modes <ref-modes>` except :ref:`periodization <Modes.per>`::
 
       len(cA) == len(cD) == floor((len(data) + wavelet.dec_len - 1) / 2)
 
-  * for :ref:`periodization <MODES.per>` mode (``"per"``)::
+  * for :ref:`periodization <Modes.per>` mode (``"per"``)::
 
       len(cA) == len(cD) == ceil(len(data) / 2)
 
@@ -162,11 +162,11 @@ Result coefficients length - ``dwt_coeff_len``
 .. function:: dwt_coeff_len(data_len, filter_len, mode)
 
 Based on the given *input data length*, Wavelet *decomposition filter length*
-and :ref:`signal extension mode <MODES>`, the :func:`dwt_coeff_len` function
+and :ref:`signal extension mode <Modes>`, the :func:`dwt_coeff_len` function
 calculates length of resulting coefficients arrays that would be created while
 performing :func:`dwt` transform.
 
-For :ref:`periodization <MODES.per>` mode this equals::
+For :ref:`periodization <Modes.per>` mode this equals::
 
   ceil(data_len / 2)
 
