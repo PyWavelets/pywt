@@ -57,11 +57,18 @@ def __from_object(mode):
 
 class Modes(object):
     """
-    Different ways of dealing with border distortion problem while performing
-    Discrete Wavelet Transform analysis.
+    Because the most common and practical way of representing digital signals
+    in computer science is with finite arrays of values, some extrapolation
+    of the input data has to be performed in order to extend the signal before
+    computing the :ref:`Discrete Wavelet Transform <ref-dwt>` using the cascading
+    filter banks algorithm.
 
-    To reduce this effect the signal or image can be extended by adding extra
-    samples.
+    Depending on the extrapolation method, significant artifacts at the signal's
+    borders can be introduced during that process, which in turn may lead to
+    inaccurate computations of the :ref:`DWT <ref-dwt>` at the signal's ends.
+
+    PyWavelets provides several methods of signal extrapolation that can be used to
+    minimize this negative effect:
 
     zpd - zero-padding                   0  0 | x1 x2 ... xn | 0  0
     cpd - constant-padding              x1 x1 | x1 x2 ... xn | xn xn
@@ -70,11 +77,29 @@ class Modes(object):
     sp1 - smooth-padding               (1st derivative interpolation)
 
     DWT performed for these extension modes is slightly redundant, but ensure
-    a perfect reconstruction for IDWT.
+    a perfect reconstruction for IDWT. To receive the smallest possible number of coefficients,
+    computations can be performed with the periodization mode:
 
-    per - periodization - like periodic-padding but gives the smallest number
+    per - periodization - like periodic-padding but gives the smallest possible number
           of decomposition coefficients. IDWT must be performed with the same mode.
 
+    Examples
+    --------
+    >>> import pywt
+    >>> pywt.Modes.modes
+        ['zpd', 'cpd', 'sym', 'ppd', 'sp1', 'per']
+    >>> # The different ways of passing wavelet and mode parameters
+    >>> (a, d) = pywt.dwt([1,2,3,4,5,6], 'db2', 'sp1')
+    >>> (a, d) = pywt.dwt([1,2,3,4,5,6], pywt.Wavelet('db2'), pywt.Modes.sp1)
+
+    Notes
+    -----
+    Extending data in context of PyWavelets does not mean reallocation of the data
+    in computer's physical memory and copying values, but rather computing
+    the extra values only when they are needed.
+    This feature saves extra memory and CPU resources and helps to avoid page
+    swapping when handling relatively big data arrays on computers with low
+    physical memory.
     """
 
     zpd = c_wt.MODE_ZEROPAD
