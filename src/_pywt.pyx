@@ -57,11 +57,18 @@ def __from_object(mode):
 
 class MODES(object):
     """
-    Different ways of dealing with border distortion problem while performing
-    Discrete Wavelet Transform analysis.
+    Because the most common and practical way of representing digital signals
+    in computer science is with finite arrays of values, some extrapolation
+    of the input data has to be performed in order to extend the signal before
+    computing the :ref:`Discrete Wavelet Transform <ref-dwt>` using the cascading
+    filter banks algorithm.
 
-    To reduce this effect the signal or image can be extended by adding extra
-    samples.
+    Depending on the extrapolation method, significant artifacts at the signal's
+    borders can be introduced during that process, which in turn may lead to
+    inaccurate computations of the :ref:`DWT <ref-dwt>` at the signal's ends.
+
+    PyWavelets provides several methods of signal extrapolation that can be used to
+    minimize this negative effect:
 
     zpd - zero-padding                   0  0 | x1 x2 ... xn | 0  0
     cpd - constant-padding              x1 x1 | x1 x2 ... xn | xn xn
@@ -70,11 +77,29 @@ class MODES(object):
     sp1 - smooth-padding               (1st derivative interpolation)
 
     DWT performed for these extension modes is slightly redundant, but ensure
-    a perfect reconstruction for IDWT.
+    a perfect reconstruction for IDWT. To receive the smallest possible number of coefficients,
+    computations can be performed with the periodization mode:
 
-    per - periodization - like periodic-padding but gives the smallest number
+    per - periodization - like periodic-padding but gives the smallest possible number
           of decomposition coefficients. IDWT must be performed with the same mode.
 
+    Examples
+    --------
+    >>> import pywt
+    >>> pywt.Modes.modes
+        ['zpd', 'cpd', 'sym', 'ppd', 'sp1', 'per']
+    >>> # The different ways of passing wavelet and mode parameters
+    >>> (a, d) = pywt.dwt([1,2,3,4,5,6], 'db2', 'sp1')
+    >>> (a, d) = pywt.dwt([1,2,3,4,5,6], pywt.Wavelet('db2'), pywt.Modes.sp1)
+
+    Notes
+    -----
+    Extending data in context of PyWavelets does not mean reallocation of the data
+    in computer's physical memory and copying values, but rather computing
+    the extra values only when they are needed.
+    This feature saves extra memory and CPU resources and helps to avoid page
+    swapping when handling relatively big data arrays on computers with low
+    physical memory.
     """
 
     zpd = c_wt.MODE_ZEROPAD
@@ -262,12 +287,12 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
             except (TypeError, TypeError):
                 raise ValueError("Filter bank with numeric values required.")
 
-            if not (1 == len(dec_lo.shape) == len(dec_hi.shape) == 
+            if not (1 == len(dec_lo.shape) == len(dec_hi.shape) ==
                          len(rec_lo.shape) == len(rec_hi.shape)):
                 raise ValueError("All filters in filter bank must be 1D.")
 
             filter_length = len(dec_lo)
-            if not (0 < filter_length == len(dec_hi) == len(rec_lo) == 
+            if not (0 < filter_length == len(dec_hi) == len(rec_lo) ==
                                          len(rec_hi)) > 0:
                 raise ValueError("All filters in filter bank must have "
                                  "length greater than 0.")
@@ -293,7 +318,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
     def __dealloc__(self):
         if self.w is not NULL:
             # if w._builtin is 0 then it frees the memory for the filter arrays
-            c_wt.free_wavelet(self.w) 
+            c_wt.free_wavelet(self.w)
             self.w = NULL
 
     def __len__(self): #assume
@@ -378,7 +403,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
                 return self.w.vanishing_moments_phi
 
     property _builtin:
-        """Returns True if the wavelet is built-in one (not created with 
+        """Returns True if the wavelet is built-in one (not created with
         custom filter bank).
         """
         def __get__(self):
@@ -1147,7 +1172,7 @@ def swt(object data, object wavelet, object level=None, int start_level=0):
 
     if end_level > c_wt.swt_max_level(input.len):
         msg = ("Level value too high (max level for current input len and "
-               "start_level is %d)." % (c_wt.swt_max_level(input.len) - 
+               "start_level is %d)." % (c_wt.swt_max_level(input.len) -
                                         start_level))
         raise ValueError(msg)
 
