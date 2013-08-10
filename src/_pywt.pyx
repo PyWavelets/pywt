@@ -211,8 +211,6 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
     cdef readonly name
     cdef readonly number
 
-    #cdef readonly properties
-
     def __cinit__(self, char* name="", object filter_bank=None):
         cdef object family_code, family_number
         cdef object filters
@@ -221,7 +219,6 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
 
         if not name and filter_bank is None:
             raise TypeError("Wavelet name or filter bank must be specified.")
-        #print wname_to_code(name, number)
 
         if filter_bank is None:
             # builtin wavelet
