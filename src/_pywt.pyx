@@ -42,7 +42,7 @@ cdef c_wt.MODE c_mode_from_object(mode) except c_wt.MODE_INVALID:
         co = c_python.PyObject_GetAttrString(Modes, mode)
         if co is not NULL:
             o = <object>co
-            c_python.Py_DECREF(o) # decref above extra ref inc
+            c_python.Py_DECREF(o)  # decref above extra ref inc
             m = <object>co
         else:
             c_python.PyErr_Clear()
@@ -93,7 +93,7 @@ class Modes(object):
 ###############################################################################
 # Wavelet
 
-include "wavelets_list.pxi" ## __wname_to_code
+include "wavelets_list.pxi"  # __wname_to_code
 
 cdef object wname_to_code(char* name):
     cdef object code_number
@@ -106,6 +106,7 @@ cdef object wname_to_code(char* name):
     except KeyError:
         raise ValueError("Unknown wavelet name '%s', check wavelist() for the "
                          "list of available builtin wavelets." % name)
+
 
 def wavelist(family=None):
     """
@@ -133,7 +134,7 @@ def wavelist(family=None):
 
     """
     cdef object wavelets, sorting_list
-    sorting_list = [] # for natural sorting order
+    sorting_list = []  # for natural sorting order
     wavelets = []
     cdef object name
     if family is None:
@@ -150,6 +151,7 @@ def wavelist(family=None):
     for x, x, name in sorting_list:
         wavelets.append(name)
     return wavelets
+
 
 def families(int short=True):
     """
@@ -262,12 +264,12 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
             except (TypeError, TypeError):
                 raise ValueError("Filter bank with numeric values required.")
 
-            if not (1 == len(dec_lo.shape) == len(dec_hi.shape) == 
+            if not (1 == len(dec_lo.shape) == len(dec_hi.shape) ==
                          len(rec_lo.shape) == len(rec_hi.shape)):
                 raise ValueError("All filters in filter bank must be 1D.")
 
             filter_length = len(dec_lo)
-            if not (0 < filter_length == len(dec_hi) == len(rec_lo) == 
+            if not (0 < filter_length == len(dec_hi) == len(rec_lo) ==
                                          len(rec_hi)) > 0:
                 raise ValueError("All filters in filter bank must have "
                                  "length greater than 0.")
@@ -293,10 +295,10 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
     def __dealloc__(self):
         if self.w is not NULL:
             # if w._builtin is 0 then it frees the memory for the filter arrays
-            c_wt.free_wavelet(self.w) 
+            c_wt.free_wavelet(self.w)
             self.w = NULL
 
-    def __len__(self): #assume
+    def __len__(self):  # assume
         return self.w.dec_len
 
     property dec_lo:
@@ -378,7 +380,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
                 return self.w.vanishing_moments_phi
 
     property _builtin:
-        """Returns True if the wavelet is built-in one (not created with 
+        """Returns True if the wavelet is built-in one (not created with
         custom filter bank).
         """
         def __get__(self):
@@ -459,8 +461,8 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
         if self.w.orthogonal:
             filter_length = self.w.dec_len
             output_length = <index_t> ((filter_length-1) * p + 1)
-            keep_length = get_keep_length(output_length,level,filter_length)
-            output_length = fix_output_length(output_length,keep_length)
+            keep_length = get_keep_length(output_length, level, filter_length)
+            output_length = fix_output_length(output_length, keep_length)
 
             right_extent_length = get_right_extent_length(output_length,
                                                           keep_length)
@@ -470,7 +472,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
                                     keep_length), np.zeros(right_extent_length))),
                     np.concatenate(([0.], keep(upcoef('d', [n], self, level),
                                     keep_length), np.zeros(right_extent_length))),
-                    np.linspace(0.0,(output_length-1)/p,output_length)]
+                    np.linspace(0.0, (output_length-1)/p, output_length)]
         else:
             mul = 1
             if self.w.biorthogonal:
@@ -481,8 +483,8 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
 
             filter_length  = other.w.dec_len
             output_length = <index_t> ((filter_length-1) * p)
-            keep_length = get_keep_length(output_length,level,filter_length)
-            output_length = fix_output_length(output_length,keep_length)
+            keep_length = get_keep_length(output_length, level, filter_length)
+            output_length = fix_output_length(output_length, keep_length)
             right_extent_length = get_right_extent_length(output_length, keep_length)
 
             phi_d  = np.concatenate(([0.], keep(upcoef('a', [n], other, level),
@@ -493,8 +495,8 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
 
             filter_length = self.w.dec_len
             output_length = <index_t> ((filter_length-1) * p)
-            keep_length = get_keep_length(output_length,level,filter_length)
-            output_length = fix_output_length(output_length,keep_length)
+            keep_length = get_keep_length(output_length, level, filter_length)
+            output_length = fix_output_length(output_length, keep_length)
             right_extent_length = get_right_extent_length(output_length, keep_length)
 
             phi_r  = np.concatenate(([0.], keep(upcoef('a', [n], self, level),
@@ -538,7 +540,8 @@ cdef index_t fix_output_length(index_t output_length, index_t keep_length):
     return output_length
 
 cdef index_t get_right_extent_length(index_t output_length, index_t keep_length):
-     return output_length - keep_length - 1
+    return output_length - keep_length - 1
+
 
 def wavelet_from_object(wavelet):
     return c_wavelet_from_object(wavelet)
@@ -551,6 +554,7 @@ cdef c_wavelet_from_object(wavelet):
 
 ###############################################################################
 # DWT
+
 
 def dwt_max_level(data_len, filter_len):
     """
@@ -583,6 +587,7 @@ def dwt_max_level(data_len, filter_len):
         return c_wt.dwt_max_level(data_len, filter_len.dec_len)
     else:
         return c_wt.dwt_max_level(data_len, filter_len)
+
 
 def dwt(object data, object wavelet, object mode='sym'):
     """
@@ -651,7 +656,7 @@ def dwt(object data, object wavelet, object mode='sym'):
     assert input.dtype == output_a.dtype == output_d.dtype
     if input.dtype == FLOAT64:
         if (c_wt.double_dec_a(<double*>input.data, input.len, w.w,
-                             <double*>output_a.data, output_a.len, mode_) < 0
+                              <double*>output_a.data, output_a.len, mode_) < 0
             or
             c_wt.double_dec_d(<double*>input.data, input.len, w.w,
                               <double*>output_d.data, output_d.len, mode_) < 0):
@@ -952,7 +957,7 @@ def upcoef(part, coeffs, wavelet, int level=1, take=0):
                 raise RuntimeError("Invalid data type.")
             do_rec_a = 1
 
-        data = rec # keep reference
+        data = rec  # keep reference
         input.len = output.len
         input.data = output.data
 
@@ -964,6 +969,7 @@ def upcoef(part, coeffs, wavelet, int level=1, take=0):
 
             return rec[left_bound:-right_bound]
     return rec
+
 
 def downcoef(part, object data, object wavelet, object mode='sym', int level=1):
     """
@@ -1020,7 +1026,6 @@ def downcoef(part, object data, object wavelet, object mode='sym', int level=1):
     #elif level > c_wt.dwt_max_level(input.len, w.dec_len):
     #    raise ValueError("Value of level is higher than the max dwt level for given input lenght and wavelet. Max level is %d." % c_wt.dwt_max_level(input.len, w.dec_len))
 
-
     for i from 0 <= i < level:
         # output len
         output_len = c_wt.dwt_buffer_length(input.len, w.dec_len, mode_)
@@ -1052,7 +1057,7 @@ def downcoef(part, object data, object wavelet, object mode='sym', int level=1):
             else:
                 raise RuntimeError("Invalid data type.")
 
-        data = coeffs # keep reference
+        data = coeffs  # keep reference
         input.len = output.len
         input.data = output.data
 
@@ -1060,6 +1065,7 @@ def downcoef(part, object data, object wavelet, object mode='sym', int level=1):
 
 ###############################################################################
 # swt
+
 
 def swt_max_level(input_len):
     """
@@ -1079,6 +1085,7 @@ def swt_max_level(input_len):
         Maximum level of Stationary Wavelet Transform for data of given length.
     """
     return c_wt.swt_max_level(input_len)
+
 
 def swt(object data, object wavelet, object level=None, int start_level=0):
     """
@@ -1147,7 +1154,7 @@ def swt(object data, object wavelet, object level=None, int start_level=0):
 
     if end_level > c_wt.swt_max_level(input.len):
         msg = ("Level value too high (max level for current input len and "
-               "start_level is %d)." % (c_wt.swt_max_level(input.len) - 
+               "start_level is %d)." % (c_wt.swt_max_level(input.len) -
                                         start_level))
         raise ValueError(msg)
 
@@ -1187,7 +1194,7 @@ def swt(object data, object wavelet, object level=None, int start_level=0):
         else:
             raise RuntimeError("Invalid data type.")
 
-        input.data = output.data # a -> input
+        input.data = output.data  # a -> input
         input.len = output.len
 
         ret.append((cA, cD))
