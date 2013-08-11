@@ -15,7 +15,7 @@ from itertools import cycle
 
 import numpy as np
 
-from ._pywt import Wavelet, Modes
+from ._pywt import Wavelet, MODES
 from ._pywt import dwt, idwt, swt, downcoef
 
 
@@ -30,7 +30,7 @@ def dwt2(data, wavelet, mode='sym'):
     wavelet : Wavelet object or name string
         Wavelet to use
     mode : str, optional
-        Signal extension mode, see Modes (default: 'sym')
+        Signal extension mode, see MODES (default: 'sym')
 
     Returns
     -------
@@ -59,7 +59,7 @@ def dwt2(data, wavelet, mode='sym'):
     if not isinstance(wavelet, Wavelet):
         wavelet = Wavelet(wavelet)
 
-    mode = Modes.from_object(mode)
+    mode = MODES.from_object(mode)
 
     # filter rows
     H, L = [], []
@@ -103,7 +103,7 @@ def idwt2(coeffs, wavelet, mode='sym'):
     wavelet : Wavelet object or name string
         Wavelet to use
     mode : str, optional
-        Signal extension mode, see Modes (default: 'sym')
+        Signal extension mode, see MODES (default: 'sym')
 
     Examples
     --------
@@ -144,7 +144,7 @@ def idwt2(coeffs, wavelet, mode='sym'):
     if not isinstance(wavelet, Wavelet):
         wavelet = Wavelet(wavelet)
 
-    mode = Modes.from_object(mode)
+    mode = MODES.from_object(mode)
 
     # idwt columns
     L = []
@@ -208,7 +208,7 @@ def dwtn(data, wavelet, mode='sym'):
     wavelet : Wavelet object or name string
         Wavelet to use
     mode : str, optional
-        Signal extension mode, see Modes (default: 'sym')
+        Signal extension mode, see MODES (default: 'sym')
 
     Returns
     -------

@@ -9,7 +9,7 @@ data2 = pylab.arange(612 - 80, 20, -0.5) / 250.
 data2 = pylab.sin(40 * pylab.log(data2)) * pylab.sign((pylab.log(data2)))
 from sample_data import ecg as data3
 
-mode = pywt.Modes.sp1
+mode = pywt.MODES.sp1
 DWT = 1
 
 
