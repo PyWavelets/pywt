@@ -1,8 +1,0 @@
-syntax: glob
-*.pyc
-build/
-dist/
-PyWavelets.egg-info/
-src/_pywt.c
-src/_pywt.h
-.idea/
