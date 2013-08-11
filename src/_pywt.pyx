@@ -2,7 +2,7 @@
 # See COPYING for license details.
 
 __doc__ = """Pyrex wrapper for low-level C wavelet transform implementation."""
-__all__ = ['Modes', 'Wavelet', 'dwt', 'dwt_coeff_len', 'dwt_max_level',
+__all__ = ['MODES', 'Wavelet', 'dwt', 'dwt_coeff_len', 'dwt_max_level',
            'idwt', 'swt', 'swt_max_level', 'upcoef', 'downcoef',
            'wavelist', 'families']
 
@@ -28,7 +28,7 @@ import numpy as np
 include "arraytools.pxi"
 
 ###############################################################################
-# Modes
+# MODES
 
 cdef c_wt.MODE c_mode_from_object(mode) except c_wt.MODE_INVALID:
     cdef c_wt.MODE m
@@ -39,7 +39,7 @@ cdef c_wt.MODE c_mode_from_object(mode) except c_wt.MODE_INVALID:
         if m <= c_wt.MODE_INVALID or m >= c_wt.MODE_MAX:
             raise ValueError("Invalid mode.")
     else:
-        co = c_python.PyObject_GetAttrString(Modes, mode)
+        co = c_python.PyObject_GetAttrString(MODES, mode)
         if co is not NULL:
             o = <object>co
             c_python.Py_DECREF(o)  # decref above extra ref inc
@@ -55,7 +55,7 @@ def __from_object(mode):
     return c_mode_from_object(mode)
 
 
-class Modes(object):
+class MODES(object):
     """
     Because the most common and practical way of representing digital signals
     in computer science is with finite arrays of values, some extrapolation
@@ -86,11 +86,11 @@ class Modes(object):
     Examples
     --------
     >>> import pywt
-    >>> pywt.Modes.modes
+    >>> pywt.MODES.modes
         ['zpd', 'cpd', 'sym', 'ppd', 'sp1', 'per']
     >>> # The different ways of passing wavelet and mode parameters
     >>> (a, d) = pywt.dwt([1,2,3,4,5,6], 'db2', 'sp1')
-    >>> (a, d) = pywt.dwt([1,2,3,4,5,6], pywt.Wavelet('db2'), pywt.Modes.sp1)
+    >>> (a, d) = pywt.dwt([1,2,3,4,5,6], pywt.Wavelet('db2'), pywt.MODES.sp1)
 
     Notes
     -----
@@ -624,7 +624,7 @@ def dwt(object data, object wavelet, object mode='sym'):
     wavelet : Wavelet object or name
         Wavelet to use
     mode : str, optional (default: 'sym')
-        Signal extension mode, see Modes
+        Signal extension mode, see MODES
 
     Returns
     -------
@@ -709,7 +709,7 @@ def dwt_coeff_len(data_len, filter_len, mode='sym'):
     filter_len : int
         Filter length.
     mode : str, optional (default: 'sym')
-        Signal extension mode, see Modes
+        Signal extension mode, see MODES
 
     Returns
     -------
@@ -761,7 +761,7 @@ def idwt(object cA, object cD, object wavelet, object mode='sym',
     wavelet : Wavelet object or name
         Wavelet to use
     mode : str, optional (default: 'sym')
-        Signal extension mode, see Modes
+        Signal extension mode, see MODES
     correct_size : int, optional (default: 0)
         Under normal conditions (all data lengths dyadic) `cA` and `cD`
         coefficients lists must have the same lengths. With `correct_size`
@@ -1011,7 +1011,7 @@ def downcoef(part, object data, object wavelet, object mode='sym', int level=1):
     data :
         Input signal
     mode : str, optional
-        Signal extension mode, see Modes (default: 'sym')
+        Signal extension mode, see MODES (default: 'sym')
     wavelet : Wavelet object or name
         Wavelet to use
     level : int, optional

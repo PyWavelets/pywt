@@ -11,7 +11,7 @@ data2 = pylab.sin(40 * pylab.log(x)) * pylab.sign((pylab.log(x)))
 
 from sample_data import ecg as data3
 
-mode = pywt.Modes.sp1
+mode = pywt.MODES.sp1
 
 
 def plot(data, w, title):
