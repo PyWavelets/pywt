@@ -6,27 +6,10 @@ Verify DWT perfect reconstruction.
 
 from __future__ import division, print_function, absolute_import
 
-import math
-
 import numpy as np
 from numpy.testing import assert_, run_module_suite
 
 import pywt
-
-
-def mse(ar1, ar2):
-    """Mean squared error"""
-    ar1 = np.asarray(ar1, dtype=np.float64)
-    ar2 = np.asarray(ar2, dtype=np.float64)
-    dif = ar1 - ar2
-    dif *= dif
-    return dif.sum() / len(ar1)
-
-
-def rms(ar1, ar2):
-    """Root mean squared error"""
-    return math.sqrt(mse(ar1, ar2))
-
 
 def test_perfect_reconstruction():
     families = ('db', 'sym', 'coif', 'bior', 'rbio')
@@ -67,7 +50,7 @@ def check_reconstruction(pmode, mmode, wavelet, dtype):
         if len(data) % 2:
             rec = rec[:len(data)]
 
-        rms_rec = rms(data, rec)
+        rms_rec = np.sqrt(np.mean((data-rec)**2))
         msg = ('[RMS_REC > EPSILON] for Mode: %s, Wavelet: %s, '
                'Length: %d, rms=%.3g' % ( pmode, wavelet, len(data), rms_rec))
         assert_(rms_rec < epsilon, msg=msg)
