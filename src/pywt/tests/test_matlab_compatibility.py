@@ -5,8 +5,6 @@ accuracy against MathWorks Wavelet Toolbox.
 
 from __future__ import division, print_function, absolute_import
 
-import math
-
 import numpy as np
 from numpy.testing import assert_, dec, run_module_suite
 
@@ -21,19 +19,6 @@ except ImportError:
           "MATLAB, MathWorks Wavelet Toolbox and mlabwrap Python extension "
           "installed.")
     _has_matlab = True
-
-
-def mse(ar1, ar2):
-    """Mean squared error"""
-    ar1 = np.asarray(ar1, dtype=np.float64)
-    ar2 = np.asarray(ar2, dtype=np.float64)
-    dif = (ar1 - ar2)**2
-    return dif.sum() / ar1.size
-
-
-def rms(ar1, ar2):
-    """Root mean squared error"""
-    return math.sqrt(mse(ar1, ar2))
 
 
 @dec.skipif(_has_matlab)
@@ -69,8 +54,8 @@ def check_accuracy(pmode, mmode, wavelet):
         md = md.flat
 
         # calculate error measures
-        mse_a, mse_d = mse(pa, ma), mse(pd, md)
-        rms_a, rms_d = math.sqrt(mse_a), math.sqrt(mse_d)
+        rms_a = np.sqrt(np.mean((pa-ma)**2))
+        rms_d = np.sqrt(np.mean((pd-md)**2))
 
         msg = ('[RMS_A > EPSILON] for Mode: %s, Wavelet: %s, '
               'Length: %d, rms=%.3g' % (pmode, wavelet, len(data), rms_a))
