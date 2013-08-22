@@ -4,6 +4,8 @@
 import os
 import sys
 
+import numpy as np
+
 try:
     from setuptools import setup
     has_setuptools = True
@@ -13,6 +15,7 @@ except ImportError:
 
 from util import commands
 
+
 if sys.platform == "darwin":
     # Don't create resource files on OS X tar.
     os.environ["COPY_EXTENDED_ATTRIBUTES_DISABLE"] = "true"
@@ -21,7 +24,7 @@ if sys.platform == "darwin":
 dwt = commands.Extension("pywt._pywt",
     sources=["src/_pywt.pyx", "src/common.c", "src/convolution.c",
              "src/wavelets.c", "src/wt.c"],
-    include_dirs=["src"],
+    include_dirs=["src", np.get_include()],
     define_macros=[("PY_EXTENSION", None)],
 )
 
