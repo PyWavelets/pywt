@@ -21,7 +21,7 @@ import warnings
 import numpy as np
 cimport numpy as np
 
-from scipy.lib.six import string_types
+from pywt.tools.six import string_types
 
 ###############################################################################
 # MODES
