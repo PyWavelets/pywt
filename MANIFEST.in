@@ -2,12 +2,19 @@ include setup.py setup.cfg
 include README.rst CHANGES.txt COPYING.txt THANKS.txt
 include MANIFEST.in
 
-graft demo
-graft doc
-graft src
-graft util
+# All source files
+recursive-include src *
+# All documentation
+recursive-include doc *
+recursive-include demo *
+
+# Add build and testing tools
+include tox.ini
+recursive-include util *
 
 prune build
 prune doc/build
+prune */__pycache__
 
 global-exclude *.py[cod] *.egg *.egg-info
+global-exclude *~ *.bak *.swp
