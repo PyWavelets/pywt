@@ -26,3 +26,5 @@ convolution.[ch]
 wavelets.[ch]
 wavelets_coeffs.h
 wt.[ch]
+cythonize.dat
+pywt/__config__.py
