@@ -126,3 +126,11 @@ def expand_files(glob_pattern, force_update=False):
             new_file = open(destination_path, "wb")
             new_file.write(content.encode('utf-8'))
             new_file.close()
+
+
+
+if __name__ == '__main__':
+    cwd = os.path.abspath(os.path.dirname(__file__))
+    templates_glob = os.path.join(cwd, '..', 'pywt', "src", "*.template.*")
+    expand_files(templates_glob)
+
