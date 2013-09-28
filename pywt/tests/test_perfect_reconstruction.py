@@ -11,6 +11,7 @@ from numpy.testing import assert_, run_module_suite
 
 import pywt
 
+
 def test_perfect_reconstruction():
     families = ('db', 'sym', 'coif', 'bior', 'rbio')
     wavelets = sum([pywt.wavelist(name) for name in families], [])
@@ -53,7 +54,7 @@ def check_reconstruction(pmode, mmode, wavelet, dtype):
 
         rms_rec = np.sqrt(np.mean((data-rec)**2))
         msg = ('[RMS_REC > EPSILON] for Mode: %s, Wavelet: %s, '
-               'Length: %d, rms=%.3g' % ( pmode, wavelet, len(data), rms_rec))
+               'Length: %d, rms=%.3g' % (pmode, wavelet, len(data), rms_rec))
         assert_(rms_rec < epsilon, msg=msg)
 
 
