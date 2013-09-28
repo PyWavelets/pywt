@@ -5,8 +5,6 @@ import os
 import sys
 import subprocess
 
-import numpy as np
-
 
 try:
     from setuptools import setup
@@ -15,7 +13,6 @@ except ImportError:
     from distutils.core import setup
     has_setuptools = False
 
-from util import commands
 
 
 if sys.platform == "darwin":
@@ -23,19 +20,7 @@ if sys.platform == "darwin":
     os.environ["COPY_EXTENDED_ATTRIBUTES_DISABLE"] = "true"
     os.environ["COPYFILE_DISABLE"] = "true"
 
-dwt = commands.Extension("pywt._pywt",
-    sources=["_pywt.pyx", "pywt/src/common.c", "pywt/src/convolution.c",
-             "pywt/src/wavelets.c", "pywt/src/wt.c"],
-    include_dirs=["pywt/src", np.get_include()],
-    define_macros=[("PY_EXTENSION", None)],
-)
 
-
-cmdclass = {
-    "build_ext": commands.BuildExtCommand,
-    "sdist": commands.SdistCommand,
-    "clean_build": commands.CleanCommand,
-}
 setup_args = {}
 
 
@@ -117,7 +102,7 @@ def setup_package():
         ],
         platforms=["Windows", "Linux", "Solaris", "Mac OS-X", "Unix"],
         test_suite='nose.collector',
-        cmdclass=cmdclass,
+        cmdclass={},
         **setup_args
     )
     if len(sys.argv) >= 2 and ('--help' in sys.argv[1:] or

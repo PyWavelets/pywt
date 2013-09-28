@@ -26,3 +26,4 @@ convolution.[ch]
 wavelets.[ch]
 wavelets_coeffs.h
 wt.[ch]
+cythonize.dat
