@@ -9,7 +9,7 @@ def configuration(parent_package='',top_path=None):
     config = Configuration('pywt', parent_package, top_path)
 
     config.add_data_dir('tests')
-    config.add_subpackage('tools')
+    config.add_subpackage('_tools')
 
     # add main PyWavelets module
     config.add_extension('_pywt',
