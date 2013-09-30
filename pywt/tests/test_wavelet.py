@@ -74,7 +74,6 @@ def test_custom_wavelet():
     haar_custom2.biorthogonal = True
 
 
-@dec.knownfailureif(True, "This is seriously broken")
 def test_wavefun_sym3():
     w = pywt.Wavelet('sym3')
     # sym3 is an orthogonal wavelet, so 3 outputs from wavefun
@@ -118,7 +117,6 @@ def test_wavefun_sym3():
     assert_allclose(psi, psi_expect)
 
 
-@dec.knownfailureif(True, "This is seriously broken")
 def test_wavefun_bior13():
     w = pywt.Wavelet('bior1.3')
     # bior1.3 is not an orthogonal wavelet, so 5 outputs from wavefun
