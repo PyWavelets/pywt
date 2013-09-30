@@ -6,12 +6,89 @@ import sys
 import subprocess
 
 
-try:
-    from setuptools import setup
-    has_setuptools = True
-except ImportError:
-    from distutils.core import setup
-    has_setuptools = False
+MAJOR               = 0
+MINOR               = 3
+MICRO               = 0
+ISRELEASED          = False
+VERSION             = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
+
+
+# Return the git revision as a string
+def git_version():
+    def _minimal_ext_cmd(cmd):
+        # construct minimal environment
+        env = {}
+        for k in ['SYSTEMROOT', 'PATH']:
+            v = os.environ.get(k)
+            if v is not None:
+                env[k] = v
+        # LANGUAGE is used on win32
+        env['LANGUAGE'] = 'C'
+        env['LANG'] = 'C'
+        env['LC_ALL'] = 'C'
+        out = subprocess.Popen(cmd, stdout = subprocess.PIPE, env=env).communicate()[0]
+        return out
+
+    try:
+        out = _minimal_ext_cmd(['git', 'rev-parse', 'HEAD'])
+        GIT_REVISION = out.strip().decode('ascii')
+    except OSError:
+        GIT_REVISION = "Unknown"
+
+    return GIT_REVISION
+
+
+def get_version_info():
+    # Adding the git rev number needs to be done inside
+    # write_version_py(), otherwise the import of pywt.version messes
+    # up the build under Python 3.
+    FULLVERSION = VERSION
+    if os.path.exists('.git'):
+        GIT_REVISION = git_version()
+    elif os.path.exists('pywt/version.py'):
+        # must be a source distribution, use existing version file
+        # load it as a separate module to not load pywt/__init__.py
+        import imp
+        version = imp.load_source('pywt.version', 'pywt/version.py')
+        GIT_REVISION = version.git_revision
+    else:
+        GIT_REVISION = "Unknown"
+
+    if not ISRELEASED:
+        FULLVERSION += '.dev-' + GIT_REVISION[:7]
+
+    return FULLVERSION, GIT_REVISION
+
+
+def write_version_py(filename='pywt/version.py'):
+    cnt = """
+# THIS FILE IS GENERATED FROM PYWAVELETS SETUP.PY
+short_version = '%(version)s'
+version = '%(version)s'
+full_version = '%(full_version)s'
+git_revision = '%(git_revision)s'
+release = %(isrelease)s
+
+if not release:
+    version = full_version
+"""
+    FULLVERSION, GIT_REVISION = get_version_info()
+
+    a = open(filename, 'w')
+    try:
+        a.write(cnt % {'version': VERSION,
+                       'full_version' : FULLVERSION,
+                       'git_revision' : GIT_REVISION,
+                       'isrelease': str(ISRELEASED)})
+    finally:
+        a.close()
+
+
+
+# BEFORE importing distutils, remove MANIFEST. distutils doesn't properly
+# update it when the contents of directories change.
+if os.path.exists('MANIFEST'):
+    os.remove('MANIFEST')
 
 
 
@@ -58,13 +135,11 @@ def configuration(parent_package='',top_path=None):
     return config
 
 
-if has_setuptools:
-    setup_args["zip_safe"] = False
-    if not os.path.exists(os.path.join("pywt", "_pywt.c")):
-        setup_args["setup_requires"] = ["Cython >= 0.17.1"]
-
-
 def setup_package():
+
+    # Rewrite the version file everytime
+    write_version_py()
+
     metadata = dict(
         name="PyWavelets",
         version="0.2.2",
@@ -117,6 +192,9 @@ def setup_package():
             from setuptools import setup
         except ImportError:
             from distutils.core import setup
+
+        FULLVERSION, GIT_REVISION = get_version_info()
+        metadata['version'] = FULLVERSION
     else:
         from numpy.distutils.core import setup
 
