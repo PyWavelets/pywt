@@ -132,15 +132,18 @@ def test_data_reconstruction_delete_nodes_2d():
     # TODO: decompose=True
 
 
-@dec.skipif(True, 'The documentation says one should not rely on this.')
 def test_lazy_evaluation_2D():
+    # Note: internal implementation detail not to be relied on.  Testing for
+    # now for backwards compatibility, but this test may be broken in needed.
     x = np.array([[1, 2, 3, 4, 5, 6, 7, 8]] * 8)
     wp = pywt.WaveletPacket2D(data=x, wavelet='db1', mode='sym')
 
     assert_(wp.a is None)
-    assert_allclose(wp['a'], np.array([[3., 7., 11., 15.]] * 4), rtol=1e-12)
-    assert_allclose(wp.a, np.array([[3., 7., 11., 15.]] * 4), rtol=1e-12)
-    assert_(np.all(wp.d == np.zeros((4, 4))))
+    assert_allclose(wp['a'].data, np.array([[3., 7., 11., 15.]] * 4),
+                    rtol=1e-12)
+    assert_allclose(wp.a.data, np.array([[3., 7., 11., 15.]] * 4), rtol=1e-12)
+    assert_allclose(wp.d.data, np.zeros((4, 4)), rtol=1e-12, atol=1e-12)
+
 
 if __name__ == '__main__':
     run_module_suite()
