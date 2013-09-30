@@ -23,6 +23,11 @@ cimport numpy as np
 
 from pywt._tools.six import string_types
 
+
+ctypedef fused data_t:
+    np.float32_t
+    np.float64_t
+
 ###############################################################################
 # MODES
 
@@ -649,13 +654,14 @@ def dwt(object data, object wavelet, object mode='sym'):
     """
     _check_mode_input(mode)
     # accept array_like input; make a copy to ensure a contiguous array
-    data = np.array(data, dtype=np.float64)
+    dt = _check_dtype(data)
+    data = np.array(data, dtype=dt)
     return _dwt(data, wavelet, mode)
 
 
-def _dwt(np.ndarray[double, ndim=1] data, object wavelet, object mode='sym'):
+def _dwt(np.ndarray[data_t, ndim=1] data, object wavelet, object mode='sym'):
     """See `dwt` docstring for details."""
-    cdef np.ndarray[double, ndim=1, mode="c"] cA, cD
+    cdef np.ndarray[data_t, ndim=1, mode="c"] cA, cD
     cdef Wavelet w
     cdef c_wt.MODE mode_
 
@@ -670,20 +676,20 @@ def _dwt(np.ndarray[double, ndim=1] data, object wavelet, object mode='sym'):
     cA = np.zeros(output_len, data.dtype)
     cD = np.zeros(output_len, data.dtype)
 
-    if data.dtype == np.float64:
+    if data_t == np.float64_t:
         if (c_wt.double_dec_a(&data[0], data.size, w.w,
                               &cA[0], cA.size, mode_) < 0
             or
             c_wt.double_dec_d(&data[0], data.size, w.w,
                               &cD[0], cD.size, mode_) < 0):
             raise RuntimeError("C dwt failed.")
-    #elif input.dtype == FLOAT32:
-    #    if (c_wt.float_dec_a(<float*>input.data, input.size, w.w,
-    #                         <float*>output_a.data, output_a.size, mode_) < 0
-    #        or
-    #        c_wt.float_dec_d(<float*>input.data, input.size, w.w,
-    #                         <float*>output_d.data, output_d.size, mode_) < 0):
-    #        raise RuntimeError("C dwt failed.")
+    elif data_t == np.float32_t:
+        if (c_wt.float_dec_a(&data[0], data.size, w.w,
+                             &cA[0], cA.size, mode_) < 0
+            or
+            c_wt.float_dec_d(&data[0], data.size, w.w,
+                             &cD[0], cD.size, mode_) < 0):
+            raise RuntimeError("C dwt failed.")
     else:
         raise RuntimeError("Invalid data type.")
 
@@ -747,6 +753,19 @@ def _check_mode_input(mode):
                         "object.")
 
 
+def _check_dtype(data):
+    """Check for cA/cD input what (if any) the dtype is."""
+    try:
+        dt = data.dtype
+        if not dt == np.float32:
+            # integer input was always accepted; convert to float64
+            dt = np.float64
+    except AttributeError:
+        dt = np.float64
+
+    return dt
+
+
 def idwt(cA, cD, object wavelet, object mode='sym', int correct_size=0):
     """
     idwt(cA, cD, wavelet, mode='sym', correct_size=0)
@@ -786,9 +805,11 @@ def idwt(cA, cD, object wavelet, object mode='sym', int correct_size=0):
                          "specified.")
 
     if cA is not None:
-        cA = np.array(cA, dtype=np.float64)
+        dt = _check_dtype(cA)
+        cA = np.array(cA, dtype=dt)
     if cD is not None:
-        cD = np.array(cD, dtype=np.float64)
+        dt = _check_dtype(cD)
+        cD = np.array(cD, dtype=dt)
 
     if cA is not None and cD is not None:
         if cA.dtype != cD.dtype:
@@ -803,8 +824,8 @@ def idwt(cA, cD, object wavelet, object mode='sym', int correct_size=0):
     return _idwt(cA, cD, wavelet, mode, correct_size)
     
 
-def _idwt(np.ndarray[double, ndim=1, mode="c"] cA,
-          np.ndarray[double, ndim=1, mode="c"] cD,
+def _idwt(np.ndarray[data_t, ndim=1, mode="c"] cA,
+          np.ndarray[data_t, ndim=1, mode="c"] cD,
           object wavelet, object mode='sym', int correct_size=0):
     """See `idwt` for details"""
 
@@ -816,7 +837,7 @@ def _idwt(np.ndarray[double, ndim=1, mode="c"] cA,
     w = c_wavelet_from_object(wavelet)
     mode_ = c_mode_from_object(mode)
 
-    cdef np.ndarray[double, ndim=1, mode="c"] rec
+    cdef np.ndarray[data_t, ndim=1, mode="c"] rec
     cdef index_t rec_len
     cdef index_t size_diff
 
@@ -850,20 +871,21 @@ def _idwt(np.ndarray[double, ndim=1, mode="c"] cA,
 
     # call idwt func.  one of cA/cD can be None, then only
     # reconstruction of non-null part will be performed
-    if rec.dtype == np.float64:
+    if data_t is np.float64_t:
         if c_wt.double_idwt(&cA[0], cA.size,
                             &cD[0], cD.size, w.w,
                             &rec[0], rec.size, mode_,
                             correct_size) < 0:
             raise RuntimeError("C idwt failed.")
-    #elif output.dtype == FLOAT32:
-    #    if c_wt.float_idwt(<float*>input_a.data, input_a.size,
-    #                       <float*>input_d.data, input_d.size, w.w,
-    #                       <float*>output.data, output.size, mode_,
-    #                       correct_size) < 0:
-    #        raise RuntimeError("C idwt failed.")
+    elif data_t == np.float32_t:
+        if c_wt.float_idwt(&cA[0], cA.size,
+                           &cD[0], cD.size, w.w,
+                           &rec[0], rec.size, mode_,
+                           correct_size) < 0:
+            raise RuntimeError("C idwt failed.")
     else:
         raise RuntimeError("Invalid data type.")
+
     return rec
 
 
