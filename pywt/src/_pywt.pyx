@@ -931,14 +931,15 @@ def upcoef(part, coeffs, wavelet, level=1, take=0):
 
     """
     # accept array_like input; make a copy to ensure a contiguous array
-    coeffs = np.array(coeffs, dtype=np.float64)
+    dt = _check_dtype(coeffs)
+    coeffs = np.array(coeffs, dtype=dt)
     return _upcoef(part, coeffs, wavelet, level, take)
 
 
-def _upcoef(part, np.ndarray[double, ndim=1, mode="c"] coeffs, wavelet,
+def _upcoef(part, np.ndarray[data_t, ndim=1, mode="c"] coeffs, wavelet,
             int level=1, take=0):
     cdef Wavelet w
-    cdef np.ndarray[double, ndim=1, mode="c"] rec
+    cdef np.ndarray[data_t, ndim=1, mode="c"] rec
     cdef int i, do_rec_a
     cdef index_t rec_len, left_bound, right_bound
 
@@ -963,25 +964,25 @@ def _upcoef(part, np.ndarray[double, ndim=1, mode="c"] coeffs, wavelet,
         rec = np.zeros(rec_len, dtype=coeffs.dtype)
 
         if do_rec_a:
-            if coeffs.dtype == np.float64:
+            if data_t is np.float64_t:
                 if c_wt.double_rec_a(&coeffs[0], coeffs.size, w.w,
                                      &rec[0], rec.size) < 0:
                     raise RuntimeError("C rec_a failed.")
-            #elif input.dtype == FLOAT32:
-            #    if c_wt.float_rec_a(<float*>input.data, input.size, w.w,
-            #                        <float*>output.data, output.size) < 0:
-            #        raise RuntimeError("C rec_a failed.")
+            elif data_t is np.float32_t:
+                if c_wt.float_rec_a(&coeffs[0], coeffs.size, w.w,
+                                    &rec[0], rec.size) < 0:
+                    raise RuntimeError("C rec_a failed.")
             else:
                 raise RuntimeError("Invalid data type.")
         else:
-            if coeffs.dtype == np.float64:
+            if data_t is np.float64_t:
                 if c_wt.double_rec_d(&coeffs[0], coeffs.size, w.w,
                                      &rec[0], rec.size) < 0:
                     raise RuntimeError("C rec_a failed.")
-            #elif input.dtype == FLOAT32:
-            #    if c_wt.float_rec_d(<float*>input.data, input.size, w.w,
-            #                        <float*>output.data, output.size) < 0:
-            #        raise RuntimeError("C rec_a failed.")
+            elif data_t is np.float32_t:
+                if c_wt.float_rec_d(&coeffs[0], coeffs.size, w.w,
+                                    &rec[0], rec.size) < 0:
+                    raise RuntimeError("C rec_a failed.")
             else:
                 raise RuntimeError("Invalid data type.")
             do_rec_a = 1
@@ -999,7 +1000,7 @@ def _upcoef(part, np.ndarray[double, ndim=1, mode="c"] coeffs, wavelet,
     return rec
 
 
-def downcoef(part, np.ndarray[double, ndim=1, mode="c"] data,
+def downcoef(part, np.ndarray[data_t, ndim=1, mode="c"] data,
              object wavelet, object mode='sym', int level=1):
     """
     downcoef(part, data, wavelet, mode='sym', level=1)
@@ -1029,7 +1030,7 @@ def downcoef(part, np.ndarray[double, ndim=1, mode="c"] data,
     coeffs :
     """
 
-    cdef np.ndarray[double, ndim=1, mode="c"] coeffs
+    cdef np.ndarray[data_t, ndim=1, mode="c"] coeffs
     cdef int i, do_dec_a
     cdef index_t dec_len
     cdef Wavelet w
@@ -1053,25 +1054,25 @@ def downcoef(part, np.ndarray[double, ndim=1, mode="c"] data,
         coeffs = np.zeros(output_len, dtype=data.dtype)
 
         if do_dec_a:
-            if data.dtype == np.float64:
+            if data_t is np.float64_t:
                 if c_wt.double_dec_a(&data[0], data.size, w.w,
                                      &coeffs[0], coeffs.size, mode_) < 0:
                     raise RuntimeError("C dec_a failed.")
-            #elif input.dtype == FLOAT32:
-            #    if c_wt.float_dec_a(<float*>input.data, input.size, w.w,
-            #                        <float*>output.data, output.size, mode_) < 0:
-            #        raise RuntimeError("C dec_a failed.")
+            elif data_t is np.float32_t:
+                if c_wt.float_dec_a(&data[0], data.size, w.w,
+                                    &coeffs[0], coeffs.size, mode_) < 0:
+                    raise RuntimeError("C dec_a failed.")
             else:
                 raise RuntimeError("Invalid data type.")
         else:
-            if data.dtype == np.float64:
+            if data_t is np.float64_t:
                 if c_wt.double_dec_d(&data[0], data.size, w.w,
                                      &coeffs[0], coeffs.size, mode_) < 0:
                     raise RuntimeError("C dec_a failed.")
-            #elif input.dtype == FLOAT32:
-            #    if c_wt.float_dec_d(<float*>input.data, input.size, w.w,
-            #                        <float*>output.data, output.size, mode_) < 0:
-            #        raise RuntimeError("C dec_a failed.")
+            elif data_t is np.float32_t:
+                if c_wt.float_dec_d(&data[0], data.size, w.w,
+                                    &coeffs[0], coeffs.size, mode_) < 0:
+                    raise RuntimeError("C dec_a failed.")
             else:
                 raise RuntimeError("Invalid data type.")
 
@@ -1136,14 +1137,15 @@ def swt(data, object wavelet, object level=None, int start_level=0):
 
     """
     # accept array_like input; make a copy to ensure a contiguous array
-    data = np.array(data, dtype=np.float64)
+    dt = _check_dtype(data)
+    data = np.array(data, dtype=dt)
     return _swt(data, wavelet, level, start_level)
 
 
-def _swt(np.ndarray[double, ndim=1, mode="c"] data, object wavelet,
+def _swt(np.ndarray[data_t, ndim=1, mode="c"] data, object wavelet,
          object level=None, int start_level=0):
     """See `swt` for details."""
-    cdef np.ndarray[double, ndim=1, mode="c"] cA, cD
+    cdef np.ndarray[data_t, ndim=1, mode="c"] cA, cD
     cdef Wavelet w
     cdef int i, end_level, level_
 
@@ -1183,28 +1185,28 @@ def _swt(np.ndarray[double, ndim=1, mode="c"] data, object wavelet,
         # alloc memory, decompose D
         cD = np.zeros(output_len, dtype=data.dtype)
 
-        if data.dtype == np.float64:
+        if data_t is np.float64_t:
             if c_wt.double_swt_d(&data[0], data.size, w.w,
                                  &cD[0], cD.size, i) < 0:
                 raise RuntimeError("C swt failed.")
-        #elif input.dtype == FLOAT32:
-        #    if c_wt.float_swt_d(<float*>input.data, input.size, w.w,
-        #                        <float*>output.data, output.size, i) < 0:
-        #        raise RuntimeError("C swt failed.")
+        elif data_t is np.float32_t:
+            if c_wt.float_swt_d(&data[0], data.size, w.w,
+                                &cD[0], cD.size, i) < 0:
+                raise RuntimeError("C swt failed.")
         else:
             raise RuntimeError("Invalid data type.")
 
         # alloc memory, decompose A
         cA = np.zeros(output_len, dtype=data.dtype)
 
-        if data.dtype == np.float64:
+        if data_t is np.float64_t:
             if c_wt.double_swt_a(&data[0], data.size, w.w,
                                  &cA[0], cA.size, i) < 0:
                 raise RuntimeError("C swt failed.")
-        #elif input.dtype == FLOAT32:
-        #    if c_wt.float_swt_a(<float*>input.data, input.size, w.w,
-        #                        <float*>output.data, output.size, i) < 0:
-        #        raise RuntimeError("C swt failed.")
+        elif data_t is np.float32_t:
+            if c_wt.float_swt_a(&data[0], data.size, w.w,
+                                &cA[0], cA.size, i) < 0:
+                raise RuntimeError("C swt failed.")
         else:
             raise RuntimeError("Invalid data type.")
 
