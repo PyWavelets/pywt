@@ -743,7 +743,6 @@ def dwt_coeff_len(data_len, filter_len, mode='sym'):
 def _check_mode_input(mode):
     valid_ints = range(len(MODES.modes))
     if not ((isinstance(mode, string_types)) or (mode in valid_ints)):
-        print(mode, type(mode))
         raise TypeError("`mode` should be a string, unicode or a pywt.MODES "
                         "object.")
 

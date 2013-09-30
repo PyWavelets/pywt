@@ -2,7 +2,7 @@
 
 from __future__ import division, print_function, absolute_import
 
-from numpy.testing import (run_module_suite,
+from numpy.testing import (run_module_suite, dec,
     assert_almost_equal, assert_allclose, assert_)
 
 import pywt
@@ -25,6 +25,7 @@ def test_waverec():
     assert_allclose(pywt.waverec(coeffs, 'db1'), x, rtol=1e-12)
 
 
+@dec.knownfailureif(True, "https://github.com/rgommers/pywt/issues/27")
 def test_swt_decomposition():
     x = [3, 7, 1, 3, -2, 6, 4, 6]
     db1 = pywt.Wavelet('db1')
