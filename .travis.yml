@@ -11,4 +11,4 @@ install:
   - pip install .
 
 script:
-  - python setup.py test
+  - python runtests.py -n -m full
