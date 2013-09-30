@@ -26,15 +26,15 @@ def test_traversing_wp_tree():
     assert_(wp.maxlevel == 3)
 
     # First level
-    assert_allclose(wp['a'].data, np.array([2.12132034, 4.94974747,
-                                              7.77817459, 10.60660172]),
-                    rtol=1e-8)
+    assert_allclose(wp['a'].data, np.array([2.12132034356, 4.949747468306,
+                                           7.778174593052, 10.606601717798]),
+                    rtol=1e-12)
 
     # Second level
-    assert_allclose(wp['aa'].data, np.array([5., 13.]), rtol=1e-8)
+    assert_allclose(wp['aa'].data, np.array([5., 13.]), rtol=1e-12)
 
     # Third level
-    assert_allclose(wp['aaa'].data, np.array([12.72792206]), rtol=1e-8)
+    assert_allclose(wp['aaa'].data, np.array([12.727922061358]), rtol=1e-12)
 
 
 def test_acess_path():
@@ -147,4 +147,3 @@ def test_removing_nodes():
 
 if __name__ == '__main__':
     run_module_suite()
-    # test_traversing_wp_tree()
