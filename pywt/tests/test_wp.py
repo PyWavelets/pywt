@@ -107,11 +107,10 @@ def test_reconstructing_data():
             ['aaa', 'aad', 'ada', 'add', 'daa', 'dad', 'dda', 'ddd'])
 
 
-@dec.knownfailureif(True, 'https://github.com/rgommers/pywt/issues/29')
 def test_removing_nodes():
     x = [1, 2, 3, 4, 5, 6, 7, 8]
     wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='sym')
-    dummy = wp.get_level(2)
+    wp.get_level(2)
 
     dataleafs = [n.data for n in wp.get_leaf_nodes(False)]
     expected = np.array([[5., 13.], [-2, -2], [-1, -1], [0, 0]])
@@ -129,7 +128,7 @@ def test_removing_nodes():
 
     wp.reconstruct()
     # The reconstruction is:
-    assert_allclose(wp.reconstruct(),   # FIXME
+    assert_allclose(wp.reconstruct(),
                     np.array([2., 3., 2., 3., 6., 7., 6., 7.]), rtol=1e-12)
 
     # Restore the data

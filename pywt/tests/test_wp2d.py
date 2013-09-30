@@ -82,7 +82,6 @@ def test_collecting_nodes_2d():
     assert_(paths == expected_paths)
 
 
-@dec.knownfailureif(True, 'https://github.com/rgommers/pywt/issues/32')
 def test_data_reconstruction_2d():
     x = np.array([[1, 2, 3, 4, 5, 6, 7, 8]] * 8, dtype=np.float64)
     wp = pywt.WaveletPacket2D(data=x, wavelet='db1', mode='sym')
@@ -100,6 +99,7 @@ def test_data_reconstruction_2d():
                     rtol=1e-12)
     assert_allclose(wp['va'].data, np.zeros((2, 2)) - 2, rtol=1e-12)
 
+    new_wp['va'] = wp['va'].data
     assert_allclose(new_wp.reconstruct(update=False), x, rtol=1e-12)
 
 

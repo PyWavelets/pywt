@@ -755,10 +755,12 @@ def idwt(cA, cD, object wavelet, object mode='sym', int correct_size=0):
 
     Parameters
     ----------
-    cA : array_like
-        Approximation coefficients
-    cD : array_like
-        Detail coefficients
+    cA : array_like or None
+        Approximation coefficients.  If None, will be set to array of zeros
+        with same shape as `cD`.
+    cD : array_like or None
+        Detail coefficients.  If None, will be set to array of zeros
+        with same shape as `cA`.
     wavelet : Wavelet object or name
         Wavelet to use
     mode : str, optional (default: 'sym')
@@ -778,15 +780,29 @@ def idwt(cA, cD, object wavelet, object mode='sym', int correct_size=0):
     """
     _check_mode_input(mode)
     # accept array_like input; make a copy to ensure a contiguous array
+
+    if cA is None and cD is None:
+        raise ValueError("At least one coefficient parameter must be "
+                         "specified.")
+
     if cA is not None:
         cA = np.array(cA, dtype=np.float64)
     if cD is not None:
         cD = np.array(cD, dtype=np.float64)
 
+    if cA is not None and cD is not None:
+        if cA.dtype != cD.dtype:
+            # need to upcast to common type
+            cA = cA.astype(np.float64)
+            cD = cD.astype(np.float64)
+    elif cA is None:
+        cA = np.zeros(cD.shape, dtype=cD.dtype)
+    elif cD is None:
+        cD = np.zeros(cA.shape, dtype=cA.dtype)
+
     return _idwt(cA, cD, wavelet, mode, correct_size)
     
 
-#FIXME: should take None for cA/cD
 def _idwt(np.ndarray[double, ndim=1, mode="c"] cA,
           np.ndarray[double, ndim=1, mode="c"] cD,
           object wavelet, object mode='sym', int correct_size=0):
@@ -804,35 +820,20 @@ def _idwt(np.ndarray[double, ndim=1, mode="c"] cA,
     cdef index_t rec_len
     cdef index_t size_diff
 
-    if cA is None and cD is None:
-        raise ValueError("At least one coefficient parameter must be specified.")
-
-    if cA is not None and cD is not None:
-        if cA.dtype != cD.dtype:
-            # need to upcast to common type
-            cA = cA.astype(np.float64)
-            cD = cD.astype(np.float64)
-
-    # check for sizes difference
-    if cA is not None:
-        if cD is not None:
-            size_diff = cA.size - cD.size
-            if size_diff:
-                if correct_size:
-                    if size_diff < 0 or size_diff > 1:
-                        msg = ("Coefficients arrays must satisfy "
-                               "(0 <= len(cA) - len(cD) <= 1).")
-                        raise ValueError(msg)
-                    input_len = cA.size - size_diff
-                else:
-                    msg = "Coefficients arrays must have the same size."
-                    raise ValueError(msg)
-            else:
-                input_len = cD.size
+    # check for size difference between arrays
+    size_diff = cA.size - cD.size
+    if size_diff:
+        if correct_size:
+            if size_diff < 0 or size_diff > 1:
+                msg = ("Coefficients arrays must satisfy "
+                       "(0 <= len(cA) - len(cD) <= 1).")
+                raise ValueError(msg)
+            input_len = cA.size - size_diff
         else:
-            input_len = cA.size
+            msg = "Coefficients arrays must have the same size."
+            raise ValueError(msg)
     else:
-        input_len = cD.size
+        input_len = cA.size
 
     # find reconstruction buffer length
     rec_len = c_wt.idwt_buffer_length(input_len, w.rec_len, mode_)
