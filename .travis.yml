@@ -5,7 +5,15 @@ python:
   - 3.3
 
 before_install:
+  - uname -a
+  - free -m
+  - df -h
+  - ulimit -a
   - pip install -q --use-mirrors Cython numpy
+  # For Python 2.6 we also need argparse
+  - pip install argparse
+  - python -V
+  - popd
 
 install:
   - pip install .

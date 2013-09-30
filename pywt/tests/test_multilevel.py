@@ -40,7 +40,8 @@ def test_swt_decomposition():
     assert_allclose(cD2, expected_cD2, rtol=1e-12)
 
     # level=1, start_level=1 decomposition should match level=2
-    cA2, cD2 = pywt.swt(cA1, db1, level=1, start_level=1)
+    res = pywt.swt(cA1, db1, level=1, start_level=1)
+    cA2, cD2 = res[0]
     assert_allclose(cA2, expected_cA2, rtol=1e-12)
     assert_allclose(cD2, expected_cD2, rtol=1e-12)
 

@@ -9,7 +9,7 @@ from numpy.testing import (run_module_suite, dec,
 import pywt
 
 
-def test_transversing_tree_2d():
+def test_traversing_tree_2d():
     x = np.array([[1, 2, 3, 4, 5, 6, 7, 8]] * 8, dtype=np.float64)
     wp = pywt.WaveletPacket2D(data=x, wavelet='db1', mode='sym')
 
@@ -33,7 +33,7 @@ def test_transversing_tree_2d():
     assert_raises(ValueError, lambda: wp['f'])
 
 
-def test_acessing_node_atributes_2d():
+def test_accessing_node_atributes_2d():
     x = np.array([[1, 2, 3, 4, 5, 6, 7, 8]] * 8, dtype=np.float64)
     wp = pywt.WaveletPacket2D(data=x, wavelet='db1', mode='sym')
 
@@ -63,8 +63,8 @@ def test_collecting_nodes_2d():
     # Second level
     assert_(len(wp.get_level(2)) == 16)
     paths = [node.path for node in wp.get_level(2)]
-    expected_paths = ['aa', 'ah', 'av', 'ad', 'ha', 'hh', 'hv', 'hd', 'va', 'vh', 'vv',
-            'vd', 'da', 'dh', 'dv', 'dd']
+    expected_paths = ['aa', 'ah', 'av', 'ad', 'ha', 'hh', 'hv', 'hd', 'va',
+                      'vh', 'vv', 'vd', 'da', 'dh', 'dv', 'dd']
     assert_(paths == expected_paths)
 
     # Third level.
@@ -132,7 +132,7 @@ def test_data_reconstruction_delete_nodes_2d():
 
 @dec.skipif(True, 'The documentation says one should not rely on this.')
 def test_lazy_evaluation_2D():
-    x = numpy.array([[1, 2, 3, 4, 5, 6, 7, 8]] * 8)
+    x = np.array([[1, 2, 3, 4, 5, 6, 7, 8]] * 8)
     wp = pywt.WaveletPacket2D(data=x, wavelet='db1', mode='sym')
 
     assert_(wp.a is None)
