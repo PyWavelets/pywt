@@ -1186,7 +1186,9 @@ def _swt(np.ndarray[double, ndim=1, mode="c"] data, object wavelet,
         else:
             raise RuntimeError("Invalid data type.")
 
+        data = cA
         ret.append((cA, cD))
+
     ret.reverse()
     return ret
 
