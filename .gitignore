@@ -18,6 +18,9 @@ pip-log.txt
 
 # Editors
 .idea
+.project
+.pydevproject
+.settings
 
 # Project working files
 _pywt.[ch]
