@@ -13,7 +13,13 @@ def test_centrfreq():
     w = pywt.Wavelet('db1')
     expected = 1
     result = pywt.centfrq(w, precision=12)
+    assert_almost_equal(result, expected, decimal=3)
+    # db2, frequency=2/3
+    w = pywt.Wavelet('db2')
+    expected = 2/3.
+    result = pywt.centfrq(w, precision=12)
     assert_almost_equal(result, expected)
+
 
 
 def test_scal2frq_scale():
@@ -21,16 +27,16 @@ def test_scal2frq_scale():
     delta = 1
     w = pywt.Wavelet('db1')
     expected = 1. / scale
-    result = pywt.scal2frq(w, scale, delta, precision=8)
-    assert_almost_equal(result, expected)
+    result = pywt.scal2frq(w, scale, delta, precision=12)
+    assert_almost_equal(result, expected, decimal=3)
 
 def test_scal2frq_delta():
     scale = 1
     delta = 2
     w = pywt.Wavelet('db1')
     expected = 1. / delta
-    result = pywt.scal2frq(w, scale, delta, precision=8)
-    assert_almost_equal(result, expected)
+    result = pywt.scal2frq(w, scale, delta, precision=12)
+    assert_almost_equal(result, expected, decimal=3)
 
 
 if __name__ == '__main__':
