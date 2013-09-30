@@ -14,7 +14,7 @@ def test_wavelet_packet_structure():
     wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='sym')
 
     assert_(wp.data == [1, 2, 3, 4, 5, 6, 7, 8])
-    assert_(repr(wp.path), '')
+    assert_(wp.path == '')
     assert_(wp.level == 0)
     assert_(wp['ad'].maxlevel == 3)
 
@@ -92,15 +92,13 @@ def test_reconstructing_data():
     new_wp['d'] = wp['d']
 
     # Reconstruct data from aa, ad, and d packets.
-    assert_allclose(new_wp.reconstruct(update=False), np.arange(1, 9),
-                    rtol=1e-12)
+    assert_allclose(new_wp.reconstruct(update=False), x, rtol=1e-12)
 
     # The node's :attr:`~Node.data` will not be updated
     assert_(new_wp.data is None)
 
     # When `update` is True:
-    assert_allclose(new_wp.reconstruct(update=True), np.arange(1, 9),
-                    rtol=1e-12)
+    assert_allclose(new_wp.reconstruct(update=True), x, rtol=1e-12)
     assert_allclose(new_wp.data, np.arange(1, 9), rtol=1e-12)
 
     assert_([n.path for n in new_wp.get_leaf_nodes(False)] ==
