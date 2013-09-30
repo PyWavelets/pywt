@@ -354,12 +354,12 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
     property family_name:
         "Wavelet family name"
         def __get__(self):
-            return self.w.family_name
+            return self.w.family_name.decode('latin-1')
 
     property short_family_name:
         "Short wavelet family name"
         def __get__(self):
-            return self.w.short_name
+            return self.w.short_name.decode('latin-1')
 
     property orthogonal:
         "Is orthogonal"
