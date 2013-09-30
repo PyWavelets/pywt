@@ -1000,8 +1000,7 @@ def _upcoef(part, np.ndarray[data_t, ndim=1, mode="c"] coeffs, wavelet,
     return rec
 
 
-def downcoef(part, np.ndarray[data_t, ndim=1, mode="c"] data,
-             object wavelet, object mode='sym', int level=1):
+def downcoef(part, data, wavelet, mode='sym', level=1):
     """
     downcoef(part, data, wavelet, mode='sym', level=1)
 
@@ -1016,8 +1015,8 @@ def downcoef(part, np.ndarray[data_t, ndim=1, mode="c"] data,
         Coefficients type:
         * 'a' - approximations reconstruction is performed
         * 'd' - details reconstruction is performed
-    data :
-        Input signal
+    data : array_like
+        Input signal.
     mode : str, optional
         Signal extension mode, see MODES (default: 'sym')
     wavelet : Wavelet object or name
@@ -1028,8 +1027,16 @@ def downcoef(part, np.ndarray[data_t, ndim=1, mode="c"] data,
     Returns
     -------
     coeffs :
-    """
 
+    """
+    # accept array_like input; make a copy to ensure a contiguous array
+    dt = _check_dtype(data)
+    data = np.array(data, dtype=dt)
+    return _downcoef(part, data, wavelet, mode, level)
+
+
+def _downcoef(part, np.ndarray[data_t, ndim=1, mode="c"] data,
+              object wavelet, object mode='sym', int level=1):
     cdef np.ndarray[data_t, ndim=1, mode="c"] coeffs
     cdef int i, do_dec_a
     cdef index_t dec_len
