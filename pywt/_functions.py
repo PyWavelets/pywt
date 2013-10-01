@@ -180,7 +180,7 @@ def scale2frequency(wavelet, scale, precision=8):
     return central_frequency(wavelet, precision=precision) / scale
 
 
-def qmf(filter):
+def qmf(filt):
     """
     Returns the Quadrature Mirror Filter(QMF).
 
@@ -189,7 +189,7 @@ def qmf(filter):
 
     Parameters
     ----------
-    filter : array_like
+    filt : array_like
         Input filter for which QMF needs to be computed.
 
     Returns
@@ -198,7 +198,7 @@ def qmf(filter):
         Quadrature mirror of the input filter.
 
     """
-    qm_filter = np.array(filter)[::-1]
+    qm_filter = np.array(filt)[::-1]
     qm_filter[1::2] = -qm_filter[1::2]
     return qm_filter
 
