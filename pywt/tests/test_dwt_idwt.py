@@ -3,7 +3,7 @@ from __future__ import division, print_function, absolute_import
 
 import numpy as np
 from numpy.testing import (run_module_suite, assert_allclose, assert_,
-    assert_raises, dec)
+    assert_raises)
 
 import pywt
 
@@ -43,7 +43,6 @@ def test_dwt_coeff_len():
     assert_allclose(ln_modes, [6, 6, 6, 6, 6, 4])
 
 
-@dec.knownfailureif(True, "None input not yet working")
 def test_idwt_none_input():
     # None input equals arrays of zeros of the right length
     res1 = pywt.idwt([1,2,0,1], None, 'db2', 'sym')

@@ -1,16 +1,12 @@
 #!/usr/bin/env python
 from __future__ import division, print_function, absolute_import
 
-import sys
-
 import numpy as np
-from numpy.testing import run_module_suite, assert_allclose, assert_, dec
+from numpy.testing import run_module_suite, assert_allclose, assert_
 
 import pywt
 
 
-@dec.knownfailureif(sys.version[0] == '3',
-                    "https://github.com/rgommers/pywt/issues/34")
 def test_wavelet_properties():
     w = pywt.Wavelet('db3')
 
@@ -74,7 +70,6 @@ def test_custom_wavelet():
     haar_custom2.biorthogonal = True
 
 
-@dec.knownfailureif(True, "This is seriously broken")
 def test_wavefun_sym3():
     w = pywt.Wavelet('sym3')
     # sym3 is an orthogonal wavelet, so 3 outputs from wavefun
@@ -118,7 +113,6 @@ def test_wavefun_sym3():
     assert_allclose(psi, psi_expect)
 
 
-@dec.knownfailureif(True, "This is seriously broken")
 def test_wavefun_bior13():
     w = pywt.Wavelet('bior1.3')
     # bior1.3 is not an orthogonal wavelet, so 5 outputs from wavefun
