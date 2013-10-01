@@ -9,14 +9,14 @@ Other wavelet related functions.
 
 from __future__ import division, print_function, absolute_import
 
-__all__ = ["intwave", "centfrq", "scal2frq", "qmf", "orthfilt"]
-
-from math import sqrt
-
 import numpy as np
 from numpy.fft import fft
 
 from ._pywt import Wavelet
+
+
+__all__ = ["intwave", "centfrq", "scal2frq", "qmf", "orthfilt"]
+
 
 WAVELET_CLASSES = (Wavelet)
 
@@ -28,8 +28,8 @@ def wavelet_for_name(name):
     try:
         wavelet = Wavelet(name)
     except ValueError:
-        raise
-        #raise ValueError("Invalid wavelet name - %s." % name)
+        raise ValueError("Invalid wavelet name - %s." % name)
+
     return wavelet
 
 
@@ -46,8 +46,9 @@ def intwave(wavelet, precision=8):
 
     Parameters
     ----------
-    wavelet : Wavelet object, wavelet name string or (wavelet function approx., x grid)
-        Wavelet to integrate
+    wavelet : Wavelet instance, str or tuple
+        Wavelet to integrate.  If a string, should be the name of a wavelet.
+        If a tuple, should contain ``(wavelet function approx., x grid)``.
     precision : int, optional
         Precision that will be used for wavelet function
         approximation computed with the wavefun(level=precision)
@@ -70,13 +71,14 @@ def intwave(wavelet, precision=8):
 
     Examples
     --------
-    >>> from pywt import functions
     >>> import pywt
     >>> wavelet1 = pywt.Wavelet('db2')
-    >>> [int_psi, x] = functions.intwave(wavelet1, precision=5)
+    >>> [int_psi, x] = pywt.intwave(wavelet1, precision=5)
     >>> wavelet2 = pywt.Wavelet('bior1.3')
-    >>> [int_psi_d, int_psi_r, x] = functions.intwave(wavelet2, precision=5)
+    >>> [int_psi_d, int_psi_r, x] = pywt.intwave(wavelet2, precision=5)
+
     """
+    # FIXME: this function should really use scipy.integrate.quad
 
     if isinstance(wavelet, tuple):
         psi, x = np.asarray(wavelet[0]), np.asarray(wavelet[1])
@@ -108,8 +110,9 @@ def centfrq(wavelet, precision=8):
 
     Parameters
     ----------
-    wavelet : Wavelet object, wavelet name string or (wavelet function approx., x grid)
-        Wavelet to integrate
+    wavelet : Wavelet instance, str or tuple
+        Wavelet to integrate.  If a string, should be the name of a wavelet.
+        If a tuple, should contain ``(wavelet function approx., x grid)``.
     precision : int, optional
         Precision that will be used for wavelet function
         approximation computed with the wavefun(level=precision)
@@ -126,6 +129,7 @@ def centfrq(wavelet, precision=8):
         of Wavelet object to allow custom wavelet functions.
     """
 
+    # FIXME: `wavelet` handling should be identical to intwave, factor out
     if isinstance(wavelet, tuple):
         psi, x = np.asarray(wavelet[0]), np.asarray(wavelet[1])
     else:
@@ -155,25 +159,26 @@ def scal2frq(wavelet, scale, delta, precision=8):
 
     Parameters
     ----------
-    wavelet : Wavelet object, wavelet name string or (wavelet function approx., x grid)
-        Wavelet to integrate
+    wavelet : Wavelet instance, str or tuple
+        Wavelet to integrate.  If a string, should be the name of a wavelet.
+        If a tuple, should contain ``(wavelet function approx., x grid)``.
     scale : scalar
     delta : scalar
         sampling
     precision : int, optional
-        Precision that will be used for wavelet function
-        approximation computed with the wavefun(level=precision)
-        Wavelet's method (default: 8).
+        Precision that will be used for wavelet function approximation computed
+        with ``wavelet.wavefun(level=precision)``.  Default is 8.
 
     Returns
     -------
-    scalar
+    freq : scalar
 
     Notes
     -----
     (function_approx, xgrid) :
         Function defined on xgrid. Used instead
         of Wavelet object to allow custom wavelet functions.
+
     """
     return centfrq(wavelet, precision=precision) / (scale * delta)
 
@@ -189,7 +194,7 @@ def orthfilt(scaling_filter):
 
     scaling_filter = np.asarray(scaling_filter, dtype=np.float64)
 
-    rec_lo = sqrt(2) * scaling_filter / sum(scaling_filter)
+    rec_lo = np.sqrt(2) * scaling_filter / sum(scaling_filter)
     dec_lo = rec_lo[::-1]
 
     rec_hi = qmf(rec_lo)
