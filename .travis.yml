@@ -10,6 +10,8 @@ before_install:
   - df -h
   - ulimit -a
   - pip install -q --use-mirrors Cython numpy
+  - pip install coverage
+  - pip install coveralls
   # For Python 2.6 we also need argparse
   - pip install argparse
   - python -V
@@ -18,4 +20,6 @@ install:
   - pip install .
 
 script:
-  - python runtests.py -n -m full
+  - python runtests.py -n -m full --coverage
+after_success:
+    - coveralls
