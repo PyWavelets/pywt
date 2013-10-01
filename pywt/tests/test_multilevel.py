@@ -7,7 +7,6 @@ from numpy.testing import (run_module_suite, assert_almost_equal,
     assert_allclose, assert_)
 
 import pywt
-from pywt import multilevel
 
 
 def test_wavedec():
@@ -52,18 +51,18 @@ def test_swt_decomposition():
 
 
 def test_wavedec2():
-    coeffs = multilevel.wavedec2(np.ones((4, 4)), 'db1')
+    coeffs = pywt.multilevel.wavedec2(np.ones((4, 4)), 'db1')
 
     assert_(len(coeffs), 3)
-    assert_allclose(multilevel.waverec2(coeffs, 'db1'), np.ones((4, 4)),
+    assert_allclose(pywt.multilevel.waverec2(coeffs, 'db1'), np.ones((4, 4)),
                     rtol=1e-12)
 
 
 def test_waverec2():
-    coeffs = multilevel.waverec2(np.ones((4, 4)), 'db1')
+    coeffs = pywt.multilevel.waverec2(np.ones((4, 4)), 'db1')
 
     assert_(len(coeffs), 3)
-    assert_allclose(multilevel.wavedec2(coeffs, 'db1'), np.ones((4, 4)),
+    assert_allclose(pywt.multilevel.wavedec2(coeffs, 'db1'), np.ones((4, 4)),
                     rtol=1e-12)
 
 if __name__ == '__main__':
