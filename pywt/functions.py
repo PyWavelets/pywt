@@ -39,7 +39,7 @@ def _integrate(arr, step):
     Return the indefinite integral of the input array.
     """
     out = np.empty_like(arr)
-    interp = Interpolate(np.arange(arr.shape), arr)
+    interp = Interpolate(np.arange(arr.shape[0]), arr)
     for i in range(len(arr)):
         out[i] = interp.integral(0, i)
     return out * step
