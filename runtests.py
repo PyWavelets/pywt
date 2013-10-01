@@ -44,6 +44,7 @@ import time
 import imp
 from argparse import ArgumentParser, REMAINDER
 
+
 def main(argv):
     parser = ArgumentParser(usage=__doc__.lstrip())
     parser.add_argument("--verbose", "-v", action="count", default=1,
@@ -161,6 +162,7 @@ def main(argv):
     else:
         sys.exit(1)
 
+
 def build_project(args):
     """
     Build a dev version of the project.
@@ -235,6 +237,7 @@ def build_project(args):
 
     return site_dir
 
+
 if sys.version_info[0] >= 3:
     import builtins
     exec_ = getattr(builtins, "exec")
@@ -250,6 +253,7 @@ else:
         elif locs is None:
             locs = globs
         exec("""exec code in globs, locs""")
+
 
 if __name__ == "__main__":
     main(argv=sys.argv[1:])
