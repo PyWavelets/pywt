@@ -183,10 +183,10 @@ def scal2frq(wavelet, scale, delta, precision=8):
     return centfrq(wavelet, precision=precision) / (scale * delta)
 
 
-def qmf(filter):
-    filter = np.array(filter)[::-1]
-    filter[1::2] = -filter[1::2]
-    return filter
+def qmf(filt):
+    filt = np.array(filt)[::-1]
+    filt[1::2] = -filt[1::2]
+    return filt
 
 
 def orthfilt(scaling_filter):
