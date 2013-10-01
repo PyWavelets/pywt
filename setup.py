@@ -141,7 +141,6 @@ def setup_package():
 
     metadata = dict(
         name="PyWavelets",
-        version="0.2.2",
         author="Filip Wasilewski",
         author_email="en@ig.ma",
         url="http://www.pybytes.com/pywavelets/",
