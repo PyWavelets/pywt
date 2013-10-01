@@ -255,7 +255,6 @@ Wavelet* wavelet(char name, int order)
                         wtfree(w);
                         return NULL;
                 }
-            //## ENDFOR $DTYPE$
             break;
 
         /* Discrete FIR filter approximation of Meyer wavelet */
