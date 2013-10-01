@@ -112,6 +112,16 @@ def expand_templates():
         raise RuntimeError("Expanding templates failed!")
 
 
+def expand_src_templates():
+    cwd = os.path.abspath(os.path.dirname(__file__))
+    print("Expanding templates")
+    p = subprocess.call([sys.executable,
+                          os.path.join(cwd, 'util', 'templating_src.py'),
+                          'pywt'],
+                         cwd=cwd)
+    if p != 0:
+        raise RuntimeError("Expanding templates failed!")
+
 def generate_cython():
     cwd = os.path.abspath(os.path.dirname(__file__))
     print("Cythonizing sources")
@@ -201,6 +211,7 @@ def setup_package():
         cwd = os.path.abspath(os.path.dirname(__file__))
         if not os.path.exists(os.path.join(cwd, 'PKG-INFO')):
             # Generate Cython sources, unless building from source release
+            expand_src_templates()
             expand_templates()
             generate_cython()
 
