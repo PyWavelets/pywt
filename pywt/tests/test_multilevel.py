@@ -58,12 +58,5 @@ def test_wavedec2():
                     rtol=1e-12)
 
 
-def test_waverec2():
-    coeffs = pywt.multilevel.waverec2(np.ones((4, 4)), 'db1')
-
-    assert_(len(coeffs), 3)
-    assert_allclose(pywt.multilevel.wavedec2(coeffs, 'db1'), np.ones((4, 4)),
-                    rtol=1e-12)
-
 if __name__ == '__main__':
     run_module_suite()
