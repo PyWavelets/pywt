@@ -19,13 +19,14 @@ typedef enum {
 
 /* Wavelet structure holding pointers to filter arrays and property attributes */
 typedef struct {
-    
-    //## FOR $DTYPE$ IN (double, float):
-        $DTYPE$* dec_hi_$DTYPE$;  /* highpass decomposition */
-        $DTYPE$* dec_lo_$DTYPE$;  /* lowpass decomposition */
-        $DTYPE$* rec_hi_$DTYPE$;  /* highpass reconstruction */
-        $DTYPE$* rec_lo_$DTYPE$;  /* lowpass reconstruction */
-    //## ENDFOR $DTYPE$
+        double* dec_hi_double;  /* highpass decomposition */
+        double* dec_lo_double;  /* lowpass decomposition */
+        double* rec_hi_double;  /* highpass reconstruction */
+        double* rec_lo_double;  /* lowpass reconstruction */
+        float* dec_hi_float;
+        float* dec_lo_float;
+        float* rec_hi_float;
+        float* rec_lo_float;
     
     index_t dec_len;   /* length of decomposition filter */
     index_t rec_len;   /* length of reconstruction filter */

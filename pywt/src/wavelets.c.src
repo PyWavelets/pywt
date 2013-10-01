@@ -1,0 +1,463 @@
+/* Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/> */
+/* See COPYING for license details. */
+
+/* Allocating, setting properties and destroying wavelet structs */
+#include "wavelets.h"
+#include "wavelets_coeffs.h"
+
+Wavelet* wavelet(char name, int order)
+{
+    Wavelet *w, *wtmp;
+    index_t i;
+
+    /* Haar wavelet */
+    if(name == 'h' || name == 'H'){
+
+        /* the same as db1 */
+        w = wavelet('d', 1);
+        w->family_name = "Haar";
+        w->short_name = "haar";
+        return w;
+
+    /* Reverse biorthogonal wavelets family */
+    } else if (name == 'r' || name == 'R') { 
+
+        /* rbio is like bior, only with switched filters */
+        wtmp = wavelet('b', order);
+        w = copy_wavelet(wtmp);
+        
+        if(w == NULL)
+            return NULL;
+        
+        w->dec_len = wtmp->rec_len;
+        w->rec_len = wtmp->dec_len;
+
+        for(i = 0; i < w->rec_len; ++i){
+            /**begin repeat
+             * #type = double, float#
+             */
+                w->rec_lo_@type@[i] = wtmp->dec_lo_@type@[wtmp->dec_len-1-i];
+                w->rec_hi_@type@[i] = wtmp->dec_hi_@type@[wtmp->dec_len-1-i];
+            /**end repeat**/
+        }
+
+        for(i = 0; i < w->dec_len; ++i){
+            /**begin repeat
+             * #type = double, float#
+             */
+                w->dec_hi_@type@[i] = wtmp->rec_hi_@type@[wtmp->rec_len-1-i];
+                w->dec_lo_@type@[i] = wtmp->rec_lo_@type@[wtmp->rec_len-1-i];
+            /**end repeat**/
+        }
+
+        w->vanishing_moments_psi = order / 10; /* 1st digit */
+        w->vanishing_moments_phi = -1;
+
+        w->family_name = "Reverse biorthogonal";
+        w->short_name = "rbio";
+
+        free_wavelet(wtmp);
+        
+        return w;
+    }
+
+    w = wtmalloc(sizeof(Wavelet));
+    if(w == NULL)
+        return NULL;
+
+    w->_builtin = 1;
+
+    switch(name){
+
+        /* Daubechies wavelets family */
+        case 'd':
+        case 'D':
+            w->dec_len = w->rec_len = 2*order;
+
+            w->vanishing_moments_psi = order;
+            w->vanishing_moments_phi = 0;
+            w->support_width = 2*order - 1;
+            w->orthogonal = 1;
+            w->biorthogonal = 1;
+            w->symmetry = ASYMMETRIC;
+            w->compact_support = 1;
+            w->family_name = "Daubechies";
+            w->short_name = "db";
+
+            switch (order) {
+                /**begin repeat
+                 * #order = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20#
+                 */
+                case @order@:
+                    /**begin repeat1
+                     * #type = double, float#
+                     */
+                    w->dec_lo_@type@ = db@order@_@type@[0];
+                    w->dec_hi_@type@ = db@order@_@type@[1];
+                    w->rec_lo_@type@ = db@order@_@type@[2];
+                    w->rec_hi_@type@ = db@order@_@type@[3];
+                    /**end repeat1**/
+                    break;
+                /**end repeat**/ 
+                default:
+                    wtfree(w);
+                    return NULL;
+            }
+            break;
+
+        /* Symlets wavelets family */
+        case 's':
+        case 'S':
+            w->dec_len = w->rec_len = order << 1;
+
+            w->vanishing_moments_psi = order;
+            w->vanishing_moments_phi = 0;
+            w->support_width = 2*order - 1;
+            w->orthogonal = 1;
+            w->biorthogonal = 1;
+            w->symmetry = NEAR_SYMMETRIC;
+            w->compact_support = 1;
+            w->family_name = "Symlets";
+            w->short_name = "sym";
+
+            switch (order) {
+                /**begin repeat
+                 * #order = 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20#
+                 */
+                case @order@:
+                    /**begin repeat1
+                     * #type = double, float#
+                     */
+                    w->dec_lo_@type@ = sym@order@_@type@[0];
+                    w->dec_hi_@type@ = sym@order@_@type@[1];
+                    w->rec_lo_@type@ = sym@order@_@type@[2];
+                    w->rec_hi_@type@ = sym@order@_@type@[3];
+                    /**end repeat1**/
+                    break;
+                /**end repeat**/
+            
+                default:
+                    wtfree(w);
+                    return NULL;
+            }
+            break;
+
+        /* Coiflets wavelets family */
+        case 'c':
+        case 'C':
+            w->dec_len = w->rec_len = order * 6;
+
+            w->vanishing_moments_psi = 2*order;
+            w->vanishing_moments_phi = 2*order -1;
+            w->support_width = 6*order - 1;
+            w->orthogonal = 1;
+            w->biorthogonal = 1;
+            w->symmetry = NEAR_SYMMETRIC;
+            w->compact_support = 1;
+            w->family_name = "Coiflets";
+            w->short_name = "coif";
+
+            switch (order) {
+                /**begin repeat
+                 * #order = 1, 2, 3, 4, 5#
+                 */
+                case @order@:
+                    /**begin repeat1
+                     * #type = double, float#
+                     */
+                    w->dec_lo_@type@ = coif@order@_@type@[0];
+                    w->dec_hi_@type@ = coif@order@_@type@[1];
+                    w->rec_lo_@type@ = coif@order@_@type@[2];
+                    w->rec_hi_@type@ = coif@order@_@type@[3];
+                    /**end repeat1**/
+                    break;
+                /**end repeat**/
+            
+                default:
+                    wtfree(w);
+                    return NULL;
+            }
+            break;
+
+        /* Biorthogonal wavelets family */
+        case 'b':
+        case 'B':
+
+            w->vanishing_moments_psi = order/10;
+            w->vanishing_moments_phi = -1;
+            w->support_width = -1;
+            w->orthogonal = 0;
+            w->biorthogonal = 1;
+            w->symmetry = SYMMETRIC;
+            w->compact_support = 1;
+            w->family_name = "Biorthogonal";
+            w->short_name = "bior";
+
+                switch (order) {
+                    /**begin repeat
+                     * #M = 1, 3, 5#
+                     */
+                        case 1@M@:
+                            /**begin repeat1
+                             * #type = double, float#
+                             */
+                                w->dec_lo_@type@ = bior1_@M@_@type@[0];
+                                w->dec_hi_@type@ = bior1_@M@_@type@[1];
+                                w->rec_lo_@type@ = bior1_@M@_@type@[2];
+                                w->rec_hi_@type@ = bior1_@M@_@type@[3];
+                            /**end repeat1**/
+                            w->dec_len = w->rec_len = 2 * @M@;
+                            break;
+                    /**end repeat**/
+
+                    /**begin repeat
+                     * #M = 2, 4, 6, 8#
+                     */
+                        case 2@M@:
+                            /**begin repeat1
+                             * #type = double, float#
+                             */
+                                w->dec_lo_@type@ = bior2_@M@_@type@[0];
+                                w->dec_hi_@type@ = bior2_@M@_@type@[1];
+                                w->rec_lo_@type@ = bior2_@M@_@type@[2];
+                                w->rec_hi_@type@ = bior2_@M@_@type@[3];
+                            /**end repeat1**/
+                            w->dec_len = w->rec_len = 2 * @M@ + 2;
+                            break;
+                    /**end repeat**/
+
+                    /**begin repeat
+                     * #M = 1, 3, 5, 7, 9#
+                     */
+                        case 3@M@:
+                            /**begin repeat1
+                             * #type = double, float#
+                             */
+                                w->dec_lo_@type@ = bior3_@M@_@type@[0];
+                                w->dec_hi_@type@ = bior3_@M@_@type@[1];
+                                w->rec_lo_@type@ = bior3_@M@_@type@[2];
+                                w->rec_hi_@type@ = bior3_@M@_@type@[3];
+                            /**end repeat1**/
+                            w->dec_len = w->rec_len = 2 * @M@ + 2;
+                            break;
+                    /**end repeat**/
+
+                    /**begin repeat
+                     * #M = 4#
+                     */
+                        case 4@M@:
+                            /**begin repeat1
+                             * #type = double, float#
+                             */
+                                w->dec_lo_@type@ = bior4_@M@_@type@[0];
+                                w->dec_hi_@type@ = bior4_@M@_@type@[1];
+                                w->rec_lo_@type@ = bior4_@M@_@type@[2];
+                                w->rec_hi_@type@ = bior4_@M@_@type@[3];
+                            /**end repeat1**/
+                            w->dec_len = w->rec_len = 2 * @M@ + 2;
+                            break;
+                    /**end repeat**/
+
+                    /**begin repeat
+                     * #M = 5#
+                     */
+                        case 5@M@:
+                            /**begin repeat1
+                             * #type = double, float#
+                             */
+                                w->dec_lo_@type@ = bior5_@M@_@type@[0];
+                                w->dec_hi_@type@ = bior5_@M@_@type@[1];
+                                w->rec_lo_@type@ = bior5_@M@_@type@[2];
+                                w->rec_hi_@type@ = bior5_@M@_@type@[3];
+                            /**end repeat1**/
+                            w->dec_len = w->rec_len = 2 * @M@ + 2;
+                            break;
+                    /**end repeat**/
+
+                    /**begin repeat
+                     * #M = 8#
+                     */
+                        case 6@M@:
+                            /**begin repeat1
+                             * #type = double, float#
+                             */
+                                w->dec_lo_@type@ = bior6_@M@_@type@[0];
+                                w->dec_hi_@type@ = bior6_@M@_@type@[1];
+                                w->rec_lo_@type@ = bior6_@M@_@type@[2];
+                                w->rec_hi_@type@ = bior6_@M@_@type@[3];
+                            /**end repeat1**/
+                            w->dec_len = w->rec_len = 2 * @M@ + 2;
+                            break;
+                    /**end repeat**/
+
+                    default:
+                        wtfree(w);
+                        return NULL;
+                }
+            break;
+
+        /* Discrete FIR filter approximation of Meyer wavelet */
+        case 'm':
+        case 'M':
+
+            w->vanishing_moments_psi = -1;
+            w->vanishing_moments_phi = -1;
+            w->support_width = -1;
+            w->orthogonal = 1;
+            w->biorthogonal = 1;
+            w->symmetry = SYMMETRIC;
+            w->compact_support = 1;
+            w->family_name = "Discrete Meyer (FIR Approximation)";
+            w->short_name = "dmey";
+
+            /**begin repeat
+             * #type = double, float#
+             */
+                w->dec_lo_@type@ = dmey_@type@[0];
+                w->dec_hi_@type@ = dmey_@type@[1];
+                w->rec_lo_@type@ = dmey_@type@[2];
+                w->rec_hi_@type@ = dmey_@type@[3];
+            /**end repeat**/
+            w->dec_len = w->rec_len = 62;
+            return w;
+            break;
+
+        default:
+            wtfree(w);
+            return NULL;
+    }
+    return w;
+}
+
+
+Wavelet* blank_wavelet(index_t filters_length)
+{
+    Wavelet* w;
+
+    if(filters_length < 1)
+        return NULL;
+
+    /* pad to even length */
+    if(filters_length % 2)
+        ++filters_length;
+
+    w = wtmalloc(sizeof(Wavelet));
+    if(w == NULL) return NULL;
+
+    /* 
+     * Important!
+     * Otherwise filters arrays allocated here won't be deallocated by free_wavelet
+     */
+    w->_builtin = 0;
+
+    w->dec_len = w->rec_len = filters_length;
+
+    /**begin repeat
+     * #type = double, float#
+     */
+        w->dec_lo_@type@ = wtcalloc(filters_length, sizeof(@type@));
+        w->dec_hi_@type@ = wtcalloc(filters_length, sizeof(@type@));
+        w->rec_lo_@type@ = wtcalloc(filters_length, sizeof(@type@));
+        w->rec_hi_@type@ = wtcalloc(filters_length, sizeof(@type@));
+
+        if(w->dec_lo_@type@ == NULL || w->dec_hi_@type@ == NULL || w->rec_lo_@type@ == NULL || w->rec_hi_@type@ == NULL){
+            free_wavelet(w);
+            return NULL;
+        }
+    /**end repeat**/
+
+    /* set properties to "blank" values */
+    w->vanishing_moments_psi = 0;
+    w->vanishing_moments_phi = 0;
+    w->support_width = -1;
+    w->orthogonal = 0;
+    w->biorthogonal = 0;
+    w->symmetry = UNKNOWN;
+    w->compact_support = 0;
+    w->family_name = "";
+    w->short_name = "";
+
+    return w;
+}
+
+
+Wavelet* copy_wavelet(Wavelet* base)
+{
+    Wavelet* w;
+    index_t i;
+
+    if(base == NULL) return NULL;
+
+    if(base->dec_len < 1 || base->rec_len < 1)
+        return NULL;
+
+    w = wtmalloc(sizeof(Wavelet));
+    if(w == NULL) return NULL;
+
+    memcpy(w, base, sizeof(Wavelet));
+
+    w->_builtin = 0;
+
+    /**begin repeat
+     * #type = double, float#
+     */
+
+        w->dec_lo_@type@ = wtcalloc(w->dec_len, sizeof(@type@));
+        w->dec_hi_@type@ = wtcalloc(w->dec_len, sizeof(@type@));
+        w->rec_lo_@type@ = wtcalloc(w->rec_len, sizeof(@type@));
+        w->rec_hi_@type@ = wtcalloc(w->rec_len, sizeof(@type@));
+
+        if(w->dec_lo_@type@ == NULL || w->dec_hi_@type@ == NULL || w->rec_lo_@type@ == NULL || w->rec_hi_@type@ == NULL){
+            free_wavelet(w);
+            return NULL;
+        }
+
+        for(i=0; i< w->dec_len; ++i){
+            w->dec_lo_@type@[i] = base->dec_lo_@type@[i];
+            w->dec_hi_@type@[i] = base->dec_hi_@type@[i];
+        }
+
+        for(i=0; i< w->rec_len; ++i){
+            w->rec_lo_@type@[i] = base->rec_lo_@type@[i];
+            w->rec_hi_@type@[i] = base->rec_hi_@type@[i];
+        }
+
+    /**end repeat**/
+
+    return w;
+}
+
+void free_wavelet(Wavelet *w){
+
+    if(w->_builtin == 0){
+
+        /* deallocate filters */
+
+        /**begin repeat
+         * #type = double, float#
+         */
+            if(w->dec_lo_@type@ != NULL){
+                wtfree(w->dec_lo_@type@);
+                w->dec_lo_@type@ = NULL;
+            }
+
+            if(w->dec_hi_@type@ != NULL){
+                wtfree(w->dec_hi_@type@);
+                w->dec_hi_@type@ = NULL;
+            }
+
+            if(w->rec_lo_@type@ != NULL){
+                wtfree(w->rec_lo_@type@);
+                w->rec_lo_@type@ = NULL;
+            }
+
+            if(w->rec_hi_@type@ != NULL){
+                wtfree(w->rec_hi_@type@);
+                w->rec_hi_@type@ = NULL;
+            }
+        /**end repeat**/
+    }
+
+    /* finally free struct */
+    wtfree(w);
+}
