@@ -12,6 +12,7 @@ from __future__ import division, print_function, absolute_import
 import numpy as np
 from numpy.fft import fft
 
+from scipy.interpolate import InterpolatedUnivariateSpline as Interpolate
 from ._pywt import Wavelet
 
 
@@ -34,9 +35,14 @@ def wavelet_for_name(name):
 
 
 def _integrate(arr, step):
-    integral = np.cumsum(arr)
-    integral *= step
-    return integral
+    """
+    Return the indefinite integral of the input array.
+    """
+    out = np.empty_like(arr)
+    interp = Interpolate(np.arange(arr.shape[0]), arr)
+    for i in range(len(arr)):
+        out[i] = interp.integral(0, i)
+    return out * step
 
 
 def intwave(wavelet, precision=8):
@@ -78,7 +84,6 @@ def intwave(wavelet, precision=8):
     >>> [int_psi_d, int_psi_r, x] = pywt.intwave(wavelet2, precision=5)
 
     """
-    # FIXME: this function should really use scipy.integrate.quad
 
     if isinstance(wavelet, tuple):
         psi, x = np.asarray(wavelet[0]), np.asarray(wavelet[1])
@@ -183,10 +188,10 @@ def scal2frq(wavelet, scale, delta, precision=8):
     return centfrq(wavelet, precision=precision) / (scale * delta)
 
 
-def qmf(filter):
-    filter = np.array(filter)[::-1]
-    filter[1::2] = -filter[1::2]
-    return filter
+def qmf(filt):
+    filt = np.array(filt)[::-1]
+    filt[1::2] = -filt[1::2]
+    return filt
 
 
 def orthfilt(scaling_filter):

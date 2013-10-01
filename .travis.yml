@@ -9,7 +9,7 @@ before_install:
   - free -m
   - df -h
   - ulimit -a
-  - pip install -q --use-mirrors Cython numpy
+  - pip install -q --use-mirrors Cython numpy scipy
   - pip install coverage
   - pip install coveralls
   # For Python 2.6 we also need argparse

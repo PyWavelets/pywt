@@ -28,6 +28,7 @@ PyWavelets is a package for the Python programming language. It requires:
 
  - Python_ 2.6 or 2.7
  - numpy_ numeric array module
+ - scipy_ Interpolate module
 
 Download
 --------
@@ -116,4 +117,4 @@ For information on commercial support and development email me at en@ig.ma.
 .. _Python: http://python.org/
 .. _Python Package Index: http://pypi.python.org/pypi/PyWavelets/
 .. _PyWavelets discussions group: http://groups.google.com/group/pywavelets
-
+.. _scipy: http://scipy.org
