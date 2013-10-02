@@ -1,31 +1,31 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import numpy
-import pylab
+import numpy as np
+import matplotlib.pyplot as plt
 
 from pywt import WaveletPacket
 
-x = numpy.arange(612 - 80, 20, -0.5) / 150.
-data = numpy.sin(20 * pylab.log(x)) * numpy.sign((pylab.log(x)))
-from sample_data import ecg as data
+from sample_data import ecg
 
-wp = WaveletPacket(data, 'sym5', maxlevel=4)
 
-pylab.bone()
-pylab.subplot(wp.maxlevel + 1, 1, 1)
-pylab.plot(data, 'k')
-pylab.xlim(0, len(data) - 1)
-pylab.title("Wavelet packet coefficients")
+wp = WaveletPacket(ecg, 'sym5', maxlevel=4)
 
-for i in range(1, wp.maxlevel + 1):
-    ax = pylab.subplot(wp.maxlevel + 1, 1, i + 1)
-    nodes = wp.get_level(i, "freq")
+fig = plt.figure()
+plt.set_cmap('bone')
+ax = fig.add_subplot(wp.maxlevel + 1, 1, 1)
+ax.plot(ecg, 'k')
+ax.set_xlim(0, len(ecg) - 1)
+ax.set_title("Wavelet packet coefficients")
+
+for level in range(1, wp.maxlevel + 1):
+    ax = fig.add_subplot(wp.maxlevel + 1, 1, level + 1)
+    nodes = wp.get_level(level, "freq")
     nodes.reverse()
     labels = [n.path for n in nodes]
-    values = -abs(numpy.array([n.data for n in nodes]))
-    pylab.imshow(values, interpolation='nearest', aspect='auto')
-    pylab.yticks(numpy.arange(len(labels) - 0.5, -0.5, -1), labels)
-    pylab.setp(ax.get_xticklabels(), visible=False)
+    values = -abs(np.array([n.data for n in nodes]))
+    ax.imshow(values, interpolation='nearest', aspect='auto')
+    ax.set_yticks(np.arange(len(labels) - 0.5, -0.5, -1), labels)
+    plt.setp(ax.get_xticklabels(), visible=False)
 
-pylab.show()
+plt.show()
