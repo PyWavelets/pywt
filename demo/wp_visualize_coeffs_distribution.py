@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
+
 import numpy as np
 import matplotlib.pyplot as plt
 
 from pywt import WaveletPacket
 
-from sample_data import ecg
 
-
+ecg = np.load(os.path.join('data', 'ecg.npy'))
 wp = WaveletPacket(ecg, 'sym5', maxlevel=4)
 
 fig = plt.figure()
