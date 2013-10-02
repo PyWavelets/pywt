@@ -1,15 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
 import sys
 
-import pylab
+import matplotlib.pyplot as plt
 
 import pywt
 
-usage = """Usage:\n %s wavelet [refinement level]""" % os.path.basename(
-    sys.argv[0])
+
+usage = """
+Usage:
+    python waveinfo.py waveletname
+
+    Example: python waveinfo.py 'sym5'
+"""
 
 try:
     wavelet = pywt.Wavelet(sys.argv[1])
@@ -24,25 +28,22 @@ except IndexError as e:
     print(usage)
     raise SystemExit
 
-print(wavelet)
 
 data = wavelet.wavefun(level)
 funcs, x = data[:-1], data[-1]
 
-n = (len(data) - 1) // 2
-labels = [
-    "scaling function (phi)", "wavelet function (psi)",
-    "r. scaling function (phi)", "r. wavelet function (psi)"
-]
-colours = ("r", "g", "r", "g")
-for i, (d, label, colour) in enumerate(zip(funcs, labels, colours)):
+labels = ["scaling function (phi)", "wavelet function (psi)",
+          "r. scaling function (phi)", "r. wavelet function (psi)"]
+colors = ("r", "g", "r", "g")
+fig = plt.figure()
+for i, (d, label, color) in enumerate(zip(funcs, labels, colors)):
     mi, ma = d.min(), d.max()
     margin = (ma - mi) * 0.05
-    ax = pylab.subplot(n, 2, 1 + i)
+    ax = fig.add_subplot((len(data) - 1) // 2, 2, 1 + i)
 
-    pylab.plot(x, d, colour)
-    pylab.title(label)
-    pylab.ylim(mi - margin, ma + margin)
-    pylab.xlim(x[0], x[-1])
+    ax.plot(x, d, color)
+    ax.set_title(label)
+    ax.set_ylim(mi - margin, ma + margin)
+    ax.set_xlim(x[0], x[-1])
 
-pylab.show()
+plt.show()
