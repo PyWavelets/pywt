@@ -1,21 +1,30 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import pylab
+import os
+
+import numpy as np
+import matplotlib.pyplot as plt
 
 import pywt
 
-data1 = pylab.array(list(range(1, 400)) + list(range(398, 600)) + list(range(601, 1024)))
-x = pylab.arange(612 - 80, 20, -0.5) / 250.
-data2 = pylab.sin(40 * pylab.log(x)) * pylab.sign((pylab.log(x)))
 
-from sample_data import ecg as data3
+ecg = np.load(os.path.join('data', 'ecg.npy'))
+
+data1 = np.concatenate((np.arange(1, 400),
+                        np.arange(398, 600),
+                        np.arange(601, 1024)))
+x = np.linspace(0.082, 2.128, num=1024)[::-1]
+data2 = np.sin(40 * np.log(x)) * np.sign((np.log(x)))
 
 mode = pywt.MODES.sp1
 
 
-def plot(data, w, title):
-    print(title)
+def plot_signal_decomp(data, w, title):
+    """Decompose and plot a signal S.
+
+    S = An + Dn + Dn-1 + ... + D1
+    """
     w = pywt.Wavelet(w)
     a = data
     ca = []
@@ -36,30 +45,28 @@ def plot(data, w, title):
         coeff_list = [None, coeff] + [None] * i
         rec_d.append(pywt.waverec(coeff_list, w))
 
-    pylab.figure()
-    ax_main = pylab.subplot(len(rec_a) + 1, 1, 1)
-    pylab.title(title)
+    fig = plt.figure()
+    ax_main = fig.add_subplot(len(rec_a) + 1, 1, 1)
+    ax_main.set_title(title)
     ax_main.plot(data)
-    pylab.xlim(0, len(data) - 1)
+    ax_main.set_xlim(0, len(data) - 1)
 
     for i, y in enumerate(rec_a):
-        #print len(data), len(x), len(data) / (2**(i+1))
-        ax = pylab.subplot(len(rec_a) + 1, 2, 3 + i * 2)
+        ax = fig.add_subplot(len(rec_a) + 1, 2, 3 + i * 2)
         ax.plot(y, 'r')
-        pylab.xlim(0, len(y) - 1)
-        pylab.ylabel("A%d" % (i + 1))
+        ax.set_xlim(0, len(y) - 1)
+        ax.set_ylabel("A%d" % (i + 1))
 
     for i, y in enumerate(rec_d):
-        ax = pylab.subplot(len(rec_d) + 1, 2, 4 + i * 2)
+        ax = fig.add_subplot(len(rec_d) + 1, 2, 4 + i * 2)
         ax.plot(y, 'g')
-        pylab.xlim(0, len(y) - 1)
-        #pylab.ylim(min(0,1.4*min(x)), max(0,1.4*max(x)))
-        pylab.ylabel("D%d" % (i + 1))
+        ax.set_xlim(0, len(y) - 1)
+        ax.set_ylabel("D%d" % (i + 1))
 
 
-print("Signal decomposition (S = An + Dn + Dn-1 + ... + D1)")
-plot(data1, 'coif5', "DWT: Signal irregularity")
-plot(data2, 'sym5', "DWT: Frequency and phase change - Symmlets5")
-plot(data3, 'sym5', "DWT: Ecg sample - Symmlets5")
+plot_signal_decomp(data1, 'coif5', "DWT: Signal irregularity")
+plot_signal_decomp(data2, 'sym5', "DWT: Frequency and phase change - Symmlets5")
+plot_signal_decomp(ecg, 'sym5', "DWT: Ecg sample - Symmlets5")
 
-pylab.show()
+
+plt.show()

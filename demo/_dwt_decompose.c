@@ -1,3 +1,8 @@
+/*
+ * Note: this currently doesn't get installed.  There's also no way to query
+ * the location of wt.h.  Conclusion: there is no C API.
+ */
+
 #include <stdio.h>
 
 #include "wt.h"
