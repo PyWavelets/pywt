@@ -20,9 +20,9 @@ def test_traversing_tree_2d():
 
     assert_allclose(wp['a'].data, np.array([[3., 7., 11., 15.]] * 4),
                     rtol=1e-12)
-    assert_allclose(wp['h'].data, np.zeros((4, 4)), rtol=1e-12)
-    assert_allclose(wp['v'].data, -np.ones((4, 4)), rtol=1e-12)
-    assert_allclose(wp['d'].data, np.zeros((4, 4)), rtol=1e-12)
+    assert_allclose(wp['h'].data, np.zeros((4, 4)), rtol=1e-12, atol=1e-14)
+    assert_allclose(wp['v'].data, -np.ones((4, 4)), rtol=1e-12, atol=1e-14)
+    assert_allclose(wp['d'].data, np.zeros((4, 4)), rtol=1e-12, atol=1e-14)
 
     assert_allclose(wp['aa'].data, np.array([[10., 26.]] * 2), rtol=1e-12)
 

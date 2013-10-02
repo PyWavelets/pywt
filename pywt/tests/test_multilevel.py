@@ -37,13 +37,13 @@ def test_swt_decomposition():
     expected_cA2 = [7, 4.5, 4, 5.5, 7, 9.5, 10, 8.5]
     assert_allclose(cA2, expected_cA2, rtol=1e-12)
     expected_cD2 = [3, 3.5, 0, -4.5, -3, 0.5, 0, 0.5]
-    assert_allclose(cD2, expected_cD2, rtol=1e-12)
+    assert_allclose(cD2, expected_cD2, rtol=1e-12, atol=1e-14)
 
     # level=1, start_level=1 decomposition should match level=2
     res = pywt.swt(cA1, db1, level=1, start_level=1)
     cA2, cD2 = res[0]
     assert_allclose(cA2, expected_cA2, rtol=1e-12)
-    assert_allclose(cD2, expected_cD2, rtol=1e-12)
+    assert_allclose(cD2, expected_cD2, rtol=1e-12, atol=1e-14)
 
     coeffs = pywt.swt(x, db1)
     assert_(len(coeffs) == 3)
