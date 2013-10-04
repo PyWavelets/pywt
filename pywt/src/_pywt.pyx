@@ -9,7 +9,6 @@ __all__ = ['MODES', 'Wavelet', 'dwt', 'dwt_coeff_len', 'dwt_max_level',
 ###############################################################################
 # imports
 
-cimport c_python
 cimport c_wt
 
 from libc.math cimport pow, sqrt
@@ -31,33 +30,8 @@ ctypedef fused data_t:
 ###############################################################################
 # MODES
 
-cdef c_wt.MODE c_mode_from_object(mode) except c_wt.MODE_INVALID:
-    cdef c_wt.MODE m
-    cdef c_python.PyObject* co
-    cdef object o
-    if isinstance(mode, int):
-        m = mode
-        if m <= c_wt.MODE_INVALID or m >= c_wt.MODE_MAX:
-            raise ValueError("Invalid mode.")
-    else:
-        mode = mode.encode('utf-8')
-        co = c_python.PyObject_GetAttrString(MODES, mode)
-        if co is not NULL:
-            o = <object>co
-            c_python.Py_DECREF(o)  # decref above extra ref inc
-            m = <object>co
-        else:
-            c_python.PyErr_Clear()
-            raise ValueError("Unknown mode name '%s'." % mode)
 
-    return m
-
-
-def __from_object(mode):
-    return c_mode_from_object(mode)
-
-
-class MODES(object):
+class _Modes(object):
     """
     Because the most common and practical way of representing digital signals
     in computer science is with finite arrays of values, some extrapolation
@@ -102,8 +76,8 @@ class MODES(object):
     This feature saves extra memory and CPU resources and helps to avoid page
     swapping when handling relatively big data arrays on computers with low
     physical memory.
-    """
 
+    """
     zpd = c_wt.MODE_ZEROPAD
     cpd = c_wt.MODE_CONSTANT_EDGE
     sym = c_wt.MODE_SYMMETRIC
@@ -115,7 +89,23 @@ class MODES(object):
 
     modes = ["zpd", "cpd", "sym", "ppd", "sp1", "per"]
 
-    from_object = staticmethod(__from_object)
+    def from_object(self, mode):
+        if isinstance(mode, int):
+            m = mode
+            if m <= c_wt.MODE_INVALID or m >= c_wt.MODE_MAX:
+                raise ValueError("Invalid mode.")
+        else:
+            try:
+                m = getattr(MODES, mode)
+            except AttributeError:
+                raise ValueError("Unknown mode name '%s'." % mode)
+
+        return m
+
+
+# All capitals for backwards compatibility
+MODES = _Modes()
+
 
 ###############################################################################
 # Wavelet
@@ -666,7 +656,7 @@ def _dwt(np.ndarray[data_t, ndim=1] data, object wavelet, object mode='sym'):
     cdef c_wt.MODE mode_
 
     w = c_wavelet_from_object(wavelet)
-    mode_ = c_mode_from_object(mode)
+    mode_ = MODES.from_object(mode)
 
     data = np.array(data)
     output_len = c_wt.dwt_buffer_length(data.size, w.dec_len, mode_)
@@ -740,7 +730,7 @@ def dwt_coeff_len(data_len, filter_len, mode='sym'):
     if filter_len_ < 1:
         raise ValueError("Value of filter_len must be greater than zero.")
 
-    return c_wt.dwt_buffer_length(data_len, filter_len_, c_mode_from_object(mode))
+    return c_wt.dwt_buffer_length(data_len, filter_len_, MODES.from_object(mode))
 
 
 ###############################################################################
@@ -835,7 +825,7 @@ def _idwt(np.ndarray[data_t, ndim=1, mode="c"] cA,
     cdef c_wt.MODE mode_
 
     w = c_wavelet_from_object(wavelet)
-    mode_ = c_mode_from_object(mode)
+    mode_ = MODES.from_object(mode)
 
     cdef np.ndarray[data_t, ndim=1, mode="c"] rec
     cdef index_t rec_len
@@ -1045,7 +1035,7 @@ def _downcoef(part, np.ndarray[data_t, ndim=1, mode="c"] data,
 
     _check_mode_input(mode)
     w = c_wavelet_from_object(wavelet)
-    mode_ = c_mode_from_object(mode)
+    mode_ = MODES.from_object(mode)
 
     if part not in ('a', 'd'):
         raise ValueError("Argument 1 must be 'a' or 'd', not '%s'." % part)
