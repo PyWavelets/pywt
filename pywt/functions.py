@@ -184,12 +184,45 @@ def scal2frq(wavelet, scale, delta, precision=8):
 
 
 def qmf(filter):
-    filter = np.array(filter)[::-1]
-    filter[1::2] = -filter[1::2]
-    return filter
+    """
+    Returns the Quadrature Mirror Filter whose magnitude response is mirror
+    image about `pi/2` of that of the input filter.
+
+    Parameters
+    ----------
+    filter : list or numpy array
+        Input filter for which QMF needs to be computed.
+
+    Returns
+    -------
+    qm_filter : numpy array
+        Quadrature mirror of the input filter.
+
+    """
+    qm_filter = np.array(filter)[::-1]
+    qm_filter[1::2] = -qm_filter[1::2]
+    return qm_filter
 
 
 def orthfilt(scaling_filter):
+    """
+    Returns the orhtogonal filter bank consisting of the HPFs and LPFs at
+    decomposition and reconstruction stage for the input scaling filter.
+
+    Parameters
+    ----------
+    scaling_filter : list or numpy array
+        Inpute scaling filter(father wavelet).
+
+    Returns
+    -------
+    orth_filt_bank : tuple of numpy arrays
+        The orthogonal filter bank of the input scaling filter in the order :
+        1] Decomposition LPF
+        2] Decomposition HPF
+        3] Reconstruction LPF
+        4] Reconstruction HPF
+    """
     assert len(scaling_filter) % 2 == 0
 
     scaling_filter = np.asarray(scaling_filter, dtype=np.float64)
@@ -200,4 +233,5 @@ def orthfilt(scaling_filter):
     rec_hi = qmf(rec_lo)
     dec_hi = rec_hi[::-1]
 
-    return (dec_lo, dec_hi, rec_lo, rec_hi)
+    orth_filt_bank = (dec_lo, dec_hi, rec_lo, rec_hi)
+    return orth_filt_bank
