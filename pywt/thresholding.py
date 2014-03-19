@@ -53,17 +53,17 @@ def threshold(data, value, mode='soft', substitute=0):
 
     Examples
     --------
-    >>> from pywt import thresholding
+    >>> import pywt
     >>> data = np.linspace(1, 4, 7)
     >>> data
     array([ 1. ,  1.5,  2. ,  2.5,  3. ,  3.5,  4. ])
-    >>> thresholding.threshold(data, 2, 'soft')
+    >>> pywt.threshold(data, 2, 'soft')
     array([ 0. ,  0. ,  0. ,  0.5,  1. ,  1.5,  2. ])
-    >>> thresholding.threshold(data, 2, 'hard')
+    >>> pywt.threshold(data, 2, 'hard')
     array([ 0. ,  0. ,  2. ,  2.5,  3. ,  3.5,  4. ])
-    >>> thresholding.threshold(data, 2, 'greater')
+    >>> pywt.threshold(data, 2, 'greater')
     array([ 0. ,  0. ,  2. ,  2.5,  3. ,  3.5,  4. ])
-    >>> thresholding.threshold(data, 2, 'less')
+    >>> pywt.threshold(data, 2, 'less')
     array([ 1. ,  1.5,  2. ,  0. ,  0. ,  0. ,  0. ])
 
     """

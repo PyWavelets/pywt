@@ -16,7 +16,7 @@ from ._pywt import *
 from .functions import *
 from .multilevel import *
 from .multidim import *
-from . import thresholding
+from .thresholding import *
 from .wavelet_packets import *
 
 
