@@ -19,19 +19,19 @@ def threshold(data, value, mode='soft', substitute=0):
     """
     Thresholds the input data depending on the mode argument.
 
-    In `soft` thresholding, the data values where their absolute value is less
-    than the value param are replaced with substitute. From the data values with
-    absolute value greater or equal to the thresholding value, a quantity of
-    (signum * value) is subtracted.
+    In ``soft`` thresholding, the data values where their absolute value is
+    less than the value param are replaced with substitute. From the data
+    values with absolute value greater or equal to the thresholding value,
+    a quantity of ``(signum * value)`` is subtracted.
 
-    In `hard` thresholding, the data values where their absolute value is less
-    than the value param are replaced with substitute. Data values with
+    In ``hard`` thresholding, the data values where their absolute value is
+    less than the value param are replaced with substitute. Data values with
     absolute value greater or equal to the thresholding value stay untouched.
 
-    In `greater` thresholding, the data is replaced with substitute where data
-    is below the thresholding value. Greater data values pass untouched.
+    In ``greater`` thresholding, the data is replaced with substitute where
+    data is below the thresholding value. Greater data values pass untouched.
 
-    In `less` thresholding, the data is replaced with substitute where data
+    In ``less`` thresholding, the data is replaced with substitute where data
     is above the thresholding value. Less data values pass untouched.
 
     Parameters
@@ -41,8 +41,9 @@ def threshold(data, value, mode='soft', substitute=0):
     value : scalar
         Thresholding value.
     mode : {'soft', 'hard', 'greater', 'less'}
-        Decided the type of thresholding to be applied on input data.
-    substitute : double, optional
+        Decides the type of thresholding to be applied on input data. Default
+        is 'soft'.
+    substitute : float, optional
         Substitute value (default: 0).
 
     Returns
@@ -66,6 +67,8 @@ def threshold(data, value, mode='soft', substitute=0):
     array([ 1. ,  1.5,  2. ,  0. ,  0. ,  0. ,  0. ])
 
     """
+    data = np.asarray(data)
+
     if mode == 'soft':
         mvalue = -value
 
@@ -91,6 +94,7 @@ def threshold(data, value, mode='soft', substitute=0):
         output = np.where(np.greater(data, value), substitute, data)
 
     else:
-        raise ValueError("The mode parameter only takes value among {\'soft\', \'hard\', \'greater\',\'less\'}")
+        raise ValueError("The mode parameter only takes value among "
+                         "{'soft', 'hard', 'greater','less'}.")
 
     return output
