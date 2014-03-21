@@ -208,7 +208,7 @@ def qmf(filter):
 
 def orthfilt(scaling_filter):
     """
-    Returns the orthogonal filter bank. 
+    Returns the orthogonal filter bank.
 
     The orthogonal filter bank consists of the HPFs and LPFs at
     decomposition and reconstruction stage for the input scaling filter.
@@ -216,7 +216,7 @@ def orthfilt(scaling_filter):
     Parameters
     ----------
     scaling_filter : array_like
-        Inpute scaling filter(father wavelet).
+        Input scaling filter (father wavelet).
 
     Returns
     -------
@@ -226,12 +226,14 @@ def orthfilt(scaling_filter):
         2] Decomposition HPF
         3] Reconstruction LPF
         4] Reconstruction HPF
+
     """
-    assert len(scaling_filter) % 2 == 0
+    if not (len(scaling_filter) % 2 == 0):
+        raise ValueError("`scaling_filter` length has to be even.")
 
     scaling_filter = np.asarray(scaling_filter, dtype=np.float64)
 
-    rec_lo = np.sqrt(2) * scaling_filter / sum(scaling_filter)
+    rec_lo = np.sqrt(2) * scaling_filter / np.sum(scaling_filter)
     dec_lo = rec_lo[::-1]
 
     rec_hi = qmf(rec_lo)
