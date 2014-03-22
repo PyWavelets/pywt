@@ -9,14 +9,14 @@
 
 from __future__ import division, print_function, absolute_import
 
-__all__ = ['dwt2', 'idwt2', 'swt2', 'dwtn']
+__all__ = ['dwt2', 'idwt2', 'swt2', 'dwtn', 'idwtn']
 
-from itertools import cycle
+from itertools import cycle, product
 
 import numpy as np
 
 from ._pywt import Wavelet, MODES
-from ._pywt import dwt, idwt, swt, downcoef
+from ._pywt import dwt, idwt, swt, downcoef, upcoef
 
 
 def dwt2(data, wavelet, mode='sym'):
@@ -242,6 +242,59 @@ def dwtn(data, wavelet, mode='sym'):
         coeffs = new_coeffs
     return dict(coeffs)
 
+def _upcoef(coeffs, wavelet, type):
+	"""Adapts pywt.upcoef call for apply_along_axis"""
+	return upcoef(type, coeffs, wavelet, level=1, take=0)
+
+def idwtn(coeffs, wavelet):
+	"""
+	Single-level n-dimensional Discrete Wavelet Transform.
+	
+	Parameters
+	----------
+	coeffs: dict
+	dictionary as in output of dwtn. Missing or None items
+	will be treated as zeroes.
+	wavelet : Wavelet object or name string
+	Wavelet to use
+	
+	Returns
+	-------
+	data: ndarray
+	original signal reconstructed from input data.
+	"""
+
+	if not isinstance(wavelet, Wavelet):
+		wavelet = Wavelet(wavelet)
+
+	dims = max( len(key) for key in coeffs.keys() )
+
+	for axis in reversed(range(dims)):
+		new_coeffs = {}
+		new_keys = [ ''.join(coeff) for coeff in product('ad', repeat=axis) ]
+
+		for key in new_keys:
+			L = coeffs.get(key + 'a')
+			H = coeffs.get(key + 'd')
+
+			if L is not None:
+				L = np.apply_along_axis(_upcoef, axis, L, wavelet, 'a')
+
+			if H is not None:
+				H = np.apply_along_axis(_upcoef, axis, H, wavelet, 'd')
+
+			if H is None and L is None:
+				new_coeffs[key] = None
+			elif H is None:
+				new_coeffs[key] = L
+			elif L is None:
+				new_coeffs[key] = H
+			else:
+				new_coeffs[key] = L + H
+
+		coeffs = new_coeffs
+	
+	return next(iter(coeffs.values()))
 
 def swt2(data, wavelet, level, start_level=0):
     """
