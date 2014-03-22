@@ -72,20 +72,20 @@ def dwt2(data, wavelet, mode='sym'):
     H = np.transpose(H)
     L = np.transpose(L)
 
-    LL, LH = [], []
+    LL, HL = [], []
     for row in L:
         cA, cD = dwt(np.array(row, np.float64), wavelet, mode)
         LL.append(cA)
-        LH.append(cD)
+        HL.append(cD)
 
-    HL, HH = [], []
+    LH, HH = [], []
     for row in H:
         cA, cD = dwt(np.array(row, np.float64), wavelet, mode)
-        HL.append(cA)
+        LH.append(cA)
         HH.append(cD)
 
     # build result structure: (approx, (horizontal, vertical, diagonal))
-    ret = (np.transpose(LL), (np.transpose(LH), np.transpose(HL), np.transpose(HH)))
+    ret = (np.transpose(LL), (np.transpose(HL), np.transpose(LH), np.transpose(HH)))
 
     return ret
 
@@ -221,8 +221,8 @@ def dwtn(data, wavelet, mode='sym'):
 
             {
                 'aa': <coeffs>  # A(LL) - approx. on 1st dim, approx. on 2nd dim
-                'ad': <coeffs>  # H(LH) - approx. on 1st dim, det. on 2nd dim
-                'da': <coeffs>  # V(HL) - det. on 1st dim, approx. on 2nd dim
+                'ad': <coeffs>  # V(LH) - approx. on 1st dim, det. on 2nd dim
+                'da': <coeffs>  # H(HL) - det. on 1st dim, approx. on 2nd dim
                 'dd': <coeffs>  # D(HH) - det. on 1st dim, det. on 2nd dim
             }
 
