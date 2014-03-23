@@ -84,11 +84,12 @@ def dwt2(data, wavelet, mode='sym'):
         LH.append(cA)
         HH.append(cD)
 
-    # build result structure: (approx, (horizontal, vertical, diagonal))
-    ret = (np.transpose(LL), (np.transpose(HL), np.transpose(LH), np.transpose(HH)))
+    # build result structure: (approx,
+    #                          (horizontal, vertical, diagonal))
+    ret = (np.transpose(LL),
+           (np.transpose(HL), np.transpose(LH), np.transpose(HH)))
 
     return ret
-
 
 def idwt2(coeffs, wavelet, mode='sym'):
     """
@@ -191,11 +192,9 @@ def idwt2(coeffs, wavelet, mode='sym'):
 
     return np.array(data, np.float64)
 
-
 def _downcoef(data, wavelet, mode, type):
     """Adapts pywt.downcoef call for apply_along_axis"""
     return downcoef(type, data, wavelet, mode, level=1)
-
 
 def dwtn(data, wavelet, mode='sym'):
     """

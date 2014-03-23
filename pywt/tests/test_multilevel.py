@@ -4,7 +4,7 @@ from __future__ import division, print_function, absolute_import
 
 import numpy as np
 from numpy.testing import (run_module_suite, assert_almost_equal,
-    assert_allclose, assert_)
+                           assert_allclose, assert_)
 
 import pywt
 
