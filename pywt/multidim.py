@@ -11,7 +11,7 @@ from __future__ import division, print_function, absolute_import
 
 __all__ = ['dwt2', 'idwt2', 'swt2', 'dwtn', 'idwtn']
 
-from itertools import cycle, product
+from itertools import cycle, product, repeat
 
 import numpy as np
 
@@ -242,11 +242,11 @@ def dwtn(data, wavelet, mode='sym'):
         coeffs = new_coeffs
     return dict(coeffs)
 
-def _upcoef(coeffs, wavelet, type):
+def _upcoef(coeffs, wavelet, take, type):
     """Adapts pywt.upcoef call for apply_along_axis"""
-    return upcoef(type, coeffs, wavelet, level=1, take=0)
+    return upcoef(type, coeffs, wavelet, level=1, take=take)
 
-def idwtn(coeffs, wavelet):
+def idwtn(coeffs, wavelet, take=0):
     """
     Single-level n-dimensional Discrete Wavelet Transform.
     
@@ -268,8 +268,12 @@ def idwtn(coeffs, wavelet):
         wavelet = Wavelet(wavelet)
 
     dims = max(len(key) for key in coeffs.keys())
+    try:
+        takes = reversed(tuple(iter(take)))
+    except TypeError:
+        takes = repeat(take, dims)
 
-    for axis in reversed(range(dims)):
+    for axis, take in zip(reversed(range(dims)), takes):
         new_coeffs = {}
         new_keys = [ ''.join(coeff) for coeff in product('ad', repeat=axis) ]
 
@@ -278,10 +282,10 @@ def idwtn(coeffs, wavelet):
             H = coeffs.get(key + 'd')
 
             if L is not None:
-                L = np.apply_along_axis(_upcoef, axis, L, wavelet, 'a')
+                L = np.apply_along_axis(_upcoef, axis, L, wavelet, take, 'a')
 
             if H is not None:
-                H = np.apply_along_axis(_upcoef, axis, H, wavelet, 'd')
+                H = np.apply_along_axis(_upcoef, axis, H, wavelet, take, 'd')
 
             if H is None and L is None:
                 new_coeffs[key] = None

@@ -51,5 +51,20 @@ def test_idwtn_missing():
 
     assert_allclose(pywt.idwt2((LL, (HL, None, HH)), wavelet), pywt.idwtn(d, 'haar'))
 
+def test_idwtn_take():
+    data = np.array([
+        [[0, 4, 1, 5, 1, 4],
+         [0 ,5, 6, 3, 2, 1],
+         [2, 5,19, 4,19, 1]],
+        [[1, 5, 1, 2, 3, 4],
+         [7,12, 6,52, 7, 8],
+         [5, 2, 6,78,12, 2]]])
+    wavelet = pywt.Wavelet('haar')
+
+    d = pywt.dwtn(data, wavelet)
+
+    assert_(data.shape != pywt.idwtn(d, wavelet).shape)
+    assert_allclose(data, pywt.idwtn(d, wavelet, data.shape))
+
 if __name__ == '__main__':
     run_module_suite()
