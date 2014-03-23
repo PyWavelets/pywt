@@ -269,17 +269,17 @@ def idwtn(coeffs, wavelet, take=0):
 
     dims = max(len(key) for key in coeffs.keys())
     try:
-        takes = reversed(tuple(iter(take)))
+        takes = iter(take)
     except TypeError:
         takes = repeat(take, dims)
 
-    for axis, take in zip(reversed(range(dims)), takes):
+    for dim, axis, take in zip(reversed(range(dims)), range(dims), takes):
         new_coeffs = {}
-        new_keys = [ ''.join(coeff) for coeff in product('ad', repeat=axis) ]
+        new_keys = [ ''.join(coeff) for coeff in product('ad', repeat=dim) ]
 
         for key in new_keys:
-            L = coeffs.get(key + 'a')
-            H = coeffs.get(key + 'd')
+            L = coeffs.get('a' + key)
+            H = coeffs.get('d' + key)
 
             if L is not None:
                 L = np.apply_along_axis(_upcoef, axis, L, wavelet, take, 'a')
