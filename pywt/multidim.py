@@ -91,6 +91,7 @@ def dwt2(data, wavelet, mode='sym'):
 
     return ret
 
+
 def idwt2(coeffs, wavelet, mode='sym'):
     """
     2D Inverse Discrete Wavelet Transform. Reconstruct data from coefficients
@@ -192,9 +193,11 @@ def idwt2(coeffs, wavelet, mode='sym'):
 
     return np.array(data, np.float64)
 
+
 def _downcoef(data, wavelet, mode, type):
     """Adapts pywt.downcoef call for apply_along_axis"""
     return downcoef(type, data, wavelet, mode, level=1)
+
 
 def dwtn(data, wavelet, mode='sym'):
     """
@@ -241,9 +244,11 @@ def dwtn(data, wavelet, mode='sym'):
         coeffs = new_coeffs
     return dict(coeffs)
 
+
 def _upcoef(coeffs, wavelet, take, type):
     """Adapts pywt.upcoef call for apply_along_axis"""
     return upcoef(type, coeffs, wavelet, level=1, take=take)
+
 
 def idwtn(coeffs, wavelet, take=0):
     """
@@ -298,6 +303,7 @@ def idwtn(coeffs, wavelet, take=0):
         coeffs = new_coeffs
     
     return coeffs['']
+
 
 def swt2(data, wavelet, level, start_level=0):
     """

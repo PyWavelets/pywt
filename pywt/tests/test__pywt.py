@@ -19,6 +19,7 @@ def test_upcoef_docstring():
     rec = pywt.upcoef('a', cA, 'db2', take=n) + pywt.upcoef('d', cD, 'db2', take=n)
     assert_allclose(rec, data)
 
+
 def test_upcoef_reconstruct():
     data = np.arange(3)
     a = pywt.downcoef('a', data, 'haar')

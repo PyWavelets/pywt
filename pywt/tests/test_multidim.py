@@ -8,6 +8,7 @@ from numpy.testing import (run_module_suite, assert_almost_equal,
 
 import pywt
 
+
 def test_idwtn_reconstruct():
     data = np.array([
         [[0, 4, 1, 5, 1, 4],
@@ -24,6 +25,7 @@ def test_idwtn_reconstruct():
     original_shape = [slice(None, s) for s in data.shape]
     assert_(np.allclose(data, pywt.idwtn(d, wavelet)[original_shape]))
 
+
 def test_idwtn_idwt2():
     data = np.array([
         [0, 4, 1, 5, 1, 4],
@@ -37,6 +39,7 @@ def test_idwtn_idwt2():
 
     assert_allclose(pywt.idwt2((LL, (HL, LH, HH)), wavelet),
                     pywt.idwtn(d, wavelet))
+
 
 def test_idwtn_missing():
     # Test to confirm missing data behave as zeroes
@@ -52,6 +55,7 @@ def test_idwtn_missing():
 
     assert_(np.allclose(pywt.idwt2((LL, (HL, None, HH)), wavelet),
                         pywt.idwtn(d, 'haar')))
+
 
 def test_idwtn_take():
     data = np.array([

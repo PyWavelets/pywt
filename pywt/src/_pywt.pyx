@@ -736,6 +736,7 @@ def dwt_coeff_len(data_len, filter_len, mode='sym'):
 ###############################################################################
 # idwt
 
+
 def _check_mode_input(mode):
     valid_ints = range(len(MODES.modes))
     if not ((isinstance(mode, string_types)) or (mode in valid_ints)):
@@ -881,6 +882,7 @@ def _idwt(np.ndarray[data_t, ndim=1, mode="c"] cA,
 
 ###############################################################################
 # upcoef & downcoef
+
 
 def upcoef(part, coeffs, wavelet, level=1, take=0):
     """
