@@ -980,13 +980,13 @@ def _upcoef(part, np.ndarray[data_t, ndim=1, mode="c"] coeffs, wavelet,
         # TODO: this algorithm needs some explaining
         coeffs = rec
 
-    if take > 0:
-        if take < rec_len:
-            left_bound = right_bound = (rec_len-take)/2
-            if (rec_len-take)%2:
-                left_bound = left_bound + 1
+    if take > 0 and take < rec_len:
+        left_bound = right_bound = (rec_len-take)//2
+        if (rec_len-take)%2:
+            # right_bound must never be zero for indexing to work
+            right_bound = right_bound + 1
 
-            return rec[left_bound:-right_bound]
+        return rec[left_bound:-right_bound]
     return rec
 
 
