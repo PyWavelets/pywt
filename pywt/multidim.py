@@ -11,7 +11,7 @@ from __future__ import division, print_function, absolute_import
 
 __all__ = ['dwt2', 'idwt2', 'swt2', 'dwtn', 'idwtn']
 
-from itertools import cycle, product, repeat
+from itertools import cycle, product, repeat, islice
 
 import numpy as np
 
@@ -273,17 +273,18 @@ def idwtn(coeffs, wavelet, take=0):
 
     dims = max(len(key) for key in coeffs.keys())
     try:
-        takes = iter(take)
+        takes = list(islice(take, dims))
+        takes.reverse()
     except TypeError:
         takes = repeat(take, dims)
 
-    for dim, axis, take in zip(reversed(range(dims)), range(dims), takes):
+    for axis, take in zip(reversed(range(dims)), takes):
         new_coeffs = {}
-        new_keys = [ ''.join(coeff) for coeff in product('ad', repeat=dim) ]
+        new_keys = [ ''.join(coeff) for coeff in product('ad', repeat=axis) ]
 
         for key in new_keys:
-            L = coeffs.get('a' + key)
-            H = coeffs.get('d' + key)
+            L = coeffs.get(key + 'a')
+            H = coeffs.get(key + 'd')
 
             if L is not None:
                 L = np.apply_along_axis(_upcoef, axis, L, wavelet, take, 'a')

@@ -23,7 +23,7 @@ def test_idwtn_reconstruct():
 
     # idwtn creates even-length shapes (2x dwtn size)
     original_shape = [slice(None, s) for s in data.shape]
-    assert_(np.allclose(data, pywt.idwtn(d, wavelet)[original_shape]))
+    assert_allclose(data, pywt.idwtn(d, wavelet)[original_shape])
 
 
 def test_idwtn_idwt2():
@@ -53,13 +53,13 @@ def test_idwtn_missing():
     LL, (HL, _, HH) = pywt.dwt2(data, wavelet)
     d = {'aa': LL, 'da': HL, 'dd': HH}
 
-    assert_(np.allclose(pywt.idwt2((LL, (HL, None, HH)), wavelet),
-                        pywt.idwtn(d, 'haar')))
+    assert_allclose(pywt.idwt2((LL, (HL, None, HH)), wavelet),
+                        pywt.idwtn(d, 'haar'))
 
 
 def test_idwtn_take():
     data = np.array([
-        [[0, 4, 1, 5, 1, 4],
+        [[1, 4, 1, 5, 1, 4],
          [0 ,5, 6, 3, 2, 1],
          [2, 5,19, 4,19, 1]],
         [[1, 5, 1, 2, 3, 4],
@@ -70,7 +70,7 @@ def test_idwtn_take():
     d = pywt.dwtn(data, wavelet)
 
     assert_(data.shape != pywt.idwtn(d, wavelet).shape)
-    assert_(np.allclose(data, pywt.idwtn(d, wavelet, data.shape)))
+    assert_allclose(data, pywt.idwtn(d, wavelet, data.shape), atol=1e-15)
 
 if __name__ == '__main__':
     run_module_suite()
