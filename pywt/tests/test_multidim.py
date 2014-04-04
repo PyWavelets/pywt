@@ -54,7 +54,7 @@ def test_idwtn_missing():
     d = {'aa': LL, 'da': HL, 'dd': HH}
 
     assert_allclose(pywt.idwt2((LL, (HL, None, HH)), wavelet),
-                        pywt.idwtn(d, 'haar'))
+                    pywt.idwtn(d, 'haar'))
 
 
 def test_idwtn_take():
