@@ -3,9 +3,9 @@
 from __future__ import division, print_function, absolute_import
 
 import numpy as np
-from numpy.testing import (run_module_suite, assert_almost_equal,
-                           assert_allclose, assert_)
 from nose.tools import raises
+from numpy.testing import run_module_suite, assert_allclose, assert_
+
 import pywt
 
 @raises(ValueError)
@@ -14,6 +14,7 @@ def test_dwtn_input_error():
     pywt.dwtn(data, 'haar')
     data = [dict(), dict()]
     pywt.dwtn(data, 'haar')
+
 
 def test_3D_reconstruct():
     # All dimensions even length so `take` does not need to be specified
@@ -29,7 +30,11 @@ def test_3D_reconstruct():
 
     wavelet = pywt.Wavelet('haar')
     d = pywt.dwtn(data, wavelet)
-    assert_allclose(data, pywt.idwtn(d, wavelet))
+    # idwtn creates even-length shapes (2x dwtn size)
+    original_shape = [slice(None, s) for s in data.shape]
+    assert_allclose(data, pywt.idwtn(d, wavelet)[original_shape],
+                    rtol=1e-13, atol=1e-13)
+
 
 def test_idwtn_idwt2():
     data = np.array([
@@ -43,7 +48,7 @@ def test_idwtn_idwt2():
     d = {'aa': LL, 'da': HL, 'ad': LH, 'dd': HH}
 
     assert_allclose(pywt.idwt2((LL, (HL, LH, HH)), wavelet),
-                    pywt.idwtn(d, wavelet))
+                    pywt.idwtn(d, wavelet), rtol=1e-14, atol=1e-14)
 
 
 def test_idwtn_missing():
@@ -52,14 +57,15 @@ def test_idwtn_missing():
         [0, 4, 1, 5, 1, 4],
         [0 ,5, 6, 3, 2, 1],
         [2, 5,19, 4,19, 1]])
-    
+
     wavelet = pywt.Wavelet('haar')
 
     LL, (HL, _, HH) = pywt.dwt2(data, wavelet)
     d = {'aa': LL, 'da': HL, 'dd': HH}
 
     assert_allclose(pywt.idwt2((LL, (HL, None, HH)), wavelet),
-                    pywt.idwtn(d, wavelet))
+                    pywt.idwtn(d, 'haar'), atol=1e-15)
+
 
 def test_idwtn_take():
     data = np.array([
@@ -82,7 +88,7 @@ def test_ignore_invalid_keys():
         [0, 4, 1, 5, 1, 4],
         [0 ,5, 6, 3, 2, 1],
         [2, 5,19, 4,19, 1]])
-    
+
     wavelet = pywt.Wavelet('haar')
 
     LL, (HL, LH, HH) = pywt.dwt2(data, wavelet)
@@ -113,6 +119,7 @@ def test_error_mismatched_size():
     d = {'aa': LL, 'da': HL, 'ad': LH, 'dd': HH}
 
     pywt.idwtn(d, wavelet)
+
 
 if __name__ == '__main__':
     run_module_suite()

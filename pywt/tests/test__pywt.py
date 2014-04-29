@@ -3,14 +3,13 @@
 from __future__ import division, print_function, absolute_import
 
 import numpy as np
-from numpy.testing import (run_module_suite, assert_almost_equal,
-                           assert_allclose, assert_)
+from numpy.testing import run_module_suite, assert_allclose
 
 import pywt
 
 
 def test_upcoef_docstring():
-    data = [1,2,3,4,5,6]
+    data = [1, 2, 3, 4, 5, 6]
     (cA, cD) = pywt.dwt(data, 'db2', 'sp1')
     rec = pywt.upcoef('a', cA, 'db2') + pywt.upcoef('d', cD, 'db2')
     expect = [-0.25, -0.4330127, 1., 2., 3., 4., 5.,
@@ -30,3 +29,7 @@ def test_upcoef_reconstruct():
     rec = (pywt.upcoef('a', a, 'haar', take=3) +
            pywt.upcoef('d', d, 'haar', take=3))
     assert_allclose(rec, data)
+
+
+if __name__ == '__main__':
+    run_module_suite()

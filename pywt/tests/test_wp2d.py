@@ -3,8 +3,8 @@
 from __future__ import division, print_function, absolute_import
 
 import numpy as np
-from numpy.testing import (run_module_suite, dec,
-                           assert_allclose, assert_, assert_raises)
+from numpy.testing import (run_module_suite, assert_allclose, assert_,
+                           assert_raises)
 
 import pywt
 

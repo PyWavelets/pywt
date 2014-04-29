@@ -3,8 +3,8 @@
 from __future__ import division, print_function, absolute_import
 
 import numpy as np
-from numpy.testing import (run_module_suite, dec,
-                           assert_allclose, assert_, assert_raises)
+from numpy.testing import (run_module_suite, assert_allclose, assert_,
+                           assert_raises)
 
 import pywt
 
@@ -141,6 +141,7 @@ def test_removing_nodes():
         assert_allclose(dataleafs[i], expected[i, :], atol=1e-12)
 
     assert_allclose(wp.reconstruct(), np.arange(1, 9), rtol=1e-12)
+
 
 if __name__ == '__main__':
     run_module_suite()
