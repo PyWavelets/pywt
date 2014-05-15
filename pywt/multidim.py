@@ -280,7 +280,7 @@ def idwtn(coeffs, wavelet, mode='sym', take=None):
     mode = MODES.from_object(mode)
 
     # Ignore any invalid keys
-    coeffs = {k: v for k, v in coeffs.items() if set(k) <= {'a', 'd'}}
+    coeffs = dict((k, v) for k, v in coeffs.items() if set(k) <= {'a', 'd'})
     dims = max(len(key) for key in coeffs.keys())
 
     if take is not None:
