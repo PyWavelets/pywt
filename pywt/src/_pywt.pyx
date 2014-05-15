@@ -778,7 +778,7 @@ def idwt(cA, cD, object wavelet, object mode='sym', int correct_size=0):
     correct_size : int, optional (default: 0)
         Under normal conditions (all data lengths dyadic) `cA` and `cD`
         coefficients lists must have the same lengths. With `correct_size`
-        set to True, length of cA may be greater by one than length of `cA`.
+        set to True, length of `cA` may be greater by one than length of `cD`.
         Useful when doing multilevel decomposition and reconstruction of
         non-dyadic length signals.
 

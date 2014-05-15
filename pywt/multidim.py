@@ -250,7 +250,7 @@ def _upcoef(coeffs, wavelet, take, type):
     return upcoef(type, coeffs, wavelet, level=1, take=take)
 
 
-def idwtn(coeffs, wavelet, take=0):
+def idwtn(coeffs, wavelet, mode='sym', take=None):
     """
     Single-level n-dimensional Discrete Wavelet Transform.
     
@@ -261,6 +261,13 @@ def idwtn(coeffs, wavelet, take=0):
         will be treated as zeroes.
     wavelet : Wavelet object or name string
         Wavelet to use
+    mode : str, optional
+        Signal extension mode used in the decomposition,
+        see MODES (default: 'sym')
+    takes : int or iterable of int or None, optional
+        Number of values to take from the center of the idwtn.
+        If None will be calculated from `mode` to be the size of the original
+        data, rounded up to the nearest multiple of 2 (default: None)
     
     Returns
     -------
@@ -270,13 +277,29 @@ def idwtn(coeffs, wavelet, take=0):
 
     if not isinstance(wavelet, Wavelet):
         wavelet = Wavelet(wavelet)
+    mode = MODES.from_object(mode)
 
+    # Ignore any invalid keys
+    coeffs = {k: v for k, v in coeffs.items() if set(k) <= {'a', 'd'}}
     dims = max(len(key) for key in coeffs.keys())
-    try:
-        takes = list(islice(take, dims))
-        takes.reverse()
-    except TypeError:
-        takes = repeat(take, dims)
+
+    if take is not None:
+        try:
+            takes = list(islice(take, dims))
+            takes.reverse()
+        except TypeError:
+            takes = repeat(take, dims)
+    else:
+        try:
+            coeff_shape = next( reversed(v.shape) for k, v in coeffs.items()
+                                if v is not None and len(k) == dims )
+        except StopIteration:
+            raise ValueError("`coeffs` must contain at least one non-null wavelet band")
+        # As in src/common.c
+        if mode == MODES.per:
+            takes = [ 2 * s for s in coeff_shape ]
+        else:
+            takes = [ 2 * s - wavelet.rec_len + 2 for s in coeff_shape ]
 
     for axis, take in zip(reversed(range(dims)), takes):
         new_coeffs = {}
