@@ -231,6 +231,8 @@ def dwtn(data, wavelet, mode='sym'):
     """
     data = np.asarray(data)
     dim = len(data.shape)
+    if dim < 1:
+        raise ValueError("Input data must be at least 1D")
     coeffs = [('', data)]
     for axis in range(dim):
         new_coeffs = []
@@ -263,10 +265,12 @@ def idwtn(coeffs, wavelet, mode='sym', take=None):
         Wavelet to use
     mode : str, optional
         Signal extension mode used in the decomposition,
-        see MODES (default: 'sym')
+        see MODES (default: 'sym'). Overridden by `take`.
     takes : int or iterable of int or None, optional
         Number of values to take from the center of the idwtn.
-        If None will be calculated from `mode` to be the size of the original
+        If 0, the entire reverse transformation will be used, including
+        parts generated from padding in the forward transform.
+        If None, will be calculated from `mode` to be the size of the original
         data, rounded up to the nearest multiple of 2 (default: None)
     
     Returns
@@ -283,6 +287,15 @@ def idwtn(coeffs, wavelet, mode='sym', take=None):
     coeffs = dict((k, v) for k, v in coeffs.items() if set(k) <= set('ad'))
     dims = max(len(key) for key in coeffs.keys())
 
+    try:
+        coeff_shapes = ( v.shape for k, v in coeffs.items()
+                         if v is not None and len(k) == dims )
+        coeff_shape = next(coeff_shapes)
+    except StopIteration:
+        raise ValueError("`coeffs` must contain at least one non-null wavelet band")
+    if any(s != coeff_shape for s in coeff_shapes):
+        raise ValueError("`coeffs` must all be of equal size (or None)")
+
     if take is not None:
         try:
             takes = list(islice(take, dims))
@@ -290,16 +303,11 @@ def idwtn(coeffs, wavelet, mode='sym', take=None):
         except TypeError:
             takes = repeat(take, dims)
     else:
-        try:
-            coeff_shape = next( reversed(v.shape) for k, v in coeffs.items()
-                                if v is not None and len(k) == dims )
-        except StopIteration:
-            raise ValueError("`coeffs` must contain at least one non-null wavelet band")
         # As in src/common.c
         if mode == MODES.per:
-            takes = [ 2 * s for s in coeff_shape ]
+            takes = [ 2 * s for s in reversed(coeff_shape) ]
         else:
-            takes = [ 2 * s - wavelet.rec_len + 2 for s in coeff_shape ]
+            takes = [ 2 * s - wavelet.rec_len + 2 for s in reversed(coeff_shape) ]
 
     for axis, take in zip(reversed(range(dims)), takes):
         new_coeffs = {}
