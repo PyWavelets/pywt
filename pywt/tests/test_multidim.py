@@ -3,17 +3,15 @@
 from __future__ import division, print_function, absolute_import
 
 import numpy as np
-from nose.tools import raises
-from numpy.testing import run_module_suite, assert_allclose, assert_
+from numpy.testing import (run_module_suite, assert_allclose, assert_,
+                           assert_raises)
 
 import pywt
 
-@raises(ValueError)
+
 def test_dwtn_input_error():
     data = dict()
-    pywt.dwtn(data, 'haar')
-    data = [dict(), dict()]
-    pywt.dwtn(data, 'haar')
+    assert_raises(ValueError, pywt.dwtn, data, 'haar')
 
 
 def test_3D_reconstruct():
@@ -47,8 +45,10 @@ def test_idwtn_idwt2():
     LL, (HL, LH, HH) = pywt.dwt2(data, wavelet)
     d = {'aa': LL, 'da': HL, 'ad': LH, 'dd': HH}
 
-    assert_allclose(pywt.idwt2((LL, (HL, LH, HH)), wavelet),
-                    pywt.idwtn(d, wavelet), rtol=1e-14, atol=1e-14)
+    for mode in pywt.MODES.modes:
+        assert_allclose(pywt.idwt2((LL, (HL, LH, HH)), wavelet, mode=mode),
+                        pywt.idwtn(d, wavelet, mode=mode),
+                        rtol=1e-14, atol=1e-14)
 
 
 def test_idwtn_missing():
@@ -96,9 +96,9 @@ def test_ignore_invalid_keys():
          'foo': LH, 'a': HH}
 
     assert_allclose(pywt.idwt2((LL, (HL, LH, HH)), wavelet),
-                    pywt.idwtn(d, wavelet))
+                    pywt.idwtn(d, wavelet), atol=1e-15)
 
-@raises(ValueError)
+
 def test_error_mismatched_size():
     data = np.array([
         [0, 4, 1, 5, 1, 4],
@@ -118,7 +118,7 @@ def test_error_mismatched_size():
     HH = HH[:, :-1]
     d = {'aa': LL, 'da': HL, 'ad': LH, 'dd': HH}
 
-    pywt.idwtn(d, wavelet)
+    assert_raises(ValueError, pywt.idwtn, d, wavelet)
 
 
 if __name__ == '__main__':
