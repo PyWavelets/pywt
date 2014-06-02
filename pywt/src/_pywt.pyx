@@ -736,6 +736,7 @@ def dwt_coeff_len(data_len, filter_len, mode='sym'):
 ###############################################################################
 # idwt
 
+
 def _check_mode_input(mode):
     valid_ints = range(len(MODES.modes))
     if not ((isinstance(mode, string_types)) or (mode in valid_ints)):
@@ -777,7 +778,7 @@ def idwt(cA, cD, object wavelet, object mode='sym', int correct_size=0):
     correct_size : int, optional (default: 0)
         Under normal conditions (all data lengths dyadic) `cA` and `cD`
         coefficients lists must have the same lengths. With `correct_size`
-        set to True, length of cA may be greater by one than length of `cA`.
+        set to True, length of `cA` may be greater by one than length of `cD`.
         Useful when doing multilevel decomposition and reconstruction of
         non-dyadic length signals.
 
@@ -882,6 +883,7 @@ def _idwt(np.ndarray[data_t, ndim=1, mode="c"] cA,
 ###############################################################################
 # upcoef & downcoef
 
+
 def upcoef(part, coeffs, wavelet, level=1, take=0):
     """
     upcoef(part, coeffs, wavelet, level=1, take=0)
@@ -898,14 +900,20 @@ def upcoef(part, coeffs, wavelet, level=1, take=0):
         Coefficients array to recontruct
     wavelet : Wavelet object or name
         Wavelet to use
-    level : int, optional (default: 1)
-        Multilevel reconstruction level
-    take : , optional (default: 0)
-        Take central part of length equal to 'take' from the result
+    level : int, optional
+        Multilevel reconstruction level.  Default is 1.
+    take : int, optional
+        Take central part of length equal to 'take' from the result.
+        Default is 0.
 
     Returns
     -------
-    rec : array_like
+    rec : ndarray
+        1-D array with reconstructed data from coefficients.
+
+    See Also
+    --------
+    downcoef
 
     Examples
     --------
@@ -927,7 +935,7 @@ def upcoef(part, coeffs, wavelet, level=1, take=0):
 
 
 def _upcoef(part, np.ndarray[data_t, ndim=1, mode="c"] coeffs, wavelet,
-            int level=1, take=0):
+            int level=1, int take=0):
     cdef Wavelet w
     cdef np.ndarray[data_t, ndim=1, mode="c"] rec
     cdef int i, do_rec_a
@@ -980,13 +988,14 @@ def _upcoef(part, np.ndarray[data_t, ndim=1, mode="c"] coeffs, wavelet,
         # TODO: this algorithm needs some explaining
         coeffs = rec
 
-    if take > 0:
-        if take < rec_len:
-            left_bound = right_bound = (rec_len-take)/2
-            if (rec_len-take)%2:
-                left_bound = left_bound + 1
+    if take > 0 and take < rec_len:
+        left_bound = right_bound = (rec_len-take) // 2
+        if (rec_len-take) % 2:
+            # right_bound must never be zero for indexing to work
+            right_bound = right_bound + 1
 
-            return rec[left_bound:-right_bound]
+        return rec[left_bound:-right_bound]
+
     return rec
 
 
@@ -1003,20 +1012,27 @@ def downcoef(part, data, wavelet, mode='sym', level=1):
     ----------
     part : str
         Coefficients type:
+
         * 'a' - approximations reconstruction is performed
         * 'd' - details reconstruction is performed
+
     data : array_like
         Input signal.
-    mode : str, optional
-        Signal extension mode, see MODES (default: 'sym')
     wavelet : Wavelet object or name
         Wavelet to use
+    mode : str, optional
+        Signal extension mode, see `MODES`.  Default is 'sym'.
     level : int, optional
-        Decomposition level (default: 1)
+        Decomposition level.  Default is 1.
 
     Returns
     -------
-    coeffs :
+    coeffs : ndarray
+        1-D array of coefficients.
+
+    See Also
+    --------
+    upcoef
 
     """
     # accept array_like input; make a copy to ensure a contiguous array
@@ -1089,12 +1105,13 @@ def swt_max_level(input_len):
     Parameters
     ----------
     input_len : int
-        Input data length
+        Input data length.
 
     Returns
     -------
     max_level : int
         Maximum level of Stationary Wavelet Transform for data of given length.
+
     """
     return c_wt.swt_max_level(input_len)
 
@@ -1111,8 +1128,8 @@ def swt(data, object wavelet, object level=None, int start_level=0):
         Input signal
     wavelet :
         Wavelet to use (Wavelet object or name)
-    level :
-        Transform level
+    level : int, optional
+        Transform level.
     start_level : int, optional
         The level at which the decomposition will begin (it allows to
         skip a given number of transform steps and compute
@@ -1126,7 +1143,7 @@ def swt(data, object wavelet, object level=None, int start_level=0):
 
             [(cAn, cDn), ..., (cA2, cD2), (cA1, cD1)]
 
-        where *n* = *level*.
+        where ``n`` equals input parameter `level`.
 
         If *m* = *start_level* is given, then the beginning *m* steps are skipped::
 

@@ -9,14 +9,14 @@
 
 from __future__ import division, print_function, absolute_import
 
-__all__ = ['dwt2', 'idwt2', 'swt2', 'dwtn']
+__all__ = ['dwt2', 'idwt2', 'swt2', 'dwtn', 'idwtn']
 
-from itertools import cycle
+from itertools import cycle, product, repeat, islice
 
 import numpy as np
 
 from ._pywt import Wavelet, MODES
-from ._pywt import dwt, idwt, swt, downcoef
+from ._pywt import dwt, idwt, swt, downcoef, upcoef
 
 
 def dwt2(data, wavelet, mode='sym'):
@@ -40,9 +40,9 @@ def dwt2(data, wavelet, mode='sym'):
 
     Examples
     --------
-    >>> from pywt import multidim
+    >>> import pywt
     >>> data = np.ones((4,4), dtype=np.float64)
-    >>> coeffs = multidim.dwt2(data, 'haar')
+    >>> coeffs = pywt.dwt2(data, 'haar')
     >>> cA, (cH, cV, cD) = coeffs
     >>> cA
     array([[ 2.,  2.],
@@ -54,7 +54,7 @@ def dwt2(data, wavelet, mode='sym'):
     """
     data = np.asarray(data)
     if len(data.shape) != 2:
-        raise ValueError("Expected 2D data array")
+        raise ValueError("Expected 2-D data array")
 
     if not isinstance(wavelet, Wavelet):
         wavelet = Wavelet(wavelet)
@@ -72,28 +72,31 @@ def dwt2(data, wavelet, mode='sym'):
     H = np.transpose(H)
     L = np.transpose(L)
 
-    LL, LH = [], []
+    LL, HL = [], []
     for row in L:
         cA, cD = dwt(np.array(row, np.float64), wavelet, mode)
         LL.append(cA)
-        LH.append(cD)
+        HL.append(cD)
 
-    HL, HH = [], []
+    LH, HH = [], []
     for row in H:
         cA, cD = dwt(np.array(row, np.float64), wavelet, mode)
-        HL.append(cA)
+        LH.append(cA)
         HH.append(cD)
 
-    # build result structure: (approx, (horizontal, vertical, diagonal))
-    ret = (np.transpose(LL), (np.transpose(LH), np.transpose(HL), np.transpose(HH)))
+    # build result structure: (approx,
+    #                          (horizontal, vertical, diagonal))
+    ret = (np.transpose(LL),
+           (np.transpose(HL), np.transpose(LH), np.transpose(HH)))
 
     return ret
 
 
 def idwt2(coeffs, wavelet, mode='sym'):
     """
-    2D Inverse Discrete Wavelet Transform. Reconstruct data from coefficients
-    arrays.
+    2-D Inverse Discrete Wavelet Transform.
+
+    Reconstructs data from coefficient arrays.
 
     Parameters
     ----------
@@ -107,10 +110,10 @@ def idwt2(coeffs, wavelet, mode='sym'):
 
     Examples
     --------
-    >>> from pywt import multidim
+    >>> import pywt
     >>> data = np.array([[1,2], [3,4]], dtype=np.float64)
-    >>> coeffs = multidim.dwt2(data, 'haar')
-    >>> multidim.idwt2(coeffs, 'haar')
+    >>> coeffs = pywt.dwt2(data, 'haar')
+    >>> pywt.idwt2(coeffs, 'haar')
     array([[ 1.,  2.],
            [ 3.,  4.]])
 
@@ -192,11 +195,6 @@ def idwt2(coeffs, wavelet, mode='sym'):
     return np.array(data, np.float64)
 
 
-def _downcoef(data, wavelet, mode, type):
-    """Adapts pywt.downcoef call for apply_along_axis"""
-    return downcoef(type, data, wavelet, mode, level=1)
-
-
 def dwtn(data, wavelet, mode='sym'):
     """
     Single-level n-dimensional Discrete Wavelet Transform.
@@ -204,11 +202,11 @@ def dwtn(data, wavelet, mode='sym'):
     Parameters
     ----------
     data : ndarray
-        nD array with input data
+        n-dimensional array with input data.
     wavelet : Wavelet object or name string
-        Wavelet to use
+        Wavelet to use.
     mode : str, optional
-        Signal extension mode, see MODES (default: 'sym')
+        Signal extension mode, see `MODES`.  Default is 'sym'.
 
     Returns
     -------
@@ -221,26 +219,124 @@ def dwtn(data, wavelet, mode='sym'):
 
             {
                 'aa': <coeffs>  # A(LL) - approx. on 1st dim, approx. on 2nd dim
-                'ad': <coeffs>  # H(LH) - approx. on 1st dim, det. on 2nd dim
-                'da': <coeffs>  # V(HL) - det. on 1st dim, approx. on 2nd dim
+                'ad': <coeffs>  # V(LH) - approx. on 1st dim, det. on 2nd dim
+                'da': <coeffs>  # H(HL) - det. on 1st dim, approx. on 2nd dim
                 'dd': <coeffs>  # D(HH) - det. on 1st dim, det. on 2nd dim
             }
 
     """
     data = np.asarray(data)
     dim = len(data.shape)
+    if dim < 1:
+        raise ValueError("Input data must be at least 1D")
     coeffs = [('', data)]
+
+    def _downcoef(data, wavelet, mode, type):
+        """Adapts pywt.downcoef call for apply_along_axis"""
+        return downcoef(type, data, wavelet, mode, level=1)
+
     for axis in range(dim):
         new_coeffs = []
         for subband, x in coeffs:
             new_coeffs.extend([
-                (subband + 'a', np.apply_along_axis(_downcoef, axis,
-                 x, wavelet, mode, 'a')),
-                (subband + 'd', np.apply_along_axis(_downcoef, axis,
-                 x, wavelet, mode, 'd'))])
+                (subband + 'a', np.apply_along_axis(_downcoef, axis, x,
+                                                    wavelet, mode, 'a')),
+                (subband + 'd', np.apply_along_axis(_downcoef, axis, x,
+                                                    wavelet, mode, 'd'))])
 
         coeffs = new_coeffs
+
     return dict(coeffs)
+
+
+def idwtn(coeffs, wavelet, mode='sym', take=None):
+    """
+    Single-level n-dimensional Discrete Wavelet Transform.
+
+    Parameters
+    ----------
+    coeffs: dict
+        Dictionary as in output of `dwtn`. Missing or None items
+        will be treated as zeroes.
+    wavelet : Wavelet object or name string
+        Wavelet to use
+    mode : str, optional
+        Signal extension mode used in the decomposition,
+        see MODES (default: 'sym'). Overridden by `take`.
+    take : int or iterable of int or None, optional
+        Number of values to take from the center of the idwtn for each axis.
+        If 0, the entire reverse transformation will be used, including
+        parts generated from padding in the forward transform.
+        If None (default), will be calculated from `mode` to be the size of the
+        original data, rounded up to the nearest multiple of 2.
+        Passed to `upcoef`.
+
+    Returns
+    -------
+    data: ndarray
+        Original signal reconstructed from input data.
+
+    """
+    if not isinstance(wavelet, Wavelet):
+        wavelet = Wavelet(wavelet)
+    mode = MODES.from_object(mode)
+
+    # Ignore any invalid keys
+    coeffs = dict((k, v) for k, v in coeffs.items() if set(k) <= set('ad'))
+    dims = max(len(key) for key in coeffs.keys())
+
+    try:
+        coeff_shapes = ( v.shape for k, v in coeffs.items()
+                         if v is not None and len(k) == dims )
+        coeff_shape = next(coeff_shapes)
+    except StopIteration:
+        raise ValueError("`coeffs` must contain at least one non-null wavelet band")
+    if any(s != coeff_shape for s in coeff_shapes):
+        raise ValueError("`coeffs` must all be of equal size (or None)")
+
+    if take is not None:
+        try:
+            takes = list(islice(take, dims))
+            takes.reverse()
+        except TypeError:
+            takes = repeat(take, dims)
+    else:
+        # As in src/common.c
+        if mode == MODES.per:
+            takes = [2*s for s in reversed(coeff_shape)]
+        else:
+            takes = [2*s - wavelet.rec_len + 2 for s in reversed(coeff_shape)]
+
+    def _upcoef(coeffs, wavelet, take, type):
+        """Adapts pywt.upcoef call for apply_along_axis"""
+        return upcoef(type, coeffs, wavelet, level=1, take=take)
+
+    for axis, take in zip(reversed(range(dims)), takes):
+        new_coeffs = {}
+        new_keys = [''.join(coeff) for coeff in product('ad', repeat=axis)]
+
+        for key in new_keys:
+            L = coeffs.get(key + 'a')
+            H = coeffs.get(key + 'd')
+
+            if L is not None:
+                L = np.apply_along_axis(_upcoef, axis, L, wavelet, take, 'a')
+
+            if H is not None:
+                H = np.apply_along_axis(_upcoef, axis, H, wavelet, take, 'd')
+
+            if H is None and L is None:
+                new_coeffs[key] = None
+            elif H is None:
+                new_coeffs[key] = L
+            elif L is None:
+                new_coeffs[key] = H
+            else:
+                new_coeffs[key] = L + H
+
+        coeffs = new_coeffs
+
+    return coeffs['']
 
 
 def swt2(data, wavelet, level, start_level=0):
