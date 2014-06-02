@@ -4,7 +4,7 @@ from __future__ import division, print_function, absolute_import
 
 import numpy as np
 from numpy.testing import (run_module_suite, assert_allclose, assert_,
-                           assert_raises)
+                           assert_raises, assert_equal)
 
 import pywt
 
@@ -76,12 +76,17 @@ def test_idwtn_take():
          [7,12, 6,52, 7, 8],
          [5, 2, 6,78,12, 2]]])
     wavelet = pywt.Wavelet('haar')
-
     d = pywt.dwtn(data, wavelet)
 
-    # Make sure we're actually testing something
     assert_(data.shape != pywt.idwtn(d, wavelet).shape)
     assert_allclose(data, pywt.idwtn(d, wavelet, take=data.shape), atol=1e-15)
+
+    # Check shape for take not equal to data.shape
+    data = np.random.randn(51, 17, 68)
+    d = pywt.dwtn(data, wavelet)
+    assert_equal((2, 2, 2), pywt.idwtn(d, wavelet, take=2).shape)
+    assert_equal((52, 18, 68), pywt.idwtn(d, wavelet, take=0).shape)
+
 
 def test_ignore_invalid_keys():
     data = np.array([

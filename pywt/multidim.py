@@ -264,7 +264,7 @@ def idwtn(coeffs, wavelet, mode='sym', take=None):
         Signal extension mode used in the decomposition,
         see MODES (default: 'sym'). Overridden by `take`.
     take : int or iterable of int or None, optional
-        Number of values to take from the center of the idwtn.
+        Number of values to take from the center of the idwtn for each axis.
         If 0, the entire reverse transformation will be used, including
         parts generated from padding in the forward transform.
         If None (default), will be calculated from `mode` to be the size of the
@@ -303,9 +303,9 @@ def idwtn(coeffs, wavelet, mode='sym', take=None):
     else:
         # As in src/common.c
         if mode == MODES.per:
-            takes = [ 2 * s for s in reversed(coeff_shape) ]
+            takes = [2*s for s in reversed(coeff_shape)]
         else:
-            takes = [ 2 * s - wavelet.rec_len + 2 for s in reversed(coeff_shape) ]
+            takes = [2*s - wavelet.rec_len + 2 for s in reversed(coeff_shape)]
 
     def _upcoef(coeffs, wavelet, take, type):
         """Adapts pywt.upcoef call for apply_along_axis"""
@@ -313,7 +313,7 @@ def idwtn(coeffs, wavelet, mode='sym', take=None):
 
     for axis, take in zip(reversed(range(dims)), takes):
         new_coeffs = {}
-        new_keys = [ ''.join(coeff) for coeff in product('ad', repeat=axis) ]
+        new_keys = [''.join(coeff) for coeff in product('ad', repeat=axis)]
 
         for key in new_keys:
             L = coeffs.get(key + 'a')
