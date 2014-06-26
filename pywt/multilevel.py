@@ -353,7 +353,7 @@ def waverecn(coeffs, wavelet, mode='sym'):
 
     a, ds = coeffs[0], coeffs[1:]
 
-    ndim=len(ds[0].keys()[0])
+    ndim=len(list(ds[0].keys())[0])
 
     for d in ds:
         d['a'*ndim]=a
