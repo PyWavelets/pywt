@@ -274,8 +274,8 @@ def wavedecn(data, wavelet, mode='sym', level=None):
 
     data = np.asarray(data, np.float64)
 
-    if len(data.shape) < 3:
-        raise ValueError("Expected 3D input data.")
+    if len(data.shape) < 1:
+        raise ValueError("Expected at least 1D input data.")
 
     if not isinstance(wavelet, Wavelet):
         wavelet = Wavelet(wavelet)
