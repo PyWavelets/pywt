@@ -14,9 +14,10 @@ import numpy as np
 
 from ._pywt import Wavelet
 from ._pywt import dwt, idwt, dwt_max_level
-from ._multidim import dwt2, idwt2
+from ._multidim import dwt2, idwt2, dwtn, idwtn
 
-__all__ = ['wavedec', 'waverec', 'wavedec2', 'waverec2', 'iswt', 'iswt2']
+__all__ = ['wavedec', 'waverec', 'wavedec2', 'waverec2', 'wavedecn',
+           'waverecn', 'iswt', 'iswt2']
 
 
 def wavedec(data, wavelet, mode='symmetric', level=None):
@@ -399,3 +400,145 @@ def iswt2(coeffs, wavelet):
                 output[indices_h, indices_w] = (x1 + x2 + x3 + x4) / 4
 
     return output
+
+
+def wavedecn(data, wavelet, mode='symmetric', level=None):
+    """
+    Multilevel nD Discrete Wavelet Transform.
+
+    Parameters
+    ----------
+    data : ndarray
+        nD input data
+    wavelet : Wavelet object or name string
+        Wavelet to use
+    mode : str, optional
+        Signal extension mode, see MODES (default: 'sym')
+    level : int, optional
+        Decomposition level. If level is None (default) then it will be
+        calculated using `dwt_max_level` function.
+
+    Returns
+    -------
+    [cAn, (cHn, cVn, cDn,...), ... (cH1, cV1, cD1,...)] : list
+        Coefficients list
+
+    Examples
+    --------
+    >>> from pywt import multilevel
+    >>> coeffs = multilevel.wavedecn(np.ones((4,4,4)), 'db1')
+    >>> # Levels:
+    >>> len(coeffs)-1
+    3
+    >>> multilevel.waverecn(coeffs, 'db1')
+    array([[[ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.]],
+
+       [[ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.]],
+
+       [[ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.]],
+
+       [[ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.]]])
+
+    """
+
+    data = np.asarray(data, np.float64)
+
+    if len(data.shape) < 3:
+        raise ValueError("Expected 3D input data.")
+
+    if not isinstance(wavelet, Wavelet):
+        wavelet = Wavelet(wavelet)
+
+    if level is None:
+        size = min(data.shape)
+        level = dwt_max_level(size, wavelet.dec_len)
+    elif level < 0:
+        raise ValueError(
+            "Level value of %d is too low . Minimum level is 0." % level)
+
+    coeffs_list = []
+
+    a = data
+    for i in range(level):
+        coeffs = dwtn(a, wavelet, mode)
+        a = coeffs.pop('a'*data.ndim)
+        coeffs_list.append(coeffs)
+
+    coeffs_list.append(a)
+    coeffs_list.reverse()
+
+    return coeffs_list
+
+
+def waverecn(coeffs, wavelet, mode='symmetric'):
+    """
+    Multilevel nD Inverse Discrete Wavelet Transform.
+
+    coeffs : array_like
+        Coefficients list [cAn, (cHn, cVn, cDn,...), ... (cH1, cV1, cD1,...)]
+    wavelet : Wavelet object or name string
+        Wavelet to use
+    mode : str, optional
+        Signal extension mode, see MODES (default: 'sym')
+
+    Returns
+    -------
+    nD array of reconstructed data.
+
+    Examples
+    --------
+    >>> from pywt import multilevel
+    >>> coeffs = multilevel.wavedecn(np.ones((4,4,4)), 'db1')
+    >>> # Levels:
+    >>> len(coeffs)-1
+    2
+    >>> multilevel.waverecn(coeffs, 'db1')
+    array([[[ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.]],
+
+       [[ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.]],
+
+       [[ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.]],
+
+       [[ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.]]])
+    """
+
+    if not isinstance(coeffs, (list, tuple)):
+        raise ValueError("Expected sequence of coefficient arrays.")
+
+    if len(coeffs) < 2:
+        raise ValueError(
+            "Coefficient list too short (minimum 2 arrays required).")
+
+    a, ds = coeffs[0], coeffs[1:]
+
+    ndim = len(ds[0].keys()[0])
+
+    for d in ds:
+        d['a'*ndim] = a
+        a = idwtn(d, wavelet, mode)
+
+    return a
