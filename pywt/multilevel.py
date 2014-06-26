@@ -10,7 +10,7 @@ and Inverse Discrete Wavelet Transform.
 
 from __future__ import division, print_function, absolute_import
 
-__all__ = ['wavedec', 'waverec', 'wavedec2', 'waverec2']
+__all__ = ['wavedec', 'waverec', 'wavedec2', 'waverec2', 'wavedecn', 'waverecn']
 
 import numpy as np
 
