@@ -165,6 +165,14 @@ def test_waverecn():
         assert_(len(coeffs) == 3)
         assert_allclose(pywt.waverecn(coeffs, 'db1'), np.ones((4, )*nd), rtol=1e-12)
 
+def test_waverecn_db8():
+
+    #test 2D case only. 
+    for nd in [2,]:
+        coeffs = pywt.wavedecn(np.ones((64, )*nd), 'db8')
+        assert_(len(coeffs) == 3)
+        assert_allclose(pywt.waverecn(coeffs, 'db8'), np.ones((64, )*nd), rtol=1e-12)
+
 
 def test_multilevel_dtypes():
     wavelet = pywt.Wavelet('haar')

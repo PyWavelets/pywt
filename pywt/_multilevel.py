@@ -535,10 +535,18 @@ def waverecn(coeffs, wavelet, mode='symmetric'):
 
     a, ds = coeffs[0], coeffs[1:]
 
-    ndim = len(ds[0].keys()[0])
+    dims = max(len(key) for key in ds[0].keys())
 
-    for d in ds:
-        d['a'*ndim] = a
-        a = idwtn(d, wavelet, mode)
+    for idx,d in enumerate(ds):
+
+        #determine the shape at the next level for idwtn
+        if idx<(len(ds)-1):
+            next_shape=[v.shape for k,v in ds[idx+1].items() if v is not None]
+            take=next_shape[0]
+        else:
+            take=None
+
+        d['a'*dims]=a
+        a = idwtn(d, wavelet, mode,take=take)
 
     return a
