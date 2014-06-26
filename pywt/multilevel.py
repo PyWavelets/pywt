@@ -239,7 +239,7 @@ def wavedecn(data, wavelet, mode='sym', level=None):
 
     Returns
     -------
-    [cAn, (cHn, cVn, cDn,...), ... (cH1, cV1, cD1,...)] : list
+    [cAn, {diff_coeffs_leveln}, ... {diff_coeffs_level1}] : list
         Coefficients list
 
     Examples
@@ -305,7 +305,7 @@ def waverecn(coeffs, wavelet, mode='sym'):
     Multilevel nD Inverse Discrete Wavelet Transform.
 
     coeffs : array_like
-        Coefficients list [cAn, (cHn, cVn, cDn,...), ... (cH1, cV1, cD1,...)]
+        Coefficients list [cAn, {diff_coeffs_leveln}, ... {diff_coeffs_level1}]
     wavelet : Wavelet object or name string
         Wavelet to use
     mode : str, optional
