@@ -85,7 +85,7 @@ Python 3
 --------
 
 Python 2 e Python 3 version are working under the
-same same code base at https://github.com/rgommers/pywt, as well as the examples. 
+same code base at https://github.com/rgommers/pywt, as well as the examples. 
 Check out the `changelog <https://github.com/rgommers/pywt>`_ for
 info.
 
