@@ -26,7 +26,7 @@ Requirements
 
 PyWavelets is a package for the Python programming language. It requires:
 
- - Python_ 2.6, 2.7 or 3.2
+ - Python_ 2.6, 2.7 or >=3.2
  - numpy_ numeric array module
 
 Download
