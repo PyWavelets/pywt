@@ -84,10 +84,10 @@ Go and fork on `GitHub`_ today!
 Python 3
 --------
 
-PyWavelts was fully ported to Python 3. The current Python3 branch is 
-at https://github.com/rgommers/pywt. Check out the `changelog <https://github.com/rgommers/pywt>`_ for
-info. Currently the code and examples are ported to work on Python 2.7 and 3.2
-from the same codebase.
+Python 2 e Python 3 version are working under the
+same same code base at https://github.com/rgommers/pywt, as well as the examples. 
+Check out the `changelog <https://github.com/rgommers/pywt>`_ for
+info.
 
 Issues should be reported on https://github.com/rgommers/pywt/issues.
 
