@@ -26,14 +26,14 @@ Requirements
 
 PyWavelets is a package for the Python programming language. It requires:
 
- - Python_ 2.6 or 2.7
+ - Python_ 2.6, 2.7 or >=3.2
  - numpy_ numeric array module
 
 Download
 --------
 
 The most recent *development* version can be found on GitHub at
-https://github.com/nigma/pywt.
+https://github.com/rgommers/pywt.
 
 Latest release, including source and binary package for Windows, is available
 for download from the `Python Package Index`_.
@@ -84,10 +84,12 @@ Go and fork on `GitHub`_ today!
 Python 3
 --------
 
-Python 3 development branch is at https://github.com/nigma/pywt/tree/py-3.
-Check out the `changelog <https://github.com/nigma/pywt/commits/py-3>`_ for
-info. Currently the code and examples are ported to work on Python 2.7 and 3.2
-from the same codebase.
+Python 2 e Python 3 version are working under the
+same code base at https://github.com/rgommers/pywt, as well as the examples. 
+Check out the `changelog <https://github.com/rgommers/pywt>`_ for
+info.
+
+Issues should be reported on https://github.com/rgommers/pywt/issues.
 
 Contact
 -------
