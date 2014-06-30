@@ -27,7 +27,7 @@ Requirements
 PyWavelets is a package for the Python programming language. It requires:
 
  - Python_ 2.6, 2.7 or >=3.2
- - numpy_ numeric array module
+ - Numpy_ 
 
 Download
 --------
@@ -36,7 +36,8 @@ The most recent *development* version can be found on GitHub at
 https://github.com/rgommers/pywt.
 
 Latest release, including source and binary package for Windows, is available
-for download from the `Python Package Index`_.
+for download from the `Python Package Index`_.  Note that the official release
+is quite old and doesn't yet support Python 3.
 
 Install
 -------
@@ -44,14 +45,12 @@ Install
 In order to build PyWavelets from source, a working C compiler (GCC or MSVC)
 and a recent version of Cython_ is required.
 
- - To install PyWavelets open shell prompt and type ``pip install PyWavelets``
-   or ``easy_install PyWavelets``.
+ - To install PyWavelets open shell prompt and type 
+   ``pip install -e git+https://github.com/rgommers/pywt#egg=pywt`` (dev version)
+   or ``pip install PyWavelets`` (last official release)
 
  - To build and install from source, navigate to downloaded PyWavelets source
    code directory and type ``python setup.py install``.
-
- - The `in-development version`_ of PyWavelets can be installed with
-   ``pip install PyWavelets==dev`` or ``easy_install PyWavelets==dev``.
 
 Prebuilt Windows binaries and source code packages are also
 available from `Python Package Index`_.
@@ -74,17 +73,16 @@ Contributing
 
 PyWavelets started in 2006 as an academic project for a master thesis
 on `Analysis and Classification of Medical Signals using Wavelet Transforms`
-and is maintained by its `original developer`_.
+but seems to no longer be maintained by its `original developer`_.
+This repo contains further development work by multiple contributors.
 
 All contributions including bug reports, bug fixes, new feature implementations
 and documentation improvements are welcome.
 
-Go and fork on `GitHub`_ today!
-
 Python 3
 --------
 
-Python 2 e Python 3 version are working under the
+Python 2.x and Python 3.x versions are working under the
 same code base at https://github.com/rgommers/pywt, as well as the examples. 
 Check out the `changelog <https://github.com/rgommers/pywt>`_ for
 info.
@@ -94,7 +92,7 @@ Issues should be reported on https://github.com/rgommers/pywt/issues.
 Contact
 -------
 
-Use `GitHub Issues`_ or `PyWavelets discussions group`_ to post your
+Use `GitHub Issues`_ or the `PyWavelets discussions group`_ to post your
 comments or questions.
 
 License
@@ -105,15 +103,16 @@ PyWavelets is a free Open Source software released under the MIT license.
 Commercial Support
 ------------------
 
-For information on commercial support and development email me at en@ig.ma.
+For information on commercial support and development one can try to contact
+the original developer at en@ig.ma.
 
 
 .. _Cython: http://cython.org/
 .. _demo: https://github.com/nigma/pywt/tree/master/demo
-.. _GitHub: https://github.com/nigma/pywt
+.. _GitHub: https://github.com/rgommers/pywt/issues
 .. _GitHub Issues: https://github.com/nigma/pywt/issues
 .. _in-development version: https://github.com/nigma/pywt/tarball/develop#egg=PyWavelets-dev
-.. _numpy: http://numpy.scipy.org/
+.. _Numpy: http://numpy.scipy.org/
 .. _original developer: http://en.ig.ma
 .. _Python: http://python.org/
 .. _Python Package Index: http://pypi.python.org/pypi/PyWavelets/
