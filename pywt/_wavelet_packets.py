@@ -351,7 +351,7 @@ class BaseNode(object):
                 if subnode is not None:
                     subnode.walk(func, args, kwargs, decompose)
 
-    def walk_depth(self, func, args=(), kwargs=None, decompose=False):
+    def walk_depth(self, func, args=(), kwargs=None, decompose=True):
         """
         Walk tree and call func on every node starting from the bottom-most
         nodes.
