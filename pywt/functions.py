@@ -15,7 +15,7 @@ from numpy.fft import fft
 from ._pywt import Wavelet
 
 
-__all__ = ["integrate_wavelet", "central_frequency", "scal2frq", "qmf",
+__all__ = ["integrate_wavelet", "central_frequency", "scale2frequency", "qmf",
            "orthfilt"]
 
 
@@ -157,7 +157,7 @@ def central_frequency(wavelet, precision=8):
     return 1.0 / (domain / (index - 1))
 
 
-def scal2frq(wavelet, scale, delta, precision=8):
+def scale2frequency(wavelet, scale, delta, precision=8):
     """
 
     Parameters
