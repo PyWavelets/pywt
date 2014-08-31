@@ -13,11 +13,11 @@ from __future__ import division, print_function, absolute_import
 
 
 from ._pywt import *
-from .functions import *
-from .multilevel import *
-from .multidim import *
-from .thresholding import *
-from .wavelet_packets import *
+from ._functions import *
+from ._multilevel import *
+from ._multidim import *
+from ._thresholding import *
+from ._wavelet_packets import *
 
 
 __all__ = [s for s in dir() if not s.startswith('_')]

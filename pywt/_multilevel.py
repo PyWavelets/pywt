@@ -14,7 +14,7 @@ import numpy as np
 
 from ._pywt import Wavelet
 from ._pywt import dwt, idwt, dwt_max_level
-from .multidim import dwt2, idwt2
+from ._multidim import dwt2, idwt2
 
 __all__ = ['wavedec', 'waverec', 'wavedec2', 'waverec2', 'iswt', 'iswt2']
 

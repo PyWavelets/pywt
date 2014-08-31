@@ -12,7 +12,7 @@ __all__ = ["BaseNode", "Node", "WaveletPacket", "Node2D", "WaveletPacket2D"]
 import numpy as np
 
 from ._pywt import Wavelet, dwt, idwt, dwt_max_level
-from .multidim import dwt2, idwt2
+from ._multidim import dwt2, idwt2
 
 
 def get_graycode_order(level, x='a', y='d'):
