@@ -40,7 +40,7 @@ def test_scal2frq_delta():
 
 def test_intwave_orthogonal():
     w = pywt.Wavelet('db1')
-    int_psi, x = pywt.intwave(w, precision=12)
+    int_psi, x = pywt.integrate_wavelet(w, precision=12)
     ix = x < 0.5
     # For x < 0.5, the integral is equal to x
     assert_allclose(int_psi[ix], x[ix])

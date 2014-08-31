@@ -33,30 +33,30 @@ Single-level n-dimensional Discrete Wavelet Transform.
       }
 
 
-Integrating wavelet functions - :func:`intwave`
+Integrating wavelet functions - :func:`integrate_wavelet`
 -----------------------------------------------
 
-.. function:: intwave(wavelet[, precision=8])
+.. function:: integrate_wavelet(wavelet[, precision=8])
 
   Integration of wavelet function approximations as well as any other signals
-  can be performed using the :func:`pywt.intwave` function.
+  can be performed using the :func:`pywt.integrate_wavelet` function.
 
   The result of the call depends on the *wavelet* argument:
 
   * for orthogonal wavelets - an integral of the wavelet function specified
     on an x-grid::
 
-      [int_psi, x] = intwave(wavelet, precision)
+      [int_psi, x] = integrate_wavelet(wavelet, precision)
 
   * for other wavelets - integrals of decomposition and reconstruction
     wavelet functions and a corresponding x-grid::
 
-      [int_psi_d, int_psi_r, x] = intwave(wavelet, precision)
+      [int_psi_d, int_psi_r, x] = integrate_wavelet(wavelet, precision)
 
   * for a tuple of coefficients data and a x-grid - an integral of function
     and the given x-grid is returned (the x-grid is used for computations).::
 
-      [int_function, x] = intwave((data, x), precision)
+      [int_function, x] = integrate_wavelet((data, x), precision)
 
 
   **Example:**
@@ -65,9 +65,9 @@ Integrating wavelet functions - :func:`intwave`
 
     >>> import pywt
     >>> wavelet1 = pywt.Wavelet('db2')
-    >>> [int_psi, x] = pywt.intwave(wavelet1, precision=5)
+    >>> [int_psi, x] = pywt.integrate_wavelet(wavelet1, precision=5)
     >>> wavelet2 = pywt.Wavelet('bior1.3')
-    >>> [int_psi_d, int_psi_r, x] = pywt.intwave(wavelet2, precision=5)
+    >>> [int_psi_d, int_psi_r, x] = pywt.integrate_wavelet(wavelet2, precision=5)
 
 
 Central frequency of *psi* wavelet function

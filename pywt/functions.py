@@ -15,7 +15,7 @@ from numpy.fft import fft
 from ._pywt import Wavelet
 
 
-__all__ = ["intwave", "centfrq", "scal2frq", "qmf", "orthfilt"]
+__all__ = ["integrate_wavelet", "centfrq", "scal2frq", "qmf", "orthfilt"]
 
 
 WAVELET_CLASSES = (Wavelet)
@@ -39,7 +39,7 @@ def _integrate(arr, step):
     return integral
 
 
-def intwave(wavelet, precision=8):
+def integrate_wavelet(wavelet, precision=8):
     """
     Integrate `psi` wavelet function from -Inf to x using the rectangle
     integration method.
@@ -73,9 +73,10 @@ def intwave(wavelet, precision=8):
     --------
     >>> import pywt
     >>> wavelet1 = pywt.Wavelet('db2')
-    >>> [int_psi, x] = pywt.intwave(wavelet1, precision=5)
+    >>> [int_psi, x] = pywt.integrate_wavelet(wavelet1, precision=5)
     >>> wavelet2 = pywt.Wavelet('bior1.3')
-    >>> [int_psi_d, int_psi_r, x] = pywt.intwave(wavelet2, precision=5)
+    >>> [int_psi_d, int_psi_r, x] = pywt.integrate_wavelet(wavelet2,
+                                                           precision=5)
 
     """
     # FIXME: this function should really use scipy.integrate.quad
@@ -129,7 +130,8 @@ def centfrq(wavelet, precision=8):
         of Wavelet object to allow custom wavelet functions.
     """
 
-    # FIXME: `wavelet` handling should be identical to intwave, factor out
+    # FIXME: `wavelet` handling should be identical to integrate_wavelet,
+    # factor out
     if isinstance(wavelet, tuple):
         psi, x = np.asarray(wavelet[0]), np.asarray(wavelet[1])
     else:
