@@ -34,17 +34,18 @@ ctypedef fused data_t:
 class _Modes(object):
     """
     Because the most common and practical way of representing digital signals
-    in computer science is with finite arrays of values, some extrapolation
-    of the input data has to be performed in order to extend the signal before
-    computing the :ref:`Discrete Wavelet Transform <ref-dwt>` using the cascading
-    filter banks algorithm.
+    in computer science is with finite arrays of values, some extrapolation of
+    the input data has to be performed in order to extend the signal before
+    computing the :ref:`Discrete Wavelet Transform <ref-dwt>` using the
+    cascading filter banks algorithm.
 
-    Depending on the extrapolation method, significant artifacts at the signal's
-    borders can be introduced during that process, which in turn may lead to
-    inaccurate computations of the :ref:`DWT <ref-dwt>` at the signal's ends.
+    Depending on the extrapolation method, significant artifacts at the
+    signal's borders can be introduced during that process, which in turn may
+    lead to inaccurate computations of the :ref:`DWT <ref-dwt>` at the signal's
+    ends.
 
-    PyWavelets provides several methods of signal extrapolation that can be used to
-    minimize this negative effect:
+    PyWavelets provides several methods of signal extrapolation that can be
+    used to minimize this negative effect:
 
     zpd - zero-padding                   0  0 | x1 x2 ... xn | 0  0
     cpd - constant-padding              x1 x1 | x1 x2 ... xn | xn xn
@@ -52,12 +53,13 @@ class _Modes(object):
     ppd - periodic-padding            xn-1 xn | x1 x2 ... xn | x1 x2
     sp1 - smooth-padding               (1st derivative interpolation)
 
-    DWT performed for these extension modes is slightly redundant, but ensure
-    a perfect reconstruction for IDWT. To receive the smallest possible number of coefficients,
-    computations can be performed with the periodization mode:
+    DWT performed for these extension modes is slightly redundant, but ensure a
+    perfect reconstruction for IDWT. To receive the smallest possible number of
+    coefficients, computations can be performed with the periodization mode:
 
-    per - periodization - like periodic-padding but gives the smallest possible number
-          of decomposition coefficients. IDWT must be performed with the same mode.
+    per - periodization - like periodic-padding but gives the smallest possible
+          number of decomposition coefficients. IDWT must be performed with the
+          same mode.
 
     Examples
     --------
@@ -70,12 +72,11 @@ class _Modes(object):
 
     Notes
     -----
-    Extending data in context of PyWavelets does not mean reallocation of the data
-    in computer's physical memory and copying values, but rather computing
-    the extra values only when they are needed.
-    This feature saves extra memory and CPU resources and helps to avoid page
-    swapping when handling relatively big data arrays on computers with low
-    physical memory.
+    Extending data in context of PyWavelets does not mean reallocation of the
+    data in computer's physical memory and copying values, but rather computing
+    the extra values only when they are needed.  This feature saves extra
+    memory and CPU resources and helps to avoid page swapping when handling
+    relatively big data arrays on computers with low physical memory.
 
     """
     zpd = common.MODE_ZEROPAD
