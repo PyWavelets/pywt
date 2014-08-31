@@ -38,26 +38,20 @@ Integrating wavelet functions - :func:`integrate_wavelet`
 
 .. function:: integrate_wavelet(wavelet[, precision=8])
 
-  Integration of wavelet function approximations as well as any other signals
-  can be performed using the :func:`pywt.integrate_wavelet` function.
+  Integration of wavelet function approximations can be performed
+  using the :func:`pywt.integrate_wavelet` function.
 
   The result of the call depends on the *wavelet* argument:
 
-  * for orthogonal wavelets - an integral of the wavelet function specified
-    on an x-grid::
+  * for orthogonal and continuous wavelets - an integral of the
+    wavelet function specified on an x-grid::
 
-      [int_psi, x] = integrate_wavelet(wavelet, precision)
+      [int_psi, x_grid] = integrate_wavelet(wavelet, precision)
 
-  * for other wavelets - integrals of decomposition and reconstruction
-    wavelet functions and a corresponding x-grid::
+  * for other wavelets - integrals of decomposition and
+    reconstruction wavelet functions and a corresponding x-grid::
 
-      [int_psi_d, int_psi_r, x] = integrate_wavelet(wavelet, precision)
-
-  * for a tuple of coefficients data and a x-grid - an integral of function
-    and the given x-grid is returned (the x-grid is used for computations).::
-
-      [int_function, x] = integrate_wavelet((data, x), precision)
-
+      [int_psi_d, int_psi_r, x_grid] = integrate_wavelet(wavelet, precision)
 
   **Example:**
 
