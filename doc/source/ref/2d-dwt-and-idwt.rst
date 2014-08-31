@@ -11,7 +11,7 @@
 Single level ``dwt2``
 ~~~~~~~~~~~~~~~~~~~~~
 
-.. function:: dwt2(data, wavelet[, mode='sym'])
+.. function:: dwt2(data, wavelet[, mode='symmetric'])
 
   The :func:`dwt2` function performs single level 2D Discrete Wavelet Transform.
 
@@ -20,7 +20,7 @@ Single level ``dwt2``
   :param wavelet: |wavelet|
 
   :param mode: |mode| This is only important when DWT was performed
-               in :ref:`periodization <Modes.per>` mode.
+               in :ref:`periodization <Modes.periodization>` mode.
 
   .. compound::
 
@@ -71,7 +71,7 @@ access to particular type of the output coefficients.
 Single level ``idwt2``
 ~~~~~~~~~~~~~~~~~~~~~~
 
-.. function:: idwt2(coeffs, wavelet[, mode='sym'])
+.. function:: idwt2(coeffs, wavelet[, mode='symmetric'])
 
   The :func:`idwt2` function reconstructs data from the given coefficients
   set by performing single level 2D Inverse Discrete Wavelet Transform.
@@ -84,7 +84,7 @@ Single level ``idwt2``
   :param wavelet: |wavelet|
 
   :param mode: |mode| This is only important when the :func:`dwt` was performed
-               in the :ref:`periodization <Modes.per>` mode.
+               in the :ref:`periodization <Modes.periodization>` mode.
 
   **Example:**
 
@@ -101,7 +101,7 @@ Single level ``idwt2``
 2D multilevel decomposition using ``wavedec2``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. function:: wavedec2(data, wavelet[, mode='sym'[, level=None]])
+.. function:: wavedec2(data, wavelet[, mode='symmetric'[, level=None]])
 
   .. compound::
 
@@ -139,7 +139,7 @@ Single level ``idwt2``
 2D multilevel reconstruction using ``waverec2``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. function:: waverec2(coeffs, wavelet[, mode='sym'])
+.. function:: waverec2(coeffs, wavelet[, mode='symmetric'])
 
   Performs multilevel reconstruction from the given coefficients set.
 

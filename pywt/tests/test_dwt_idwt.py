@@ -67,7 +67,7 @@ def test_dwt_input_error():
 def test_dwt_wavelet_kwd():
     x = np.array([3, 7, 1, 1, -2, 5, 4, 6])
     w = pywt.Wavelet('sym3')
-    cA, cD = pywt.dwt(x, wavelet=w, mode='cpd')
+    cA, cD = pywt.dwt(x, wavelet=w, mode='constant')
     cA_expect = [4.38354585, 3.80302657, 7.31813271, -0.58565539, 4.09727044,
                  7.81994027]
     cD_expect = [-1.33068221, -2.78795192, -3.16825651, -0.67715519,
@@ -79,7 +79,7 @@ def test_dwt_wavelet_kwd():
 def test_dwt_coeff_len():
     x = np.array([3, 7, 1, 1, -2, 5, 4, 6])
     w = pywt.Wavelet('sym3')
-    ln = pywt.dwt_coeff_len(data_len=len(x), filter_len=w.dec_len, mode='sym')
+    ln = pywt.dwt_coeff_len(data_len=len(x), filter_len=w.dec_len, mode='symmetric')
     assert_(ln == 6)
     ln_modes = [pywt.dwt_coeff_len(len(x), w.dec_len, mode) for mode in
                 pywt.Modes.modes]
@@ -88,29 +88,29 @@ def test_dwt_coeff_len():
 
 def test_idwt_none_input():
     # None input equals arrays of zeros of the right length
-    res1 = pywt.idwt([1, 2, 0, 1], None, 'db2', 'sym')
-    res2 = pywt.idwt([1, 2, 0, 1], [0, 0, 0, 0], 'db2', 'sym')
+    res1 = pywt.idwt([1, 2, 0, 1], None, 'db2', 'symmetric')
+    res2 = pywt.idwt([1, 2, 0, 1], [0, 0, 0, 0], 'db2', 'symmetric')
     assert_allclose(res1, res2, rtol=1e-15, atol=1e-15)
 
-    res1 = pywt.idwt(None, [1, 2, 0, 1], 'db2', 'sym')
-    res2 = pywt.idwt([0, 0, 0, 0], [1, 2, 0, 1], 'db2', 'sym')
+    res1 = pywt.idwt(None, [1, 2, 0, 1], 'db2', 'symmetric')
+    res2 = pywt.idwt([0, 0, 0, 0], [1, 2, 0, 1], 'db2', 'symmetric')
     assert_allclose(res1, res2, rtol=1e-15, atol=1e-15)
 
     # Only one argument at a time can be None
-    assert_raises(ValueError, pywt.idwt, None, None, 'db2', 'sym')
+    assert_raises(ValueError, pywt.idwt, None, None, 'db2', 'symmetric')
 
 
 def test_idwt_correct_size_kw():
-    res = pywt.idwt([1, 2, 3, 4, 5], [1, 2, 3, 4], 'db2', 'sym',
+    res = pywt.idwt([1, 2, 3, 4, 5], [1, 2, 3, 4], 'db2', 'symmetric',
                     correct_size=True)
     expected = [1.76776695, 0.61237244, 3.18198052, 0.61237244, 4.59619408,
                 0.61237244]
     assert_allclose(res, expected)
 
     assert_raises(ValueError, pywt.idwt,
-                  [1, 2, 3, 4, 5], [1, 2, 3, 4], 'db2', 'sym')
+                  [1, 2, 3, 4, 5], [1, 2, 3, 4], 'db2', 'symmetric')
     assert_raises(ValueError, pywt.idwt, [1, 2, 3, 4], [1, 2, 3, 4, 5], 'db2',
-                  'sym', correct_size=True)
+                  'symmetric', correct_size=True)
 
 
 def test_idwt_invalid_input():

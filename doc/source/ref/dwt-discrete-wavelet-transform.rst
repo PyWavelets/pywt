@@ -15,14 +15,14 @@ functions used to perform single- and multilevel Discrete Wavelet Transforms.
 Single level ``dwt``
 --------------------
 
-.. function:: dwt(data, wavelet[, mode='sym'])
+.. function:: dwt(data, wavelet[, mode='symmetric'])
 
   The :func:`dwt` function is used to perform single level, one dimensional
   Discrete Wavelet Transform.
 
   ::
 
-    (cA, cD) = dwt(data, wavelet, mode='sym')
+    (cA, cD) = dwt(data, wavelet, mode='symmetric')
 
   :param data: |data|
 
@@ -37,11 +37,11 @@ Single level ``dwt``
   available options and the :func:`dwt_coeff_len` function for information on
   getting the expected result length:
 
-  * for all :ref:`modes <ref-modes>` except :ref:`periodization <Modes.per>`::
+  * for all :ref:`modes <ref-modes>` except :ref:`periodization <Modes.periodization>`::
 
       len(cA) == len(cD) == floor((len(data) + wavelet.dec_len - 1) / 2)
 
-  * for :ref:`periodization <Modes.per>` mode (``"per"``)::
+  * for :ref:`periodization <Modes.periodization>` mode (``"periodization"``)::
 
       len(cA) == len(cD) == ceil(len(data) / 2)
 
@@ -60,7 +60,7 @@ Single level ``dwt``
 Multilevel decomposition using ``wavedec``
 ------------------------------------------
 
-.. function:: wavedec(data, wavelet, mode='sym', level=None)
+.. function:: wavedec(data, wavelet, mode='symmetric', level=None)
 
   .. compound::
 
@@ -105,7 +105,7 @@ Multilevel decomposition using ``wavedec``
 Partial Discrete Wavelet Transform data decomposition ``downcoef``
 ------------------------------------------------------------------
 
-.. function:: downcoef(part, data, wavelet[, mode='sym'[, level=1]])
+.. function:: downcoef(part, data, wavelet[, mode='symmetric'[, level=1]])
 
    Similar to :func:`~pywt.dwt`, but computes only one set of coefficients.
    Useful when you need only approximation or only details at the given level.
@@ -166,7 +166,7 @@ and :ref:`signal extension mode <Modes>`, the :func:`dwt_coeff_len` function
 calculates length of resulting coefficients arrays that would be created while
 performing :func:`dwt` transform.
 
-For :ref:`periodization <Modes.per>` mode this equals::
+For :ref:`periodization <Modes.periodization>` mode this equals::
 
   ceil(data_len / 2)
 

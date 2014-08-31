@@ -19,7 +19,7 @@ from ._pywt import Wavelet, Modes
 from ._pywt import dwt, idwt, swt, dwt_axis, idwt_axis
 
 
-def dwt2(data, wavelet, mode='sym'):
+def dwt2(data, wavelet, mode='symmetric'):
     """
     2D Discrete Wavelet Transform.
 
@@ -92,7 +92,7 @@ def dwt2(data, wavelet, mode='sym'):
     return ret
 
 
-def idwt2(coeffs, wavelet, mode='sym'):
+def idwt2(coeffs, wavelet, mode='symmetric'):
     """
     2-D Inverse Discrete Wavelet Transform.
 
@@ -195,7 +195,7 @@ def idwt2(coeffs, wavelet, mode='sym'):
     return np.array(data)
 
 
-def dwtn(data, wavelet, mode='sym'):
+def dwtn(data, wavelet, mode='symmetric'):
     """
     Single-level n-dimensional Discrete Wavelet Transform.
 
@@ -247,7 +247,7 @@ def dwtn(data, wavelet, mode='sym'):
     return dict(coeffs)
 
 
-def idwtn(coeffs, wavelet, mode='sym'):
+def idwtn(coeffs, wavelet, mode='symmetric'):
     """
     Single-level n-dimensional Discrete Wavelet Transform.
 

@@ -86,7 +86,7 @@ def load_image(path, mode=None, size=None):
     return im
 
 
-def blend_images(base, texture, wavelet, level, mode='sp1', base_gain=None,
+def blend_images(base, texture, wavelet, level, mode='smooth', base_gain=None,
                  texture_gain=None):
     """Blend loaded images at `level` of granularity using `wavelet`"""
 

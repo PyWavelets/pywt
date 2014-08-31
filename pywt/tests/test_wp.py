@@ -11,7 +11,7 @@ import pywt
 
 def test_wavelet_packet_structure():
     x = [1, 2, 3, 4, 5, 6, 7, 8]
-    wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='sym')
+    wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='symmetric')
 
     assert_(wp.data == [1, 2, 3, 4, 5, 6, 7, 8])
     assert_(wp.path == '')
@@ -21,7 +21,7 @@ def test_wavelet_packet_structure():
 
 def test_traversing_wp_tree():
     x = [1, 2, 3, 4, 5, 6, 7, 8]
-    wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='sym')
+    wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='symmetric')
 
     assert_(wp.maxlevel == 3)
 
@@ -39,7 +39,7 @@ def test_traversing_wp_tree():
 
 def test_acess_path():
     x = [1, 2, 3, 4, 5, 6, 7, 8]
-    wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='sym')
+    wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='symmetric')
 
     assert_(wp['a'].path == 'a')
     assert_(wp['aa'].path == 'aa')
@@ -54,7 +54,7 @@ def test_acess_path():
 
 def test_access_node_atributes():
     x = [1, 2, 3, 4, 5, 6, 7, 8]
-    wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='sym')
+    wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='symmetric')
 
     assert_allclose(wp['ad'].data, np.array([-2., -2.]), rtol=1e-12)
     assert_(wp['ad'].path == 'ad')
@@ -62,12 +62,12 @@ def test_access_node_atributes():
     assert_(wp['ad'].parent.path == 'a')
     assert_(wp['ad'].level == 2)
     assert_(wp['ad'].maxlevel == 3)
-    assert_(wp['ad'].mode == 'sym')
+    assert_(wp['ad'].mode == 'symmetric')
 
 
 def test_collecting_nodes():
     x = [1, 2, 3, 4, 5, 6, 7, 8]
-    wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='sym')
+    wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='symmetric')
 
     # All nodes in natural order
     assert_([node.path for node in wp.get_level(3, 'natural')] ==
@@ -80,10 +80,10 @@ def test_collecting_nodes():
 
 def test_reconstructing_data():
     x = [1, 2, 3, 4, 5, 6, 7, 8]
-    wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='sym')
+    wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='symmetric')
 
     # Create another Wavelet Packet and feed it with some data.
-    new_wp = pywt.WaveletPacket(data=None, wavelet='db1', mode='sym')
+    new_wp = pywt.WaveletPacket(data=None, wavelet='db1', mode='symmetric')
     new_wp['aa'] = wp['aa'].data
     new_wp['ad'] = [-2., -2.]
 
@@ -109,7 +109,7 @@ def test_reconstructing_data():
 
 def test_removing_nodes():
     x = [1, 2, 3, 4, 5, 6, 7, 8]
-    wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='sym')
+    wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='symmetric')
     wp.get_level(2)
 
     dataleafs = [n.data for n in wp.get_leaf_nodes(False)]

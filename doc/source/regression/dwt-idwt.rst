@@ -42,7 +42,7 @@ Now let's experiment with the :func:`dwt` some more. For example let's pass a
 mode (the default is :ref:`sym <Modes.sym>`) for the border effect handling:
 
     >>> w = pywt.Wavelet('sym3')
-    >>> cA, cD = pywt.dwt(x, wavelet=w, mode='cpd')
+    >>> cA, cD = pywt.dwt(x, wavelet=w, mode='constant')
     >>> print cA
     [ 4.38354585  3.80302657  7.31813271 -0.58565539  4.09727044  7.81994027]
     >>> print cD
@@ -56,7 +56,7 @@ To find out what will be the output data size use the :func:`dwt_coeff_len`
 function:
 
     >>> # int() is for normalizing Python integers and long integers for documentation tests
-    >>> int(pywt.dwt_coeff_len(data_len=len(x), filter_len=w.dec_len, mode='sym'))
+    >>> int(pywt.dwt_coeff_len(data_len=len(x), filter_len=w.dec_len, mode='symmetric'))
     6
     >>> int(pywt.dwt_coeff_len(len(x), w, 'sym'))
     6
@@ -73,15 +73,15 @@ extension mode (please refer to the PyWavelets' documentation for the
 :ref:`extension modes <Modes>` available:
 
     >>> pywt.Modes.modes
-    ['zpd', 'cpd', 'sym', 'ppd', 'sp1', 'per']
+    ['zero', 'constant', 'symmetric', 'periodic', 'smooth', 'periodization']
 
     >>> [int(pywt.dwt_coeff_len(len(x), w.dec_len, mode)) for mode in pywt.Modes.modes]
     [6, 6, 6, 6, 6, 4]
 
-As you see in the above example, the :ref:`per <Modes.per>` (periodization) mode
-is slightly different from the others. It's aim when doing the :func:`DWT <dwt>`
-transform is to output coefficients arrays that are half of the length of the
-input data.
+As you see in the above example, the :ref:`periodization <Modes.periodization>`
+(periodization) mode is slightly different from the others. It's aim when
+doing the :func:`DWT <dwt>` transform is to output coefficients arrays that
+are half of the length of the input data.
 
 Knowing that, you should never mix the periodization mode with other modes when
 doing :func:`DWT <dwt>` and :func:`IDWT <idwt>`. Otherwise, it will produce
@@ -89,10 +89,10 @@ doing :func:`DWT <dwt>` and :func:`IDWT <idwt>`. Otherwise, it will produce
 
     >>> x
     [3, 7, 1, 1, -2, 5, 4, 6]
-    >>> cA, cD = pywt.dwt(x, wavelet=w, mode='per')
-    >>> print pywt.idwt(cA, cD, 'sym3', 'sym') # invalid mode
+    >>> cA, cD = pywt.dwt(x, wavelet=w, mode='periodization')
+    >>> print pywt.idwt(cA, cD, 'sym3', 'symmetric') # invalid mode
     [ 1.  1. -2.  5.]
-    >>> print pywt.idwt(cA, cD, 'sym3', 'per')
+    >>> print pywt.idwt(cA, cD, 'sym3', 'periodization')
     [ 3.  7.  1.  1. -2.  5.  4.  6.]
 
 

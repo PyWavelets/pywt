@@ -533,7 +533,7 @@ class WaveletPacket(Node):
         If None, it will be calculated based on the `wavelet` and `data`
         length using `pywt.dwt_max_level`.
     """
-    def __init__(self, data, wavelet, mode='sym', maxlevel=None):
+    def __init__(self, data, wavelet, mode='symmetric', maxlevel=None):
         super(WaveletPacket, self).__init__(None, data, "")
 
         if not isinstance(wavelet, Wavelet):
@@ -635,7 +635,7 @@ class WaveletPacket2D(Node2D):
         If None, it will be calculated based on the `wavelet` and `data`
         length using `pywt.dwt_max_level`.
     """
-    def __init__(self, data, wavelet, mode='sp1', maxlevel=None):
+    def __init__(self, data, wavelet, mode='smooth', maxlevel=None):
         super(WaveletPacket2D, self).__init__(None, data, "")
 
         if not isinstance(wavelet, Wavelet):

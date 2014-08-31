@@ -22,35 +22,35 @@ inaccurate computations of the :ref:`DWT <ref-dwt>` at the signal's ends.
 PyWavelets provides several methods of signal extrapolation that can be used to
 minimize this negative effect:
 
-  .. _`Modes.zpd`:
+  .. _`Modes.zero`:
 
-  * ``zpd`` - **zero-padding** - signal is extended by adding zero samples::
+  * ``zero`` - **zero-padding** - signal is extended by adding zero samples::
 
       ... 0  0 | x1 x2 ... xn | 0  0 ...
 
-  .. _`Modes.cpd`:
+  .. _`Modes.constant`:
 
-  * ``cpd`` - **constant-padding** - border values are replicated::
+  * ``constant`` - **constant-padding** - border values are replicated::
 
       ... x1 x1 | x1 x2 ... xn | xn xn ...
 
-  .. _`Modes.sym`:
+  .. _`Modes.symmetric`:
 
-  * ``sym`` - **symmetric-padding** - signal is extended by *mirroring*
+  * ``symmetric`` - **symmetric-padding** - signal is extended by *mirroring*
     samples::
 
       ... x2 x1 | x1 x2 ... xn | xn xn-1 ...
 
-  .. _`Modes.ppd`:
+  .. _`Modes.periodic`:
   .. _`periodic-padding`:
 
-  * ``ppd`` - **periodic-padding** - signal is treated as a periodic one::
+  * ``periodic`` - **periodic-padding** - signal is treated as a periodic one::
 
       ... xn-1 xn | x1 x2 ... xn | x1 x2 ...
 
-  .. _`Modes.sp1`:
+  .. _`Modes.smooth`:
 
-  * ``sp1`` - **smooth-padding** - signal is extended according to the first
+  * ``smooth`` - **smooth-padding** - signal is extended according to the first
     derivatives calculated on the edges (straight line)
 
 :ref:`DWT <ref-dwt>` performed for these extension modes is slightly redundant, but ensures
@@ -58,9 +58,9 @@ perfect reconstruction. To receive the smallest possible number of coefficients,
 computations can be performed with the `periodization`_ mode:
 
   .. _`periodization`:
-  .. _`Modes.per`:
+  .. _`Modes.periodization`:
 
-  * ``per`` - **periodization** - is like `periodic-padding`_ but gives the
+  * ``periodization`` - **periodization** - is like `periodic-padding`_ but gives the
     smallest possible number of decomposition coefficients. :ref:`IDWT <ref-idwt>` must be
     performed with the same mode.
 
@@ -70,7 +70,7 @@ computations can be performed with the `periodization`_ mode:
 
     >>> import pywt
     >>> print pywt.Modes.modes
-    ['zpd', 'cpd', 'sym', 'ppd', 'sp1', 'per']
+    ['zero', 'constant', 'symmetric', 'periodic', 'smooth', 'periodization']
 
 
 Notice that you can use any of the following ways of passing wavelet and mode
@@ -79,8 +79,8 @@ parameters:
 .. sourcecode:: python
 
   >>> import pywt
-  >>> (a, d) = pywt.dwt([1,2,3,4,5,6], 'db2', 'sp1')
-  >>> (a, d) = pywt.dwt([1,2,3,4,5,6], pywt.Wavelet('db2'), pywt.Modes.sp1)
+  >>> (a, d) = pywt.dwt([1,2,3,4,5,6], 'db2', 'smooth')
+  >>> (a, d) = pywt.dwt([1,2,3,4,5,6], pywt.Wavelet('db2'), pywt.Modes.smooth)
 
 .. note::
     Extending data in context of PyWavelets does not mean reallocation of the data

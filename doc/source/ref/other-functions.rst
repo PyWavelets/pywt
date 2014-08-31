@@ -11,7 +11,7 @@ Other functions
 Single-level n-dimensional Discrete Wavelet Transform.
 ------------------------------------------------------
 
-.. function:: dwtn(data, wavelet[, mode='sym'])
+.. function:: dwtn(data, wavelet[, mode='symmetric'])
 
    Performs single-level n-dimensional Discrete Wavelet Transform.
 

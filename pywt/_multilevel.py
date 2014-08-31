@@ -19,7 +19,7 @@ from ._multidim import dwt2, idwt2
 __all__ = ['wavedec', 'waverec', 'wavedec2', 'waverec2', 'iswt', 'iswt2']
 
 
-def wavedec(data, wavelet, mode='sym', level=None):
+def wavedec(data, wavelet, mode='symmetric', level=None):
     """
     Multilevel 1D Discrete Wavelet Transform of data.
 
@@ -79,7 +79,7 @@ def wavedec(data, wavelet, mode='sym', level=None):
     return coeffs_list
 
 
-def waverec(coeffs, wavelet, mode='sym'):
+def waverec(coeffs, wavelet, mode='symmetric'):
     """
     Multilevel 1D Inverse Discrete Wavelet Transform.
 
@@ -115,7 +115,7 @@ def waverec(coeffs, wavelet, mode='sym'):
     return a
 
 
-def wavedec2(data, wavelet, mode='sym', level=None):
+def wavedec2(data, wavelet, mode='symmetric', level=None):
     """
     Multilevel 2D Discrete Wavelet Transform.
 
@@ -178,7 +178,7 @@ def wavedec2(data, wavelet, mode='sym', level=None):
     return coeffs_list
 
 
-def waverec2(coeffs, wavelet, mode='sym'):
+def waverec2(coeffs, wavelet, mode='symmetric'):
     """
     Multilevel 2D Inverse Discrete Wavelet Transform.
 

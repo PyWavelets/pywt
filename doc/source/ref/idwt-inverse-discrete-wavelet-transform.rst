@@ -11,7 +11,7 @@ Inverse Discrete Wavelet Transform (IDWT)
 Single level ``idwt``
 ---------------------
 
-.. function:: idwt(cA, cD, wavelet[, mode='sym'[, correct_size=0]])
+.. function:: idwt(cA, cD, wavelet[, mode='symmetric'[, correct_size=0]])
 
   The :func:`idwt` function reconstructs data from the given coefficients by
   performing single level Inverse Discrete Wavelet Transform.
@@ -23,7 +23,7 @@ Single level ``idwt``
   :param wavelet: |wavelet|
 
   :param mode: |mode| This is only important when DWT was performed in
-               :ref:`periodization <Modes.per>` mode.
+               :ref:`periodization <Modes.periodization>` mode.
 
   :param correct_size: Typically, *cA* and *cD* coefficients lists must have
                        equal lengths in order to perform IDWT. Setting
@@ -40,8 +40,8 @@ Single level ``idwt``
   .. sourcecode:: python
 
     >>> import pywt
-    >>> (cA, cD) = pywt.dwt([1,2,3,4,5,6], 'db2', 'sp1')
-    >>> print pywt.idwt(cA, cD, 'db2', 'sp1')
+    >>> (cA, cD) = pywt.dwt([1,2,3,4,5,6], 'db2', 'smooth')
+    >>> print pywt.idwt(cA, cD, 'db2', 'smooth')
     [ 1.  2.  3.  4.  5.  6.]
 
   One of the neat features of :func:`idwt` is that one of the *cA* and *cD*
@@ -54,9 +54,9 @@ Single level ``idwt``
   .. sourcecode:: python
 
     >>> import pywt
-    >>> (cA, cD) = pywt.dwt([1,2,3,4,5,6], 'db2', 'sp1')
-    >>> A = pywt.idwt(cA, None, 'db2', 'sp1')
-    >>> D = pywt.idwt(None, cD, 'db2', 'sp1')
+    >>> (cA, cD) = pywt.dwt([1,2,3,4,5,6], 'db2', 'smooth')
+    >>> A = pywt.idwt(cA, None, 'db2', 'smooth')
+    >>> D = pywt.idwt(None, cD, 'db2', 'smooth')
     >>> print A + D
     [ 1.  2.  3.  4.  5.  6.]
 
@@ -65,7 +65,7 @@ Single level ``idwt``
 Multilevel reconstruction using ``waverec``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. function:: waverec(coeffs, wavelet[, mode='sym'])
+.. function:: waverec(coeffs, wavelet[, mode='symmetric'])
 
   Performs multilevel reconstruction of signal from the given list of
   coefficients.
@@ -117,7 +117,7 @@ Direct reconstruction with ``upcoef``
 
     >>> import pywt
     >>> data = [1,2,3,4,5,6]
-    >>> (cA, cD) = pywt.dwt(data, 'db2', 'sp1')
+    >>> (cA, cD) = pywt.dwt(data, 'db2', 'smooth')
     >>> print pywt.upcoef('a', cA, 'db2') + pywt.upcoef('d', cD, 'db2')
     [-0.25       -0.4330127   1.          2.          3.          4.          5.
       6.          1.78589838 -1.03108891]

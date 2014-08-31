@@ -10,7 +10,7 @@ import pywt
 
 def test_upcoef_docstring():
     data = [1, 2, 3, 4, 5, 6]
-    (cA, cD) = pywt.dwt(data, 'db2', 'sp1')
+    (cA, cD) = pywt.dwt(data, 'db2', 'smooth')
     rec = pywt.upcoef('a', cA, 'db2') + pywt.upcoef('d', cD, 'db2')
     expect = [-0.25, -0.4330127, 1., 2., 3., 4., 5.,
               6., 1.78589838, -1.03108891]

@@ -13,7 +13,7 @@ containing ``None`` values can be surprising. ``None`` values are converted to
 
     >>> import numpy, pywt
     >>> x = [None, None]
-    >>> mode = 'sym'
+    >>> mode = 'symmetric'
     >>> wavelet = 'db1'
     >>> cA, cD = pywt.dwt(x, wavelet, mode)
     >>> numpy.all(numpy.isnan(cA))
