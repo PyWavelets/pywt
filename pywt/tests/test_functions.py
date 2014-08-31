@@ -11,12 +11,12 @@ def test_centrfreq():
     # db1 is Haar function, frequency=1
     w = pywt.Wavelet('db1')
     expected = 1
-    result = pywt.centfrq(w, precision=12)
+    result = pywt.central_frequency(w, precision=12)
     assert_almost_equal(result, expected, decimal=3)
     # db2, frequency=2/3
     w = pywt.Wavelet('db2')
     expected = 2/3.
-    result = pywt.centfrq(w, precision=12)
+    result = pywt.central_frequency(w, precision=12)
     assert_almost_equal(result, expected)
 
 

@@ -73,8 +73,8 @@ Integrating wavelet functions - :func:`integrate_wavelet`
 Central frequency of *psi* wavelet function
 -------------------------------------------
 
-.. function:: centfrq(wavelet[, precision=8])
-              centfrq((function_approx, x))
+.. function:: central_frequency(wavelet[, precision=8])
+              central_frequency((function_approx, x))
 
    :param wavelet: :class:`Wavelet`, wavelet name string or
                    `(wavelet function approx., x grid)` pair

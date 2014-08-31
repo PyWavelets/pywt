@@ -15,7 +15,8 @@ from numpy.fft import fft
 from ._pywt import Wavelet
 
 
-__all__ = ["integrate_wavelet", "centfrq", "scal2frq", "qmf", "orthfilt"]
+__all__ = ["integrate_wavelet", "central_frequency", "scal2frq", "qmf",
+           "orthfilt"]
 
 
 WAVELET_CLASSES = (Wavelet)
@@ -105,7 +106,7 @@ def integrate_wavelet(wavelet, precision=8):
             return _integrate(psi_d, step), _integrate(psi_r, step), x
 
 
-def centfrq(wavelet, precision=8):
+def central_frequency(wavelet, precision=8):
     """
     Computes the central frequency of the `psi` wavelet function.
 
@@ -182,7 +183,7 @@ def scal2frq(wavelet, scale, delta, precision=8):
         of Wavelet object to allow custom wavelet functions.
 
     """
-    return centfrq(wavelet, precision=precision) / (scale * delta)
+    return central_frequency(wavelet, precision=precision) / (scale * delta)
 
 
 def qmf(filter):
