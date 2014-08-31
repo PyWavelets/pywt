@@ -16,7 +16,7 @@ from ._pywt import Wavelet
 
 
 __all__ = ["integrate_wavelet", "central_frequency", "scale2frequency", "qmf",
-           "orthfilt"]
+           "orthogonal_filter_bank"]
 
 
 WAVELET_CLASSES = (Wavelet)
@@ -209,7 +209,7 @@ def qmf(filter):
     return qm_filter
 
 
-def orthfilt(scaling_filter):
+def orthogonal_filter_bank(scaling_filter):
     """
     Returns the orthogonal filter bank.
 
