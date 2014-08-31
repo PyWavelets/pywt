@@ -10,8 +10,8 @@ import pywt
 
 def test_available_modes():
     modes = ['zpd', 'cpd', 'sym', 'ppd', 'sp1', 'per']
-    assert_equal(pywt.MODES.modes, modes)
-    assert_equal(pywt.MODES.from_object('cpd'), 2)
+    assert_equal(pywt.Modes.modes, modes)
+    assert_equal(pywt.Modes.from_object('cpd'), 2)
 
 
 def test_invalid_modes():
@@ -21,10 +21,10 @@ def test_invalid_modes():
     assert_raises(TypeError, pywt.dwt, x, 'db2', 7)
     assert_raises(TypeError, pywt.dwt, x, 'db2', None)
 
-    assert_raises(ValueError, pywt.MODES.from_object, 'unknown')
-    assert_raises(ValueError, pywt.MODES.from_object, -1)
-    assert_raises(ValueError, pywt.MODES.from_object, 7)
-    assert_raises(TypeError, pywt.MODES.from_object, None)
+    assert_raises(ValueError, pywt.Modes.from_object, 'unknown')
+    assert_raises(ValueError, pywt.Modes.from_object, -1)
+    assert_raises(ValueError, pywt.Modes.from_object, 7)
+    assert_raises(TypeError, pywt.Modes.from_object, None)
 
 
 def test_dwt_idwt_allmodes():
@@ -48,7 +48,7 @@ def test_dwt_idwt_allmodes():
         'per': ([4.053172, 3.05257099, 2.85381112, 8.42522221],
                 [0.18946869, 4.18258152, 4.33737503, 2.60428326])
     }
-    for mode in pywt.MODES.modes:
+    for mode in pywt.Modes.modes:
         cA, cD = pywt.dwt(x, 'db2', mode)
         assert_allclose(cA, dwt_result_modes[mode][0], rtol=1e-7, atol=1e-8)
         assert_allclose(cD, dwt_result_modes[mode][1], rtol=1e-7, atol=1e-8)

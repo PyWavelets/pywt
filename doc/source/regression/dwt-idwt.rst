@@ -39,7 +39,7 @@ More Examples
 
 Now let's experiment with the :func:`dwt` some more. For example let's pass a
 :class:`Wavelet` object instead of the wavelet name and specify signal extension
-mode (the default is :ref:`sym <MODES.sym>`) for the border effect handling:
+mode (the default is :ref:`sym <Modes.sym>`) for the border effect handling:
 
     >>> w = pywt.Wavelet('sym3')
     >>> cA, cD = pywt.dwt(x, wavelet=w, mode='cpd')
@@ -70,15 +70,15 @@ reconstruction...).
 The third argument of the :func:`dwt_coeff_len` is the already mentioned signal
 extension mode (please refer to the PyWavelets' documentation for the
 :ref:`modes <modes>` description). Currently there are six
-:ref:`extension modes <MODES>` available:
+:ref:`extension modes <Modes>` available:
 
-    >>> pywt.MODES.modes
+    >>> pywt.Modes.modes
     ['zpd', 'cpd', 'sym', 'ppd', 'sp1', 'per']
 
-    >>> [int(pywt.dwt_coeff_len(len(x), w.dec_len, mode)) for mode in pywt.MODES.modes]
+    >>> [int(pywt.dwt_coeff_len(len(x), w.dec_len, mode)) for mode in pywt.Modes.modes]
     [6, 6, 6, 6, 6, 4]
 
-As you see in the above example, the :ref:`per <MODES.per>` (periodization) mode
+As you see in the above example, the :ref:`per <Modes.per>` (periodization) mode
 is slightly different from the others. It's aim when doing the :func:`DWT <dwt>`
 transform is to output coefficients arrays that are half of the length of the
 input data.
@@ -154,7 +154,7 @@ coefficient array by one element:
 Not every coefficient array can be used in :func:`IDWT <idwt>`. In the following
 example the :func:`idwt` will fail because the input arrays are invalid - they
 couldn't be created as a result of :func:`DWT <dwt>`, because the minimal output
-length for dwt using ``db4`` wavelet and the :ref:`sym <MODES.sym>` mode is
+length for dwt using ``db4`` wavelet and the :ref:`sym <Modes.sym>` mode is
 ``4``, not ``3``:
 
     >>> pywt.idwt([1,2,4], [4,1,3], 'db4', 'sym')

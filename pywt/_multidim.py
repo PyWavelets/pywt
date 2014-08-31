@@ -15,7 +15,7 @@ from itertools import cycle, product
 
 import numpy as np
 
-from ._pywt import Wavelet, MODES
+from ._pywt import Wavelet, Modes
 from ._pywt import dwt, idwt, swt, dwt_axis, idwt_axis
 
 
@@ -30,7 +30,7 @@ def dwt2(data, wavelet, mode='sym'):
     wavelet : Wavelet object or name string
         Wavelet to use
     mode : str, optional
-        Signal extension mode, see MODES (default: 'sym')
+        Signal extension mode, see Modes (default: 'sym')
 
     Returns
     -------
@@ -59,7 +59,7 @@ def dwt2(data, wavelet, mode='sym'):
     if not isinstance(wavelet, Wavelet):
         wavelet = Wavelet(wavelet)
 
-    mode = MODES.from_object(mode)
+    mode = Modes.from_object(mode)
 
     # filter rows
     H, L = [], []
@@ -106,7 +106,7 @@ def idwt2(coeffs, wavelet, mode='sym'):
     wavelet : Wavelet object or name string
         Wavelet to use
     mode : str, optional
-        Signal extension mode, see MODES (default: 'sym')
+        Signal extension mode, see Modes (default: 'sym')
 
     Examples
     --------
@@ -147,7 +147,7 @@ def idwt2(coeffs, wavelet, mode='sym'):
     if not isinstance(wavelet, Wavelet):
         wavelet = Wavelet(wavelet)
 
-    mode = MODES.from_object(mode)
+    mode = Modes.from_object(mode)
 
     # idwt columns
     L = []
@@ -206,7 +206,7 @@ def dwtn(data, wavelet, mode='sym'):
     wavelet : Wavelet object or name string
         Wavelet to use.
     mode : str, optional
-        Signal extension mode, see `MODES`.  Default is 'sym'.
+        Signal extension mode, see `Modes`.  Default is 'sym'.
 
     Returns
     -------
@@ -260,7 +260,7 @@ def idwtn(coeffs, wavelet, mode='sym'):
         Wavelet to use
     mode : str, optional
         Signal extension mode used in the decomposition,
-        see MODES (default: 'sym').
+        see Modes (default: 'sym').
 
     Returns
     -------
@@ -270,7 +270,7 @@ def idwtn(coeffs, wavelet, mode='sym'):
     """
     if not isinstance(wavelet, Wavelet):
         wavelet = Wavelet(wavelet)
-    mode = MODES.from_object(mode)
+    mode = Modes.from_object(mode)
 
     # Ignore any invalid keys
     coeffs = dict((k, np.asarray(v)) for k, v in coeffs.items()

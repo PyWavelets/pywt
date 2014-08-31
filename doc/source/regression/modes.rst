@@ -16,16 +16,16 @@ Import :mod:`pywt` first
     ...     a = numpy.where(numpy.abs(a) < 1e-5, 0, a)
     ...     return numpy.array2string(a, precision=5, separator=' ', suppress_small=True)
 
-List of available signal extension :ref:`modes <MODES>`:
+List of available signal extension :ref:`modes <Modes>`:
 
-    >>> print pywt.MODES.modes
+    >>> print pywt.Modes.modes
     ['zpd', 'cpd', 'sym', 'ppd', 'sp1', 'per']
 
 
 Test that :func:`dwt` and :func:`idwt` can be performed using every mode:
 
     >>> x = [1,2,1,5,-1,8,4,6]
-    >>> for mode in pywt.MODES.modes:
+    >>> for mode in pywt.Modes.modes:
     ...     cA, cD = pywt.dwt(x, 'db2', mode)
     ...     print "Mode:", mode
     ...     print "cA:", format_array(cA)
@@ -65,10 +65,10 @@ Invalid mode name should rise a :exc:`ValueError`:
     ValueError: Unknown mode name 'invalid'.
 
 
-You can also refer to modes via :ref:`MODES <MODES>` class attributes:
+You can also refer to modes via :ref:`Modes <Modes>` class attributes:
 
     >>> for mode_name in ['zpd', 'cpd', 'sym', 'ppd', 'sp1', 'per']:
-    ...     mode = getattr(pywt.MODES, mode_name)
+    ...     mode = getattr(pywt.Modes, mode_name)
     ...     cA, cD = pywt.dwt([1,2,1,5,-1,8,4,6], 'db2', mode)
     ...     print "Mode:", mode, "(%s)" % mode_name
     ...     print "cA:", format_array(cA)
@@ -100,7 +100,7 @@ You can also refer to modes via :ref:`MODES <MODES>` class attributes:
     Reconstruction: [ 1.  2.  1.  5. -1.  8.  4.  6.]
 
 
-The default mode is :ref:`sym <MODES.sym>`:
+The default mode is :ref:`sym <Modes.sym>`:
 
     >>> cA, cD = pywt.dwt(x, 'db2')
     >>> print cA

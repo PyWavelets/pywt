@@ -82,7 +82,7 @@ def test_dwt_coeff_len():
     ln = pywt.dwt_coeff_len(data_len=len(x), filter_len=w.dec_len, mode='sym')
     assert_(ln == 6)
     ln_modes = [pywt.dwt_coeff_len(len(x), w.dec_len, mode) for mode in
-                pywt.MODES.modes]
+                pywt.Modes.modes]
     assert_allclose(ln_modes, [6, 6, 6, 6, 6, 4])
 
 

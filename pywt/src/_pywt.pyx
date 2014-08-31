@@ -2,7 +2,7 @@
 # See COPYING for license details.
 
 __doc__ = """Pyrex wrapper for low-level C wavelet transform implementation."""
-__all__ = ['MODES', 'Wavelet', 'dwt', 'dwt_coeff_len', 'dwt_max_level',
+__all__ = ['Modes', 'Wavelet', 'dwt', 'dwt_coeff_len', 'dwt_max_level',
            'idwt', 'swt', 'swt_max_level', 'upcoef', 'downcoef',
            'wavelist', 'families']
 
@@ -29,7 +29,7 @@ ctypedef fused data_t:
 
 
 ###############################################################################
-# MODES
+# Modes
 
 class _Modes(object):
     """
@@ -62,11 +62,11 @@ class _Modes(object):
     Examples
     --------
     >>> import pywt
-    >>> pywt.MODES.modes
+    >>> pywt.Modes.modes
         ['zpd', 'cpd', 'sym', 'ppd', 'sp1', 'per']
     >>> # The different ways of passing wavelet and mode parameters
     >>> (a, d) = pywt.dwt([1,2,3,4,5,6], 'db2', 'sp1')
-    >>> (a, d) = pywt.dwt([1,2,3,4,5,6], pywt.Wavelet('db2'), pywt.MODES.sp1)
+    >>> (a, d) = pywt.dwt([1,2,3,4,5,6], pywt.Wavelet('db2'), pywt.Modes.sp1)
 
     Notes
     -----
@@ -94,16 +94,14 @@ class _Modes(object):
             m = mode
         else:
             try:
-                m = getattr(MODES, mode)
+                m = getattr(Modes, mode)
             except AttributeError:
                 raise ValueError("Unknown mode name '%s'." % mode)
 
         return m
 
 
-# All capitals for backwards compatibility
-MODES = _Modes()
-
+Modes = _Modes()
 
 ###############################################################################
 # Wavelet
@@ -617,7 +615,7 @@ def dwt(object data, object wavelet, object mode='sym'):
     wavelet : Wavelet object or name
         Wavelet to use
     mode : str, optional (default: 'sym')
-        Signal extension mode, see MODES
+        Signal extension mode, see Modes
 
     Returns
     -------
@@ -818,7 +816,7 @@ def dwt_coeff_len(data_len, filter_len, mode='sym'):
     filter_len : int
         Filter length.
     mode : str, optional (default: 'sym')
-        Signal extension mode, see MODES
+        Signal extension mode, see Modes
 
     Returns
     -------
@@ -856,7 +854,7 @@ def dwt_coeff_len(data_len, filter_len, mode='sym'):
 
 def _try_mode(mode):
     try:
-        return MODES.from_object(mode)
+        return Modes.from_object(mode)
     except ValueError as e:
         if "Unknown mode name" in str(e):
             raise
@@ -893,7 +891,7 @@ def idwt(cA, cD, object wavelet, object mode='sym', int correct_size=0):
     wavelet : Wavelet object or name
         Wavelet to use
     mode : str, optional (default: 'sym')
-        Signal extension mode, see MODES
+        Signal extension mode, see Modes
     correct_size : int, optional (default: 0)
         Under normal conditions (all data lengths dyadic) `cA` and `cD`
         coefficients lists must have the same lengths. With `correct_size`
@@ -1162,7 +1160,7 @@ def downcoef(part, data, wavelet, mode='sym', level=1):
     wavelet : Wavelet object or name
         Wavelet to use
     mode : str, optional
-        Signal extension mode, see `MODES`.  Default is 'sym'.
+        Signal extension mode, see `Modes`.  Default is 'sym'.
     level : int, optional
         Decomposition level.  Default is 1.
 

@@ -37,7 +37,7 @@ def test_3D_reconstruct():
          [5, 2, 6, 78, 12, 2]]])
 
     wavelet = pywt.Wavelet('haar')
-    for mode in pywt.MODES.modes:
+    for mode in pywt.Modes.modes:
         d = pywt.dwtn(data, wavelet, mode=mode)
         assert_allclose(data, pywt.idwtn(d, wavelet, mode=mode),
                         rtol=1e-13, atol=1e-13)
@@ -52,7 +52,7 @@ def test_stride():
                          [2, 5, 19, 4, 19, 1]],
                         dtype=dtype)
 
-        for mode in pywt.MODES.modes:
+        for mode in pywt.Modes.modes:
             expected = pywt.dwtn(data, wavelet)
             strided = np.ones((3, 12), dtype=data.dtype)
             strided[::-1, ::2] = data
@@ -69,7 +69,7 @@ def test_byte_offset():
                          [2, 5, 19, 4, 19, 1]],
                         dtype=dtype)
 
-        for mode in pywt.MODES.modes:
+        for mode in pywt.Modes.modes:
             expected = pywt.dwtn(data, wavelet)
             padded = np.ones((3, 6), dtype=np.dtype([('data', data.dtype),
                                                      ('pad', 'byte')]))
@@ -111,7 +111,7 @@ def test_idwtn_idwt2():
     LL, (HL, LH, HH) = pywt.dwt2(data, wavelet)
     d = {'aa': LL, 'da': HL, 'ad': LH, 'dd': HH}
 
-    for mode in pywt.MODES.modes:
+    for mode in pywt.Modes.modes:
         assert_allclose(pywt.idwt2((LL, (HL, LH, HH)), wavelet, mode=mode),
                         pywt.idwtn(d, wavelet, mode=mode),
                         rtol=1e-14, atol=1e-14)
@@ -128,7 +128,7 @@ def test_idwtn_idwt2_complex():
     LL, (HL, LH, HH) = pywt.dwt2(data, wavelet)
     d = {'aa': LL, 'da': HL, 'ad': LH, 'dd': HH}
 
-    for mode in pywt.MODES.modes:
+    for mode in pywt.Modes.modes:
         assert_allclose(pywt.idwt2((LL, (HL, LH, HH)), wavelet, mode=mode),
                         pywt.idwtn(d, wavelet, mode=mode),
                         rtol=1e-14, atol=1e-14)

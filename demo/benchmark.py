@@ -28,7 +28,7 @@ wavelet_names = ['db1', 'db2', 'db3', 'db4', 'db5', 'db6', 'db7',
 
 
 wavelets = [pywt.Wavelet(n) for n in wavelet_names]
-mode = pywt.MODES.zpd
+mode = pywt.Modes.zpd
 
 times_dwt = [[] for i in range(len(wavelets))]
 times_idwt = [[] for i in range(len(wavelets))]
