@@ -22,19 +22,9 @@ def test_centrfreq():
 
 def test_scal2frq_scale():
     scale = 2
-    delta = 1
     w = pywt.Wavelet('db1')
     expected = 1. / scale
-    result = pywt.scale2frequency(w, scale, delta, precision=12)
-    assert_almost_equal(result, expected, decimal=3)
-
-
-def test_scal2frq_delta():
-    scale = 1
-    delta = 2
-    w = pywt.Wavelet('db1')
-    expected = 1. / delta
-    result = pywt.scale2frequency(w, scale, delta, precision=12)
+    result = pywt.scale2frequency(w, scale, precision=12)
     assert_almost_equal(result, expected, decimal=3)
 
 

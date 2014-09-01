@@ -140,7 +140,7 @@ def central_frequency(wavelet, precision=8):
     return 1.0 / (domain / (index - 1))
 
 
-def scale2frequency(wavelet, scale, delta, precision=8):
+def scale2frequency(wavelet, scale, precision=8):
     """
 
     Parameters
@@ -148,8 +148,6 @@ def scale2frequency(wavelet, scale, delta, precision=8):
     wavelet : Wavelet instance or str
         Wavelet to integrate.  If a string, should be the name of a wavelet.
     scale : scalar
-    delta : scalar
-        sampling
     precision : int, optional
         Precision that will be used for wavelet function approximation computed
         with ``wavelet.wavefun(level=precision)``.  Default is 8.
@@ -159,7 +157,7 @@ def scale2frequency(wavelet, scale, delta, precision=8):
     freq : scalar
 
     """
-    return central_frequency(wavelet, precision=precision) / (scale * delta)
+    return central_frequency(wavelet, precision=precision) / scale
 
 
 def qmf(filter):
