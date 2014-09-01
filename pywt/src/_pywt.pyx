@@ -536,6 +536,13 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
             s.append(x.rstrip())
         return u'\n'.join(s)
 
+    def __repr__(self):
+        repr = "{module}.{classname}(name='{name}', filter_bank={filter_bank})"
+        return repr.format(module=type(self).__module__,
+                           classname=type(self).__name__,
+                           name=self.name,
+                           filter_bank=self.filter_bank)
+
 
 cdef index_t get_keep_length(index_t output_length,
                              int level, index_t filter_length):

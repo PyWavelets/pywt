@@ -70,5 +70,14 @@ def test_upcoef_multilevel():
     assert_allclose(a1, a3)
 
 
+def test_wavelet_repr():
+    from pywt import _pywt
+    wavelet = _pywt.Wavelet('sym8')
+
+    repr_wavelet = eval(wavelet.__repr__())
+
+    assert(wavelet.__repr__() == repr_wavelet.__repr__())
+
+
 if __name__ == '__main__':
     run_module_suite()
