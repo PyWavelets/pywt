@@ -83,5 +83,13 @@ def test_idwt_invalid_input():
     assert_raises(ValueError, pywt.idwt, [1, 2, 4], [4, 1, 3], 'db4', 'sym')
 
 
+def test_swt_iswt_basic():
+    x = [3, 7, 1, 1, -2, 5, 4, 6]
+    cAcD = pywt.swt(x, 'haar')
+
+    x_roundtrip = pywt.iswt(cAcD, 'haar')
+    assert_allclose(x_roundtrip, x, rtol=1e-10)
+
+
 if __name__ == '__main__':
     run_module_suite()
