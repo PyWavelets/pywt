@@ -44,7 +44,7 @@ if os.name == 'nt':
 else:
     from time import time as clock  # noqa
 
-import Image  # PIL
+from PIL import Image  # PIL
 import numpy  # http://www.scipy.org
 
 import pywt

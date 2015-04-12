@@ -3,7 +3,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-import Image  # PIL
+from PIL import Image
 
 from pywt import WaveletPacket2D
 
