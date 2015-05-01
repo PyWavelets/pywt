@@ -10,13 +10,14 @@ and Inverse Discrete Wavelet Transform.
 
 from __future__ import division, print_function, absolute_import
 
-__all__ = ['wavedec', 'waverec', 'wavedec2', 'waverec2', 'wavedecn', 'waverecn']
-
 import numpy as np
 
 from ._pywt import Wavelet
 from ._pywt import dwt, idwt, dwt_max_level
 from .multidim import dwt2, idwt2, dwtn, idwtn
+
+__all__ = ['wavedec', 'waverec', 'wavedec2', 'waverec2', 'wavedecn',
+           'waverecn']
 
 
 def wavedec(data, wavelet, mode='sym', level=None):
@@ -39,9 +40,9 @@ def wavedec(data, wavelet, mode='sym', level=None):
     -------
     [cA_n, cD_n, cD_n-1, ..., cD2, cD1] : list
         Ordered list of coefficients arrays
-        where `n` denotes the level of decomposition. The first element (`cA_n`) of
-        the result is approximation coefficients array and the following elements
-        (`cD_n` - `cD_1`) are details coefficients arrays.
+        where `n` denotes the level of decomposition. The first element
+        (`cA_n`) of the result is approximation coefficients array and the
+        following elements (`cD_n` - `cD_1`) are details coefficients arrays.
 
     Examples
     --------
@@ -177,6 +178,7 @@ def wavedec2(data, wavelet, mode='sym', level=None):
 
     return coeffs_list
 
+
 def waverec2(coeffs, wavelet, mode='sym'):
     """
     Multilevel 2D Inverse Discrete Wavelet Transform.
@@ -292,13 +294,14 @@ def wavedecn(data, wavelet, mode='sym', level=None):
     a = data
     for i in range(level):
         coeffs = dwtn(a, wavelet, mode)
-        a=coeffs.pop('a'*data.ndim)
+        a = coeffs.pop('a'*data.ndim)
         coeffs_list.append(coeffs)
 
     coeffs_list.append(a)
     coeffs_list.reverse()
 
-    return coeffs_list    
+    return coeffs_list
+
 
 def waverecn(coeffs, wavelet, mode='sym'):
     """
@@ -355,16 +358,17 @@ def waverecn(coeffs, wavelet, mode='sym'):
 
     dims = max(len(key) for key in ds[0].keys())
 
-    for idx,d in enumerate(ds):
+    for idx, d in enumerate(ds):
 
-        #determine the shape at the next level for idwtn
-        if idx<(len(ds)-1):
-            next_shape=[v.shape for k,v in ds[idx+1].items() if v is not None]
-            take=next_shape[0]
+        # determine the shape at the next level for idwtn
+        if idx < (len(ds)-1):
+            next_shape = [
+                v.shape for k, v in ds[idx+1].items() if v is not None]
+            take = next_shape[0]
         else:
-            take=None
+            take = None
 
-        d['a'*dims]=a
-        a = idwtn(d, wavelet, mode,take=take)
+        d['a'*dims] = a
+        a = idwtn(d, wavelet, mode, take=take)
 
     return a
