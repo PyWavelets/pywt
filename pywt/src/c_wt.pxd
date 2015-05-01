@@ -9,7 +9,7 @@ cdef extern from "common.h":
     cdef void* wtmalloc(long size)
     cdef void* wtcalloc(long len, long size)
     cdef void wtfree(void* ptr)
-    
+
     ctypedef enum MODE:
         MODE_INVALID = -1
         MODE_ZEROPAD = 0
@@ -23,16 +23,16 @@ cdef extern from "common.h":
 
 
     # buffers lengths
-    cdef index_t dwt_buffer_length(index_t input_len, index_t filter_len, MODE mode)
-    cdef index_t upsampling_buffer_length(index_t coeffs_len, index_t filter_len,   
-                                          MODE mode)
-    cdef index_t idwt_buffer_length(index_t coeffs_len, index_t filter_len, MODE mode)
-    cdef index_t swt_buffer_length(index_t coeffs_len)
-    cdef index_t reconstruction_buffer_length(index_t coeffs_len, index_t filter_len)
+    cdef index_t dwt_buffer_length(index_t input_len, index_t filter_len, MODE mode) nogil
+    cdef index_t upsampling_buffer_length(index_t coeffs_len, index_t filter_len,
+                                          MODE mode) nogil
+    cdef index_t idwt_buffer_length(index_t coeffs_len, index_t filter_len, MODE mode) nogil
+    cdef index_t swt_buffer_length(index_t coeffs_len) nogil
+    cdef index_t reconstruction_buffer_length(index_t coeffs_len, index_t filter_len) nogil
 
     # max dec levels
-    cdef int dwt_max_level(index_t input_len, index_t filter_len)
-    cdef int swt_max_level(index_t input_len)
+    cdef int dwt_max_level(index_t input_len, index_t filter_len) nogil
+    cdef int swt_max_level(index_t input_len) nogil
 
 
 cdef extern from "wavelets.h":
@@ -48,13 +48,13 @@ cdef extern from "wavelets.h":
         double* dec_lo_double      # lowpass   decomposition
         double* rec_hi_double      # highpass reconstruction
         double* rec_lo_double      # lowpass   reconstruction
-        
+
         float* dec_hi_float
         float* dec_lo_float
         float* rec_hi_float
         float* rec_lo_float
-        
-        
+
+
         index_t dec_len         # length of decomposition filter
         index_t rec_len         # length of reconstruction filter
 
@@ -80,53 +80,53 @@ cdef extern from "wavelets.h":
         char* short_name
 
 
-    cdef Wavelet* wavelet(char name, int type)
-    cdef Wavelet* blank_wavelet(index_t filter_length)
-    cdef void free_wavelet(Wavelet* wavelet)
+    cdef Wavelet* wavelet(char name, int type) nogil
+    cdef Wavelet* blank_wavelet(index_t filter_length) nogil
+    cdef void free_wavelet(Wavelet* wavelet) nogil
 
 
 cdef extern from "wt.h":
 
     cdef int double_dec_a(double input[], index_t input_len, Wavelet* wavelet,
-                          double output[], index_t output_len, MODE mode)
+                          double output[], index_t output_len, MODE mode) nogil
     cdef int double_dec_d(double input[], index_t input_len, Wavelet* wavelet,
-                          double output[], index_t output_len, MODE mode)
+                          double output[], index_t output_len, MODE mode) nogil
 
     cdef int double_rec_a(double coeffs_a[], index_t coeffs_len, Wavelet* wavelet,
-                          double output[], index_t output_len)
+                          double output[], index_t output_len) nogil
     cdef int double_rec_d(double coeffs_d[], index_t coeffs_len, Wavelet* wavelet,
-                          double output[], index_t output_len)
+                          double output[], index_t output_len) nogil
 
-    cdef int double_idwt(double coeffs_a[], index_t coeffs_a_len, 
+    cdef int double_idwt(double coeffs_a[], index_t coeffs_a_len,
                          double coeffs_d[], index_t coeffs_d_len,
                          Wavelet* wavelet, double output[], index_t output_len,
-                         MODE mode, int correct_size)
+                         MODE mode, int correct_size) nogil
 
     cdef int double_swt_a(double input[], index_t input_len, Wavelet* wavelet,
-                          double output[], index_t output_len, int level)
+                          double output[], index_t output_len, int level) nogil
     cdef int double_swt_d(double input[], index_t input_len, Wavelet* wavelet,
-                          double output[], index_t output_len, int level)
+                          double output[], index_t output_len, int level) nogil
 
 
     cdef int float_dec_a(float input[], index_t input_len, Wavelet* wavelet,
-                         float output[], index_t output_len, MODE mode)
+                         float output[], index_t output_len, MODE mode) nogil
     cdef int float_dec_d(float input[], index_t input_len, Wavelet* wavelet,
-                         float output[], index_t output_len, MODE mode)
+                         float output[], index_t output_len, MODE mode) nogil
 
     cdef int float_rec_a(float coeffs_a[], index_t coeffs_len, Wavelet* wavelet,
-                         float output[], index_t output_len)
+                         float output[], index_t output_len) nogil
     cdef int float_rec_d(float coeffs_d[], index_t coeffs_len, Wavelet* wavelet,
-                         float output[], index_t output_len)
+                         float output[], index_t output_len) nogil
 
-    cdef int float_idwt(float coeffs_a[], index_t coeffs_a_len, 
+    cdef int float_idwt(float coeffs_a[], index_t coeffs_a_len,
                         float coeffs_d[], index_t coeffs_d_len,
                         Wavelet* wavelet, float output[], index_t output_len,
-                        MODE mode, int correct_size)
+                        MODE mode, int correct_size) nogil
 
     cdef int float_swt_a(float input[], index_t input_len, Wavelet* wavelet,
-                         float output[], index_t output_len, int level)
+                         float output[], index_t output_len, int level) nogil
     cdef int float_swt_d(float input[], index_t input_len, Wavelet* wavelet,
-                         float output[], index_t output_len, int level)
+                         float output[], index_t output_len, int level) nogil
 
 
 
