@@ -14,9 +14,11 @@ __all__ = ['dwt2', 'idwt2', 'swt2', 'dwtn', 'idwtn']
 from itertools import cycle, product, repeat, islice
 
 import numpy as np
+import warnings
 
 from ._pywt import Wavelet, MODES
-from ._pywt import dwt, idwt, swt, downcoef, upcoef
+from ._pywt import (dwt, idwt, swt, downcoef, upcoef, downcoef_lastaxis,
+                    upcoef_lastaxis)
 
 
 def dwt2(data, wavelet, mode='sym'):
@@ -195,7 +197,7 @@ def idwt2(coeffs, wavelet, mode='sym'):
     return np.array(data, np.float64)
 
 
-def dwtn(data, wavelet, mode='sym'):
+def dwtn_slow(data, wavelet, mode='sym'):
     """
     Single-level n-dimensional Discrete Wavelet Transform.
 
@@ -249,7 +251,194 @@ def dwtn(data, wavelet, mode='sym'):
     return dict(coeffs)
 
 
+def dwtn(data, wavelet, mode='sym'):
+    """
+    Single-level n-dimensional Discrete Wavelet Transform.
+    This version does the looping in C if the array is <= 4D.
+
+    Parameters
+    ----------
+    data : ndarray
+        n-dimensional array with input data.
+    wavelet : Wavelet object or name string
+        Wavelet to use.
+    mode : str, optional
+        Signal extension mode, see `MODES`.  Default is 'sym'.
+
+    Returns
+    -------
+    coeffs : dict
+        Results are arranged in a dictionary, where key specifies
+        the transform type on each dimension and value is a n-dimensional
+        coefficients array.
+
+        For example, for a 2D case the result will look something like this::
+
+            {
+                'aa': <coeffs>  # A(LL) - approx. on 1st dim, approx. on 2nd dim
+                'ad': <coeffs>  # V(LH) - approx. on 1st dim, det. on 2nd dim
+                'da': <coeffs>  # H(HL) - det. on 1st dim, approx. on 2nd dim
+                'dd': <coeffs>  # D(HH) - det. on 1st dim, det. on 2nd dim
+            }
+
+    """
+    data = np.asarray(data)
+    dim = data.ndim
+    if dim < 1:
+        raise ValueError("Input data must be at least 1D")
+    if dim > 4:
+        warnings.warn("not implemented for >4D.  falling back to slower "
+                      "nD version")
+        return dwtn_slow(data, wavelet=wavelet, mode=mode)
+
+    # have to upgrade integer types to float
+    if data.dtype != np.float32:
+        data = np.asarray(data, dtype=np.float64)
+
+    # add new axes up to 4D for compatibility with the cython code
+    npad = 0
+    while data.ndim < 4:
+        data = np.ascontiguousarray(data[np.newaxis, ...])
+        npad += 1
+    ndim = data.ndim
+
+    coeffs = [('', data)]
+    for axis in range(npad, ndim):
+        new_coeffs = []
+        for subband, x in coeffs:
+            if axis < ndim:
+                x = np.ascontiguousarray(np.swapaxes(x, axis, -1))
+            a = downcoef_lastaxis('a', x, wavelet=wavelet, mode=mode, level=1)
+            d = downcoef_lastaxis('d', x, wavelet=wavelet, mode=mode, level=1)
+            if axis < ndim:
+                a = np.ascontiguousarray(np.swapaxes(a, -1, axis))
+                d = np.ascontiguousarray(np.swapaxes(d, -1, axis))
+            new_coeffs.extend([(subband + 'a', a), (subband + 'd', d)])
+        coeffs = new_coeffs
+
+    coeff_dict = dict(coeffs)
+    if dim < ndim:
+        # remove any extra singleton dimensions that were added
+        for k, v in coeff_dict.items():
+            coeff_dict[k] = v.reshape(v.shape[npad:], order='C')
+    return coeff_dict
+
+
 def idwtn(coeffs, wavelet, mode='sym', take=None):
+    """
+    Single-level n-dimensional Discrete Wavelet Transform.
+
+    Parameters
+    ----------
+    coeffs: dict
+        Dictionary as in output of `dwtn`. Missing or None items
+        will be treated as zeroes.
+    wavelet : Wavelet object or name string
+        Wavelet to use
+    mode : str, optional
+        Signal extension mode used in the decomposition,
+        see MODES (default: 'sym'). Overridden by `take`.
+    take : int or iterable of int or None, optional
+        Number of values to take from the center of the idwtn for each axis.
+        If 0, the entire reverse transformation will be used, including
+        parts generated from padding in the forward transform.
+        If None (default), will be calculated from `mode` to be the size of the
+        original data, rounded up to the nearest multiple of 2.
+        Passed to `upcoef`.
+
+    Returns
+    -------
+    data: ndarray
+        Original signal reconstructed from input data.
+
+    """
+    if not isinstance(wavelet, Wavelet):
+        wavelet = Wavelet(wavelet)
+    mode = MODES.from_object(mode)
+
+    # Ignore any invalid keys
+    coeffs = dict((k, v) for k, v in coeffs.items() if set(k) <= set('ad'))
+    dims = max(len(key) for key in coeffs.keys())
+
+    if dims > 4:
+        warnings.warn("not implemented for >4D.  falling back to slower "
+                      "nD version")
+        return idwtn_slow(coeffs, wavelet=wavelet, mode=mode, take=take)
+
+    try:
+        coeff_shapes = (v.shape for k, v in coeffs.items()
+                        if v is not None and len(k) == dims)
+        coeff_shape = next(coeff_shapes)
+    except StopIteration:
+        raise ValueError("`coeffs` must contain at least one non-null wavelet "
+                         "band")
+    if any(s != coeff_shape for s in coeff_shapes):
+        raise ValueError("`coeffs` must all be of equal size (or None)")
+
+    if take is not None:
+        try:
+            takes = list(islice(take, dims))
+            takes.reverse()
+        except TypeError:
+            takes = repeat(take, dims)
+    else:
+        # As in src/common.c
+        if mode == MODES.per:
+            takes = [2*s for s in reversed(coeff_shape)]
+        else:
+            takes = [2*s - wavelet.rec_len + 2 for s in reversed(coeff_shape)]
+
+    ndim = 4  # cython set up for 4D case
+    npad = ndim - dims
+    for axis, take in zip(reversed(range(npad, ndim)), takes):
+        new_coeffs = {}
+        new_keys = [''.join(coeff) for coeff in product('ad', repeat=(axis-npad))]
+        for key in new_keys:
+            L = coeffs.get(key + 'a')
+            H = coeffs.get(key + 'd')
+            # add new axes up to 4D for compatibility with the cython code
+            if L is not None:
+                while L.ndim < ndim:
+                    L = L[np.newaxis, ...]
+                if axis < ndim:
+                    L = np.swapaxes(L, axis, -1)
+                L = np.ascontiguousarray(L)
+                # L = np.apply_along_axis(_upcoef, axis, L, wavelet, take, 'a')
+                L = upcoef_lastaxis('a', L, wavelet=wavelet, level=1,
+                                    take=take)
+                if axis < ndim:
+                    L = np.swapaxes(L, -1, axis)
+            if H is not None:
+                while H.ndim < ndim:
+                    H = H[np.newaxis, ...]
+                if axis < ndim:
+                    H = np.swapaxes(H, axis, -1)
+                H = np.ascontiguousarray(H)
+                # H = np.apply_along_axis(_upcoef, axis, H, wavelet, take, 'd')
+                H = upcoef_lastaxis('d', H, wavelet=wavelet, level=1,
+                                    take=take)
+                if axis < ndim:
+                    H = np.swapaxes(H, -1, axis)
+            if H is None and L is None:
+                new_coeffs[key] = None
+            elif H is None:
+                new_coeffs[key] = L
+            elif L is None:
+                new_coeffs[key] = H
+            else:
+                new_coeffs[key] = L + H
+            if not (H is None and L is None):
+                if dims < ndim:
+                    new_coeffs[key] = np.ascontiguousarray(
+                        new_coeffs[key].reshape(new_coeffs[key].shape[npad:],
+                                                order='C'))
+
+        coeffs = new_coeffs
+
+    return coeffs['']
+
+
+def idwtn_slow(coeffs, wavelet, mode='sym', take=None):
     """
     Single-level n-dimensional Discrete Wavelet Transform.
 

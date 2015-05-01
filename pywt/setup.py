@@ -15,6 +15,8 @@ def configuration(parent_package='', top_path=None):
         '_pywt',
         sources=["src/_pywt.c", "src/common.c", "src/convolution.c",
                  "src/wavelets.c", "src/wt.c"],
+        # extra_compile_args=['-fopenmp'],
+        # extra_link_args=['-fopenmp'],
         include_dirs=["src", np.get_include()],
         define_macros=[("PY_EXTENSION", None)],
     )
