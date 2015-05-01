@@ -286,11 +286,12 @@ def idwtn(coeffs, wavelet, mode='sym', take=None):
     dims = max(len(key) for key in coeffs.keys())
 
     try:
-        coeff_shapes = ( v.shape for k, v in coeffs.items()
-                         if v is not None and len(k) == dims )
+        coeff_shapes = (v.shape for k, v in coeffs.items()
+                        if v is not None and len(k) == dims)
         coeff_shape = next(coeff_shapes)
     except StopIteration:
-        raise ValueError("`coeffs` must contain at least one non-null wavelet band")
+        raise ValueError("`coeffs` must contain at least one non-null wavelet "
+                         "band")
     if any(s != coeff_shape for s in coeff_shapes):
         raise ValueError("`coeffs` must all be of equal size (or None)")
 
@@ -414,7 +415,8 @@ def swt2(data, wavelet, level, start_level=0):
 
         # build result structure: (approx, (horizontal, vertical, diagonal))
         approx = np.transpose(LL)
-        ret.append((approx, (np.transpose(LH), np.transpose(HL), np.transpose(HH))))
+        ret.append((approx,
+                    (np.transpose(LH), np.transpose(HL), np.transpose(HH))))
 
         # for next iteration
         data = approx

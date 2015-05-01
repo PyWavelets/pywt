@@ -45,7 +45,7 @@ def test_dwt_coeff_len():
 
 def test_idwt_none_input():
     # None input equals arrays of zeros of the right length
-    res1 = pywt.idwt([1,2,0,1], None, 'db2', 'sym')
+    res1 = pywt.idwt([1, 2, 0, 1], None, 'db2', 'sym')
     res2 = pywt.idwt([1, 2, 0, 1], [0, 0, 0, 0], 'db2', 'sym')
     assert_allclose(res1, res2, rtol=1e-15, atol=1e-15)
 
@@ -72,7 +72,7 @@ def test_idwt_correct_size_kw():
 
 def test_idwt_invalid_input():
     # Too short, min length is 4 for 'db4':
-    assert_raises(ValueError, pywt.idwt, [1,2,4], [4,1,3], 'db4', 'sym')
+    assert_raises(ValueError, pywt.idwt, [1, 2, 4], [4, 1, 3], 'db4', 'sym')
 
 
 if __name__ == '__main__':
