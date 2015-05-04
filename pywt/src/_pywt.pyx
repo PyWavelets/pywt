@@ -4,7 +4,7 @@
 __doc__ = """Pyrex wrapper for low-level C wavelet transform implementation."""
 __all__ = ['MODES', 'Wavelet', 'dwt', 'dwt_coeff_len', 'dwt_max_level',
            'idwt', 'swt', 'swt_max_level', 'upcoef', 'downcoef',
-           'wavelist', 'families']
+           'upcoef_lastaxis', 'downcoef_lastaxis', 'wavelist', 'families']
 
 ###############################################################################
 # imports
@@ -911,7 +911,7 @@ def upcoef(part, coeffs, wavelet, level=1, take=0):
 
     See Also
     --------
-    downcoef
+    downcoef_lastaxis
 
     Examples
     --------
@@ -1000,7 +1000,7 @@ def _upcoef(part, np.ndarray[data_t, ndim=1, mode="c"] coeffs, wavelet,
 @cython.wraparound(False)
 @cython.boundscheck(False)
 @cython.cdivision(True)
-def upcoef_lastaxis(part, data_t[:, :, :, ::1] coeffs, object  wavelet, int level=1, int take=0):
+def upcoef_lastaxis(part, data_t[:, ::1] coeffs, object  wavelet, int level=1, int take=0):
     """
     upcoef(part, coeffs, wavelet, level=1, take=0)
 
@@ -1031,18 +1031,6 @@ def upcoef_lastaxis(part, data_t[:, :, :, ::1] coeffs, object  wavelet, int leve
     --------
     downcoef
 
-    Examples
-    --------
-    >>> import pywt
-    >>> data = [1,2,3,4,5,6]
-    >>> (cA, cD) = pywt.dwt(data, 'db2', 'sp1')
-    >>> pywt.upcoef('a', cA, 'db2') + pywt.upcoef('d', cD, 'db2')
-    [-0.25       -0.4330127   1.          2.          3.          4.          5.
-      6.          1.78589838 -1.03108891]
-    >>> n = len(data)
-    >>> pywt.upcoef('a', cA, 'db2', take=n) + pywt.upcoef('d', cD, 'db2', take=n)
-    [ 1.  2.  3.  4.  5.  6.]
-
     """
     # # accept array_like input; make a copy to ensure a contiguous array
     # dt = _check_dtype(coeffs)
@@ -1051,13 +1039,11 @@ def upcoef_lastaxis(part, data_t[:, :, :, ::1] coeffs, object  wavelet, int leve
     cdef:
         Wavelet w
         c_wt.Wavelet* wav
-        data_t[:, :, :, ::1] rec
-        int x, y, z, do_rec_a
-        int nx = coeffs.shape[0]
-        int ny = coeffs.shape[1]
-        int nz = coeffs.shape[2]
+        data_t[:, ::1] rec
+        int x, do_rec_a
+        int nfilt = coeffs.shape[0]
         int axis = -1
-        c_wt.index_t rec_len, left_bound, right_bound
+        c_wt.index_t coeff_len, rec_len, left_bound, right_bound
 
     w = c_wavelet_from_object(wavelet)
     wav = w.w
@@ -1071,13 +1057,7 @@ def upcoef_lastaxis(part, data_t[:, :, :, ::1] coeffs, object  wavelet, int leve
     if level < 1:
         raise ValueError("Value of level must be greater than 0.")
 
-    if axis < 0:
-        axis = coeffs.ndim + axis
-
-    if axis != 3:
-        raise ValueError("TODO...")
-
-    coeff_len = coeffs.shape[axis]
+    coeff_len = coeffs.shape[1]
     rec_len = c_wt.reconstruction_buffer_length(coeff_len, w.dec_len)
     if rec_len < 1:
         raise RuntimeError("Invalid output length.")
@@ -1087,19 +1067,13 @@ def upcoef_lastaxis(part, data_t[:, :, :, ::1] coeffs, object  wavelet, int leve
     elif data_t is np.float32_t:
         arr_dtype = np.float32
 
-    """ NOTE: We only loop the last axis because it is the only contiguous one.
-        (Can do the other axes by using np.swapaxes prior to calling this
-        function:   see pywt.multidim.dwtn_v2)
-    """
-    rec = np.zeros((nx, ny, nz, rec_len), dtype=arr_dtype, order='C')
+    rec = np.zeros((nfilt, rec_len), dtype=arr_dtype, order='C')
     # TODO: use of prange made it much slower.  why?
     # with nogil, parallel():
-    #     for z in prange(nz):
-    for x in range(nx):
-        for y in range(ny):
-            for z in range(nz):
-                _upcoef_v2(do_rec_a, &coeffs[x, y, z, 0], coeff_len,
-                           &rec[x, y, z, 0], rec_len, wav)
+    #     for x in prange(nfilt):
+    for x in range(nfilt):
+        _upcoef_v2(do_rec_a, &coeffs[x, 0], coeff_len, &rec[x, 0], rec_len,
+                   wav)
 
     rec = np.asarray(rec)
     if take > 0 and take < rec_len:
@@ -1145,6 +1119,7 @@ cdef void _upcoef_v2(int do_rec_a, data_t *coeffs, c_wt.index_t coeff_len,
     return
 
 
+# TODO: depricate this function
 def downcoef(part, data, wavelet, mode='sym', level=1):
     """
     downcoef(part, data, wavelet, mode='sym', level=1)
@@ -1187,10 +1162,62 @@ def downcoef(part, data, wavelet, mode='sym', level=1):
     return _downcoef(part, data, wavelet, mode, level)
 
 
+# TODO: depricate this function
+def _downcoef(part, np.ndarray[data_t, ndim=1, mode="c"] data,
+              object wavelet, object mode='sym', int level=1):
+    cdef np.ndarray[data_t, ndim=1, mode="c"] coeffs
+    cdef int i, do_dec_a
+    cdef index_t dec_len
+    cdef Wavelet w
+    cdef c_wt.MODE mode_
+
+    _check_mode_input(mode)
+    w = c_wavelet_from_object(wavelet)
+    mode_ = MODES.from_object(mode)
+
+    if part not in ('a', 'd'):
+        raise ValueError("Argument 1 must be 'a' or 'd', not '%s'." % part)
+    do_dec_a = (part == 'a')
+
+    if level < 1:
+        raise ValueError("Value of level must be greater than 0.")
+
+    for i from 0 <= i < level:
+        output_len = c_wt.dwt_buffer_length(data.size, w.dec_len, mode_)
+        if output_len < 1:
+            raise RuntimeError("Invalid output length.")
+        coeffs = np.zeros(output_len, dtype=data.dtype)
+
+        if do_dec_a:
+            if data_t is np.float64_t:
+                if c_wt.double_dec_a(&data[0], data.size, w.w,
+                                     &coeffs[0], coeffs.size, mode_) < 0:
+                    raise RuntimeError("C dec_a failed.")
+            elif data_t is np.float32_t:
+                if c_wt.float_dec_a(&data[0], data.size, w.w,
+                                    &coeffs[0], coeffs.size, mode_) < 0:
+                    raise RuntimeError("C dec_a failed.")
+            else:
+                raise RuntimeError("Invalid data type.")
+        else:
+            if data_t is np.float64_t:
+                if c_wt.double_dec_d(&data[0], data.size, w.w,
+                                     &coeffs[0], coeffs.size, mode_) < 0:
+                    raise RuntimeError("C dec_a failed.")
+            elif data_t is np.float32_t:
+                if c_wt.float_dec_d(&data[0], data.size, w.w,
+                                    &coeffs[0], coeffs.size, mode_) < 0:
+                    raise RuntimeError("C dec_a failed.")
+            else:
+                raise RuntimeError("Invalid data type.")
+
+    return coeffs
+
+
 @cython.wraparound(False)
 @cython.boundscheck(False)
 @cython.cdivision(True)
-def downcoef_lastaxis(part, data_t[:, :, :, ::1] data, object wavelet, object mode='sym', int level=1):
+def downcoef_lastaxis(part, data_t[:, ::1] data, object wavelet, object mode='sym', int level=1):
     """
     downcoef(part, data, wavelet, mode='sym', level=1)
 
@@ -1230,11 +1257,9 @@ def downcoef_lastaxis(part, data_t[:, :, :, ::1] data, object wavelet, object mo
         Wavelet w
         c_wt.MODE mode_
         c_wt.Wavelet* wav
-        data_t[:, :, :, ::1] coeffs
-        int x, y, z, do_dec_a
-        int nx = data.shape[0]
-        int ny = data.shape[1]
-        int nz = data.shape[2]
+        data_t[:, ::1] coeffs
+        int x, do_dec_a
+        int nfilt = data.shape[0]
         int axis = -1
         c_wt.index_t output_len
 
@@ -1252,13 +1277,7 @@ def downcoef_lastaxis(part, data_t[:, :, :, ::1] data, object wavelet, object mo
     if level < 1:
         raise ValueError("Value of level must be greater than 0.")
 
-    if axis < 0:
-        axis = data.ndim + axis
-
-    if axis != 3:
-        raise ValueError("TODO...")
-
-    data_len = data.shape[axis]
+    data_len = data.shape[1]
     output_len = c_wt.dwt_buffer_length(data_len, w.dec_len, mode_)
     if output_len < 1:
         raise RuntimeError("Invalid output length.")
@@ -1268,20 +1287,16 @@ def downcoef_lastaxis(part, data_t[:, :, :, ::1] data, object wavelet, object mo
     elif data_t is np.float32_t:
         arr_dtype = np.float32
 
-    """ NOTE: We only loop the last axis because it is the only contiguous one.
-        (Can do the other axes by using np.swapaxes prior to calling this
-        function:   see pywt.multidim.dwtn_v2)
+    """ Can filter over the last axis because it is contiguous.  Loop over
+    the other axis.
     """
-    coeffs = np.zeros((nx, ny, nz, output_len), dtype=arr_dtype, order='C')
+    coeffs = np.zeros((nfilt, output_len), dtype=arr_dtype, order='C')
     # TODO: use of prange made it much slower.  why?
     # with nogil, parallel():
-    #     for z in prange(nz):
-    for x in range(nx):
-        for y in range(ny):
-            for z in range(nz):
-                _downcoef_v2(do_dec_a, &data[x, y, z, 0], data_len,
-                             &coeffs[x, y, z, 0], output_len, wav, mode_,
-                             level)
+    #     for x in prange(nfilt):
+    for x in range(nfilt):
+        _downcoef_v2(do_dec_a, &data[x,  0], data_len, &coeffs[x, 0],
+                     output_len, wav, mode_, level)
     return np.asarray(coeffs)
 
 
@@ -1317,56 +1332,6 @@ cdef void _downcoef_v2(int do_dec_a, data_t *data, c_wt.index_t data_len,
                     with gil:
                         raise RuntimeError("C float_dec_d failed.")
     return
-
-
-def _downcoef(part, np.ndarray[data_t, ndim=1, mode="c"] data,
-              object wavelet, object mode='sym', int level=1):
-    cdef np.ndarray[data_t, ndim=1, mode="c"] coeffs
-    cdef int i, do_dec_a
-    cdef index_t dec_len
-    cdef Wavelet w
-    cdef c_wt.MODE mode_
-
-    w = c_wavelet_from_object(wavelet)
-    mode_ = _try_mode(mode)
-
-    if part not in ('a', 'd'):
-        raise ValueError("Argument 1 must be 'a' or 'd', not '%s'." % part)
-    do_dec_a = (part == 'a')
-
-    if level < 1:
-        raise ValueError("Value of level must be greater than 0.")
-
-    for i from 0 <= i < level:
-        output_len = c_wt.dwt_buffer_length(data.size, w.dec_len, mode_)
-        if output_len < 1:
-            raise RuntimeError("Invalid output length.")
-        coeffs = np.zeros(output_len, dtype=data.dtype)
-
-        if do_dec_a:
-            if data_t is np.float64_t:
-                if c_wt.double_dec_a(&data[0], data.size, w.w,
-                                     &coeffs[0], coeffs.size, mode_) < 0:
-                    raise RuntimeError("C dec_a failed.")
-            elif data_t is np.float32_t:
-                if c_wt.float_dec_a(&data[0], data.size, w.w,
-                                    &coeffs[0], coeffs.size, mode_) < 0:
-                    raise RuntimeError("C dec_a failed.")
-            else:
-                raise RuntimeError("Invalid data type.")
-        else:
-            if data_t is np.float64_t:
-                if c_wt.double_dec_d(&data[0], data.size, w.w,
-                                     &coeffs[0], coeffs.size, mode_) < 0:
-                    raise RuntimeError("C dec_d failed.")
-            elif data_t is np.float32_t:
-                if c_wt.float_dec_d(&data[0], data.size, w.w,
-                                    &coeffs[0], coeffs.size, mode_) < 0:
-                    raise RuntimeError("C dec_d failed.")
-            else:
-                raise RuntimeError("Invalid data type.")
-
-    return coeffs
 
 ###############################################################################
 # swt
