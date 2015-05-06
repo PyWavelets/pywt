@@ -15,8 +15,7 @@ import numpy as np
 import warnings
 
 from ._pywt import Wavelet, MODES
-from ._pywt import (dwt, idwt, swt, downcoef, upcoef, downcoef_lastaxis,
-                    upcoef_lastaxis)
+from ._pywt import (dwt, idwt, swt, downcoef, upcoef)
 
 __all__ = ['dwt2', 'idwt2', 'swt2', 'dwtn', 'idwtn']
 
@@ -232,43 +231,19 @@ def dwtn(data, wavelet, mode='sym'):
     dim = data.ndim
     if dim < 1:
         raise ValueError("Input data must be at least 1D")
-    if dim != 2:
-        do_reshape = True
-    else:
-        do_reshape = False
 
     # have to upgrade integer types to float
     if data.dtype != np.float32:
         data = np.asarray(data, dtype=np.float64)
 
-    if dim == 1:
-        # will add new axis in 1D for compatibility with the cython code
-        npad = 1
-    else:
-        npad = 0
-
     coeffs = [('', data)]
     for axis in range(dim):
         new_coeffs = []
         for subband, x in coeffs:
-            if axis < (dim - 1):
-                # place axis to filter last so it will be contiguous
-                x = np.swapaxes(x, axis, -1)
-            if do_reshape:
-                # reshape all other axes into the first dimension of a 2D array
-                orig_shape = x.shape
-                x = x.reshape((-1, x.shape[-1]), order='C')
-            x = np.ascontiguousarray(x)
-            a = downcoef_lastaxis('a', x, wavelet=wavelet, mode=mode, level=1)
-            d = downcoef_lastaxis('d', x, wavelet=wavelet, mode=mode, level=1)
-            if do_reshape:
-                # restore original number of dimensions
-                a = a.reshape(orig_shape[npad:-1] + (a.shape[-1], ), order='C')
-                d = d.reshape(orig_shape[npad:-1] + (a.shape[-1], ), order='C')
-            if axis < (dim - 1):
-                # swap axes back to their original order
-                a = np.ascontiguousarray(np.swapaxes(a, -1, axis))
-                d = np.ascontiguousarray(np.swapaxes(d, -1, axis))
+            a = downcoef('a', x, wavelet=wavelet, mode=mode, level=1,
+                         axis=axis)
+            d = downcoef('d', x, wavelet=wavelet, mode=mode, level=1,
+                         axis=axis)
             new_coeffs.extend([(subband + 'a', a), (subband + 'd', d)])
         coeffs = new_coeffs
     return dict(coeffs)
@@ -333,56 +308,21 @@ def idwtn(coeffs, wavelet, mode='sym', take=None):
         else:
             takes = [2*s - wavelet.rec_len + 2 for s in reversed(coeff_shape)]
 
-    if dims == 1:
-        # an extra dimension will have to be added for the 1D case
-        npad = 1
-    else:
-        npad = 0
-    if dims != 2:
-        do_reshape = True
-    else:
-        do_reshape = False
-    lastaxis = dims - 1
     for axis, take in zip(reversed(range(dims)), takes):
         new_coeffs = {}
         new_keys = \
             [''.join(coeff) for coeff in product('ad', repeat=axis)]
         for key in new_keys:
             L = coeffs.get(key + 'a')
+            print(L.shape)
             H = coeffs.get(key + 'd')
             # add new axes up to 4D for compatibility with the cython code
             if L is not None:
-                if axis < lastaxis:
-                    L = np.swapaxes(L, axis, -1)
-                if do_reshape:
-                    orig_shape_L = L.shape
-                    L = L.reshape((-1, L.shape[-1]), order='C')
-                L = np.ascontiguousarray(L)
-                # L = np.apply_along_axis(_upcoef, axis, L, wavelet, take, 'a')
-                L = upcoef_lastaxis('a', L, wavelet=wavelet, level=1,
-                                    take=take)
-                L = np.ascontiguousarray(L)
-                if do_reshape:
-                    L = L.reshape(orig_shape_L[npad:-1] + (L.shape[-1], ),
-                                  order='C')
-                if axis < lastaxis:
-                    L = np.swapaxes(L, -1, axis)
+                L = upcoef('a', L, wavelet=wavelet, level=1, take=take,
+                           axis=axis)
             if H is not None:
-                if axis < lastaxis:
-                    H = np.swapaxes(H, axis, -1)
-                if do_reshape:
-                    orig_shape_H = H.shape
-                    H = H.reshape((-1, H.shape[-1]), order='C')
-                H = np.ascontiguousarray(H)
-                # H = np.apply_along_axis(_upcoef, axis, H, wavelet, take, 'd')
-                H = upcoef_lastaxis('d', H, wavelet=wavelet, level=1,
-                                    take=take)
-                H = np.ascontiguousarray(H)
-                if do_reshape:
-                    H = H.reshape(orig_shape_H[npad:-1] + (H.shape[-1], ),
-                                  order='C')
-                if axis < lastaxis:
-                    H = np.swapaxes(H, -1, axis)
+                H = upcoef('d', H, wavelet=wavelet, level=1, take=take,
+                           axis=axis)
             if H is None and L is None:
                 new_coeffs[key] = None
             elif H is None:
@@ -391,7 +331,6 @@ def idwtn(coeffs, wavelet, mode='sym', take=None):
                 new_coeffs[key] = H
             else:
                 new_coeffs[key] = L + H
-
         coeffs = new_coeffs
 
     return coeffs['']
