@@ -993,18 +993,11 @@ def _upcoef(part, np.ndarray[data_t, ndim=1, mode="c"] coeffs, wavelet,
     for i from 0 <= i < level:
         # output len
         rec_len = c_wt.reconstruction_buffer_length(coeffs.size, w.dec_len)
-        # print("rec_len = {}".format(rec_len))
-        # print("coeffs_len = {}".format(coeffs.size))
-        # print("coeffs.__array_interface__['data']={}".format(coeffs.__array_interface__['data']))
-        # print("coeffs={}".format(coeffs))
-        # print("coeffs.flags = {}".format(coeffs.flags))
         if rec_len < 1:
             raise RuntimeError("Invalid output length.")
 
         # reconstruct
         rec = np.zeros(rec_len, dtype=coeffs.dtype)
-        # print("rec_pre.__array_interface__['data']={}".format(rec.__array_interface__['data']))
-        # print("rec_pre={}".format(rec))
         if do_rec_a:
             if data_t is np.float64_t:
                 if c_wt.double_rec_a(&coeffs[0], coeffs.size, w.w,
@@ -1030,8 +1023,6 @@ def _upcoef(part, np.ndarray[data_t, ndim=1, mode="c"] coeffs, wavelet,
             do_rec_a = 1
 
         # TODO: this algorithm needs some explaining
-        # print("rec_post.__array_interface__['data']={}".format(rec.__array_interface__['data']))
-        # print("rec_post={}".format(rec))
         coeffs = rec
 
     if take > 0 and take < rec_len:
@@ -1242,9 +1233,6 @@ def _downcoef_lastaxis(part, data_t[:, ::1] data, object wavelet,
     the other axis.
     """
     coeffs = np.zeros((nfilt, output_len), dtype=arr_dtype, order='C')
-    # TODO: use of prange made it much slower.  why?
-    # with nogil, parallel():
-    #     for x in prange(nfilt):
     for x in range(nfilt):
         _downcoef(do_dec_a, &data[x,  0], data_len, &coeffs[x, 0],
                   output_len, wav, mode_, level)
