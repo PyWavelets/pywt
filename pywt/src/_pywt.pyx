@@ -23,8 +23,6 @@ cimport numpy as np
 from pywt._tools.six import string_types
 
 import cython
-# from cython.parallel import parallel, prange
-
 
 ctypedef fused data_t:
     np.float32_t
@@ -1238,9 +1236,6 @@ def _downcoef_lastaxis(part, data_t[:, ::1] data, object wavelet,
     the other axis.
     """
     coeffs = np.zeros((nfilt, output_len), dtype=arr_dtype, order='C')
-    # TODO: use of prange made it much slower.  why?
-    # with nogil, parallel():
-    #     for x in prange(nfilt):
     for x in range(nfilt):
         _downcoef(do_dec_a, &data[x,  0], data_len, &coeffs[x, 0],
                   output_len, wav, mode_, level)

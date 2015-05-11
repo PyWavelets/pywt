@@ -314,7 +314,6 @@ def idwtn(coeffs, wavelet, mode='sym', take=None):
             [''.join(coeff) for coeff in product('ad', repeat=axis)]
         for key in new_keys:
             L = coeffs.get(key + 'a')
-            print(L.shape)
             H = coeffs.get(key + 'd')
             # add new axes up to 4D for compatibility with the cython code
             if L is not None:
