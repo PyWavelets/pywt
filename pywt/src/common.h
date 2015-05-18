@@ -25,7 +25,7 @@
     #else
         #include "Python.h"
     #endif
-    
+
     typedef Py_ssize_t index_t;
 
     /* using Python's memory manager */
@@ -33,7 +33,7 @@
     #define wtfree(ptr)         PyMem_Free(ptr)
     void *wtcalloc(size_t, size_t);
 #else
-    typedef int index_t; 
+    typedef int index_t;
     /* standard c memory management */
     #define wtmalloc(size)      malloc(size)
     #define wtfree(ptr)         free(ptr)
@@ -66,14 +66,14 @@ typedef enum {
  */
 index_t dwt_buffer_length(index_t input_len, index_t filter_len, MODE mode);
 
-/* 
+/*
  * Length of reconstructed signal for specified input coeffs length and filter
  * length. It is used for direct reconstruction from coefficients (normal
  * convolution of upsampled coeffs with filter).
  */
 index_t reconstruction_buffer_length(index_t coeffs_len, index_t filter_len);
 
-/* 
+/*
  * Length of IDWT reconstructed signal for specified input coeffs length, filter
  * length and extension mode.
  */

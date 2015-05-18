@@ -9,7 +9,7 @@ cdef extern from "common.h":
     cdef void* wtmalloc(long size)
     cdef void* wtcalloc(long len, long size)
     cdef void wtfree(void* ptr)
-    
+
     ctypedef enum MODE:
         MODE_INVALID = -1
         MODE_ZEROPAD = 0
@@ -24,7 +24,7 @@ cdef extern from "common.h":
 
     # buffers lengths
     cdef index_t dwt_buffer_length(index_t input_len, index_t filter_len, MODE mode)
-    cdef index_t upsampling_buffer_length(index_t coeffs_len, index_t filter_len,   
+    cdef index_t upsampling_buffer_length(index_t coeffs_len, index_t filter_len,
                                           MODE mode)
     cdef index_t idwt_buffer_length(index_t coeffs_len, index_t filter_len, MODE mode)
     cdef index_t swt_buffer_length(index_t coeffs_len)
@@ -48,13 +48,13 @@ cdef extern from "wavelets.h":
         double* dec_lo_double      # lowpass   decomposition
         double* rec_hi_double      # highpass reconstruction
         double* rec_lo_double      # lowpass   reconstruction
-        
+
         float* dec_hi_float
         float* dec_lo_float
         float* rec_hi_float
         float* rec_lo_float
-        
-        
+
+
         index_t dec_len         # length of decomposition filter
         index_t rec_len         # length of reconstruction filter
 
@@ -97,7 +97,7 @@ cdef extern from "wt.h":
     cdef int double_rec_d(double coeffs_d[], index_t coeffs_len, Wavelet* wavelet,
                           double output[], index_t output_len)
 
-    cdef int double_idwt(double coeffs_a[], index_t coeffs_a_len, 
+    cdef int double_idwt(double coeffs_a[], index_t coeffs_a_len,
                          double coeffs_d[], index_t coeffs_d_len,
                          Wavelet* wavelet, double output[], index_t output_len,
                          MODE mode, int correct_size)
@@ -118,7 +118,7 @@ cdef extern from "wt.h":
     cdef int float_rec_d(float coeffs_d[], index_t coeffs_len, Wavelet* wavelet,
                          float output[], index_t output_len)
 
-    cdef int float_idwt(float coeffs_a[], index_t coeffs_a_len, 
+    cdef int float_idwt(float coeffs_a[], index_t coeffs_a_len,
                         float coeffs_d[], index_t coeffs_d_len,
                         Wavelet* wavelet, float output[], index_t output_len,
                         MODE mode, int correct_size)
@@ -127,6 +127,3 @@ cdef extern from "wt.h":
                          float output[], index_t output_len, int level)
     cdef int float_swt_d(float input[], index_t input_len, Wavelet* wavelet,
                          float output[], index_t output_len, int level)
-
-
-

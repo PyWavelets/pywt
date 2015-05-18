@@ -20,15 +20,15 @@ Wavelet* wavelet(char name, int order)
         return w;
 
     /* Reverse biorthogonal wavelets family */
-    } else if (name == 'r' || name == 'R') { 
+    } else if (name == 'r' || name == 'R') {
 
         /* rbio is like bior, only with switched filters */
         wtmp = wavelet('b', order);
         w = copy_wavelet(wtmp);
-        
+
         if(w == NULL)
             return NULL;
-        
+
         w->dec_len = wtmp->rec_len;
         w->rec_len = wtmp->dec_len;
 
@@ -57,7 +57,7 @@ Wavelet* wavelet(char name, int order)
         w->short_name = "rbio";
 
         free_wavelet(wtmp);
-        
+
         return w;
     }
 
@@ -98,7 +98,7 @@ Wavelet* wavelet(char name, int order)
                     w->rec_hi_@type@ = db@order@_@type@[3];
                     /**end repeat1**/
                     break;
-                /**end repeat**/ 
+                /**end repeat**/
                 default:
                     wtfree(w);
                     return NULL;
@@ -135,7 +135,7 @@ Wavelet* wavelet(char name, int order)
                     /**end repeat1**/
                     break;
                 /**end repeat**/
-            
+
                 default:
                     wtfree(w);
                     return NULL;
@@ -172,7 +172,7 @@ Wavelet* wavelet(char name, int order)
                     /**end repeat1**/
                     break;
                 /**end repeat**/
-            
+
                 default:
                     wtfree(w);
                     return NULL;
@@ -344,7 +344,7 @@ Wavelet* blank_wavelet(index_t filters_length)
     w = wtmalloc(sizeof(Wavelet));
     if(w == NULL) return NULL;
 
-    /* 
+    /*
      * Important!
      * Otherwise filters arrays allocated here won't be deallocated by free_wavelet
      */

@@ -29,14 +29,14 @@ index_t dwt_buffer_length(index_t input_len, index_t filter_len, MODE mode){
 index_t reconstruction_buffer_length(index_t coeffs_len, index_t filter_len){
     if(coeffs_len < 1 || filter_len < 1)
         return 0;
-    
+
     return 2*coeffs_len+filter_len-2;
 }
 
 index_t idwt_buffer_length(index_t coeffs_len, index_t filter_len, MODE mode){
     if(coeffs_len < 0 || filter_len < 0)
         return 0;
-    
+
     switch(mode){
             case MODE_PERIODIZATION:
                 return 2*coeffs_len;
@@ -56,7 +56,7 @@ int dwt_max_level(index_t input_len, index_t filter_len){
     int i;
     if(input_len < 1 || filter_len < 2)
         return 0;
-    
+
     i = (int) floor(log((double)input_len/(double)(filter_len-1)) /log(2.0));
     return (i > 0) ? i : 0;
 }

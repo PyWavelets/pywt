@@ -13,25 +13,23 @@ int @type@_downsampling_convolution_periodization(const @type@* input, const_ind
 
 {
 
-    index_t i, j, k, F_2, corr;
+    index_t i, j, k;
     index_t start;
     @type@ sum;
     @type@* ptr_w = output;
 
-    i = step-1;  /* first element taken from input is input[step-1] */
-    start = F_2 = F/2;  /* extending by (F-2)/2 elements */
-    corr = 0;
+    start = F/2;  /* extending by (F-2)/2 elements */
 
     for(i=start; i < F; i+=step){
         sum = 0;
-        for(j = 0; j < i+1-corr; ++j)    /* overlapping */
-            sum += filter[j]*input[i-j-corr];
+        for(j = 0; j < i+1; ++j)    /* overlapping */
+            sum += filter[j]*input[i-j];
 
         if(N%2){
             if(F-j){ /* if something to extend */
                 sum += filter[j] * input[N-1];
                 if(F-j){
-                    for(k = 2-corr; k <= F-j; ++k)
+                    for(k = 2; k <= F-j; ++k)
                         sum += filter[j-1+k] * input[N-k+1];
                 }
             }
@@ -197,7 +195,7 @@ int @type@_downsampling_convolution(const @type@* input, const_index_t N,
             }
 
             /*
-             * F - N-1 : filter in input range - simple convolution 
+             * F - N-1 : filter in input range - simple convolution
              * Most time is spent in this loop.
              */
             #ifdef OPT_UNROLL4
@@ -485,7 +483,8 @@ int @type@_allocating_downsampling_convolution(const @type@* input, const_index_
 
 int @type@_upsampling_convolution_full(const @type@* input, const_index_t N,
                                 const @type@* filter, const_index_t F,
-                                @type@* output, const_index_t O){
+                                @type@* output, const_index_t O)
+{
     register index_t i;
     register index_t j;
     @type@ *ptr_out;
@@ -644,9 +643,9 @@ int @type@_upsampling_convolution_valid_sf_periodization(const @type@* input,
 
         /* Check if extending is really needed */
         /* split filter len correct + extra samples*/
-        N_p = F_2-1 + (index_t) ceil(k/2.); 
+        N_p = F_2-1 + (index_t) ceil(k/2.);
 
-        /* 
+        /*
          * ok, if is then do:
          * 1. Allocate buffers for front and rear parts of extended input
          * 2. Copy periodically appropriate elements from input to the buffers
@@ -656,7 +655,7 @@ int @type@_upsampling_convolution_valid_sf_periodization(const @type@* input,
          */
 
         if(N_p > 0){
-            /* 
+            /*
              * Allocate memory only for the front and rear extension parts, not
              * the whole input
              */
@@ -680,7 +679,7 @@ int @type@_upsampling_convolution_valid_sf_periodization(const @type@* input,
                 periodization_buf[(N_p - k) - i] = input[N - (i%N)];
 
             /* copy from end of input to beginning of buffer */
-            memcpy(periodization_buf_rear, input + N - k, k * sizeof(@type@));  
+            memcpy(periodization_buf_rear, input + N - k, k * sizeof(@type@));
             for(i = 0; i < (N_p - k); ++i)
                 periodization_buf_rear[k + i] = input[i%N];
 
@@ -785,7 +784,8 @@ int @type@_upsampling_convolution_valid_sf(const @type@* input,
                                            const_index_t N, const @type@*
                                            filter, const_index_t F, @type@*
                                            output, const_index_t O, MODE
-                                           mode){
+                                           mode)
+{
 
     @type@ *ptr_out = output;
     @type@ *filter_even, *filter_odd;

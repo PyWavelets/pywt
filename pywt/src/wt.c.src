@@ -39,7 +39,7 @@ int @type@_dec_d(@type@ input[], index_t input_len,
 
     return @type@_downsampling_convolution(input, input_len,
                                            wavelet->dec_hi_@type@,
-                                           wavelet->dec_len, output, 
+                                           wavelet->dec_len, output,
                                            2, mode);
 }
 
@@ -53,7 +53,7 @@ int @type@_rec_a(@type@ coeffs_a[], index_t coeffs_len,
     /* check output length */
     if(output_len != reconstruction_buffer_length(coeffs_len, wavelet->rec_len))
         return -1;
-    
+
     return @type@_upsampling_convolution_full(coeffs_a, coeffs_len,
                                               wavelet->rec_lo_@type@,
                                               wavelet->rec_len, output,
@@ -70,7 +70,7 @@ int @type@_rec_d(@type@ coeffs_d[], index_t coeffs_len,
     /* check for output length */
     if(output_len != reconstruction_buffer_length(coeffs_len, wavelet->rec_len))
         return -1;
-    
+
     return @type@_upsampling_convolution_full(coeffs_d, coeffs_len,
                                               wavelet->rec_hi_@type@,
                                               wavelet->rec_len, output,
@@ -91,7 +91,7 @@ int @type@_idwt(@type@ coeffs_a[], index_t coeffs_a_len,
                 MODE mode, int fix_size_diff){
 
     index_t input_len;
-    
+
     /*
      * If one of coeffs array is NULL then the reconstruction will be performed
      * using the other one
@@ -123,12 +123,12 @@ int @type@_idwt(@type@ coeffs_a[], index_t coeffs_a_len,
     } else {
         goto error;
     }
-    
+
     /* check output size */
     if(output_len != idwt_buffer_length(input_len, wavelet->rec_len, mode))
         goto error;
 
-    /* 
+    /*
      * Set output to zero (this can be omitted if output array is already
      * cleared) memset(output, 0, output_len * sizeof(@type@));
      */
@@ -142,7 +142,7 @@ int @type@_idwt(@type@ coeffs_a[], index_t coeffs_a_len,
             goto error;
         }
     }
-    /* 
+    /*
      * Add reconstruction of details coeffs performed with highpass
      * reconstruction filter.
      */
@@ -172,7 +172,7 @@ int @type@_swt_(@type@ input[], index_t input_len,
 
     if(level < 1)
         return -1;
-    
+
     if(level > swt_max_level(input_len))
         return -2;
 
