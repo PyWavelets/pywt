@@ -84,24 +84,17 @@ int @type@_downsampling_convolution(const @type@* input, const_index_t N,
      * existing elements of signal). To handle this the signal has to be
      * "extended" on both sides by computing the missing values.
      *
-     * General schema is as follows: 1. Handle extended on the left, convolve
-     * filter with samples computed for time < 0 2. Do the normal decimated
-     * convolution of filter with signal samples 3. Handle extended on the
-     * right, convolve filter with samples computed for time > n-1
+     * General schema is as follows:
+     * 1. Handle extended on the left, convolve filter with samples computed for
+     *    time < 0
+     * 2. Do the normal decimated convolution of filter with signal samples
+     * 3. Handle extended on the right, convolve filter with samples computed
+     *    for time > n-1
      */
 
     index_t i, j, k;
     index_t start;
     @type@ sum, tmp;
-    #ifdef OPT_UNROLL2
-        @type@ sum2;
-    #endif
-    #ifdef OPT_UNROLL4
-        #ifndef OPT_UNROLL2
-            @type@ sum2;
-        #endif
-        @type@ sum3, sum4;
-    #endif
 
     @type@* ptr_w = output;
 
@@ -198,43 +191,6 @@ int @type@_downsampling_convolution(const @type@* input, const_index_t N,
              * F - N-1 : filter in input range - simple convolution
              * Most time is spent in this loop.
              */
-            #ifdef OPT_UNROLL4
-            /* manually unroll the loop a bit */
-            if((N - F)/step > 4) {
-                for(; i < (N - (3*step)); i += 4*step){  /* input elements */
-                    sum  = input[i]          * filter[0];
-                    sum2 = input[i+step]     * filter[0];
-                    sum3 = input[i+(2*step)] * filter[0];
-                    sum4 = input[i+(3*step)] * filter[0];
-                    for(j = 1; j < F; ++j){
-                        sum += input[i-j]           * filter[j];
-                        sum2 += input[(step+i)-j]   * filter[j];
-                        sum3 += input[(2*step+i)-j] * filter[j];
-                        sum4 += input[(3*step+i)-j] * filter[j];
-                    }
-                    *(ptr_w++) = sum;
-                    *(ptr_w++) = sum2;
-                    *(ptr_w++) = sum3;
-                    *(ptr_w++) = sum4;
-                }
-            }
-            #endif
-
-            #ifdef OPT_UNROLL2
-            if((N - F)/step > 2) {
-                for(; i < (N - step); i += 2*step){  /* input elements, */
-                    sum  = input[i]   * filter[0];
-                    sum2 = input[i+step] * filter[0];
-                    for(j = 1; j < F; ++j){
-                        sum += input[i-j]         * filter[j];
-                        sum2 += input[(step+i)-j] * filter[j];
-                    }
-                    *(ptr_w++) = sum;
-                    *(ptr_w++) = sum2;
-                }
-            }
-            #endif
-
             for(; i < N; i+=step){  /* input elements, */
                 sum = input[i] * filter[0];
                 for(j = 1; j < F; ++j){
@@ -791,16 +747,6 @@ int @type@_upsampling_convolution_valid_sf(const @type@* input,
     @type@ *filter_even, *filter_odd;
     @type@ *ptr_base;
     @type@ sum_even, sum_odd;
-    #ifdef OPT_UNROLL2
-        @type@ sum_even2, sum_odd2;
-    #endif
-    #ifdef OPT_UNROLL4
-        #ifndef OPT_UNROLL2
-            @type@ sum_even2, sum_odd2;
-        #endif
-        @type@ sum_even3, sum_odd3;
-        @type@ sum_even4, sum_odd4;
-    #endif
 
     index_t i, j;
     index_t F_2 = F/2;
@@ -838,66 +784,6 @@ int @type@_upsampling_convolution_valid_sf(const @type@* input,
 
     ptr_base = (@type@*)input + F_2 - 1;
     i = 0;
-
-    #ifdef OPT_UNROLL4
-    /* manually unroll the loop a bit */
-    for(; i < N-(F_2-1+8); i+=4){    /* sliding over signal from left to right */
-        sum_even  = filter_even[0] * ptr_base[i];
-        sum_even2 = filter_even[0] * ptr_base[i+1];
-        sum_even3 = filter_even[0] * ptr_base[i+2];
-        sum_even4 = filter_even[0] * ptr_base[i+3];
-
-        sum_odd   = filter_odd[0] * ptr_base[i];
-        sum_odd2  = filter_odd[0] * ptr_base[i+1];
-        sum_odd3  = filter_odd[0] * ptr_base[i+2];
-        sum_odd4  = filter_odd[0] * ptr_base[i+3];
-
-        for(j = 1; j < F_2; ++j){
-            sum_even  += filter_even[j] * ptr_base[i-j];
-            sum_even2 += filter_even[j] * ptr_base[(i+1)-j];
-            sum_even3 += filter_even[j] * ptr_base[(i+2)-j];
-            sum_even4 += filter_even[j] * ptr_base[(i+3)-j];
-
-            sum_odd  += filter_odd[j] * ptr_base[i-j];
-            sum_odd2 += filter_odd[j] * ptr_base[(i+1)-j];
-            sum_odd3 += filter_odd[j] * ptr_base[(i+2)-j];
-            sum_odd4 += filter_odd[j] * ptr_base[(i+3)-j];
-        }
-
-        *(ptr_out++) += sum_even;
-        *(ptr_out++) += sum_odd;
-        *(ptr_out++) += sum_even2;
-        *(ptr_out++) += sum_odd2;
-        *(ptr_out++) += sum_even3;
-        *(ptr_out++) += sum_odd3;
-        *(ptr_out++) += sum_even4;
-        *(ptr_out++) += sum_odd4;
-    }
-    #endif
-
-    #ifdef OPT_UNROLL2
-    /* manually unroll the loop a bit */
-    for(; i < N-(F_2+1); i+=2){    /* sliding over signal from left to right */
-        sum_even = filter_even[0] * ptr_base[i];
-        sum_even2 = filter_even[0] * ptr_base[i+1];
-
-        sum_odd  = filter_odd[0] * ptr_base[i];
-        sum_odd2  = filter_odd[0] * ptr_base[i+1];
-
-        for(j = 1; j < F_2; ++j){
-            sum_even += filter_even[j] * ptr_base[i-j];
-            sum_even2 += filter_even[j] * ptr_base[(i+1)-j];
-
-            sum_odd += filter_odd[j] * ptr_base[i-j];
-            sum_odd2 += filter_odd[j] * ptr_base[(i+1)-j];
-        }
-
-        *(ptr_out++) += sum_even;
-        *(ptr_out++) += sum_odd;
-        *(ptr_out++) += sum_even2;
-        *(ptr_out++) += sum_odd2;
-    }
-    #endif
 
     for(; i < N-(F_2-1); ++i){    /* sliding over signal from left to right */
         sum_even = filter_even[0] * ptr_base[i];
