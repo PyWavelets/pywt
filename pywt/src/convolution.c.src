@@ -12,57 +12,55 @@ int @type@_downsampling_convolution_periodization(const @type@* input, const_ind
                              @type@* output, const_index_t step)
 
 {
+    /*
+    * Should it be an error to call this mode with signal lengths
+    * not divisible by the step? Not really periodic if padded.
+    *
+    * If it is exactly divisible, can it be replaced by one loop?
+    *   for (i=0; i < N; i += step){
+    *     @type@ sum = 0;
+    *     for (j=0; j < F; j++){
+    *       sum += filter[j] * input[(i-j+N) % N];
+    *     *(ptr_w++) = sum;
+    *   }
+    */
 
-    index_t i, j, k;
-    index_t start;
-    @type@ sum;
+    index_t i;
     @type@* ptr_w = output;
 
-    start = F/2;  /* extending by (F-2)/2 elements */
-
-    for(i=start; i < F; i+=step){
-        sum = 0;
-        for(j = 0; j < i+1; ++j)    /* overlapping */
-            sum += filter[j]*input[i-j];
-
-        if(N%2){
-            if(F-j){ /* if something to extend */
-                sum += filter[j] * input[N-1];
-                if(F-j){
-                    for(k = 2; k <= F-j; ++k)
-                        sum += filter[j-1+k] * input[N-k+1];
-                }
-            }
-        } else { /* extra element from input   -> i0 i1 i2 [i2] */
-            for(k = 1; k <= F-j; ++k)
-                sum += filter[j-1+k] * input[N-k];
-        }
+    for (i=F/2; i < F; i += step) {
+        @type@ sum = 0;
+        index_t j;
+        for (j = 0; j <= i; ++j)
+            sum += filter[j] * input[i-j];
+        // Pad out signals with non-divisible length using last element
+        // FIXME: Should N%2 be N%step for larger steps?
+        for (index_t k = 0; k < (N % 2) && j < F; ++k, ++j)
+            sum += filter[j] * input[N-1];
+        for (index_t k = N-1; j < F; --k, ++j)
+            sum += filter[j] * input[k];
         *(ptr_w++) = sum;
     }
 
     /* F - N-1 : filter in input range.  Most time is spent in this loop */
     for(; i < N; i+=step){    /* input elements, */
-        sum = 0;
-        for(j = 0; j < F; ++j)
+        @type@ sum = 0;
+        for(index_t j = 0; j < F; ++j)
             sum += input[i-j]*filter[j];
         *(ptr_w++) = sum;
     }
 
-    for(; i < N-step + (F/2)+1 + N%2; i += step){   /* input elements */
-        sum = 0;
-        k = i-N+1;
-        for(j = k; j < F; ++j)   /* overlapped elements */
-            sum += filter[j]*input[i-j];
-
-        if(N%2 == 0){
-            for(j = 0; j < k; ++j){  /* out of boundary (filter elements [0, k-1]) */
-                sum += filter[j]*input[k-1-j];
-            }
-        } else {  /* repeating extra element -> i0 i1 i2 [i2] */
-            for(j = 0; j < k-1; ++j)  /* out of boundary (filter elements [0, k-1]) */
-                sum += filter[j]*input[k-2-j];
-            sum += filter[k-1] * input[N-1];
-        }
+    for(i = i - N; i < F/2; i += step){   /* input elements */
+        @type@ sum = 0;
+        index_t j;
+        for (j = 0; j <= i - (N % 2); ++j)
+          sum += filter[j] * input[i - j - (N % 2)];
+        // Pad out with last element
+        // FIXME: N%2 or N%step
+        for(index_t k = 0; k < (N % 2) && j < F; ++k, ++j)
+            sum += filter[j] * input[N-1];
+        for(index_t k = N-1; j < F; --k, ++j)   /* overlapped elements */
+            sum += filter[j]*input[k];
         *(ptr_w++) = sum;
     }
     return 0;
