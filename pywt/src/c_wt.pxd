@@ -4,7 +4,6 @@
 cdef extern from "common.h":
 
     ctypedef int index_t
-    ctypedef int const_index_t
 
     cdef void* wtmalloc(long size)
     cdef void* wtcalloc(long len, long size)

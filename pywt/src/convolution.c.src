@@ -7,9 +7,9 @@
  * #type = double, float#
  */
 
-int @type@_downsampling_convolution_periodization(const @type@* input, const_index_t N,
-                             const @type@* filter, const_index_t F,
-                             @type@* output, const_index_t step)
+int @type@_downsampling_convolution_periodization(const @type@* input, const index_t N,
+                             const @type@* filter, const index_t F,
+                             @type@* output, const index_t step)
 
 {
     /*
@@ -67,10 +67,10 @@ int @type@_downsampling_convolution_periodization(const @type@* input, const_ind
 }
 
 
-int @type@_downsampling_convolution(const @type@* input, const_index_t N,
-                             const @type@* filter, const_index_t F,
+int @type@_downsampling_convolution(const @type@* input, const index_t N,
+                             const @type@* filter, const index_t F,
                              @type@* output,
-                             const_index_t step, MODE mode)
+                             const index_t step, MODE mode)
 {
     /*
      * This convolution performs efficient downsampling by computing every
@@ -297,10 +297,10 @@ int @type@_downsampling_convolution(const @type@* input, const_index_t N,
  * ### like downsampling_convolution, but with memory allocation ###
  */
 
-int @type@_allocating_downsampling_convolution(const @type@* input, const_index_t N,
-                                        const @type@* filter, const_index_t F,
+int @type@_allocating_downsampling_convolution(const @type@* input, const index_t N,
+                                        const @type@* filter, const index_t F,
                                         @type@* output,
-                                        const_index_t step, MODE mode)
+                                        const index_t step, MODE mode)
 {
     index_t N_extended_right_start, start, stop;
     @type@ *buffer;
@@ -438,9 +438,9 @@ int @type@_allocating_downsampling_convolution(const @type@* input, const_index_
  * performs "normal" convolution of "upsampled" input coeffs array with filter
  */
 
-int @type@_upsampling_convolution_full(const @type@* input, const_index_t N,
-                                const @type@* filter, const_index_t F,
-                                @type@* output, const_index_t O)
+int @type@_upsampling_convolution_full(const @type@* input, const index_t N,
+                                const @type@* filter, const index_t F,
+                                @type@* output, const index_t O)
 {
     register index_t i;
     register index_t j;
@@ -478,11 +478,11 @@ int @type@_upsampling_convolution_full(const @type@* input, const_index_t N,
  */
 
 int @type@_upsampling_convolution_valid_sf_periodization(const @type@* input,
-                                                         const_index_t N,
+                                                         const index_t N,
                                                          const @type@*
-                                                         filter, const_index_t
+                                                         filter, const index_t
                                                          F, @type@* output,
-                                                         const_index_t O)
+                                                         const index_t O)
 {
 
     @type@ *ptr_out = output;
@@ -738,9 +738,9 @@ int @type@_upsampling_convolution_valid_sf_periodization(const @type@* input,
  */
 
 int @type@_upsampling_convolution_valid_sf(const @type@* input,
-                                           const_index_t N, const @type@*
-                                           filter, const_index_t F, @type@*
-                                           output, const_index_t O, MODE
+                                           const index_t N, const @type@*
+                                           filter, const index_t F, @type@*
+                                           output, const index_t O, MODE
                                            mode)
 {
 
@@ -806,9 +806,9 @@ int @type@_upsampling_convolution_valid_sf(const @type@* input,
 
 /* -> swt - todo */
 int @type@_upsampled_filter_convolution(const @type@* input,
-                                        const_index_t N, const @type@*
-                                        filter, const_index_t F, @type@*
-                                        output, const_index_t step, MODE mode)
+                                        const index_t N, const @type@*
+                                        filter, const index_t F, @type@*
+                                        output, const index_t step, MODE mode)
 {
     return -1;
 }

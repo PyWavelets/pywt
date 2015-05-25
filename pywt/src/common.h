@@ -41,9 +41,6 @@
 #endif
 
 
-typedef const index_t const_index_t;
-
-
 /* Signal extension modes */
 typedef enum {
        MODE_INVALID = -1,
