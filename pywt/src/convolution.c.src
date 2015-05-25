@@ -302,31 +302,25 @@ int @type@_allocating_downsampling_convolution(const @type@* input, const_index_
                                         @type@* output,
                                         const_index_t step, MODE mode)
 {
-    index_t i, j, F_minus_1, N_extended_len, N_extended_right_start;
-    index_t start, stop;
-    @type@ sum, tmp;
+    index_t N_extended_right_start, start, stop;
     @type@ *buffer;
-    @type@* ptr_w = output;
-
-    F_minus_1 = F - 1;
-    start = F_minus_1+step-1;
 
     /* allocate memory and copy input */
     if(mode != MODE_PERIODIZATION){
 
-        N_extended_len = N + 2*F_minus_1;
-        N_extended_right_start = N + F_minus_1;
+        index_t N_extended_len = N + 2*(F-1);
+        N_extended_right_start = N + (F-1);
 
         buffer = wtcalloc(N_extended_len, sizeof(@type@));
         if(buffer == NULL)
             return -1;
 
-        memcpy(buffer+F_minus_1, input, sizeof(@type@) * N);
+        memcpy(buffer+(F-1), input, sizeof(@type@) * N);
+        start = (F-1) + step - 1;
         stop = N_extended_len;
 
     } else {
-
-        N_extended_len = N + F-1;
+        index_t N_extended_len = N + F-1;
         N_extended_right_start = N-1 + F/2;
 
         buffer = wtcalloc(N_extended_len, sizeof(@type@));
@@ -335,8 +329,7 @@ int @type@_allocating_downsampling_convolution(const @type@* input, const_index_
 
         memcpy(buffer+F/2-1, input, sizeof(@type@) * N);
 
-        start -= 1;
-
+        start = (F-1) + step - 2;
         if(step == 1)
             stop = N_extended_len-1;
         else /* step == 2 */
@@ -349,68 +342,72 @@ int @type@_allocating_downsampling_convolution(const @type@* input, const_index_
         case MODE_PERIODIZATION:
             if(N%2){ /* odd - repeat last element */
                 buffer[N_extended_right_start] = input[N-1];
-                for(j = 1; j < F/2; ++j)
+                for(index_t j = 1; j < F/2; ++j)
                     buffer[N_extended_right_start+j] = buffer[F/2-2 + j]; /* copy from beginning of `input` to right */
-                for(j = 0; j < F/2-1; ++j)   /* copy from 'buffer' to left */
+                for(index_t j = 0; j < F/2-1; ++j)   /* copy from 'buffer' to left */
                     buffer[F/2-2-j] =  buffer[N_extended_right_start-j];
             } else {
-                for(j = 0; j < F/2; ++j)
+                for(index_t j = 0; j < F/2; ++j)
                     buffer[N_extended_right_start+j] = input[j%N]; /* copy from beginning of `input` to right */
-                for(j = 0; j < F/2-1; ++j)   /* copy from 'buffer' to left */
+                for(index_t j = 0; j < F/2-1; ++j)   /* copy from 'buffer' to left */
                     buffer[F/2-2-j] =  buffer[N_extended_right_start-1-j];
             }
             break;
 
-        case MODE_SYMMETRIC:
+        case MODE_SYMMETRIC:{
+            index_t j;
             for(j = 0; j < N; ++j){
-                buffer[F_minus_1-1-j] = input[j%N];
+                buffer[(F-1)-1-j] = input[j%N];
                 buffer[N_extended_right_start+j] = input[N-1-(j%N)];
             }
-            i=j;
+            index_t i = j;
             /* use `buffer` as source */
-            for(; j < F_minus_1; ++j){
-                buffer[F_minus_1-1-j] =  buffer[N_extended_right_start-1+i-j];
-                buffer[N_extended_right_start+j] = buffer[F_minus_1+j-i];
+            for(; j < (F-1); ++j){
+                buffer[(F-1)-1-j] =  buffer[N_extended_right_start-1+i-j];
+                buffer[N_extended_right_start+j] = buffer[(F-1)+j-i];
             }
             break;
+        }
 
-        case MODE_ASYMMETRIC:
+        case MODE_ASYMMETRIC:{
+            index_t j;
             for(j = 0; j < N; ++j){
-                buffer[F_minus_1-1-j] = input[0] - input[j%N];
+                buffer[(F-1)-1-j] = input[0] - input[j%N];
                 buffer[N_extended_right_start+j] = (input[N-1] - input[N-1-(j%N)]);
             }
-            i=j;
+            index_t i = j;
             /* use `buffer` as source */
-            for(; j < F_minus_1; ++j){
-                buffer[F_minus_1-1-j] =  buffer[N_extended_right_start-1+i-j];
-                buffer[N_extended_right_start+j] = buffer[F_minus_1+j-i];
+            for(; j < (F-1); ++j){
+                buffer[(F-1)-1-j] =  buffer[N_extended_right_start-1+i-j];
+                buffer[N_extended_right_start+j] = buffer[(F-1)+j-i];
             }
             break;
+        }
 
         case MODE_SMOOTH:
             if(N>1){
-                tmp = input[0]-input[1];
-                for(j = 0; j < F_minus_1; ++j)
-                    buffer[j] = input[0] +    (tmp * (F_minus_1-j));
+                @type@ tmp = input[0]-input[1];
+                for(index_t j = 0; j < (F-1); ++j)
+                    buffer[j] = input[0] +    (tmp * ((F-1)-j));
                 tmp = input[N-1]-input[N-2];
-                for(j = 0; j < F_minus_1; ++j)
+                for(index_t j = 0; j < (F-1); ++j)
                     buffer[N_extended_right_start+j] = input[N-1] + (tmp*j);
                 break;
             }
 
         case MODE_CONSTANT_EDGE:
-            for(j = 0; j < F_minus_1; ++j){
+            for(index_t j = 0; j < (F-1); ++j){
                 buffer[j] = input[0];
                 buffer[N_extended_right_start+j] = input[N-1];
             }
             break;
 
         case MODE_PERIODIC:
-            for(j = 0; j < F_minus_1; ++j)
+            for(index_t j = 0; j < F-1; ++j)
                 buffer[N_extended_right_start+j] = input[j%N]; /* copy from beginning of `input` to right */
 
-            for(j = 0; j < F_minus_1; ++j)   /* copy from 'buffer' to left */
-                buffer[F_minus_1-1-j] =  buffer[N_extended_right_start-1-j];
+            for(index_t j = 0; j < F-1; ++j)   /* copy from 'buffer' to left */
+                buffer[(F-1)-1-j] =  buffer[N_extended_right_start-1-j];
             break;
 
         case MODE_ZEROPAD:
@@ -422,12 +419,13 @@ int @type@_allocating_downsampling_convolution(const @type@* input, const_index_
     /*
      * F - N-1 : filter in input range, perform convolution with decimation
      */
-    for(i=start; i < stop; i+=step){  /* input elements */
-        sum = 0;
-        for(j = 0; j < F; ++j){
+    for(index_t i=start, o=0; i < stop; i+=step, ++o){  /* input elements */
+        @type@ sum = 0;
+
+        for(index_t j = 0; j < F; ++j){
             sum += buffer[i-j]*filter[j];
         }
-        *(ptr_w++) = sum;
+        output[o] = sum;
     }
 
     /* free memory */
