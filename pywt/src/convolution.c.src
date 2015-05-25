@@ -111,28 +111,33 @@ int @type@_downsampling_convolution(const @type@* input, const_index_t N,
     {
         case MODE_SYMMETRIC:
             for(i=start; i < F; i+=step){
-                index_t k = i+1;
                 @type@ sum = 0;
                 index_t j;
 
                 for(j = 0; j <= i; ++j)
                     sum += filter[j]*input[i-j];
-                for(; j < F; ++j)
-                    sum += filter[j] * input[j-k];
+                for(index_t k = 0; j < F; ++j, ++k)
+                    sum += filter[j]*input[k];
                 *(ptr_w++) = sum;
             }
             break;
 
         case MODE_ASYMMETRIC:
+            /* Not documented or tested.
+             *
+             * The `n`th element past the edge is the first element of the
+             * sequence minus the `n`th element, as illustrated below:
+             *
+             * ... (0 - 2) (0 - 1) (0 - 0) | 0 1 2 ...
+             */
             for(i=start; i < F; i+=step){
-                index_t k = i+1;
                 @type@ sum = 0;
                 index_t j;
 
                 for(j = 0; j <= i; ++j)
                     sum += filter[j]*input[i-j];
-                for(; j < F; ++j)
-                    sum += filter[j] * (input[0] - input[j-k]);
+                for(index_t k = 0; j < F; ++j, ++k)
+                    sum += filter[j]*(input[0] - input[k]);
                 *(ptr_w++) = sum;
             }
             break;
@@ -140,41 +145,40 @@ int @type@_downsampling_convolution(const @type@* input, const_index_t N,
         case MODE_CONSTANT_EDGE:
             for(i=start; i < F; i+=step){
                 @type@ sum = 0;
-                index_t k = i+1;
                 index_t j;
 
                 for(j = 0; j <= i; ++j)
                     sum += filter[j]*input[i-j];
                 for(; j < F; ++j)
-                    sum += filter[j] * input[0];
+                    sum += filter[j]*input[0];
                 *(ptr_w++) = sum;
             }
             break;
 
-        case MODE_SMOOTH:
+        case MODE_SMOOTH:{
+            @type@ gradient = input[0]-input[1];
             for(i=start; i < F; i+=step){
                 @type@ sum = 0;
-                @type@ tmp = input[0]-input[1];
                 index_t j;
 
                 for(j = 0; j <= i; ++j)
                     sum += filter[j]*input[i-j];
-                for(; j < F; ++j)
-                    sum += filter[j] * (input[0] + tmp * (j-i));
+                for(index_t k = 1; j < F; ++j, ++k)
+                    sum += filter[j]*(input[0] + gradient * k);
                 *(ptr_w++) = sum;
             }
             break;
+        }
 
         case MODE_PERIODIC:
             for(i=start; i < F; i+=step){
                 @type@ sum = 0;
-                index_t k = N+i;
                 index_t j;
 
                 for(j = 0; j <= i; ++j)
                     sum += filter[j]*input[i-j];
-                for(; j < F; ++j)
-                    sum += filter[j] * input[k-j];
+                for(index_t k = N-1; j < F; ++j, --k)
+                    sum += filter[j]*input[k];
                 *(ptr_w++) = sum;
             }
             break;
@@ -210,14 +214,13 @@ int @type@_downsampling_convolution(const @type@* input, const_index_t N,
         case MODE_SYMMETRIC:
             for(; i < N+F-1; i += step){  /* input elements */
                 @type@ sum = 0;
-                index_t k = i-N+1;   /* 1, 2, 3 : overlapped elements */
                 index_t j;
 
-                for(j = 0; j < k; ++j)  /* out of boundary (TODO: j = _offset) */
-                    /* j-i-1      0*(N-1), 0*(N-2) 1*(N-1) */
-                    sum += filter[j]*input[N-k+j];
-                for(; j < F; ++j)   /*TODO: j < F-_offset */
+                /* TODO: add offset to j? Inherited, not sure what this means */
+                for(j = F - 1; i-j < N; --j)
                     sum += filter[j]*input[i-j];
+                for(index_t k = N-1; j >= 0; --j, --k)
+                    sum += filter[j]*input[k];
                 *(ptr_w++) = sum;
             }
             break;
@@ -225,13 +228,12 @@ int @type@_downsampling_convolution(const @type@* input, const_index_t N,
         case MODE_ASYMMETRIC:
             for(; i < N+F-1; i += step){  /* input elements */
                 @type@ sum = 0;
-                index_t k = i-N+1;
                 index_t j;
 
-                for(j = 0; j < k; ++j)   /* out of boundary */
-                    sum += filter[j]*(input[N-1]-input[N-k-1+j]); /* -= j-i-1 */
-                for(; j < F; ++j)   /* overlapped elements */
+                for(j = F - 1; i-j < N; --j)
                     sum += filter[j]*input[i-j];
+                for(index_t k = N-1; j >= 0; --j, --k)
+                    sum += filter[j]*(input[N-1] - input[k]);
                 *(ptr_w++) = sum;
             }
             break;
@@ -239,42 +241,40 @@ int @type@_downsampling_convolution(const @type@* input, const_index_t N,
         case MODE_CONSTANT_EDGE:
             for(; i < N+F-1; i += step){  /* input elements */
                 @type@ sum = 0;
-                index_t k = i-N+1;
                 index_t j;
 
-                for(j = 0; j < k; ++j)  /* out of boundary (filter elements [0, k-1]) */
-                    sum += filter[j]*input[N-1]; /* input[N-1] = const */
-                for(; j < F; ++j)   /* overlapped elements */
+                for(j = F - 1; i-j < N; --j)  /* out of boundary (filter elements [0, k-1]) */
                     sum += filter[j]*input[i-j];
+                for(; j >= 0; --j)   /* overlapped elements */
+                    sum += filter[j]*input[N-1]; /* input[N-1] = const */
                 *(ptr_w++) = sum;
             }
             break;
 
-        case MODE_SMOOTH:
+        case MODE_SMOOTH:{
+            @type@ gradient = input[N-1]-input[N-2];
             for(; i < N+F-1; i += step){  /* input elements */
                 @type@ sum = 0;
-                @type@ tmp = input[N-1]-input[N-2];
-                index_t k = i-N+1;
                 index_t j;
 
-                for(j = 0; j < k; ++j)  /* out of boundary (filter elements [0, k-1]) */
-                    sum += filter[j] * (input[N-1] + tmp * (k-j));
-                for(; j < F; ++j)  /* overlapped elements */
+                for(j = F - 1; i - j < N; --j)  /* overlapped elements */
                     sum += filter[j]*input[i-j];
+                for(index_t k = 1; j >= 0; --j, ++k)  /* out of boundary (filter elements [0, k-1]) */
+                    sum += filter[j]*(input[N-1] + gradient * k);
                 *(ptr_w++) = sum;
             }
             break;
+        }
 
         case MODE_PERIODIC:
             for(; i < N+F-1; i += step){  /* input elements */
                 @type@ sum = 0;
-                index_t k = i-N+1;
                 index_t j;
 
-                for(j = 0; j < k; ++j)  /* out of boundary (filter elements [0, k-1]) */
-                    sum += filter[j]*input[k-1-j];
-                for(; j < F; ++j)   /* overlapped elements */
+                for (j = F - 1; i - j < N; --j)
                     sum += filter[j]*input[i-j];
+                for (index_t k = 0; j >= 0; --j, ++k)
+                    sum += filter[j]*input[k];
                 *(ptr_w++) = sum;
             }
             break;
@@ -283,10 +283,9 @@ int @type@_downsampling_convolution(const @type@* input, const_index_t N,
         default:
             for(; i < N+F-1; i += step){
                 @type@ sum = 0;
-                index_t j;
 
-                for(j = i-(N-1); j < F; ++j)
-                    sum += input[i-j]*filter[j];
+                for(index_t j = F - 1; i - j < N; --j)
+                    sum += filter[j]*input[i-j];
                 *(ptr_w++) = sum;
             }
             break;
