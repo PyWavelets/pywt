@@ -107,19 +107,16 @@ int @type@_downsampling_convolution(const @type@* input, const index_t N,
 
     /* Other signal extension modes */
     /* 0 - F-1 : sliding in filter */
-    switch(mode)
-    {
-        case MODE_SYMMETRIC:
-            for(i=start; i < F; i+=step){
-                @type@ sum = 0;
-                index_t j;
+    for(i=start; i < F; i+=step){
+        @type@ sum = 0;
+        index_t j;
+        for(j = 0; j <= i; ++j)
+            sum += filter[j]*input[i-j];
 
-                for(j = 0; j <= i; ++j)
-                    sum += filter[j]*input[i-j];
-                for(index_t k = 0; j < F; ++j, ++k)
-                    sum += filter[j]*input[k];
-                *(ptr_w++) = sum;
-            }
+        switch(mode) {
+        case MODE_SYMMETRIC:
+            for(index_t k = 0; j < F; ++j, ++k)
+                sum += filter[j]*input[k];
             break;
 
         case MODE_ASYMMETRIC:
@@ -130,70 +127,30 @@ int @type@_downsampling_convolution(const @type@* input, const index_t N,
              *
              * ... (0 - 2) (0 - 1) (0 - 0) | 0 1 2 ...
              */
-            for(i=start; i < F; i+=step){
-                @type@ sum = 0;
-                index_t j;
-
-                for(j = 0; j <= i; ++j)
-                    sum += filter[j]*input[i-j];
-                for(index_t k = 0; j < F; ++j, ++k)
-                    sum += filter[j]*(input[0] - input[k]);
-                *(ptr_w++) = sum;
-            }
+            for(index_t k = 0; j < F; ++j, ++k)
+                sum += filter[j]*(input[0] - input[k]);
             break;
 
         case MODE_CONSTANT_EDGE:
-            for(i=start; i < F; i+=step){
-                @type@ sum = 0;
-                index_t j;
-
-                for(j = 0; j <= i; ++j)
-                    sum += filter[j]*input[i-j];
-                for(; j < F; ++j)
-                    sum += filter[j]*input[0];
-                *(ptr_w++) = sum;
-            }
+            for(; j < F; ++j)
+                sum += filter[j]*input[0];
             break;
 
-        case MODE_SMOOTH:{
-            @type@ gradient = input[0]-input[1];
-            for(i=start; i < F; i+=step){
-                @type@ sum = 0;
-                index_t j;
-
-                for(j = 0; j <= i; ++j)
-                    sum += filter[j]*input[i-j];
-                for(index_t k = 1; j < F; ++j, ++k)
-                    sum += filter[j]*(input[0] + gradient * k);
-                *(ptr_w++) = sum;
-            }
+        case MODE_SMOOTH:
+            for(index_t k = 1; j < F; ++j, ++k)
+                sum += filter[j]*(input[0] + k * (input[0] - input[1]));
             break;
-        }
 
         case MODE_PERIODIC:
-            for(i=start; i < F; i+=step){
-                @type@ sum = 0;
-                index_t j;
-
-                for(j = 0; j <= i; ++j)
-                    sum += filter[j]*input[i-j];
-                for(index_t k = N-1; j < F; ++j, --k)
-                    sum += filter[j]*input[k];
-                *(ptr_w++) = sum;
-            }
+            for(index_t k = N-1; j < F; ++j, --k)
+                sum += filter[j]*input[k];
             break;
 
         case MODE_ZEROPAD:
         default:
-            for(i=start; i < F; i+=step){
-                @type@ sum = 0;
-                index_t j;
-
-                for(j = 0; j <= i; ++j)
-                    sum += filter[j]*input[i-j];
-                *(ptr_w++) = sum;
-            }
             break;
+        }
+        *(ptr_w++) = sum;
     }
 
     /*
@@ -209,86 +166,38 @@ int @type@_downsampling_convolution(const @type@* input, const index_t N,
     }
 
     /* N - N+F-1 : sliding out filter */
-    switch(mode)
-    {
+    for(; i < N+F-1; i += step){  /* input elements */
+        @type@ sum = 0;
+        index_t j;
+        for(j = F - 1; i-j < N; --j)
+            sum += filter[j]*input[i-j];
+        switch(mode) {
         case MODE_SYMMETRIC:
-            for(; i < N+F-1; i += step){  /* input elements */
-                @type@ sum = 0;
-                index_t j;
-
-                /* TODO: add offset to j? Inherited, not sure what this means */
-                for(j = F - 1; i-j < N; --j)
-                    sum += filter[j]*input[i-j];
-                for(index_t k = N-1; j >= 0; --j, --k)
-                    sum += filter[j]*input[k];
-                *(ptr_w++) = sum;
-            }
+            /* TODO: add offset to j? Inherited, not sure what this means */
+            for(index_t k = N-1; j >= 0; --j, --k)
+                sum += filter[j]*input[k];
             break;
-
         case MODE_ASYMMETRIC:
-            for(; i < N+F-1; i += step){  /* input elements */
-                @type@ sum = 0;
-                index_t j;
-
-                for(j = F - 1; i-j < N; --j)
-                    sum += filter[j]*input[i-j];
-                for(index_t k = N-1; j >= 0; --j, --k)
-                    sum += filter[j]*(input[N-1] - input[k]);
-                *(ptr_w++) = sum;
-            }
+            for(index_t k = N-1; j >= 0; --j, --k)
+                sum += filter[j]*(input[N-1] - input[k]);
             break;
-
         case MODE_CONSTANT_EDGE:
-            for(; i < N+F-1; i += step){  /* input elements */
-                @type@ sum = 0;
-                index_t j;
-
-                for(j = F - 1; i-j < N; --j)  /* out of boundary (filter elements [0, k-1]) */
-                    sum += filter[j]*input[i-j];
-                for(; j >= 0; --j)   /* overlapped elements */
-                    sum += filter[j]*input[N-1]; /* input[N-1] = const */
-                *(ptr_w++) = sum;
-            }
+            for(; j >= 0; --j)   /* overlapped elements */
+                sum += filter[j]*input[N-1]; /* input[N-1] = const */
             break;
-
-        case MODE_SMOOTH:{
-            @type@ gradient = input[N-1]-input[N-2];
-            for(; i < N+F-1; i += step){  /* input elements */
-                @type@ sum = 0;
-                index_t j;
-
-                for(j = F - 1; i - j < N; --j)  /* overlapped elements */
-                    sum += filter[j]*input[i-j];
-                for(index_t k = 1; j >= 0; --j, ++k)  /* out of boundary (filter elements [0, k-1]) */
-                    sum += filter[j]*(input[N-1] + gradient * k);
-                *(ptr_w++) = sum;
-            }
+        case MODE_SMOOTH:
+            for(index_t k = 1; j >= 0; --j, ++k)  /* out of boundary (filter elements [0, k-1]) */
+                sum += filter[j]*(input[N-1] + k * (input[N-1] - input[N-2]));
             break;
-        }
-
         case MODE_PERIODIC:
-            for(; i < N+F-1; i += step){  /* input elements */
-                @type@ sum = 0;
-                index_t j;
-
-                for (j = F - 1; i - j < N; --j)
-                    sum += filter[j]*input[i-j];
-                for (index_t k = 0; j >= 0; --j, ++k)
-                    sum += filter[j]*input[k];
-                *(ptr_w++) = sum;
-            }
+            for (index_t k = 0; j >= 0; --j, ++k)
+                sum += filter[j]*input[k];
             break;
-
         case MODE_ZEROPAD:
         default:
-            for(; i < N+F-1; i += step){
-                @type@ sum = 0;
-
-                for(index_t j = F - 1; i - j < N; --j)
-                    sum += filter[j]*input[i-j];
-                *(ptr_w++) = sum;
-            }
             break;
+        }
+        *(ptr_w++) = sum;
     }
     return 0;
 }
