@@ -118,34 +118,18 @@ int @type@_downsampling_convolution(const @type@* input, const index_t N,
             for(index_t k = 0; j < F; ++j, ++k)
                 sum += filter[j]*input[k];
             break;
-
-        case MODE_ASYMMETRIC:
-            /* Not documented or tested.
-             *
-             * The `n`th element past the edge is the first element of the
-             * sequence minus the `n`th element, as illustrated below:
-             *
-             * ... (0 - 2) (0 - 1) (0 - 0) | 0 1 2 ...
-             */
-            for(index_t k = 0; j < F; ++j, ++k)
-                sum += filter[j]*(input[0] - input[k]);
-            break;
-
         case MODE_CONSTANT_EDGE:
             for(; j < F; ++j)
                 sum += filter[j]*input[0];
             break;
-
         case MODE_SMOOTH:
             for(index_t k = 1; j < F; ++j, ++k)
                 sum += filter[j]*(input[0] + k * (input[0] - input[1]));
             break;
-
         case MODE_PERIODIC:
             for(index_t k = N-1; j < F; ++j, --k)
                 sum += filter[j]*input[k];
             break;
-
         case MODE_ZEROPAD:
         default:
             break;
@@ -176,10 +160,6 @@ int @type@_downsampling_convolution(const @type@* input, const index_t N,
             /* TODO: add offset to j? Inherited, not sure what this means */
             for(index_t k = N-1; j >= 0; --j, --k)
                 sum += filter[j]*input[k];
-            break;
-        case MODE_ASYMMETRIC:
-            for(index_t k = N-1; j >= 0; --j, --k)
-                sum += filter[j]*(input[N-1] - input[k]);
             break;
         case MODE_CONSTANT_EDGE:
             for(; j >= 0; --j)   /* overlapped elements */
@@ -268,21 +248,6 @@ int @type@_allocating_downsampling_convolution(const @type@* input, const index_
             for(j = 0; j < N; ++j){
                 buffer[(F-1)-1-j] = input[j%N];
                 buffer[N_extended_right_start+j] = input[N-1-(j%N)];
-            }
-            index_t i = j;
-            /* use `buffer` as source */
-            for(; j < (F-1); ++j){
-                buffer[(F-1)-1-j] =  buffer[N_extended_right_start-1+i-j];
-                buffer[N_extended_right_start+j] = buffer[(F-1)+j-i];
-            }
-            break;
-        }
-
-        case MODE_ASYMMETRIC:{
-            index_t j;
-            for(j = 0; j < N; ++j){
-                buffer[(F-1)-1-j] = input[0] - input[j%N];
-                buffer[N_extended_right_start+j] = (input[N-1] - input[N-1-(j%N)]);
             }
             index_t i = j;
             /* use `buffer` as source */

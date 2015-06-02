@@ -51,7 +51,6 @@ typedef enum {
        MODE_PERIODIC,      /* signal is treated as being periodic */
        MODE_PERIODIZATION, /* signal is treated as being periodic, minimal output lenght */
        MODE_MAX,
-       MODE_ASYMMETRIC /* TODO */
 } MODE;
 
 

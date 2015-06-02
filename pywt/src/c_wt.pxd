@@ -13,7 +13,6 @@ cdef extern from "common.h":
         MODE_INVALID = -1
         MODE_ZEROPAD = 0
         MODE_SYMMETRIC
-        MODE_ASYMMETRIC
         MODE_CONSTANT_EDGE
         MODE_SMOOTH
         MODE_PERIODIC
