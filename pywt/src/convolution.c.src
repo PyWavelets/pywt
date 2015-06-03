@@ -27,15 +27,14 @@ int @type@_downsampling_convolution_periodization(const @type@* input, const ind
 
     index_t i;
     @type@* ptr_w = output;
+    const index_t padding = N % 2; // Should be N%step for larger steps?
 
     for (i=F/2; i < F; i += step) {
         @type@ sum = 0;
         index_t j;
         for (j = 0; j <= i; ++j)
             sum += filter[j] * input[i-j];
-        // Pad out signals with non-divisible length using last element
-        // FIXME: Should N%2 be N%step for larger steps?
-        for (index_t k = 0; k < (N % 2) && j < F; ++k, ++j)
+        for (index_t k = 0; k < padding && j < F; ++k, ++j)
             sum += filter[j] * input[N-1];
         for (index_t k = N-1; j < F; --k, ++j)
             sum += filter[j] * input[k];
@@ -53,11 +52,9 @@ int @type@_downsampling_convolution_periodization(const @type@* input, const ind
     for(i = i - N; i < F/2; i += step){   /* input elements */
         @type@ sum = 0;
         index_t j;
-        for (j = 0; j <= i - (N % 2); ++j)
-          sum += filter[j] * input[i - j - (N % 2)];
-        // Pad out with last element
-        // FIXME: N%2 or N%step
-        for(index_t k = 0; k < (N % 2) && j < F; ++k, ++j)
+        for (j = 0; j <= i - padding; ++j)
+            sum += filter[j] * input[i - j - padding];
+        for(index_t k = 0; k < padding && j < F; ++k, ++j)
             sum += filter[j] * input[N-1];
         for(index_t k = N-1; j < F; --k, ++j)   /* overlapped elements */
             sum += filter[j]*input[k];
