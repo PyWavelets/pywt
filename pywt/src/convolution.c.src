@@ -108,7 +108,9 @@ int @type@_downsampling_convolution(const @type@* input, const index_t N,
      * 1. Handle extended on the left, convolve filter with samples computed for
      *    time < 0
      * 2. Do the normal decimated convolution of filter with signal samples
-     * 3. Handle extended on the right, convolve filter with samples computed
+     * 3. Handle case where filter extends beyond signal to both the left and
+     *    right (only applies if F > N)
+     * 4. Handle extended on the right, convolve filter with samples computed
      *    for time > n-1
      */
 
