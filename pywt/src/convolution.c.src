@@ -29,15 +29,17 @@ int @type@_downsampling_convolution_periodization(const @type@* input, const ind
     @type@* ptr_w = output;
     const index_t padding = N % 2; // Should be N%step for larger steps?
 
-    for (i=F/2; i < F; i += step) {
+    for (i=F/2; i < F && i < N; i += step) {
         @type@ sum = 0;
         index_t j;
         for (j = 0; j <= i; ++j)
             sum += filter[j] * input[i-j];
-        for (index_t k = 0; k < padding && j < F; ++k, ++j)
-            sum += filter[j] * input[N-1];
-        for (index_t k = N-1; j < F; --k, ++j)
-            sum += filter[j] * input[k];
+        while (j < F){
+            for (index_t k = 0; k < padding && j < F; ++k, ++j)
+                sum += filter[j] * input[N-1];
+            for (index_t k = 0; k < N && j < F; ++k, ++j)
+                sum += filter[j] * input[N-1-k];
+        }
         *(ptr_w++) = sum;
     }
 
@@ -49,15 +51,38 @@ int @type@_downsampling_convolution_periodization(const @type@* input, const ind
         *(ptr_w++) = sum;
     }
 
-    for(i = i - N; i < F/2; i += step){   /* input elements */
+    for (; i < F && i < N + F/2; i += step) {
         @type@ sum = 0;
-        index_t j;
-        for (j = 0; j <= i - padding; ++j)
-            sum += filter[j] * input[i - j - padding];
-        for(index_t k = 0; k < padding && j < F; ++k, ++j)
-            sum += filter[j] * input[N-1];
-        for(index_t k = N-1; j < F; --k, ++j)   /* overlapped elements */
-            sum += filter[j]*input[k];
+        index_t j = 0;
+
+        while (i-j >= N){
+            for (index_t k = 0; k < padding && i-j >= N; ++k, ++j)
+                sum += filter[i-N-j] * input[N-1];
+            for (index_t k = 0; k < N && i-j >= N; ++k, ++j)
+                sum += filter[i-N-j] * input[k];
+        }
+        for (; j <= i; ++j)
+            sum += filter[j] * input[i-j];
+        while (j < F){
+            for (index_t k = 0; k < padding && j < F; ++k, ++j)
+                sum += filter[j] * input[N-1];
+            for (index_t k = 0; k < N && j < F; ++k, ++j)
+                sum += filter[j] * input[N-1-k];
+        }
+        *(ptr_w++) = sum;
+    }
+
+    for(; i < N + F/2; i += step){   /* input elements */
+        @type@ sum = 0;
+        index_t j = 0;
+        while (i-j >= N){
+            for (index_t k = 0; k < padding && i-j >= N; ++k, ++j)
+                sum += filter[i-N-j] * input[N-1];
+            for (index_t k = 0; k < N && i-j >= N; ++k, ++j)
+                sum += filter[i-N-j] * input[k];
+        }
+        for (; j < F; ++j)
+            sum += filter[j] * input[i-j];
         *(ptr_w++) = sum;
     }
     return 0;
@@ -93,8 +118,6 @@ int @type@_downsampling_convolution(const @type@* input, const index_t N,
     @type@* ptr_w = output;
 
     if(mode == MODE_PERIODIZATION){
-        if (F > N)
-            return @type@_allocating_downsampling_convolution_periodization(input, N, filter, F, output, step);
         return @type@_downsampling_convolution_periodization(input, N, filter, F, output, step);
     }
 
@@ -247,61 +270,6 @@ int @type@_downsampling_convolution(const @type@* input, const index_t N,
             sum += filter[j]*input[i-j];
         *(ptr_w++) = sum;
     }
-    return 0;
-}
-
-/*
- * ### like downsampling_convolution, but with memory allocation ###
- */
-
-int @type@_allocating_downsampling_convolution_periodization(const @type@* input, const index_t N,
-                                                             const @type@* filter, const index_t F,
-                                                             @type@* output, const index_t step)
-{
-    index_t N_extended_right_start, start, stop;
-    @type@ *buffer;
-
-    index_t N_extended_len = N + F-1;
-    N_extended_right_start = N-1 + F/2;
-
-    buffer = wtcalloc(N_extended_len, sizeof(@type@));
-    if(buffer == NULL)
-        return -1;
-
-    memcpy(buffer+F/2-1, input, sizeof(@type@) * N);
-
-    start = (F-1) + step - 2;
-    if(step == 1)
-        stop = N_extended_len-1;
-    else /* step == 2 */
-        stop = N_extended_len;
-
-    if(N%2){ /* odd - repeat last element */
-        buffer[N_extended_right_start] = input[N-1];
-        for(index_t j = 1; j < F/2; ++j)
-            buffer[N_extended_right_start+j] = buffer[F/2-2 + j]; /* copy from beginning of `input` to right */
-        for(index_t j = 0; j < F/2-1; ++j)   /* copy from 'buffer' to left */
-            buffer[F/2-2-j] =  buffer[N_extended_right_start-j];
-    } else {
-        for(index_t j = 0; j < F/2; ++j)
-            buffer[N_extended_right_start+j] = input[j%N]; /* copy from beginning of `input` to right */
-        for(index_t j = 0; j < F/2-1; ++j)   /* copy from 'buffer' to left */
-            buffer[F/2-2-j] =  buffer[N_extended_right_start-1-j];
-    }
-    /*
-     * F - N-1 : filter in input range, perform convolution with decimation
-     */
-    for(index_t i=start, o=0; i < stop; i+=step, ++o){  /* input elements */
-        @type@ sum = 0;
-
-        for(index_t j = 0; j < F; ++j){
-            sum += buffer[i-j]*filter[j];
-        }
-        output[o] = sum;
-    }
-
-    /* free memory */
-    wtfree(buffer);
     return 0;
 }
 
