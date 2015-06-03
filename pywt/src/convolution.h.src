@@ -34,12 +34,10 @@ int @type@_downsampling_convolution(const @type@* input, const index_t N,
  * signals (shorter than filter).  This is called from downsampling_convolution
  */
 
-int @type@_allocating_downsampling_convolution(const @type@* input,
-                                               const index_t N, const @type@*
-                                               filter, const index_t F,
-                                               @type@* output, const index_t
-                                               step, MODE mode);
-
+int @type@_allocating_downsampling_convolution_periodization(const @type@* input,
+                                                             const index_t N, const @type@*
+                                                             filter, const index_t F,
+                                                             @type@* output, const index_t step);
 
 /*
  * Performs normal (full) convolution of "upsampled" input coeffs array with
