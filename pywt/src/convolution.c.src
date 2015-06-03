@@ -7,10 +7,9 @@
  * #type = double, float#
  */
 
-int @type@_downsampling_convolution_periodization(const @type@* input, const index_t N,
-                             const @type@* filter, const index_t F,
-                             @type@* output, const index_t step)
-
+int @type@_downsampling_convolution_periodization(const @type@ * const restrict input, const index_t N,
+                                                  const @type@ * const restrict filter, const index_t F,
+                                                  @type@ * const restrict output, const index_t step)
 {
     /*
     * Should it be an error to call this mode with signal lengths
@@ -25,11 +24,10 @@ int @type@_downsampling_convolution_periodization(const @type@* input, const ind
     *   }
     */
 
-    index_t i;
-    @type@* ptr_w = output;
+    index_t i = F/2, o = 0;
     const index_t padding = N % 2; // Should be N%step for larger steps?
 
-    for (i=F/2; i < F && i < N; i += step) {
+    for (; i < F && i < N; i += step, ++o) {
         @type@ sum = 0;
         index_t j;
         for (j = 0; j <= i; ++j)
@@ -40,18 +38,18 @@ int @type@_downsampling_convolution_periodization(const @type@* input, const ind
             for (index_t k = 0; k < N && j < F; ++k, ++j)
                 sum += filter[j] * input[N-1-k];
         }
-        *(ptr_w++) = sum;
+        output[o] = sum;
     }
 
     /* F - N-1 : filter in input range.  Most time is spent in this loop */
-    for(; i < N; i+=step){    /* input elements, */
+    for(; i < N; i+=step, ++o){    /* input elements, */
         @type@ sum = 0;
         for(index_t j = 0; j < F; ++j)
             sum += input[i-j]*filter[j];
-        *(ptr_w++) = sum;
+        output[o] = sum;
     }
 
-    for (; i < F && i < N + F/2; i += step) {
+    for (; i < F && i < N + F/2; i += step, ++o) {
         @type@ sum = 0;
         index_t j = 0;
 
@@ -69,10 +67,10 @@ int @type@_downsampling_convolution_periodization(const @type@* input, const ind
             for (index_t k = 0; k < N && j < F; ++k, ++j)
                 sum += filter[j] * input[N-1-k];
         }
-        *(ptr_w++) = sum;
+        output[o] = sum;
     }
 
-    for(; i < N + F/2; i += step){   /* input elements */
+    for(; i < N + F/2; i += step, ++o){   /* input elements */
         @type@ sum = 0;
         index_t j = 0;
         while (i-j >= N){
@@ -83,16 +81,16 @@ int @type@_downsampling_convolution_periodization(const @type@* input, const ind
         }
         for (; j < F; ++j)
             sum += filter[j] * input[i-j];
-        *(ptr_w++) = sum;
+        output[o] = sum;
     }
     return 0;
 }
 
 
-int @type@_downsampling_convolution(const @type@* input, const index_t N,
-                             const @type@* filter, const index_t F,
-                             @type@* output,
-                             const index_t step, MODE mode)
+int @type@_downsampling_convolution(const @type@ * const restrict input, const index_t N,
+                                    const @type@ * const restrict filter, const index_t F,
+                                    @type@ * const restrict output,
+                                    const index_t step, MODE mode)
 {
     /*
      * This convolution performs efficient downsampling by computing every
@@ -114,10 +112,7 @@ int @type@_downsampling_convolution(const @type@* input, const index_t N,
      *    for time > n-1
      */
 
-    index_t i;
-    index_t start = step-1; /* first element taken from input is input[step-1] */
-
-    @type@* ptr_w = output;
+    index_t i = step - 1, o = 0;
 
     if(mode == MODE_PERIODIZATION){
         return @type@_downsampling_convolution_periodization(input, N, filter, F, output, step);
@@ -125,7 +120,7 @@ int @type@_downsampling_convolution(const @type@* input, const index_t N,
 
     /* Other signal extension modes */
     /* 0 - F-1 : sliding in filter */
-    for(i=start; i < F && i < N; i+=step){
+    for(; i < F && i < N; i+=step, ++o){
         @type@ sum = 0;
         index_t j;
         for(j = 0; j <= i; ++j)
@@ -157,22 +152,22 @@ int @type@_downsampling_convolution(const @type@* input, const index_t N,
         default:
             break;
         }
-        *(ptr_w++) = sum;
+        output[o] = sum;
     }
 
     /*
      * F - N-1 : filter in input range - simple convolution
      * Most time is spent in this loop.
      */
-    for(; i < N; i+=step){  /* input elements, */
+    for(; i < N; i+=step, ++o){  /* input elements, */
         @type@ sum = 0;
 
         for(index_t j = 0; j < F; ++j)
             sum += input[i-j]*filter[j];
-        *(ptr_w++) = sum;
+        output[o] = sum;
     }
 
-    for(; i < F; i+=step){
+    for(; i < F; i+=step, ++o){
         @type@ sum = 0;
         index_t j = 0;
         switch(mode) {
@@ -232,11 +227,11 @@ int @type@_downsampling_convolution(const @type@* input, const index_t N,
         default:
             break;
         }
-        *(ptr_w++) = sum;
+        output[o] = sum;
     }
 
     /* N - N+F-1 : sliding out filter */
-    for(; i < N+F-1; i += step){  /* input elements */
+    for(; i < N+F-1; i += step, ++o){
         @type@ sum = 0;
         index_t j = 0;
         switch(mode) {
@@ -270,7 +265,7 @@ int @type@_downsampling_convolution(const @type@* input, const index_t N,
         }
         for(; j < F; ++j)
             sum += filter[j]*input[i-j];
-        *(ptr_w++) = sum;
+        output[o] = sum;
     }
     return 0;
 }
