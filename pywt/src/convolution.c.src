@@ -315,16 +315,6 @@ int @type@_upsampling_convolution_valid_sf_periodization(const @type@* input,
                                                          F, @type@* output,
                                                          const index_t O)
 {
-
-    @type@ *ptr_out = output;
-    @type@ *filter_even, *filter_odd;
-    @type@ *periodization_buf = NULL;
-    @type@ *periodization_buf_rear = NULL;
-    @type@ *ptr_base;
-    @type@ sum_even, sum_odd;
-    index_t i, j, k, N_p = 0;
-    index_t F_2 = F/2;
-
     if(F%2) return -3; /* Filter must have even-length. */
 
     /*
@@ -332,47 +322,30 @@ int @type@_upsampling_convolution_valid_sf_periodization(const @type@* input,
      * the filter's length. The coeff array has to be extended periodically.
      * This can be only valid for PERIODIZATION_MODE
      */
-    if(N < F_2)
-    {
+    if(N < F/2) {
         /* Input data for periodization mode has to be periodically extended */
 
         /* New length for temporary input */
-        N_p = F_2-1 +N;
+        const index_t N_p = F/2 - 1 + N;
 
         /* periodization_buf will hold periodically copied input coeffs values */
-        periodization_buf = wtcalloc(N_p, sizeof(@type@));
+        @type@ * periodization_buf = wtcalloc(N_p, sizeof(*periodization_buf));
 
         if(periodization_buf == NULL)
             return -1;
 
-        /* Copy input data to its place in the periodization_buf */
-        /* -> [0 0 0 i1 i2 i3 0 0 0] */
-        k = (F_2-1)/2;
-        for(i=k; i < k+N; ++i)
-            periodization_buf[i] = input[(i-k)%N];
-
-        /* if(N%2)
-         *     periodization_buf[i++] = input[N-1];
-         *
-         * [0 0 0 i1 i2 i3 0 0 0]
-         *  points here ^^
-         */
-        periodization_buf_rear = periodization_buf+i-1;
-
-        /* copy cyclically () to right   [0 0 0 i1 i2 i3 i1 i2 ...] */
-        j = i-k;
-        for(; i < N_p; ++i)
-            periodization_buf[i] = periodization_buf[i-j];
+        /* Copy input data to its place in the periodization_buf
+         * -> [0 0 0 | i1 i2 i3 | i1 i2 ...] */
+        const index_t k = (F/2-1)/2;
+        for(index_t i=0, o=k; o < N_p; ++i, ++o)
+            periodization_buf[o] = input[i%N];
 
         /* copy cyclically () to left    [... i2 i3 i1 i2 i3 i1 i2 i3] */
-        j = 0;
-        for(i=k-1; i >= 0; --i){
-            periodization_buf[i] = periodization_buf_rear[j];
-            --j;
-        }
+        for(index_t i=k-1; i >= 0; --i)
+            periodization_buf[i] = periodization_buf[N+i];
 
         /* Now perform the valid convolution */
-        if(F_2%2){
+        if((F/2)%2){
             @type@_upsampling_convolution_valid_sf(periodization_buf, N_p, filter, F, output, O, MODE_ZEROPAD);
 
         /* The F_2%2==0 case needs special result fix (oh my, another one..) */
@@ -383,8 +356,8 @@ int @type@_upsampling_convolution_valid_sf_periodization(const @type@* input,
              * Memory allocation for temporary output is done.
              * Computed temporary result is copied to output*
              */
-            ptr_out = wtcalloc(idwt_buffer_length(N, F, MODE_PERIODIZATION),
-                                                  sizeof(@type@));
+            @type@ * ptr_out = wtcalloc(idwt_buffer_length(N, F, MODE_PERIODIZATION),
+                                        sizeof(@type@));
             if(ptr_out == NULL){
                 wtfree(periodization_buf);
                 return -1;
@@ -394,7 +367,7 @@ int @type@_upsampling_convolution_valid_sf_periodization(const @type@* input,
             @type@_upsampling_convolution_valid_sf(periodization_buf, N_p, filter, F, ptr_out, O, MODE_ZEROPAD);
 
             /* rewrite result to output */
-            for(i=2*N-1; i > 0; --i){
+            for(index_t i=1; i < 2*N; ++i){
                 output[i] += ptr_out[i-1];
             }
             /* and the first element */
@@ -404,7 +377,15 @@ int @type@_upsampling_convolution_valid_sf_periodization(const @type@* input,
         }
 
     } else {
-    /* Otherwise (N >= F_2) */
+        /* Otherwise (N >= F_2) */
+        @type@ *ptr_out = output;
+        @type@ *filter_even, *filter_odd;
+        @type@ * periodization_buf = NULL;
+        @type@ *periodization_buf_rear = NULL;
+        @type@ *ptr_base;
+        @type@ sum_even, sum_odd;
+        index_t i, j, k, N_p = 0;
+        index_t F_2 = F/2;
 
         /* Allocate memory for even and odd elements of the filter */
         filter_even = wtmalloc(F_2 * sizeof(@type@));
