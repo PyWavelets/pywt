@@ -278,19 +278,13 @@ int @type@_downsampling_convolution(const @type@ * const restrict input, const i
  */
 
 int @type@_upsampling_convolution_full(const @type@* input, const index_t N,
-                                const @type@* filter, const index_t F,
-                                @type@* output, const index_t O)
+                                       const @type@* filter, const index_t F,
+                                       @type@* output, const index_t O)
 {
-    register index_t i;
-    register index_t j;
-    @type@ *ptr_out;
-
     if(F<2)
         return -1;
 
-    ptr_out = output + ((N-1) << 1);
-
-    for(i = N-1; i >= 0; --i){
+    for(index_t i = N-1, o = (N-1) * 2; i >= 0; --i, o -= 2){
         /*
          * sliding in filter from the right (end of input)
          * i0 0  i1 0  i2 0
@@ -298,10 +292,8 @@ int @type@_upsampling_convolution_full(const @type@* input, const index_t N,
          *             f1 f2 -> o2
          *          f1 f2 f3 -> o3
          */
-
-        for(j = 0; j < F; ++j)
-            ptr_out[j] += input[i] * filter[j]; /* input[i] - const in loop */
-        ptr_out -= 2;
+        for(index_t j = 0; j < F; ++j)
+            output[o + j] += input[i] * filter[j];
     }
     return 0;
 }
