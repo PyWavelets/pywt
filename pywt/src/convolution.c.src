@@ -379,7 +379,6 @@ int @type@_upsampling_convolution_valid_sf_periodization(const @type@* input,
     } else {
         /* Otherwise (N >= F_2) */
         @type@ *ptr_out = output;
-        @type@ *filter_even, *filter_odd;
         @type@ * periodization_buf = NULL;
         @type@ *periodization_buf_rear = NULL;
         @type@ *ptr_base;
@@ -388,10 +387,10 @@ int @type@_upsampling_convolution_valid_sf_periodization(const @type@* input,
         index_t F_2 = F/2;
 
         /* Allocate memory for even and odd elements of the filter */
-        filter_even = wtmalloc(F_2 * sizeof(@type@));
-        filter_odd = wtmalloc(F_2 * sizeof(@type@));
+        @type@ * filter_even = wtmalloc(F_2 * sizeof(@type@));
+        @type@ * filter_odd = wtmalloc(F_2 * sizeof(@type@));
 
-        if(filter_odd == NULL || filter_odd == NULL){
+        if(filter_odd == NULL || filter_even == NULL){
             if(filter_odd == NULL) wtfree(filter_odd);
             if(filter_even == NULL) wtfree(filter_even);
             return -1;
