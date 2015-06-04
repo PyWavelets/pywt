@@ -114,9 +114,11 @@ int @type@_downsampling_convolution(const @type@ * const restrict input, const i
 
     index_t i = step - 1, o = 0;
 
-    if(mode == MODE_PERIODIZATION){
+    if(mode == MODE_PERIODIZATION)
         return @type@_downsampling_convolution_periodization(input, N, filter, F, output, step);
-    }
+
+    if (mode == MODE_SMOOTH && N < 2)
+        mode = MODE_CONSTANT_EDGE;
 
     /* Other signal extension modes */
     /* 0 - F-1 : sliding in filter */
