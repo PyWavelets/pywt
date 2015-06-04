@@ -568,43 +568,34 @@ int @type@_upsampling_convolution_valid_sf_periodization(const @type@* input,
  * case to separate function this looks much clearer now.
  */
 
-int @type@_upsampling_convolution_valid_sf(const @type@* input,
-                                           const index_t N, const @type@*
-                                           filter, const index_t F, @type@*
-                                           output, const index_t O, MODE
-                                           mode)
+int @type@_upsampling_convolution_valid_sf(const @type@* input, const index_t N,
+                                           const @type@* filter, const index_t F,
+                                           @type@* output, const index_t O,
+                                           MODE mode)
 {
-
-    @type@ *ptr_out = output;
-    @type@ *filter_even, *filter_odd;
-    @type@ *ptr_base;
-    @type@ sum_even, sum_odd;
-
-    index_t i, j;
-    index_t F_2 = F/2;
-
     if(mode == MODE_PERIODIZATION) /* Special case */
         return @type@_upsampling_convolution_valid_sf_periodization(input, N,
-                                                                     filter, F,
-                                                                     output, O);
+                                                                    filter, F,
+                                                                    output, O);
 
-    if((F%2) || (N < F_2)) /* Filter must have even length. */
+    if((F%2) || (N < F/2)) /* Filter must have even length. */
         return -1;
 
     /* Allocate memory for even and odd elements of the filter */
-    filter_even = wtmalloc(F_2 * sizeof(@type@));
-    filter_odd = wtmalloc(F_2 * sizeof(@type@));
+    @type@ * filter_even = wtmalloc(F/2 * sizeof(@type@));
+    @type@ * filter_odd = wtmalloc(F/2 * sizeof(@type@));
 
     if(filter_odd == NULL || filter_odd == NULL){
-        if(filter_odd == NULL) wtfree(filter_odd);
-        if(filter_even == NULL) wtfree(filter_even);
+        // NULL pointers may be safely free'd (no-op)
+        wtfree(filter_odd);
+        wtfree(filter_even);
         return -1;
     }
 
     /* split filter to even and odd values */
-    for(i = 0; i < F_2; ++i){
-        filter_even[i] = filter[i << 1];
-        filter_odd[i] = filter[(i << 1) + 1];
+    for(index_t i = 0; i < F/2; ++i){
+        filter_even[i] = filter[i * 2];
+        filter_odd[i] = filter[i * 2 + 1];
     }
 
     /*
@@ -614,20 +605,17 @@ int @type@_upsampling_convolution_valid_sf(const @type@* input,
      * This part is simple, no extra hacks, just two convolutions in one loop
      */
 
-    ptr_base = (@type@*)input + F_2 - 1;
-    i = 0;
+    for(index_t o = 0, i = F/2 - 1; i < N; ++i, o += 2){
+        @type@ sum_even = filter_even[0] * input[i];
+        @type@ sum_odd  = filter_odd[0] * input[i];
 
-    for(; i < N-(F_2-1); ++i){    /* sliding over signal from left to right */
-        sum_even = filter_even[0] * ptr_base[i];
-        sum_odd  = filter_odd[0] * ptr_base[i];
-
-        for(j = 1; j < F_2; ++j){
-            sum_even += filter_even[j] * ptr_base[i-j];
-            sum_odd += filter_odd[j] * ptr_base[i-j];
+        for(index_t j = 1; j < F/2; ++j){
+            sum_even += filter_even[j] * input[i-j];
+            sum_odd += filter_odd[j] * input[i-j];
         }
 
-        *(ptr_out++) += sum_even;
-        *(ptr_out++) += sum_odd;
+        output[o] += sum_even;
+        output[o+1] += sum_odd;
     }
 
     wtfree(filter_even);
