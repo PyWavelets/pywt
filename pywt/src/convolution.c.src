@@ -277,9 +277,9 @@ int @type@_downsampling_convolution(const @type@ * const restrict input, const i
  * performs "normal" convolution of "upsampled" input coeffs array with filter
  */
 
-int @type@_upsampling_convolution_full(const @type@* input, const index_t N,
-                                       const @type@* filter, const index_t F,
-                                       @type@* output, const index_t O)
+int @type@_upsampling_convolution_full(const @type@ * const restrict input, const index_t N,
+                                       const @type@ * const restrict filter, const index_t F,
+                                       @type@ * const restrict output, const index_t O)
 {
     if(F<2)
         return -1;
