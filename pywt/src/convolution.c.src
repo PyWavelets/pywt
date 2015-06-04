@@ -581,45 +581,23 @@ int @type@_upsampling_convolution_valid_sf(const @type@ * const restrict input, 
     if((F%2) || (N < F/2)) /* Filter must have even length. */
         return -1;
 
-    /* Allocate memory for even and odd elements of the filter */
-    @type@ * filter_even = wtmalloc(F/2 * sizeof(@type@));
-    @type@ * filter_odd = wtmalloc(F/2 * sizeof(@type@));
-
-    if(filter_odd == NULL || filter_odd == NULL){
-        // NULL pointers may be safely free'd (no-op)
-        wtfree(filter_odd);
-        wtfree(filter_even);
-        return -1;
-    }
-
-    /* split filter to even and odd values */
-    for(index_t i = 0; i < F/2; ++i){
-        filter_even[i] = filter[i * 2];
-        filter_odd[i] = filter[i * 2 + 1];
-    }
-
-    /*
-     * Perform _valid_ convolution (only when all filter_even and filter_odd elements
+    /* Perform _valid_ convolution (only when all filter_even and filter_odd elements
      * are in range of input data).
      *
      * This part is simple, no extra hacks, just two convolutions in one loop
      */
 
     for(index_t o = 0, i = F/2 - 1; i < N; ++i, o += 2){
-        @type@ sum_even = filter_even[0] * input[i];
-        @type@ sum_odd  = filter_odd[0] * input[i];
+        @type@ sum_even = 0;
+        @type@ sum_odd = 0;
 
-        for(index_t j = 1; j < F/2; ++j){
-            sum_even += filter_even[j] * input[i-j];
-            sum_odd += filter_odd[j] * input[i-j];
+        for(index_t j = 0; j < F/2; ++j){
+            sum_even += filter[j*2] * input[i-j];
+            sum_odd += filter[j*2+1] * input[i-j];
         }
-
         output[o] += sum_even;
         output[o+1] += sum_odd;
     }
-
-    wtfree(filter_even);
-    wtfree(filter_odd);
     return 0;
 }
 
