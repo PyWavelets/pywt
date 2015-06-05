@@ -284,7 +284,10 @@ int @type@_upsampling_convolution_full(const @type@ * const restrict input, cons
     if(F<2)
         return -1;
 
-    for(index_t i = N-1, o = (N-1) * 2; i >= 0; --i, o -= 2){
+    for(index_t i = 0, o = 0; i < N + F/2; ++i, o += 2){
+        @type@ sum_even = 0;
+        @type@ sum_odd = 0;
+
         /*
          * sliding in filter from the right (end of input)
          * i0 0  i1 0  i2 0
@@ -292,8 +295,13 @@ int @type@_upsampling_convolution_full(const @type@ * const restrict input, cons
          *             f1 f2 -> o2
          *          f1 f2 f3 -> o3
          */
-        for(index_t j = 0; j < F; ++j)
-            output[o + j] += input[i] * filter[j];
+        for(index_t j = (i >= N) ? i-(N-1) : 0; j < F/2 && j <= i; ++j){
+            sum_even += filter[j*2] * input[i-j];
+            sum_odd += filter[j*2+1] * input[i-j];
+        }
+
+        output[o] += sum_even;
+        output[o+1] += sum_odd;
     }
     return 0;
 }
@@ -530,7 +538,6 @@ int @type@_upsampling_convolution_valid_sf(const @type@ * const restrict input, 
      *
      * This part is simple, no extra hacks, just two convolutions in one loop
      */
-
     for(index_t o = 0, i = F/2 - 1; i < N; ++i, o += 2){
         @type@ sum_even = 0;
         @type@ sum_odd = 0;
