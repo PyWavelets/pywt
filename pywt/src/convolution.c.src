@@ -331,59 +331,55 @@ int @type@_upsampling_convolution_valid_sf_periodization(const @type@* input, co
      * This can be only valid for PERIODIZATION_MODE
      */
     if(N < F/2) {
-        /* Input data for periodization mode has to be periodically extended */
+        @type@ * const restrict ptr_out = wtcalloc(idwt_buffer_length(N, F, MODE_PERIODIZATION),
+                                                   sizeof(@type@));
+        const index_t start = F/4;
+        index_t i = start, o = 0;
 
-        /* New length for temporary input */
-        const index_t N_p = F/2 - 1 + N;
-
-        /* periodization_buf will hold periodically copied input coeffs values */
-        @type@ * periodization_buf = wtcalloc(N_p, sizeof(*periodization_buf));
-
-        if(periodization_buf == NULL)
-            return -1;
-
-        /* Copy input data to its place in the periodization_buf
-         * -> [0 0 0 | i1 i2 i3 | i1 i2 ...] */
-        const index_t k = (F/2-1)/2;
-        for(index_t i=0, o=k; o < N_p; ++i, ++o)
-            periodization_buf[o] = input[i%N];
-
-        /* copy cyclically () to left    [... i2 i3 i1 i2 i3 i1 i2 i3] */
-        for(index_t i=k-1; i >= 0; --i)
-            periodization_buf[i] = periodization_buf[N+i];
-
-        /* Now perform the valid convolution */
-        if((F/2)%2){
-            @type@_upsampling_convolution_valid_sf(periodization_buf, N_p, filter, F, output, O, MODE_ZEROPAD);
-
-        /* The F_2%2==0 case needs special result fix (oh my, another one..) */
-        } else {
-
-            /*
-             * Cheap result fix for short inputs
-             * Memory allocation for temporary output is done.
-             * Computed temporary result is copied to output*
-             */
-            @type@ * ptr_out = wtcalloc(idwt_buffer_length(N, F, MODE_PERIODIZATION),
-                                        sizeof(@type@));
-            if(ptr_out == NULL){
-                wtfree(periodization_buf);
-                return -1;
+        for (; i < N; ++i, o += 2){
+            index_t j = 0;
+            for(; j <= i; ++j){
+                ptr_out[o] += filter[2*j] * input[i-j];
+                ptr_out[o+1] += filter[2*j+1] * input[i-j];
             }
-
-            /* Convolve here as for (F_2%2) branch above */
-            @type@_upsampling_convolution_valid_sf(periodization_buf, N_p, filter, F, ptr_out, O, MODE_ZEROPAD);
-
-            /* rewrite result to output */
-            for(index_t i=1; i < 2*N; ++i){
-                output[i] += ptr_out[i-1];
+            while (j < F/2){
+                for(index_t k = 0; k < N && j < F/2; ++k, ++j){
+                    ptr_out[o] += filter[2*j] * input[N-1-k];
+                    ptr_out[o+1] += filter[2*j+1] * input[N-1-k];
+                }
             }
-            /* and the first element */
-            output[0] += ptr_out[2*N-1];
-            wtfree(ptr_out);
-            /* and voila!, ugh */
         }
 
+        for (; i < N + start; ++i, o += 2){
+            index_t j = 0;
+            while(i-j >= N){
+                for (index_t k = 0; k < N && i-j >= N; ++k, ++j){
+                    ptr_out[o] += filter[2*(i-N-j)] * input[k];
+                    ptr_out[o+1] += filter[2*(i-N-j)+1] * input[k];
+                }
+            }
+            for (; j <= i && j < F/2; ++j){
+                ptr_out[o] += filter[2*j] * input[i-j];
+                ptr_out[o+1] += filter[2*j+1] * input[i-j];
+            }
+            while (j < F / 2){
+                for (index_t k = 0; k < N && j < F/2; ++k, ++j){
+                    ptr_out[o] += filter[2*j] * input[N-1-k];
+                    ptr_out[o+1] += filter[2*j+1] * input[N-1-k];
+                }
+            }
+        }
+
+        if ((F/2)%2 == 0){
+            // Shift everything one element right
+            for(index_t i = 1; i < 2*N; ++i)
+                output[i] += ptr_out[i-1];
+            output[0] += ptr_out[2*N-1];
+        } else {
+            for (index_t i = 0; i < 2*N; ++i)
+                output[i] += ptr_out[i];
+        }
+        wtfree(ptr_out);
     } else {
         /* Otherwise (N >= F_2) */
         @type@ * ptr_out = output;
