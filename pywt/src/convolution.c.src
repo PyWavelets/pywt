@@ -331,55 +331,68 @@ int @type@_upsampling_convolution_valid_sf_periodization(const @type@* input, co
      * This can be only valid for PERIODIZATION_MODE
      */
     if(N < F/2) {
-        @type@ * const restrict ptr_out = wtcalloc(idwt_buffer_length(N, F, MODE_PERIODIZATION),
-                                                   sizeof(@type@));
-        const index_t start = F/4;
-        index_t i = start, o = 0;
+        index_t const start = F/4;
+        index_t i = start;
+        index_t const end = ((F/2)%2) ? N + F/4 : N + F/4 - 1;
+        index_t o = ((F/2)%2) ? 0 : 1;
+
+        if ((F/2)%2 == 0){
+            // Shift everything one element right
+
+            // i = N-1; even element goes to output[O-1], odd element goes to output[o]
+            index_t j = 0;
+            while(N+start-1-j >= N){
+                for (index_t k = 0; k < N && N+start-1-j >= N; ++k, ++j){
+                    output[2*N-1] += filter[2*(N+start-1-N-j)] * input[k];
+                    output[0] += filter[2*(N+start-1-N-j)+1] * input[k];
+                }
+            }
+            for (; j <= N+start-1 && j < F/2; ++j){
+                output[2*N-1] += filter[2*j] * input[N+start-1-j];
+                output[0] += filter[2*j+1] * input[N+start-1-j];
+            }
+            while (j < F / 2){
+                for (index_t k = 0; k < N && j < F/2; ++k, ++j){
+                    output[2*N-1] += filter[2*j] * input[N-1-k];
+                    output[0] += filter[2*j+1] * input[N-1-k];
+                }
+            }
+        }
 
         for (; i < N; ++i, o += 2){
             index_t j = 0;
             for(; j <= i; ++j){
-                ptr_out[o] += filter[2*j] * input[i-j];
-                ptr_out[o+1] += filter[2*j+1] * input[i-j];
+                output[o] += filter[2*j] * input[i-j];
+                output[o+1] += filter[2*j+1] * input[i-j];
             }
             while (j < F/2){
                 for(index_t k = 0; k < N && j < F/2; ++k, ++j){
-                    ptr_out[o] += filter[2*j] * input[N-1-k];
-                    ptr_out[o+1] += filter[2*j+1] * input[N-1-k];
+                    output[o] += filter[2*j] * input[N-1-k];
+                    output[o+1] += filter[2*j+1] * input[N-1-k];
                 }
             }
         }
 
-        for (; i < N + start; ++i, o += 2){
+        for (; i < end; ++i, o += 2){
             index_t j = 0;
             while(i-j >= N){
                 for (index_t k = 0; k < N && i-j >= N; ++k, ++j){
-                    ptr_out[o] += filter[2*(i-N-j)] * input[k];
-                    ptr_out[o+1] += filter[2*(i-N-j)+1] * input[k];
+                    output[o] += filter[2*(i-N-j)] * input[k];
+                    output[o+1] += filter[2*(i-N-j)+1] * input[k];
                 }
             }
             for (; j <= i && j < F/2; ++j){
-                ptr_out[o] += filter[2*j] * input[i-j];
-                ptr_out[o+1] += filter[2*j+1] * input[i-j];
+                output[o] += filter[2*j] * input[i-j];
+                output[o+1] += filter[2*j+1] * input[i-j];
             }
             while (j < F / 2){
                 for (index_t k = 0; k < N && j < F/2; ++k, ++j){
-                    ptr_out[o] += filter[2*j] * input[N-1-k];
-                    ptr_out[o+1] += filter[2*j+1] * input[N-1-k];
+                    output[o] += filter[2*j] * input[N-1-k];
+                    output[o+1] += filter[2*j+1] * input[N-1-k];
                 }
             }
         }
 
-        if ((F/2)%2 == 0){
-            // Shift everything one element right
-            for(index_t i = 1; i < 2*N; ++i)
-                output[i] += ptr_out[i-1];
-            output[0] += ptr_out[2*N-1];
-        } else {
-            for (index_t i = 0; i < 2*N; ++i)
-                output[i] += ptr_out[i];
-        }
-        wtfree(ptr_out);
     } else {
         /* Otherwise (N >= F_2) */
         @type@ * ptr_out = output;
