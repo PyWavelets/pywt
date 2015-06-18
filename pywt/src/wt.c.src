@@ -9,9 +9,9 @@
  * #type = double, float#
  */
 
-int @type@_dec_a(@type@ input[], index_t input_len,
+int @type@_dec_a(@type@ input[], size_t input_len,
                  Wavelet* wavelet,
-                 @type@ output[], index_t output_len,
+                 @type@ output[], size_t output_len,
                  MODE mode){
 
     /* check output length */
@@ -28,9 +28,9 @@ int @type@_dec_a(@type@ input[], index_t input_len,
 
 /* Decomposition of input with highpass filter */
 
-int @type@_dec_d(@type@ input[], index_t input_len,
+int @type@_dec_d(@type@ input[], size_t input_len,
                  Wavelet* wavelet,
-                 @type@ output[], index_t output_len,
+                 @type@ output[], size_t output_len,
                  MODE mode){
 
     /* check output length */
@@ -46,9 +46,9 @@ int @type@_dec_d(@type@ input[], index_t input_len,
 
 /* Direct reconstruction with lowpass reconstruction filter */
 
-int @type@_rec_a(@type@ coeffs_a[], index_t coeffs_len,
+int @type@_rec_a(@type@ coeffs_a[], size_t coeffs_len,
                  Wavelet* wavelet,
-                 @type@ output[], index_t output_len){
+                 @type@ output[], size_t output_len){
 
     /* check output length */
     if(output_len != reconstruction_buffer_length(coeffs_len, wavelet->rec_len))
@@ -63,9 +63,9 @@ int @type@_rec_a(@type@ coeffs_a[], index_t coeffs_len,
 
 /* Direct reconstruction with highpass reconstruction filter */
 
-int @type@_rec_d(@type@ coeffs_d[], index_t coeffs_len,
+int @type@_rec_d(@type@ coeffs_d[], size_t coeffs_len,
                  Wavelet* wavelet,
-                 @type@ output[], index_t output_len){
+                 @type@ output[], size_t output_len){
 
     /* check for output length */
     if(output_len != reconstruction_buffer_length(coeffs_len, wavelet->rec_len))
@@ -84,13 +84,13 @@ int @type@_rec_d(@type@ coeffs_d[], index_t coeffs_len,
  * is useful in multilevel decompositions and reconstructions of odd-length
  * signals).  Requires zero-filled output buffer.
  */
-int @type@_idwt(@type@ coeffs_a[], index_t coeffs_a_len,
-                @type@ coeffs_d[], index_t coeffs_d_len,
+int @type@_idwt(@type@ coeffs_a[], size_t coeffs_a_len,
+                @type@ coeffs_d[], size_t coeffs_d_len,
                 Wavelet* wavelet,
-                @type@ output[], index_t output_len,
+                @type@ output[], size_t output_len,
                 MODE mode, int fix_size_diff){
 
-    index_t input_len;
+    size_t input_len;
 
     /*
      * If one of coeffs array is NULL then the reconstruction will be performed

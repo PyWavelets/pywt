@@ -27,10 +27,10 @@ typedef struct {
         float* dec_lo_float;
         float* rec_hi_float;
         float* rec_lo_float;
-    
-    index_t dec_len;   /* length of decomposition filter */
-    index_t rec_len;   /* length of reconstruction filter */
-    
+
+    size_t dec_len;   /* length of decomposition filter */
+    size_t rec_len;   /* length of reconstruction filter */
+
     /* Wavelet properties */
     int vanishing_moments_psi;
     int vanishing_moments_phi;
@@ -61,13 +61,13 @@ typedef struct {
  *
  * _builtin field is set to 1
  */
-Wavelet* wavelet(char name, int order);
+Wavelet* wavelet(char name, unsigned int order);
 
 /* 
  * Allocate blank Wavelet with zero-filled filters of given length
  * _builtin field is set to 0
  */
-Wavelet* blank_wavelet(index_t filters_length);
+Wavelet* blank_wavelet(size_t filters_length);
 
 /* Deep copy Wavelet */
 Wavelet* copy_wavelet(Wavelet* base);

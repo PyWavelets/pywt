@@ -14,7 +14,7 @@ void *wtcalloc(size_t len, size_t size){
 
 /* buffers and max levels params */
 
-index_t dwt_buffer_length(index_t input_len, index_t filter_len, MODE mode){
+size_t dwt_buffer_length(size_t input_len, size_t filter_len, MODE mode){
     if(input_len < 1 || filter_len < 1)
         return 0;
 
@@ -26,14 +26,14 @@ index_t dwt_buffer_length(index_t input_len, index_t filter_len, MODE mode){
     }
 }
 
-index_t reconstruction_buffer_length(index_t coeffs_len, index_t filter_len){
+size_t reconstruction_buffer_length(size_t coeffs_len, size_t filter_len){
     if(coeffs_len < 1 || filter_len < 1)
         return 0;
 
     return 2*coeffs_len+filter_len-2;
 }
 
-index_t idwt_buffer_length(index_t coeffs_len, index_t filter_len, MODE mode){
+size_t idwt_buffer_length(size_t coeffs_len, size_t filter_len, MODE mode){
     if(coeffs_len < 0 || filter_len < 0)
         return 0;
 
@@ -45,23 +45,22 @@ index_t idwt_buffer_length(index_t coeffs_len, index_t filter_len, MODE mode){
     }
 }
 
-index_t swt_buffer_length(index_t input_len){
+size_t swt_buffer_length(size_t input_len){
     if(input_len < 0)
         return 0;
-
     return input_len;
 }
 
-int dwt_max_level(index_t input_len, index_t filter_len){
-    int i;
+int dwt_max_level(size_t input_len, size_t filter_len){
     if(input_len < 1 || filter_len < 2)
         return 0;
 
+    int i;
     i = (int) floor(log((double)input_len/(double)(filter_len-1)) /log(2.0));
     return (i > 0) ? i : 0;
 }
 
-int swt_max_level(index_t input_len){
+int swt_max_level(size_t input_len){
     int i, j;
     i = (int) floor(log((double) input_len)/log(2.0));
 

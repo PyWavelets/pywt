@@ -5,10 +5,9 @@
 #include "wavelets.h"
 #include "wavelets_coeffs.h"
 
-Wavelet* wavelet(char name, int order)
+Wavelet* wavelet(char name, unsigned int order)
 {
     Wavelet *w, *wtmp;
-    index_t i;
 
     /* Haar wavelet */
     if(name == 'h' || name == 'H'){
@@ -32,7 +31,7 @@ Wavelet* wavelet(char name, int order)
         w->dec_len = wtmp->rec_len;
         w->rec_len = wtmp->dec_len;
 
-        for(i = 0; i < w->rec_len; ++i){
+        for(size_t i = 0; i < w->rec_len; ++i){
             /**begin repeat
              * #type = double, float#
              */
@@ -41,7 +40,7 @@ Wavelet* wavelet(char name, int order)
             /**end repeat**/
         }
 
-        for(i = 0; i < w->dec_len; ++i){
+        for(size_t i = 0; i < w->dec_len; ++i){
             /**begin repeat
              * #type = double, float#
              */
@@ -330,7 +329,7 @@ Wavelet* wavelet(char name, int order)
 }
 
 
-Wavelet* blank_wavelet(index_t filters_length)
+Wavelet* blank_wavelet(size_t filters_length)
 {
     Wavelet* w;
 
@@ -384,7 +383,6 @@ Wavelet* blank_wavelet(index_t filters_length)
 Wavelet* copy_wavelet(Wavelet* base)
 {
     Wavelet* w;
-    index_t i;
 
     if(base == NULL) return NULL;
 
@@ -412,12 +410,13 @@ Wavelet* copy_wavelet(Wavelet* base)
             return NULL;
         }
 
-        for(i=0; i< w->dec_len; ++i){
+        // FIXME: memcpy
+        for(size_t i=0; i< w->dec_len; ++i){
             w->dec_lo_@type@[i] = base->dec_lo_@type@[i];
             w->dec_hi_@type@[i] = base->dec_hi_@type@[i];
         }
 
-        for(i=0; i< w->rec_len; ++i){
+        for(size_t i=0; i< w->rec_len; ++i){
             w->rec_lo_@type@[i] = base->rec_lo_@type@[i];
             w->rec_hi_@type@[i] = base->rec_hi_@type@[i];
         }
