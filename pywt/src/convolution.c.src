@@ -319,9 +319,9 @@ int @type@_upsampling_convolution_full(const @type@ * const restrict input, cons
  * The input data has to be periodically extended for this mode.
  */
 
-int @type@_upsampling_convolution_valid_sf_periodization(const @type@* input, const index_t N,
-                                                         const @type@* filter, const index_t F,
-                                                         @type@* output, const index_t O)
+int @type@_upsampling_convolution_valid_sf_periodization(const @type@ * const restrict input, const index_t N,
+                                                         const @type@ * const restrict filter, const index_t F,
+                                                         @type@ * const restrict output, const index_t O)
 {
     if(F%2) return -3; /* Filter must have even-length. */
 
