@@ -332,7 +332,7 @@ int @type@_upsampling_convolution_valid_sf_periodization(const @type@* input, co
      */
     index_t const start = F/4;
     index_t i = start;
-    index_t const end = ((F/2)%2) ? N + F/4 : N + F/4 - 1;
+    index_t const end = N + start - (((F/2)%2) ? 0 : 1);
     index_t o = 0;
 
     if ((F/2)%2 == 0){
@@ -340,10 +340,10 @@ int @type@_upsampling_convolution_valid_sf_periodization(const @type@* input, co
 
         // i = N-1; even element goes to output[O-1], odd element goes to output[o]
         index_t j = 0;
-        while(N+start-1-j >= N){
-            for (index_t k = 0; k < N && N+start-1-j >= N; ++k, ++j){
-                output[2*N-1] += filter[2*(N+start-1-N-j)] * input[k];
-                output[0] += filter[2*(N+start-1-N-j)+1] * input[k];
+        while(start-1-j >= 0){
+            for (index_t k = 0; k < N && start-1-j >= 0; ++k, ++j){
+                output[2*N-1] += filter[2*(start-1-j)] * input[k];
+                output[0] += filter[2*(start-1-j)+1] * input[k];
             }
         }
         for (; j <= N+start-1 && j < F/2; ++j){
