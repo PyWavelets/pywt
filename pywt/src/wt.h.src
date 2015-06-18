@@ -6,9 +6,6 @@
 #ifndef _WT_H_
 #define _WT_H_
 
-#include <memory.h>
-#include <math.h>
-
 #include "common.h"
 #include "convolution.h"
 #include "wavelets.h"

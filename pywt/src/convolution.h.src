@@ -4,7 +4,6 @@
 #ifndef _CONVOLUTION_H_
 #define _CONVOLUTION_H_
 
-#include <math.h>
 #include "common.h"
 
 /**begin repeat
