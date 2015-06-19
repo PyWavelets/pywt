@@ -38,9 +38,9 @@ typedef struct {
 
     SYMMETRY symmetry;
 
-    int orthogonal:1;
-    int biorthogonal:1;
-    int compact_support:1;
+    unsigned int orthogonal:1;
+    unsigned int biorthogonal:1;
+    unsigned int compact_support:1;
 
     /*
      * Set if filters arrays shouldn't be deallocated by
