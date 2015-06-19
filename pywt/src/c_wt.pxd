@@ -23,14 +23,14 @@ cdef extern from "common.h":
     # buffers lengths
     cdef size_t dwt_buffer_length(size_t input_len, size_t filter_len, MODE mode)
     cdef size_t upsampling_buffer_length(size_t coeffs_len, size_t filter_len,
-                                          MODE mode)
+                                         MODE mode)
+    cdef size_t reconstruction_buffer_length(size_t coeffs_len, size_t filter_len)
     cdef size_t idwt_buffer_length(size_t coeffs_len, size_t filter_len, MODE mode)
     cdef size_t swt_buffer_length(size_t coeffs_len)
-    cdef size_t reconstruction_buffer_length(size_t coeffs_len, size_t filter_len)
 
     # max dec levels
-    cdef int dwt_max_level(size_t input_len, size_t filter_len)
-    cdef int swt_max_level(size_t input_len)
+    cdef unsigned char dwt_max_level(size_t input_len, size_t filter_len)
+    cdef unsigned char swt_max_level(size_t input_len)
 
 
 cdef extern from "wavelets.h":

@@ -7,9 +7,7 @@
 #define _COMMON_H_
 
 #include <stdlib.h>
-#include <math.h>
 #include <memory.h>
-
 
 /* ##### Typedefs ##### */
 
@@ -38,6 +36,10 @@
     #define wtmalloc(size)      malloc(size)
     #define wtfree(ptr)         free(ptr)
     #define wtcalloc(len, size) calloc(len, size)
+#endif
+
+#ifdef _MSC_VER
+    #include <intrin.h>
 #endif
 
 
@@ -79,10 +81,10 @@ size_t idwt_buffer_length(size_t coeffs_len, size_t filter_len, MODE mode);
 size_t swt_buffer_length(size_t input_len);
 
 /* Maximum useful level of DWT decomposition. */
-int dwt_max_level(size_t input_len, size_t filter_len);
+unsigned char dwt_max_level(size_t input_len, size_t filter_len);
 
 /* Maximum useful level of SWT decomposition. */
-int swt_max_level(size_t input_len);
+unsigned char swt_max_level(size_t input_len);
 
 
 #endif
