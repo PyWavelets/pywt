@@ -1,11 +1,13 @@
 /* Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/> */
 /* See COPYING for license details. */
 
-#include "convolution.h"
+#include "templating.h"
 
-/**begin repeat
- * #type = double, float#
- */
+#ifndef TYPE
+#error TYPE must be defined here.
+#else
+
+#include "convolution.h"
 
 #if defined _MSC_VER
 #define restrict __restrict
@@ -31,15 +33,15 @@
  * See 'common.h' for descriptions of the extension modes.
  */
 
-int @type@_downsampling_convolution_periodization(const @type@ * const restrict input, const size_t N,
-                                                  const @type@ * const restrict filter, const size_t F,
-                                                  @type@ * const restrict output, const size_t step)
+int CAT(TYPE, _downsampling_convolution_periodization)(const TYPE * const restrict input, const size_t N,
+                                                       const TYPE * const restrict filter, const size_t F,
+                                                       TYPE * const restrict output, const size_t step)
 {
     size_t i = F/2, o = 0;
     const size_t padding = (step - (N % step)) % step;
 
     for (; i < F && i < N; i += step, ++o) {
-        @type@ sum = 0;
+        TYPE sum = 0;
         size_t j;
         for (j = 0; j <= i; ++j)
             sum += filter[j] * input[i-j];
@@ -54,7 +56,7 @@ int @type@_downsampling_convolution_periodization(const @type@ * const restrict 
     }
 
     for(; i < N; i+=step, ++o){
-        @type@ sum = 0;
+        TYPE sum = 0;
         size_t j;
         for(j = 0; j < F; ++j)
             sum += input[i-j]*filter[j];
@@ -62,7 +64,7 @@ int @type@_downsampling_convolution_periodization(const @type@ * const restrict 
     }
 
     for (; i < F && i < N + F/2; i += step, ++o) {
-        @type@ sum = 0;
+        TYPE sum = 0;
         size_t j = 0;
 
         while (i-j >= N){
@@ -85,7 +87,7 @@ int @type@_downsampling_convolution_periodization(const @type@ * const restrict 
     }
 
     for(; i < N + F/2; i += step, ++o){
-        @type@ sum = 0;
+        TYPE sum = 0;
         size_t j = 0;
         while (i-j >= N){
             size_t k;
@@ -102,10 +104,10 @@ int @type@_downsampling_convolution_periodization(const @type@ * const restrict 
 }
 
 
-int @type@_downsampling_convolution(const @type@ * const restrict input, const size_t N,
-                                    const @type@ * const restrict filter, const size_t F,
-                                    @type@ * const restrict output,
-                                    const size_t step, MODE mode)
+int CAT(TYPE, _downsampling_convolution)(const TYPE * const restrict input, const size_t N,
+                                         const TYPE * const restrict filter, const size_t F,
+                                         TYPE * const restrict output,
+                                         const size_t step, MODE mode)
 {
     /* This convolution performs efficient downsampling by computing every
      * step'th element of normal convolution (currently tested only for step=1
@@ -115,13 +117,13 @@ int @type@_downsampling_convolution(const @type@ * const restrict input, const s
     size_t i = step - 1, o = 0;
 
     if(mode == MODE_PERIODIZATION)
-        return @type@_downsampling_convolution_periodization(input, N, filter, F, output, step);
+        return CAT(TYPE, _downsampling_convolution_periodization)(input, N, filter, F, output, step);
 
     if (mode == MODE_SMOOTH && N < 2)
         mode = MODE_CONSTANT_EDGE;
 
     for(; i < F && i < N; i+=step, ++o){
-        @type@ sum = 0;
+        TYPE sum = 0;
         size_t j;
         for(j = 0; j <= i; ++j)
             sum += filter[j]*input[i-j];
@@ -161,7 +163,7 @@ int @type@_downsampling_convolution(const @type@ * const restrict input, const s
     }
 
     for(; i < N; i+=step, ++o){
-        @type@ sum = 0;
+        TYPE sum = 0;
         size_t j;
         for(j = 0; j < F; ++j)
             sum += input[i-j]*filter[j];
@@ -169,7 +171,7 @@ int @type@_downsampling_convolution(const @type@ * const restrict input, const s
     }
 
     for(; i < F; i+=step, ++o){
-        @type@ sum = 0;
+        TYPE sum = 0;
         size_t j = 0;
 
         switch(mode) {
@@ -247,7 +249,7 @@ int @type@_downsampling_convolution(const @type@ * const restrict input, const s
     }
 
     for(; i < N+F-1; i += step, ++o){
-        @type@ sum = 0;
+        TYPE sum = 0;
         size_t j = 0;
         switch(mode) {
         case MODE_SYMMETRIC:
@@ -289,9 +291,9 @@ int @type@_downsampling_convolution(const @type@ * const restrict input, const s
     return 0;
 }
 
-int @type@_upsampling_convolution_full(const @type@ * const restrict input, const size_t N,
-                                       const @type@ * const restrict filter, const size_t F,
-                                       @type@ * const restrict output, const size_t O)
+int CAT(TYPE, _upsampling_convolution_full)(const TYPE * const restrict input, const size_t N,
+                                            const TYPE * const restrict filter, const size_t F,
+                                            TYPE * const restrict output, const size_t O)
 {
     /* Performs a zero-padded convolution, using each input element for two
      * consecutive filter elements. This simulates an upsampled input.
@@ -344,9 +346,9 @@ int @type@_upsampling_convolution_full(const @type@ * const restrict input, cons
 }
 
 
-int @type@_upsampling_convolution_valid_sf_periodization(const @type@ * const restrict input, const size_t N,
-                                                         const @type@ * const restrict filter, const size_t F,
-                                                         @type@ * const restrict output, const size_t O)
+int CAT(TYPE, _upsampling_convolution_valid_sf_periodization)(const TYPE * const restrict input, const size_t N,
+                                                              const TYPE * const restrict filter, const size_t F,
+                                                              TYPE * const restrict output, const size_t O)
 {
     // TODO? Allow for non-2 step
 
@@ -456,15 +458,15 @@ int @type@_upsampling_convolution_valid_sf_periodization(const @type@ * const re
  * case to separate function this looks much clearer now.
  */
 
-int @type@_upsampling_convolution_valid_sf(const @type@ * const restrict input, const size_t N,
-                                           const @type@ * const restrict filter, const size_t F,
-                                           @type@ * const restrict output, const size_t O,
-                                           MODE mode)
+int CAT(TYPE, _upsampling_convolution_valid_sf)(const TYPE * const restrict input, const size_t N,
+                                                const TYPE * const restrict filter, const size_t F,
+                                                TYPE * const restrict output, const size_t O,
+                                                MODE mode)
 {
     // TODO: Allow non-2 step?
 
     if(mode == MODE_PERIODIZATION)
-        return @type@_upsampling_convolution_valid_sf_periodization(input, N, filter, F, output, O);
+        return CAT(TYPE, _upsampling_convolution_valid_sf_periodization)(input, N, filter, F, output, O);
 
     if((F%2) || (N < F/2))
         return -1;
@@ -473,8 +475,8 @@ int @type@_upsampling_convolution_valid_sf(const @type@ * const restrict input, 
     {
         size_t o, i;
         for(o = 0, i = F/2 - 1; i < N; ++i, o += 2){
-            @type@ sum_even = 0;
-            @type@ sum_odd = 0;
+            TYPE sum_even = 0;
+            TYPE sum_odd = 0;
             size_t j;
             for(j = 0; j < F/2; ++j){
                 sum_even += filter[j*2] * input[i-j];
@@ -488,14 +490,13 @@ int @type@_upsampling_convolution_valid_sf(const @type@ * const restrict input, 
 }
 
 /* -> swt - todo */
-int @type@_upsampled_filter_convolution(const @type@* input, const size_t N,
-                                        const @type@* filter, const size_t F,
-                                        @type@* output,
-                                        const size_t step, MODE mode)
+int CAT(TYPE, _upsampled_filter_convolution)(const TYPE* input, const size_t N,
+                                             const TYPE* filter, const size_t F,
+                                             TYPE* output,
+                                             const size_t step, MODE mode)
 {
     return -1;
 }
 
-/**end repeat**/
-
 #undef restrict
+#endif /* TYPE */

@@ -25,7 +25,6 @@ pip-log.txt
 # Project working files
 _pywt.[ch]
 c_wt.pxd
-convolution.[ch]
 wavelets.[ch]
 wavelets_coeffs.h
 wt.[ch]
