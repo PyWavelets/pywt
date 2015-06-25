@@ -7,25 +7,30 @@
  * #type = double, float#
  */
 
+/* This file contains several functions for computing the convolution of a
+ * signal with a filter. The general scheme is:
+ *   output[o] = sum(filter[j] * input[i-j] for j = [0..F) and i = [0..N))
+ * where 'o', 'i' and 'j' may progress at different rates.
+ *
+ * Most of the code deals with different edge extension modes. Values are
+ * computed on-demand, in four steps:
+ * 1. Filter extends past signal on the left.
+ * 2. Filter completely contained within signal (no extension).
+ * 3. Filter extends past signal on both sides (only if F > N).
+ * 4. Filter extends past signal on the right.
+ *
+ * MODE_PERIODIZATION produces different output lengths to other modes, so is
+ * implemented as a separate function for each case.
+ *
+ * See 'common.h' for descriptions of the extension modes.
+ */
+
 int @type@_downsampling_convolution_periodization(const @type@ * const restrict input, const size_t N,
                                                   const @type@ * const restrict filter, const size_t F,
                                                   @type@ * const restrict output, const size_t step)
 {
-    /*
-    * Should it be an error to call this mode with signal lengths
-    * not divisible by the step? Not really periodic if padded.
-    *
-    * If it is exactly divisible, can it be replaced by one loop?
-    *   for (i=0; i < N; i += step){
-    *     @type@ sum = 0;
-    *     for (j=0; j < F; j++){
-    *       sum += filter[j] * input[(i-j+N) % N];
-    *     *(ptr_w++) = sum;
-    *   }
-    */
-
     size_t i = F/2, o = 0;
-    const size_t padding = N % 2; // Should be N%step for larger steps?
+    const size_t padding = N % 2; // FIXME: Should be N%step for larger steps?
 
     for (; i < F && i < N; i += step, ++o) {
         @type@ sum = 0;
@@ -41,8 +46,7 @@ int @type@_downsampling_convolution_periodization(const @type@ * const restrict 
         output[o] = sum;
     }
 
-    /* F - N-1 : filter in input range.  Most time is spent in this loop */
-    for(; i < N; i+=step, ++o){    /* input elements, */
+    for(; i < N; i+=step, ++o){
         @type@ sum = 0;
         for(size_t j = 0; j < F; ++j)
             sum += input[i-j]*filter[j];
@@ -70,7 +74,7 @@ int @type@_downsampling_convolution_periodization(const @type@ * const restrict 
         output[o] = sum;
     }
 
-    for(; i < N + F/2; i += step, ++o){   /* input elements */
+    for(; i < N + F/2; i += step, ++o){
         @type@ sum = 0;
         size_t j = 0;
         while (i-j >= N){
@@ -92,24 +96,9 @@ int @type@_downsampling_convolution(const @type@ * const restrict input, const s
                                     @type@ * const restrict output,
                                     const size_t step, MODE mode)
 {
-    /*
-     * This convolution performs efficient downsampling by computing every
+    /* This convolution performs efficient downsampling by computing every
      * step'th element of normal convolution (currently tested only for step=1
      * and step=2).
-     *
-     * It also implements several different strategies of dealing with border
-     * distortion problem (the problem of computing convolution for not
-     * existing elements of signal). To handle this the signal has to be
-     * "extended" on both sides by computing the missing values.
-     *
-     * General schema is as follows:
-     * 1. Handle extended on the left, convolve filter with samples computed for
-     *    time < 0
-     * 2. Do the normal decimated convolution of filter with signal samples
-     * 3. Handle case where filter extends beyond signal to both the left and
-     *    right (only applies if F > N)
-     * 4. Handle extended on the right, convolve filter with samples computed
-     *    for time > n-1
      */
 
     size_t i = step - 1, o = 0;
@@ -120,8 +109,6 @@ int @type@_downsampling_convolution(const @type@ * const restrict input, const s
     if (mode == MODE_SMOOTH && N < 2)
         mode = MODE_CONSTANT_EDGE;
 
-    /* Other signal extension modes */
-    /* 0 - F-1 : sliding in filter */
     for(; i < F && i < N; i+=step, ++o){
         @type@ sum = 0;
         size_t j;
@@ -157,11 +144,7 @@ int @type@_downsampling_convolution(const @type@ * const restrict input, const s
         output[o] = sum;
     }
 
-    /*
-     * F - N-1 : filter in input range - simple convolution
-     * Most time is spent in this loop.
-     */
-    for(; i < N; i+=step, ++o){  /* input elements, */
+    for(; i < N; i+=step, ++o){
         @type@ sum = 0;
 
         for(size_t j = 0; j < F; ++j)
@@ -175,8 +158,10 @@ int @type@_downsampling_convolution(const @type@ * const restrict input, const s
 
         switch(mode) {
         case MODE_SYMMETRIC:
-            /* TODO: add offset to j? Inherited, not sure what this means */
-            // Process elements beyond end in reverse (i.e. away from data)
+            // Included from original: TODO: j < F-_offset
+            /* Iterate over filter in reverse to process elements away from
+             * data. This gives a known first input element to process (N-1)
+             */
             while (i - j >= N){
                 for(size_t k = 0; k < N && i-j >= N; ++j, ++k)
                     sum += filter[i-N-j]*input[N-1-k];
@@ -235,14 +220,12 @@ int @type@_downsampling_convolution(const @type@ * const restrict input, const s
         output[o] = sum;
     }
 
-    /* N - N+F-1 : sliding out filter */
     for(; i < N+F-1; i += step, ++o){
         @type@ sum = 0;
         size_t j = 0;
         switch(mode) {
         case MODE_SYMMETRIC:
-            /* TODO: add offset to j? Inherited, not sure what this means */
-            // Process elements beyond end in reverse (i.e. away from data)
+            // Included from original: TODO: j < F-_offset
             while (i - j >= N){
                 for(size_t k = 0; k < N && i-j >= N; ++j, ++k)
                     sum += filter[i-N-j]*input[N-1-k];
@@ -275,42 +258,44 @@ int @type@_downsampling_convolution(const @type@ * const restrict input, const s
     return 0;
 }
 
-/*
- * Requires zero-filled output buffer output is larger than input
- * performs "normal" convolution of "upsampled" input coeffs array with filter
- */
-
 int @type@_upsampling_convolution_full(const @type@ * const restrict input, const size_t N,
                                        const @type@ * const restrict filter, const size_t F,
                                        @type@ * const restrict output, const size_t O)
 {
+    /* Performs a zero-padded convolution, using each input element for two
+     * consecutive filter elements. This simulates an upsampled input.
+     *
+     * In contrast to downsampling_convolution, this adds to the output. This
+     * allows multiple runs with different inputs and the same output to be used
+     * for idwt.
+     */
+
+    // FIXME? Return a valid result for i%2 != 0? Not for idwt, but could be useful.
+
+    // If check omitted, this function would be a no-op for F<2
     if(F<2)
         return -1;
 
     size_t i = 0, o = 0;
 
-    // Sliding filter in
     for(; i < N && i < F/2; ++i, o += 2)
         for(size_t j = 0; j <= i; ++j){
             output[o] += filter[j*2] * input[i-j];
             output[o+1] += filter[j*2+1] * input[i-j];
         }
 
-    // Equivalent to upsampling_convolution_valid_sf
     for(; i < N; ++i, o += 2)
         for(size_t j = 0; j < F/2; ++j){
             output[o] += filter[j*2] * input[i-j];
             output[o+1] += filter[j*2+1] * input[i-j];
         }
 
-    // Overlap at both ends, if N < F/2
     for(; i < F/2; ++i, o += 2)
         for(size_t j = i-(N-1); j <= i; ++j){
             output[o] += filter[j*2] * input[i-j];
             output[o+1] += filter[j*2+1] * input[i-j];
         }
 
-    // Sliding filter out
     for(; i < N+F/2; ++i, o += 2)
         for(size_t j = i-(N-1); j < F/2; ++j){
             output[o] += filter[j*2] * input[i-j];
@@ -319,36 +304,24 @@ int @type@_upsampling_convolution_full(const @type@ * const restrict input, cons
     return 0;
 }
 
-/*
- * performs IDWT for PERIODIZATION mode only
- * (refactored from the upsampling_convolution_valid_sf function)
- *
- * The upsampling is performed by splitting filters to even and odd elements
- * and performing 2 convolutions
- *
- * The input data has to be periodically extended for this mode.
- */
 
 int @type@_upsampling_convolution_valid_sf_periodization(const @type@ * const restrict input, const size_t N,
                                                          const @type@ * const restrict filter, const size_t F,
                                                          @type@ * const restrict output, const size_t O)
 {
+    // TODO? Allow for non-2 step
+
     if(F%2) return -3; /* Filter must have even-length. */
 
-    /*
-     * Handle special situation when input coeff data is shorter than half of
-     * the filter's length. The coeff array has to be extended periodically.
-     * This can be only valid for PERIODIZATION_MODE
-     */
     size_t const start = F/4;
     size_t i = start;
     size_t const end = N + start - (((F/2)%2) ? 0 : 1);
     size_t o = 0;
 
     if ((F/2)%2 == 0){
-        // Shift everything one element right
+        // Shift output one element right. This is necessary for perfect reconstruction.
 
-        // i = N-1; even element goes to output[O-1], odd element goes to output[o]
+        // i = N-1; even element goes to output[O-1], odd element goes to output[0]
         size_t j = 0;
         while(j <= start-1){
             for (size_t k = 0; k < N && j <= start-1; ++k, ++j){
@@ -442,19 +415,15 @@ int @type@_upsampling_convolution_valid_sf(const @type@ * const restrict input, 
                                            @type@ * const restrict output, const size_t O,
                                            MODE mode)
 {
-    if(mode == MODE_PERIODIZATION) /* Special case */
-        return @type@_upsampling_convolution_valid_sf_periodization(input, N,
-                                                                    filter, F,
-                                                                    output, O);
+    // TODO: Allow non-2 step?
 
-    if((F%2) || (N < F/2)) /* Filter must have even length. */
+    if(mode == MODE_PERIODIZATION)
+        return @type@_upsampling_convolution_valid_sf_periodization(input, N, filter, F, output, O);
+
+    if((F%2) || (N < F/2))
         return -1;
 
-    /* Perform _valid_ convolution (only when all filter_even and filter_odd elements
-     * are in range of input data).
-     *
-     * This part is simple, no extra hacks, just two convolutions in one loop
-     */
+    // Perform only stage 2 - all elements in the filter overlap an input element.
     for(size_t o = 0, i = F/2 - 1; i < N; ++i, o += 2){
         @type@ sum_even = 0;
         @type@ sum_odd = 0;

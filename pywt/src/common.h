@@ -47,11 +47,15 @@
 typedef enum {
        MODE_INVALID = -1,
        MODE_ZEROPAD = 0,   /* default, signal extended with zeros */
-       MODE_SYMMETRIC,     /* signal extended symmetrically (mirror) */
+       MODE_SYMMETRIC,     /* signal extended symmetrically (mirror)
+                            * For extensions greater than signal length,
+                            * mirror back and forth:
+                            * 2 3 3 2 1 | 1 2 3 | 3 2 1 1 2
+                            */
        MODE_CONSTANT_EDGE, /* signal extended with the border value */
        MODE_SMOOTH,        /* linear extrapolation (first derivative) */
        MODE_PERIODIC,      /* signal is treated as being periodic */
-       MODE_PERIODIZATION, /* signal is treated as being periodic, minimal output lenght */
+       MODE_PERIODIZATION, /* signal is treated as being periodic, minimal output length */
        MODE_MAX,
 } MODE;
 
