@@ -3,8 +3,7 @@
 
 /* Wavelet transforms using convolution functions defined in convolution.h */
 
-#ifndef _WT_H_
-#define _WT_H_
+#pragma once
 
 #include "common.h"
 #include "convolution.h"
@@ -57,5 +56,3 @@ int @type@_swt_d(@type@ input[], index_t input_len,
                  int level);
 
 /**end repeat**/
-
-#endif

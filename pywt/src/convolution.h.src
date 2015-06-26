@@ -1,8 +1,7 @@
 /* Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/> */
 /* See COPYING for license details. */
 
-#ifndef _CONVOLUTION_H_
-#define _CONVOLUTION_H_
+#pragma once
 
 #include "common.h"
 
@@ -64,5 +63,3 @@ int @type@_upsampling_convolution_valid_sf(const @type@ * const restrict input, 
  */
 
 /**end repeat**/
-
-#endif

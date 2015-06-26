@@ -1,10 +1,7 @@
 /* Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/> */
 /* See COPYING for license details. */
 
-/* Wavelet struct */
-
-#ifndef _WAVELETS_H_
-#define _WAVELETS_H_
+#pragma once
 
 #include "common.h"
 
@@ -77,5 +74,3 @@ Wavelet* copy_wavelet(Wavelet* base);
  * wavelet(...) or blank_wavelet(...) functions.
  */
 void free_wavelet(Wavelet *wavelet);
-
-#endif

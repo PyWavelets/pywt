@@ -3,8 +3,7 @@
 
 /* Common constants, typedefs and functions */
 
-#ifndef _COMMON_H_
-#define _COMMON_H_
+#pragma once
 
 #include <stdlib.h>
 #include <memory.h>
@@ -89,6 +88,3 @@ unsigned char dwt_max_level(size_t input_len, size_t filter_len);
 
 /* Maximum useful level of SWT decomposition. */
 unsigned char swt_max_level(size_t input_len);
-
-
-#endif
