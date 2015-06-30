@@ -41,7 +41,6 @@ cdef extern from "wavelets.h":
         SYMMETRIC
 
     ctypedef struct Wavelet:
-
         double* dec_hi_double      # highpass decomposition
         double* dec_lo_double      # lowpass   decomposition
         double* rec_hi_double      # highpass reconstruction
@@ -52,26 +51,18 @@ cdef extern from "wavelets.h":
         float* rec_hi_float
         float* rec_lo_float
 
-
         size_t dec_len         # length of decomposition filter
         size_t rec_len         # length of reconstruction filter
-
-        # FIXME: Are these used?
-        index_t dec_hi_offset
-        index_t dec_lo_offset
-        index_t rec_hi_offset
-        index_t rec_lo_offset
 
         int vanishing_moments_psi
         int vanishing_moments_phi
         index_t support_width
 
-        int orthogonal
-        int biorthogonal
+        unsigned int orthogonal
+        unsigned int biorthogonal
+        unsigned int compact_support
 
-        int symmetry
-
-        int compact_support
+        SYMMETRY symmetry
 
         int _builtin
 
