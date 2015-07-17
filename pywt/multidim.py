@@ -34,8 +34,8 @@ def dwt2(data, wavelet, mode='sym'):
 
     Returns
     -------
-    (cA, (cH, cV, cD)) : tuple
-        Approximation, horizontal detail, vertical detail and diagonal
+    (cA, (cV, cH, cD)) : tuple
+        Approximation, vertical detail, horizontal detail and diagonal
         detail coefficients respectively.
 
     Examples
@@ -72,22 +72,22 @@ def dwt2(data, wavelet, mode='sym'):
     H = np.transpose(H)
     L = np.transpose(L)
 
-    LL, HL = [], []
+    LL, LH = [], []
     for row in L:
         cA, cD = dwt(np.array(row, np.float64), wavelet, mode)
         LL.append(cA)
-        HL.append(cD)
+        LH.append(cD)
 
-    LH, HH = [], []
+    HL, HH = [], []
     for row in H:
         cA, cD = dwt(np.array(row, np.float64), wavelet, mode)
-        LH.append(cA)
+        HL.append(cA)
         HH.append(cD)
 
     # build result structure: (approx,
     #                          (horizontal, vertical, diagonal))
     ret = (np.transpose(LL),
-           (np.transpose(HL), np.transpose(LH), np.transpose(HH)))
+           (np.transpose(LH), np.transpose(HL), np.transpose(HH)))
 
     return ret
 
@@ -101,7 +101,7 @@ def idwt2(coeffs, wavelet, mode='sym'):
     Parameters
     ----------
     coeffs : tuple
-        (cA, (cH, cV, cD)) A tuple with approximation coefficients and three
+        (cA, (cV, cH, cD)) A tuple with approximation coefficients and three
         details coefficients 2D arrays like from `dwt2()`
     wavelet : Wavelet object or name string
         Wavelet to use
