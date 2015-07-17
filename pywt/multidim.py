@@ -72,13 +72,13 @@ def dwt2(data, wavelet, mode='sym'):
     H = np.transpose(H)
     L = np.transpose(L)
 
-    LL, HL = [], []
+    LL, LH = [], []
     for row in L:
         cA, cD = dwt(np.array(row, np.float64), wavelet, mode)
         LL.append(cA)
         LH.append(cD)
 
-    LH, HH = [], []
+    HL, HH = [], []
     for row in H:
         cA, cD = dwt(np.array(row, np.float64), wavelet, mode)
         HL.append(cA)
