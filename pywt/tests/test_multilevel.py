@@ -56,5 +56,25 @@ def test_wavedec2():
     assert_allclose(pywt.waverec2(coeffs, 'db1'), np.ones((4, 4)), rtol=1e-12)
 
 
+def test_waverecn():
+
+    # test 1D through 4D cases
+    for nd in range(1, 5):
+        coeffs = pywt.wavedecn(np.ones((4, ) * nd), 'db1')
+        assert_(len(coeffs) == 3)
+        assert_allclose(pywt.waverecn(coeffs, 'db1'),
+                        np.ones((4, ) * nd), rtol=1e-12)
+
+
+def test_waverecn_db8():
+
+    # test 2D case only.
+    for nd in [2, ]:
+        coeffs = pywt.wavedecn(np.ones((64, ) * nd), 'db8')
+        assert_(len(coeffs) == 3)
+        assert_allclose(pywt.waverecn(coeffs, 'db8'),
+                        np.ones((64, ) * nd), rtol=1e-12)
+
+
 if __name__ == '__main__':
     run_module_suite()

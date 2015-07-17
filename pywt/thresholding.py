@@ -10,9 +10,9 @@ functions.
 
 from __future__ import division, print_function, absolute_import
 
-__all__ = ['threshold']
-
 import numpy as np
+
+__all__ = ['threshold']
 
 
 def threshold(data, value, mode='soft', substitute=0):

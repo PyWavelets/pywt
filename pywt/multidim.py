@@ -9,14 +9,15 @@
 
 from __future__ import division, print_function, absolute_import
 
-__all__ = ['dwt2', 'idwt2', 'swt2', 'dwtn', 'idwtn']
-
 from itertools import cycle, product, repeat, islice
 
 import numpy as np
+import warnings
 
 from ._pywt import Wavelet, MODES
-from ._pywt import dwt, idwt, swt, downcoef, upcoef
+from ._pywt import (dwt, idwt, swt, downcoef, upcoef)
+
+__all__ = ['dwt2', 'idwt2', 'swt2', 'dwtn', 'idwtn']
 
 
 def dwt2(data, wavelet, mode='sym'):
@@ -198,6 +199,7 @@ def idwt2(coeffs, wavelet, mode='sym'):
 def dwtn(data, wavelet, mode='sym'):
     """
     Single-level n-dimensional Discrete Wavelet Transform.
+    This version does the looping in C if the array is <= 4D.
 
     Parameters
     ----------
@@ -226,26 +228,24 @@ def dwtn(data, wavelet, mode='sym'):
 
     """
     data = np.asarray(data)
-    dim = len(data.shape)
+    dim = data.ndim
     if dim < 1:
         raise ValueError("Input data must be at least 1D")
+
+    # have to upgrade integer types to float
+    if data.dtype != np.float32:
+        data = np.asarray(data, dtype=np.float64)
+
     coeffs = [('', data)]
-
-    def _downcoef(data, wavelet, mode, type):
-        """Adapts pywt.downcoef call for apply_along_axis"""
-        return downcoef(type, data, wavelet, mode, level=1)
-
     for axis in range(dim):
         new_coeffs = []
         for subband, x in coeffs:
-            new_coeffs.extend([
-                (subband + 'a', np.apply_along_axis(_downcoef, axis, x,
-                                                    wavelet, mode, 'a')),
-                (subband + 'd', np.apply_along_axis(_downcoef, axis, x,
-                                                    wavelet, mode, 'd'))])
-
+            a = downcoef('a', x, wavelet=wavelet, mode=mode, level=1,
+                         axis=axis)
+            d = downcoef('d', x, wavelet=wavelet, mode=mode, level=1,
+                         axis=axis)
+            new_coeffs.extend([(subband + 'a', a), (subband + 'd', d)])
         coeffs = new_coeffs
-
     return dict(coeffs)
 
 
@@ -286,11 +286,12 @@ def idwtn(coeffs, wavelet, mode='sym', take=None):
     dims = max(len(key) for key in coeffs.keys())
 
     try:
-        coeff_shapes = ( v.shape for k, v in coeffs.items()
-                         if v is not None and len(k) == dims )
+        coeff_shapes = (v.shape for k, v in coeffs.items()
+                        if v is not None and len(k) == dims)
         coeff_shape = next(coeff_shapes)
     except StopIteration:
-        raise ValueError("`coeffs` must contain at least one non-null wavelet band")
+        raise ValueError("`coeffs` must contain at least one non-null wavelet "
+                         "band")
     if any(s != coeff_shape for s in coeff_shapes):
         raise ValueError("`coeffs` must all be of equal size (or None)")
 
@@ -307,24 +308,20 @@ def idwtn(coeffs, wavelet, mode='sym', take=None):
         else:
             takes = [2*s - wavelet.rec_len + 2 for s in reversed(coeff_shape)]
 
-    def _upcoef(coeffs, wavelet, take, type):
-        """Adapts pywt.upcoef call for apply_along_axis"""
-        return upcoef(type, coeffs, wavelet, level=1, take=take)
-
     for axis, take in zip(reversed(range(dims)), takes):
         new_coeffs = {}
-        new_keys = [''.join(coeff) for coeff in product('ad', repeat=axis)]
-
+        new_keys = \
+            [''.join(coeff) for coeff in product('ad', repeat=axis)]
         for key in new_keys:
             L = coeffs.get(key + 'a')
             H = coeffs.get(key + 'd')
-
+            # add new axes up to 4D for compatibility with the cython code
             if L is not None:
-                L = np.apply_along_axis(_upcoef, axis, L, wavelet, take, 'a')
-
+                L = upcoef('a', L, wavelet=wavelet, level=1, take=take,
+                           axis=axis)
             if H is not None:
-                H = np.apply_along_axis(_upcoef, axis, H, wavelet, take, 'd')
-
+                H = upcoef('d', H, wavelet=wavelet, level=1, take=take,
+                           axis=axis)
             if H is None and L is None:
                 new_coeffs[key] = None
             elif H is None:
@@ -333,7 +330,6 @@ def idwtn(coeffs, wavelet, mode='sym', take=None):
                 new_coeffs[key] = H
             else:
                 new_coeffs[key] = L + H
-
         coeffs = new_coeffs
 
     return coeffs['']
@@ -414,7 +410,8 @@ def swt2(data, wavelet, level, start_level=0):
 
         # build result structure: (approx, (horizontal, vertical, diagonal))
         approx = np.transpose(LL)
-        ret.append((approx, (np.transpose(LH), np.transpose(HL), np.transpose(HH))))
+        ret.append((approx,
+                    (np.transpose(LH), np.transpose(HL), np.transpose(HH))))
 
         # for next iteration
         data = approx

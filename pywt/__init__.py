@@ -19,10 +19,10 @@ from .multidim import *
 from .thresholding import *
 from .wavelet_packets import *
 
-
-__all__ = [s for s in dir() if not s.startswith('_')]
-
 from pywt.version import version as __version__
 
 from numpy.testing import Tester
+
+__all__ = [s for s in dir() if not s.startswith('_')]
+
 test = Tester().test

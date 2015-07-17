@@ -29,14 +29,14 @@ def test_perfect_reconstruction():
 
 def check_reconstruction(pmode, mmode, wavelet, dtype):
     data_size = list(range(2, 40)) + [100, 200, 500, 1000, 2000, 10000,
-                                50000, 100000]
+                                      50000, 100000]
     np.random.seed(12345)
-    #TODO: smoke testing - more failures for different seeds
+    # TODO: smoke testing - more failures for different seeds
 
     if dtype == np.float32:
         epsilon = 3e-7
     else:
-        #FIXME: limit was 5e-11, but gave failures.  Investigate
+        # FIXME: limit was 5e-11, but gave failures.  Investigate
         epsilon = 1e-8
 
     for N in data_size:

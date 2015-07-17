@@ -139,7 +139,6 @@ def test_wavefun_bior13():
                              0.03125, 0.109375, 0.140625, 0.015625, -0.015625,
                              0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
 
-
     psi_r_expect = np.zeros(x.size, dtype=np.float)
     psi_r_expect[7:15] = -0.125
     psi_r_expect[15:19] = 1
