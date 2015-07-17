@@ -739,7 +739,7 @@ def _try_mode(mode):
     except ValueError as e:
         if "Unknown mode name" in str(e):
             raise
-        raise TypeError("Invalid mode: {}".format(mode))
+        raise TypeError("Invalid mode: {0}".format(str(mode)))
 
 
 def _check_dtype(data):
