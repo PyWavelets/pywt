@@ -20,8 +20,6 @@ import warnings
 import numpy as np
 cimport numpy as np
 
-from pywt._tools.six import string_types
-
 
 ctypedef fused data_t:
     np.float32_t
@@ -91,9 +89,9 @@ class _Modes(object):
 
     def from_object(self, mode):
         if isinstance(mode, int):
-            m = mode
-            if m <= c_wt.MODE_INVALID or m >= c_wt.MODE_MAX:
+            if mode <= c_wt.MODE_INVALID or mode >= c_wt.MODE_MAX:
                 raise ValueError("Invalid mode.")
+            m = mode
         else:
             try:
                 m = getattr(MODES, mode)
@@ -642,7 +640,6 @@ def dwt(object data, object wavelet, object mode='sym'):
     [-0.70710678 -0.70710678 -0.70710678]
 
     """
-    _check_mode_input(mode)
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(data)
     data = np.array(data, dtype=dt)
@@ -656,7 +653,7 @@ def _dwt(np.ndarray[data_t, ndim=1] data, object wavelet, object mode='sym'):
     cdef c_wt.MODE mode_
 
     w = c_wavelet_from_object(wavelet)
-    mode_ = MODES.from_object(mode)
+    mode_ = _try_mode(mode)
 
     data = np.array(data)
     output_len = c_wt.dwt_buffer_length(data.size, w.dec_len, mode_)
@@ -719,7 +716,6 @@ def dwt_coeff_len(data_len, filter_len, mode='sym'):
     """
     cdef index_t filter_len_
 
-    _check_mode_input(mode)
     if isinstance(filter_len, Wavelet):
         filter_len_ = filter_len.dec_len
     else:
@@ -730,18 +726,20 @@ def dwt_coeff_len(data_len, filter_len, mode='sym'):
     if filter_len_ < 1:
         raise ValueError("Value of filter_len must be greater than zero.")
 
-    return c_wt.dwt_buffer_length(data_len, filter_len_, MODES.from_object(mode))
+    return c_wt.dwt_buffer_length(data_len, filter_len_, _try_mode(mode))
 
 
 ###############################################################################
 # idwt
 
 
-def _check_mode_input(mode):
-    valid_ints = range(len(MODES.modes))
-    if not ((isinstance(mode, string_types)) or (mode in valid_ints)):
-        raise TypeError("`mode` should be a string, unicode or a pywt.MODES "
-                        "object.")
+def _try_mode(mode):
+    try:
+        return MODES.from_object(mode)
+    except ValueError as e:
+        if "Unknown mode name" in str(e):
+            raise
+        raise TypeError("Invalid mode: {0}".format(str(mode)))
 
 
 def _check_dtype(data):
@@ -788,7 +786,6 @@ def idwt(cA, cD, object wavelet, object mode='sym', int correct_size=0):
         Single level reconstruction of signal from given coefficients.
 
     """
-    _check_mode_input(mode)
     # accept array_like input; make a copy to ensure a contiguous array
 
     if cA is None and cD is None:
@@ -826,7 +823,7 @@ def _idwt(np.ndarray[data_t, ndim=1, mode="c"] cA,
     cdef c_wt.MODE mode_
 
     w = c_wavelet_from_object(wavelet)
-    mode_ = MODES.from_object(mode)
+    mode_ = _try_mode(mode)
 
     cdef np.ndarray[data_t, ndim=1, mode="c"] rec
     cdef index_t rec_len
@@ -1049,9 +1046,8 @@ def _downcoef(part, np.ndarray[data_t, ndim=1, mode="c"] data,
     cdef Wavelet w
     cdef c_wt.MODE mode_
 
-    _check_mode_input(mode)
     w = c_wavelet_from_object(wavelet)
-    mode_ = MODES.from_object(mode)
+    mode_ = _try_mode(mode)
 
     if part not in ('a', 'd'):
         raise ValueError("Argument 1 must be 'a' or 'd', not '%s'." % part)
