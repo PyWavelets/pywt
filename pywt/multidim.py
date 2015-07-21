@@ -36,7 +36,7 @@ def dwt2(data, wavelet, mode='sym'):
     -------
     (cA, (cH, cV, cD)) : tuple
         Approximation, horizontal detail, vertical detail and diagonal
-        detail coefficients respectively.
+        detail coefficients respectively.  Horizontal refers to array axis 0.
 
     Examples
     --------
@@ -122,7 +122,7 @@ def idwt2(coeffs, wavelet, mode='sym'):
         raise ValueError("Invalid coeffs param")
 
     # L -low-pass data, H - high-pass data
-    LL, (LH, HL, HH) = coeffs
+    LL, (HL, LH, HH) = coeffs
 
     if LL is not None:
         LL = np.transpose(LL)
@@ -151,29 +151,29 @@ def idwt2(coeffs, wavelet, mode='sym'):
 
     # idwt columns
     L = []
-    if LL is None and LH is None:
+    if LL is None and HL is None:
         L = None
     else:
         if LL is None:
             # IDWT can handle None input values - equals to zero-array
             LL = cycle([None])
-        if LH is None:
-            # IDWT can handle None input values - equals to zero-array
-            LH = cycle([None])
-        for rowL, rowH in zip(LL, LH):
-            L.append(idwt(rowL, rowH, wavelet, mode, 1))
-
-    H = []
-    if HL is None and HH is None:
-        H = None
-    else:
         if HL is None:
             # IDWT can handle None input values - equals to zero-array
             HL = cycle([None])
+        for rowL, rowH in zip(LL, HL):
+            L.append(idwt(rowL, rowH, wavelet, mode, 1))
+
+    H = []
+    if LH is None and HH is None:
+        H = None
+    else:
+        if LH is None:
+            # IDWT can handle None input values - equals to zero-array
+            LH = cycle([None])
         if HH is None:
             # IDWT can handle None input values - equals to zero-array
             HH = cycle([None])
-        for rowL, rowH in zip(HL, HH):
+        for rowL, rowH in zip(LH, HH):
             H.append(idwt(rowL, rowH, wavelet, mode, 1))
 
     if L is not None:
