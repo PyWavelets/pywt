@@ -28,11 +28,7 @@ def soft(data, value, substitute=0):
 
 def hard(data, value, substitute=0):
     data = np.asarray(data)
-    mvalue = -value
-
-    cond = np.less(data, value)
-    cond &= np.greater(data, mvalue)
-
+    cond = np.less(np.absolute(data), value)
     return np.where(cond, substitute, data)
 
 def greater(data, value, substitute=0):
