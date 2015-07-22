@@ -16,15 +16,13 @@ import numpy as np
 
 def soft(data, value, substitute=0):
     data = np.asarray(data)
-    mvalue = -value
 
-    cond_less = np.less(data, value)
-    cond_greater = np.greater(data, mvalue)
+    magnitude = np.absolute(data)
+    sign = np.sign(data)
+    thresholded = (magnitude - value).clip(0) * sign
 
-    output = np.where(cond_less & cond_greater, substitute, data)
-    output = np.where(cond_less, output + value, output)
-    output = np.where(cond_greater, output - value, output)
-    return output
+    cond = np.less(magnitude, value)
+    return np.where(cond, substitute, thresholded)
 
 def hard(data, value, substitute=0):
     data = np.asarray(data)
