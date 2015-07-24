@@ -13,6 +13,9 @@ import pywt
 dtypes_in = [np.int8, np.float32, np.float64, np.complex64, np.complex128]
 dtypes_out = [np.float64, np.float32, np.float64, np.complex64, np.complex128]
 
+dtypes_and_tolerances = [(np.float32, 3e-6), (np.float64, 1e-13),
+                         (np.int8, 1e-13)]
+
 
 def test_wavedec():
     x = [3, 7, 1, 1, -2, 5, 4, 6]
@@ -29,6 +32,11 @@ def test_waverec():
     x = [3, 7, 1, 1, -2, 5, 4, 6]
     coeffs = pywt.wavedec(x, 'db1')
     assert_allclose(pywt.waverec(coeffs, 'db1'), x, rtol=1e-12)
+
+    x = np.asarray(x)
+    for dt, tol in dtypes_and_tolerances:
+        coeffs = pywt.wavedec(x.astype(dt), 'db1')
+        assert_allclose(pywt.waverec(coeffs, 'db1'), x, atol=tol, rtol=tol)
 
 
 def test_waverec_none():
@@ -153,9 +161,11 @@ def test_swt2_iswt2_integration():
 
 
 def test_wavedec2():
-    coeffs = pywt.wavedec2(np.ones((4, 4)), 'db1')
-    assert_(len(coeffs) == 3)
-    assert_allclose(pywt.waverec2(coeffs, 'db1'), np.ones((4, 4)), rtol=1e-12)
+    x = np.ones((4, 4))
+    for dt, tol in dtypes_and_tolerances:
+        coeffs = pywt.wavedec2(x.astype(dt), 'db1')
+        assert_(len(coeffs) == 3)
+        assert_allclose(pywt.waverec2(coeffs, 'db1'), x, atol=tol, rtol=tol)
 
 
 def test_waverecn():
@@ -219,6 +229,13 @@ def test_waverec2_none_coeffs():
     coeffs = pywt.wavedec2(x, 'db1')
     coeffs[1] = (None, None, None)
     assert_(x.shape == pywt.waverec2(coeffs, 'db1').shape)
+
+
+def test_waverec_dtypes():
+    x = np.ones((4, 4, 4))
+    for dt, tol in dtypes_and_tolerances:
+        coeffs = pywt.wavedecn(x.astype(dt), 'db1')
+        assert_allclose(pywt.waverecn(coeffs, 'db1'), x, atol=tol, rtol=tol)
 
 
 if __name__ == '__main__':
