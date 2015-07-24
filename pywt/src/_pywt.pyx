@@ -1209,7 +1209,7 @@ def _downcoef_lastaxis(part, data_t[:, ::1] data, object wavelet,
 
     dt = _check_dtype(data)
     data = np.array(data, dtype=dt)
-    _check_mode_input(mode)
+    _try_mode(mode)
     w = c_wavelet_from_object(wavelet)
     wav = w.w
     mode_ = MODES.from_object(mode)
