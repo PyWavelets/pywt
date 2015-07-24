@@ -198,7 +198,6 @@ def idwt2(coeffs, wavelet, mode='sym'):
 def dwtn(data, wavelet, mode='sym'):
     """
     Single-level n-dimensional Discrete Wavelet Transform.
-    This version does the looping in C if the array is <= 4D.
 
     Parameters
     ----------
@@ -310,7 +309,6 @@ def idwtn(coeffs, wavelet, mode='sym', take=None):
         for key in new_keys:
             L = coeffs.get(key + 'a')
             H = coeffs.get(key + 'd')
-            # add new axes up to 4D for compatibility with the cython code
             if L is not None:
                 L = upcoef('a', L, wavelet=wavelet, level=1, take=take,
                            axis=axis)
