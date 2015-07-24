@@ -810,7 +810,7 @@ def idwt(cA, cD, object wavelet, object mode='sym', int correct_size=0):
         cD = np.zeros(cA.shape, dtype=cA.dtype)
 
     return _idwt(cA, cD, wavelet, mode, correct_size)
-    
+
 
 def _idwt(np.ndarray[data_t, ndim=1, mode="c"] cA,
           np.ndarray[data_t, ndim=1, mode="c"] cD,
@@ -1084,6 +1084,7 @@ def _downcoef(part, np.ndarray[data_t, ndim=1, mode="c"] data,
                     raise RuntimeError("C dec_a failed.")
             else:
                 raise RuntimeError("Invalid data type.")
+        data = coeffs
 
     return coeffs
 
@@ -1181,7 +1182,7 @@ def _swt(np.ndarray[data_t, ndim=1, mode="c"] data, object wavelet,
 
     if end_level > c_wt.swt_max_level(data.size):
         msg = ("Level value too high (max level for current data size and "
-               "start_level is %d)." % (c_wt.swt_max_level(data.size) - 
+               "start_level is %d)." % (c_wt.swt_max_level(data.size) -
                                         start_level))
         raise ValueError(msg)
 
