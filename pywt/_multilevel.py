@@ -416,17 +416,17 @@ def wavedecn(data, wavelet, mode='symmetric', level=None):
         Signal extension mode, see MODES (default: 'sym')
     level : int, optional
         Decomposition level. If level is None (default) then it will be
-        calculated using `dwt_max_level` function.
+        calculated using the ``dwt_max_level`` function.
 
     Returns
     -------
-    [cAn, {diff_coeffs_leveln}, ... {diff_coeffs_level1}] : list
+    [cAn, {details_level_n}, ... {details_level_1}] : list
         Coefficients list
 
     Examples
     --------
     >>> from pywt import multilevel
-    >>> coeffs = multilevel.wavedecn(np.ones((4,4,4)), 'db1')
+    >>> coeffs = multilevel.wavedecn(np.ones((4, 4, 4)), 'db1')
     >>> # Levels:
     >>> len(coeffs)-1
     3
@@ -452,7 +452,6 @@ def wavedecn(data, wavelet, mode='symmetric', level=None):
         [ 1.,  1.,  1.,  1.]]])
 
     """
-
     data = np.asarray(data, np.float64)
 
     if len(data.shape) < 1:
@@ -473,7 +472,7 @@ def wavedecn(data, wavelet, mode='symmetric', level=None):
     a = data
     for i in range(level):
         coeffs = dwtn(a, wavelet, mode)
-        a = coeffs.pop('a'*data.ndim)
+        a = coeffs.pop('a' * data.ndim)
         coeffs_list.append(coeffs)
 
     coeffs_list.append(a)
@@ -487,7 +486,7 @@ def waverecn(coeffs, wavelet, mode='symmetric'):
     Multilevel nD Inverse Discrete Wavelet Transform.
 
     coeffs : array_like
-        Coefficients list [cAn, {diff_coeffs_leveln}, ... {diff_coeffs_level1}]
+        Coefficients list [cAn, {details_level_n}, ... {details_level_1}]
     wavelet : Wavelet object or name string
         Wavelet to use
     mode : str, optional
@@ -500,7 +499,7 @@ def waverecn(coeffs, wavelet, mode='symmetric'):
     Examples
     --------
     >>> from pywt import multilevel
-    >>> coeffs = multilevel.wavedecn(np.ones((4,4,4)), 'db1')
+    >>> coeffs = multilevel.wavedecn(np.ones((4, 4, 4)), 'db1')
     >>> # Levels:
     >>> len(coeffs)-1
     2
@@ -537,16 +536,17 @@ def waverecn(coeffs, wavelet, mode='symmetric'):
 
     dims = max(len(key) for key in ds[0].keys())
 
-    for idx,d in enumerate(ds):
+    for idx, d in enumerate(ds):
 
         #determine the shape at the next level for idwtn
-        if idx<(len(ds)-1):
-            next_shape=[v.shape for k,v in ds[idx+1].items() if v is not None]
-            take=next_shape[0]
+        if idx < (len(ds) - 1):
+            next_shape = [
+                v.shape for k, v in ds[idx + 1].items() if v is not None]
+            take = next_shape[0]
         else:
-            take=None
+            take = None
 
-        d['a'*dims]=a
-        a = idwtn(d, wavelet, mode,take=take)
+        d['a' * dims] = a
+        a = idwtn(d, wavelet, mode, take=take)
 
     return a
