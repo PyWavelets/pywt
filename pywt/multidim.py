@@ -233,7 +233,7 @@ def dwtn(data, wavelet, mode='sym'):
         raise ValueError("Input data must be at least 1D")
 
     # have to upgrade integer types to float
-    if data.dtype != np.float32:
+    if data.dtype != np.float64:
         data = np.asarray(data, dtype=np.float64)
 
     coeffs = [('', data)]

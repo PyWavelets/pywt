@@ -963,7 +963,8 @@ def upcoef(part, coeffs, wavelet, level=1, take=0, axis=-1):
         rec = _upcoef_lastaxis(part, coeffs, wavelet, level, take)
 
         # restore original dimensions
-        rec = rec.reshape(original_shape[npad:-1] + (rec.shape[-1], ), order='C')
+        rec = rec.reshape(original_shape[npad:-1] + (rec.shape[-1], ),
+                          order='C')
 
         # restore original axis order
         if axis != lastaxis:
@@ -1116,10 +1117,9 @@ cdef void _upcoef_v2(int do_rec_a, data_t *coeffs, c_wt.index_t coeff_len,
     return
 
 
-# TODO: depricate this function
 def downcoef(part, data, wavelet, mode='sym', level=1, axis=-1):
     """
-    downcoef(part, data, wavelet, mode='sym', level=1)
+    downcoef(part, data, wavelet, mode='sym', level=1, axis=-1)
 
     Partial Discrete Wavelet Transform data decomposition.
 
