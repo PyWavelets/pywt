@@ -20,6 +20,24 @@ __all__ = ['wavedec', 'waverec', 'wavedec2', 'waverec2', 'wavedecn',
            'waverecn', 'iswt', 'iswt2']
 
 
+def _check_level(size, dec_len, level):
+    """
+    Set the default decomposition level or check if requested level is valid.
+    """
+    if level is None:
+        level = dwt_max_level(size, dec_len)
+    elif level < 0:
+        raise ValueError(
+            "Level value of %d is too low . Minimum level is 0." % level)
+    else:
+        max_level = dwt_max_level(size, dec_len)
+        if level > max_level:
+            raise ValueError(
+                "Level value of %d is too high.  Maximum allowed is %d." % (
+                    level, max_level))
+    return level
+
+
 def wavedec(data, wavelet, mode='symmetric', level=None):
     """
     Multilevel 1D Discrete Wavelet Transform of data.
@@ -33,8 +51,8 @@ def wavedec(data, wavelet, mode='symmetric', level=None):
     mode : str, optional
         Signal extension mode, see Modes (default: 'symmetric')
     level : int, optional
-        Decomposition level. If level is None (default) then it will be
-        calculated using `dwt_max_level` function.
+        Decomposition level (must be >= 0). If level is None (default) then it
+        will be calculated using the ``dwt_max_level`` function.
 
     Returns
     -------
@@ -57,15 +75,12 @@ def wavedec(data, wavelet, mode='symmetric', level=None):
     array([  5.,  13.])
 
     """
+    data = np.asarray(data)
 
     if not isinstance(wavelet, Wavelet):
         wavelet = Wavelet(wavelet)
 
-    if level is None:
-        level = dwt_max_level(len(data), wavelet.dec_len)
-    elif level < 0:
-        raise ValueError(
-            "Level value of %d is too low . Minimum level is 0." % level)
+    level = _check_level(min(data.shape), wavelet.dec_len, level)
 
     coeffs_list = []
 
@@ -131,8 +146,8 @@ def wavedec2(data, wavelet, mode='symmetric', level=None):
     mode : str, optional
         Signal extension mode, see Modes (default: 'symmetric')
     level : int, optional
-        Decomposition level. If level is None (default) then it will be
-        calculated using `dwt_max_level` function.
+        Decomposition level (must be >= 0). If level is None (default) then it
+        will be calculated using the ``dwt_max_level`` function.
 
     Returns
     -------
@@ -152,7 +167,6 @@ def wavedec2(data, wavelet, mode='symmetric', level=None):
            [ 1.,  1.,  1.,  1.],
            [ 1.,  1.,  1.,  1.]])
     """
-
     data = np.asarray(data)
 
     if data.ndim != 2:
@@ -161,12 +175,7 @@ def wavedec2(data, wavelet, mode='symmetric', level=None):
     if not isinstance(wavelet, Wavelet):
         wavelet = Wavelet(wavelet)
 
-    if level is None:
-        size = min(data.shape)
-        level = dwt_max_level(size, wavelet.dec_len)
-    elif level < 0:
-        raise ValueError(
-            "Level value of %d is too low . Minimum level is 0." % level)
+    level = _check_level(min(data.shape), wavelet.dec_len, level)
 
     coeffs_list = []
 
@@ -415,8 +424,8 @@ def wavedecn(data, wavelet, mode='symmetric', level=None):
     mode : str, optional
         Signal extension mode, see MODES (default: 'sym')
     level : int, optional
-        Decomposition level. If level is None (default) then it will be
-        calculated using the ``dwt_max_level`` function.
+        Decomposition level (must be >= 0). If level is None (default) then it
+        will be calculated using the ``dwt_max_level`` function.
 
     Returns
     -------
@@ -452,7 +461,7 @@ def wavedecn(data, wavelet, mode='symmetric', level=None):
         [ 1.,  1.,  1.,  1.]]])
 
     """
-    data = np.asarray(data, np.float64)
+    data = np.asarray(data)
 
     if len(data.shape) < 1:
         raise ValueError("Expected at least 1D input data.")
@@ -460,12 +469,7 @@ def wavedecn(data, wavelet, mode='symmetric', level=None):
     if not isinstance(wavelet, Wavelet):
         wavelet = Wavelet(wavelet)
 
-    if level is None:
-        size = min(data.shape)
-        level = dwt_max_level(size, wavelet.dec_len)
-    elif level < 0:
-        raise ValueError(
-            "Level value of %d is too low . Minimum level is 0." % level)
+    level = _check_level(min(data.shape), wavelet.dec_len, level)
 
     coeffs_list = []
 
