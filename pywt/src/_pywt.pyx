@@ -1201,6 +1201,7 @@ def _downcoef_lastaxis(part, data_t[:, ::1] data, object wavelet,
         Wavelet w
         c_wt.MODE mode_
         c_wt.Wavelet* wav
+        int status
         data_t[:, ::1] coeffs
         int x, do_dec_a
         int nfilt = data.shape[0]
@@ -1218,56 +1219,60 @@ def _downcoef_lastaxis(part, data_t[:, ::1] data, object wavelet,
         raise ValueError("Argument 1 must be 'a' or 'd', not '%s'." % part)
     if level < 1:
         raise ValueError("Value of level must be greater than 0.")
-    data_len = data.shape[1]
-    output_len = c_wt.dwt_buffer_length(data_len, w.dec_len, mode_)
-    if output_len < 1:
-        raise RuntimeError("Invalid output length.")
     if data_t is np.float64_t:
         arr_dtype = np.float64
     elif data_t is np.float32_t:
         arr_dtype = np.float32
-    """ Can filter over the last axis because it is contiguous.  Loop over
-    the other axis.
-    """
-    coeffs = np.zeros((nfilt, output_len), dtype=arr_dtype, order='C')
-    for x in range(nfilt):
-        _downcoef(do_dec_a, &data[x,  0], data_len, &coeffs[x, 0],
-                  output_len, wav, mode_, level)
+    for i from 0 <= i < level:
+        data_len = data.shape[1]
+        output_len = c_wt.dwt_buffer_length(data_len, w.dec_len, mode_)
+        if output_len < 1:
+            raise RuntimeError("Invalid output length.")
+        coeffs = np.zeros((nfilt, output_len), dtype=arr_dtype, order='C')
+        """ Can filter over the last axis because it is contiguous.  Loop over
+        the other axis.
+        """
+        for x in range(nfilt):
+            status = _downcoef(do_dec_a, &data[x,  0], data_len, &coeffs[x, 0],
+                               output_len, wav, mode_)
+            if status == -1:
+                raise RuntimeError("_downcoef() call failed at "
+                                   "level={}".format(i))
+        data = coeffs.copy()
     return np.asarray(coeffs)
 
 
 @cython.wraparound(False)
 @cython.boundscheck(False)
 @cython.cdivision(True)
-cdef void _downcoef(int do_dec_a, data_t *data, c_wt.index_t data_len,
+cdef int _downcoef(int do_dec_a, data_t *data, c_wt.index_t data_len,
                     data_t *coeffs, c_wt.index_t output_len,
-                    c_wt.Wavelet* w, c_wt.MODE mode, int level) nogil:
+                    c_wt.Wavelet* w, c_wt.MODE mode) nogil except? -1:
     cdef int i
-    for i in range(level):
-        if do_dec_a:
-            if data_t is np.float64_t:
-                if c_wt.double_dec_a(data, data_len, w,
-                                      coeffs, output_len, mode) < 0:
-                    with gil:
-                        raise RuntimeError("C double_dec_a failed.")
+    if do_dec_a:
+        if data_t is np.float64_t:
+            if c_wt.double_dec_a(data, data_len, w,
+                                  coeffs, output_len, mode) < 0:
+                with gil:
+                    raise RuntimeError("C double_dec_a failed.")
 
-            elif data_t is np.float32_t:
-                if c_wt.float_dec_a(data, data_len, w,
-                                    coeffs, output_len, mode) < 0:
-                    with gil:
-                        raise RuntimeError("C float_dec_a failed.")
-        else:
-            if data_t is np.float64_t:
-                if c_wt.double_dec_d(data, data_len, w,
-                                     coeffs, output_len, mode) < 0:
-                    with gil:
-                        raise RuntimeError("C double_dec_d failed.")
-            elif data_t is np.float32_t:
-                if c_wt.float_dec_d(data, data_len, w,
-                                    coeffs, output_len, mode) < 0:
-                    with gil:
-                        raise RuntimeError("C float_dec_d failed.")
-    return
+        elif data_t is np.float32_t:
+            if c_wt.float_dec_a(data, data_len, w,
+                                coeffs, output_len, mode) < 0:
+                with gil:
+                    raise RuntimeError("C float_dec_a failed.")
+    else:
+        if data_t is np.float64_t:
+            if c_wt.double_dec_d(data, data_len, w,
+                                 coeffs, output_len, mode) < 0:
+                with gil:
+                    raise RuntimeError("C double_dec_d failed.")
+        elif data_t is np.float32_t:
+            if c_wt.float_dec_d(data, data_len, w,
+                                coeffs, output_len, mode) < 0:
+                with gil:
+                    raise RuntimeError("C float_dec_d failed.")
+    return 0
 
 ###############################################################################
 # swt
