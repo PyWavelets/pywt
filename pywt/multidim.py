@@ -14,10 +14,9 @@ __all__ = ['dwt2', 'idwt2', 'swt2', 'dwtn', 'idwtn']
 from itertools import cycle, product, repeat, islice
 
 import numpy as np
-import warnings
 
 from ._pywt import Wavelet, MODES
-from ._pywt import (dwt, idwt, swt, downcoef, upcoef)
+from ._pywt import dwt, idwt, swt, downcoef, upcoef
 
 
 def dwt2(data, wavelet, mode='sym'):
@@ -231,10 +230,6 @@ def dwtn(data, wavelet, mode='sym'):
     dim = data.ndim
     if dim < 1:
         raise ValueError("Input data must be at least 1D")
-
-    # have to upgrade integer types to float
-    if data.dtype != np.float64:
-        data = np.asarray(data, dtype=np.float64)
 
     coeffs = [('', data)]
     for axis in range(dim):
