@@ -31,5 +31,29 @@ def test_upcoef_reconstruct():
     assert_allclose(rec, data)
 
 
+def test_downcoef_multilevel():
+    r = np.random.randn(16)
+    nlevels = 3
+    # calling with level=1 nlevels times
+    a1 = r.copy()
+    for i in range(nlevels):
+        a1 = pywt.downcoef('a', a1, 'haar', level=1)
+    # call with level=nlevels once
+    a3 = pywt.downcoef('a', r, 'haar', level=3)
+    assert_allclose(a1, a3)
+
+
+def test_upcoef_multilevel():
+    r = np.random.randn(4)
+    nlevels = 3
+    # calling with level=1 nlevels times
+    a1 = r.copy()
+    for i in range(nlevels):
+        a1 = pywt.upcoef('a', a1, 'haar', level=1)
+    # call with level=nlevels once
+    a3 = pywt.upcoef('a', r, 'haar', level=3)
+    assert_allclose(a1, a3)
+
+
 if __name__ == '__main__':
     run_module_suite()
