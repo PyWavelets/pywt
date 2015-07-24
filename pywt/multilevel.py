@@ -39,9 +39,9 @@ def wavedec(data, wavelet, mode='sym', level=None):
     -------
     [cA_n, cD_n, cD_n-1, ..., cD2, cD1] : list
         Ordered list of coefficients arrays
-        where `n` denotes the level of decomposition. The first element (`cA_n`) of
-        the result is approximation coefficients array and the following elements
-        (`cD_n` - `cD_1`) are details coefficients arrays.
+        where `n` denotes the level of decomposition. The first element
+        (`cA_n`) of the result is approximation coefficients array and the
+        following elements (`cD_n` - `cD_1`) are details coefficients arrays.
 
     Examples
     --------

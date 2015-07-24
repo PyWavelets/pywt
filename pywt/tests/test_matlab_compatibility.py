@@ -58,7 +58,7 @@ def check_accuracy(pmode, mmode, wavelet):
         rms_d = np.sqrt(np.mean((pd-md)**2))
 
         msg = ('[RMS_A > EPSILON] for Mode: %s, Wavelet: %s, '
-              'Length: %d, rms=%.3g' % (pmode, wavelet, len(data), rms_a))
+               'Length: %d, rms=%.3g' % (pmode, wavelet, len(data), rms_a))
         assert_(rms_a < epsilon, msg=msg)
 
         msg = ('[RMS_D > EPSILON] for Mode: %s, Wavelet: %s, '

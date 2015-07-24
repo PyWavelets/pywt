@@ -228,11 +228,11 @@ class BaseNode(object):
         """
         if isinstance(path, str):
             if (self.maxlevel is not None
-                and len(path) > self.maxlevel * self.PART_LEN):
+                    and len(path) > self.maxlevel * self.PART_LEN):
                 raise IndexError("Path length is out of range.")
             if path:
                 return self.get_subnode(path[0:self.PART_LEN], True)[
-                       path[self.PART_LEN:]]
+                    path[self.PART_LEN:]]
             else:
                 return self
         else:
@@ -284,8 +284,8 @@ class BaseNode(object):
         node = self[path]
         # don't clear node value and subnodes (node may still exist outside
         # the tree)
-        ## node._init_subnodes()
-        ## node.data = None
+        # # node._init_subnodes()
+        # # node.data = None
         parent = node.parent
         node.parent = None  # TODO
         if parent and node.node_name:
@@ -396,7 +396,7 @@ class Node(BaseNode):
 
     def _create_subnode(self, part, data=None, overwrite=True):
         return self._create_subnode_base(node_cls=Node, part=part, data=data,
-            overwrite=overwrite)
+                                         overwrite=overwrite)
 
     def _decompose(self):
         """
@@ -455,7 +455,7 @@ class Node2D(BaseNode):
 
     def _create_subnode(self, part, data=None, overwrite=True):
         return self._create_subnode_base(node_cls=Node2D, part=part, data=data,
-            overwrite=overwrite)
+                                         overwrite=overwrite)
 
     def _decompose(self):
         """
@@ -472,8 +472,8 @@ class Node2D(BaseNode):
         self._create_subnode(self.LH, data_lh)
         self._create_subnode(self.HL, data_hl)
         self._create_subnode(self.HH, data_hh)
-        return self._get_node(self.LL), self._get_node(self.LH),\
-               self._get_node(self.HL), self._get_node(self.HH)
+        return (self._get_node(self.LL), self._get_node(self.LH),
+                self._get_node(self.HL), self._get_node(self.HH))
 
     def _reconstruct(self, update):
         data_ll, data_lh, data_hl, data_hh = None, None, None, None
@@ -492,7 +492,7 @@ class Node2D(BaseNode):
             data_hh = node_hh.reconstruct()
 
         if (data_ll is None and data_lh is None
-            and data_hl is None and data_hh is None):
+                and data_hl is None and data_hh is None):
             raise ValueError(
                 "Tree is missing data - all subnodes of `%s` node "
                 "are None. Cannot reconstruct node." % self.path

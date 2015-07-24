@@ -18,13 +18,13 @@ def test_3D_reconstruct():
     # All dimensions even length so `take` does not need to be specified
     data = np.array([
         [[0, 4, 1, 5, 1, 4],
-         [0 ,5,26, 3, 2, 1],
-         [5 ,8, 2,33, 4, 9],
-         [2, 5,19, 4,19, 1]],
+         [0, 5, 26, 3, 2, 1],
+         [5, 8, 2, 33, 4, 9],
+         [2, 5, 19, 4, 19, 1]],
         [[1, 5, 1, 2, 3, 4],
-         [7,12, 6,52, 7, 8],
-         [2,12, 3,52, 6, 8],
-         [5, 2, 6,78,12, 2]]])
+         [7, 12, 6, 52, 7, 8],
+         [2, 12, 3, 52, 6, 8],
+         [5, 2, 6, 78, 12, 2]]])
 
     wavelet = pywt.Wavelet('haar')
     d = pywt.dwtn(data, wavelet)
@@ -37,8 +37,8 @@ def test_3D_reconstruct():
 def test_idwtn_idwt2():
     data = np.array([
         [0, 4, 1, 5, 1, 4],
-        [0 ,5, 6, 3, 2, 1],
-        [2, 5,19, 4,19, 1]])
+        [0, 5, 6, 3, 2, 1],
+        [2, 5, 19, 4, 19, 1]])
 
     wavelet = pywt.Wavelet('haar')
 
@@ -55,8 +55,8 @@ def test_idwtn_missing():
     # Test to confirm missing data behave as zeroes
     data = np.array([
         [0, 4, 1, 5, 1, 4],
-        [0 ,5, 6, 3, 2, 1],
-        [2, 5,19, 4,19, 1]])
+        [0, 5, 6, 3, 2, 1],
+        [2, 5, 19, 4, 19, 1]])
 
     wavelet = pywt.Wavelet('haar')
 
@@ -70,11 +70,11 @@ def test_idwtn_missing():
 def test_idwtn_take():
     data = np.array([
         [[1, 4, 1, 5, 1, 4],
-         [0 ,5, 6, 3, 2, 1],
-         [2, 5,19, 4,19, 1]],
+         [0, 5, 6, 3, 2, 1],
+         [2, 5, 19, 4, 19, 1]],
         [[1, 5, 1, 2, 3, 4],
-         [7,12, 6,52, 7, 8],
-         [5, 2, 6,78,12, 2]]])
+         [7, 12, 6, 52, 7, 8],
+         [5, 2, 6, 78, 12, 2]]])
     wavelet = pywt.Wavelet('haar')
     d = pywt.dwtn(data, wavelet)
 
@@ -91,8 +91,8 @@ def test_idwtn_take():
 def test_ignore_invalid_keys():
     data = np.array([
         [0, 4, 1, 5, 1, 4],
-        [0 ,5, 6, 3, 2, 1],
-        [2, 5,19, 4,19, 1]])
+        [0, 5, 6, 3, 2, 1],
+        [2, 5, 19, 4, 19, 1]])
 
     wavelet = pywt.Wavelet('haar')
 
@@ -107,8 +107,8 @@ def test_ignore_invalid_keys():
 def test_error_mismatched_size():
     data = np.array([
         [0, 4, 1, 5, 1, 4],
-        [0 ,5, 6, 3, 2, 1],
-        [2, 5,19, 4,19, 1]])
+        [0, 5, 6, 3, 2, 1],
+        [2, 5, 19, 4, 19, 1]])
 
     wavelet = pywt.Wavelet('haar')
 
