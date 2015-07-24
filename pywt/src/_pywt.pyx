@@ -1094,7 +1094,7 @@ cdef void _upcoef_v2(int do_rec_a, data_t *coeffs, c_wt.index_t coeff_len,
     if do_rec_a:
         if data_t is np.float64_t:
             if c_wt.double_rec_a(coeffs, coeff_len, w,
-                                  rec, rec_len) < 0:
+                                 rec, rec_len) < 0:
                 with gil:
                     raise RuntimeError("C double_rec_a failed.")
 
@@ -1207,12 +1207,9 @@ def _downcoef_lastaxis(part, data_t[:, ::1] data, object wavelet,
         int axis = -1
         c_wt.index_t output_len
 
-    dt = _check_dtype(data)
-    data = np.array(data, dtype=dt)
-    _try_mode(mode)
     w = c_wavelet_from_object(wavelet)
     wav = w.w
-    mode_ = MODES.from_object(mode)
+    mode_ = _try_mode(mode)
     if (part == 'a'):
         do_dec_a = 1
     else:
