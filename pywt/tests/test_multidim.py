@@ -27,11 +27,13 @@ def test_3D_reconstruct():
          [5, 2, 6, 78, 12, 2]]])
 
     wavelet = pywt.Wavelet('haar')
-    d = pywt.dwtn(data, wavelet)
-    # idwtn creates even-length shapes (2x dwtn size)
-    original_shape = [slice(None, s) for s in data.shape]
-    assert_allclose(data, pywt.idwtn(d, wavelet)[original_shape],
-                    rtol=1e-13, atol=1e-13)
+
+    for dt, tol in [('float32', 3e-6), ('float64', 1e-13)]:
+        d = pywt.dwtn(data.astype(dt), wavelet)
+        # idwtn creates even-length shapes (2x dwtn size)
+        original_shape = [slice(None, s) for s in data.shape]
+        assert_allclose(data, pywt.idwtn(d, wavelet)[original_shape],
+                        rtol=tol, atol=tol)
 
 
 def test_idwtn_idwt2():
