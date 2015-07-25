@@ -14,6 +14,33 @@ __all__ = ['threshold']
 
 import numpy as np
 
+def soft(data, value, substitute=0):
+    data = np.asarray(data)
+
+    magnitude = np.absolute(data)
+    sign = np.sign(data)
+    thresholded = (magnitude - value).clip(0) * sign
+
+    cond = np.less(magnitude, value)
+    return np.where(cond, substitute, thresholded)
+
+def hard(data, value, substitute=0):
+    data = np.asarray(data)
+    cond = np.less(np.absolute(data), value)
+    return np.where(cond, substitute, data)
+
+def greater(data, value, substitute=0):
+    data = np.asarray(data)
+    return np.where(np.less(data, value), substitute, data)
+
+def less(data, value, substitute=0):
+    data = np.asarray(data)
+    return np.where(np.greater(data, value), substitute, data)
+
+thresholding_options = {'soft': soft,
+                        'hard': hard,
+                        'greater': greater,
+                        'less': less}
 
 def threshold(data, value, mode='soft', substitute=0):
     """
@@ -67,34 +94,12 @@ def threshold(data, value, mode='soft', substitute=0):
     array([ 1. ,  1.5,  2. ,  0. ,  0. ,  0. ,  0. ])
 
     """
-    data = np.asarray(data)
 
-    if mode == 'soft':
-        mvalue = -value
-
-        cond_less = np.less(data, value)
-        cond_greater = np.greater(data, mvalue)
-
-        output = np.where(cond_less & cond_greater, substitute, data)
-        output = np.where(cond_less, output + value, output)
-        output = np.where(cond_greater, output - value, output)
-
-    elif mode == 'hard':
-        mvalue = -value
-
-        cond = np.less(data, value)
-        cond &= np.greater(data, mvalue)
-
-        output = np.where(cond, substitute, data)
-
-    elif mode == 'greater':
-        output = np.where(np.less(data, value), substitute, data)
-
-    elif mode == 'less':
-        output = np.where(np.greater(data, value), substitute, data)
-
-    else:
-        raise ValueError("The mode parameter only takes value among "
-                         "{'soft', 'hard', 'greater','less'}.")
-
-    return output
+    try:
+        return thresholding_options[mode](data, value, substitute)
+    except KeyError:
+        # Make sure error is always identical by sorting keys
+        keys = ("'{0}'".format(key) for key in
+                sorted(thresholding_options.keys()))
+        raise ValueError("The mode parameter only takes values from: {0}."
+                         .format(', '.join(keys)))
