@@ -1,5 +1,10 @@
 Changelog
 
+0.3.0
+    A mojor refactoring, providing support for Python 3.x while maintaining
+    full backwards compatiblity.
+    Development has moved to https://github.com/rgommers/pywt
+
 0.2.2
     maintenance release:
       - resolved setup and build issues

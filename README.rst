@@ -5,29 +5,37 @@ PyWavelets is a free Open Source wavelet transform software for Python_
 programming language. It is written in Python, Cython and C for a mix of easy
 and powerful high-level interface and the best performance.
 
-PyWavelets is very easy to start with and use, and currently is capable of:
+PyWavelets is very easy to start with and use. Just install the package, open
+the Python interactive shell and type:
+
+  .. sourcecode:: python
+
+    >>> import pywt
+    >>> cA, cD = pywt.dwt([1, 2, 3, 4], 'db1')
+
+Voilà! Computing wavelet transforms never before has been so simple :)
+
+Main features
+-------------
+
+The main features of PyWavelets are:
 
   * 1D and 2D Forward and Inverse Discrete Wavelet Transform (DWT and IDWT)
   * 1D and 2D Stationary Wavelet Transform (Undecimated Wavelet Transform)
   * 1D and 2D Wavelet Packet decomposition and reconstruction
   * Approximating wavelet and scaling functions
-  * Over seventy built-in wavelet filters and custom wavelets supported
+  * Over seventy `built-in wavelet filters`_
+    and custom wavelets supported
   * Single and double precision calculations
-  * Results compatibility with Matlab Wavelet Toolbox (tm)
-
-.. image::
-    https://secure.travis-ci.org/rgommers/pywt.png?branch=master
-    :alt: Build Status
-    :target: https://secure.travis-ci.org/rgommers/pywt
-
+  * Results compatibility with Matlab Wavelet Toolbox |tm|
 
 Requirements
 ------------
 
 PyWavelets is a package for the Python programming language. It requires:
 
- - Python_ 2.6, 2.7 or >=3.2
- - Numpy_ 
+ - Python_ 2.6, 2.7 or >=3.3
+ - Numpy_ >= 1.6.2
 
 Download
 --------
@@ -36,8 +44,8 @@ The most recent *development* version can be found on GitHub at
 https://github.com/rgommers/pywt.
 
 Latest release, including source and binary package for Windows, is available
-for download from the `Python Package Index`_.  Note that the official release
-is quite old and doesn't yet support Python 3.
+for download from the `Python Package Index`_ or on 
+`https://github.com/rgommers/pywt/releases`__
 
 Install
 -------
@@ -45,9 +53,7 @@ Install
 In order to build PyWavelets from source, a working C compiler (GCC or MSVC)
 and a recent version of Cython_ is required.
 
- - To install PyWavelets open shell prompt and type 
-   ``pip install -e git+https://github.com/rgommers/pywt#egg=pywt`` (dev version)
-   or ``pip install PyWavelets`` (last official release)
+ - Install PyWavelets with ``pip install PyWavelets``.
 
  - To build and install from source, navigate to downloaded PyWavelets source
    code directory and type ``python setup.py install``.
@@ -59,6 +65,9 @@ Binary packages for several Linux distributors are maintained by Open Source
 community contributors. Query your Linux package manager tool
 for `python-wavelets`, `python-pywt` or similar package name.
 
+.. seealso::  :ref:`Development notes <dev-index>` section contains more
+              information on building and installing from source code.
+
 Documentation
 -------------
 
@@ -68,31 +77,33 @@ http://pywavelets.readthedocs.org.
 
 For more usage examples see the `demo`_ directory in the source package.
 
-Contributing
-------------
+State of development & Contributing
+-----------------------------------
 
 PyWavelets started in 2006 as an academic project for a master thesis
 on `Analysis and Classification of Medical Signals using Wavelet Transforms`
-but seems to no longer be maintained by its `original developer`_.
-This repo contains further development work by multiple contributors.
+and was maintained until 2012 by its `original developer`_.  In 2013
+maintenance was taken over in a new repo (`https://github.com/rgommers/pywt`__)
+by a larger development teams with stated support from the original developer.
+At the moment it's not yet clear if that repo will become a full fork under a
+new name or if the PyWavelets name can be kept.  The latter is preferred but
+requires permission from the original developer (see 
+`https://github.com/nigma/pywt/issues/13`__  for current status on this issue).
 
 All contributions including bug reports, bug fixes, new feature implementations
-and documentation improvements are welcome.
+and documentation improvements are welcome.  Moreover, developers with an
+interest in PyWavelets are very welcome to join the development team!
+
 
 Python 3
 --------
 
-Python 2.x and Python 3.x versions are working under the
-same code base at https://github.com/rgommers/pywt, as well as the examples. 
-Check out the `changelog <https://github.com/rgommers/pywt>`_ for
-info.
-
-Issues should be reported on https://github.com/rgommers/pywt/issues.
+Python 3.x is fully supported from release v0.3.0 on.
 
 Contact
 -------
 
-Use `GitHub Issues`_ or the `PyWavelets discussions group`_ to post your
+Use `GitHub Issues`_ or `PyWavelets discussions group`_ to post your
 comments or questions.
 
 License
@@ -100,21 +111,26 @@ License
 
 PyWavelets is a free Open Source software released under the MIT license.
 
-Commercial Support
-------------------
+Contents
+--------
 
-For information on commercial support and development one can try to contact
-the original developer at en@ig.ma.
+.. toctree::
+   :maxdepth: 1
+
+   ref/index
+   regression/index
+   dev/index
+   resources
+   contents
 
 
+.. _built-in wavelet filters: http://wavelets.pybytes.com/
 .. _Cython: http://cython.org/
-.. _demo: https://github.com/nigma/pywt/tree/master/demo
-.. _GitHub: https://github.com/rgommers/pywt/issues
-.. _GitHub Issues: https://github.com/nigma/pywt/issues
-.. _in-development version: https://github.com/nigma/pywt/tarball/develop#egg=PyWavelets-dev
-.. _Numpy: http://numpy.scipy.org/
+.. _demo: https://github.com/rgommers/pywt/tree/master/demo
+.. _GitHub: https://github.com/rgommers/pywt
+.. _GitHub Issues: https://github.com/rgommers/pywt/issues
+.. _Numpy: http://www.numpy.org
 .. _original developer: http://en.ig.ma
 .. _Python: http://python.org/
 .. _Python Package Index: http://pypi.python.org/pypi/PyWavelets/
 .. _PyWavelets discussions group: http://groups.google.com/group/pywavelets
-
