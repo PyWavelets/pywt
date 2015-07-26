@@ -65,7 +65,8 @@ def plot_signal_decomp(data, w, title):
 
 
 plot_signal_decomp(data1, 'coif5', "DWT: Signal irregularity")
-plot_signal_decomp(data2, 'sym5', "DWT: Frequency and phase change - Symmlets5")
+plot_signal_decomp(data2, 'sym5',
+                   "DWT: Frequency and phase change - Symmlets5")
 plot_signal_decomp(ecg, 'sym5', "DWT: Ecg sample - Symmlets5")
 
 

@@ -106,10 +106,10 @@ def blend_images(base, texture, wavelet, level, mode='sp1', base_gain=None,
 
         # blend details coefficients
         for n, (base_band_details, texture_band_details) in enumerate(
-            zip(base_band_coeffs, texture_band_coeffs)):
+                zip(base_band_coeffs, texture_band_coeffs)):
             blended_details = []
             for (base_detail, texture_detail) in zip(base_band_details,
-                texture_band_details):
+                                                     texture_band_details):
                 if base_gain is not None:
                     base_detail *= base_gain
                 if texture_gain is not None:
@@ -117,7 +117,7 @@ def blend_images(base, texture, wavelet, level, mode='sp1', base_gain=None,
 
                 # select coeffs with greater energy
                 blended = numpy.where(abs(base_detail) > abs(texture_detail),
-                    base_detail, texture_detail)
+                                      base_detail, texture_detail)
                 blended_details.append(blended)
 
             base_band_coeffs[n] = texture_band_coeffs[n] = None
@@ -174,7 +174,7 @@ def main():
         t = clock()
 
     im = blend_images(base, texture, options.wavelet, options.level,
-        options.mode, options.base_gain, options.texture_gain)
+                      options.mode, options.base_gain, options.texture_gain)
 
     if options.timeit:
         print("%.3fs" % (clock() - t))

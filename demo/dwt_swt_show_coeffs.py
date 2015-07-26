@@ -62,12 +62,13 @@ def plot_coeffs(data, w, title, use_dwt=True):
             ax.set_ylim(min(0, 1.4 * min(x)), max(0, 1.4 * max(x)))
         else:
             vals = x[w.dec_len * (1 + i):len(x) - w.dec_len * (1 + i)]
-            ax.set_ylim( min(0, 2 * min(vals)), max(0, 2 * max(vals)))
+            ax.set_ylim(min(0, 2 * min(vals)), max(0, 2 * max(vals)))
 
 
 # Show DWT coefficients
 use_dwt = True
-plot_coeffs(data1, 'db1', "DWT: Signal irregularity shown in D1 - Haar wavelet",
+plot_coeffs(data1, 'db1',
+            "DWT: Signal irregularity shown in D1 - Haar wavelet",
             use_dwt)
 plot_coeffs(data2, 'sym5', "DWT: Frequency and phase change - Symmlets5",
             use_dwt)

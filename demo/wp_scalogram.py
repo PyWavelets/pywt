@@ -43,7 +43,7 @@ ax2 = fig2.add_subplot(211)
 ax2.specgram(data, NFFT=64, noverlap=32, cmap=cmap)
 ax2.set_title("Spectrogram of signal")
 ax3 = fig2.add_subplot(212)
-ax3.imshow(values, origin='upper', extent=[-1,1,-1,1],
+ax3.imshow(values, origin='upper', extent=[-1, 1, -1, 1],
            interpolation='nearest')
 ax3.set_title("Wavelet packet coefficients")
 

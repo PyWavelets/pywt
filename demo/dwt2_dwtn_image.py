@@ -39,7 +39,8 @@ coeffsn = pywt.dwtn(original, 'bior1.3')
 fig = plt.figure()
 for i, key in enumerate(['aa', 'ad', 'da', 'dd']):
     ax = fig.add_subplot(2, 2, i + 1)
-    ax.imshow(coeffsn[key], origin='image', interpolation="nearest", cmap=plt.cm.gray)
+    ax.imshow(coeffsn[key], origin='image', interpolation="nearest",
+              cmap=plt.cm.gray)
     ax.set_title(titles[i], fontsize=12)
 
 fig.suptitle("dwtn coefficients", fontsize=14)
