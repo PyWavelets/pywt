@@ -14,6 +14,7 @@ __all__ = ['threshold']
 
 import numpy as np
 
+
 def soft(data, value, substitute=0):
     data = np.asarray(data)
 
@@ -24,23 +25,28 @@ def soft(data, value, substitute=0):
     cond = np.less(magnitude, value)
     return np.where(cond, substitute, thresholded)
 
+
 def hard(data, value, substitute=0):
     data = np.asarray(data)
     cond = np.less(np.absolute(data), value)
     return np.where(cond, substitute, data)
 
+
 def greater(data, value, substitute=0):
     data = np.asarray(data)
     return np.where(np.less(data, value), substitute, data)
+
 
 def less(data, value, substitute=0):
     data = np.asarray(data)
     return np.where(np.greater(data, value), substitute, data)
 
+
 thresholding_options = {'soft': soft,
                         'hard': hard,
                         'greater': greater,
                         'less': less}
+
 
 def threshold(data, value, mode='soft', substitute=0):
     """
