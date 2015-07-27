@@ -1,17 +1,22 @@
-include setup.py setup.cfg
-include README.rst CHANGES.txt COPYING.txt THANKS.txt
+include setup.py runtests.py
+include README.rst
+include *.txt
 include MANIFEST.in
 
 # All source files
-recursive-include src *
+recursive-include pywt *
 # All documentation
 recursive-include doc *
 recursive-include demo *
+
+# Cached Cython signatures
+include cythonize.dat
 
 # Add build and testing tools
 include tox.ini
 recursive-include util *
 
+# Exclude what we don't want to include
 prune build
 prune doc/build
 prune */__pycache__
