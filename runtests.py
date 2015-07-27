@@ -28,8 +28,11 @@ EXTRA_PATH = ['/usr/lib/ccache', '/usr/lib/f90cache',
               '/usr/local/lib/ccache', '/usr/local/lib/f90cache']
 
 # ---------------------------------------------------------------------
+if __doc__ is None:
+    __doc__ = "Run without -OO if you want usage info"
+else:
+    __doc__ = __doc__.format(**globals())
 
-__doc__ = __doc__.format(**globals())
 
 import sys
 import os

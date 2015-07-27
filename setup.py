@@ -141,10 +141,10 @@ def setup_package():
 
     metadata = dict(
         name="PyWavelets",
-        author="Filip Wasilewski",
-        author_email="en@ig.ma",
-        url="http://www.pybytes.com/pywavelets/",
-        download_url="http://pypi.python.org/pypi/PyWavelets/",
+        maintainer="The PyWavelets Developers",
+        maintainer_email="http://groups.google.com/group/pywavelets",
+        url="https://github.com/rgommers/pywt",
+        download_url="https://github.com/rgommers/pywt/releases",
         license="MIT",
         description="PyWavelets, wavelet transform module",
         long_description="""\
@@ -158,8 +158,7 @@ def setup_package():
         * Single and double precision calculations
         * Results compatibility with Matlab Wavelet Toolbox (tm)
         """,
-        keywords=["wavelets", "wavelet transform", "DWT", "SWT", "scientific",
-                  "NumPy"],
+        keywords=["wavelets", "wavelet transform", "DWT", "SWT", "scientific"],
         classifiers=[
             "Development Status :: 5 - Production/Stable",
             "Intended Audience :: Developers",
@@ -169,8 +168,12 @@ def setup_package():
             "Operating System :: OS Independent",
             "Programming Language :: C",
             "Programming Language :: Python",
+            "Programming Language :: Python :: 3",
             "Programming Language :: Python :: 2.6",
             "Programming Language :: Python :: 2.7",
+            "Programming Language :: Python :: 3.3",
+            "Programming Language :: Python :: 3.4",
+            "Programming Language :: Python :: 3.5",
             "Topic :: Software Development :: Libraries :: Python Modules"
         ],
         platforms=["Windows", "Linux", "Solaris", "Mac OS-X", "Unix"],
@@ -194,6 +197,11 @@ def setup_package():
         FULLVERSION, GIT_REVISION = get_version_info()
         metadata['version'] = FULLVERSION
     else:
+        if (len(sys.argv) >= 2 and sys.argv[1] == 'bdist_wheel') or (
+                    'develop' in sys.argv):
+            # bdist_wheel needs setuptools
+            import setuptools
+
         from numpy.distutils.core import setup
 
         cwd = os.path.abspath(os.path.dirname(__file__))

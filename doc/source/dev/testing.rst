@@ -6,15 +6,15 @@ Testing
 Continous integration with Travis-CI
 ------------------------------------
 
-The project is using `Travis-CI <http://travis-ci.org/#!/nigma/pywt>`_ service
+The project is using `Travis-CI <https://travis-ci.org/rgommers/pywt>`_ service
 for continous integration and testing.
 
 Current build status is:
 
 .. image::
-    https://secure.travis-ci.org/nigma/pywt.png?branch=develop
+    https://secure.travis-ci.org/rgommers/pywt.png?branch=develop
     :alt: Build Status
-    :target: https://secure.travis-ci.org/nigma/pywt
+    :target: https://secure.travis-ci.org/rgommers/pywt
 
 
 If you are submitting a patch or pull request please make sure it
@@ -24,18 +24,23 @@ does not break the build.
 Running tests locally
 ---------------------
 
-Simply::
+Tests are implemented with `nose`_, so use one of:
 
-  python setup.py test
+    $ nosetests pywt
+
+    >>> pywt.test()
 
 
 Running tests with Tox
 ----------------------
 
-There's also a config file for running tests with Tox (``pip install tox``)::
+There's also a config file for running tests with `Tox`_ (``pip install tox``).
+To for example run tests for Python 2.7 and Python 3.4 use::
 
-  tox
+  tox -e py27,py34
 
-It is not however very convenient at the moment because Tox recreates
-the test environment (which is a good thing) and builds numpy from
-source on every run (which takes a lot of time).
+For more information see the `Tox`_ documentation.
+
+
+.. _nose: http://nose.readthedocs.org/en/latest/ 
+.. _Tox: http://tox.testrun.org/ 

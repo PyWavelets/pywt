@@ -1,23 +1,59 @@
+# After changing this file, check it on:
+#   http://lint.travis-ci.org/
 language: python
+sudo: false
+matrix:
+  include:
+    - python: 2.7
+      env:
+        - PYFLAKES=1
+        - PEP8=1
+        - NUMPYSPEC=numpy
+      before_install:
+        - pip install pep8==1.5.1
+        - pip install pyflakes
+      script:
+        - PYFLAKES_NODOCTEST=1 pyflakes pywt demo | grep -E -v 'unable to detect undefined names|assigned to but never used|imported but unused|redefinition of unused' > test.out; cat test.out; test \! -s test.out
+        - pep8 pywt demo
 
-python:
-  - 2.6
-  - 3.3
+    - python: 3.5-dev
+      env:
+        - NUMPYSPEC=numpy
+    - python: 3.4
+      env:
+        - NUMPYSPEC=numpy
+    - python: 3.3
+      env:
+        - NUMPYSPEC=numpy
+    - python: 2.6
+      env:
+        - OPTIMIZE=-OO
+        - NUMPYSPEC="numpy==1.6.2"
+    - python: 2.7
+      env:
+        - NUMPYSPEC="--upgrade git+git://github.com/numpy/numpy.git@v1.9.1"
+
+addons:
+  apt:
+    packages:
+    - ccache
+cache:
+  directories:
+    - $HOME/.ccache
 
 before_install:
+  - export PATH=/usr/lib/ccache:$PATH
   - uname -a
   - free -m
   - df -h
   - ulimit -a
-  - pip install -q --use-mirrors Cython numpy
-  # For Python 2.6 we also need argparse
-  - pip install argparse
+  # Speed up install by not compiling Cython
+  - travis_retry pip install --install-option="--no-cython-compile" Cython==0.22
+  - travis_retry pip install $NUMPYSPEC
+  - travis_retry pip install nose
   - pip install coverage
-  - pip install coveralls
   - python -V
+  - set -o pipefail
 
 script:
-  - python runtests.py -g -m full --coverage
-
-after_success:
-    - coveralls
+  - python -u $OPTIMIZE runtests.py -g -m full --coverage
