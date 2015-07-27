@@ -152,7 +152,7 @@ def wavedec2(data, wavelet, mode='sym', level=None):
 
     data = np.asarray(data, np.float64)
 
-    if len(data.shape) != 2:
+    if data.ndim != 2:
         raise ValueError("Expected 2D input data.")
 
     if not isinstance(wavelet, Wavelet):

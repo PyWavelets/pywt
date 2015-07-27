@@ -53,7 +53,7 @@ def dwt2(data, wavelet, mode='sym'):
 
     """
     data = np.asarray(data)
-    if len(data.shape) != 2:
+    if data.ndim != 2:
         raise ValueError("Expected 2-D data array")
 
     if not isinstance(wavelet, Wavelet):
@@ -137,7 +137,7 @@ def idwt2(coeffs, wavelet, mode='sym'):
     for arr in (LL, LH, HL, HH):
         if arr is not None:
             all_none = False
-            if len(arr.shape) != 2:
+            if arr.ndim != 2:
                 raise TypeError("All input coefficients arrays must be 2D.")
 
     if all_none:
@@ -225,7 +225,7 @@ def dwtn(data, wavelet, mode='sym'):
 
     """
     data = np.asarray(data)
-    dim = len(data.shape)
+    dim = data.ndim
     if dim < 1:
         raise ValueError("Input data must be at least 1D")
     coeffs = [('', data)]
@@ -377,7 +377,7 @@ def swt2(data, wavelet, level, start_level=0):
 
     """
     data = np.asarray(data)
-    if len(data.shape) != 2:
+    if data.ndim != 2:
         raise ValueError("Expected 2D data array")
 
     if not isinstance(wavelet, Wavelet):
