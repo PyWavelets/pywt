@@ -217,11 +217,10 @@ def dwtn(data, wavelet, mode='sym'):
 
         For example, for a 2D case the result will look something like this::
 
-            {
-                'aa': <coeffs>  # A(LL) - approx. on 1st dim, approx. on 2nd dim
-                'ad': <coeffs>  # V(LH) - approx. on 1st dim, det. on 2nd dim
-                'da': <coeffs>  # H(HL) - det. on 1st dim, approx. on 2nd dim
-                'dd': <coeffs>  # D(HH) - det. on 1st dim, det. on 2nd dim
+            {'aa': <coeffs>  # A(LL) - approx. on 1st dim, approx. on 2nd dim
+             'ad': <coeffs>  # V(LH) - approx. on 1st dim, det. on 2nd dim
+             'da': <coeffs>  # H(HL) - det. on 1st dim, approx. on 2nd dim
+             'dd': <coeffs>  # D(HH) - det. on 1st dim, det. on 2nd dim
             }
 
     """

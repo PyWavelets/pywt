@@ -43,7 +43,7 @@ for row in wp2.get_level(2, 'freq'):
     for node in row:
         ax = fig.add_subplot(len(row), len(row), i)
         ax.set_title("%s=(%s row, %s col)" % (
-        (node.path,) + wp2.expand_2d_path(node.path)))
+                     (node.path,) + wp2.expand_2d_path(node.path)))
         ax.imshow(np.sqrt(np.abs(node.data)), origin='image',
                   interpolation="nearest", cmap=plt.cm.gray)
         i += 1

@@ -37,7 +37,7 @@ for family, (rows, cols) in plot_data:
             ax.plot(x, phi, color)
             ax.set_xlim(min(x), max(x))
 
-            ax = fig.add_subplot(rows, 2 * cols, 1 + 2 * (col + row * cols) + 1)
+            ax = fig.add_subplot(rows, 2*cols, 1 + 2*(col + row*cols) + 1)
             ax.set_title(wavelet.name + " psi")
             ax.plot(x, psi, color)
             ax.set_xlim(min(x), max(x))
@@ -60,24 +60,23 @@ for family, (rows, cols) in [('bior', (4, 3)), ('rbio', (4, 3))]:
             row *= 2
 
             color = next(colors)
-            ax = fig.add_subplot(2 * rows, 2 * cols, 1 + 2 * (col + row * cols))
+            ax = fig.add_subplot(2*rows, 2*cols, 1 + 2*(col + row*cols))
             ax.set_title(wavelet.name + " phi")
             ax.plot(x, phi, color)
             ax.set_xlim(min(x), max(x))
 
-            ax = fig.add_subplot(2 * rows, 2 * cols, 2 * (1 + col + row * cols))
+            ax = fig.add_subplot(2*rows, 2*cols, 2*(1 + col + row*cols))
             ax.set_title(wavelet.name + " psi")
             ax.plot(x, psi, color)
             ax.set_xlim(min(x), max(x))
 
             row += 1
-            ax = fig.add_subplot(2 * rows, 2 * cols, 1 + 2 * (col + row * cols))
+            ax = fig.add_subplot(2*rows, 2*cols, 1 + 2*(col + row*cols))
             ax.set_title(wavelet.name + " phi_r")
             ax.plot(x, phi_r, color)
             ax.set_xlim(min(x), max(x))
 
-            ax = fig.add_subplot(2 * rows, 2 * cols,
-                1 + 2 * (col + row * cols) + 1)
+            ax = fig.add_subplot(2*rows, 2*cols, 1 + 2*(col + row*cols) + 1)
             ax.set_title(wavelet.name + " psi_r")
             ax.plot(x, psi_r, color)
             ax.set_xlim(min(x), max(x))
