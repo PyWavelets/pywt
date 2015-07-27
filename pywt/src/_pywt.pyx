@@ -643,6 +643,8 @@ def dwt(object data, object wavelet, object mode='sym'):
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(data)
     data = np.array(data, dtype=dt)
+    if data.ndim != 1:
+        raise ValueError("dwt requires a 1D data array.")
     return _dwt(data, wavelet, mode)
 
 
@@ -795,9 +797,13 @@ def idwt(cA, cD, object wavelet, object mode='sym', int correct_size=0):
     if cA is not None:
         dt = _check_dtype(cA)
         cA = np.array(cA, dtype=dt)
+        if cA.ndim != 1:
+            raise ValueError("idwt requires 1D coefficient arrays.")
     if cD is not None:
         dt = _check_dtype(cD)
         cD = np.array(cD, dtype=dt)
+        if cD.ndim != 1:
+            raise ValueError("idwt requires 1D coefficient arrays.")
 
     if cA is not None and cD is not None:
         if cA.dtype != cD.dtype:
