@@ -27,7 +27,7 @@ The main features of PyWavelets are:
   * Over seventy `built-in wavelet filters`_
     and custom wavelets supported
   * Single and double precision calculations
-  * Results compatible with Matlab Wavelet Toolbox |tm|
+  * Results compatible with Matlab Wavelet Toolbox (TM)
 
 Requirements
 ------------
@@ -44,8 +44,7 @@ The most recent *development* version can be found on GitHub at
 https://github.com/rgommers/pywt.
 
 Latest release, including source and binary package for Windows, is available
-for download from the `Python Package Index`_ or on 
-`https://github.com/rgommers/pywt/releases`__
+for download from the `Python Package Index`_ or on the `Releases Page`_.
 
 Install
 -------
@@ -83,12 +82,12 @@ State of development & Contributing
 PyWavelets started in 2006 as an academic project for a master thesis
 on `Analysis and Classification of Medical Signals using Wavelet Transforms`
 and was maintained until 2012 by its `original developer`_.  In 2013
-maintenance was taken over in a new repo (`https://github.com/rgommers/pywt`__)
+maintenance was taken over in a `new repo <https://github.com/rgommers/pywt>`_)
 by a larger development team - a move supported by the original developer.
 The repo move doesn't mean that this is a fork - the package continues to be
 developed under the name "PyWavelets", and released on PyPi and Github (see
-`https://github.com/nigma/pywt/issues/13`__ for the discussion where that was
-decided).
+`this issue <https://github.com/nigma/pywt/issues/13>`_ for the discussion
+where that was decided).
 
 All contributions including bug reports, bug fixes, new feature implementations
 and documentation improvements are welcome.  Moreover, developers with an
@@ -134,3 +133,4 @@ Contents
 .. _Python: http://python.org/
 .. _Python Package Index: http://pypi.python.org/pypi/PyWavelets/
 .. _PyWavelets discussions group: http://groups.google.com/group/pywavelets
+.. _Releases Page: https://github.com/rgommers/pywt/releases
