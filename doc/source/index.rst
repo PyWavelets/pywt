@@ -20,14 +20,14 @@ Main features
 
 The main features of PyWavelets are:
 
-  * 1D and 2D Forward and Inverse Discrete Wavelet Transform (DWT and IDWT)
+  * 1D, 2D and nD Forward and Inverse Discrete Wavelet Transform (DWT and IDWT)
   * 1D and 2D Stationary Wavelet Transform (Undecimated Wavelet Transform)
   * 1D and 2D Wavelet Packet decomposition and reconstruction
   * Approximating wavelet and scaling functions
   * Over seventy `built-in wavelet filters`_
     and custom wavelets supported
   * Single and double precision calculations
-  * Results compatibility with Matlab Wavelet Toolbox |tm|
+  * Results compatible with Matlab Wavelet Toolbox |tm|
 
 Requirements
 ------------
@@ -84,11 +84,11 @@ PyWavelets started in 2006 as an academic project for a master thesis
 on `Analysis and Classification of Medical Signals using Wavelet Transforms`
 and was maintained until 2012 by its `original developer`_.  In 2013
 maintenance was taken over in a new repo (`https://github.com/rgommers/pywt`__)
-by a larger development teams with stated support from the original developer.
-At the moment it's not yet clear if that repo will become a full fork under a
-new name or if the PyWavelets name can be kept.  The latter is preferred but
-requires permission from the original developer (see 
-`https://github.com/nigma/pywt/issues/13`__  for current status on this issue).
+by a larger development team - a move supported by the original developer.
+The repo move doesn't mean that this is a fork - the package continues to be
+developed under the name "PyWavelets", and released on PyPi and Github (see
+`https://github.com/nigma/pywt/issues/13`__ for the discussion where that was
+decided).
 
 All contributions including bug reports, bug fixes, new feature implementations
 and documentation improvements are welcome.  Moreover, developers with an
@@ -103,7 +103,7 @@ Python 3.x is fully supported from release v0.3.0 on.
 Contact
 -------
 
-Use `GitHub Issues`_ or `PyWavelets discussions group`_ to post your
+Use `GitHub Issues`_ or the `PyWavelets discussions group`_ to post your
 comments or questions.
 
 License

@@ -142,7 +142,7 @@ def setup_package():
     metadata = dict(
         name="PyWavelets",
         maintainer="The PyWavelets Developers",
-        maintainer_email="scipy-dev@scipy.org",
+        maintainer_email="http://groups.google.com/group/pywavelets",
         url="https://github.com/rgommers/pywt",
         download_url="https://github.com/rgommers/pywt/releases",
         license="MIT",
