@@ -9,6 +9,6 @@
 # of the rackspace folder instead of trying to install from more recent
 # source tarball published on PyPI
 numpy==1.8.1
-cython==0.20.2
+Cython==0.20.2
 nose
 wheel
