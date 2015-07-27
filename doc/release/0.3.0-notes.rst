@@ -1,0 +1,75 @@
+==============================
+PyWavelets 0.3.0 Release Notes
+==============================
+
+.. contents::
+
+PyWavelets 0.3.0 is the first release of the package in 3 years.  It is the
+result of a significant effort of a growing development team to modernize the
+package, to provide Python 3.x support and to make a start with providing new
+features as well as improved performance.  A 0.4.0 release will follow
+shortly, and will contain more significant new features as well as
+changes/deprecations to streamline the API.
+
+This release requires Python 2.6, 2.7 or 3.3-3.5 and NumPy 1.6.2 or greater.
+
+Highlights of this release include:
+
+- Support for Python 3.x (>=3.3)
+- Added a test suite (based on nose, coverage up to 61% so far)
+- Maintenance work: C style complying to the Numpy style guide, improved
+  templating system, more complete docstrings, pep8/pyflakes compliance, and
+  more.
+
+
+New features
+============
+
+Test suite
+----------
+
+The test suite can be run with ``nosetests pywt`` or with::
+
+    >>> import pywt
+    >>> pywt.test()
+
+n-D Inverse Discrete Wavelet Transform
+--------------------------------------
+
+The function ``pywt.idwtn``, which provides n-dimensional inverse DWT, has been
+added.  It complements ``idwt``, ``idwt2`` and ``dwtn``.
+
+Thresholding
+------------
+
+The function `pywt.threshold` has been added.  It unifies the four thresholding
+functions that are still provided in the ``pywt.thresholding`` namespace.
+
+
+Backwards incompatible changes
+==============================
+
+None in this release.
+
+
+Other changes
+=============
+
+Development has moved to `a new repo <https://github.com/rgommers/pywt>`_.
+Everyone with an interest in wavelets is welcome to contribute!
+
+Building wheels, building with ``python setup.py develop`` and many other
+standard ways to build and install PyWavelets are supported now.
+
+
+Authors
+=======
+
+
+Issues closed
+-------------
+
+
+Pull requests
+-------------
+
