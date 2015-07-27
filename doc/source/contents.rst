@@ -10,6 +10,7 @@ PyWavelets
    regression/index
    dev/index
    resources
+   releasenotes
 
 Indices and tables
 ==================
