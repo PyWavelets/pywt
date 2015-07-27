@@ -65,6 +65,20 @@ standard ways to build and install PyWavelets are supported now.
 Authors
 =======
 
+* Ankit Agrawal +
+* François Boulogne +
+* Ralf Gommers +
+* David Menéndez Hurtado +
+* Gregory R. Lee +
+* David McInnis +
+* Helder Oliveira +
+* Filip Wasilewski
+* Kai Wohlfahrt +
+
+A total of 9 people contributed to this release.
+People with a "+" by their names contributed a patch for the first time.
+This list of names is automatically generated, and may not be fully complete.
+
 
 Issues closed
 -------------
