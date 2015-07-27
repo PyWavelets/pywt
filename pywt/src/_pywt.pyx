@@ -277,8 +277,8 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
             except TypeError:
                 raise ValueError("Filter bank with numeric values required.")
 
-            if not (1 == len(dec_lo.shape) == len(dec_hi.shape) ==
-                         len(rec_lo.shape) == len(rec_hi.shape)):
+            if not (1 == dec_lo.ndim == dec_hi.ndim ==
+                         rec_lo.ndim == rec_hi.ndim):
                 raise ValueError("All filters in filter bank must be 1D.")
 
             filter_length = len(dec_lo)

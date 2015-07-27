@@ -543,7 +543,7 @@ class WaveletPacket(Node):
 
         if data is not None:
             data = np.asarray(data, dtype=np.float64)
-            assert len(data.shape) == 1
+            assert data.ndim == 1
             self.data_size = data.shape[0]
             if maxlevel is None:
                 maxlevel = dwt_max_level(self.data_size, self.wavelet)
@@ -645,7 +645,7 @@ class WaveletPacket2D(Node2D):
 
         if data is not None:
             data = np.asarray(data, dtype=np.float64)
-            assert len(data.shape) == 2
+            assert data.ndim == 2
             self.data_size = data.shape
             if maxlevel is None:
                 maxlevel = dwt_max_level(min(self.data_size), self.wavelet)
