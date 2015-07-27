@@ -26,8 +26,6 @@ matrix:
       env:
         - NUMPYSPEC=numpy
     - python: 2.6
-      before_install:
-        - pip install argparse
       env:
         - OPTIMIZE=-OO
         - NUMPYSPEC="numpy==1.6.2"
