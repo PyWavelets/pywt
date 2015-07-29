@@ -24,10 +24,8 @@ pip-log.txt
 
 # Project working files
 _pywt.[ch]
-c_wt.pxd
 wavelets.[ch]
 wavelets_coeffs.h
-wt.[ch]
 cythonize.dat
 pywt/__config__.py
 pywt/version.py
