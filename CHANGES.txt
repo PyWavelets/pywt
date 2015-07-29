@@ -3,7 +3,7 @@ Changelog
 0.3.0
     A major refactoring, providing support for Python 3.x while maintaining
     full backwards compatiblity.
-    Development has moved to https://github.com/rgommers/pywt
+    Development has moved to https://github.com/PyWavelets/pywt
 
 0.2.2
     maintenance release:

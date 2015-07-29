@@ -35,7 +35,7 @@ Articles
  - `Wavelet Regression in Python <http://jseabold.net/blog/2012/02/wavelet-regression-in-python.html>`_
 
 
-.. _GitHub repository: https://github.com/rgommers/pywt
-.. _GitHub Issues: https://github.com/rgommers/pywt/issues
+.. _GitHub repository: https://github.com/PyWavelets/pywt
+.. _GitHub Issues: https://github.com/PyWavelets/pywt/issues
 .. _PyWavelets discussions group: http://groups.google.com/group/pywavelets
 .. _wavelets.pybytes.com: http://wavelets.pybytes.com/

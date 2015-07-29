@@ -6,15 +6,15 @@ Testing
 Continous integration with Travis-CI
 ------------------------------------
 
-The project is using `Travis-CI <https://travis-ci.org/rgommers/pywt>`_ service
+The project is using `Travis-CI <https://travis-ci.org/PyWavelets/pywt>`_ service
 for continous integration and testing.
 
 Current build status is:
 
 .. image::
-    https://secure.travis-ci.org/rgommers/pywt.png?branch=develop
+    https://secure.travis-ci.org/PyWavelets/pywt.png?branch=develop
     :alt: Build Status
-    :target: https://secure.travis-ci.org/rgommers/pywt
+    :target: https://secure.travis-ci.org/PyWavelets/pywt
 
 
 If you are submitting a patch or pull request please make sure it

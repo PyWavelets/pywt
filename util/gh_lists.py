@@ -22,7 +22,7 @@ Issue = collections.namedtuple('Issue', ('id', 'title', 'url'))
 
 def main():
     p = argparse.ArgumentParser(usage=__doc__.lstrip())
-    p.add_argument('--project', default='rgommers/pywt')
+    p.add_argument('--project', default='PyWavelets/pywt')
     p.add_argument('milestone')
     args = p.parse_args()
 
