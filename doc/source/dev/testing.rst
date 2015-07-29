@@ -12,7 +12,7 @@ for continous integration and testing.
 Current build status is:
 
 .. image::
-    https://secure.travis-ci.org/PyWavelets/pywt.png?branch=develop
+    https://secure.travis-ci.org/PyWavelets/pywt.png?branch=master
     :alt: Build Status
     :target: https://secure.travis-ci.org/PyWavelets/pywt
 
