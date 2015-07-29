@@ -131,6 +131,8 @@ def configuration(parent_package='',top_path=None):
                        quiet=True)
 
     config.add_subpackage('pywt')
+
+    config.get_version('pywt/version.py')
     return config
 
 
