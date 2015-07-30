@@ -1,0 +1,40 @@
+==============================
+PyWavelets 0.4.0 Release Notes
+==============================
+
+.. note:: PyWavelets 0.4.0 is not released yet!
+
+.. contents::
+
+
+
+This release requires Python 2.6, 2.7 or 3.3-3.5 and NumPy 1.6.2 or greater.
+
+
+New features
+============
+
+
+Deprecated features
+===================
+
+
+Backwards incompatible changes
+==============================
+
+
+Other changes
+=============
+
+
+Authors
+=======
+
+
+Issues closed for v0.4.0
+------------------------
+
+
+Pull requests for v0.4.0
+------------------------
+
