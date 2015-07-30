@@ -62,7 +62,7 @@ available from `Python Package Index`_.
 
 Binary packages for several Linux distributors are maintained by Open Source
 community contributors. Query your Linux package manager tool
-for `python-wavelets`, `python-pywt` or similar package name.
+for `python-pywavelets`, `python-wavelets`, `python-pywt` or similar package name.
 
 .. seealso::  :ref:`Development notes <dev-index>` section contains more
               information on building and installing from source code.
