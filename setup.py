@@ -56,7 +56,7 @@ def get_version_info():
         GIT_REVISION = "Unknown"
 
     if not ISRELEASED:
-        FULLVERSION += '.dev-' + GIT_REVISION[:7]
+        FULLVERSION += '.dev0+' + GIT_REVISION[:7]
 
     return FULLVERSION, GIT_REVISION
 
@@ -145,8 +145,8 @@ def setup_package():
         name="PyWavelets",
         maintainer="The PyWavelets Developers",
         maintainer_email="http://groups.google.com/group/pywavelets",
-        url="https://github.com/rgommers/pywt",
-        download_url="https://github.com/rgommers/pywt/releases",
+        url="https://github.com/PyWavelets/pywt",
+        download_url="https://github.com/PyWavelets/pywt/releases",
         license="MIT",
         description="PyWavelets, wavelet transform module",
         long_description="""\

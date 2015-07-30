@@ -1,0 +1,135 @@
+==============================
+PyWavelets 0.3.0 Release Notes
+==============================
+
+.. contents::
+
+PyWavelets 0.3.0 is the first release of the package in 3 years.  It is the
+result of a significant effort of a growing development team to modernize the
+package, to provide Python 3.x support and to make a start with providing new
+features as well as improved performance.  A 0.4.0 release will follow
+shortly, and will contain more significant new features as well as
+changes/deprecations to streamline the API.
+
+This release requires Python 2.6, 2.7 or 3.3-3.5 and NumPy 1.6.2 or greater.
+
+Highlights of this release include:
+
+- Support for Python 3.x (>=3.3)
+- Added a test suite (based on nose, coverage up to 61% so far)
+- Maintenance work: C style complying to the Numpy style guide, improved
+  templating system, more complete docstrings, pep8/pyflakes compliance, and
+  more.
+
+
+New features
+============
+
+Test suite
+----------
+
+The test suite can be run with ``nosetests pywt`` or with::
+
+    >>> import pywt
+    >>> pywt.test()
+
+n-D Inverse Discrete Wavelet Transform
+--------------------------------------
+
+The function ``pywt.idwtn``, which provides n-dimensional inverse DWT, has been
+added.  It complements ``idwt``, ``idwt2`` and ``dwtn``.
+
+Thresholding
+------------
+
+The function `pywt.threshold` has been added.  It unifies the four thresholding
+functions that are still provided in the ``pywt.thresholding`` namespace.
+
+
+Backwards incompatible changes
+==============================
+
+None in this release.
+
+
+Other changes
+=============
+
+Development has moved to `a new repo <https://github.com/PyWavelets/pywt>`_.
+Everyone with an interest in wavelets is welcome to contribute!
+
+Building wheels, building with ``python setup.py develop`` and many other
+standard ways to build and install PyWavelets are supported now.
+
+
+Authors
+=======
+
+* Ankit Agrawal +
+* François Boulogne +
+* Ralf Gommers +
+* David Menéndez Hurtado +
+* Gregory R. Lee +
+* David McInnis +
+* Helder Oliveira +
+* Filip Wasilewski
+* Kai Wohlfahrt +
+
+A total of 9 people contributed to this release.
+People with a "+" by their names contributed a patch for the first time.
+This list of names is automatically generated, and may not be fully complete.
+
+
+Issues closed for v0.3.0
+------------------------
+
+- `#3 <https://github.com/PyWavelets/pywt/issues/3>`__: Remove numerix compat layer
+- `#4 <https://github.com/PyWavelets/pywt/issues/4>`__: Add single code base Python 3 support
+- `#5 <https://github.com/PyWavelets/pywt/issues/5>`__: PEP8 issues
+- `#6 <https://github.com/PyWavelets/pywt/issues/6>`__: Migrate tests to nose
+- `#7 <https://github.com/PyWavelets/pywt/issues/7>`__: Expand test coverage without Matlab to a reasonable level
+- `#8 <https://github.com/PyWavelets/pywt/issues/8>`__: Replace custom C templates by Numpy's templating system
+- `#9 <https://github.com/PyWavelets/pywt/issues/9>`__: Replace Cython templates by fused types
+- `#10 <https://github.com/PyWavelets/pywt/issues/10>`__: Replace use of __array_interface__ with Cython's memoryviews
+- `#11 <https://github.com/PyWavelets/pywt/issues/11>`__: Format existing docstrings in numpydoc format.
+- `#12 <https://github.com/PyWavelets/pywt/issues/12>`__: Complete docstrings, they're quite sparse right now
+- `#13 <https://github.com/PyWavelets/pywt/issues/13>`__: Reorganize source tree
+- `#24 <https://github.com/PyWavelets/pywt/issues/24>`__: doc/source/regression should be moved
+- `#27 <https://github.com/PyWavelets/pywt/issues/27>`__: Broken test: test_swt_decomposition
+- `#28 <https://github.com/PyWavelets/pywt/issues/28>`__: Install issue, no module tools.six
+- `#29 <https://github.com/PyWavelets/pywt/issues/29>`__: wp.update fails after removal of nodes
+- `#32 <https://github.com/PyWavelets/pywt/issues/32>`__: wp.update fails on 2D
+- `#34 <https://github.com/PyWavelets/pywt/issues/34>`__: Wavelet string attributes shouldn't be bytes in Python 3
+- `#35 <https://github.com/PyWavelets/pywt/issues/35>`__: Re-enable float32 support
+- `#36 <https://github.com/PyWavelets/pywt/issues/36>`__: wavelet instance vs string
+- `#40 <https://github.com/PyWavelets/pywt/issues/40>`__: Test with Numpy 1.8rc1
+- `#45 <https://github.com/PyWavelets/pywt/issues/45>`__: demos should be updated and integrated in docs
+- `#60 <https://github.com/PyWavelets/pywt/issues/60>`__: Moving pywt forward faster
+- `#61 <https://github.com/PyWavelets/pywt/issues/61>`__: issues to address in moving towards 0.3.0
+- `#71 <https://github.com/PyWavelets/pywt/issues/71>`__: BUG: _pywt.downcoef always returns level=1 result
+
+
+Pull requests for v0.3.0
+------------------------
+
+- `#1 <https://github.com/PyWavelets/pywt/pull/1>`__: travis: check all branches + fix URL
+- `#17 <https://github.com/PyWavelets/pywt/pull/17>`__: [DOC] doctrings for multilevel functions
+- `#18 <https://github.com/PyWavelets/pywt/pull/18>`__: DOC: format -> functions.py
+- `#20 <https://github.com/PyWavelets/pywt/pull/20>`__: MAINT: remove unnecessary zero() copy()
+- `#21 <https://github.com/PyWavelets/pywt/pull/21>`__: Doc wavelet_packets
+- `#22 <https://github.com/PyWavelets/pywt/pull/22>`__: Minor doc fixes
+- `#25 <https://github.com/PyWavelets/pywt/pull/25>`__: TEST: remove useless functions and use numpy instead
+- `#26 <https://github.com/PyWavelets/pywt/pull/26>`__: Merge most recent work
+- `#30 <https://github.com/PyWavelets/pywt/pull/30>`__: Adding test for wp.rst
+- `#41 <https://github.com/PyWavelets/pywt/pull/41>`__: Change to Numpy templating system
+- `#43 <https://github.com/PyWavelets/pywt/pull/43>`__: MAINT: update six.py to not use lazy loading.
+- `#49 <https://github.com/PyWavelets/pywt/pull/49>`__: Taking on API Issues
+- `#50 <https://github.com/PyWavelets/pywt/pull/50>`__: Add idwtn
+- `#53 <https://github.com/PyWavelets/pywt/pull/53>`__: readme updated with info related to Py3 version
+- `#63 <https://github.com/PyWavelets/pywt/pull/63>`__: Remove six
+- `#65 <https://github.com/PyWavelets/pywt/pull/65>`__: Thresholding
+- `#70 <https://github.com/PyWavelets/pywt/pull/70>`__: MAINT: PEP8 fixes
+- `#72 <https://github.com/PyWavelets/pywt/pull/72>`__: BUG: fix _downcoef for level > 1
+- `#73 <https://github.com/PyWavelets/pywt/pull/73>`__: MAINT: documentation and metadata update for repo fork
+- `#74 <https://github.com/PyWavelets/pywt/pull/74>`__: STY: fix pep8/pyflakes issues
+- `#77 <https://github.com/PyWavelets/pywt/pull/77>`__: MAINT: raise ValueError if data given to dwt or idwt is not 1D...
