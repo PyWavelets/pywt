@@ -49,7 +49,7 @@ copyright = jinja2.filters.do_mark_safe('2006-%s, <a href="https://groups.google
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
 import pywt
-version = re.sub(r'\.dev-.*$', r'.dev', pywt.__version__)
+version = re.sub(r'\.dev0+.*$', r'.dev', pywt.__version__)
 release = pywt.__version__
 
 print "PyWavelets (VERSION %s)" % (version,)
