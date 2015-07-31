@@ -221,46 +221,52 @@ def waverec2(coeffs, wavelet, mode='sym'):
 
     return a
 
-def iswt(coefficients, wavelet):
-   """
-     Input parameters:
+def iswt(coeffs, wavelet):
+    """
+    Multilevel 1D Inverse Discrete Stationary Wavelet Transform.
 
-       coefficients
-         approx and detail coefficients, arranged in level value
-         exactly as output from swt:
-         e.g. [(cA1, cD1), (cA2, cD2), ..., (cAn, cDn)]
+    Parameters
+    ----------
+    coeffs : array_like
+        Coefficients list of tuples [(cA1, cD1), (cA2, cD2), ..., (cAn, cDn)]
+    wavelet : Wavelet object or name string
+        Wavelet to use
 
-       wavelet
-         Either the name of a wavelet or a Wavelet object
+    Examples
+    --------
+    >>> import pywt
+    >>> coeffs = pywt.swt([1,2,3,4,5,6,7,8], 'db2', level=2)
+    >>> pywt.iswt(coeffs, 'db2')
+    array([ 1.,  2.,  3.,  4.,  5.,  6.,  7.,  8.])
+    """
 
-   """
-   output = coefficients[0][0].copy() # Avoid modification of input data
+    output = coeffs[0][0].copy() # Avoid modification of input data
 
-   #num_levels, equivalent to the decomposition level, n
-   num_levels = len(coefficients)
-   for j in range(num_levels,0,-1):
-       step_size = int(pow(2, j-1))
-       last_index = step_size
-       _, cD = coefficients[num_levels - j]
-       for first in range(last_index): # 0 to last_index - 1
+    #num_levels, equivalent to the decomposition level, n
+    num_levels = len(coeffs)
+    for j in range(num_levels,0,-1):
+        step_size = int(pow(2, j-1))
+        last_index = step_size
+        _, cD = coeffs[num_levels - j]
+        for first in range(last_index): # 0 to last_index - 1
 
-           # Getting the indices that we will transform
-           indices = np.arange(first, len(cD), step_size)
+            # Getting the indices that we will transform
+            indices = np.arange(first, len(cD), step_size)
 
-           # select the even indices
-           even_indices = indices[0::2]
-           # select the odd indices
-           odd_indices = indices[1::2]
+            # select the even indices
+            even_indices = indices[0::2]
+            # select the odd indices
+            odd_indices = indices[1::2]
 
-           # perform the inverse dwt on the selected indices,
-           # making sure to use periodic boundary conditions
-           x1 = idwt(output[even_indices], cD[even_indices], wavelet, 'per')
-           x2 = idwt(output[odd_indices], cD[odd_indices], wavelet, 'per')
+            # perform the inverse dwt on the selected indices,
+            # making sure to use periodic boundary conditions
+            x1 = idwt(output[even_indices], cD[even_indices], wavelet, 'per')
+            x2 = idwt(output[odd_indices], cD[odd_indices], wavelet, 'per')
 
-           # perform a circular shift right
-           x2 = np.roll(x2, 1)
+            # perform a circular shift right
+            x2 = np.roll(x2, 1)
 
-           # average and insert into the correct indices
-           output[indices] = (x1 + x2)/2.
+            # average and insert into the correct indices
+            output[indices] = (x1 + x2)/2.
 
-   return output
+    return output
