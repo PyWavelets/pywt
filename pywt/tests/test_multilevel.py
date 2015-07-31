@@ -65,28 +65,31 @@ def test_swt_decomposition():
 
 
 def test_swt_iswt_integration():
-    """
-    This function performs a round-trip transform test on all available
-    types of wavelets in PyWavelets - except the 'dmey' wavelet. The
-    latter has been excluded because it does not produce very precise
-    results. This is likely due to the fact that the 'dmey' wavelet is
-    a discrete approximation of a continuous wavelet.
-    All wavelets are tested up to 3 levels.
-    The test validates neither swt or iswt as such, but it does ensure
-    that they are each other's inverse.
-    """
+    # This function performs a round-trip swt/iswt transform test on
+    # all available types of wavelets in PyWavelets - except the
+    # 'dmey' wavelet. The latter has been excluded because it does not
+    # produce very precise results. This is likely due to the fact
+    # that the 'dmey' wavelet is a discrete approximation of a
+    # continuous wavelet. All wavelets are tested up to 3 levels. The
+    # test validates neither swt or iswt as such, but it does ensure
+    # that they are each other's inverse.
+
     max_level = 3
     wavelets = pywt.wavelist()
     if 'dmey' in wavelets:
-        wavelets.remove('dmey') # The 'dmey' wavelet seems to be a bit special - disregard it for now
+        # The 'dmey' wavelet seems to be a bit special - disregard it for now
+        wavelets.remove('dmey')
     for current_wavelet_str in wavelets:
         current_wavelet = pywt.Wavelet(current_wavelet_str)
-        input_length_power = np.ceil(np.log2(max(current_wavelet.dec_len, current_wavelet.rec_len)))
-        input_length = 2**int(input_length_power + max_level - 1)
+        input_length_power = int(np.ceil(np.log2(max(
+            current_wavelet.dec_len,
+            current_wavelet.rec_len))))
+        input_length = 2**(input_length_power + max_level - 1)
         X = np.arange(input_length)
         coeffs = pywt.swt(X, current_wavelet, max_level)
         Y = pywt.iswt(coeffs, current_wavelet)
         assert_allclose(Y, X, rtol=1e-5, atol=1e-7)
+
 
 def test_swt_dtypes():
     wavelet = pywt.Wavelet('haar')
@@ -104,6 +107,33 @@ def test_swt_dtypes():
         cA, (cH, cV, cD) = pywt.swt2(x, wavelet, level=1)[0]
         assert_(cA.dtype == cH.dtype == cV.dtype == cD.dtype == dt_out,
                 "swt2: " + errmsg)
+
+
+def test_swt2_iswt2_integration():
+    # This function performs a round-trip swt2/iswt2 transform test on
+    # all available types of wavelets in PyWavelets - except the
+    # 'dmey' wavelet. The latter has been excluded because it does not
+    # produce very precise results. This is likely due to the fact
+    # that the 'dmey' wavelet is a discrete approximation of a
+    # continuous wavelet. All wavelets are tested up to 3 levels. The
+    # test validates neither swt2 or iswt2 as such, but it does ensure
+    # that they are each other's inverse.
+
+    max_level = 3
+    wavelets = pywt.wavelist()
+    if 'dmey' in wavelets:
+        # The 'dmey' wavelet seems to be a bit special - disregard it for now
+        wavelets.remove('dmey')
+    for current_wavelet_str in wavelets:
+        current_wavelet = pywt.Wavelet(current_wavelet_str)
+        input_length_power = int(np.ceil(np.log2(max(
+            current_wavelet.dec_len,
+            current_wavelet.rec_len))))
+        input_length = 2**(input_length_power + max_level - 1)
+        X = np.arange(input_length**2).reshape(input_length, input_length)
+        coeffs = pywt.swt2(X, current_wavelet, max_level)
+        Y = pywt.iswt2(coeffs, current_wavelet)
+        assert_allclose(Y, X, rtol=1e-5, atol=1e-5)
 
 
 def test_wavedec2():
