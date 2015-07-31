@@ -24,4 +24,4 @@ If these instructions are not clear or you need help setting up your
 development environment, go ahead and ask on the PyWavelets discussion
 group at http://groups.google.com/group/pywavelets or open a ticket on GitHub_.
 
-.. _GitHub: https://github.com/nigma/pywt
+.. _GitHub: https://github.com/PyWavelets/pywt
