@@ -9,17 +9,21 @@ import numpy as np
 from numpy.testing import assert_, dec, run_module_suite
 
 import pywt
+import os
 
-
-_has_matlab = False
-try:
-    from mlabwrap import mlab
-except ImportError:
-    print("To run Matlab compatibility tests you need to have MathWorks "
-          "MATLAB, MathWorks Wavelet Toolbox and mlabwrap Python extension "
-          "installed.")
+if 'PYWT_DISABLE_MATLAB' in os.environ:
     _has_matlab = True
-
+    print("Matlab compatibility tests disabled by environment variable "
+          "PYWT_DISABLE_MATLAB.")
+else:
+    _has_matlab = False
+    try:
+        from mlabwrap import mlab
+    except ImportError:
+        print("To run Matlab compatibility tests you need to have MathWorks "
+              "MATLAB, MathWorks Wavelet Toolbox and mlabwrap Python extension "
+              "installed.")
+        _has_matlab = True
 
 @dec.skipif(_has_matlab)
 def test_accuracy():
