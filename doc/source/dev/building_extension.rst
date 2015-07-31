@@ -6,10 +6,10 @@ Building and installing PyWavelets
 Installing from source code
 ---------------------------
 
-Go to https://github.com/nigma/pywt GitHub project page, fork and clone the
+Go to https://github.com/PyWavelets/pywt GitHub project page, fork and clone the
 repository or use the upstream repository to get the source code::
 
-    git clone https://github.com/nigma/pywt.git PyWavelets
+    git clone https://github.com/PyWavelets/pywt.git PyWavelets
 
 Activate your Python virtual environment, go to the cloned source directory
 and type the following commands to build and install the package::
@@ -31,7 +31,7 @@ Installing a development version
 
 You can also install directly from the source repository::
 
-    pip install -e git+https://github.com/nigma/pywt.git#egg=PyWavelets
+    pip install -e git+https://github.com/PyWavelets/pywt.git#egg=PyWavelets
 
 or::
 
