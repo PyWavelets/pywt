@@ -12,8 +12,6 @@ MICRO = 0
 ISRELEASED = False
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 
-# GCC < 5 defaults to c99, so we need to specify c99 to these
-unix_like_compilers = ['unix', 'mingw32', 'cygwin']
 
 # Return the git revision as a string
 def git_version():
@@ -207,22 +205,12 @@ def setup_package():
             import setuptools
 
         from numpy.distutils.core import setup
-        from numpy.distutils.command.build_ext import build_ext
 
         cwd = os.path.abspath(os.path.dirname(__file__))
         if not os.path.exists(os.path.join(cwd, 'PKG-INFO')):
             # Generate Cython sources, unless building from source release
             expand_src_templates()
             generate_cython()
-
-        class build_ext_c99(build_ext):
-            def build_extensions(self):
-                if self.compiler.compiler_type in unix_like_compilers:
-                    for e in self.extensions:
-                        # No damage if specified twice
-                        e.extra_compile_args.append('-std=c99')
-                build_ext.build_extensions(self)
-        metadata['cmdclass'] = {'build_ext': build_ext_c99}
 
     metadata['configuration'] = configuration
 

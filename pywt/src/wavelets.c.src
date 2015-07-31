@@ -31,22 +31,28 @@ Wavelet* wavelet(char name, unsigned int order)
         w->dec_len = wtmp->rec_len;
         w->rec_len = wtmp->dec_len;
 
-        for(size_t i = 0; i < w->rec_len; ++i){
-            /**begin repeat
-             * #type = double, float#
-             */
+        {
+            size_t i;
+            for(i = 0; i < w->rec_len; ++i){
+                /**begin repeat
+                 * #type = double, float#
+                 */
                 w->rec_lo_@type@[i] = wtmp->dec_lo_@type@[wtmp->dec_len-1-i];
                 w->rec_hi_@type@[i] = wtmp->dec_hi_@type@[wtmp->dec_len-1-i];
-            /**end repeat**/
+                /**end repeat**/
+            }
         }
 
-        for(size_t i = 0; i < w->dec_len; ++i){
-            /**begin repeat
-             * #type = double, float#
-             */
+        {
+            size_t i;
+            for(i = 0; i < w->dec_len; ++i){
+                /**begin repeat
+                 * #type = double, float#
+                 */
                 w->dec_hi_@type@[i] = wtmp->rec_hi_@type@[wtmp->rec_len-1-i];
                 w->dec_lo_@type@[i] = wtmp->rec_lo_@type@[wtmp->rec_len-1-i];
-            /**end repeat**/
+                /**end repeat**/
+            }
         }
 
         w->vanishing_moments_psi = order / 10; /* 1st digit */
@@ -410,16 +416,11 @@ Wavelet* copy_wavelet(Wavelet* base)
             return NULL;
         }
 
-        // FIXME: memcpy
-        for(size_t i=0; i< w->dec_len; ++i){
-            w->dec_lo_@type@[i] = base->dec_lo_@type@[i];
-            w->dec_hi_@type@[i] = base->dec_hi_@type@[i];
-        }
-
-        for(size_t i=0; i< w->rec_len; ++i){
-            w->rec_lo_@type@[i] = base->rec_lo_@type@[i];
-            w->rec_hi_@type@[i] = base->rec_hi_@type@[i];
-        }
+        // FIXME: Test coverage, the only use in `wavelet` overwrites the filter
+        memcpy(w->dec_lo_@type@, base->dec_lo_@type@, w->dec_len * sizeof(@type@));
+        memcpy(w->dec_hi_@type@, base->dec_hi_@type@, w->dec_len * sizeof(@type@));
+        memcpy(w->rec_lo_@type@, base->rec_lo_@type@, w->rec_len * sizeof(@type@));
+        memcpy(w->rec_hi_@type@, base->rec_hi_@type@, w->rec_len * sizeof(@type@));
 
     /**end repeat**/
 

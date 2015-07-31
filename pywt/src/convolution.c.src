@@ -38,9 +38,10 @@ int @type@_downsampling_convolution_periodization(const @type@ * const restrict 
         for (j = 0; j <= i; ++j)
             sum += filter[j] * input[i-j];
         while (j < F){
-            for (size_t k = 0; k < padding && j < F; ++k, ++j)
+            size_t k;
+            for (k = 0; k < padding && j < F; ++k, ++j)
                 sum += filter[j] * input[N-1];
-            for (size_t k = 0; k < N && j < F; ++k, ++j)
+            for (k = 0; k < N && j < F; ++k, ++j)
                 sum += filter[j] * input[N-1-k];
         }
         output[o] = sum;
@@ -48,7 +49,8 @@ int @type@_downsampling_convolution_periodization(const @type@ * const restrict 
 
     for(; i < N; i+=step, ++o){
         @type@ sum = 0;
-        for(size_t j = 0; j < F; ++j)
+        size_t j;
+        for(j = 0; j < F; ++j)
             sum += input[i-j]*filter[j];
         output[o] = sum;
     }
@@ -58,17 +60,19 @@ int @type@_downsampling_convolution_periodization(const @type@ * const restrict 
         size_t j = 0;
 
         while (i-j >= N){
-            for (size_t k = 0; k < padding && i-j >= N; ++k, ++j)
+            size_t k;
+            for (k = 0; k < padding && i-j >= N; ++k, ++j)
                 sum += filter[i-N-j] * input[N-1];
-            for (size_t k = 0; k < N && i-j >= N; ++k, ++j)
+            for (k = 0; k < N && i-j >= N; ++k, ++j)
                 sum += filter[i-N-j] * input[k];
         }
         for (; j <= i; ++j)
             sum += filter[j] * input[i-j];
         while (j < F){
-            for (size_t k = 0; k < padding && j < F; ++k, ++j)
+            size_t k;
+            for (k = 0; k < padding && j < F; ++k, ++j)
                 sum += filter[j] * input[N-1];
-            for (size_t k = 0; k < N && j < F; ++k, ++j)
+            for (k = 0; k < N && j < F; ++k, ++j)
                 sum += filter[j] * input[N-1-k];
         }
         output[o] = sum;
@@ -78,9 +82,10 @@ int @type@_downsampling_convolution_periodization(const @type@ * const restrict 
         @type@ sum = 0;
         size_t j = 0;
         while (i-j >= N){
-            for (size_t k = 0; k < padding && i-j >= N; ++k, ++j)
+            size_t k;
+            for (k = 0; k < padding && i-j >= N; ++k, ++j)
                 sum += filter[i-N-j] * input[N-1];
-            for (size_t k = 0; k < N && i-j >= N; ++k, ++j)
+            for (k = 0; k < N && i-j >= N; ++k, ++j)
                 sum += filter[i-N-j] * input[k];
         }
         for (; j < F; ++j)
@@ -118,9 +123,10 @@ int @type@_downsampling_convolution(const @type@ * const restrict input, const s
         switch(mode) {
         case MODE_SYMMETRIC:
             while (j < F){
-                for(size_t k = 0; k < N && j < F; ++j, ++k)
+                size_t k;
+                for(k = 0; k < N && j < F; ++j, ++k)
                     sum += filter[j]*input[k];
-                for(size_t k = 0; k < N && j < F; ++k, ++j)
+                for(k = 0; k < N && j < F; ++k, ++j)
                     sum += filter[j] * input[N-1-k];
             }
             break;
@@ -128,14 +134,18 @@ int @type@_downsampling_convolution(const @type@ * const restrict input, const s
             for(; j < F; ++j)
                 sum += filter[j]*input[0];
             break;
-        case MODE_SMOOTH:
-            for(size_t k = 1; j < F; ++j, ++k)
+        case MODE_SMOOTH:{
+            size_t k;
+            for(k = 1; j < F; ++j, ++k)
                 sum += filter[j]*(input[0] + k * (input[0] - input[1]));
             break;
+        }
         case MODE_PERIODIC:
-            while (j < F)
-                for(size_t k = 0; k < N && j < F; ++k, ++j)
+            while (j < F){
+                size_t k;
+                for(k = 0; k < N && j < F; ++k, ++j)
                     sum += filter[j]*input[N-1-k];
+            }
             break;
         case MODE_ZEROPAD:
         default:
@@ -146,8 +156,8 @@ int @type@_downsampling_convolution(const @type@ * const restrict input, const s
 
     for(; i < N; i+=step, ++o){
         @type@ sum = 0;
-
-        for(size_t j = 0; j < F; ++j)
+        size_t j;
+        for(j = 0; j < F; ++j)
             sum += input[i-j]*filter[j];
         output[o] = sum;
     }
@@ -163,9 +173,10 @@ int @type@_downsampling_convolution(const @type@ * const restrict input, const s
              * data. This gives a known first input element to process (N-1)
              */
             while (i - j >= N){
-                for(size_t k = 0; k < N && i-j >= N; ++j, ++k)
+                size_t k;
+                for(k = 0; k < N && i-j >= N; ++j, ++k)
                     sum += filter[i-N-j]*input[N-1-k];
-                for(size_t k = 0; k < N && i-j >= N; ++j, ++k)
+                for(k = 0; k < N && i-j >= N; ++j, ++k)
                     sum += filter[i-N-j]*input[k];
             }
             break;
@@ -173,14 +184,18 @@ int @type@_downsampling_convolution(const @type@ * const restrict input, const s
             for(; i-j >= N; ++j)
                 sum += filter[j]*input[N-1];
             break;
-        case MODE_SMOOTH:
-            for(size_t k = i - N + 1; i-j >= N; ++j, --k)
+        case MODE_SMOOTH:{
+            size_t k;
+            for(k = i - N + 1; i-j >= N; ++j, --k)
                 sum += filter[j]*(input[N-1] + k * (input[N-1] - input[N-2]));
             break;
+        }
         case MODE_PERIODIC:
-            while (i-j >= N)
-                for (size_t k = 0; k < N && i-j >= N; ++j, ++k)
+            while (i-j >= N){
+                size_t k;
+                for (k = 0; k < N && i-j >= N; ++j, ++k)
                     sum += filter[i-N-j]*input[k];
+            }
             break;
         case MODE_ZEROPAD:
         default:
@@ -194,9 +209,10 @@ int @type@_downsampling_convolution(const @type@ * const restrict input, const s
         switch(mode) {
         case MODE_SYMMETRIC:
             while (j < F){
-                for(size_t k = 0; k < N && j < F; ++j, ++k)
+                size_t k;
+                for(k = 0; k < N && j < F; ++j, ++k)
                     sum += filter[j]*input[k];
-                for(size_t k = 0; k < N && j < F; ++k, ++j)
+                for(k = 0; k < N && j < F; ++k, ++j)
                     sum += filter[j] * input[N-1-k];
             }
             break;
@@ -204,14 +220,18 @@ int @type@_downsampling_convolution(const @type@ * const restrict input, const s
             for(; j < F; ++j)
                 sum += filter[j]*input[0];
             break;
-        case MODE_SMOOTH:
-            for(size_t k = 1; j < F; ++j, ++k)
+        case MODE_SMOOTH:{
+            size_t k;
+            for(k = 1; j < F; ++j, ++k)
                 sum += filter[j]*(input[0] + k * (input[0] - input[1]));
             break;
+        }
         case MODE_PERIODIC:
-            while (j < F)
-                for(size_t k = 0; k < N && j < F; ++k, ++j)
+            while (j < F){
+                size_t k;
+                for(k = 0; k < N && j < F; ++k, ++j)
                     sum += filter[j]*input[N-1-k];
+            }
             break;
         case MODE_ZEROPAD:
         default:
@@ -227,9 +247,10 @@ int @type@_downsampling_convolution(const @type@ * const restrict input, const s
         case MODE_SYMMETRIC:
             // Included from original: TODO: j < F-_offset
             while (i - j >= N){
-                for(size_t k = 0; k < N && i-j >= N; ++j, ++k)
+                size_t k;
+                for(k = 0; k < N && i-j >= N; ++j, ++k)
                     sum += filter[i-N-j]*input[N-1-k];
-                for(size_t k = 0; k < N && i-j >= N; ++j, ++k)
+                for(k = 0; k < N && i-j >= N; ++j, ++k)
                     sum += filter[i-N-j]*input[k];
             }
             break;
@@ -237,14 +258,18 @@ int @type@_downsampling_convolution(const @type@ * const restrict input, const s
             for(; i-j >= N; ++j)
                 sum += filter[j]*input[N-1];
             break;
-        case MODE_SMOOTH:
-            for(size_t k = i - N + 1; i-j >= N; ++j, --k)
+        case MODE_SMOOTH:{
+            size_t k;
+            for(k = i - N + 1; i-j >= N; ++j, --k)
                 sum += filter[j]*(input[N-1] + k * (input[N-1] - input[N-2]));
             break;
+        }
         case MODE_PERIODIC:
-            while (i-j >= N)
-                for (size_t k = 0; k < N && i-j >= N; ++j, ++k)
+            while (i-j >= N){
+                size_t k;
+                for (k = 0; k < N && i-j >= N; ++j, ++k)
                     sum += filter[i-N-j]*input[k];
+            }
             break;
         case MODE_ZEROPAD:
         default:
@@ -273,34 +298,42 @@ int @type@_upsampling_convolution_full(const @type@ * const restrict input, cons
     // FIXME? Return a valid result for i%2 != 0? Not for idwt, but could be useful.
 
     // If check omitted, this function would be a no-op for F<2
+    size_t i = 0, o = 0;
+
     if(F<2)
         return -1;
 
-    size_t i = 0, o = 0;
-
-    for(; i < N && i < F/2; ++i, o += 2)
-        for(size_t j = 0; j <= i; ++j){
+    for(; i < N && i < F/2; ++i, o += 2){
+        size_t j;
+        for(j = 0; j <= i; ++j){
             output[o] += filter[j*2] * input[i-j];
             output[o+1] += filter[j*2+1] * input[i-j];
         }
+    }
 
-    for(; i < N; ++i, o += 2)
-        for(size_t j = 0; j < F/2; ++j){
+    for(; i < N; ++i, o += 2){
+        size_t j;
+        for(j = 0; j < F/2; ++j){
             output[o] += filter[j*2] * input[i-j];
             output[o+1] += filter[j*2+1] * input[i-j];
         }
+    }
 
-    for(; i < F/2; ++i, o += 2)
-        for(size_t j = i-(N-1); j <= i; ++j){
+    for(; i < F/2; ++i, o += 2){
+        size_t j;
+        for(j = i-(N-1); j <= i; ++j){
             output[o] += filter[j*2] * input[i-j];
             output[o+1] += filter[j*2+1] * input[i-j];
         }
+    }
 
-    for(; i < N+F/2; ++i, o += 2)
-        for(size_t j = i-(N-1); j < F/2; ++j){
+    for(; i < N+F/2; ++i, o += 2){
+        size_t j;
+        for(j = i-(N-1); j < F/2; ++j){
             output[o] += filter[j*2] * input[i-j];
             output[o+1] += filter[j*2+1] * input[i-j];
         }
+    }
     return 0;
 }
 
@@ -311,12 +344,12 @@ int @type@_upsampling_convolution_valid_sf_periodization(const @type@ * const re
 {
     // TODO? Allow for non-2 step
 
-    if(F%2) return -3; /* Filter must have even-length. */
-
     size_t const start = F/4;
     size_t i = start;
     size_t const end = N + start - (((F/2)%2) ? 0 : 1);
     size_t o = 0;
+
+    if(F%2) return -3; /* Filter must have even-length. */
 
     if ((F/2)%2 == 0){
         // Shift output one element right. This is necessary for perfect reconstruction.
@@ -324,7 +357,8 @@ int @type@_upsampling_convolution_valid_sf_periodization(const @type@ * const re
         // i = N-1; even element goes to output[O-1], odd element goes to output[0]
         size_t j = 0;
         while(j <= start-1){
-            for (size_t k = 0; k < N && j <= start-1; ++k, ++j){
+            size_t k;
+            for (k = 0; k < N && j <= start-1; ++k, ++j){
                 output[2*N-1] += filter[2*(start-1-j)] * input[k];
                 output[0] += filter[2*(start-1-j)+1] * input[k];
             }
@@ -334,7 +368,8 @@ int @type@_upsampling_convolution_valid_sf_periodization(const @type@ * const re
             output[0] += filter[2*j+1] * input[N+start-1-j];
         }
         while (j < F / 2){
-            for (size_t k = 0; k < N && j < F/2; ++k, ++j){
+            size_t k;
+            for (k = 0; k < N && j < F/2; ++k, ++j){
                 output[2*N-1] += filter[2*j] * input[N-1-k];
                 output[0] += filter[2*j+1] * input[N-1-k];
             }
@@ -350,7 +385,8 @@ int @type@_upsampling_convolution_valid_sf_periodization(const @type@ * const re
             output[o+1] += filter[2*j+1] * input[i-j];
         }
         while (j < F/2){
-            for(size_t k = 0; k < N && j < F/2; ++k, ++j){
+            size_t k;
+            for(k = 0; k < N && j < F/2; ++k, ++j){
                 output[o] += filter[2*j] * input[N-1-k];
                 output[o+1] += filter[2*j+1] * input[N-1-k];
             }
@@ -358,7 +394,8 @@ int @type@_upsampling_convolution_valid_sf_periodization(const @type@ * const re
     }
 
     for (; i < N; ++i, o += 2){
-        for(size_t j = 0; j < F/2; ++j){
+        size_t j;
+        for(j = 0; j < F/2; ++j){
             output[o] += filter[2*j] * input[i-j];
             output[o+1] += filter[2*j+1] * input[i-j];
         }
@@ -367,7 +404,8 @@ int @type@_upsampling_convolution_valid_sf_periodization(const @type@ * const re
     for (; i < F/2 && i < end; ++i, o += 2){
         size_t j = 0;
         while(i-j >= N){
-            for (size_t k = 0; k < N && i-j >= N; ++k, ++j){
+            size_t k;
+            for (k = 0; k < N && i-j >= N; ++k, ++j){
                 output[o] += filter[2*(i-N-j)] * input[k];
                 output[o+1] += filter[2*(i-N-j)+1] * input[k];
             }
@@ -377,7 +415,8 @@ int @type@_upsampling_convolution_valid_sf_periodization(const @type@ * const re
             output[o+1] += filter[2*j+1] * input[i-j];
         }
         while (j < F / 2){
-            for (size_t k = 0; k < N && j < F/2; ++k, ++j){
+            size_t k;
+            for (k = 0; k < N && j < F/2; ++k, ++j){
                 output[o] += filter[2*j] * input[N-1-k];
                 output[o+1] += filter[2*j+1] * input[N-1-k];
             }
@@ -387,7 +426,8 @@ int @type@_upsampling_convolution_valid_sf_periodization(const @type@ * const re
     for (; i < end; ++i, o += 2){
         size_t j = 0;
         while(i-j >= N){
-            for (size_t k = 0; k < N && i-j >= N; ++k, ++j){
+            size_t k;
+            for (k = 0; k < N && i-j >= N; ++k, ++j){
                 output[o] += filter[2*(i-N-j)] * input[k];
                 output[o+1] += filter[2*(i-N-j)+1] * input[k];
             }
@@ -424,16 +464,19 @@ int @type@_upsampling_convolution_valid_sf(const @type@ * const restrict input, 
         return -1;
 
     // Perform only stage 2 - all elements in the filter overlap an input element.
-    for(size_t o = 0, i = F/2 - 1; i < N; ++i, o += 2){
-        @type@ sum_even = 0;
-        @type@ sum_odd = 0;
-
-        for(size_t j = 0; j < F/2; ++j){
-            sum_even += filter[j*2] * input[i-j];
-            sum_odd += filter[j*2+1] * input[i-j];
+    {
+        size_t o, i;
+        for(o = 0, i = F/2 - 1; i < N; ++i, o += 2){
+            @type@ sum_even = 0;
+            @type@ sum_odd = 0;
+            size_t j;
+            for(j = 0; j < F/2; ++j){
+                sum_even += filter[j*2] * input[i-j];
+                sum_odd += filter[j*2+1] * input[i-j];
+            }
+            output[o] += sum_even;
+            output[o+1] += sum_odd;
         }
-        output[o] += sum_even;
-        output[o+1] += sum_odd;
     }
     return 0;
 }
