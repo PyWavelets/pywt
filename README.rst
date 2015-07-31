@@ -62,7 +62,7 @@ available from `Python Package Index`_.
 
 Binary packages for several Linux distributors are maintained by Open Source
 community contributors. Query your Linux package manager tool
-for `python-wavelets`, `python-pywt` or similar package name.
+for `python-pywavelets`, `python-wavelets`, `python-pywt` or similar package name.
 
 .. seealso::  :ref:`Development notes <dev-index>` section contains more
               information on building and installing from source code.
@@ -108,28 +108,3 @@ License
 -------
 
 PyWavelets is a free Open Source software released under the MIT license.
-
-Contents
---------
-
-.. toctree::
-   :maxdepth: 1
-
-   ref/index
-   regression/index
-   dev/index
-   resources
-   contents
-
-
-.. _built-in wavelet filters: http://wavelets.pybytes.com/
-.. _Cython: http://cython.org/
-.. _demo: https://github.com/PyWavelets/pywt/tree/master/demo
-.. _GitHub: https://github.com/PyWavelets/pywt
-.. _GitHub Issues: https://github.com/PyWavelets/pywt/issues
-.. _Numpy: http://www.numpy.org
-.. _original developer: http://en.ig.ma
-.. _Python: http://python.org/
-.. _Python Package Index: http://pypi.python.org/pypi/PyWavelets/
-.. _PyWavelets discussions group: http://groups.google.com/group/pywavelets
-.. _Releases Page: https://github.com/PyWavelets/pywt/releases
