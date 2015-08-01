@@ -61,3 +61,5 @@ int @type@_swt_d(@type@ input[], index_t input_len,
                  int level);
 
 /**end repeat**/
+
+#undef restrict

@@ -69,3 +69,5 @@ int @type@_upsampling_convolution_valid_sf(const @type@ * const restrict input, 
  */
 
 /**end repeat**/
+
+#undef restrict

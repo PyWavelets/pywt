@@ -3,6 +3,12 @@
 
 #include "wt.h"
 
+#if defined _MSC_VER
+#define restrict __restrict
+#elif defined __GNUC__
+#define restrict __restrict__
+#endif
+
 /* Decomposition of input with lowpass filter */
 
 /**begin repeat
@@ -223,3 +229,5 @@ int @type@_swt_d(@type@ input[], index_t input_len, Wavelet* wavelet,
                        wavelet->dec_len, output, output_len, level);
 }
 /**end repeat**/
+
+#undef restrict

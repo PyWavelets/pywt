@@ -7,6 +7,12 @@
  * #type = double, float#
  */
 
+#if defined _MSC_VER
+#define restrict __restrict
+#elif defined __GNUC__
+#define restrict __restrict__
+#endif
+
 /* This file contains several functions for computing the convolution of a
  * signal with a filter. The general scheme is:
  *   output[o] = sum(filter[j] * input[i-j] for j = [0..F) and i = [0..N))
@@ -491,3 +497,5 @@ int @type@_upsampled_filter_convolution(const @type@* input, const size_t N,
 }
 
 /**end repeat**/
+
+#undef restrict
