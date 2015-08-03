@@ -24,56 +24,58 @@ except ImportError:
 
 @dec.skipif(_has_matlab)
 def test_accuracy():
-
     # list of mode names in pywt and matlab
     modes = [('zpd', 'zpd'), ('cpd', 'sp0'), ('sym', 'sym'),
              ('ppd', 'ppd'), ('sp1', 'sp1'), ('per', 'per')]
 
     families = ('db', 'sym', 'coif', 'bior', 'rbio')
     wavelets = sum([pywt.wavelist(name) for name in families], [])
+    rstate = np.random.RandomState(1234)
     mlab.start()
     try:
-        for pmode, mmode in modes:
-            for wavelet in wavelets:
-                yield check_accuracy, pmode, mmode, wavelet
+        for wavelet in wavelets:
+            w = pywt.Wavelet(wavelet)
+            mlab.set_variable('wavelet', wavelet)
+            data_size = (w.dec_len, w.dec_len + 1)
+            for N in data_size:
+                data = rstate.randn(N)
+                mlab.set_variable('data', data)
+                for pmode, mmode in modes:
+                    yield _check_accuracy, data, w, pmode, mmode, wavelet
+
     finally:
         mlab.stop()
 
 
-def check_accuracy(pmode, mmode, wavelet):
+def _check_accuracy(data, w, pmode, mmode, wavelet):
+    """
+    assumes Matlab variables `wavelet` and `data` have already been set
+    externally.
+    """
     # max RMSE
     epsilon = 1.0e-10
 
-    w = pywt.Wavelet(wavelet)
-    data_size = [w.dec_len, w.dec_len + 1]
-    np.random.seed(1234)
+    # PyWavelets result
+    pa, pd = pywt.dwt(data, w, pmode)
 
-    for N in data_size:
-        data = np.random.random(N)
+    # Matlab result
+    mlab_code = "[ma, md] = dwt(data, wavelet, 'mode', '%s');" % mmode
+    res = mlab.run_code(mlab_code)
+    # need np.asarray because sometimes the output is type float
+    ma = np.asarray(mlab.get_variable('ma')).flat
+    md = np.asarray(mlab.get_variable('md')).flat
 
-        # PyWavelets result
-        pa, pd = pywt.dwt(data, wavelet, pmode)
+    # calculate error measures
+    rms_a = np.sqrt(np.mean((pa-ma)**2))
+    rms_d = np.sqrt(np.mean((pd-md)**2))
 
-        # Matlab result
-        mlab.set_variable('data', data)
-        mlab.set_variable('wavelet', wavelet)
-        mlab_code = "[ma, md] = dwt(data, wavelet, 'mode', '%s');" % mmode
-        res = mlab.run_code(mlab_code)
-        # need np.asarray because sometimes the output is type float
-        ma = np.asarray(mlab.get_variable('ma')).flat
-        md = np.asarray(mlab.get_variable('md')).flat
+    msg = ('[RMS_A > EPSILON] for Mode: %s, Wavelet: %s, '
+           'Length: %d, rms=%.3g' % (pmode, wavelet, len(data), rms_a))
+    assert_(rms_a < epsilon, msg=msg)
 
-        # calculate error measures
-        rms_a = np.sqrt(np.mean((pa-ma)**2))
-        rms_d = np.sqrt(np.mean((pd-md)**2))
-
-        msg = ('[RMS_A > EPSILON] for Mode: %s, Wavelet: %s, '
-               'Length: %d, rms=%.3g' % (pmode, wavelet, len(data), rms_a))
-        assert_(rms_a < epsilon, msg=msg)
-
-        msg = ('[RMS_D > EPSILON] for Mode: %s, Wavelet: %s, '
-               'Length: %d, rms=%.3g' % (pmode, wavelet, len(data), rms_d))
-        assert_(rms_d < epsilon, msg=msg)
+    msg = ('[RMS_D > EPSILON] for Mode: %s, Wavelet: %s, '
+           'Length: %d, rms=%.3g' % (pmode, wavelet, len(data), rms_d))
+    assert_(rms_d < epsilon, msg=msg)
 
 
 if __name__ == '__main__':
