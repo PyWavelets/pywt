@@ -5,6 +5,15 @@ cdef extern from "common.h":
     cdef void* wtcalloc(long len, long size)
     cdef void wtfree(void* ptr)
 
+    ctypedef struct ArrayInfo:
+        size_t * shape
+        index_t * strides
+        size_t ndim
+
+    ctypedef enum Coefficient:
+        COEF_APPROX = 0
+        COEF_DETAIL = 1
+
     ctypedef enum MODE:
         MODE_INVALID = -1
         MODE_ZEROPAD = 0

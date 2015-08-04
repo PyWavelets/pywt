@@ -686,6 +686,78 @@ def _dwt(np.ndarray[data_t, ndim=1] data, object wavelet, object mode='sym'):
 
     return (cA, cD)
 
+cdef common.ArrayInfo getInfo(np.ndarray data):
+    cdef common.ArrayInfo info
+    # FIXME: Do these get gc'd at the end of the function?
+
+    cdef size_t[::1] shape
+    cdef index_t[::1] strides
+
+    shape = (<size_t [:data.ndim]> <size_t *> data.shape).copy()
+    strides = (<index_t [:data.ndim]> <index_t *> data.strides).copy()
+
+    info.ndim = data.ndim
+    info.shape = <size_t *> &shape[0]
+    info.strides = <index_t *> &strides[0]
+    for i in range(info.ndim):
+        info.strides[i] /= data.itemsize
+    return info
+
+def dwtn(data, wavelet, mode='sym'):
+    cdef int ndim = data.ndim
+    if ndim < 1:
+        raise ValueError("Input data must be at least 1D")
+    coeffs = [('', data)]
+
+    for axis in range(ndim):
+        new_coeffs = []
+        for subband, x in coeffs:
+            cA, cD = dwt_axis(data, wavelet, mode, axis)
+            new_coeffs.extend([(subband + 'a', cA),
+                               (subband + 'd', cD)])
+        coeffs = new_coeffs
+    return dict(coeffs)
+
+def dwt_axis(np.ndarray data, wavelet, mode='sym', unsigned int axis=0):
+    cdef common.ArrayInfo data_info
+    cdef common.ArrayInfo output_info
+    cdef Wavelet w = c_wavelet_from_object(wavelet)
+    cdef common.MODE _mode = _try_mode(mode)
+
+    cdef np.ndarray cD, cA
+    cdef size_t[::1] output_shape
+
+    output_shape = (<size_t [:data.ndim]> <size_t *> data.shape).copy()
+    output_shape[axis] = common.dwt_buffer_length(data.shape[axis], w.dec_len, _mode)
+
+    cA = np.empty(output_shape, data.dtype)
+    cD = np.empty(output_shape, data.dtype)
+
+    data_info = getInfo(data)
+    output_info = getInfo(cA)
+
+    if data.dtype == 'float64':
+        if c_wt.double_downcoef_axis(<double *> data.data, data_info,
+                                     <double *> cA.data, output_info,
+                                     w.w, axis, common.COEF_APPROX, _mode):
+            raise RuntimeError("C wavelet transform failed")
+        if c_wt.double_downcoef_axis(<double *> data.data, data_info,
+                                     <double *> cD.data, output_info,
+                                     w.w, axis, common.COEF_DETAIL, _mode):
+            raise RuntimeError("C wavelet transform failed")
+    elif data.dtype == 'float32':
+        if c_wt.float_downcoef_axis(<float *> data.data, data_info,
+                                    <float *> cA.data, output_info,
+                                    w.w, axis, common.COEF_APPROX, _mode):
+            raise RuntimeError("C wavelet transform failed")
+        if c_wt.float_downcoef_axis(<float *> data.data, data_info,
+                                    <float *> cD.data, output_info,
+                                    w.w, axis, common.COEF_DETAIL, _mode):
+            raise RuntimeError("C wavelet transform failed")
+    else:
+        raise TypeError("Array must be floating point, not {}"
+                        .format(data.dtype))
+    return (cA, cD)
 
 def dwt_coeff_len(data_len, filter_len, mode='sym'):
     """
