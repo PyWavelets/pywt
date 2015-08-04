@@ -17,6 +17,103 @@
 
 /* Decomposition of input with lowpass filter */
 
+int CAT(TYPE, _downcoef_axis)(const TYPE * const restrict input, const ArrayInfo input_info,
+                              TYPE * const restrict output, const ArrayInfo output_info,
+                              const Wavelet * const restrict wavelet, const size_t axis,
+                              const Coefficient coef, const MODE mode){
+    size_t i;
+    size_t num_loops = 1;
+    bool make_temp_input, make_temp_output;
+    TYPE * temp_input = NULL, * temp_output = NULL;
+
+    if (input_info.ndim != output_info.ndim)
+        return 1;
+    if (axis >= input_info.ndim)
+        return 1;
+
+    for (i = 0; i < input_info.ndim; ++i){
+        if (i == axis){
+            if (dwt_buffer_length(input_info.shape[i], wavelet->dec_len, mode)
+                != output_info.shape[i])
+                return 1;
+        } else {
+            if (input_info.shape[i] != output_info.shape[i])
+                return 1;
+        }
+    }
+
+    make_temp_input = input_info.strides[axis] != 1;
+    make_temp_output = output_info.strides[axis] != 1;
+    if (make_temp_input)
+        if ((temp_input = malloc(input_info.shape[axis] * sizeof(TYPE))) == NULL)
+            goto cleanup;
+    if (make_temp_output)
+        if ((temp_output = malloc(output_info.shape[axis] * sizeof(TYPE))) == NULL)
+            goto cleanup;
+
+    for (i = 0; i < input_info.ndim; ++i){
+        if (i != axis)
+            num_loops *= input_info.shape[i];
+    }
+
+    for (i = 0; i < num_loops; ++i){
+        size_t j;
+        size_t input_offset = 0, output_offset = 0;
+        const TYPE * input_row;
+        TYPE * output_row;
+
+        // Calculate offset into linear buffer
+        {
+            size_t reduced_idx = i;
+            for (j = 0; j < input_info.ndim; ++j){
+                size_t j_rev = input_info.ndim - 1 - j;
+                if (j_rev != axis){
+                    size_t axis_idx = reduced_idx % input_info.shape[j_rev];
+                    reduced_idx /= input_info.shape[j_rev];
+
+                    input_offset += (axis_idx * input_info.strides[j_rev]);
+                    output_offset += (axis_idx * output_info.strides[j_rev]);
+                }
+            }
+        }
+
+        // Copy to temporary input if necessary
+        if (make_temp_input)
+            for (j = 0; j < input_info.shape[axis]; ++j)
+                temp_input[j] = (input + input_offset)[j * input_info.strides[axis]];
+
+        // Select temporary or direct output and input
+        input_row = make_temp_input ? temp_input : (input + input_offset);
+        output_row = make_temp_output ? temp_output : (output + output_offset);
+
+        // Apply along axis
+        switch (coef){
+        case COEF_APPROX:
+            CAT(TYPE, _dec_a)(input_row, input_info.shape[axis], wavelet,
+                              output_row, output_info.shape[axis], mode);
+            break;
+        case COEF_DETAIL:
+            CAT(TYPE, _dec_d)(input_row, input_info.shape[axis], wavelet,
+                              output_row, output_info.shape[axis], mode);
+            break;
+        }
+
+        // Copy from temporary output if necessary
+        if (make_temp_output)
+            for (j = 0; j < output_info.shape[axis]; ++j)
+                (output + output_offset)[j * output_info.strides[axis]] = output_row[j];
+    }
+
+    free(temp_input);
+    free(temp_output);
+    return 0;
+
+ cleanup:
+    free(temp_input);
+    free(temp_output);
+    return 2;
+}
+
 int CAT(TYPE, _dec_a)(const TYPE * const restrict input, const size_t input_len,
                       const Wavelet * const restrict wavelet,
                       TYPE * const restrict output, const size_t output_len,

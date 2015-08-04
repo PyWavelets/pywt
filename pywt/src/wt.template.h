@@ -20,6 +20,11 @@
 /* _a suffix - wavelet transform approximations */
 /* _d suffix - wavelet transform details */
 
+int CAT(TYPE, _downcoef_axis)(const TYPE * const restrict input, const ArrayInfo input_info,
+                              TYPE * const restrict output, const ArrayInfo output_info,
+                              const Wavelet * const restrict wavelet, const size_t axis,
+                              const Coefficient detail, const MODE mode);
+
 /* Single level decomposition */
 int CAT(TYPE, _dec_a)(const TYPE * const restrict input, const size_t input_len,
                       const Wavelet * const restrict wavelet,

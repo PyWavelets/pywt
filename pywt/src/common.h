@@ -41,6 +41,16 @@
     #include <intrin.h>
 #endif
 
+typedef struct {
+    size_t * shape;
+    size_t * strides;
+    size_t ndim;
+} ArrayInfo;
+
+typedef enum {
+    COEF_APPROX = 0,
+    COEF_DETAIL = 1,
+} Coefficient;
 
 /* Signal extension modes */
 typedef enum {
