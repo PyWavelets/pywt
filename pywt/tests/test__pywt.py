@@ -7,8 +7,6 @@ from numpy.testing import run_module_suite, assert_allclose
 
 import pywt
 
-rstate = np.random.RandomState(1234)
-
 
 def test_upcoef_docstring():
     data = [1, 2, 3, 4, 5, 6]
@@ -34,6 +32,7 @@ def test_upcoef_reconstruct():
 
 
 def test_downcoef_multilevel():
+    rstate = np.random.RandomState(1234)
     r = rstate.randn(16)
     nlevels = 3
     # calling with level=1 nlevels times
@@ -46,6 +45,7 @@ def test_downcoef_multilevel():
 
 
 def test_compare_downcoef_coeffs():
+    rstate = np.random.RandomState(1234)
     r = rstate.randn(16)
     # compare downcoef against wavedec outputs
     for nlevels in [1, 2, 3]:
@@ -58,6 +58,7 @@ def test_compare_downcoef_coeffs():
 
 
 def test_upcoef_multilevel():
+    rstate = np.random.RandomState(1234)
     r = rstate.randn(4)
     nlevels = 3
     # calling with level=1 nlevels times
