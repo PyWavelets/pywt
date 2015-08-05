@@ -9,9 +9,14 @@ from numpy.testing import (run_module_suite, assert_allclose, assert_,
 import pywt
 
 
-def test_dwtn_input_error():
+def test_dwtn_input():
+    # Array-like must be accepted
+    pywt.dwtn([1, 2, 3, 4], 'haar')
+    # Others must not
     data = dict()
-    assert_raises(ValueError, pywt.dwtn, data, 'haar')
+    assert_raises(TypeError, pywt.dwtn, data, 'haar')
+    # Must be at least 1D
+    assert_raises(ValueError, pywt.dwtn, 2, 'haar')
 
 
 def test_3D_reconstruct():

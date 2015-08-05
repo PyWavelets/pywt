@@ -703,8 +703,51 @@ cdef common.ArrayInfo getInfo(np.ndarray data):
         info.strides[i] /= data.itemsize
     return info
 
+cdef np.dtype checkDtype(np.ndarray data):
+    try:
+        if data.dtype in (np.float64, np.float32):
+            return data.dtype
+        else:
+            return np.dtype('float64')
+    except AttributeError:
+        return np.dtype('float64')
+
 def dwtn(data, wavelet, mode='sym'):
-    cdef int ndim = data.ndim
+    """
+    Single-level n-dimensional Discrete Wavelet Transform.
+
+    Parameters
+    ----------
+    data : ndarray
+        n-dimensional array with input data.
+    wavelet : Wavelet object or name string
+        Wavelet to use.
+    mode : str, optional
+        Signal extension mode, see `MODES`.  Default is 'sym'.
+
+    Returns
+    -------
+    coeffs : dict
+        Results are arranged in a dictionary, where key specifies
+        the transform type on each dimension and value is a n-dimensional
+        coefficients array.
+
+        For example, for a 2D case the result will look something like this::
+
+            {'aa': <coeffs>  # A(LL) - approx. on 1st dim, approx. on 2nd dim
+             'ad': <coeffs>  # V(LH) - approx. on 1st dim, det. on 2nd dim
+             'da': <coeffs>  # H(HL) - det. on 1st dim, approx. on 2nd dim
+             'dd': <coeffs>  # D(HH) - det. on 1st dim, det. on 2nd dim
+            }
+
+    """
+    cdef int ndim
+
+    data = np.asarray(data)
+    ndim = data.ndim
+
+    if data.dtype == np.dtype('object'):
+        raise TypeError("Input must be a numeric array-like")
     if ndim < 1:
         raise ValueError("Input data must be at least 1D")
     coeffs = [('', data)]
@@ -718,11 +761,13 @@ def dwtn(data, wavelet, mode='sym'):
         coeffs = new_coeffs
     return dict(coeffs)
 
-def dwt_axis(np.ndarray data, wavelet, mode='sym', unsigned int axis=0):
+cpdef dwt_axis(np.ndarray data, object wavelet, object mode='sym', unsigned int axis=0):
     cdef common.ArrayInfo data_info
     cdef common.ArrayInfo output_info
     cdef Wavelet w = c_wavelet_from_object(wavelet)
     cdef common.MODE _mode = _try_mode(mode)
+
+    data = data.astype(checkDtype(data), copy=False)
 
     cdef np.ndarray cD, cA
     cdef size_t[::1] output_shape
