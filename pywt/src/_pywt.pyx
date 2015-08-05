@@ -712,7 +712,7 @@ def dwtn(data, wavelet, mode='sym'):
     for axis in range(ndim):
         new_coeffs = []
         for subband, x in coeffs:
-            cA, cD = dwt_axis(data, wavelet, mode, axis)
+            cA, cD = dwt_axis(x, wavelet, mode, axis)
             new_coeffs.extend([(subband + 'a', cA),
                                (subband + 'd', cD)])
         coeffs = new_coeffs
