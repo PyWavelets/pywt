@@ -964,6 +964,10 @@ def _upcoef(part, np.ndarray[data_t, ndim=1, mode="c"] coeffs, wavelet,
         # reconstruct
         rec = np.zeros(rec_len, dtype=coeffs.dtype)
 
+        # To mirror multi-level wavelet reconstruction behaviour, when detail
+        # reconstruction is requested, the dec_d variant is only called at the
+        # first level to generate the approximation coefficients at the second
+        # level.  Subsequent levels apply the reconstruction filter.
         if do_rec_a:
             if data_t is np.float64_t:
                 if c_wt.double_rec_a(&coeffs[0], coeffs.size, w.w,
@@ -986,6 +990,7 @@ def _upcoef(part, np.ndarray[data_t, ndim=1, mode="c"] coeffs, wavelet,
                     raise RuntimeError("C rec_d failed.")
             else:
                 raise RuntimeError("Invalid data type.")
+            # switch to approximation filter for subsequent levels
             do_rec_a = 1
 
         # TODO: this algorithm needs some explaining
@@ -1068,7 +1073,11 @@ def _downcoef(part, np.ndarray[data_t, ndim=1, mode="c"] data,
             raise RuntimeError("Invalid output length.")
         coeffs = np.zeros(output_len, dtype=data.dtype)
 
-        # for level > 1 and do_dec_a=False, always call dec_a until last level
+        # To mirror multi-level wavelet decomposition behaviour, when detail
+        # coefficients are requested, the dec_d variant is only called at the
+        # final level.  All prior levels use dec_a.  In other words, the detail
+        # coefficients at level n are those produced via the operation of the
+        # detail filter on the approximation coefficients of level n-1.
         if do_dec_a or (i < level - 1):
             if data_t is np.float64_t:
                 if c_wt.double_dec_a(&data[0], data.size, w.w,
