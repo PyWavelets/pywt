@@ -979,11 +979,11 @@ def _upcoef(part, np.ndarray[data_t, ndim=1, mode="c"] coeffs, wavelet,
             if data_t is np.float64_t:
                 if c_wt.double_rec_d(&coeffs[0], coeffs.size, w.w,
                                      &rec[0], rec.size) < 0:
-                    raise RuntimeError("C rec_a failed.")
+                    raise RuntimeError("C rec_d failed.")
             elif data_t is np.float32_t:
                 if c_wt.float_rec_d(&coeffs[0], coeffs.size, w.w,
                                     &rec[0], rec.size) < 0:
-                    raise RuntimeError("C rec_a failed.")
+                    raise RuntimeError("C rec_d failed.")
             else:
                 raise RuntimeError("Invalid data type.")
             do_rec_a = 1
@@ -1083,11 +1083,11 @@ def _downcoef(part, np.ndarray[data_t, ndim=1, mode="c"] data,
             if data_t is np.float64_t:
                 if c_wt.double_dec_d(&data[0], data.size, w.w,
                                      &coeffs[0], coeffs.size, mode_) < 0:
-                    raise RuntimeError("C dec_a failed.")
+                    raise RuntimeError("C dec_d failed.")
             elif data_t is np.float32_t:
                 if c_wt.float_dec_d(&data[0], data.size, w.w,
                                     &coeffs[0], coeffs.size, mode_) < 0:
-                    raise RuntimeError("C dec_a failed.")
+                    raise RuntimeError("C dec_d failed.")
             else:
                 raise RuntimeError("Invalid data type.")
         data = coeffs
