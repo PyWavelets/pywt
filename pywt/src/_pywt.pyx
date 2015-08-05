@@ -686,15 +686,6 @@ def _dwt(np.ndarray[data_t, ndim=1] data, object wavelet, object mode='sym'):
 
     return (cA, cD)
 
-cdef np.dtype checkDtype(np.ndarray data):
-    try:
-        if data.dtype in (np.float64, np.float32):
-            return data.dtype
-        else:
-            return np.dtype('float64')
-    except AttributeError:
-        return np.dtype('float64')
-
 def dwtn(data, wavelet, mode='sym'):
     """
     Single-level n-dimensional Discrete Wavelet Transform.
@@ -750,7 +741,7 @@ cpdef dwt_axis(np.ndarray data, object wavelet, object mode='sym', unsigned int 
     cdef Wavelet w = c_wavelet_from_object(wavelet)
     cdef common.MODE _mode = _try_mode(mode)
 
-    data = data.astype(checkDtype(data), copy=False)
+    data = data.astype(_check_dtype(data), copy=False)
 
     cdef np.ndarray cD, cA
     cdef size_t[::1] output_shape
@@ -850,16 +841,16 @@ def _try_mode(mode):
         raise TypeError("Invalid mode: {0}".format(str(mode)))
 
 
-def _check_dtype(data):
+cdef np.dtype _check_dtype(data):
     """Check for cA/cD input what (if any) the dtype is."""
+    cdef np.dtype dt
     try:
         dt = data.dtype
-        if not dt == np.float32:
+        if dt not in (np.float64, np.float32):
             # integer input was always accepted; convert to float64
-            dt = np.float64
+            dt = np.dtype('float64')
     except AttributeError:
-        dt = np.float64
-
+        dt = np.dtype('float64')
     return dt
 
 
