@@ -1068,7 +1068,8 @@ def _downcoef(part, np.ndarray[data_t, ndim=1, mode="c"] data,
             raise RuntimeError("Invalid output length.")
         coeffs = np.zeros(output_len, dtype=data.dtype)
 
-        if do_dec_a:
+        # for level > 1 and do_dec_a=False, always call dec_a until last level
+        if do_dec_a or (i < level - 1):
             if data_t is np.float64_t:
                 if c_wt.double_dec_a(&data[0], data.size, w.w,
                                      &coeffs[0], coeffs.size, mode_) < 0:
