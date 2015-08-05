@@ -686,23 +686,6 @@ def _dwt(np.ndarray[data_t, ndim=1] data, object wavelet, object mode='sym'):
 
     return (cA, cD)
 
-cdef common.ArrayInfo getInfo(np.ndarray data):
-    cdef common.ArrayInfo info
-    # FIXME: Do these get gc'd at the end of the function?
-
-    cdef size_t[::1] shape
-    cdef index_t[::1] strides
-
-    shape = (<size_t [:data.ndim]> <size_t *> data.shape).copy()
-    strides = (<index_t [:data.ndim]> <index_t *> data.strides).copy()
-
-    info.ndim = data.ndim
-    info.shape = <size_t *> &shape[0]
-    info.strides = <index_t *> &strides[0]
-    for i in range(info.ndim):
-        info.strides[i] /= data.itemsize
-    return info
-
 cdef np.dtype checkDtype(np.ndarray data):
     try:
         if data.dtype in (np.float64, np.float32):
@@ -778,8 +761,13 @@ cpdef dwt_axis(np.ndarray data, object wavelet, object mode='sym', unsigned int 
     cA = np.empty(output_shape, data.dtype)
     cD = np.empty(output_shape, data.dtype)
 
-    data_info = getInfo(data)
-    output_info = getInfo(cA)
+    data_info.ndim = data.ndim
+    data_info.strides = <index_t *> data.strides
+    data_info.shape = <size_t *> data.shape
+
+    output_info.ndim = cA.ndim
+    output_info.strides = <index_t *> cA.strides
+    output_info.shape = <size_t *> cA.shape
 
     if data.dtype == 'float64':
         if c_wt.double_downcoef_axis(<double *> data.data, data_info,

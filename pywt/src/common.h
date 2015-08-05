@@ -43,7 +43,7 @@
 
 typedef struct {
     size_t * shape;
-    size_t * strides;
+    index_t * strides;
     size_t ndim;
 } ArrayInfo;
 

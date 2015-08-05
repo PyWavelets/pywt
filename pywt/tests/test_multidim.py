@@ -38,6 +38,40 @@ def test_3D_reconstruct():
     assert_allclose(data, pywt.idwtn(d, wavelet)[original_shape],
                     rtol=1e-13, atol=1e-13)
 
+def test_stride():
+    wavelet = pywt.Wavelet('haar')
+
+    for dtype in ('float32', 'float64'):
+        data = np.array([[0, 4, 1, 5, 1, 4],
+                         [0, 5, 6, 3, 2, 1],
+                         [2, 5, 19, 4, 19, 1]],
+                        dtype=dtype)
+
+        for mode in pywt.MODES.modes:
+            expected = pywt.dwtn(data, wavelet)
+            strided = np.ones((3, 12), dtype=data.dtype)
+            strided[::-1, ::2] = data
+            strided_dwtn = pywt.dwtn(strided[::-1, ::2], wavelet)
+            for key in expected.keys():
+                assert_allclose(strided_dwtn[key], expected[key])
+
+def test_byte_offset():
+    wavelet = pywt.Wavelet('haar')
+    for dtype in ('float32', 'float64'):
+        data = np.array([[0, 4, 1, 5, 1, 4],
+                         [0, 5, 6, 3, 2, 1],
+                         [2, 5, 19, 4, 19, 1]],
+                        dtype=dtype)
+
+        for mode in pywt.MODES.modes:
+            expected = pywt.dwtn(data, wavelet)
+            padded = np.ones((3, 6), dtype=np.dtype([('data', data.dtype),
+                                                     ('pad', 'byte')]))
+            padded[:] = data
+            padded_dwtn = pywt.dwtn(padded['data'], wavelet)
+            for key in expected.keys():
+                assert_allclose(padded_dwtn[key], expected[key])
+
 
 def test_idwtn_idwt2():
     data = np.array([

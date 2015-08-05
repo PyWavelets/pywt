@@ -42,8 +42,8 @@ int CAT(TYPE, _downcoef_axis)(const TYPE * const restrict input, const ArrayInfo
         }
     }
 
-    make_temp_input = input_info.strides[axis] != 1;
-    make_temp_output = output_info.strides[axis] != 1;
+    make_temp_input = input_info.strides[axis] != sizeof(TYPE);
+    make_temp_output = output_info.strides[axis] != sizeof(TYPE);
     if (make_temp_input)
         if ((temp_input = malloc(input_info.shape[axis] * sizeof(TYPE))) == NULL)
             goto cleanup;
@@ -80,11 +80,15 @@ int CAT(TYPE, _downcoef_axis)(const TYPE * const restrict input, const ArrayInfo
         // Copy to temporary input if necessary
         if (make_temp_input)
             for (j = 0; j < input_info.shape[axis]; ++j)
-                temp_input[j] = (input + input_offset)[j * input_info.strides[axis]];
+                // Offsets are byte offsets, to need to cast to char and back
+                temp_input[j] = *(TYPE *)(((char *) input) + input_offset
+                                          + j * input_info.strides[axis]);
 
         // Select temporary or direct output and input
-        input_row = make_temp_input ? temp_input : (input + input_offset);
-        output_row = make_temp_output ? temp_output : (output + output_offset);
+        input_row = make_temp_input ? temp_input
+            : (TYPE *)((char *) input + input_offset);
+        output_row = make_temp_output ? temp_output
+            : (TYPE *)((char *) output + output_offset);
 
         // Apply along axis
         switch (coef){
@@ -101,7 +105,9 @@ int CAT(TYPE, _downcoef_axis)(const TYPE * const restrict input, const ArrayInfo
         // Copy from temporary output if necessary
         if (make_temp_output)
             for (j = 0; j < output_info.shape[axis]; ++j)
-                (output + output_offset)[j * output_info.strides[axis]] = output_row[j];
+                // Offsets are byte offsets, to need to cast to char and back
+                *(TYPE *)((char *) output + output_offset
+                          + j * output_info.strides[axis]) = output_row[j];
     }
 
     free(temp_input);
