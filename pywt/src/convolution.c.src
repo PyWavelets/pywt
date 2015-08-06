@@ -36,7 +36,7 @@ int @type@_downsampling_convolution_periodization(const @type@ * const restrict 
                                                   @type@ * const restrict output, const size_t step)
 {
     size_t i = F/2, o = 0;
-    const size_t padding = N % 2; // FIXME: Should be N%step for larger steps?
+    const size_t padding = (step - (N % step)) % step;
 
     for (; i < F && i < N; i += step, ++o) {
         @type@ sum = 0;
@@ -301,13 +301,13 @@ int @type@_upsampling_convolution_full(const @type@ * const restrict input, cons
      * for idwt.
      */
 
-    // FIXME? Return a valid result for i%2 != 0? Not for idwt, but could be useful.
-
     // If check omitted, this function would be a no-op for F<2
     size_t i = 0, o = 0;
 
     if(F<2)
         return -1;
+    if(F%2)
+        return -3;
 
     for(; i < N && i < F/2; ++i, o += 2){
         size_t j;
