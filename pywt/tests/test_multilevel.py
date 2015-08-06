@@ -26,6 +26,13 @@ def test_waverec():
     assert_allclose(pywt.waverec(coeffs, 'db1'), x, rtol=1e-12)
 
 
+def test_waverec_complex():
+    x = np.array([3, 7, 1, 1, -2, 5, 4, 6])
+    x = x + 1j
+    coeffs = pywt.wavedec(x, 'db1')
+    assert_allclose(pywt.waverec(coeffs, 'db1'), x, rtol=1e-12)
+
+
 def test_swt_decomposition():
     x = [3, 7, 1, 3, -2, 6, 4, 6]
     db1 = pywt.Wavelet('db1')
@@ -103,6 +110,13 @@ def test_multilevel_dtypes():
             assert_(c.dtype == dt_out, "wavedec2: " + errmsg)
         x_roundtrip = pywt.waverec2([cA, coeffsD2, coeffsD1], wavelet)
         assert_(x_roundtrip.dtype == dt_out, "waverec2: " + errmsg)
+
+
+def test_wavedec2_complex():
+    data = np.ones((4, 4)) + 1j
+    coeffs = pywt.wavedec2(data, 'db1')
+    assert_(len(coeffs) == 3)
+    assert_allclose(pywt.waverec2(coeffs, 'db1'), data, rtol=1e-12)
 
 
 if __name__ == '__main__':
