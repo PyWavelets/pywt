@@ -37,6 +37,23 @@ def test_dwt_idwt_dtypes():
         assert_(x_roundtrip.dtype == dt_out, "idwt: " + errmsg)
 
 
+def test_dwt_idwt_basic_complex():
+    x = np.asarray([3, 7, 1, 1, -2, 5, 4, 6])
+    x = x + 0.5j*x
+    cA, cD = pywt.dwt(x, 'db2')
+    cA_expect = np.asarray([5.65685425, 7.39923721, 0.22414387, 3.33677403,
+                            7.77817459])
+    cA_expect = cA_expect + 0.5j*cA_expect
+    cD_expect = np.asarray([-2.44948974, -1.60368225, -4.44140056, -0.41361256,
+                            1.22474487])
+    cD_expect = cD_expect + 0.5j*cD_expect
+    assert_allclose(cA, cA_expect)
+    assert_allclose(cD, cD_expect)
+
+    x_roundtrip = pywt.idwt(cA, cD, 'db2')
+    assert_allclose(x_roundtrip, x, rtol=1e-10)
+
+
 def test_dwt_input_error():
     data = np.ones((16, 1))
     assert_raises(ValueError, pywt.dwt, data, 'haar')
