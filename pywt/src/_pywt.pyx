@@ -950,6 +950,9 @@ def upcoef(part, coeffs, wavelet, level=1, take=0):
     [ 1.  2.  3.  4.  5.  6.]
 
     """
+    if np.iscomplexobj(coeffs):
+        return (upcoef(part, coeffs.real, wavelet, level, take) +
+                1j*upcoef(part, coeffs.imag, wavelet, level, take))
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(coeffs)
     coeffs = np.array(coeffs, dtype=dt)
@@ -1057,6 +1060,9 @@ def downcoef(part, data, wavelet, mode='sym', level=1):
     upcoef
 
     """
+    if np.iscomplexobj(data):
+        return (downcoef(part, data.real, wavelet, mode, level) +
+                1j*downcoef(part, data.imag, wavelet, mode, level))
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(data)
     data = np.array(data, dtype=dt)
