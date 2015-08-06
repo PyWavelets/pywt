@@ -736,15 +736,13 @@ def dwtn(data, wavelet, mode='sym'):
     return dict(coeffs)
 
 cpdef dwt_axis(np.ndarray data, object wavelet, object mode='sym', unsigned int axis=0):
-    cdef common.ArrayInfo data_info
-    cdef common.ArrayInfo output_info
     cdef Wavelet w = c_wavelet_from_object(wavelet)
     cdef common.MODE _mode = _try_mode(mode)
-
-    data = data.astype(_check_dtype(data), copy=False)
-
+    cdef common.ArrayInfo data_info, output_info
     cdef np.ndarray cD, cA
     cdef size_t[::1] output_shape
+
+    data = data.astype(_check_dtype(data), copy=False)
 
     output_shape = (<size_t [:data.ndim]> <size_t *> data.shape).copy()
     output_shape[axis] = common.dwt_buffer_length(data.shape[axis], w.dec_len, _mode)
