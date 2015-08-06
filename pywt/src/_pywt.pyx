@@ -83,8 +83,6 @@ class _Modes(object):
     sp1 = c_wt.MODE_SMOOTH
     per = c_wt.MODE_PERIODIZATION
 
-    _asym = c_wt.MODE_ASYMMETRIC
-
     modes = ["zpd", "cpd", "sym", "ppd", "sp1", "per"]
 
     def from_object(self, mode):

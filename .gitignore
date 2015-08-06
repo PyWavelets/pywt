@@ -32,3 +32,4 @@ wt.[ch]
 cythonize.dat
 pywt/__config__.py
 pywt/version.py
+build.log

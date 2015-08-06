@@ -1,18 +1,21 @@
 /* Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/> */
 /* See COPYING for license details. */
 
-#ifndef _CONVOLUTION_H_
-#define _CONVOLUTION_H_
+#pragma once
 
-#include <math.h>
 #include "common.h"
+
+#if defined _MSC_VER
+#define restrict __restrict
+#elif defined __GNUC__
+#define restrict __restrict__
+#endif
 
 /**begin repeat
  * #type = double, float#
  */
 
-/* 
- * Performs convolution of input with filter and downsamples by taking every
+/* Performs convolution of input with filter and downsamples by taking every
  * step-th element from the result.
  *
  * input    - input data
@@ -26,22 +29,10 @@
 
 /* memory efficient version */
 
-int @type@_downsampling_convolution(const @type@* input, const_index_t N,
-                                    const @type@* filter, const_index_t F,
-                                    @type@* output, const_index_t step,
+int @type@_downsampling_convolution(const @type@ * const restrict input, const size_t N,
+                                    const @type@ * const restrict filter, const size_t F,
+                                    @type@ * const restrict output, const size_t step,
                                     MODE mode);
-
-/* 
- * Straightforward implementation with memory reallocation - for very short
- * signals (shorter than filter).  This id called from downsampling_convolution
- */ 
-
-int @type@_allocating_downsampling_convolution(const @type@* input,
-                                               const_index_t N, const @type@*
-                                               filter, const_index_t F,
-                                               @type@* output, const_index_t
-                                               step, MODE mode);
-
 
 /*
  * Performs normal (full) convolution of "upsampled" input coeffs array with
@@ -57,22 +48,20 @@ int @type@_allocating_downsampling_convolution(const @type@* input,
  * mode     - signal extension mode
  */
 
-int @type@_upsampling_convolution_full(const @type@* input, const_index_t N,
-                                       const @type@* filter, const_index_t F,
-                                       @type@* output, const_index_t O);
+int @type@_upsampling_convolution_full(const @type@ * const restrict input, const size_t N,
+                                       const @type@ * const restrict filter, const size_t F,
+                                       @type@ * const restrict output, const size_t O);
 
-/* 
- * Performs valid convolution (signals must overlap)
+/* Performs valid convolution (signals must overlap)
  * Extends (virtually) input for MODE_PERIODIZATION.
  */
 
-int @type@_upsampling_convolution_valid_sf(const @type@* input, const_index_t N,
-                                           const @type@* filter,
-                                           const_index_t F, @type@* output,
-                                           const_index_t O, MODE mode);
+int @type@_upsampling_convolution_valid_sf(const @type@ * const restrict input, const size_t N,
+                                           const @type@ * const restrict filter, const size_t F,
+                                           @type@ * const restrict output, const size_t O,
+                                           MODE mode);
 
-/* 
- * TODO
+/* TODO
  * for SWT
  * int upsampled_filter_convolution(const @type@* input, const int N,
  *                                  const @type@* filter, const int F,
@@ -81,4 +70,4 @@ int @type@_upsampling_convolution_valid_sf(const @type@* input, const_index_t N,
 
 /**end repeat**/
 
-#endif
+#undef restrict

@@ -3,16 +3,22 @@
 
 #include "wt.h"
 
+#if defined _MSC_VER
+#define restrict __restrict
+#elif defined __GNUC__
+#define restrict __restrict__
+#endif
+
 /* Decomposition of input with lowpass filter */
 
 /**begin repeat
  * #type = double, float#
  */
 
-int @type@_dec_a(@type@ input[], index_t input_len,
-                 Wavelet* wavelet,
-                 @type@ output[], index_t output_len,
-                 MODE mode){
+int @type@_dec_a(const @type@ * const restrict input, const size_t input_len,
+                 const Wavelet * const restrict wavelet,
+                 @type@ * const restrict output, const size_t output_len,
+                 const MODE mode){
 
     /* check output length */
     if(output_len != dwt_buffer_length(input_len, wavelet->dec_len, mode)){
@@ -28,10 +34,10 @@ int @type@_dec_a(@type@ input[], index_t input_len,
 
 /* Decomposition of input with highpass filter */
 
-int @type@_dec_d(@type@ input[], index_t input_len,
-                 Wavelet* wavelet,
-                 @type@ output[], index_t output_len,
-                 MODE mode){
+int @type@_dec_d(const @type@ * const restrict input, const size_t input_len,
+                 const Wavelet * const restrict wavelet,
+                 @type@ * const restrict output, const size_t output_len,
+                 const MODE mode){
 
     /* check output length */
     if(output_len != dwt_buffer_length(input_len, wavelet->dec_len, mode))
@@ -39,21 +45,21 @@ int @type@_dec_d(@type@ input[], index_t input_len,
 
     return @type@_downsampling_convolution(input, input_len,
                                            wavelet->dec_hi_@type@,
-                                           wavelet->dec_len, output, 
+                                           wavelet->dec_len, output,
                                            2, mode);
 }
 
 
 /* Direct reconstruction with lowpass reconstruction filter */
 
-int @type@_rec_a(@type@ coeffs_a[], index_t coeffs_len,
-                 Wavelet* wavelet,
-                 @type@ output[], index_t output_len){
+int @type@_rec_a(const @type@ * const restrict coeffs_a, const size_t coeffs_len,
+                 const Wavelet * const restrict wavelet,
+                 @type@ * const restrict output, const size_t output_len){
 
     /* check output length */
     if(output_len != reconstruction_buffer_length(coeffs_len, wavelet->rec_len))
         return -1;
-    
+
     return @type@_upsampling_convolution_full(coeffs_a, coeffs_len,
                                               wavelet->rec_lo_@type@,
                                               wavelet->rec_len, output,
@@ -63,14 +69,14 @@ int @type@_rec_a(@type@ coeffs_a[], index_t coeffs_len,
 
 /* Direct reconstruction with highpass reconstruction filter */
 
-int @type@_rec_d(@type@ coeffs_d[], index_t coeffs_len,
-                 Wavelet* wavelet,
-                 @type@ output[], index_t output_len){
+int @type@_rec_d(const @type@ * const restrict coeffs_d, const size_t coeffs_len,
+                 const Wavelet * const restrict wavelet,
+                 @type@ * const restrict output, const size_t output_len){
 
     /* check for output length */
     if(output_len != reconstruction_buffer_length(coeffs_len, wavelet->rec_len))
         return -1;
-    
+
     return @type@_upsampling_convolution_full(coeffs_d, coeffs_len,
                                               wavelet->rec_hi_@type@,
                                               wavelet->rec_len, output,
@@ -84,14 +90,14 @@ int @type@_rec_d(@type@ coeffs_d[], index_t coeffs_len,
  * is useful in multilevel decompositions and reconstructions of odd-length
  * signals).  Requires zero-filled output buffer.
  */
-int @type@_idwt(@type@ coeffs_a[], index_t coeffs_a_len,
-                @type@ coeffs_d[], index_t coeffs_d_len,
-                Wavelet* wavelet,
-                @type@ output[], index_t output_len,
-                MODE mode, int fix_size_diff){
+int @type@_idwt(const @type@ * const restrict coeffs_a, const size_t coeffs_a_len,
+                const @type@ * const restrict coeffs_d, const size_t coeffs_d_len,
+                const Wavelet * const restrict wavelet,
+                @type@ * const restrict output, const size_t output_len,
+                const MODE mode, const int fix_size_diff){
 
-    index_t input_len;
-    
+    size_t input_len;
+
     /*
      * If one of coeffs array is NULL then the reconstruction will be performed
      * using the other one
@@ -123,12 +129,12 @@ int @type@_idwt(@type@ coeffs_a[], index_t coeffs_a_len,
     } else {
         goto error;
     }
-    
+
     /* check output size */
     if(output_len != idwt_buffer_length(input_len, wavelet->rec_len, mode))
         goto error;
 
-    /* 
+    /*
      * Set output to zero (this can be omitted if output array is already
      * cleared) memset(output, 0, output_len * sizeof(@type@));
      */
@@ -142,7 +148,7 @@ int @type@_idwt(@type@ coeffs_a[], index_t coeffs_a_len,
             goto error;
         }
     }
-    /* 
+    /*
      * Add reconstruction of details coeffs performed with highpass
      * reconstruction filter.
      */
@@ -172,7 +178,7 @@ int @type@_swt_(@type@ input[], index_t input_len,
 
     if(level < 1)
         return -1;
-    
+
     if(level > swt_max_level(input_len))
         return -2;
 
@@ -223,3 +229,5 @@ int @type@_swt_d(@type@ input[], index_t input_len, Wavelet* wavelet,
                        wavelet->dec_len, output, output_len, level);
 }
 /**end repeat**/
+
+#undef restrict
