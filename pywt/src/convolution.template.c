@@ -33,9 +33,9 @@
  * See 'common.h' for descriptions of the extension modes.
  */
 
-int CAT(TYPE, _downsampling_convolution_periodization)(const TYPE * const restrict input, const size_t N,
-                                                       const TYPE * const restrict filter, const size_t F,
-                                                       TYPE * const restrict output, const size_t step)
+static int CAT(TYPE, _downsampling_convolution_periodization)(const TYPE * const restrict input, const size_t N,
+                                                              const TYPE * const restrict filter, const size_t F,
+                                                              TYPE * const restrict output, const size_t step)
 {
     size_t i = F/2, o = 0;
     const size_t padding = (step - (N % step)) % step;
@@ -346,9 +346,9 @@ int CAT(TYPE, _upsampling_convolution_full)(const TYPE * const restrict input, c
 }
 
 
-int CAT(TYPE, _upsampling_convolution_valid_sf_periodization)(const TYPE * const restrict input, const size_t N,
-                                                              const TYPE * const restrict filter, const size_t F,
-                                                              TYPE * const restrict output, const size_t O)
+static int CAT(TYPE, _upsampling_convolution_valid_sf_periodization)(const TYPE * const restrict input, const size_t N,
+                                                                     const TYPE * const restrict filter, const size_t F,
+                                                                     TYPE * const restrict output, const size_t O)
 {
     // TODO? Allow for non-2 step
 

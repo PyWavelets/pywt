@@ -18,8 +18,10 @@
  */
 
 /* ignore warning about initializing floats from double values */
-#ifdef _MSC_VER
+#if defined _MSC_VER
     #pragma warning (disable:4305)
+#elif defined __GNUC__
+    #pragma GCC diagnostic ignored "-Wconversion"
 #endif
 
 static TYPE CAT(db1_, TYPE)[][2] = {
