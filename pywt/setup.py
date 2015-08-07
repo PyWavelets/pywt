@@ -18,10 +18,10 @@ def configuration(parent_package='', top_path=None):
     # add main PyWavelets module
     config.add_extension(
         '_pywt',
-        sources=["src/{}.c".format(s) for s in sources],
-        depends=(["src/{}.template.c".format(s) for s in source_templates]
-                 + ["src/{}.template.h".format(s) for s in header_templates]
-                 + ["src/{}.h".format(s) for s in headers]),
+        sources=["src/{0}.c".format(s) for s in sources],
+        depends=(["src/{0}.template.c".format(s) for s in source_templates]
+                 + ["src/{0}.template.h".format(s) for s in header_templates]
+                 + ["src/{0}.h".format(s) for s in headers]),
         include_dirs=["src", np.get_include()],
         define_macros=[("PY_EXTENSION", None)],
     )
