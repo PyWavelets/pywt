@@ -16,7 +16,7 @@ from itertools import cycle, product, repeat, islice
 import numpy as np
 
 from ._pywt import Wavelet, MODES
-from ._pywt import dwt, dwtn, idwt, swt, downcoef, upcoef
+from ._pywt import dwt, dwtn, idwt, swt, downcoef, upcoef, idwt_axis
 
 
 def dwt2(data, wavelet, mode='sym'):
@@ -254,10 +254,6 @@ def idwtn(coeffs, wavelet, mode='sym', take=None):
         else:
             takes = [2*s - wavelet.rec_len + 2 for s in reversed(coeff_shape)]
 
-    def _upcoef(coeffs, wavelet, take, type):
-        """Adapts pywt.upcoef call for apply_along_axis"""
-        return upcoef(type, coeffs, wavelet, level=1, take=take)
-
     for axis, take in zip(reversed(range(dims)), takes):
         new_coeffs = {}
         new_keys = [''.join(coeff) for coeff in product('ad', repeat=axis)]
@@ -266,21 +262,17 @@ def idwtn(coeffs, wavelet, mode='sym', take=None):
             L = coeffs.get(key + 'a')
             H = coeffs.get(key + 'd')
 
-            if L is not None:
-                L = np.apply_along_axis(_upcoef, axis, L, wavelet, take, 'a')
-
-            if H is not None:
-                H = np.apply_along_axis(_upcoef, axis, H, wavelet, take, 'd')
-
-            if H is None and L is None:
-                new_coeffs[key] = None
-            elif H is None:
-                new_coeffs[key] = L
-            elif L is None:
-                new_coeffs[key] = H
-            else:
-                new_coeffs[key] = L + H
-
+            rec = idwt_axis(L, H, wavelet, axis)
+            if rec is not None:
+                if 0 < take < rec.shape[axis]:
+                    left_bound = right_bound = (rec.shape[axis] - take) // 2
+                    if (rec.shape[axis] - take) % 2:
+                        right_bound = right_bound + 1
+                    slices = tuple(slice(left_bound, -right_bound) if i == axis
+                                else slice(None) for i in range(dims))
+                    new_coeffs[key] = rec[slices]
+                else:
+                    new_coeffs[key] = rec
         coeffs = new_coeffs
 
     return coeffs['']

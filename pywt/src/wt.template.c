@@ -51,9 +51,9 @@ int CAT(TYPE, _downcoef_axis)(const TYPE * const restrict input, const ArrayInfo
         if ((temp_output = malloc(output_info.shape[axis] * sizeof(TYPE))) == NULL)
             goto cleanup;
 
-    for (i = 0; i < input_info.ndim; ++i){
+    for (i = 0; i < output_info.ndim; ++i){
         if (i != axis)
-            num_loops *= input_info.shape[i];
+            num_loops *= output_info.shape[i];
     }
 
     for (i = 0; i < num_loops; ++i){
@@ -65,11 +65,11 @@ int CAT(TYPE, _downcoef_axis)(const TYPE * const restrict input, const ArrayInfo
         // Calculate offset into linear buffer
         {
             size_t reduced_idx = i;
-            for (j = 0; j < input_info.ndim; ++j){
-                size_t j_rev = input_info.ndim - 1 - j;
+            for (j = 0; j < output_info.ndim; ++j){
+                size_t j_rev = output_info.ndim - 1 - j;
                 if (j_rev != axis){
-                    size_t axis_idx = reduced_idx % input_info.shape[j_rev];
-                    reduced_idx /= input_info.shape[j_rev];
+                    size_t axis_idx = reduced_idx % output_info.shape[j_rev];
+                    reduced_idx /= output_info.shape[j_rev];
 
                     input_offset += (axis_idx * input_info.strides[j_rev]);
                     output_offset += (axis_idx * output_info.strides[j_rev]);
@@ -86,7 +86,7 @@ int CAT(TYPE, _downcoef_axis)(const TYPE * const restrict input, const ArrayInfo
 
         // Select temporary or direct output and input
         input_row = make_temp_input ? temp_input
-            : (TYPE *)((char *) input + input_offset);
+            : (const TYPE *)((const char *) input + input_offset);
         output_row = make_temp_output ? temp_output
             : (TYPE *)((char *) output + output_offset);
 
@@ -119,6 +119,142 @@ int CAT(TYPE, _downcoef_axis)(const TYPE * const restrict input, const ArrayInfo
     free(temp_output);
     return 2;
 }
+
+
+int CAT(TYPE, _upcoef_axis)(const TYPE * const restrict coefs_a, const ArrayInfo a_info,
+                            const TYPE * const restrict coefs_d, const ArrayInfo d_info,
+                            TYPE * const restrict output, const ArrayInfo output_info,
+                            const Wavelet * const restrict wavelet, const size_t axis){
+    size_t i;
+    size_t num_loops = 1;
+    bool make_temp_coefs_a, make_temp_coefs_d, make_temp_output;
+    TYPE * temp_coefs_a = NULL, * temp_coefs_d = NULL, * temp_output = NULL;
+
+
+    if ((coefs_a == NULL) && (coefs_d == NULL))
+        return 3;
+
+    if (((coefs_a != NULL) && (a_info.ndim != output_info.ndim)) ||
+        ((coefs_d != NULL) && (d_info.ndim != output_info.ndim)))
+        return 1;
+    if (axis >= output_info.ndim)
+        return 1;
+
+    for (i = 0; i < output_info.ndim; ++i){
+        if (i == axis){
+            size_t input_shape;
+            if ((coefs_a != NULL) && (coefs_d != NULL) &&
+                (d_info.shape[i] != a_info.shape[i]))
+                return 1;
+            input_shape = (coefs_a != NULL) ? a_info.shape[i] : d_info.shape[i];
+
+            /* TODO: reconstruction_buffer_length should take a & d shapes
+             *       - for odd output_len, d_len == (a_len - 1)
+             */
+            if (reconstruction_buffer_length(input_shape, wavelet->rec_len)
+                != output_info.shape[i])
+                return 1;
+        } else {
+            if (((coefs_a != NULL) && (a_info.shape[i] != output_info.shape[i])) ||
+                ((coefs_d != NULL) && (d_info.shape[i] != output_info.shape[i])))
+                return 1;
+        }
+    }
+
+    make_temp_coefs_a = (coefs_a != NULL) && a_info.strides[axis] != sizeof(TYPE);
+    make_temp_coefs_d = (coefs_d != NULL) && d_info.strides[axis] != sizeof(TYPE);
+    make_temp_output = output_info.strides[axis] != sizeof(TYPE);
+    if (make_temp_coefs_a)
+        if ((temp_coefs_a = malloc(a_info.shape[axis] * sizeof(TYPE))) == NULL)
+            goto cleanup;
+    if (make_temp_coefs_d)
+        if ((temp_coefs_d = malloc(d_info.shape[axis] * sizeof(TYPE))) == NULL)
+            goto cleanup;
+    if (make_temp_output)
+        if ((temp_output = malloc(output_info.shape[axis] * sizeof(TYPE))) == NULL)
+            goto cleanup;
+
+    for (i = 0; i < a_info.ndim; ++i){
+        if (i != axis)
+            num_loops *= output_info.shape[i];
+    }
+
+    for (i = 0; i < num_loops; ++i){
+        size_t j;
+        size_t a_offset = 0, d_offset = 0, output_offset = 0;
+        TYPE * output_row;
+
+        // Calculate offset into linear buffer
+        {
+            size_t reduced_idx = i;
+            for (j = 0; j < output_info.ndim; ++j){
+                size_t j_rev = output_info.ndim - 1 - j;
+                if (j_rev != axis){
+                    size_t axis_idx = reduced_idx % output_info.shape[j_rev];
+                    reduced_idx /= output_info.shape[j_rev];
+
+                    a_offset += (axis_idx * a_info.strides[j_rev]);
+                    d_offset += (axis_idx * d_info.strides[j_rev]);
+                    output_offset += (axis_idx * output_info.strides[j_rev]);
+                }
+            }
+        }
+
+        // Copy to temporary input if necessary
+        if (make_temp_coefs_a)
+            for (j = 0; j < a_info.shape[axis]; ++j)
+                // Offsets are byte offsets, to need to cast to char and back
+                temp_coefs_a[j] = *(TYPE *)(((char *) coefs_a) + a_offset
+                                            + j * a_info.strides[axis]);
+        if (make_temp_coefs_d)
+            for (j = 0; j < d_info.shape[axis]; ++j)
+                // Offsets are byte offsets, to need to cast to char and back
+                temp_coefs_d[j] = *(TYPE *)(((char *) coefs_d) + d_offset
+                                            + j * d_info.strides[axis]);
+
+        // Select temporary or direct output
+        output_row = make_temp_output ? temp_output
+            : (TYPE *)((char *) output + output_offset);
+
+        // upsampling_convolution adds to input, so clear
+        if (make_temp_output)
+            memset(temp_output, 0, output_info.shape[axis] * sizeof(TYPE));
+
+        if ((coefs_a != NULL)){
+            // Pointer arithmetic on NULL is undefined
+            const TYPE * a_row = make_temp_coefs_a ? temp_coefs_a
+                : (const TYPE *)((const char *) coefs_a + a_offset);
+            CAT(TYPE, _rec_a)(a_row, a_info.shape[axis], wavelet,
+                              output_row, output_info.shape[axis]);
+        }
+        if ((coefs_d != NULL)){
+            // Pointer arithmetic on NULL is undefined
+            const TYPE * d_row = make_temp_coefs_d ? temp_coefs_d
+                : (const TYPE *)((const char *) coefs_d + d_offset);
+            CAT(TYPE, _rec_d)(d_row, d_info.shape[axis], wavelet,
+                              output_row, output_info.shape[axis]);
+        }
+
+        // Copy from temporary output if necessary
+        if (make_temp_output)
+            for (j = 0; j < output_info.shape[axis]; ++j)
+                // Offsets are byte offsets, to need to cast to char and back
+                *(TYPE *)((char *) output + output_offset
+                          + j * output_info.strides[axis]) = output_row[j];
+    }
+
+    free(temp_coefs_a);
+    free(temp_coefs_d);
+    free(temp_output);
+    return 0;
+
+ cleanup:
+    free(temp_coefs_a);
+    free(temp_coefs_d);
+    free(temp_output);
+    return 2;
+}
+
 
 int CAT(TYPE, _dec_a)(const TYPE * const restrict input, const size_t input_len,
                       const Wavelet * const restrict wavelet,
@@ -187,6 +323,7 @@ int CAT(TYPE, _rec_d)(const TYPE * const restrict coeffs_d, const size_t coeffs_
                                                    wavelet->rec_len, output,
                                                    output_len);
 }
+
 
 /*
  * IDWT reconstruction from approximation and detail coeffs

@@ -11,6 +11,10 @@ cdef extern from "wt.h":
                                   double * const output, const ArrayInfo output_info,
                                   const Wavelet * const wavelet, const size_t axis,
                                   const Coefficient detail, const MODE mode)
+    cdef int double_upcoef_axis(const double * const coefs_a, const ArrayInfo a_info,
+                                const double * const coefs_d, const ArrayInfo d_info,
+                                double * const output, const ArrayInfo output_info,
+                                const Wavelet * const wavelet, const size_t axis);
     cdef int double_dec_a(const double * const input, const size_t input_len,
                           const Wavelet * const wavelet,
                           double * const output, const size_t output_len,
@@ -43,6 +47,10 @@ cdef extern from "wt.h":
                                  float * const output, const ArrayInfo output_info,
                                  const Wavelet * const wavelet, const size_t axis,
                                  const Coefficient detail, const MODE mode)
+    cdef int float_upcoef_axis(const float * const coefs_a, const ArrayInfo a_info,
+                               const float * const coefs_d, const ArrayInfo d_info,
+                               float * const output, const ArrayInfo output_info,
+                               const Wavelet * const wavelet, const size_t axis);
     cdef int float_dec_a(const float * const input, const size_t input_len,
                          const Wavelet * const wavelet,
                          float * const output, const size_t output_len,

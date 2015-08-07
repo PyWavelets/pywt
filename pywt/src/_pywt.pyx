@@ -781,6 +781,62 @@ cpdef dwt_axis(np.ndarray data, object wavelet, object mode='sym', unsigned int 
                         .format(data.dtype))
     return (cA, cD)
 
+
+# TODO: Use idwt rather than upcoef, which requires `mode` but not `take`
+cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d, object wavelet,
+                unsigned int axis=0):
+    cdef Wavelet w = c_wavelet_from_object(wavelet)
+    cdef common.ArrayInfo a_info, d_info, output_info
+    cdef np.ndarray output
+    cdef size_t[::1] output_shape
+
+    if coefs_a is not None:
+        output_shape = (<size_t [:coefs_a.ndim]> <size_t *> coefs_a.shape).copy()
+        output_shape[axis] = common.reconstruction_buffer_length(coefs_a.shape[axis],
+                                                                 w.rec_len)
+    elif coefs_d is not None:
+        output_shape = (<size_t [:coefs_d.ndim]> <size_t *> coefs_d.shape).copy()
+        output_shape[axis] = common.reconstruction_buffer_length(coefs_d.shape[axis],
+                                                                 w.rec_len)
+    else:
+        return None;
+
+    if coefs_a is not None:
+        coefs_a = coefs_a.astype(_check_dtype(coefs_a), copy=False)
+        a_info.ndim = coefs_a.ndim
+        a_info.strides = <index_t *> coefs_a.strides
+        a_info.shape = <size_t *> coefs_a.shape
+    if coefs_d is not None:
+        coefs_d = coefs_d.astype(_check_dtype(coefs_d), copy=False)
+        d_info.ndim = coefs_d.ndim
+        d_info.strides = <index_t *> coefs_d.strides
+        d_info.shape = <size_t *> coefs_d.shape
+
+    if coefs_a.dtype != coefs_d.dtype:
+        raise ValueError("FIXME: Deal with mismatched dtypes.")
+
+    # Must be zero-initialized
+    output = np.zeros(output_shape, coefs_a.dtype)
+
+    output_info.ndim = output.ndim
+    output_info.strides = <index_t *> output.strides
+    output_info.shape = <size_t *> output.shape
+
+    if coefs_a.dtype == 'float64':
+        if c_wt.double_upcoef_axis(<double *> coefs_a.data, a_info,
+                                   <double *> coefs_d.data, d_info,
+                                   <double *> output.data, output_info,
+                                   w.w, axis):
+            raise RuntimeError("C inverse wavelet transform failed")
+    if coefs_a.dtype == 'float32':
+        if c_wt.float_upcoef_axis(<float *> coefs_a.data, a_info,
+                                  <float *> coefs_d.data, d_info,
+                                  <float *> output.data, output_info,
+                                  w.w, axis):
+            raise RuntimeError("C inverse wavelet transform failed")
+
+    return output
+
 def dwt_coeff_len(data_len, filter_len, mode='sym'):
     """
     dwt_coeff_len(data_len, filter_len, mode='sym')
