@@ -802,18 +802,22 @@ cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d, object wavelet,
         return None;
 
     if coefs_a is not None:
-        coefs_a = coefs_a.astype(_check_dtype(coefs_a), copy=False)
+        if coefs_d is not None and coefs_d.dtype.itemsize > coefs_a.dtype.itemsize:
+            coefs_a = coefs_a.astype(_check_dtype(coefs_d), copy=False)
+        else:
+            coefs_a = coefs_a.astype(_check_dtype(coefs_a), copy=False)
         a_info.ndim = coefs_a.ndim
         a_info.strides = <index_t *> coefs_a.strides
         a_info.shape = <size_t *> coefs_a.shape
     if coefs_d is not None:
+        if coefs_d is not None and coefs_d.dtype.itemsize > coefs_a.dtype.itemsize:
+            coefs_d = coefs_d.astype(_check_dtype(coefs_a), copy=False)
+        else:
+            coefs_d = coefs_d.astype(_check_dtype(coefs_d), copy=False)
         coefs_d = coefs_d.astype(_check_dtype(coefs_d), copy=False)
         d_info.ndim = coefs_d.ndim
         d_info.strides = <index_t *> coefs_d.strides
         d_info.shape = <size_t *> coefs_d.shape
-
-    if coefs_a.dtype != coefs_d.dtype:
-        raise ValueError("FIXME: Deal with mismatched dtypes.")
 
     # Must be zero-initialized
     output = np.zeros(output_shape, coefs_a.dtype)
@@ -823,14 +827,18 @@ cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d, object wavelet,
     output_info.shape = <size_t *> output.shape
 
     if coefs_a.dtype == 'float64':
-        if c_wt.double_upcoef_axis(<double *> coefs_a.data, a_info,
-                                   <double *> coefs_d.data, d_info,
+        if c_wt.double_upcoef_axis(<double *> coefs_a.data if coefs_a is not None else NULL,
+                                   a_info,
+                                   <double *> coefs_d.data if coefs_d is not None else NULL,
+                                   d_info,
                                    <double *> output.data, output_info,
                                    w.w, axis):
             raise RuntimeError("C inverse wavelet transform failed")
     if coefs_a.dtype == 'float32':
-        if c_wt.float_upcoef_axis(<float *> coefs_a.data, a_info,
-                                  <float *> coefs_d.data, d_info,
+        if c_wt.float_upcoef_axis(<float *> coefs_a.data if coefs_a is not None else NULL,
+                                  a_info,
+                                  <float *> coefs_d.data if coefs_d is not None else NULL,
+                                  d_info,
                                   <float *> output.data, output_info,
                                   w.w, axis):
             raise RuntimeError("C inverse wavelet transform failed")
