@@ -38,6 +38,7 @@ def test_3D_reconstruct():
     assert_allclose(data, pywt.idwtn(d, wavelet)[original_shape],
                     rtol=1e-13, atol=1e-13)
 
+
 def test_stride():
     wavelet = pywt.Wavelet('haar')
 
@@ -54,6 +55,7 @@ def test_stride():
             strided_dwtn = pywt.dwtn(strided[::-1, ::2], wavelet)
             for key in expected.keys():
                 assert_allclose(strided_dwtn[key], expected[key])
+
 
 def test_byte_offset():
     wavelet = pywt.Wavelet('haar')
