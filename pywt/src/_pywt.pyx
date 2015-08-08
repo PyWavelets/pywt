@@ -10,6 +10,8 @@ __all__ = ['MODES', 'Wavelet', 'dwt', 'dwt_coeff_len', 'dwt_max_level',
 # imports
 
 cimport c_wt
+cimport wavelet
+cimport common
 
 from libc.math cimport pow, sqrt
 
@@ -76,18 +78,18 @@ class _Modes(object):
     physical memory.
 
     """
-    zpd = c_wt.MODE_ZEROPAD
-    cpd = c_wt.MODE_CONSTANT_EDGE
-    sym = c_wt.MODE_SYMMETRIC
-    ppd = c_wt.MODE_PERIODIC
-    sp1 = c_wt.MODE_SMOOTH
-    per = c_wt.MODE_PERIODIZATION
+    zpd = common.MODE_ZEROPAD
+    cpd = common.MODE_CONSTANT_EDGE
+    sym = common.MODE_SYMMETRIC
+    ppd = common.MODE_PERIODIC
+    sp1 = common.MODE_SMOOTH
+    per = common.MODE_PERIODIZATION
 
     modes = ["zpd", "cpd", "sym", "ppd", "sp1", "per"]
 
     def from_object(self, mode):
         if isinstance(mode, int):
-            if mode <= c_wt.MODE_INVALID or mode >= c_wt.MODE_MAX:
+            if mode <= common.MODE_INVALID or mode >= common.MODE_MAX:
                 raise ValueError("Invalid mode.")
             m = mode
         else:
@@ -219,7 +221,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
     filters - just like the Wavelet instance itself.
 
     """
-    cdef c_wt.Wavelet* w
+    cdef wavelet.Wavelet* w
 
     cdef readonly name
     cdef readonly number
@@ -238,7 +240,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
             # builtin wavelet
             self.name = name.lower()
             family_code, family_number = wname_to_code(self.name)
-            self.w = <c_wt.Wavelet*> c_wt.wavelet(family_code, family_number)
+            self.w = <wavelet.Wavelet*> wavelet.wavelet(family_code, family_number)
 
             if self.w is NULL:
                 raise ValueError("Invalid wavelet name.")
@@ -285,7 +287,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
                 raise ValueError("All filters in filter bank must have "
                                  "length greater than 0.")
 
-            self.w = <c_wt.Wavelet*> c_wt.blank_wavelet(filter_length)
+            self.w = <wavelet.Wavelet*> wavelet.blank_wavelet(filter_length)
             if self.w is NULL:
                 raise MemoryError("Could not allocate memory for given "
                                   "filter bank.")
@@ -306,7 +308,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
     def __dealloc__(self):
         if self.w is not NULL:
             # if w._builtin is 0 then it frees the memory for the filter arrays
-            c_wt.free_wavelet(self.w)
+            wavelet.free_wavelet(self.w)
             self.w = NULL
 
     def __len__(self):
@@ -369,11 +371,11 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
     property symmetry:
         "Wavelet symmetry"
         def __get__(self):
-            if self.w.symmetry == c_wt.ASYMMETRIC:
+            if self.w.symmetry == wavelet.ASYMMETRIC:
                 return "asymmetric"
-            elif self.w.symmetry == c_wt.NEAR_SYMMETRIC:
+            elif self.w.symmetry == wavelet.NEAR_SYMMETRIC:
                 return "near symmetric"
-            elif self.w.symmetry == c_wt.SYMMETRIC:
+            elif self.w.symmetry == wavelet.SYMMETRIC:
                 return "symmetric"
             else:
                 return "unknown"
@@ -595,9 +597,9 @@ def dwt_max_level(data_len, filter_len):
     6
     """
     if isinstance(filter_len, Wavelet):
-        return c_wt.dwt_max_level(data_len, filter_len.dec_len)
+        return common.dwt_max_level(data_len, filter_len.dec_len)
     else:
-        return c_wt.dwt_max_level(data_len, filter_len)
+        return common.dwt_max_level(data_len, filter_len)
 
 
 def dwt(object data, object wavelet, object mode='sym'):
@@ -650,13 +652,13 @@ def _dwt(np.ndarray[data_t, ndim=1] data, object wavelet, object mode='sym'):
     """See `dwt` docstring for details."""
     cdef np.ndarray[data_t, ndim=1, mode="c"] cA, cD
     cdef Wavelet w
-    cdef c_wt.MODE mode_
+    cdef common.MODE mode_
 
     w = c_wavelet_from_object(wavelet)
     mode_ = _try_mode(mode)
 
     data = np.array(data)
-    output_len = c_wt.dwt_buffer_length(data.size, w.dec_len, mode_)
+    output_len = common.dwt_buffer_length(data.size, w.dec_len, mode_)
     if output_len < 1:
         raise RuntimeError("Invalid output length.")
 
@@ -726,7 +728,7 @@ def dwt_coeff_len(data_len, filter_len, mode='sym'):
     if filter_len_ < 1:
         raise ValueError("Value of filter_len must be greater than zero.")
 
-    return c_wt.dwt_buffer_length(data_len, filter_len_, _try_mode(mode))
+    return common.dwt_buffer_length(data_len, filter_len_, _try_mode(mode))
 
 
 ###############################################################################
@@ -824,7 +826,7 @@ def _idwt(np.ndarray[data_t, ndim=1, mode="c"] cA,
     cdef index_t input_len
 
     cdef Wavelet w
-    cdef c_wt.MODE mode_
+    cdef common.MODE mode_
 
     w = c_wavelet_from_object(wavelet)
     mode_ = _try_mode(mode)
@@ -849,7 +851,7 @@ def _idwt(np.ndarray[data_t, ndim=1, mode="c"] cA,
         input_len = cA.size
 
     # find reconstruction buffer length
-    rec_len = c_wt.idwt_buffer_length(input_len, w.rec_len, mode_)
+    rec_len = common.idwt_buffer_length(input_len, w.rec_len, mode_)
     if rec_len < 1:
         msg = ("Invalid coefficient arrays length for specified wavelet. "
                "Wavelet and mode must be the same as used for decomposition.")
@@ -955,7 +957,7 @@ def _upcoef(part, np.ndarray[data_t, ndim=1, mode="c"] coeffs, wavelet,
 
     for i from 0 <= i < level:
         # output len
-        rec_len = c_wt.reconstruction_buffer_length(coeffs.size, w.dec_len)
+        rec_len = common.reconstruction_buffer_length(coeffs.size, w.dec_len)
         if rec_len < 1:
             raise RuntimeError("Invalid output length.")
 
@@ -1048,7 +1050,7 @@ def _downcoef(part, np.ndarray[data_t, ndim=1, mode="c"] data,
     cdef int i, do_dec_a
     cdef index_t dec_len
     cdef Wavelet w
-    cdef c_wt.MODE mode_
+    cdef common.MODE mode_
 
     w = c_wavelet_from_object(wavelet)
     mode_ = _try_mode(mode)
@@ -1061,7 +1063,7 @@ def _downcoef(part, np.ndarray[data_t, ndim=1, mode="c"] data,
         raise ValueError("Value of level must be greater than 0.")
 
     for i from 0 <= i < level:
-        output_len = c_wt.dwt_buffer_length(data.size, w.dec_len, mode_)
+        output_len = common.dwt_buffer_length(data.size, w.dec_len, mode_)
         if output_len < 1:
             raise RuntimeError("Invalid output length.")
         coeffs = np.zeros(output_len, dtype=data.dtype)
@@ -1114,7 +1116,7 @@ def swt_max_level(input_len):
         Maximum level of Stationary Wavelet Transform for data of given length.
 
     """
-    return c_wt.swt_max_level(input_len)
+    return common.swt_max_level(input_len)
 
 
 def swt(data, object wavelet, object level=None, int start_level=0):
@@ -1170,7 +1172,7 @@ def _swt(np.ndarray[data_t, ndim=1, mode="c"] data, object wavelet,
     w = c_wavelet_from_object(wavelet)
 
     if level is None:
-        level_ = c_wt.swt_max_level(data.size)
+        level_ = common.swt_max_level(data.size)
     else:
         level_ = level
 
@@ -1180,18 +1182,18 @@ def _swt(np.ndarray[data_t, ndim=1, mode="c"] data, object wavelet,
         raise ValueError("Level value must be greater than zero.")
     if start_level < 0:
         raise ValueError("start_level must be greater than zero.")
-    if start_level >= c_wt.swt_max_level(data.size):
+    if start_level >= common.swt_max_level(data.size):
         raise ValueError("start_level must be less than %d." %
-                         c_wt.swt_max_level(data.size))
+                         common.swt_max_level(data.size))
 
-    if end_level > c_wt.swt_max_level(data.size):
+    if end_level > common.swt_max_level(data.size):
         msg = ("Level value too high (max level for current data size and "
-               "start_level is %d)." % (c_wt.swt_max_level(data.size) -
+               "start_level is %d)." % (common.swt_max_level(data.size) -
                                         start_level))
         raise ValueError(msg)
 
     # output length
-    output_len = c_wt.swt_buffer_length(data.size)
+    output_len = common.swt_buffer_length(data.size)
     if output_len < 1:
         raise RuntimeError("Invalid output length.")
 

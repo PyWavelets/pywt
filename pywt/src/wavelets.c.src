@@ -324,7 +324,6 @@ Wavelet* wavelet(char name, unsigned int order)
                 w->rec_hi_@type@ = dmey_@type@[3];
             /**end repeat**/
             w->dec_len = w->rec_len = 62;
-            return w;
             break;
 
         default:

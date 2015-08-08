@@ -25,7 +25,9 @@ unsigned char uint_log2(unsigned long x){
     return i;
 #else
     // GCC and clang
-    return sizeof(unsigned long) * 8 - __builtin_clzl(x) - 1;
+    // Safe cast: 0 <= clzl < arch_bits (64) where result is defined
+    unsigned char leading_zeros = (unsigned char) __builtin_clzl(x);
+    return sizeof(unsigned long) * 8 - leading_zeros - 1;
 #endif
 }
 
