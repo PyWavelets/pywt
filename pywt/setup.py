@@ -21,7 +21,8 @@ def configuration(parent_package='', top_path=None):
         sources=["src/{0}.c".format(s) for s in sources],
         depends=(["src/{0}.template.c".format(s) for s in source_templates]
                  + ["src/{0}.template.h".format(s) for s in header_templates]
-                 + ["src/{0}.h".format(s) for s in headers]),
+                 + ["src/{0}.h".format(s) for s in headers]
+                 + ["src/{0}.h".format(s) for s in sources]),
         include_dirs=["src", np.get_include()],
         define_macros=[("PY_EXTENSION", None)],
     )
