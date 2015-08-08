@@ -810,11 +810,10 @@ cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d, object wavelet,
         a_info.strides = <index_t *> coefs_a.strides
         a_info.shape = <size_t *> coefs_a.shape
     if coefs_d is not None:
-        if coefs_d is not None and coefs_d.dtype.itemsize > coefs_a.dtype.itemsize:
+        if coefs_a is not None and coefs_a.dtype.itemsize > coefs_d.dtype.itemsize:
             coefs_d = coefs_d.astype(_check_dtype(coefs_a), copy=False)
         else:
             coefs_d = coefs_d.astype(_check_dtype(coefs_d), copy=False)
-        coefs_d = coefs_d.astype(_check_dtype(coefs_d), copy=False)
         d_info.ndim = coefs_d.ndim
         d_info.strides = <index_t *> coefs_d.strides
         d_info.shape = <size_t *> coefs_d.shape
@@ -844,6 +843,7 @@ cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d, object wavelet,
             raise RuntimeError("C inverse wavelet transform failed")
 
     return output
+
 
 def dwt_coeff_len(data_len, filter_len, mode='sym'):
     """
