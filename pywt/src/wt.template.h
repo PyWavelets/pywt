@@ -25,8 +25,9 @@ int CAT(TYPE, _downcoef_axis)(const TYPE * const restrict input, const ArrayInfo
                               const Wavelet * const restrict wavelet, const size_t axis,
                               const Coefficient detail, const MODE mode);
 
-int CAT(TYPE, _upcoef_axis)(const TYPE * const restrict coefs_a, const ArrayInfo a_info,
-                            const TYPE * const restrict coefs_d, const ArrayInfo d_info,
+// a_info and d_info are pointers, as they may be NULL
+int CAT(TYPE, _upcoef_axis)(const TYPE * const restrict coefs_a, const ArrayInfo * a_info,
+                            const TYPE * const restrict coefs_d, const ArrayInfo * d_info,
                             TYPE * const restrict output, const ArrayInfo output_info,
                             const Wavelet * const restrict wavelet, const size_t axis);
 

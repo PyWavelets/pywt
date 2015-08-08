@@ -827,17 +827,17 @@ cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d, object wavelet,
 
     if coefs_a.dtype == 'float64':
         if c_wt.double_upcoef_axis(<double *> coefs_a.data if coefs_a is not None else NULL,
-                                   a_info,
+                                   &a_info if coefs_a is not None else NULL,
                                    <double *> coefs_d.data if coefs_d is not None else NULL,
-                                   d_info,
+                                   &d_info if coefs_d is not None else NULL,
                                    <double *> output.data, output_info,
                                    w.w, axis):
             raise RuntimeError("C inverse wavelet transform failed")
     if coefs_a.dtype == 'float32':
         if c_wt.float_upcoef_axis(<float *> coefs_a.data if coefs_a is not None else NULL,
-                                  a_info,
+                                  &a_info if coefs_a is not None else NULL,
                                   <float *> coefs_d.data if coefs_d is not None else NULL,
-                                  d_info,
+                                  &d_info if coefs_d is not None else NULL,
                                   <float *> output.data, output_info,
                                   w.w, axis):
             raise RuntimeError("C inverse wavelet transform failed")
