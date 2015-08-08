@@ -174,7 +174,7 @@ int CAT(TYPE, _upcoef_axis)(const TYPE * const restrict coefs_a, const ArrayInfo
         if ((temp_output = malloc(output_info.shape[axis] * sizeof(TYPE))) == NULL)
             goto cleanup;
 
-    for (i = 0; i < a_info.ndim; ++i){
+    for (i = 0; i < output_info.ndim; ++i){
         if (i != axis)
             num_loops *= output_info.shape[i];
     }
@@ -193,8 +193,10 @@ int CAT(TYPE, _upcoef_axis)(const TYPE * const restrict coefs_a, const ArrayInfo
                     size_t axis_idx = reduced_idx % output_info.shape[j_rev];
                     reduced_idx /= output_info.shape[j_rev];
 
-                    a_offset += (axis_idx * a_info.strides[j_rev]);
-                    d_offset += (axis_idx * d_info.strides[j_rev]);
+                    if (coefs_a != NULL)
+                        a_offset += (axis_idx * a_info.strides[j_rev]);
+                    if (coefs_d != NULL)
+                        d_offset += (axis_idx * d_info.strides[j_rev]);
                     output_offset += (axis_idx * output_info.strides[j_rev]);
                 }
             }
@@ -204,21 +206,24 @@ int CAT(TYPE, _upcoef_axis)(const TYPE * const restrict coefs_a, const ArrayInfo
         if (make_temp_coefs_a)
             for (j = 0; j < a_info.shape[axis]; ++j)
                 // Offsets are byte offsets, to need to cast to char and back
-                temp_coefs_a[j] = *(TYPE *)(((char *) coefs_a) + a_offset
+                temp_coefs_a[j] = *(TYPE *)((char *) coefs_a + a_offset
                                             + j * a_info.strides[axis]);
         if (make_temp_coefs_d)
             for (j = 0; j < d_info.shape[axis]; ++j)
                 // Offsets are byte offsets, to need to cast to char and back
-                temp_coefs_d[j] = *(TYPE *)(((char *) coefs_d) + d_offset
+                temp_coefs_d[j] = *(TYPE *)((char *) coefs_d + d_offset
                                             + j * d_info.strides[axis]);
+
+        // upsampling_convolution adds to input, so copy
+        if (make_temp_output)
+            for (j = 0; j < output_info.shape[axis]; ++j)
+                // Offsets are byte offsets, to need to cast to char and back
+                temp_output[j] = *(TYPE *)((char *) output + output_offset
+                                           + j * output_info.strides[axis]);
 
         // Select temporary or direct output
         output_row = make_temp_output ? temp_output
             : (TYPE *)((char *) output + output_offset);
-
-        // upsampling_convolution adds to input, so clear
-        if (make_temp_output)
-            memset(temp_output, 0, output_info.shape[axis] * sizeof(TYPE));
 
         if ((coefs_a != NULL)){
             // Pointer arithmetic on NULL is undefined
