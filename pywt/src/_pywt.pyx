@@ -797,42 +797,41 @@ def idwt(cA, cD, object wavelet, object mode='sym', int correct_size=0):
     """
     # accept array_like input; make a copy to ensure a contiguous array
 
-    has_cA = not (cA is None)
-    has_cD = not (cD is None)
-    if not (has_cA or has_cD):
+    if cA is None and cD is None:
         raise ValueError("At least one coefficient parameter must be "
                          "specified.")
 
     # for complex inputs: compute real and imaginary separately then combine
-    if (has_cA and np.iscomplexobj(cA)) or (has_cD and np.iscomplexobj(cD)):
-        if not has_cA:
+    if ((cA is not None) and np.iscomplexobj(cA)) or ((cD is not None) and
+            np.iscomplexobj(cD)):
+        if cA is None:
             cD = np.asarray(cD)
             cA = np.zeros_like(cD)
-        elif not has_cD:
+        elif cD is None:
             cA = np.asarray(cA)
             cD = np.zeros_like(cA)
         return (idwt(cA.real, cD.real, wavelet, mode, correct_size) +
                 1j*idwt(cA.imag, cD.imag, wavelet, mode, correct_size))
 
-    if has_cA:
+    if cA is not None:
         dt = _check_dtype(cA)
         cA = np.array(cA, dtype=dt)
         if cA.ndim != 1:
             raise ValueError("idwt requires 1D coefficient arrays.")
-    if has_cD:
+    if cD is not None:
         dt = _check_dtype(cD)
         cD = np.array(cD, dtype=dt)
         if cD.ndim != 1:
             raise ValueError("idwt requires 1D coefficient arrays.")
 
-    if has_cA and has_cD:
+    if cA is not None and cD is not None:
         if cA.dtype != cD.dtype:
             # need to upcast to common type
             cA = cA.astype(np.float64)
             cD = cD.astype(np.float64)
-    elif has_cD:
+    elif cA is None:
         cA = np.zeros_like(cD)
-    elif has_cA:
+    elif cD is None:
         cD = np.zeros_like(cA)
 
     return _idwt(cA, cD, wavelet, mode, correct_size)
