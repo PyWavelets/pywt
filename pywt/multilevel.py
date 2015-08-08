@@ -150,7 +150,7 @@ def wavedec2(data, wavelet, mode='sym', level=None):
            [ 1.,  1.,  1.,  1.]])
     """
 
-    data = np.asarray(data, np.float64)
+    data = np.asarray(data)
 
     if data.ndim != 2:
         raise ValueError("Expected 2D input data.")
