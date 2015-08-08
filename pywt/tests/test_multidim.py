@@ -126,5 +126,38 @@ def test_error_mismatched_size():
     assert_raises(ValueError, pywt.idwtn, d, wavelet)
 
 
+def test_dwt2_idwt2_dtypes():
+    # Check that float32 is preserved.  Other types get converted to float64.
+    dtypes_in = [np.int8, np.float32, np.float64]
+    dtypes_out = [np.float64, np.float32, np.float64]
+    wavelet = pywt.Wavelet('haar')
+    for n, dt in enumerate(dtypes_in):
+        dt_out = dtypes_out[n]
+        x = np.ones((4, 4), dtype=dt)
+
+        cA, (cH, cV, cD) = pywt.dwt2(x, wavelet)
+        assert_(cA.dtype == cH.dtype == cV.dtype == cD.dtype)
+
+        x_roundtrip = pywt.idwt2((cA, (cH, cV, cD)), wavelet)
+        assert_(x_roundtrip.dtype == dt_out)
+
+
+def test_dwtn_idwtn_dtypes():
+    # Check that float32 is preserved.  Other types get converted to float64.
+    dtypes_in = [np.int8, np.float32, np.float64]
+    dtypes_out = [np.float64, np.float32, np.float64]
+    wavelet = pywt.Wavelet('haar')
+    for n, dt in enumerate(dtypes_in):
+        dt_out = dtypes_out[n]
+        x = np.ones((4, 4), dtype=dt)
+
+        coeffs = pywt.dwtn(x, wavelet)
+        for k, v in coeffs.items():
+            assert_(v.dtype == dt_out)
+
+        x_roundtrip = pywt.idwtn(coeffs, wavelet)
+        assert_(x_roundtrip.dtype == dt_out)
+
+
 if __name__ == '__main__':
     run_module_suite()
