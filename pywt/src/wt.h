@@ -1,6 +1,5 @@
 #pragma once
 
-#include <stdbool.h>
 #include "common.h"
 #include "convolution.h"
 #include "wavelets.h"

@@ -23,8 +23,10 @@ int CAT(TYPE, _downcoef_axis)(const TYPE * const restrict input, const ArrayInfo
                               const Coefficient coef, const MODE mode){
     size_t i;
     size_t num_loops = 1;
-    bool make_temp_input, make_temp_output;
     TYPE * temp_input = NULL, * temp_output = NULL;
+
+    // These are boolean values, but MSVC does not have <stdbool.h>
+    int make_temp_input, make_temp_output;
 
     if (input_info.ndim != output_info.ndim)
         return 1;
@@ -127,10 +129,12 @@ int CAT(TYPE, _upcoef_axis)(const TYPE * const restrict coefs_a, const ArrayInfo
                             const Wavelet * const restrict wavelet, const size_t axis){
     size_t i;
     size_t num_loops = 1;
-    bool make_temp_coefs_a, make_temp_coefs_d, make_temp_output;
-    bool have_a = ((coefs_a != NULL) && (a_info != NULL));
-    bool have_d = ((coefs_d != NULL) && (d_info != NULL));
     TYPE * temp_coefs_a = NULL, * temp_coefs_d = NULL, * temp_output = NULL;
+
+    // These are boolean values, but MSVC does not have <stdbool.h>
+    int make_temp_coefs_a, make_temp_coefs_d, make_temp_output;
+    int have_a = ((coefs_a != NULL) && (a_info != NULL));
+    int have_d = ((coefs_d != NULL) && (d_info != NULL));
 
 
     if (!have_a && !have_d)
