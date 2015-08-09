@@ -28,7 +28,7 @@ matrix:
     - python: 2.6
       env:
         - OPTIMIZE=-OO
-        - NUMPYSPEC="numpy==1.6.2"
+        - NUMPYSPEC="numpy==1.7.2"
     - python: 2.7
       env:
         - NUMPYSPEC="--upgrade git+git://github.com/numpy/numpy.git@v1.9.1"
