@@ -28,7 +28,7 @@ def test_dwt_idwt_dtypes():
     wavelet = pywt.Wavelet('haar')
     for dt_in, dt_out in zip(dtypes_in, dtypes_out):
         x = np.ones(4, dtype=dt_in)
-        errmsg = "wrong dtype returned for {} input".format(dt_in)
+        errmsg = "wrong dtype returned for {0} input".format(dt_in)
 
         cA, cD = pywt.dwt(x, wavelet)
         assert_(cA.dtype == cD.dtype == dt_out, "dwt: " + errmsg)

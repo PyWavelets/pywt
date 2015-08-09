@@ -56,7 +56,7 @@ def test_swt_dtypes():
     dtypes_out = [np.float64, np.float32, np.float64]
     wavelet = pywt.Wavelet('haar')
     for dt_in, dt_out in zip(dtypes_in, dtypes_out):
-        errmsg = "wrong dtype returned for {} input".format(dt_in)
+        errmsg = "wrong dtype returned for {0} input".format(dt_in)
 
         # swt
         x = np.ones(8, dtype=dt_in)
@@ -85,7 +85,7 @@ def test_multilevel_dtypes():
     for dt_in, dt_out in zip(dtypes_in, dtypes_out):
         # wavedec, waverec
         x = np.ones(8, dtype=dt_in)
-        errmsg = "wrong dtype returned for {} input".format(dt_in)
+        errmsg = "wrong dtype returned for {0} input".format(dt_in)
 
         coeffs = pywt.wavedec(x, wavelet, level=2)
         for c in coeffs:
