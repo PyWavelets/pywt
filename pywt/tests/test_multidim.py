@@ -3,6 +3,7 @@
 from __future__ import division, print_function, absolute_import
 
 import numpy as np
+from itertools import combinations
 from numpy.testing import (run_module_suite, assert_allclose, assert_,
                            assert_raises, assert_equal)
 
@@ -99,11 +100,21 @@ def test_idwtn_missing():
 
     wavelet = pywt.Wavelet('haar')
 
-    LL, (HL, _, HH) = pywt.dwt2(data, wavelet)
-    d = {'aa': LL, 'da': HL, 'dd': HH}
+    coefs = pywt.dwtn(data, wavelet)
 
-    assert_allclose(pywt.idwt2((LL, (HL, None, HH)), wavelet),
-                    pywt.idwtn(d, 'haar'), atol=1e-15)
+    # No point removing zero, or all
+    for num_missing in range(1, len(coefs)):
+        for missing in combinations(coefs.keys(), num_missing):
+            missing_coefs = coefs.copy()
+            for key in missing:
+                del missing_coefs[key]
+            LL = missing_coefs.get('aa', None)
+            HL = missing_coefs.get('da', None)
+            LH = missing_coefs.get('ad', None)
+            HH = missing_coefs.get('dd', None)
+
+            assert_allclose(pywt.idwt2((LL, (HL, LH, HH)), wavelet),
+                            pywt.idwtn(missing_coefs, 'haar'), atol=1e-15)
 
 
 def test_ignore_invalid_keys():
