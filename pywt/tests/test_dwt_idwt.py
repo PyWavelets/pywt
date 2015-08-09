@@ -26,9 +26,8 @@ def test_dwt_idwt_dtypes():
     dtypes_in = [np.int8, np.float32, np.float64]
     dtypes_out = [np.float64, np.float32, np.float64]
     wavelet = pywt.Wavelet('haar')
-    for n, dt in enumerate(dtypes_in):
-        dt_out = dtypes_out[n]
-        x = np.ones(4, dtype=dt)
+    for dt_in, dt_out in zip(dtypes_in, dtypes_out):
+        x = np.ones(4, dtype=dt_in)
         cA, cD = pywt.dwt(x, wavelet)
         assert_(cA.dtype == dt_out)
         assert_(cD.dtype == dt_out)

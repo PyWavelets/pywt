@@ -131,9 +131,8 @@ def test_dwt2_idwt2_dtypes():
     dtypes_in = [np.int8, np.float32, np.float64]
     dtypes_out = [np.float64, np.float32, np.float64]
     wavelet = pywt.Wavelet('haar')
-    for n, dt in enumerate(dtypes_in):
-        dt_out = dtypes_out[n]
-        x = np.ones((4, 4), dtype=dt)
+    for dt_in, dt_out in zip(dtypes_in, dtypes_out):
+        x = np.ones((4, 4), dtype=dt_in)
 
         cA, (cH, cV, cD) = pywt.dwt2(x, wavelet)
         assert_(cA.dtype == cH.dtype == cV.dtype == cD.dtype)
@@ -147,9 +146,8 @@ def test_dwtn_idwtn_dtypes():
     dtypes_in = [np.int8, np.float32, np.float64]
     dtypes_out = [np.float64, np.float32, np.float64]
     wavelet = pywt.Wavelet('haar')
-    for n, dt in enumerate(dtypes_in):
-        dt_out = dtypes_out[n]
-        x = np.ones((4, 4), dtype=dt)
+    for dt_in, dt_out in zip(dtypes_in, dtypes_out):
+        x = np.ones((4, 4), dtype=dt_in)
 
         coeffs = pywt.dwtn(x, wavelet)
         for k, v in coeffs.items():

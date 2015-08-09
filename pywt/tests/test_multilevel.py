@@ -55,16 +55,14 @@ def test_swt_dtypes():
     dtypes_in = [np.int8, np.float32, np.float64]
     dtypes_out = [np.float64, np.float32, np.float64]
     wavelet = pywt.Wavelet('haar')
-    for n, dt in enumerate(dtypes_in):
-        dt_out = dtypes_out[n]
-
+    for dt_in, dt_out in zip(dtypes_in, dtypes_out):
         # swt
-        x = np.ones(8, dtype=dt)
+        x = np.ones(8, dtype=dt_in)
         (cA2, cD2), (cA1, cD1) = pywt.swt(x, wavelet, level=2)
         assert_(cA2.dtype == cD2.dtype == cA1.dtype == cD1.dtype == dt_out)
 
         # swt2
-        x = np.ones((8, 8), dtype=dt)
+        x = np.ones((8, 8), dtype=dt_in)
         cA, (cH, cV, cD) = pywt.swt2(x, wavelet, level=1)[0]
         assert_(cA.dtype == cH.dtype == cV.dtype == cD.dtype == dt_out)
 
@@ -80,11 +78,9 @@ def test_multilevel_dtypes():
     dtypes_in = [np.int8, np.float32, np.float64]
     dtypes_out = [np.float64, np.float32, np.float64]
     wavelet = pywt.Wavelet('haar')
-    for n, dt in enumerate(dtypes_in):
-        dt_out = dtypes_out[n]
-
+    for dt_in, dt_out in zip(dtypes_in, dtypes_out):
         # wavedec, waverec
-        x = np.ones(8, dtype=dt)
+        x = np.ones(8, dtype=dt_in)
         coeffs = pywt.wavedec(x, wavelet, level=2)
         for c in coeffs:
             assert_(c.dtype == dt_out)
@@ -92,7 +88,7 @@ def test_multilevel_dtypes():
         assert_(x_roundtrip.dtype == dt_out)
 
         # wavedec2, waverec2
-        x = np.ones((8, 8), dtype=dt)
+        x = np.ones((8, 8), dtype=dt_in)
         cA, coeffsD2, coeffsD1 = pywt.wavedec2(x, wavelet, level=2)
         assert_(cA.dtype == dt_out)
         for c in coeffsD1:
