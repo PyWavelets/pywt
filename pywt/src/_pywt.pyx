@@ -710,7 +710,7 @@ cpdef dwt_axis(np.ndarray data, object wavelet, object mode='sym', unsigned int 
     output_info.strides = <index_t *> cA.strides
     output_info.shape = <size_t *> cA.shape
 
-    if data.dtype == 'float64':
+    if data.dtype == np.float64:
         if c_wt.double_downcoef_axis(<double *> data.data, data_info,
                                      <double *> cA.data, output_info,
                                      w.w, axis, common.COEF_APPROX, _mode):
@@ -719,7 +719,7 @@ cpdef dwt_axis(np.ndarray data, object wavelet, object mode='sym', unsigned int 
                                      <double *> cD.data, output_info,
                                      w.w, axis, common.COEF_DETAIL, _mode):
             raise RuntimeError("C wavelet transform failed")
-    elif data.dtype == 'float32':
+    elif data.dtype == np.float32:
         if c_wt.float_downcoef_axis(<float *> data.data, data_info,
                                     <float *> cA.data, output_info,
                                     w.w, axis, common.COEF_APPROX, _mode):
@@ -777,7 +777,7 @@ cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d, object wavelet,
     output_info.strides = <index_t *> output.strides
     output_info.shape = <size_t *> output.shape
 
-    if coefs_a.dtype == 'float64':
+    if coefs_a.dtype == np.float64:
         if c_wt.double_upcoef_axis(<double *> coefs_a.data if coefs_a is not None else NULL,
                                    &a_info if coefs_a is not None else NULL,
                                    <double *> coefs_d.data if coefs_d is not None else NULL,
@@ -785,7 +785,7 @@ cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d, object wavelet,
                                    <double *> output.data, output_info,
                                    w.w, axis):
             raise RuntimeError("C inverse wavelet transform failed")
-    if coefs_a.dtype == 'float32':
+    if coefs_a.dtype == np.float32:
         if c_wt.float_upcoef_axis(<float *> coefs_a.data if coefs_a is not None else NULL,
                                   &a_info if coefs_a is not None else NULL,
                                   <float *> coefs_d.data if coefs_d is not None else NULL,
