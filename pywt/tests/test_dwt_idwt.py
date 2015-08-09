@@ -28,12 +28,13 @@ def test_dwt_idwt_dtypes():
     wavelet = pywt.Wavelet('haar')
     for dt_in, dt_out in zip(dtypes_in, dtypes_out):
         x = np.ones(4, dtype=dt_in)
+        errmsg = "wrong dtype returned for {} input".format(dt_in)
+
         cA, cD = pywt.dwt(x, wavelet)
-        assert_(cA.dtype == dt_out)
-        assert_(cD.dtype == dt_out)
+        assert_(cA.dtype == cD.dtype == dt_out, "dwt: " + errmsg)
 
         x_roundtrip = pywt.idwt(cA, cD, wavelet)
-        assert_(x_roundtrip.dtype == dt_out)
+        assert_(x_roundtrip.dtype == dt_out, "idwt: " + errmsg)
 
 
 def test_dwt_input_error():

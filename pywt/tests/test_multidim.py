@@ -133,12 +133,14 @@ def test_dwt2_idwt2_dtypes():
     wavelet = pywt.Wavelet('haar')
     for dt_in, dt_out in zip(dtypes_in, dtypes_out):
         x = np.ones((4, 4), dtype=dt_in)
+        errmsg = "wrong dtype returned for {} input".format(dt_in)
 
         cA, (cH, cV, cD) = pywt.dwt2(x, wavelet)
-        assert_(cA.dtype == cH.dtype == cV.dtype == cD.dtype)
+        assert_(cA.dtype == cH.dtype == cV.dtype == cD.dtype,
+                "dwt2: " + errmsg)
 
         x_roundtrip = pywt.idwt2((cA, (cH, cV, cD)), wavelet)
-        assert_(x_roundtrip.dtype == dt_out)
+        assert_(x_roundtrip.dtype == dt_out, "idwt2: " + errmsg)
 
 
 def test_dwtn_idwtn_dtypes():
@@ -148,13 +150,14 @@ def test_dwtn_idwtn_dtypes():
     wavelet = pywt.Wavelet('haar')
     for dt_in, dt_out in zip(dtypes_in, dtypes_out):
         x = np.ones((4, 4), dtype=dt_in)
+        errmsg = "wrong dtype returned for {} input".format(dt_in)
 
         coeffs = pywt.dwtn(x, wavelet)
         for k, v in coeffs.items():
-            assert_(v.dtype == dt_out)
+            assert_(v.dtype == dt_out, "dwtn: " + errmsg)
 
         x_roundtrip = pywt.idwtn(coeffs, wavelet)
-        assert_(x_roundtrip.dtype == dt_out)
+        assert_(x_roundtrip.dtype == dt_out, "idwtn: " + errmsg)
 
 
 if __name__ == '__main__':
