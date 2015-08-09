@@ -243,7 +243,7 @@ def dwtn(data, wavelet, mode='sym'):
     return dict(coeffs)
 
 
-def idwtn(coeffs, wavelet, mode='sym', take=None):
+def idwtn(coeffs, wavelet, mode='sym'):
     """
     Single-level n-dimensional Discrete Wavelet Transform.
 
@@ -289,20 +289,7 @@ def idwtn(coeffs, wavelet, mode='sym', take=None):
     if any(s != coeff_shape for s in coeff_shapes):
         raise ValueError("`coeffs` must all be of equal size (or None)")
 
-    if take is not None:
-        try:
-            takes = list(islice(take, dims))
-            takes.reverse()
-        except TypeError:
-            takes = repeat(take, dims)
-    else:
-        # As in src/common.c
-        if mode == MODES.per:
-            takes = [2*s for s in reversed(coeff_shape)]
-        else:
-            takes = [2*s - wavelet.rec_len + 2 for s in reversed(coeff_shape)]
-
-    for axis, take in zip(reversed(range(dims)), takes):
+    for axis in reversed(range(dims)):
         new_coeffs = {}
         new_keys = [''.join(coeff) for coeff in product('ad', repeat=axis)]
 
@@ -310,17 +297,7 @@ def idwtn(coeffs, wavelet, mode='sym', take=None):
             L = coeffs.get(key + 'a')
             H = coeffs.get(key + 'd')
 
-            rec = idwt_axis(L, H, wavelet, axis)
-            if rec is not None:
-                if 0 < take < rec.shape[axis]:
-                    left_bound = right_bound = (rec.shape[axis] - take) // 2
-                    if (rec.shape[axis] - take) % 2:
-                        right_bound = right_bound + 1
-                    slices = tuple(slice(left_bound, -right_bound) if i == axis
-                                else slice(None) for i in range(dims))
-                    new_coeffs[key] = rec[slices]
-                else:
-                    new_coeffs[key] = rec
+            new_coeffs[key] = idwt_axis(L, H, wavelet, mode, axis)
         coeffs = new_coeffs
 
     return coeffs['']

@@ -123,10 +123,11 @@ int CAT(TYPE, _downcoef_axis)(const TYPE * const restrict input, const ArrayInfo
 }
 
 
-int CAT(TYPE, _upcoef_axis)(const TYPE * const restrict coefs_a, const ArrayInfo * const a_info,
-                            const TYPE * const restrict coefs_d, const ArrayInfo * const d_info,
-                            TYPE * const restrict output, const ArrayInfo output_info,
-                            const Wavelet * const restrict wavelet, const size_t axis){
+int CAT(TYPE, _idwt_axis)(const TYPE * const restrict coefs_a, const ArrayInfo * const a_info,
+                          const TYPE * const restrict coefs_d, const ArrayInfo * const d_info,
+                          TYPE * const restrict output, const ArrayInfo output_info,
+                          const Wavelet * const restrict wavelet,
+                          const size_t axis, const MODE mode){
     size_t i;
     size_t num_loops = 1;
     TYPE * temp_coefs_a = NULL, * temp_coefs_d = NULL, * temp_output = NULL;
@@ -157,7 +158,7 @@ int CAT(TYPE, _upcoef_axis)(const TYPE * const restrict coefs_a, const ArrayInfo
             /* TODO: reconstruction_buffer_length should take a & d shapes
              *       - for odd output_len, d_len == (a_len - 1)
              */
-            if (reconstruction_buffer_length(input_shape, wavelet->rec_len)
+            if (idwt_buffer_length(input_shape, wavelet->rec_len, mode)
                 != output_info.shape[i])
                 return 1;
         } else {
@@ -231,15 +232,21 @@ int CAT(TYPE, _upcoef_axis)(const TYPE * const restrict coefs_a, const ArrayInfo
             // Pointer arithmetic on NULL is undefined
             const TYPE * a_row = make_temp_coefs_a ? temp_coefs_a
                 : (const TYPE *)((const char *) coefs_a + a_offset);
-            CAT(TYPE, _rec_a)(a_row, a_info->shape[axis], wavelet,
-                              output_row, output_info.shape[axis]);
+            CAT(TYPE, _upsampling_convolution_valid_sf)
+                (a_row, a_info->shape[axis],
+                 wavelet->CAT(rec_lo_, TYPE), wavelet->rec_len,
+                 output_row, output_info.shape[axis],
+                 mode);
         }
         if (have_d){
             // Pointer arithmetic on NULL is undefined
             const TYPE * d_row = make_temp_coefs_d ? temp_coefs_d
                 : (const TYPE *)((const char *) coefs_d + d_offset);
-            CAT(TYPE, _rec_d)(d_row, d_info->shape[axis], wavelet,
-                              output_row, output_info.shape[axis]);
+            CAT(TYPE, _upsampling_convolution_valid_sf)
+                (d_row, d_info->shape[axis],
+                 wavelet->CAT(rec_hi_, TYPE), wavelet->rec_len,
+                 output_row, output_info.shape[axis],
+                 mode);
         }
 
         // Copy from temporary output if necessary

@@ -736,20 +736,21 @@ cpdef dwt_axis(np.ndarray data, object wavelet, object mode='sym', unsigned int 
 
 # TODO: Use idwt rather than upcoef, which requires `mode` but not `take`
 cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d, object wavelet,
-                unsigned int axis=0):
+                object mode='sym', unsigned int axis=0):
     cdef Wavelet w = c_wavelet_from_object(wavelet)
     cdef common.ArrayInfo a_info, d_info, output_info
     cdef np.ndarray output
     cdef size_t[::1] output_shape
+    cdef common.MODE _mode = _try_mode(mode)
 
     if coefs_a is not None:
         output_shape = (<size_t [:coefs_a.ndim]> <size_t *> coefs_a.shape).copy()
-        output_shape[axis] = common.reconstruction_buffer_length(coefs_a.shape[axis],
-                                                                 w.rec_len)
+        output_shape[axis] = common.idwt_buffer_length(coefs_a.shape[axis],
+                                                       w.rec_len, _mode)
     elif coefs_d is not None:
         output_shape = (<size_t [:coefs_d.ndim]> <size_t *> coefs_d.shape).copy()
-        output_shape[axis] = common.reconstruction_buffer_length(coefs_d.shape[axis],
-                                                                 w.rec_len)
+        output_shape[axis] = common.idwt_buffer_length(coefs_d.shape[axis],
+                                                       w.rec_len, _mode)
     else:
         return None;
 
@@ -777,20 +778,20 @@ cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d, object wavelet,
     output_info.shape = <size_t *> output.shape
 
     if coefs_a.dtype == np.float64:
-        if c_wt.double_upcoef_axis(<double *> coefs_a.data if coefs_a is not None else NULL,
-                                   &a_info if coefs_a is not None else NULL,
-                                   <double *> coefs_d.data if coefs_d is not None else NULL,
-                                   &d_info if coefs_d is not None else NULL,
-                                   <double *> output.data, output_info,
-                                   w.w, axis):
+        if c_wt.double_idwt_axis(<double *> coefs_a.data if coefs_a is not None else NULL,
+                                 &a_info if coefs_a is not None else NULL,
+                                 <double *> coefs_d.data if coefs_d is not None else NULL,
+                                 &d_info if coefs_d is not None else NULL,
+                                 <double *> output.data, output_info,
+                                 w.w, axis, _mode):
             raise RuntimeError("C inverse wavelet transform failed")
     if coefs_a.dtype == np.float32:
-        if c_wt.float_upcoef_axis(<float *> coefs_a.data if coefs_a is not None else NULL,
-                                  &a_info if coefs_a is not None else NULL,
-                                  <float *> coefs_d.data if coefs_d is not None else NULL,
-                                  &d_info if coefs_d is not None else NULL,
-                                  <float *> output.data, output_info,
-                                  w.w, axis):
+        if c_wt.float_idwt_axis(<float *> coefs_a.data if coefs_a is not None else NULL,
+                                &a_info if coefs_a is not None else NULL,
+                                <float *> coefs_d.data if coefs_d is not None else NULL,
+                                &d_info if coefs_d is not None else NULL,
+                                <float *> output.data, output_info,
+                                w.w, axis, _mode):
             raise RuntimeError("C inverse wavelet transform failed")
 
     return output

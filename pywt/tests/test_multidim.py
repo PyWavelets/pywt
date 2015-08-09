@@ -20,7 +20,6 @@ def test_dwtn_input():
 
 
 def test_3D_reconstruct():
-    # All dimensions even length so `take` does not need to be specified
     data = np.array([
         [[0, 4, 1, 5, 1, 4],
          [0, 5, 26, 3, 2, 1],
@@ -32,11 +31,10 @@ def test_3D_reconstruct():
          [5, 2, 6, 78, 12, 2]]])
 
     wavelet = pywt.Wavelet('haar')
-    d = pywt.dwtn(data, wavelet)
-    # idwtn creates even-length shapes (2x dwtn size)
-    original_shape = [slice(None, s) for s in data.shape]
-    assert_allclose(data, pywt.idwtn(d, wavelet)[original_shape],
-                    rtol=1e-13, atol=1e-13)
+    for mode in pywt.MODES.modes:
+        d = pywt.dwtn(data, wavelet, mode=mode)
+        assert_allclose(data, pywt.idwtn(d, wavelet, mode=mode),
+                        rtol=1e-13, atol=1e-13)
 
 
 def test_stride():
@@ -106,27 +104,6 @@ def test_idwtn_missing():
 
     assert_allclose(pywt.idwt2((LL, (HL, None, HH)), wavelet),
                     pywt.idwtn(d, 'haar'), atol=1e-15)
-
-
-def test_idwtn_take():
-    data = np.array([
-        [[1, 4, 1, 5, 1, 4],
-         [0, 5, 6, 3, 2, 1],
-         [2, 5, 19, 4, 19, 1]],
-        [[1, 5, 1, 2, 3, 4],
-         [7, 12, 6, 52, 7, 8],
-         [5, 2, 6, 78, 12, 2]]])
-    wavelet = pywt.Wavelet('haar')
-    d = pywt.dwtn(data, wavelet)
-
-    assert_(data.shape != pywt.idwtn(d, wavelet).shape)
-    assert_allclose(data, pywt.idwtn(d, wavelet, take=data.shape), atol=1e-15)
-
-    # Check shape for take not equal to data.shape
-    data = np.random.randn(51, 17, 68)
-    d = pywt.dwtn(data, wavelet)
-    assert_equal((2, 2, 2), pywt.idwtn(d, wavelet, take=2).shape)
-    assert_equal((52, 18, 68), pywt.idwtn(d, wavelet, take=0).shape)
 
 
 def test_ignore_invalid_keys():
