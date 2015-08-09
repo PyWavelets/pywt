@@ -220,16 +220,12 @@ int CAT(TYPE, _upcoef_axis)(const TYPE * const restrict coefs_a, const ArrayInfo
                 temp_coefs_d[j] = *(TYPE *)((char *) coefs_d + d_offset
                                             + j * d_info->strides[axis]);
 
-        // upsampling_convolution adds to input, so copy
-        if (make_temp_output)
-            for (j = 0; j < output_info.shape[axis]; ++j)
-                // Offsets are byte offsets, to need to cast to char and back
-                temp_output[j] = *(TYPE *)((char *) output + output_offset
-                                           + j * output_info.strides[axis]);
-
         // Select temporary or direct output
         output_row = make_temp_output ? temp_output
             : (TYPE *)((char *) output + output_offset);
+
+        // upsampling_convolution adds to input, so zero
+        memset(output_row, 0, output_info.shape[axis] * sizeof(TYPE));
 
         if (have_a){
             // Pointer arithmetic on NULL is undefined

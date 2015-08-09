@@ -770,8 +770,7 @@ cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d, object wavelet,
         d_info.strides = <index_t *> coefs_d.strides
         d_info.shape = <size_t *> coefs_d.shape
 
-    # Must be zero-initialized
-    output = np.zeros(output_shape, coefs_a.dtype)
+    output = np.empty(output_shape, coefs_a.dtype)
 
     output_info.ndim = output.ndim
     output_info.strides = <index_t *> output.strides
