@@ -16,7 +16,7 @@ from itertools import cycle, product, repeat, islice
 import numpy as np
 
 from ._pywt import Wavelet, MODES
-from ._pywt import dwt, dwtn, idwt, swt, downcoef, upcoef, idwt_axis
+from ._pywt import dwt, idwt, swt, downcoef, upcoef, dwt_axis, idwt_axis
 
 
 def dwt2(data, wavelet, mode='sym'):
@@ -193,6 +193,54 @@ def idwt2(coeffs, wavelet, mode='sym'):
         data.append(idwt(rowL, rowH, wavelet, mode, 1))
 
     return np.array(data)
+
+
+def dwtn(data, wavelet, mode='sym'):
+    """
+    Single-level n-dimensional Discrete Wavelet Transform.
+
+    Parameters
+    ----------
+    data : ndarray
+        n-dimensional array with input data.
+    wavelet : Wavelet object or name string
+        Wavelet to use.
+    mode : str, optional
+        Signal extension mode, see `MODES`.  Default is 'sym'.
+
+    Returns
+    -------
+    coeffs : dict
+        Results are arranged in a dictionary, where key specifies
+        the transform type on each dimension and value is a n-dimensional
+        coefficients array.
+
+        For example, for a 2D case the result will look something like this::
+
+            {'aa': <coeffs>  # A(LL) - approx. on 1st dim, approx. on 2nd dim
+             'ad': <coeffs>  # V(LH) - approx. on 1st dim, det. on 2nd dim
+             'da': <coeffs>  # H(HL) - det. on 1st dim, approx. on 2nd dim
+             'dd': <coeffs>  # D(HH) - det. on 1st dim, det. on 2nd dim
+            }
+
+    """
+    data = np.asarray(data)
+    ndim = data.ndim
+
+    if data.dtype == np.dtype('object'):
+        raise TypeError("Input must be a numeric array-like")
+    if ndim < 1:
+        raise ValueError("Input data must be at least 1D")
+    coeffs = [('', data)]
+
+    for axis in range(ndim):
+        new_coeffs = []
+        for subband, x in coeffs:
+            cA, cD = dwt_axis(x, wavelet, mode, axis)
+            new_coeffs.extend([(subband + 'a', cA),
+                               (subband + 'd', cD)])
+        coeffs = new_coeffs
+    return dict(coeffs)
 
 
 def idwtn(coeffs, wavelet, mode='sym', take=None):
