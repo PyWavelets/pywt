@@ -27,9 +27,9 @@ ctypedef fused data_t:
     np.float32_t
     np.float64_t
 
+
 ###############################################################################
 # MODES
-
 
 class _Modes(object):
     """
@@ -207,6 +207,7 @@ def families(int short=True):
     if short:
         return __wfamily_list_short[:]
     return __wfamily_list_long[:]
+
 
 cdef public class Wavelet [type WaveletType, object WaveletObject]:
     """
@@ -559,15 +560,16 @@ cdef index_t get_right_extent_length(index_t output_length, index_t keep_length)
 def wavelet_from_object(wavelet):
     return c_wavelet_from_object(wavelet)
 
+
 cdef c_wavelet_from_object(wavelet):
     if isinstance(wavelet, Wavelet):
         return wavelet
     else:
         return Wavelet(wavelet)
 
+
 ###############################################################################
 # DWT
-
 
 def dwt_max_level(data_len, filter_len):
     """
@@ -734,7 +736,6 @@ def dwt_coeff_len(data_len, filter_len, mode='sym'):
 ###############################################################################
 # idwt
 
-
 def _try_mode(mode):
     try:
         return MODES.from_object(mode)
@@ -885,7 +886,6 @@ def _idwt(np.ndarray[data_t, ndim=1, mode="c"] cA,
 
 ###############################################################################
 # upcoef & downcoef
-
 
 def upcoef(part, coeffs, wavelet, level=1, take=0):
     """
@@ -1094,9 +1094,9 @@ def _downcoef(part, np.ndarray[data_t, ndim=1, mode="c"] data,
 
     return coeffs
 
+
 ###############################################################################
 # swt
-
 
 def swt_max_level(input_len):
     """
@@ -1242,7 +1242,6 @@ def keep(arr, keep_length):
     return arr
 
 
-
 # Some utility functions
 
 cdef object float64_array_to_list(double* data, index_t n):
@@ -1263,6 +1262,7 @@ cdef void copy_object_to_float64_array(source, double* dest) except *:
     for x in source:
         dest[i] = x
         i = i + 1
+
 
 cdef void copy_object_to_float32_array(source, float* dest) except *:
     cdef index_t i
