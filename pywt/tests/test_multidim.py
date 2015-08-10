@@ -43,6 +43,20 @@ def test_3D_reconstruct():
                         rtol=1e-13, atol=1e-13)
 
 
+def test_dwdtn_idwtn_allwavelets():
+    rstate = np.random.RandomState(1234)
+    r = rstate.randn(16, 16)
+    # test 2D case only for all wavelet types
+    wavelist = pywt.wavelist()
+    if 'dmey' in wavelist:
+        wavelist.remove('dmey')
+    for wavelet in wavelist:
+        for mode in pywt.Modes.modes:
+            coeffs = pywt.dwtn(r, wavelet, mode=mode)
+            assert_allclose(pywt.idwtn(coeffs, wavelet, mode=mode),
+                            r, rtol=1e-7, atol=1e-7)
+
+
 def test_stride():
     wavelet = pywt.Wavelet('haar')
 

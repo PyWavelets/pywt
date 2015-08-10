@@ -177,13 +177,19 @@ def test_waverecn():
                         rtol=1e-12)
 
 
-def test_waverecn_db8():
-    #test 2D case only.
-    for nd in [2, ]:
-        coeffs = pywt.wavedecn(np.ones((64, )*nd), 'db8')
-        assert_(len(coeffs) == 3)
-        assert_allclose(pywt.waverecn(coeffs, 'db8'), np.ones((64, )*nd),
-                        rtol=1e-12)
+def test_waverecn_all_wavelets_modes():
+    #test 2D case using all wavelets and modes
+    rstate = np.random.RandomState(1234)
+    r = rstate.randn(80, 96)
+    wavelist = pywt.wavelist()
+    if 'dmey' in wavelist:
+        # accuracy is very low for dmey, so just omit it
+        wavelist.remove('dmey')
+    for wavelet in wavelist:
+        for mode in pywt.Modes.modes:
+            coeffs = pywt.wavedecn(r, wavelet, mode=mode)
+            assert_allclose(pywt.waverecn(coeffs, wavelet, mode=mode),
+                            r, rtol=1e-7, atol=1e-7)
 
 
 def test_multilevel_dtypes():
