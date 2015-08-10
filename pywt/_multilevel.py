@@ -119,9 +119,12 @@ def waverec(coeffs, wavelet, mode='symmetric'):
     if not isinstance(coeffs, (list, tuple)):
         raise ValueError("Expected sequence of coefficient arrays.")
 
-    if len(coeffs) < 2:
+    if len(coeffs) < 1:
         raise ValueError(
-            "Coefficient list too short (minimum 2 arrays required).")
+            "Coefficient list too short (minimum 1 arrays required).")
+    elif len(coeffs) == 1:
+        # level 0 transform (just returns the approximation coefficients)
+        return coeffs[0]
 
     a, ds = coeffs[0], coeffs[1:]
 
@@ -222,9 +225,12 @@ def waverec2(coeffs, wavelet, mode='symmetric'):
     if not isinstance(coeffs, (list, tuple)):
         raise ValueError("Expected sequence of coefficient arrays.")
 
-    if len(coeffs) < 2:
+    if len(coeffs) < 1:
         raise ValueError(
-            "Coefficient list too short (minimum 2 arrays required).")
+            "Coefficient list too short (minimum 1 array required).")
+    elif len(coeffs) == 1:
+        # level 0 transform (just returns the approximation coefficients)
+        return coeffs[0]
 
     a, ds = coeffs[0], coeffs[1:]
     a = np.asarray(a)
@@ -470,6 +476,8 @@ def wavedecn(data, wavelet, mode='symmetric', level=None):
         wavelet = Wavelet(wavelet)
 
     level = _check_level(min(data.shape), wavelet.dec_len, level)
+    #if level < 1:
+    #    Raise ValueError("level = 0 in wavedecn")
 
     coeffs_list = []
 
@@ -482,7 +490,21 @@ def wavedecn(data, wavelet, mode='symmetric', level=None):
     coeffs_list.append(a)
     coeffs_list.reverse()
 
+    if len(coeffs_list) < level + 1:
+        raise ValueError("incomplete coefficient list encountered")
+
     return coeffs_list
+
+
+def _match_coeff_dims(a_coeff, d_coeff_dict):
+    # For each axis, compare the approximation coeff shape to one of the
+    # stored detail coeffs and truncate the last element along the axis
+    # if necessary.
+    d_coeff = d_coeff_dict[list(d_coeff_dict.keys())[0]]
+    size_diffs = np.subtract(a_coeff.shape, d_coeff.shape)
+    if np.any((size_diffs < 0) | (size_diffs > 1)):
+        raise ValueError("incompatible coefficient array sizes")
+    return a_coeff[[slice(s) for s in d_coeff.shape]]
 
 
 def waverecn(coeffs, wavelet, mode='symmetric'):
@@ -532,25 +554,24 @@ def waverecn(coeffs, wavelet, mode='symmetric'):
     if not isinstance(coeffs, (list, tuple)):
         raise ValueError("Expected sequence of coefficient arrays.")
 
-    if len(coeffs) < 2:
+    if len(coeffs) < 1:
         raise ValueError(
-            "Coefficient list too short (minimum 2 arrays required).")
+            "Coefficient list too short (minimum 1 array required).")
+    elif len(coeffs) == 1:
+        # level 0 transform (just returns the approximation coefficients)
+        return coeffs[0]
 
     a, ds = coeffs[0], coeffs[1:]
 
     dims = max(len(key) for key in ds[0].keys())
 
     for idx, d in enumerate(ds):
-
-        #determine the shape at the next level for idwtn
-        if idx < (len(ds) - 1):
-            next_shape = [
-                v.shape for k, v in ds[idx + 1].items() if v is not None]
-            take = next_shape[0]
-        else:
-            take = None
-
+        # The following if statement handles the case where the approximation
+        # coefficient returned at the previous level may exceed the size of the
+        # stored detail coefficients by 1 on any given axis.
+        if idx > 0:
+            a = _match_coeff_dims(a, d)
         d['a' * dims] = a
-        a = idwtn(d, wavelet, mode, take=take)
+        a = idwtn(d, wavelet, mode)
 
     return a
