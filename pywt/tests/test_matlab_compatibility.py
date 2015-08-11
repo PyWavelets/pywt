@@ -45,7 +45,7 @@ def check_accuracy(pmode, mmode, wavelet):
     epsilon = 1.0e-10
 
     w = pywt.Wavelet(wavelet)
-    data_size = list(range(w.dec_len, 40)) + [100, 200, 500, 1000, 50000]
+    data_size = [w.dec_len, w.dec_len + 1]
     np.random.seed(1234)
 
     for N in data_size:
