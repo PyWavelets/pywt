@@ -13,25 +13,31 @@ import pywt
 
 _has_matlab = False
 try:
-    from mlabwrap import mlab
+    from pymatbridge import Matlab
+    mlab = Matlab()
 except ImportError:
     print("To run Matlab compatibility tests you need to have MathWorks "
-          "MATLAB, MathWorks Wavelet Toolbox and mlabwrap Python extension "
-          "installed.")
+          "MATLAB, MathWorks Wavelet Toolbox and the pymatbridge Python "
+          "package installed.")
     _has_matlab = True
 
 
 @dec.skipif(_has_matlab)
 def test_accuracy():
+
     # list of mode names in pywt and matlab
     modes = [('zpd', 'zpd'), ('cpd', 'sp0'), ('sym', 'sym'),
              ('ppd', 'ppd'), ('sp1', 'sp1'), ('per', 'per')]
 
     families = ('db', 'sym', 'coif', 'bior', 'rbio')
     wavelets = sum([pywt.wavelist(name) for name in families], [])
-    for pmode, mmode in modes:
-        for wavelet in wavelets:
-            yield check_accuracy, pmode, mmode, wavelet
+    mlab.start()
+    try:
+        for pmode, mmode in modes:
+            for wavelet in wavelets:
+                yield check_accuracy, pmode, mmode, wavelet
+    finally:
+        mlab.stop()
 
 
 def check_accuracy(pmode, mmode, wavelet):
@@ -49,9 +55,13 @@ def check_accuracy(pmode, mmode, wavelet):
         pa, pd = pywt.dwt(data, wavelet, pmode)
 
         # Matlab result
-        ma, md = mlab.dwt(data, wavelet, 'mode', mmode, nout=2)
-        ma = ma.flat
-        md = md.flat
+        mlab.set_variable('data', data)
+        mlab.set_variable('wavelet', wavelet)
+        mlab_code = "[ma, md] = dwt(data, wavelet, 'mode', '%s');" % mmode
+        res = mlab.run_code(mlab_code)
+        # need np.asarray because sometimes the output is type float
+        ma = np.asarray(mlab.get_variable('ma')).flat
+        md = np.asarray(mlab.get_variable('md')).flat
 
         # calculate error measures
         rms_a = np.sqrt(np.mean((pa-ma)**2))
