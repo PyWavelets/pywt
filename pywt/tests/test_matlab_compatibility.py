@@ -11,18 +11,18 @@ from numpy.testing import assert_, dec, run_module_suite
 import pywt
 
 
-_has_matlab = False
 try:
     from pymatbridge import Matlab
     mlab = Matlab()
+    _matlab_missing = False
 except ImportError:
     print("To run Matlab compatibility tests you need to have MathWorks "
           "MATLAB, MathWorks Wavelet Toolbox and the pymatbridge Python "
           "package installed.")
-    _has_matlab = True
+    _matlab_missing = True
 
 
-@dec.skipif(_has_matlab)
+@dec.skipif(_matlab_missing)
 def test_accuracy():
     # list of mode names in pywt and matlab
     modes = [('zpd', 'zpd'), ('cpd', 'sp0'), ('sym', 'sym'),
