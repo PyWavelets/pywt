@@ -23,6 +23,7 @@ except ImportError:
 
 
 @dec.skipif(_matlab_missing)
+@dec.slow
 def test_accuracy():
     # list of mode names in pywt and matlab
     modes = [('zpd', 'zpd'), ('cpd', 'sp0'), ('sym', 'sym'),
