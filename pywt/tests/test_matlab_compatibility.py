@@ -61,6 +61,9 @@ def _check_accuracy(data, w, pmode, mmode, wavelet):
     # Matlab result
     mlab_code = "[ma, md] = dwt(data, wavelet, 'mode', '%s');" % mmode
     res = mlab.run_code(mlab_code)
+    if not res['success']:
+        raise RuntimeError("Matlab failed to execute the provided code. "
+                           "Check that the wavelet toolbox is installed.")
     # need np.asarray because sometimes the output is type float
     ma = np.asarray(mlab.get_variable('ma')).flat
     md = np.asarray(mlab.get_variable('md')).flat
