@@ -8,6 +8,11 @@ from numpy.testing import (run_module_suite, assert_almost_equal,
 
 import pywt
 
+# Check that float32 and complex64 are preserved.  Other real types get
+# converted to float64.
+dtypes_in = [np.int8, np.float32, np.float64, np.complex64, np.complex128]
+dtypes_out = [np.float64, np.float32, np.float64, np.complex64, np.complex128]
+
 
 def test_wavedec():
     x = [3, 7, 1, 1, -2, 5, 4, 6]
@@ -58,9 +63,6 @@ def test_swt_decomposition():
 
 
 def test_swt_dtypes():
-    # Check that float32 is preserved.  Other types get converted to float64.
-    dtypes_in = [np.int8, np.float32, np.float64]
-    dtypes_out = [np.float64, np.float32, np.float64]
     wavelet = pywt.Wavelet('haar')
     for dt_in, dt_out in zip(dtypes_in, dtypes_out):
         errmsg = "wrong dtype returned for {0} input".format(dt_in)
@@ -85,9 +87,6 @@ def test_wavedec2():
 
 
 def test_multilevel_dtypes():
-    # Check that float32 is preserved.  Other types get converted to float64.
-    dtypes_in = [np.int8, np.float32, np.float64]
-    dtypes_out = [np.float64, np.float32, np.float64]
     wavelet = pywt.Wavelet('haar')
     for dt_in, dt_out in zip(dtypes_in, dtypes_out):
         # wavedec, waverec

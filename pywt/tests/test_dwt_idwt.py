@@ -7,6 +7,11 @@ from numpy.testing import (run_module_suite, assert_allclose, assert_,
 
 import pywt
 
+# Check that float32 and complex64 are preserved.  Other real types get
+# converted to float64.
+dtypes_in = [np.int8, np.float32, np.float64, np.complex64, np.complex128]
+dtypes_out = [np.float64, np.float32, np.float64, np.complex64, np.complex128]
+
 
 def test_dwt_idwt_basic():
     x = [3, 7, 1, 1, -2, 5, 4, 6]
@@ -22,9 +27,6 @@ def test_dwt_idwt_basic():
 
 
 def test_dwt_idwt_dtypes():
-    # Check that float32 is preserved.  Other types get converted to float64.
-    dtypes_in = [np.int8, np.float32, np.float64]
-    dtypes_out = [np.float64, np.float32, np.float64]
     wavelet = pywt.Wavelet('haar')
     for dt_in, dt_out in zip(dtypes_in, dtypes_out):
         x = np.ones(4, dtype=dt_in)
