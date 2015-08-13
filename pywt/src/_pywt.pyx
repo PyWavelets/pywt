@@ -1177,6 +1177,15 @@ def swt(data, object wavelet, object level=None, int start_level=0):
             [(cAm+n, cDm+n), ..., (cAm+1, cDm+1), (cAm, cDm)]
 
     """
+    if np.iscomplexobj(data):
+        data = np.asarray(data)
+        coeffs_real = swt(data.real, wavelet, level, start_level)
+        coeffs_imag = swt(data.imag, wavelet, level, start_level)
+        coeffs_cplx = []
+        for (cA_r, cD_r), (cA_i, cD_i) in zip(coeffs_real, coeffs_imag):
+            coeffs_cplx.append((cA_r + 1j*cA_i, cD_r + 1j*cD_i))
+        return coeffs_cplx
+
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(data)
     data = np.array(data, dtype=dt)
