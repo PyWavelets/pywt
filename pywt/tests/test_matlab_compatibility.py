@@ -5,11 +5,18 @@ accuracy against MathWorks Wavelet Toolbox.
 
 from __future__ import division, print_function, absolute_import
 
+import os
 import numpy as np
 from numpy.testing import assert_, dec, run_module_suite
 
 import pywt
 
+if 'PYWT_XSLOW' in os.environ:
+    # Run a more comprehensive set of problem sizes.  This could take more than
+    # an hour to complete.
+    size_set = 'full'
+else:
+    size_set = 'reduced'
 
 try:
     from pymatbridge import Matlab
@@ -37,8 +44,12 @@ def test_accuracy():
         for wavelet in wavelets:
             w = pywt.Wavelet(wavelet)
             mlab.set_variable('wavelet', wavelet)
-            data_size = (w.dec_len, w.dec_len + 1)
-            for N in data_size:
+            if size_set == 'full':
+                data_sizes = list(range(w.dec_len, 40)) + \
+                    [100, 200, 500, 1000, 50000]
+            else:
+                data_sizes = (w.dec_len, w.dec_len + 1)
+            for N in data_sizes:
                 data = rstate.randn(N)
                 mlab.set_variable('data', data)
                 for pmode, mmode in modes:
