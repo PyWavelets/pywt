@@ -74,13 +74,13 @@ def dwt2(data, wavelet, mode='sym'):
 
     LL, HL = [], []
     for row in L:
-        cA, cD = dwt(np.array(row, np.float64), wavelet, mode)
+        cA, cD = dwt(row, wavelet, mode)
         LL.append(cA)
         HL.append(cD)
 
     LH, HH = [], []
     for row in H:
-        cA, cD = dwt(np.array(row, np.float64), wavelet, mode)
+        cA, cD = dwt(row, wavelet, mode)
         LH.append(cA)
         HH.append(cD)
 
@@ -192,7 +192,7 @@ def idwt2(coeffs, wavelet, mode='sym'):
     for rowL, rowH in zip(L, H):
         data.append(idwt(rowL, rowH, wavelet, mode, 1))
 
-    return np.array(data, np.float64)
+    return np.array(data)
 
 
 def dwtn(data, wavelet, mode='sym'):
@@ -398,17 +398,13 @@ def swt2(data, wavelet, level, start_level=0):
 
         LL, LH = [], []
         for row in L:
-            cA, cD = swt(
-                np.array(row, np.float64), wavelet, level=1, start_level=i
-            )[0]
+            cA, cD = swt(row, wavelet, level=1, start_level=i)[0]
             LL.append(cA)
             LH.append(cD)
 
         HL, HH = [], []
         for row in H:
-            cA, cD = swt(
-                np.array(row, np.float64), wavelet, level=1, start_level=i
-            )[0]
+            cA, cD = swt(row, wavelet, level=1, start_level=i)[0]
             HL.append(cA)
             HH.append(cD)
 

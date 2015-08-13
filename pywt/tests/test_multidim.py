@@ -126,5 +126,39 @@ def test_error_mismatched_size():
     assert_raises(ValueError, pywt.idwtn, d, wavelet)
 
 
+def test_dwt2_idwt2_dtypes():
+    # Check that float32 is preserved.  Other types get converted to float64.
+    dtypes_in = [np.int8, np.float32, np.float64]
+    dtypes_out = [np.float64, np.float32, np.float64]
+    wavelet = pywt.Wavelet('haar')
+    for dt_in, dt_out in zip(dtypes_in, dtypes_out):
+        x = np.ones((4, 4), dtype=dt_in)
+        errmsg = "wrong dtype returned for {0} input".format(dt_in)
+
+        cA, (cH, cV, cD) = pywt.dwt2(x, wavelet)
+        assert_(cA.dtype == cH.dtype == cV.dtype == cD.dtype,
+                "dwt2: " + errmsg)
+
+        x_roundtrip = pywt.idwt2((cA, (cH, cV, cD)), wavelet)
+        assert_(x_roundtrip.dtype == dt_out, "idwt2: " + errmsg)
+
+
+def test_dwtn_idwtn_dtypes():
+    # Check that float32 is preserved.  Other types get converted to float64.
+    dtypes_in = [np.int8, np.float32, np.float64]
+    dtypes_out = [np.float64, np.float32, np.float64]
+    wavelet = pywt.Wavelet('haar')
+    for dt_in, dt_out in zip(dtypes_in, dtypes_out):
+        x = np.ones((4, 4), dtype=dt_in)
+        errmsg = "wrong dtype returned for {0} input".format(dt_in)
+
+        coeffs = pywt.dwtn(x, wavelet)
+        for k, v in coeffs.items():
+            assert_(v.dtype == dt_out, "dwtn: " + errmsg)
+
+        x_roundtrip = pywt.idwtn(coeffs, wavelet)
+        assert_(x_roundtrip.dtype == dt_out, "idwtn: " + errmsg)
+
+
 if __name__ == '__main__':
     run_module_suite()

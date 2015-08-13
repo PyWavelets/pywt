@@ -50,10 +50,59 @@ def test_swt_decomposition():
     assert_(pywt.swt_max_level(len(x)) == 3)
 
 
+def test_swt_dtypes():
+    # Check that float32 is preserved.  Other types get converted to float64.
+    dtypes_in = [np.int8, np.float32, np.float64]
+    dtypes_out = [np.float64, np.float32, np.float64]
+    wavelet = pywt.Wavelet('haar')
+    for dt_in, dt_out in zip(dtypes_in, dtypes_out):
+        errmsg = "wrong dtype returned for {0} input".format(dt_in)
+
+        # swt
+        x = np.ones(8, dtype=dt_in)
+        (cA2, cD2), (cA1, cD1) = pywt.swt(x, wavelet, level=2)
+        assert_(cA2.dtype == cD2.dtype == cA1.dtype == cD1.dtype == dt_out,
+                "swt: " + errmsg)
+
+        # swt2
+        x = np.ones((8, 8), dtype=dt_in)
+        cA, (cH, cV, cD) = pywt.swt2(x, wavelet, level=1)[0]
+        assert_(cA.dtype == cH.dtype == cV.dtype == cD.dtype == dt_out,
+                "swt2: " + errmsg)
+
+
 def test_wavedec2():
     coeffs = pywt.wavedec2(np.ones((4, 4)), 'db1')
     assert_(len(coeffs) == 3)
     assert_allclose(pywt.waverec2(coeffs, 'db1'), np.ones((4, 4)), rtol=1e-12)
+
+
+def test_multilevel_dtypes():
+    # Check that float32 is preserved.  Other types get converted to float64.
+    dtypes_in = [np.int8, np.float32, np.float64]
+    dtypes_out = [np.float64, np.float32, np.float64]
+    wavelet = pywt.Wavelet('haar')
+    for dt_in, dt_out in zip(dtypes_in, dtypes_out):
+        # wavedec, waverec
+        x = np.ones(8, dtype=dt_in)
+        errmsg = "wrong dtype returned for {0} input".format(dt_in)
+
+        coeffs = pywt.wavedec(x, wavelet, level=2)
+        for c in coeffs:
+            assert_(c.dtype == dt_out, "wavedec: " + errmsg)
+        x_roundtrip = pywt.waverec(coeffs, wavelet)
+        assert_(x_roundtrip.dtype == dt_out, "waverec: " + errmsg)
+
+        # wavedec2, waverec2
+        x = np.ones((8, 8), dtype=dt_in)
+        cA, coeffsD2, coeffsD1 = pywt.wavedec2(x, wavelet, level=2)
+        assert_(cA.dtype == dt_out, "wavedec2: " + errmsg)
+        for c in coeffsD1:
+            assert_(c.dtype == dt_out, "wavedec2: " + errmsg)
+        for c in coeffsD2:
+            assert_(c.dtype == dt_out, "wavedec2: " + errmsg)
+        x_roundtrip = pywt.waverec2([cA, coeffsD2, coeffsD1], wavelet)
+        assert_(x_roundtrip.dtype == dt_out, "waverec2: " + errmsg)
 
 
 if __name__ == '__main__':

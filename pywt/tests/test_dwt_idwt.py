@@ -21,6 +21,22 @@ def test_dwt_idwt_basic():
     assert_allclose(x_roundtrip, x, rtol=1e-10)
 
 
+def test_dwt_idwt_dtypes():
+    # Check that float32 is preserved.  Other types get converted to float64.
+    dtypes_in = [np.int8, np.float32, np.float64]
+    dtypes_out = [np.float64, np.float32, np.float64]
+    wavelet = pywt.Wavelet('haar')
+    for dt_in, dt_out in zip(dtypes_in, dtypes_out):
+        x = np.ones(4, dtype=dt_in)
+        errmsg = "wrong dtype returned for {0} input".format(dt_in)
+
+        cA, cD = pywt.dwt(x, wavelet)
+        assert_(cA.dtype == cD.dtype == dt_out, "dwt: " + errmsg)
+
+        x_roundtrip = pywt.idwt(cA, cD, wavelet)
+        assert_(x_roundtrip.dtype == dt_out, "idwt: " + errmsg)
+
+
 def test_dwt_input_error():
     data = np.ones((16, 1))
     assert_raises(ValueError, pywt.dwt, data, 'haar')
