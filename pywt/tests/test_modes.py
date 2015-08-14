@@ -62,7 +62,7 @@ def test_dwt_idwt_allmodes():
 
 
 def test_default_mode():
-    # The default mode should be 'sym'
+    # The default mode should be 'symmetric'
     x = [1, 2, 1, 5, -1, 8, 4, 6]
     cA, cD = pywt.dwt(x, 'db2')
     cA2, cD2 = pywt.dwt(x, 'db2', mode='symmetric')
