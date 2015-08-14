@@ -22,6 +22,12 @@ def test_orthfilt_deprecation():
     assert_warns(DeprecationWarning, pywt.orthfilt, range(6))
 
 
+def test_integrate_wave_tuple():
+    sig = [0, 1, 2, 3]
+    xgrid = [0, 1, 2, 3]
+    assert_warns(DeprecationWarning, pywt.integrate_wavelet, (sig, xgrid))
+
+
 old_modes = ['zpd',
              'cpd',
              'sym',
