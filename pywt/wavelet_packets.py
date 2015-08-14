@@ -441,16 +441,16 @@ class Node2D(BaseNode):
     """
     WaveletPacket tree node.
 
-    Subnodes are called 'a' (LL), 'h' (LH), 'v' (HL) and  'd' (HH), like
+    Subnodes are called 'a' (LL), 'h' (HL), 'v' (LH) and  'd' (HH), like
     approximation and detail coefficients in the 2D Discrete Wavelet Transform
     """
 
     LL = 'a'
-    LH = 'h'
-    HL = 'v'
+    HL = 'h'
+    LH = 'v'
     HH = 'd'
 
-    PARTS = LL, LH, HL, HH
+    PARTS = LL, HL, LH, HH
     PART_LEN = 1
 
     def _create_subnode(self, part, data=None, overwrite=True):
@@ -466,14 +466,14 @@ class Node2D(BaseNode):
         if self.is_empty:
             data_ll, data_lh, data_hl, data_hh = None, None, None, None
         else:
-            data_ll, (data_lh, data_hl, data_hh) =\
+            data_ll, (data_hl, data_lh, data_hh) =\
                 dwt2(self.data, self.wavelet, self.mode)
         self._create_subnode(self.LL, data_ll)
         self._create_subnode(self.LH, data_lh)
         self._create_subnode(self.HL, data_hl)
         self._create_subnode(self.HH, data_hh)
-        return (self._get_node(self.LL), self._get_node(self.LH),
-                self._get_node(self.HL), self._get_node(self.HH))
+        return (self._get_node(self.LL), self._get_node(self.HL),
+                self._get_node(self.LH), self._get_node(self.HH))
 
     def _reconstruct(self, update):
         data_ll, data_lh, data_hl, data_hh = None, None, None, None
@@ -498,7 +498,7 @@ class Node2D(BaseNode):
                 "are None. Cannot reconstruct node." % self.path
             )
         else:
-            coeffs = data_ll, (data_lh, data_hl, data_hh)
+            coeffs = data_ll, (data_hl, data_lh, data_hh)
             rec = idwt2(coeffs, self.wavelet, self.mode)
             if update:
                 self.data = rec
