@@ -2,12 +2,14 @@
 # See COPYING for license details.
 
 __doc__ = """Pyrex wrapper for low-level C wavelet transform implementation."""
-__all__ = ['Modes', 'Wavelet', 'dwt', 'dwt_coeff_len', 'dwt_max_level',
+__all__ = ['MODES', 'Modes', 'Wavelet', 'dwt', 'dwt_coeff_len', 'dwt_max_level',
            'idwt', 'swt', 'swt_max_level', 'upcoef', 'downcoef',
            'wavelist', 'families']
 
 ###############################################################################
 # imports
+from exceptions import DeprecationWarning
+import warnings
 
 cimport c_wt
 cimport wavelet
@@ -16,8 +18,6 @@ cimport common
 from libc.math cimport pow, sqrt
 
 ctypedef Py_ssize_t index_t
-
-import warnings
 
 import numpy as np
 cimport numpy as np
@@ -104,6 +104,8 @@ class _Modes(object):
 
 
 Modes = _Modes()
+
+MODES = Modes
 
 ###############################################################################
 # Wavelet
