@@ -47,3 +47,24 @@ def test_MODES_attributes_deprecation():
 def test_MODES_attributes_usage_deprecation():
     for mode in old_modes:
         assert_warns(DeprecationWarning, pywt.dwt, range(10), 'db3', mode)
+
+
+def test_MODES_deprecation_new():
+    def use_MODES_new():
+        return pywt.MODES.symmetric
+
+    assert_warns(DeprecationWarning, use_MODES_new)
+
+
+def test_MODES_deprecation_old():
+    def use_MODES_old():
+        return pywt.MODES.sym
+
+    assert_warns(DeprecationWarning, use_MODES_old)
+
+
+def test_MODES_deprecation_getattr():
+    def use_MODES_new():
+        return getattr(pywt.MODES, 'symmetric')
+
+    assert_warns(DeprecationWarning, use_MODES_new)
