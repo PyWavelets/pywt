@@ -106,8 +106,17 @@ def integrate_wavelet(wavelet, precision=8):
 
     if type(wavelet) is str:
         wavelet = wavelet_for_name(wavelet)
+    elif type(wavelet) in (tuple, list):
+        msg = ("Integration of a general signal is deprecated "
+               "and will be removed in a future version of pywt.")
+        warnings.warn(msg, DeprecationWarning)
     elif not isinstance(wavelet, WAVELET_CLASSES):
         print("wavelet must be either string or Wavelet instance!")
+
+    if type(wavelet) in (tuple, list):
+        psi, x = np.asarray(wavelet[0]), np.asarray(wavelet[1])
+        step = x[1] - x[0]
+        return _integrate(psi, step), x
 
     functions_approximations = wavelet.wavefun(precision)
 
