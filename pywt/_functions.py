@@ -24,7 +24,7 @@ __all__ = ["integrate_wavelet", "central_frequency", "scale2frequency", "qmf",
 
 WAVELET_CLASSES = (Wavelet)
 
-_DEPRECATION_MSG = ("`{}` has been renamed to `{}` and will "
+_DEPRECATION_MSG = ("`{old}` has been renamed to `{new}` and will "
                     "be removed in a future version of pywt.")
 
 
@@ -47,25 +47,25 @@ def _integrate(arr, step):
 
 
 def intwave(*args, **kwargs):
-    msg = _DEPRECATION_MSG.format('intwave', 'integrate_wavelet')
+    msg = _DEPRECATION_MSG.format(old='intwave', new='integrate_wavelet')
     warnings.warn(msg, DeprecationWarning)
     return integrate_wavelet(*args, **kwargs)
 
 
 def centrfrq(*args, **kwargs):
-    msg = _DEPRECATION_MSG.format('centrfrq', 'central_frequency')
+    msg = _DEPRECATION_MSG.format(old='centrfrq', new='central_frequency')
     warnings.warn(msg, DeprecationWarning)
     return central_frequency(*args, **kwargs)
 
 
 def scal2frq(*args, **kwargs):
-    msg = _DEPRECATION_MSG.format('scal2frq', 'scale2frequency')
+    msg = _DEPRECATION_MSG.format(old='scal2frq', new='scale2frequency')
     warnings.warn(msg, DeprecationWarning)
     return scale2frequency(*args, **kwargs)
 
 
 def orthfilt(*args, **kwargs):
-    msg = _DEPRECATION_MSG.format('orthfilt', 'orthogonal_filter_bank')
+    msg = _DEPRECATION_MSG.format(old='orthfilt', new='orthogonal_filter_bank')
     warnings.warn(msg, DeprecationWarning)
     return orthogonal_filter_bank(*args, **kwargs)
 
