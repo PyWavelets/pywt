@@ -192,7 +192,7 @@ def test_waverecn_all_wavelets_modes():
                             r, rtol=1e-7, atol=1e-7)
 
 
-def test_multilevel_dtypes():
+def test_multilevel_dtypes_1d():
     wavelet = pywt.Wavelet('haar')
     for dt_in, dt_out in zip(dtypes_in, dtypes_out):
         # wavedec, waverec
@@ -205,8 +205,13 @@ def test_multilevel_dtypes():
         x_roundtrip = pywt.waverec(coeffs, wavelet)
         assert_(x_roundtrip.dtype == dt_out, "waverec: " + errmsg)
 
+
+def test_multilevel_dtypes_2d():
+    wavelet = pywt.Wavelet('haar')
+    for dt_in, dt_out in zip(dtypes_in, dtypes_out):
         # wavedec2, waverec2
         x = np.ones((8, 8), dtype=dt_in)
+        errmsg = "wrong dtype returned for {0} input".format(dt_in)
         cA, coeffsD2, coeffsD1 = pywt.wavedec2(x, wavelet, level=2)
         assert_(cA.dtype == dt_out, "wavedec2: " + errmsg)
         for c in coeffsD1:
@@ -215,6 +220,22 @@ def test_multilevel_dtypes():
             assert_(c.dtype == dt_out, "wavedec2: " + errmsg)
         x_roundtrip = pywt.waverec2([cA, coeffsD2, coeffsD1], wavelet)
         assert_(x_roundtrip.dtype == dt_out, "waverec2: " + errmsg)
+
+
+def test_multilevel_dtypes_nd():
+    wavelet = pywt.Wavelet('haar')
+    for dt_in, dt_out in zip(dtypes_in, dtypes_out):
+        # wavedecn, waverecn
+        x = np.ones((8, 8), dtype=dt_in)
+        errmsg = "wrong dtype returned for {0} input".format(dt_in)
+        cA, coeffsD2, coeffsD1 = pywt.wavedecn(x, wavelet, level=2)
+        assert_(cA.dtype == dt_out, "wavedecn: " + errmsg)
+        for key, c in coeffsD1.items():
+            assert_(c.dtype == dt_out, "wavedecn: " + errmsg)
+        for key, c in coeffsD2.items():
+            assert_(c.dtype == dt_out, "wavedecn: " + errmsg)
+        x_roundtrip = pywt.waverecn([cA, coeffsD2, coeffsD1], wavelet)
+        assert_(x_roundtrip.dtype == dt_out, "waverecn: " + errmsg)
 
 
 def test_wavedec2_complex():
@@ -237,7 +258,13 @@ def test_waverec2_none_coeffs():
     assert_(x.shape == pywt.waverec2(coeffs, 'db1').shape)
 
 
-def test_waverec_dtypes():
+def test_wavedecn_complex():
+    data = np.ones((4, 4, 4)) + 1j
+    coeffs = pywt.wavedecn(data, 'db1')
+    assert_allclose(pywt.waverecn(coeffs, 'db1'), data, rtol=1e-12)
+
+
+def test_waverecn_dtypes():
     x = np.ones((4, 4, 4))
     for dt, tol in dtypes_and_tolerances:
         coeffs = pywt.wavedecn(x.astype(dt), 'db1')
