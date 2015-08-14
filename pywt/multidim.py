@@ -256,14 +256,7 @@ def idwtn(coeffs, wavelet, mode='sym'):
         Wavelet to use
     mode : str, optional
         Signal extension mode used in the decomposition,
-        see MODES (default: 'sym'). Overridden by `take`.
-    take : int or iterable of int or None, optional
-        Number of values to take from the center of the idwtn for each axis.
-        If 0, the entire reverse transformation will be used, including
-        parts generated from padding in the forward transform.
-        If None (default), will be calculated from `mode` to be the size of the
-        original data, rounded up to the nearest multiple of 2.
-        Passed to `upcoef`.
+        see MODES (default: 'sym').
 
     Returns
     -------
