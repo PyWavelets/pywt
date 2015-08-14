@@ -29,6 +29,17 @@ ctypedef fused data_t:
 
 ###############################################################################
 # Modes
+_old_modes = ['zpd',
+              'cpd',
+              'sym',
+              'ppd',
+              'sp1',
+              'per',
+              ]
+
+_attr_deprecation_msg = ('{old} has been renamed to {new} and will '
+                         'be unavailable in a future version '
+                         'of pywt.')
 
 class _Modes(object):
     """
@@ -100,6 +111,16 @@ class _Modes(object):
                 raise ValueError("Unknown mode name '%s'." % mode)
 
         return m
+
+    def __getattr__(self, mode):
+        # catch deprecated mode names
+        if mode in _old_modes:
+            new_mode = Modes.modes[_old_modes.index(mode)]
+            warnings.warn(_attr_deprecation_msg.format(old=mode, new=new_mode),
+                          DeprecationWarning)
+            mode = new_mode
+        return Modes.__getattribute__(mode)
+
 
 
 Modes = _Modes()
