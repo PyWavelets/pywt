@@ -8,7 +8,6 @@ __all__ = ['MODES', 'Modes', 'Wavelet', 'dwt', 'dwt_coeff_len', 'dwt_max_level',
 
 ###############################################################################
 # imports
-from exceptions import DeprecationWarning
 import warnings
 
 cimport c_wt

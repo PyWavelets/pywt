@@ -9,7 +9,6 @@ Other wavelet related functions.
 
 from __future__ import division, print_function, absolute_import
 
-from exceptions import DeprecationWarning
 import warnings
 
 import numpy as np
