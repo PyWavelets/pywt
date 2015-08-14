@@ -3,19 +3,24 @@
 from __future__ import division, print_function, absolute_import
 
 import numpy as np
+from itertools import combinations
 from numpy.testing import (run_module_suite, assert_allclose, assert_,
                            assert_raises, assert_equal)
 
 import pywt
 
 
-def test_dwtn_input_error():
+def test_dwtn_input():
+    # Array-like must be accepted
+    pywt.dwtn([1, 2, 3, 4], 'haar')
+    # Others must not
     data = dict()
-    assert_raises(ValueError, pywt.dwtn, data, 'haar')
+    assert_raises(TypeError, pywt.dwtn, data, 'haar')
+    # Must be at least 1D
+    assert_raises(ValueError, pywt.dwtn, 2, 'haar')
 
 
 def test_3D_reconstruct():
-    # All dimensions even length so `take` does not need to be specified
     data = np.array([
         [[0, 4, 1, 5, 1, 4],
          [0, 5, 26, 3, 2, 1],
@@ -27,11 +32,46 @@ def test_3D_reconstruct():
          [5, 2, 6, 78, 12, 2]]])
 
     wavelet = pywt.Wavelet('haar')
-    d = pywt.dwtn(data, wavelet)
-    # idwtn creates even-length shapes (2x dwtn size)
-    original_shape = [slice(None, s) for s in data.shape]
-    assert_allclose(data, pywt.idwtn(d, wavelet)[original_shape],
-                    rtol=1e-13, atol=1e-13)
+    for mode in pywt.MODES.modes:
+        d = pywt.dwtn(data, wavelet, mode=mode)
+        assert_allclose(data, pywt.idwtn(d, wavelet, mode=mode),
+                        rtol=1e-13, atol=1e-13)
+
+
+def test_stride():
+    wavelet = pywt.Wavelet('haar')
+
+    for dtype in ('float32', 'float64'):
+        data = np.array([[0, 4, 1, 5, 1, 4],
+                         [0, 5, 6, 3, 2, 1],
+                         [2, 5, 19, 4, 19, 1]],
+                        dtype=dtype)
+
+        for mode in pywt.MODES.modes:
+            expected = pywt.dwtn(data, wavelet)
+            strided = np.ones((3, 12), dtype=data.dtype)
+            strided[::-1, ::2] = data
+            strided_dwtn = pywt.dwtn(strided[::-1, ::2], wavelet)
+            for key in expected.keys():
+                assert_allclose(strided_dwtn[key], expected[key])
+
+
+def test_byte_offset():
+    wavelet = pywt.Wavelet('haar')
+    for dtype in ('float32', 'float64'):
+        data = np.array([[0, 4, 1, 5, 1, 4],
+                         [0, 5, 6, 3, 2, 1],
+                         [2, 5, 19, 4, 19, 1]],
+                        dtype=dtype)
+
+        for mode in pywt.MODES.modes:
+            expected = pywt.dwtn(data, wavelet)
+            padded = np.ones((3, 6), dtype=np.dtype([('data', data.dtype),
+                                                     ('pad', 'byte')]))
+            padded[:] = data
+            padded_dwtn = pywt.dwtn(padded['data'], wavelet)
+            for key in expected.keys():
+                assert_allclose(padded_dwtn[key], expected[key])
 
 
 def test_idwtn_idwt2():
@@ -60,32 +100,21 @@ def test_idwtn_missing():
 
     wavelet = pywt.Wavelet('haar')
 
-    LL, (HL, _, HH) = pywt.dwt2(data, wavelet)
-    d = {'aa': LL, 'da': HL, 'dd': HH}
+    coefs = pywt.dwtn(data, wavelet)
 
-    assert_allclose(pywt.idwt2((LL, (HL, None, HH)), wavelet),
-                    pywt.idwtn(d, 'haar'), atol=1e-15)
+    # No point removing zero, or all
+    for num_missing in range(1, len(coefs)):
+        for missing in combinations(coefs.keys(), num_missing):
+            missing_coefs = coefs.copy()
+            for key in missing:
+                del missing_coefs[key]
+            LL = missing_coefs.get('aa', None)
+            HL = missing_coefs.get('da', None)
+            LH = missing_coefs.get('ad', None)
+            HH = missing_coefs.get('dd', None)
 
-
-def test_idwtn_take():
-    data = np.array([
-        [[1, 4, 1, 5, 1, 4],
-         [0, 5, 6, 3, 2, 1],
-         [2, 5, 19, 4, 19, 1]],
-        [[1, 5, 1, 2, 3, 4],
-         [7, 12, 6, 52, 7, 8],
-         [5, 2, 6, 78, 12, 2]]])
-    wavelet = pywt.Wavelet('haar')
-    d = pywt.dwtn(data, wavelet)
-
-    assert_(data.shape != pywt.idwtn(d, wavelet).shape)
-    assert_allclose(data, pywt.idwtn(d, wavelet, take=data.shape), atol=1e-15)
-
-    # Check shape for take not equal to data.shape
-    data = np.random.randn(51, 17, 68)
-    d = pywt.dwtn(data, wavelet)
-    assert_equal((2, 2, 2), pywt.idwtn(d, wavelet, take=2).shape)
-    assert_equal((52, 18, 68), pywt.idwtn(d, wavelet, take=0).shape)
+            assert_allclose(pywt.idwt2((LL, (HL, LH, HH)), wavelet),
+                            pywt.idwtn(missing_coefs, 'haar'), atol=1e-15)
 
 
 def test_ignore_invalid_keys():

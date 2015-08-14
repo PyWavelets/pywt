@@ -1,12 +1,21 @@
 # Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/>
 # See COPYING for license details.
 
-from common cimport MODE, index_t
+from common cimport MODE, index_t, ArrayInfo, Coefficient
 from wavelet cimport Wavelet
 
 
 cdef extern from "wt.h":
     # Cython does not know the 'restrict' keyword
+    cdef int double_downcoef_axis(const double * const input, const ArrayInfo input_info,
+                                  double * const output, const ArrayInfo output_info,
+                                  const Wavelet * const wavelet, const size_t axis,
+                                  const Coefficient detail, const MODE mode)
+    cdef int double_idwt_axis(const double * const coefs_a, const ArrayInfo * const a_info,
+                              const double * const coefs_d, const ArrayInfo * const d_info,
+                              double * const output, const ArrayInfo output_info,
+                              const Wavelet * const wavelet, const size_t axis,
+                              const MODE mode)
     cdef int double_dec_a(const double * const input, const size_t input_len,
                           const Wavelet * const wavelet,
                           double * const output, const size_t output_len,
@@ -35,6 +44,15 @@ cdef extern from "wt.h":
                           double output[], index_t output_len, int level)
 
 
+    cdef int float_downcoef_axis(const float * const input, const ArrayInfo input_info,
+                                 float * const output, const ArrayInfo output_info,
+                                 const Wavelet * const wavelet, const size_t axis,
+                                 const Coefficient detail, const MODE mode)
+    cdef int float_idwt_axis(const float * const coefs_a, const ArrayInfo * const a_info,
+                             const float * const coefs_d, const ArrayInfo * const d_info,
+                             float * const output, const ArrayInfo output_info,
+                             const Wavelet * const wavelet, const size_t axis,
+                             const MODE mode)
     cdef int float_dec_a(const float * const input, const size_t input_len,
                          const Wavelet * const wavelet,
                          float * const output, const size_t output_len,
