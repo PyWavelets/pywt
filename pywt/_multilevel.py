@@ -30,7 +30,7 @@ def wavedec(data, wavelet, mode='symmetric', level=None):
     wavelet : Wavelet object or name string
         Wavelet to use
     mode : str, optional
-        Signal extension mode, see Modes (default: 'sym')
+        Signal extension mode, see Modes (default: 'symmetric')
     level : int, optional
         Decomposition level. If level is None (default) then it will be
         calculated using `dwt_max_level` function.
@@ -90,7 +90,7 @@ def waverec(coeffs, wavelet, mode='symmetric'):
     wavelet : Wavelet object or name string
         Wavelet to use
     mode : str, optional
-        Signal extension mode, see Modes (default: 'sym')
+        Signal extension mode, see Modes (default: 'symmetric')
 
     Examples
     --------
@@ -126,7 +126,7 @@ def wavedec2(data, wavelet, mode='symmetric', level=None):
     wavelet : Wavelet object or name string
         Wavelet to use
     mode : str, optional
-        Signal extension mode, see Modes (default: 'sym')
+        Signal extension mode, see Modes (default: 'symmetric')
     level : int, optional
         Decomposition level. If level is None (default) then it will be
         calculated using `dwt_max_level` function.
@@ -187,7 +187,7 @@ def waverec2(coeffs, wavelet, mode='symmetric'):
     wavelet : Wavelet object or name string
         Wavelet to use
     mode : str, optional
-        Signal extension mode, see Modes (default: 'sym')
+        Signal extension mode, see Modes (default: 'symmetric')
 
     Returns
     -------

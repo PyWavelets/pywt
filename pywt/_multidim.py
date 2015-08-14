@@ -30,7 +30,7 @@ def dwt2(data, wavelet, mode='symmetric'):
     wavelet : Wavelet object or name string
         Wavelet to use
     mode : str, optional
-        Signal extension mode, see Modes (default: 'sym')
+        Signal extension mode, see Modes (default: 'symmetric')
 
     Returns
     -------
@@ -106,7 +106,7 @@ def idwt2(coeffs, wavelet, mode='symmetric'):
     wavelet : Wavelet object or name string
         Wavelet to use
     mode : str, optional
-        Signal extension mode, see Modes (default: 'sym')
+        Signal extension mode, see Modes (default: 'symmetric')
 
     Examples
     --------
@@ -206,7 +206,7 @@ def dwtn(data, wavelet, mode='symmetric'):
     wavelet : Wavelet object or name string
         Wavelet to use.
     mode : str, optional
-        Signal extension mode, see `Modes`.  Default is 'sym'.
+        Signal extension mode, see `Modes`.  Default is 'symmetric'.
 
     Returns
     -------
@@ -260,7 +260,7 @@ def idwtn(coeffs, wavelet, mode='symmetric'):
         Wavelet to use
     mode : str, optional
         Signal extension mode used in the decomposition,
-        see Modes (default: 'sym').
+        see Modes (default: 'symmetric').
 
     Returns
     -------

@@ -38,8 +38,9 @@ More Examples
 -------------
 
 Now let's experiment with the :func:`dwt` some more. For example let's pass a
-:class:`Wavelet` object instead of the wavelet name and specify signal extension
-mode (the default is :ref:`sym <Modes.sym>`) for the border effect handling:
+:class:`Wavelet` object instead of the wavelet name and specify signal
+extension mode (the default is :ref:`symmetric <Modes.symmetric>`) for the
+border effect handling:
 
     >>> w = pywt.Wavelet('sym3')
     >>> cA, cD = pywt.dwt(x, wavelet=w, mode='constant')
@@ -58,7 +59,7 @@ function:
     >>> # int() is for normalizing Python integers and long integers for documentation tests
     >>> int(pywt.dwt_coeff_len(data_len=len(x), filter_len=w.dec_len, mode='symmetric'))
     6
-    >>> int(pywt.dwt_coeff_len(len(x), w, 'sym'))
+    >>> int(pywt.dwt_coeff_len(len(x), w, 'symmetric'))
     6
     >>> len(cA)
     6
@@ -106,21 +107,21 @@ Now some tips & tricks. Passing ``None`` as one of the coefficient arrays
 parameters is similar to passing a *zero-filled* array. The results are simply
 the same:
 
-    >>> print pywt.idwt([1,2,0,1], None, 'db2', 'sym')
+    >>> print pywt.idwt([1,2,0,1], None, 'db2', 'symmetric')
     [ 1.19006969  1.54362308  0.44828774 -0.25881905  0.48296291  0.8365163 ]
 
-    >>> print pywt.idwt([1, 2, 0, 1], [0, 0, 0, 0], 'db2', 'sym')
+    >>> print pywt.idwt([1, 2, 0, 1], [0, 0, 0, 0], 'db2', 'symmetric')
     [ 1.19006969  1.54362308  0.44828774 -0.25881905  0.48296291  0.8365163 ]
 
-    >>> print pywt.idwt(None, [1, 2, 0, 1], 'db2', 'sym')
+    >>> print pywt.idwt(None, [1, 2, 0, 1], 'db2', 'symmetric')
     [ 0.57769726 -0.93125065  1.67303261 -0.96592583 -0.12940952 -0.22414387]
 
-    >>> print pywt.idwt([0, 0, 0, 0], [1, 2, 0, 1], 'db2', 'sym')
+    >>> print pywt.idwt([0, 0, 0, 0], [1, 2, 0, 1], 'db2', 'symmetric')
     [ 0.57769726 -0.93125065  1.67303261 -0.96592583 -0.12940952 -0.22414387]
 
 Remember that only one argument at a time can be ``None``:
 
-    >>> print pywt.idwt(None, None, 'db2', 'sym')
+    >>> print pywt.idwt(None, None, 'db2', 'symmetric')
     Traceback (most recent call last):
     ...
     ValueError: At least one coefficient parameter must be specified.
@@ -132,7 +133,7 @@ Coefficients data size in :attr:`idwt`
 When doing the :func:`IDWT <idwt>` transform, usually the coefficient arrays
 must have the same size.
 
-    >>> print pywt.idwt([1, 2, 3, 4, 5], [1, 2, 3, 4], 'db2', 'sym')
+    >>> print pywt.idwt([1, 2, 3, 4, 5], [1, 2, 3, 4], 'db2', 'symmetric')
     Traceback (most recent call last):
     ...
     ValueError: Coefficients arrays must have the same size.
@@ -142,25 +143,25 @@ to allow for a small departure from this behaviour. When the *correct_size* flag
 is set, the approximation coefficients array can be larger from the details
 coefficient array by one element:
 
-    >>> print pywt.idwt([1, 2, 3, 4, 5], [1, 2, 3, 4], 'db2', 'sym', correct_size=True)
+    >>> print pywt.idwt([1, 2, 3, 4, 5], [1, 2, 3, 4], 'db2', 'symmetric', correct_size=True)
     [ 1.76776695  0.61237244  3.18198052  0.61237244  4.59619408  0.61237244]
 
-    >>> print pywt.idwt([1, 2, 3, 4], [1, 2, 3, 4, 5], 'db2', 'sym', correct_size=True)
+    >>> print pywt.idwt([1, 2, 3, 4], [1, 2, 3, 4, 5], 'db2', 'symmetric', correct_size=True)
     Traceback (most recent call last):
     ...
     ValueError: Coefficients arrays must satisfy (0 <= len(cA) - len(cD) <= 1).
 
 
-Not every coefficient array can be used in :func:`IDWT <idwt>`. In the following
-example the :func:`idwt` will fail because the input arrays are invalid - they
-couldn't be created as a result of :func:`DWT <dwt>`, because the minimal output
-length for dwt using ``db4`` wavelet and the :ref:`sym <Modes.sym>` mode is
-``4``, not ``3``:
+Not every coefficient array can be used in :func:`IDWT <idwt>`. In the
+following example the :func:`idwt` will fail because the input arrays are
+invalid - they couldn't be created as a result of :func:`DWT <dwt>`, because
+the minimal output length for dwt using ``db4`` wavelet and the :ref:`symmetric
+<Modes.symmetric>` mode is ``4``, not ``3``:
 
-    >>> pywt.idwt([1,2,4], [4,1,3], 'db4', 'sym')
+    >>> pywt.idwt([1,2,4], [4,1,3], 'db4', 'symmetric')
     Traceback (most recent call last):
     ...
     ValueError: Invalid coefficient arrays length for specified wavelet. Wavelet and mode must be the same as used for decomposition.
 
-    >>> int(pywt.dwt_coeff_len(1, pywt.Wavelet('db4').dec_len, 'sym'))
+    >>> int(pywt.dwt_coeff_len(1, pywt.Wavelet('db4').dec_len, 'symmetric'))
     4

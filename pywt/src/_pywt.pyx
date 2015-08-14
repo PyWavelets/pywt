@@ -616,7 +616,7 @@ def dwt(object data, object wavelet, object mode='symmetric'):
         Input signal
     wavelet : Wavelet object or name
         Wavelet to use
-    mode : str, optional (default: 'sym')
+    mode : str, optional (default: 'symmetric')
         Signal extension mode, see Modes
 
     Returns
@@ -817,7 +817,7 @@ def dwt_coeff_len(data_len, filter_len, mode='symmetric'):
         Data length.
     filter_len : int
         Filter length.
-    mode : str, optional (default: 'sym')
+    mode : str, optional (default: 'symmetric')
         Signal extension mode, see Modes
 
     Returns
@@ -892,7 +892,7 @@ def idwt(cA, cD, object wavelet, object mode='symmetric', int correct_size=0):
         with same shape as `cA`.
     wavelet : Wavelet object or name
         Wavelet to use
-    mode : str, optional (default: 'sym')
+    mode : str, optional (default: 'symmetric')
         Signal extension mode, see Modes
     correct_size : int, optional (default: 0)
         Under normal conditions (all data lengths dyadic) `cA` and `cD`
@@ -1162,7 +1162,7 @@ def downcoef(part, data, wavelet, mode='symmetric', level=1):
     wavelet : Wavelet object or name
         Wavelet to use
     mode : str, optional
-        Signal extension mode, see `Modes`.  Default is 'sym'.
+        Signal extension mode, see `Modes`.  Default is 'symmetric'.
     level : int, optional
         Decomposition level.  Default is 1.
 
