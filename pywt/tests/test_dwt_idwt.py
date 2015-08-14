@@ -7,6 +7,11 @@ from numpy.testing import (run_module_suite, assert_allclose, assert_,
 
 import pywt
 
+# Check that float32 and complex64 are preserved.  Other real types get
+# converted to float64.
+dtypes_in = [np.int8, np.float32, np.float64, np.complex64, np.complex128]
+dtypes_out = [np.float64, np.float32, np.float64, np.complex64, np.complex128]
+
 
 def test_dwt_idwt_basic():
     x = [3, 7, 1, 1, -2, 5, 4, 6]
@@ -22,9 +27,6 @@ def test_dwt_idwt_basic():
 
 
 def test_dwt_idwt_dtypes():
-    # Check that float32 is preserved.  Other types get converted to float64.
-    dtypes_in = [np.int8, np.float32, np.float64]
-    dtypes_out = [np.float64, np.float32, np.float64]
     wavelet = pywt.Wavelet('haar')
     for dt_in, dt_out in zip(dtypes_in, dtypes_out):
         x = np.ones(4, dtype=dt_in)
@@ -35,6 +37,23 @@ def test_dwt_idwt_dtypes():
 
         x_roundtrip = pywt.idwt(cA, cD, wavelet)
         assert_(x_roundtrip.dtype == dt_out, "idwt: " + errmsg)
+
+
+def test_dwt_idwt_basic_complex():
+    x = np.asarray([3, 7, 1, 1, -2, 5, 4, 6])
+    x = x + 0.5j*x
+    cA, cD = pywt.dwt(x, 'db2')
+    cA_expect = np.asarray([5.65685425, 7.39923721, 0.22414387, 3.33677403,
+                            7.77817459])
+    cA_expect = cA_expect + 0.5j*cA_expect
+    cD_expect = np.asarray([-2.44948974, -1.60368225, -4.44140056, -0.41361256,
+                            1.22474487])
+    cD_expect = cD_expect + 0.5j*cD_expect
+    assert_allclose(cA, cA_expect)
+    assert_allclose(cD, cD_expect)
+
+    x_roundtrip = pywt.idwt(cA, cD, 'db2')
+    assert_allclose(x_roundtrip, x, rtol=1e-10)
 
 
 def test_dwt_input_error():

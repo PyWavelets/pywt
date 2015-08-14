@@ -8,6 +8,11 @@ from numpy.testing import (run_module_suite, assert_almost_equal,
 
 import pywt
 
+# Check that float32 and complex64 are preserved.  Other real types get
+# converted to float64.
+dtypes_in = [np.int8, np.float32, np.float64, np.complex64, np.complex128]
+dtypes_out = [np.float64, np.float32, np.float64, np.complex64, np.complex128]
+
 
 def test_wavedec():
     x = [3, 7, 1, 1, -2, 5, 4, 6]
@@ -22,6 +27,13 @@ def test_wavedec():
 
 def test_waverec():
     x = [3, 7, 1, 1, -2, 5, 4, 6]
+    coeffs = pywt.wavedec(x, 'db1')
+    assert_allclose(pywt.waverec(coeffs, 'db1'), x, rtol=1e-12)
+
+
+def test_waverec_complex():
+    x = np.array([3, 7, 1, 1, -2, 5, 4, 6])
+    x = x + 1j
     coeffs = pywt.wavedec(x, 'db1')
     assert_allclose(pywt.waverec(coeffs, 'db1'), x, rtol=1e-12)
 
@@ -51,9 +63,6 @@ def test_swt_decomposition():
 
 
 def test_swt_dtypes():
-    # Check that float32 is preserved.  Other types get converted to float64.
-    dtypes_in = [np.int8, np.float32, np.float64]
-    dtypes_out = [np.float64, np.float32, np.float64]
     wavelet = pywt.Wavelet('haar')
     for dt_in, dt_out in zip(dtypes_in, dtypes_out):
         errmsg = "wrong dtype returned for {0} input".format(dt_in)
@@ -78,9 +87,6 @@ def test_wavedec2():
 
 
 def test_multilevel_dtypes():
-    # Check that float32 is preserved.  Other types get converted to float64.
-    dtypes_in = [np.int8, np.float32, np.float64]
-    dtypes_out = [np.float64, np.float32, np.float64]
     wavelet = pywt.Wavelet('haar')
     for dt_in, dt_out in zip(dtypes_in, dtypes_out):
         # wavedec, waverec
@@ -103,6 +109,13 @@ def test_multilevel_dtypes():
             assert_(c.dtype == dt_out, "wavedec2: " + errmsg)
         x_roundtrip = pywt.waverec2([cA, coeffsD2, coeffsD1], wavelet)
         assert_(x_roundtrip.dtype == dt_out, "waverec2: " + errmsg)
+
+
+def test_wavedec2_complex():
+    data = np.ones((4, 4)) + 1j
+    coeffs = pywt.wavedec2(data, 'db1')
+    assert_(len(coeffs) == 3)
+    assert_allclose(pywt.waverec2(coeffs, 'db1'), data, rtol=1e-12)
 
 
 if __name__ == '__main__':

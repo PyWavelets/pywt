@@ -642,6 +642,12 @@ def dwt(object data, object wavelet, object mode='sym'):
     [-0.70710678 -0.70710678 -0.70710678]
 
     """
+    if np.iscomplexobj(data):
+        data = np.asarray(data)
+        cA_r, cD_r = dwt(data.real, wavelet, mode)
+        cA_i, cD_i = dwt(data.imag, wavelet, mode)
+        return  (cA_r + 1j*cA_i, cD_r + 1j*cD_i)
+
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(data)
     data = np.array(data, dtype=dt)
@@ -908,6 +914,18 @@ def idwt(cA, cD, object wavelet, object mode='sym', int correct_size=0):
         raise ValueError("At least one coefficient parameter must be "
                          "specified.")
 
+    # for complex inputs: compute real and imaginary separately then combine
+    if ((cA is not None) and np.iscomplexobj(cA)) or ((cD is not None) and
+            np.iscomplexobj(cD)):
+        if cA is None:
+            cD = np.asarray(cD)
+            cA = np.zeros_like(cD)
+        elif cD is None:
+            cA = np.asarray(cA)
+            cD = np.zeros_like(cA)
+        return (idwt(cA.real, cD.real, wavelet, mode, correct_size) +
+                1j*idwt(cA.imag, cD.imag, wavelet, mode, correct_size))
+
     if cA is not None:
         dt = _check_dtype(cA)
         cA = np.array(cA, dtype=dt)
@@ -925,9 +943,9 @@ def idwt(cA, cD, object wavelet, object mode='sym', int correct_size=0):
             cA = cA.astype(np.float64)
             cD = cD.astype(np.float64)
     elif cA is None:
-        cA = np.zeros(cD.shape, dtype=cD.dtype)
+        cA = np.zeros_like(cD)
     elif cD is None:
-        cD = np.zeros(cA.shape, dtype=cA.dtype)
+        cD = np.zeros_like(cA)
 
     return _idwt(cA, cD, wavelet, mode, correct_size)
 
@@ -1044,6 +1062,9 @@ def upcoef(part, coeffs, wavelet, level=1, take=0):
     [ 1.  2.  3.  4.  5.  6.]
 
     """
+    if np.iscomplexobj(coeffs):
+        return (upcoef(part, coeffs.real, wavelet, level, take) +
+                1j*upcoef(part, coeffs.imag, wavelet, level, take))
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(coeffs)
     coeffs = np.array(coeffs, dtype=dt)
@@ -1151,6 +1172,9 @@ def downcoef(part, data, wavelet, mode='sym', level=1):
     upcoef
 
     """
+    if np.iscomplexobj(data):
+        return (downcoef(part, data.real, wavelet, mode, level) +
+                1j*downcoef(part, data.imag, wavelet, mode, level))
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(data)
     data = np.array(data, dtype=dt)
@@ -1266,6 +1290,15 @@ def swt(data, object wavelet, object level=None, int start_level=0):
             [(cAm+n, cDm+n), ..., (cAm+1, cDm+1), (cAm, cDm)]
 
     """
+    if np.iscomplexobj(data):
+        data = np.asarray(data)
+        coeffs_real = swt(data.real, wavelet, level, start_level)
+        coeffs_imag = swt(data.imag, wavelet, level, start_level)
+        coeffs_cplx = []
+        for (cA_r, cD_r), (cA_i, cD_i) in zip(coeffs_real, coeffs_imag):
+            coeffs_cplx.append((cA_r + 1j*cA_i, cD_r + 1j*cD_i))
+        return coeffs_cplx
+
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(data)
     data = np.array(data, dtype=dt)

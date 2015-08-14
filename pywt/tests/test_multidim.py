@@ -9,6 +9,11 @@ from numpy.testing import (run_module_suite, assert_allclose, assert_,
 
 import pywt
 
+# Check that float32 and complex64 are preserved.  Other real types get
+# converted to float64.
+dtypes_in = [np.int8, np.float32, np.float64, np.complex64, np.complex128]
+dtypes_out = [np.float64, np.float32, np.float64, np.complex64, np.complex128]
+
 
 def test_dwtn_input():
     # Array-like must be accepted
@@ -74,12 +79,50 @@ def test_byte_offset():
                 assert_allclose(padded_dwtn[key], expected[key])
 
 
+def test_3D_reconstruct_complex():
+    # All dimensions even length so `take` does not need to be specified
+    data = np.array([
+        [[0, 4, 1, 5, 1, 4],
+         [0, 5, 26, 3, 2, 1],
+         [5, 8, 2, 33, 4, 9],
+         [2, 5, 19, 4, 19, 1]],
+        [[1, 5, 1, 2, 3, 4],
+         [7, 12, 6, 52, 7, 8],
+         [2, 12, 3, 52, 6, 8],
+         [5, 2, 6, 78, 12, 2]]])
+    data = data + 1j
+
+    wavelet = pywt.Wavelet('haar')
+    d = pywt.dwtn(data, wavelet)
+    # idwtn creates even-length shapes (2x dwtn size)
+    original_shape = [slice(None, s) for s in data.shape]
+    assert_allclose(data, pywt.idwtn(d, wavelet)[original_shape],
+                    rtol=1e-13, atol=1e-13)
+
+
 def test_idwtn_idwt2():
     data = np.array([
         [0, 4, 1, 5, 1, 4],
         [0, 5, 6, 3, 2, 1],
         [2, 5, 19, 4, 19, 1]])
 
+    wavelet = pywt.Wavelet('haar')
+
+    LL, (HL, LH, HH) = pywt.dwt2(data, wavelet)
+    d = {'aa': LL, 'da': HL, 'ad': LH, 'dd': HH}
+
+    for mode in pywt.MODES.modes:
+        assert_allclose(pywt.idwt2((LL, (HL, LH, HH)), wavelet, mode=mode),
+                        pywt.idwtn(d, wavelet, mode=mode),
+                        rtol=1e-14, atol=1e-14)
+
+
+def test_idwtn_idwt2_complex():
+    data = np.array([
+        [0, 4, 1, 5, 1, 4],
+        [0, 5, 6, 3, 2, 1],
+        [2, 5, 19, 4, 19, 1]])
+    data = data + 1j
     wavelet = pywt.Wavelet('haar')
 
     LL, (HL, LH, HH) = pywt.dwt2(data, wavelet)
@@ -156,9 +199,6 @@ def test_error_mismatched_size():
 
 
 def test_dwt2_idwt2_dtypes():
-    # Check that float32 is preserved.  Other types get converted to float64.
-    dtypes_in = [np.int8, np.float32, np.float64]
-    dtypes_out = [np.float64, np.float32, np.float64]
     wavelet = pywt.Wavelet('haar')
     for dt_in, dt_out in zip(dtypes_in, dtypes_out):
         x = np.ones((4, 4), dtype=dt_in)
@@ -173,9 +213,6 @@ def test_dwt2_idwt2_dtypes():
 
 
 def test_dwtn_idwtn_dtypes():
-    # Check that float32 is preserved.  Other types get converted to float64.
-    dtypes_in = [np.int8, np.float32, np.float64]
-    dtypes_out = [np.float64, np.float32, np.float64]
     wavelet = pywt.Wavelet('haar')
     for dt_in, dt_out in zip(dtypes_in, dtypes_out):
         x = np.ones((4, 4), dtype=dt_in)
