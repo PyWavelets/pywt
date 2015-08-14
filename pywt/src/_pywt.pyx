@@ -122,10 +122,32 @@ class _Modes(object):
         return Modes.__getattribute__(mode)
 
 
-
 Modes = _Modes()
 
-MODES = Modes
+
+class DeprecatedMODES(_Modes):
+    msg = ("MODES has been renamed to Modes and will be "
+           "removed in a future version of pywt.")
+
+    def __getattribute__(self, attr):
+        """Override so that deprecation warning is shown
+        every time MODES is used.
+
+        N.B. have to use __getattribute__ as well as __getattr__
+        to ensure warning on e.g. `MODES.symmetric`.
+        """
+        warnings.warn(DeprecatedMODES.msg, DeprecationWarning)
+        return _Modes.__getattribute__(self, attr)
+
+    def __getattr__(self, attr):
+        """Override so that deprecation warning is shown
+        every time MODES is used.
+        """
+        warnings.warn(DeprecatedMODES.msg, DeprecationWarning)
+        return _Modes.__getattr__(self, attr)
+
+
+MODES = DeprecatedMODES()
 
 ###############################################################################
 # Wavelet
