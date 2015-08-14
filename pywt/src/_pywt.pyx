@@ -740,7 +740,6 @@ cpdef dwt_axis(np.ndarray data, object wavelet, object mode='sym', unsigned int 
     return (cA, cD)
 
 
-# TODO: Use idwt rather than upcoef, which requires `mode` but not `take`
 cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d, object wavelet,
                 object mode='sym', unsigned int axis=0):
     cdef Wavelet w = c_wavelet_from_object(wavelet)
