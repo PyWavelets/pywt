@@ -476,9 +476,6 @@ def wavedecn(data, wavelet, mode='symmetric', level=None):
         wavelet = Wavelet(wavelet)
 
     level = _check_level(min(data.shape), wavelet.dec_len, level)
-    #if level < 1:
-    #    Raise ValueError("level = 0 in wavedecn")
-
     coeffs_list = []
 
     a = data

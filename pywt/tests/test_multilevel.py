@@ -94,7 +94,7 @@ def test_multilevel_dtypes_1d():
 
 
 def test_waverec_all_wavelets_modes():
-    #test 2D case using all wavelets and modes
+    # test 2D case using all wavelets and modes
     rstate = np.random.RandomState(1234)
     r = rstate.randn(80)
     for wavelet in wavelist:
@@ -240,7 +240,7 @@ def test_multilevel_dtypes_2d():
 @dec.skipif('PYWT_XSLOW' not in os.environ)
 @dec.slow
 def test_waverec2_all_wavelets_modes():
-    #test 2D case using all wavelets and modes
+    # test 2D case using all wavelets and modes
     rstate = np.random.RandomState(1234)
     r = rstate.randn(80, 96)
     for wavelet in wavelist:
@@ -275,7 +275,7 @@ def test_waverec2_none_coeffs():
 
 def test_waverecn():
     rstate = np.random.RandomState(1234)
-    #test 1D through 4D cases
+    # test 1D through 4D cases
     for nd in range(1, 5):
         x = rstate.randn(*(4, )*nd)
         coeffs = pywt.wavedecn(x, 'db1')
@@ -326,7 +326,7 @@ def test_waverecn_dtypes():
 
 @dec.slow
 def test_waverecn_all_wavelets_modes():
-    #test 2D case using all wavelets and modes
+    # test 2D case using all wavelets and modes
     rstate = np.random.RandomState(1234)
     r = rstate.randn(80, 96)
     for wavelet in wavelist:
