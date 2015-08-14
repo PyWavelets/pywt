@@ -225,15 +225,19 @@ def dwtn(data, wavelet, mode='sym'):
 
     """
     data = np.asarray(data)
-    ndim = data.ndim
+    if np.iscomplexobj(data):
+        keys = (''.join(k) for k in product('ad', repeat=data.ndim))
+        real = dwtn(data.real, wavelet, mode)
+        imag = dwtn(data.imag, wavelet, mode)
+        return dict((k, real[k] + 1j * imag[k]) for k in keys)
 
     if data.dtype == np.dtype('object'):
         raise TypeError("Input must be a numeric array-like")
-    if ndim < 1:
+    if data.ndim < 1:
         raise ValueError("Input data must be at least 1D")
     coeffs = [('', data)]
 
-    for axis in range(ndim):
+    for axis in range(data.ndim):
         new_coeffs = []
         for subband, x in coeffs:
             cA, cD = dwt_axis(x, wavelet, mode, axis)
@@ -269,7 +273,15 @@ def idwtn(coeffs, wavelet, mode='sym'):
     mode = MODES.from_object(mode)
 
     # Ignore any invalid keys
-    coeffs = dict((k, v) for k, v in coeffs.items() if set(k) <= set('ad'))
+    coeffs = dict((k, np.asarray(v)) for k, v in coeffs.items()
+                  if v is not None and set(k) <= set('ad'))
+
+    if any(np.iscomplexobj(v) for v in coeffs.values()):
+        real_coeffs = dict((k, v.real) for k, v in coeffs.items())
+        imag_coeffs = dict((k, v.imag) for k, v in coeffs.items())
+        return (idwtn(real_coeffs, wavelet, mode)
+                + 1j * idwtn(imag_coeffs, wavelet, mode))
+
     dims = max(len(key) for key in coeffs.keys())
 
     try:
@@ -287,8 +299,8 @@ def idwtn(coeffs, wavelet, mode='sym'):
         new_keys = [''.join(coeff) for coeff in product('ad', repeat=axis)]
 
         for key in new_keys:
-            L = coeffs.get(key + 'a')
-            H = coeffs.get(key + 'd')
+            L = coeffs.get(key + 'a', None)
+            H = coeffs.get(key + 'd', None)
 
             new_coeffs[key] = idwt_axis(L, H, wavelet, mode, axis)
         coeffs = new_coeffs
