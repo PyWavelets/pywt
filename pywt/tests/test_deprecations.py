@@ -33,7 +33,7 @@ old_modes = ['zpd',
 
 def test_MODES_from_object_deprecation():
     for mode in old_modes:
-        assert_warns(DeprecationWarning, pywt.MODES.from_object, mode)
+        assert_warns(DeprecationWarning, pywt.Modes.from_object, mode)
 
 
 def test_MODES_attributes_deprecation():
