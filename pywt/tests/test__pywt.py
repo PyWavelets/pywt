@@ -3,7 +3,7 @@
 from __future__ import division, print_function, absolute_import
 
 import numpy as np
-from numpy.testing import run_module_suite, assert_allclose
+from numpy.testing import run_module_suite, assert_allclose, assert_
 
 import pywt
 
@@ -76,7 +76,7 @@ def test_wavelet_repr():
 
     repr_wavelet = eval(wavelet.__repr__())
 
-    assert(wavelet.__repr__() == repr_wavelet.__repr__())
+    assert_(wavelet.__repr__() == repr_wavelet.__repr__())
 
 
 if __name__ == '__main__':
