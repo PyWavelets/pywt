@@ -1,6 +1,6 @@
 # AppVeyor.com is a Continuous Integration service to build and run tests under
 # Windows
-# https://ci.appveyor.com/project/rgommers/pywt
+# https://ci.appveyor.com/project/PyWavelets/pywt
 
 environment:
   global:
