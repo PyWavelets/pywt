@@ -42,8 +42,8 @@ install:
   # Setuptools too old on Appveyor, messes up PEP 440 version string (replaces
   # + with -) which prevents pip from installing the built wheel.
   - "pip install -U --no-deps setuptools"
-  # Build a wheel and a .exe installer
-  - "%CMD_IN_ENV% python setup.py bdist_wheel bdist_wininst"
+  # Build a wheel (installer)
+  - "%CMD_IN_ENV% python setup.py bdist_wheel"
   - ps: "ls dist"
 
   # Install the generated wheel package to test it
