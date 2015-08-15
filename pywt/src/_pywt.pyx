@@ -604,7 +604,7 @@ def dwt_max_level(data_len, filter_len):
         return common.dwt_max_level(data_len, filter_len)
 
 
-def dwt(object data, object wavelet, object mode='sym'):
+def dwt(object data, object wavelet, object mode='sym', axis=-1):
     """
     (cA, cD) = dwt(data, wavelet, mode='sym')
 
@@ -651,9 +651,11 @@ def dwt(object data, object wavelet, object mode='sym'):
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(data)
     data = np.array(data, dtype=dt)
-    if data.ndim != 1:
-        raise ValueError("dwt requires a 1D data array.")
-    return _dwt(data, wavelet, mode)
+
+    # convert -1 to explicit last axis
+    axis = axis % data.ndim
+
+    return dwt_axis(data, wavelet, mode, axis=axis)
 
 
 def _dwt(np.ndarray[data_t, ndim=1] data, object wavelet, object mode='sym'):
