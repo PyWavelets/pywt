@@ -136,7 +136,8 @@ class DeprecatedMODES(_Modes):
         N.B. have to use __getattribute__ as well as __getattr__
         to ensure warning on e.g. `MODES.symmetric`.
         """
-        warnings.warn(DeprecatedMODES.msg, DeprecationWarning)
+        if not attr.startswith('_'):
+            warnings.warn(DeprecatedMODES.msg, DeprecationWarning)
         return _Modes.__getattribute__(self, attr)
 
     def __getattr__(self, attr):
