@@ -19,7 +19,7 @@ from ._pywt import Wavelet, MODES
 from ._pywt import dwt, idwt, swt, downcoef, upcoef, dwt_axis, idwt_axis
 
 
-def dwt2(data, wavelet, mode='sym'):
+def dwt2(data, wavelet, mode='sym', axes=(-2, -1)):
     """
     2D Discrete Wavelet Transform.
 
@@ -31,6 +31,11 @@ def dwt2(data, wavelet, mode='sym'):
         Wavelet to use
     mode : str, optional
         Signal extension mode, see MODES (default: 'sym')
+    axes: sequence of ints, optional
+        Axes over which to compute the DWT. If not given, the last
+        two axes are used. A repeated index in `axes` means the transform
+        over that axis is performed multiple times. A one-element
+        sequence means that a one-dimensional DWT is performed.
 
     Returns
     -------
@@ -53,41 +58,16 @@ def dwt2(data, wavelet, mode='sym'):
 
     """
     data = np.asarray(data)
-    if data.ndim != 2:
-        raise ValueError("Expected 2-D data array")
 
-    if not isinstance(wavelet, Wavelet):
-        wavelet = Wavelet(wavelet)
+    if data.ndim < 2:
+        raise ValueError("Expected at least 2-D data array")
 
-    mode = MODES.from_object(mode)
-
-    # filter rows
-    H, L = [], []
-    for row in data:
-        cA, cD = dwt(row, wavelet, mode)
-        L.append(cA)
-        H.append(cD)
-
-    # filter columns
-    H = np.transpose(H)
-    L = np.transpose(L)
-
-    LL, HL = [], []
-    for row in L:
-        cA, cD = dwt(row, wavelet, mode)
-        LL.append(cA)
-        HL.append(cD)
-
-    LH, HH = [], []
-    for row in H:
-        cA, cD = dwt(row, wavelet, mode)
-        LH.append(cA)
-        HH.append(cD)
+    transform = dwtn(data=data, wavelet=wavelet, mode=mode, axes=axes)
 
     # build result structure: (approx,
     #                          (horizontal, vertical, diagonal))
-    ret = (np.transpose(LL),
-           (np.transpose(HL), np.transpose(LH), np.transpose(HH)))
+    ret = (transform['aa'],
+           (transform['da'], transform['ad'], transform['dd']))
 
     return ret
 
