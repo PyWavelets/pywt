@@ -841,7 +841,8 @@ cdef np.dtype _check_dtype(data):
     return dt
 
 
-def idwt(cA, cD, object wavelet, object mode='sym', int correct_size=0):
+def idwt(cA, cD, object wavelet, object mode='sym', int correct_size=0,
+         int axis=-1):
     """
     idwt(cA, cD, wavelet, mode='sym', correct_size=0)
 
@@ -893,13 +894,9 @@ def idwt(cA, cD, object wavelet, object mode='sym', int correct_size=0):
     if cA is not None:
         dt = _check_dtype(cA)
         cA = np.array(cA, dtype=dt)
-        if cA.ndim != 1:
-            raise ValueError("idwt requires 1D coefficient arrays.")
     if cD is not None:
         dt = _check_dtype(cD)
         cD = np.array(cD, dtype=dt)
-        if cD.ndim != 1:
-            raise ValueError("idwt requires 1D coefficient arrays.")
 
     if cA is not None and cD is not None:
         if cA.dtype != cD.dtype:
@@ -911,7 +908,9 @@ def idwt(cA, cD, object wavelet, object mode='sym', int correct_size=0):
     elif cD is None:
         cD = np.zeros_like(cA)
 
-    return _idwt(cA, cD, wavelet, mode, correct_size)
+    axis = axis % cA.ndim
+
+    return idwt_axis(cA, cD, wavelet, mode, axis=axis)
 
 
 def _idwt(np.ndarray[data_t, ndim=1, mode="c"] cA,
