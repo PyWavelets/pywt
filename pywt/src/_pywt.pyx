@@ -604,7 +604,7 @@ def dwt_max_level(data_len, filter_len):
         return common.dwt_max_level(data_len, filter_len)
 
 
-def dwt(object data, object wavelet, object mode='sym', axis=-1):
+def dwt(object data, object wavelet, object mode='sym', int axis=-1):
     """
     (cA, cD) = dwt(data, wavelet, mode='sym')
 
