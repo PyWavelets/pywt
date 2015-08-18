@@ -195,7 +195,7 @@ def idwt2(coeffs, wavelet, mode='sym'):
     return np.array(data)
 
 
-def dwtn(data, wavelet, mode='sym'):
+def dwtn(data, wavelet, mode='sym', axes=None):
     """
     Single-level n-dimensional Discrete Wavelet Transform.
 
@@ -207,6 +207,10 @@ def dwtn(data, wavelet, mode='sym'):
         Wavelet to use.
     mode : str, optional
         Signal extension mode, see `MODES`.  Default is 'sym'.
+    axes: sequence of ints, optional
+        Axes over which to compute the DWT. If not given, all axes
+        are used. Repeated indices in `axes` means that the transform
+        over that axis is performed multiple times.
 
     Returns
     -------
@@ -237,7 +241,13 @@ def dwtn(data, wavelet, mode='sym'):
         raise ValueError("Input data must be at least 1D")
     coeffs = [('', data)]
 
-    for axis in range(data.ndim):
+    if axes is None:
+        axes = range(data.ndim)
+    else:
+        # coerce negative indices to absolute
+        axes = [a % data.ndim for a in axes]
+
+    for axis in axes:
         new_coeffs = []
         for subband, x in coeffs:
             cA, cD = dwt_axis(x, wavelet, mode, axis)
