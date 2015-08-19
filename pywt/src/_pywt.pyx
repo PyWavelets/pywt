@@ -544,7 +544,7 @@ cdef index_t get_keep_length(index_t output_length,
     cdef int i "i"
     lplus = filter_length - 2
     keep_length = 1
-    for i from 0 <= i < level:
+    for i in range(level):
         keep_length = 2*keep_length+lplus
     return keep_length
 
@@ -1088,7 +1088,7 @@ def _upcoef(part, np.ndarray[data_t, ndim=1, mode="c"] coeffs, wavelet,
     if level < 1:
         raise ValueError("Value of level must be greater than 0.")
 
-    for i from 0 <= i < level:
+    for i in range(level):
         # output len
         rec_len = common.reconstruction_buffer_length(coeffs.size, w.dec_len)
         if rec_len < 1:
@@ -1198,7 +1198,7 @@ def _downcoef(part, np.ndarray[data_t, ndim=1, mode="c"] data,
     if level < 1:
         raise ValueError("Value of level must be greater than 0.")
 
-    for i from 0 <= i < level:
+    for i in range(level):
         output_len = common.dwt_buffer_length(data.size, w.dec_len, mode_)
         if output_len < 1:
             raise RuntimeError("Invalid output length.")
@@ -1343,7 +1343,7 @@ def _swt(np.ndarray[data_t, ndim=1, mode="c"] data, object wavelet,
         raise RuntimeError("Invalid output length.")
 
     ret = []
-    for i from start_level < i <= end_level:
+    for i in range(start_level+1, end_level+1):
         # alloc memory, decompose D
         cD = np.zeros(output_len, dtype=data.dtype)
 
@@ -1395,7 +1395,7 @@ cdef object float64_array_to_list(double* data, index_t n):
     cdef object ret
     ret = []
     app = ret.append
-    for i from 0 <= i < n:
+    for i in range(n):
         app(data[i])
     return ret
 
