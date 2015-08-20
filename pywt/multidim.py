@@ -231,13 +231,14 @@ def dwtn(data, wavelet, mode='sym', axes=None):
         new_coeffs = []
         for subband, x in coeffs:
             cA, cD = dwt_axis(x, wavelet, mode, axis)
+            # FIXME: this is wrong, only works for axes=(0, 1, 2)
             new_coeffs.extend([(subband + 'a', cA),
                                (subband + 'd', cD)])
         coeffs = new_coeffs
     return dict(coeffs)
 
 
-def idwtn(coeffs, wavelet, mode='sym'):
+def idwtn(coeffs, wavelet, mode='sym', axes=None):
     """
     Single-level n-dimensional Discrete Wavelet Transform.
 
@@ -284,18 +285,47 @@ def idwtn(coeffs, wavelet, mode='sym'):
     if any(s != coeff_shape for s in coeff_shapes):
         raise ValueError("`coeffs` must all be of equal size (or None)")
 
-    for axis in reversed(range(dims)):
+    if axes is None:
+        axes = reversed(range(dims))
+
+    for i, axis in enumerate(axes):
+        d = dims - (i + 1)
         new_coeffs = {}
-        new_keys = [''.join(coeff) for coeff in product('ad', repeat=axis)]
+        new_keys = [''.join(coeff) for coeff in product('ad', repeat=d)]
+        print(new_keys)
 
         for key in new_keys:
-            L = coeffs.get(key + 'a', None)
-            H = coeffs.get(key + 'd', None)
+            # FIXME: fails for pathological case of (0, 1, 2)
+            # because then the 1 inserts to the end of the key string
+            # when it should be inserting to the start.
+            lka = list(key)
+            lka.insert(axis, 'a')
+            lkd = list(key)
+            lkd.insert(axis, 'd')
 
-            new_coeffs[key] = idwt_axis(L, H, wavelet, mode, axis)
+            ka = ''.join(lka)
+            kd = ''.join(lkd)
+
+            print(ka, kd)
+
+            L = coeffs.get(ka, None)
+            H = coeffs.get(kd, None)
+
+            new_coeffs[key] = idwt_axis(L, H, wavelet, mode=mode, axis=axis)
+
         coeffs = new_coeffs
 
-    return coeffs['']
+    if '' in coeffs:
+        return coeffs['']
+    else:
+        return coeffs
+
+
+def _key_iter(axes, dims):
+    # use this in idwtn and maybe in dwtn
+    all_keys = product('ad', repeat=dims)
+
+    # now for e.g. axes=(1, 2, 0), yield (aa, aaa, ada)...
 
 
 def swt2(data, wavelet, level, start_level=0):
