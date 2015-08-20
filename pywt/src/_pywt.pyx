@@ -869,6 +869,9 @@ def idwt(cA, cD, object wavelet, object mode='sym', int correct_size=0,
         set to True, length of `cA` may be greater by one than length of `cD`.
         Useful when doing multilevel decomposition and reconstruction of
         non-dyadic length signals.
+    axis: int, optional
+        Axis over which to compute the inverse DWT. If not given, the
+        last axis is used.
 
     Returns
     -------
