@@ -288,25 +288,22 @@ def idwtn(coeffs, wavelet, mode='sym', axes=None):
     if axes is None:
         axes = reversed(range(dims))
 
+    remaining_axes = list(axes)
+
     for i, axis in enumerate(axes):
         d = dims - (i + 1)
         new_coeffs = {}
         new_keys = [''.join(coeff) for coeff in product('ad', repeat=d)]
-        print(new_keys)
+        where = sorted(remaining_axes).index(axis)
 
         for key in new_keys:
-            # FIXME: fails for pathological case of (0, 1, 2)
-            # because then the 1 inserts to the end of the key string
-            # when it should be inserting to the start.
             lka = list(key)
-            lka.insert(axis, 'a')
+            lka.insert(where, 'a')
             lkd = list(key)
-            lkd.insert(axis, 'd')
+            lkd.insert(where, 'd')
 
             ka = ''.join(lka)
             kd = ''.join(lkd)
-
-            print(ka, kd)
 
             L = coeffs.get(ka, None)
             H = coeffs.get(kd, None)
@@ -314,6 +311,7 @@ def idwtn(coeffs, wavelet, mode='sym', axes=None):
             new_coeffs[key] = idwt_axis(L, H, wavelet, mode=mode, axis=axis)
 
         coeffs = new_coeffs
+        remaining_axes.remove(axis)
 
     if '' in coeffs:
         return coeffs['']
