@@ -110,7 +110,7 @@ def waverec(coeffs, wavelet, mode='symmetric'):
     a, ds = coeffs[0], coeffs[1:]
 
     for d in ds:
-        a = idwt(a, d, wavelet, mode, 1)
+        a = idwt(a, d, wavelet, mode)
 
     return a
 

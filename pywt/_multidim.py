@@ -161,7 +161,7 @@ def idwt2(coeffs, wavelet, mode='symmetric'):
             # IDWT can handle None input values - equals to zero-array
             HL = cycle([None])
         for rowL, rowH in zip(LL, HL):
-            L.append(idwt(rowL, rowH, wavelet, mode, 1))
+            L.append(idwt(rowL, rowH, wavelet, mode))
 
     H = []
     if LH is None and HH is None:
@@ -174,7 +174,7 @@ def idwt2(coeffs, wavelet, mode='symmetric'):
             # IDWT can handle None input values - equals to zero-array
             HH = cycle([None])
         for rowL, rowH in zip(LH, HH):
-            H.append(idwt(rowL, rowH, wavelet, mode, 1))
+            H.append(idwt(rowL, rowH, wavelet, mode))
 
     if L is not None:
         L = np.transpose(L)
@@ -190,7 +190,7 @@ def idwt2(coeffs, wavelet, mode='symmetric'):
         # IDWT can handle None input values - equals to zero-array
         H = cycle([None])
     for rowL, rowH in zip(L, H):
-        data.append(idwt(rowL, rowH, wavelet, mode, 1))
+        data.append(idwt(rowL, rowH, wavelet, mode))
 
     return np.array(data)
 

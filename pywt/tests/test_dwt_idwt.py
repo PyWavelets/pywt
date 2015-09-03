@@ -100,19 +100,6 @@ def test_idwt_none_input():
     assert_raises(ValueError, pywt.idwt, None, None, 'db2', 'symmetric')
 
 
-def test_idwt_correct_size_kw():
-    res = pywt.idwt([1, 2, 3, 4, 5], [1, 2, 3, 4], 'db2', 'symmetric',
-                    correct_size=True)
-    expected = [1.76776695, 0.61237244, 3.18198052, 0.61237244, 4.59619408,
-                0.61237244]
-    assert_allclose(res, expected)
-
-    assert_raises(ValueError, pywt.idwt,
-                  [1, 2, 3, 4, 5], [1, 2, 3, 4], 'db2', 'symmetric')
-    assert_raises(ValueError, pywt.idwt, [1, 2, 3, 4], [1, 2, 3, 4, 5], 'db2',
-                  'symmetric', correct_size=True)
-
-
 def test_idwt_invalid_input():
     # Too short, min length is 4 for 'db4':
     assert_raises(ValueError, pywt.idwt, [1, 2, 4], [4, 1, 3], 'db4', 'symmetric')
