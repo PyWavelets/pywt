@@ -110,6 +110,8 @@ def waverec(coeffs, wavelet, mode='symmetric'):
     a, ds = coeffs[0], coeffs[1:]
 
     for d in ds:
+        if len(a) == len(d) + 1:
+            a = a[:-1]
         a = idwt(a, d, wavelet, mode)
 
     return a
@@ -215,9 +217,21 @@ def waverec2(coeffs, wavelet, mode='symmetric'):
             "Coefficient list too short (minimum 2 arrays required).")
 
     a, ds = coeffs[0], coeffs[1:]
+    a = np.asarray(a)
 
     for d in ds:
-        a = idwt2((a, d), wavelet, mode)
+        d = tuple(np.asarray(coeff) if coeff is not None else None
+                  for coeff in d)
+        d_shapes = (coeff.shape for coeff in d if d is not None)
+        d_shape = next(d_shapes)
+
+        # FIXME: Test d = (None, None, None)
+        if not all(s == d_shape for s in d_shapes):
+            raise ValueError("All detail shapes must be the same length.")
+
+        idxs = tuple(slice(None, -1 if a_len == d_len + 1 else None)
+                     for a_len, d_len in zip(a.shape, d_shape))
+        a = idwt2((a[idxs], d), wavelet, mode)
 
     return a
 
