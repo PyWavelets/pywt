@@ -14,7 +14,7 @@ import numpy as np
 
 from ._pywt import Wavelet
 from ._pywt import dwt, idwt, dwt_max_level
-from ._multidim import dwt2, idwt2, dwtn, idwtn
+from ._multidim import dwt2, idwt2, dwtn, idwtn, _fix_coeffs
 
 __all__ = ['wavedec', 'waverec', 'wavedec2', 'waverec2', 'wavedecn',
            'waverecn', 'iswt', 'iswt2']
@@ -554,13 +554,19 @@ def waverecn(coeffs, wavelet, mode='symmetric'):
     if len(coeffs) < 1:
         raise ValueError(
             "Coefficient list too short (minimum 1 array required).")
-    elif len(coeffs) == 1:
+
+    a, ds = coeffs[0], coeffs[1:]
+    ds = list(filter(lambda x: x, map(_fix_coeffs, ds)))
+
+    if not ds:
         # level 0 transform (just returns the approximation coefficients)
         return coeffs[0]
 
-    a, ds = coeffs[0], coeffs[1:]
-
-    dims = max(len(key) for key in ds[0].keys())
+    if a is not None:
+        a = np.asarray(a)
+        ndim = a.ndim
+    else:
+        ndim = max(max(len(key) for key in d.keys()) for d in ds)
 
     for idx, d in enumerate(ds):
         # The following if statement handles the case where the approximation
@@ -568,7 +574,7 @@ def waverecn(coeffs, wavelet, mode='symmetric'):
         # stored detail coefficients by 1 on any given axis.
         if idx > 0:
             a = _match_coeff_dims(a, d)
-        d['a' * dims] = a
+        d['a' * ndim] = a
         a = idwtn(d, wavelet, mode)
 
     return a

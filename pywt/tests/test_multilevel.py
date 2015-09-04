@@ -5,7 +5,7 @@ from __future__ import division, print_function, absolute_import
 import os
 import numpy as np
 from numpy.testing import (run_module_suite, assert_almost_equal,
-                           assert_allclose, assert_, dec)
+                           assert_allclose, assert_, assert_equal, dec)
 
 import pywt
 
@@ -281,6 +281,21 @@ def test_waverecn():
         coeffs = pywt.wavedecn(x, 'db1')
         assert_(len(coeffs) == 3)
         assert_allclose(pywt.waverecn(coeffs, 'db1'), x, rtol=tol_double)
+
+
+def test_waverecn_empty_coeff():
+    coeffs = [np.ones((4, 4, 4)), {}]
+    pywt.waverecn(coeffs, 'db1')
+    coeffs = [None, {'da': np.ones((4, 4, 4))}]
+    pywt.waverecn(coeffs, 'db1')
+    coeffs = [None, {}]
+    assert_equal(pywt.waverecn(coeffs, 'db1'), None)
+
+
+def test_waverecn_invalid_coeffs():
+    coeffs = [np.ones((4, 4, 4)),
+              {'da': np.ones((4, 4, 4)), 'dk': 'foo', 'ad': None}]
+    pywt.waverecn(coeffs, 'db1')
 
 
 def test_waverecn_accuracies():

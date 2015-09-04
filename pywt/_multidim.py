@@ -168,6 +168,11 @@ def dwtn(data, wavelet, mode='symmetric', axes=None):
     return dict(coeffs)
 
 
+def _fix_coeffs(coeffs):
+    return dict((k, np.asarray(v)) for k, v in coeffs.items()
+                 if v is not None and set(k) <= set('ad'))
+
+
 def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
     """
     Single-level n-dimensional Inverse Discrete Wavelet Transform.
@@ -201,8 +206,7 @@ def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
     mode = Modes.from_object(mode)
 
     # Ignore any invalid keys
-    coeffs = dict((k, np.asarray(v)) for k, v in coeffs.items()
-                  if v is not None and set(k) <= set('ad'))
+    coeffs = _fix_coeffs(coeffs)
 
     if any(np.iscomplexobj(v) for v in coeffs.values()):
         real_coeffs = dict((k, v.real) for k, v in coeffs.items())
