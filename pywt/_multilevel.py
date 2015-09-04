@@ -497,7 +497,11 @@ def _match_coeff_dims(a_coeff, d_coeff_dict):
     # For each axis, compare the approximation coeff shape to one of the
     # stored detail coeffs and truncate the last element along the axis
     # if necessary.
-    d_coeff = d_coeff_dict[list(d_coeff_dict.keys())[0]]
+    if a_coeff is None:
+        return None
+    if not d_coeff_dict:
+        return a_coeff
+    d_coeff = d_coeff_dict[next(iter(d_coeff_dict))]
     size_diffs = np.subtract(a_coeff.shape, d_coeff.shape)
     if np.any((size_diffs < 0) | (size_diffs > 1)):
         raise ValueError("incompatible coefficient array sizes")
@@ -556,24 +560,26 @@ def waverecn(coeffs, wavelet, mode='symmetric'):
             "Coefficient list too short (minimum 1 array required).")
 
     a, ds = coeffs[0], coeffs[1:]
-    ds = list(filter(lambda x: x, map(_fix_coeffs, ds)))
+    ds = list(map(_fix_coeffs, ds))
 
     if not ds:
         # level 0 transform (just returns the approximation coefficients)
         return coeffs[0]
+    if a is None and not any(ds):
+        raise ValueError("At least one coefficient must contain a valid value.")
 
     if a is not None:
         a = np.asarray(a)
-        ndim = a.ndim
-    else:
-        ndim = max(max(len(key) for key in d.keys()) for d in ds)
 
     for idx, d in enumerate(ds):
+        if a is None and not d:
+            continue
         # The following if statement handles the case where the approximation
         # coefficient returned at the previous level may exceed the size of the
         # stored detail coefficients by 1 on any given axis.
         if idx > 0:
             a = _match_coeff_dims(a, d)
+        ndim = max(len(key) for key in d.keys()) if d else a.ndim
         d['a' * ndim] = a
         a = idwtn(d, wavelet, mode)
 
