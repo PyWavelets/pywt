@@ -1270,7 +1270,7 @@ def swt(data, object wavelet, object level=None, int start_level=0):
     level : int, optional
         Transform level.
     start_level : int, optional
-        The level at which the decomposition will begin (it allows to
+        The level at which the decomposition will begin (it allows one to
         skip a given number of transform steps and compute
         coefficients starting from start_level) (default: 0)
 
