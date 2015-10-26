@@ -3,10 +3,11 @@
 from __future__ import division, print_function, absolute_import
 
 import os
+import warnings
 import numpy as np
 from numpy.testing import (run_module_suite, assert_almost_equal,
                            assert_allclose, assert_, assert_equal,
-                           assert_raises, dec)
+                           assert_raises, assert_warns, dec)
 
 import pywt
 
@@ -286,23 +287,31 @@ def test_waverecn():
 
 def test_waverecn_empty_coeff():
     coeffs = [np.ones((2, 2, 2)), {}, {}]
-    assert_equal(pywt.waverecn(coeffs, 'db1').shape, (8, 8, 8))
-    coeffs = [None, {'daa': np.ones((4, 4, 4))}]
-    assert_equal(pywt.waverecn(coeffs, 'db1').shape, (8, 8, 8))
-    coeffs = [np.ones((2, 2, 2)), {}, {'daa': np.ones((4, 4, 4))}]
-    assert_equal(pywt.waverecn(coeffs, 'db1').shape, (8, 8, 8))
-    coeffs = [None, {}]
-    assert_raises(ValueError, pywt.waverecn, coeffs, 'db1')
-    coeffs = [None, {}, {'daa': np.ones((3, 4, 2))}]
-    assert_equal(pywt.waverecn(coeffs, 'db1').shape, (6, 8, 4))
-    coeffs = [np.ones((2, 2, 2)), {}, {}, {'daa': np.ones((8, 8, 8))}]
-    assert_equal(pywt.waverecn(coeffs, 'db1').shape, (16, 16, 16))
+    assert_warns(UserWarning, pywt.waverecn, coeffs, 'db1')
+    # suppress warnings in the remainder of these tests
+    with warnings.catch_warnings(record=True) as w:
+        assert_equal(pywt.waverecn(coeffs, 'db1').shape, (8, 8, 8))
+        coeffs = [None, {'daa': np.ones((4, 4, 4))}]
+        assert_equal(pywt.waverecn(coeffs, 'db1').shape, (8, 8, 8))
+        coeffs = [np.ones((2, 2, 2)), {}, {'daa': np.ones((4, 4, 4))}]
+        assert_equal(pywt.waverecn(coeffs, 'db1').shape, (8, 8, 8))
+        coeffs = [None, {}]
+        assert_raises(ValueError, pywt.waverecn, coeffs, 'db1')
+        coeffs = [None, {}, {'daa': np.ones((3, 4, 2))}]
+        assert_equal(pywt.waverecn(coeffs, 'db1').shape, (6, 8, 4))
+        coeffs = [np.ones((2, 2, 2)), {}, {}, {'daa': np.ones((8, 8, 8))}]
+        assert_equal(pywt.waverecn(coeffs, 'db1').shape, (16, 16, 16))
 
 
 def test_waverecn_invalid_coeffs():
     coeffs = [np.ones((4, 4, 4)),
               {'ada': np.ones((4, 4, 4)), 'dk': 'foo', 'aad': None}]
-    pywt.waverecn(coeffs, 'db1')
+    assert_warns(UserWarning, pywt.waverecn, coeffs, 'db1')
+
+
+def test_waverecn_invalid_coeffs():
+    coeffs = [np.ones((4, 4, 4)), {'ada': np.ones((4, 4))}]
+    assert_raises(ValueError, pywt.waverecn, coeffs, 'db1')
 
 
 def test_waverecn_accuracies():

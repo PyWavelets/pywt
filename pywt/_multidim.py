@@ -11,6 +11,7 @@ from __future__ import division, print_function, absolute_import
 
 __all__ = ['dwt2', 'idwt2', 'swt2', 'dwtn', 'idwtn']
 
+import warnings
 from itertools import product
 
 import numpy as np
@@ -168,9 +169,19 @@ def dwtn(data, wavelet, mode='symmetric', axes=None):
     return dict(coeffs)
 
 
-def _fix_coeffs(coeffs):
+def _fix_coeffs(coeffs, enable_warnings=False):
+    if enable_warnings:
+        if np.any([v is None for k, v in coeffs.items()]):
+            warnings.warn("Some detail coefficient arrays were set to None and"
+                          " will be ignored during the inverse DWT.")
+        invalid_keys = [k for k, v in coeffs.items() if
+                        not set(k) <= set('ad')]
+        if invalid_keys:
+            warnings.warn("The following invalid keys were found in the detail"
+                          " coefficient dictionary and will be ignored: "
+                          "{}.".format(invalid_keys))
     return dict((k, np.asarray(v)) for k, v in coeffs.items()
-                 if v is not None and set(k) <= set('ad'))
+                if v is not None and set(k) <= set('ad'))
 
 
 def idwtn(coeffs, wavelet, mode='symmetric', axes=None):

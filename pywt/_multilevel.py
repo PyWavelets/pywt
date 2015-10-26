@@ -10,6 +10,8 @@ and Inverse Discrete Wavelet Transform.
 
 from __future__ import division, print_function, absolute_import
 
+import functools
+import warnings
 import numpy as np
 
 from ._pywt import Wavelet
@@ -560,7 +562,7 @@ def waverecn(coeffs, wavelet, mode='symmetric'):
             "Coefficient list too short (minimum 1 array required).")
 
     a, ds = coeffs[0], coeffs[1:]
-    ds = list(map(_fix_coeffs, ds))
+    ds = list(map(functools.partial(_fix_coeffs, enable_warnings=True), ds))
 
     if not ds:
         # level 0 transform (just returns the approximation coefficients)
@@ -574,6 +576,9 @@ def waverecn(coeffs, wavelet, mode='symmetric'):
     for idx, d in enumerate(ds):
         if a is None and not d:
             continue
+        if d == {}:
+            warnings.warn("Empty detail coefficient dictionary at level %d "
+                          "of %d in waverecn." % (idx + 1, len(ds)))
         # The following if statement handles the case where the approximation
         # coefficient returned at the previous level may exceed the size of the
         # stored detail coefficients by 1 on any given axis.
