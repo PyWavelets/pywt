@@ -186,5 +186,12 @@ def test_waverec2_odd_length():
     assert_allclose(pywt.waverec2(coeffs, 'db1'), x, rtol=1e-12)
 
 
+def test_waverec2_none_coeffs():
+    x = np.arange(24).reshape(6, 4)
+    coeffs = pywt.wavedec2(x, 'db1')
+    coeffs[1] = (None, None, None)
+    assert_(x.shape == pywt.waverec2(coeffs, 'db1').shape)
+
+
 if __name__ == '__main__':
     run_module_suite()
