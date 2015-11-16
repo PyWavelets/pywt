@@ -10,10 +10,10 @@ def configuration(parent_package='', top_path=None):
 
     config.add_data_dir('tests')
 
-    sources = ["_pywt", "common", "convolution", "wavelets", "wt"]
-    source_templates = ["convolution", "wt"]
-    headers = ["templating", "wavelets_coeffs"]
-    header_templates = ["convolution", "wt", "wavelets_coeffs"]
+    sources = ["_pywt", "c/common", "c/convolution", "c/wavelets", "c/wt"]
+    source_templates = ["c/convolution", "c/wt"]
+    headers = ["c/templating", "c/wavelets_coeffs"]
+    header_templates = ["c/convolution", "c/wt", "c/wavelets_coeffs"]
 
     # add main PyWavelets module
     config.add_extension(
@@ -23,7 +23,7 @@ def configuration(parent_package='', top_path=None):
                  + ["src/{0}.template.h".format(s) for s in header_templates]
                  + ["src/{0}.h".format(s) for s in headers]
                  + ["src/{0}.h".format(s) for s in sources]),
-        include_dirs=["src", np.get_include()],
+        include_dirs=["src", "src/c", np.get_include()],
         define_macros=[("PY_EXTENSION", None)],
     )
 
