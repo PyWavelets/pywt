@@ -23,9 +23,11 @@ pip-log.txt
 .settings
 
 # Project working files
-_pywt.[ch]
-wavelets.[ch]
 cythonize.dat
+# Cython files
+pywt/src/*.[ch]
+# Templated from .src
+pywt/src/c/wavelets.c
 pywt/__config__.py
 pywt/version.py
 build.log
