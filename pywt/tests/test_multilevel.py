@@ -287,9 +287,10 @@ def test_waverecn():
 
 def test_waverecn_empty_coeff():
     coeffs = [np.ones((2, 2, 2)), {}, {}]
-    assert_warns(UserWarning, pywt.waverecn, coeffs, 'db1')
+    assert_warns(DeprecationWarning, pywt.waverecn, coeffs, 'db1')
     # suppress warnings in the remainder of these tests
     with warnings.catch_warnings(record=True) as w:
+        warnings.simplefilter("ignore")
         assert_equal(pywt.waverecn(coeffs, 'db1').shape, (8, 8, 8))
         coeffs = [None, {'daa': np.ones((4, 4, 4))}]
         assert_equal(pywt.waverecn(coeffs, 'db1').shape, (8, 8, 8))
@@ -304,12 +305,14 @@ def test_waverecn_empty_coeff():
 
 
 def test_waverecn_invalid_coeffs():
+    # coeff dict with invalid keys is being deprecated
     coeffs = [np.ones((4, 4, 4)),
               {'ada': np.ones((4, 4, 4)), 'dk': 'foo', 'aad': None}]
-    assert_warns(UserWarning, pywt.waverecn, coeffs, 'db1')
+    assert_warns(DeprecationWarning, pywt.waverecn, coeffs, 'db1')
 
 
-def test_waverecn_invalid_coeffs():
+def test_waverecn_invalid_coeffs2():
+    # shape mismatch should raise an error
     coeffs = [np.ones((4, 4, 4)), {'ada': np.ones((4, 4))}]
     assert_raises(ValueError, pywt.waverecn, coeffs, 'db1')
 
