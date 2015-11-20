@@ -571,7 +571,7 @@ def waverecn(coeffs, wavelet, mode='symmetric'):
         ds = list(map(functools.partial(_fix_coeffs, nocheck=True), ds))
         msg = ("Support for coefficient dictionaries containing "
                "coefficients=None or invalid keys is depricated and will "
-               "raise an exception in a future release.")
+               "raise an exception in a future release")
         warnings.warn(msg, DeprecationWarning)
 
     if not ds:
@@ -586,10 +586,6 @@ def waverecn(coeffs, wavelet, mode='symmetric'):
     for idx, d in enumerate(ds):
         if a is None and not d:
             continue
-        if d == {}:
-            warnings.warn("Empty detail coefficient dictionary at level %d "
-                          "of %d in waverecn." % (idx + 1, len(ds)),
-                          DeprecationWarning)
         # The following if statement handles the case where the approximation
         # coefficient returned at the previous level may exceed the size of the
         # stored detail coefficients by 1 on any given axis.

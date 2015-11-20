@@ -2,7 +2,6 @@
 
 from __future__ import division, print_function, absolute_import
 
-import warnings
 import numpy as np
 from itertools import combinations
 from numpy.testing import (run_module_suite, assert_allclose, assert_,
@@ -187,13 +186,9 @@ def test_ignore_invalid_keys():
     d = {'aa': LL, 'da': HL, 'ad': LH, 'dd': HH,
          'foo': LH, 'a': HH}
 
-    assert_warns(DeprecationWarning, pywt.idwtn, d, wavelet)
-
-    # # suppress warnings in the remainder of these tests
-    with warnings.catch_warnings(record=True) as w:
-        warnings.simplefilter("ignore")
-        assert_allclose(pywt.idwt2((LL, (HL, LH, HH)), wavelet),
-                        pywt.idwtn(d, wavelet), atol=1e-15)
+    assert_allclose(pywt.idwt2((LL, (HL, LH, HH)), wavelet),
+                    assert_warns(DeprecationWarning, pywt.idwtn, d, wavelet),
+                    atol=1e-15)
 
 
 def test_error_mismatched_size():
