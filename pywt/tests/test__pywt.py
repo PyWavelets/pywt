@@ -32,26 +32,41 @@ def test_upcoef_reconstruct():
 
 
 def test_downcoef_multilevel():
-    r = np.random.randn(16)
+    rstate = np.random.RandomState(1234)
+    r = rstate.randn(16)
     nlevels = 3
     # calling with level=1 nlevels times
     a1 = r.copy()
     for i in range(nlevels):
         a1 = pywt.downcoef('a', a1, 'haar', level=1)
     # call with level=nlevels once
-    a3 = pywt.downcoef('a', r, 'haar', level=3)
+    a3 = pywt.downcoef('a', r, 'haar', level=nlevels)
     assert_allclose(a1, a3)
 
 
+def test_compare_downcoef_coeffs():
+    rstate = np.random.RandomState(1234)
+    r = rstate.randn(16)
+    # compare downcoef against wavedec outputs
+    for nlevels in [1, 2, 3]:
+        for wavelet in pywt.wavelist():
+            a = pywt.downcoef('a', r, wavelet, level=nlevels)
+            d = pywt.downcoef('d', r, wavelet, level=nlevels)
+            coeffs = pywt.wavedec(r, wavelet, level=nlevels)
+            assert_allclose(a, coeffs[0])
+            assert_allclose(d, coeffs[1])
+
+
 def test_upcoef_multilevel():
-    r = np.random.randn(4)
+    rstate = np.random.RandomState(1234)
+    r = rstate.randn(4)
     nlevels = 3
     # calling with level=1 nlevels times
     a1 = r.copy()
     for i in range(nlevels):
         a1 = pywt.upcoef('a', a1, 'haar', level=1)
     # call with level=nlevels once
-    a3 = pywt.upcoef('a', r, 'haar', level=3)
+    a3 = pywt.upcoef('a', r, 'haar', level=nlevels)
     assert_allclose(a1, a3)
 
 
