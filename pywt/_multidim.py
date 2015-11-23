@@ -86,81 +86,13 @@ def idwt2(coeffs, wavelet, mode='symmetric'):
            [ 3.,  4.]])
 
     """
-    if len(coeffs) != 2 or len(coeffs[1]) != 3:
-        raise ValueError("Invalid coeffs param")
-
     # L -low-pass data, H - high-pass data
     LL, (HL, LH, HH) = coeffs
+    if not all(c.ndim == 2 for c in (LL, HL, LH, HL) if c is not None):
+        raise TypeError("All input coefficients arrays must be 2D.")
 
-    if LL is not None:
-        LL = np.transpose(LL)
-    if LH is not None:
-        LH = np.transpose(LH)
-    if HL is not None:
-        HL = np.transpose(HL)
-    if HH is not None:
-        HH = np.transpose(HH)
-
-    all_none = True
-    for arr in (LL, LH, HL, HH):
-        if arr is not None:
-            all_none = False
-            if arr.ndim != 2:
-                raise TypeError("All input coefficients arrays must be 2D.")
-
-    if all_none:
-        raise ValueError(
-            "At least one input coefficients array must not be None.")
-
-    if not isinstance(wavelet, Wavelet):
-        wavelet = Wavelet(wavelet)
-
-    mode = Modes.from_object(mode)
-
-    # idwt columns
-    L = []
-    if LL is None and HL is None:
-        L = None
-    else:
-        if LL is None:
-            # IDWT can handle None input values - equals to zero-array
-            LL = cycle([None])
-        if HL is None:
-            # IDWT can handle None input values - equals to zero-array
-            HL = cycle([None])
-        for rowL, rowH in zip(LL, HL):
-            L.append(idwt(rowL, rowH, wavelet, mode))
-
-    H = []
-    if LH is None and HH is None:
-        H = None
-    else:
-        if LH is None:
-            # IDWT can handle None input values - equals to zero-array
-            LH = cycle([None])
-        if HH is None:
-            # IDWT can handle None input values - equals to zero-array
-            HH = cycle([None])
-        for rowL, rowH in zip(LH, HH):
-            H.append(idwt(rowL, rowH, wavelet, mode))
-
-    if L is not None:
-        L = np.transpose(L)
-    if H is not None:
-        H = np.transpose(H)
-
-    # idwt rows
-    data = []
-    if L is None:
-        # IDWT can handle None input values - equals to zero-array
-        L = cycle([None])
-    if H is None:
-        # IDWT can handle None input values - equals to zero-array
-        H = cycle([None])
-    for rowL, rowH in zip(L, H):
-        data.append(idwt(rowL, rowH, wavelet, mode))
-
-    return np.array(data)
+    coeffs = {'aa': LL, 'da': HL, 'ad': LH, 'dd': HH}
+    return idwtn(coeffs, wavelet, mode)
 
 
 def dwtn(data, wavelet, mode='symmetric'):
