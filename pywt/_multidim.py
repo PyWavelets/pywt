@@ -19,7 +19,7 @@ from ._pywt import Wavelet, Modes
 from ._pywt import swt, dwt_axis, idwt_axis
 
 
-def dwt2(data, wavelet, mode='symmetric'):
+def dwt2(data, wavelet, mode='symmetric', axis=None):
     """
     2D Discrete Wavelet Transform.
 
@@ -31,6 +31,10 @@ def dwt2(data, wavelet, mode='symmetric'):
         Wavelet to use
     mode : str, optional
         Signal extension mode, see Modes (default: 'symmetric')
+    axis : int or sequence of ints, optional
+        Axes over which to compute the DWT. Repeated elements mean the DWT will
+        be performed multiple times along these axes. A value of `None` (the
+        default) selects all axes.
 
     Returns
     -------
@@ -53,14 +57,17 @@ def dwt2(data, wavelet, mode='symmetric'):
 
     """
     data = np.asarray(data)
-    if data.ndim != 2:
+    if axis is None:
+        axis = range(data.ndim)
+    axes = list(axis)
+    if len(axes) != 2:
         raise ValueError("Expected 2-D data array")
 
-    coefs = dwtn(data, wavelet, mode)
+    coefs = dwtn(data, wavelet, mode, axes)
     return coefs['aa'], (coefs['da'], coefs['ad'], coefs['dd'])
 
 
-def idwt2(coeffs, wavelet, mode='symmetric'):
+def idwt2(coeffs, wavelet, mode='symmetric', axis=None):
     """
     2-D Inverse Discrete Wavelet Transform.
 
@@ -75,6 +82,10 @@ def idwt2(coeffs, wavelet, mode='symmetric'):
         Wavelet to use
     mode : str, optional
         Signal extension mode, see Modes (default: 'symmetric')
+    axis : int or sequence of ints, optional
+        Axes over which to compute the IDWT. Repeated elements mean the IDWT
+        will be performed multiple times along these axes. A value of `None`
+        (the default) selects all axes.
 
     Examples
     --------
@@ -88,8 +99,13 @@ def idwt2(coeffs, wavelet, mode='symmetric'):
     """
     # L -low-pass data, H - high-pass data
     LL, (HL, LH, HH) = coeffs
-    if not all(c.ndim == 2 for c in (LL, HL, LH, HL) if c is not None):
-        raise TypeError("All input coefficients arrays must be 2D.")
+    if axis is None:
+        if not all(c.ndim == 2 for c in (LL, HL, LH, HL) if c is not None):
+            raise TypeError("All input coefficients arrays must be 2D.")
+        axis = range(2)
+    axes = list(axis)
+    if len(axes) != 2:
+        raise ValueError("Expected 2-D data array")
 
     coeffs = {'aa': LL, 'da': HL, 'ad': LH, 'dd': HH}
     return idwtn(coeffs, wavelet, mode)
