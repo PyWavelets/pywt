@@ -212,6 +212,24 @@ def test_dwt2_idwt2_dtypes():
         assert_(x_roundtrip.dtype == dt_out, "idwt2: " + errmsg)
 
 
+def test_dwtn_axis():
+    data = np.array([[0, 1, 2, 3],
+                     [1, 1, 1, 1],
+                     [1, 4, 2, 8]])
+
+    coefs = pywt.dwtn(data, 'haar', axis=(1,))
+    expected_a = list(map(lambda x: pywt.dwt(x, 'haar')[0], data))
+    assert_equal(coefs['a'], expected_a)
+    expected_d = list(map(lambda x: pywt.dwt(x, 'haar')[1], data))
+    assert_equal(coefs['d'], expected_d)
+
+    coefs = pywt.dwtn(data, 'haar', axis=(1, 1))
+    expected_aa = list(map(lambda x: pywt.dwt(x, 'haar')[0], expected_a))
+    assert_equal(coefs['aa'], expected_aa)
+    expected_ad = list(map(lambda x: pywt.dwt(x, 'haar')[1], expected_a))
+    assert_equal(coefs['ad'], expected_ad)
+
+
 def test_dwtn_idwtn_dtypes():
     wavelet = pywt.Wavelet('haar')
     for dt_in, dt_out in zip(dtypes_in, dtypes_out):
