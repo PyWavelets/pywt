@@ -19,7 +19,7 @@ from ._pywt import Wavelet, MODES
 from ._pywt import dwt, idwt, swt, dwt_axis, idwt_axis
 
 
-def dwt2(data, wavelet, mode='sym'):
+def dwt2(data, wavelet, mode='sym', axes=(-2, -1)):
     """
     2D Discrete Wavelet Transform.
 
@@ -31,6 +31,11 @@ def dwt2(data, wavelet, mode='sym'):
         Wavelet to use
     mode : str, optional
         Signal extension mode, see MODES (default: 'sym')
+    axes: sequence of ints, optional
+        Axes over which to compute the DWT. If not given, the last
+        two axes are used. A repeated index in `axes` means the transform
+        over that axis is performed multiple times. A one-element
+        sequence means that a one-dimensional DWT is performed.
 
     Returns
     -------
@@ -53,41 +58,16 @@ def dwt2(data, wavelet, mode='sym'):
 
     """
     data = np.asarray(data)
-    if data.ndim != 2:
-        raise ValueError("Expected 2-D data array")
 
-    if not isinstance(wavelet, Wavelet):
-        wavelet = Wavelet(wavelet)
+    if data.ndim < 2:
+        raise ValueError("Expected at least 2-D data array")
 
-    mode = MODES.from_object(mode)
-
-    # filter rows
-    H, L = [], []
-    for row in data:
-        cA, cD = dwt(row, wavelet, mode)
-        L.append(cA)
-        H.append(cD)
-
-    # filter columns
-    H = np.transpose(H)
-    L = np.transpose(L)
-
-    LL, HL = [], []
-    for row in L:
-        cA, cD = dwt(row, wavelet, mode)
-        LL.append(cA)
-        HL.append(cD)
-
-    LH, HH = [], []
-    for row in H:
-        cA, cD = dwt(row, wavelet, mode)
-        LH.append(cA)
-        HH.append(cD)
+    transform = dwtn(data=data, wavelet=wavelet, mode=mode, axes=axes)
 
     # build result structure: (approx,
     #                          (horizontal, vertical, diagonal))
-    ret = (np.transpose(LL),
-           (np.transpose(HL), np.transpose(LH), np.transpose(HH)))
+    ret = (transform['aa'],
+           (transform['da'], transform['ad'], transform['dd']))
 
     return ret
 
@@ -195,7 +175,7 @@ def idwt2(coeffs, wavelet, mode='sym'):
     return np.array(data)
 
 
-def dwtn(data, wavelet, mode='sym'):
+def dwtn(data, wavelet, mode='sym', axes=None):
     """
     Single-level n-dimensional Discrete Wavelet Transform.
 
@@ -207,6 +187,10 @@ def dwtn(data, wavelet, mode='sym'):
         Wavelet to use.
     mode : str, optional
         Signal extension mode, see `MODES`.  Default is 'sym'.
+    axes: sequence of ints, optional
+        Axes over which to compute the DWT. If not given, all axes
+        are used. Repeated indices in `axes` means that the transform
+        over that axis is performed multiple times.
 
     Returns
     -------
@@ -237,17 +221,24 @@ def dwtn(data, wavelet, mode='sym'):
         raise ValueError("Input data must be at least 1D")
     coeffs = [('', data)]
 
-    for axis in range(data.ndim):
+    if axes is None:
+        axes = range(data.ndim)
+    else:
+        # coerce negative indices to absolute
+        axes = [a % data.ndim for a in axes]
+
+    for axis in axes:
         new_coeffs = []
         for subband, x in coeffs:
             cA, cD = dwt_axis(x, wavelet, mode, axis)
+            # FIXME: this is wrong, only works for axes=(0, 1, 2)
             new_coeffs.extend([(subband + 'a', cA),
                                (subband + 'd', cD)])
         coeffs = new_coeffs
     return dict(coeffs)
 
 
-def idwtn(coeffs, wavelet, mode='sym'):
+def idwtn(coeffs, wavelet, mode='sym', axes=None):
     """
     Single-level n-dimensional Discrete Wavelet Transform.
 
@@ -294,18 +285,45 @@ def idwtn(coeffs, wavelet, mode='sym'):
     if any(s != coeff_shape for s in coeff_shapes):
         raise ValueError("`coeffs` must all be of equal size (or None)")
 
-    for axis in reversed(range(dims)):
+    if axes is None:
+        axes = reversed(range(dims))
+
+    remaining_axes = list(axes)
+
+    for i, axis in enumerate(axes):
+        d = dims - (i + 1)
         new_coeffs = {}
-        new_keys = [''.join(coeff) for coeff in product('ad', repeat=axis)]
+        new_keys = [''.join(coeff) for coeff in product('ad', repeat=d)]
+        where = sorted(remaining_axes).index(axis)
 
         for key in new_keys:
-            L = coeffs.get(key + 'a', None)
-            H = coeffs.get(key + 'd', None)
+            lka = list(key)
+            lka.insert(where, 'a')
+            lkd = list(key)
+            lkd.insert(where, 'd')
 
-            new_coeffs[key] = idwt_axis(L, H, wavelet, mode, axis)
+            ka = ''.join(lka)
+            kd = ''.join(lkd)
+
+            L = coeffs.get(ka, None)
+            H = coeffs.get(kd, None)
+
+            new_coeffs[key] = idwt_axis(L, H, wavelet, mode=mode, axis=axis)
+
         coeffs = new_coeffs
+        remaining_axes.remove(axis)
 
-    return coeffs['']
+    if '' in coeffs:
+        return coeffs['']
+    else:
+        return coeffs
+
+
+def _key_iter(axes, dims):
+    # use this in idwtn and maybe in dwtn
+    all_keys = product('ad', repeat=dims)
+
+    # now for e.g. axes=(1, 2, 0), yield (aa, aaa, ada)...
 
 
 def swt2(data, wavelet, level, start_level=0):

@@ -604,7 +604,7 @@ def dwt_max_level(data_len, filter_len):
         return common.dwt_max_level(data_len, filter_len)
 
 
-def dwt(object data, object wavelet, object mode='sym'):
+def dwt(object data, object wavelet, object mode='sym', int axis=-1):
     """
     (cA, cD) = dwt(data, wavelet, mode='sym')
 
@@ -618,6 +618,9 @@ def dwt(object data, object wavelet, object mode='sym'):
         Wavelet to use
     mode : str, optional (default: 'sym')
         Signal extension mode, see MODES
+    axis: int, optional
+        Axis over which to compute the DWT. If not given, the
+        last axis is used.
 
     Returns
     -------
@@ -651,46 +654,11 @@ def dwt(object data, object wavelet, object mode='sym'):
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(data)
     data = np.array(data, dtype=dt)
-    if data.ndim != 1:
-        raise ValueError("dwt requires a 1D data array.")
-    return _dwt(data, wavelet, mode)
 
+    # convert -1 to explicit last axis
+    axis = axis % data.ndim
 
-def _dwt(np.ndarray[data_t, ndim=1] data, object wavelet, object mode='sym'):
-    """See `dwt` docstring for details."""
-    cdef np.ndarray[data_t, ndim=1, mode="c"] cA, cD
-    cdef Wavelet w
-    cdef common.MODE mode_
-
-    w = c_wavelet_from_object(wavelet)
-    mode_ = _try_mode(mode)
-
-    data = np.array(data)
-    output_len = common.dwt_buffer_length(data.size, w.dec_len, mode_)
-    if output_len < 1:
-        raise RuntimeError("Invalid output length.")
-
-    cA = np.zeros(output_len, data.dtype)
-    cD = np.zeros(output_len, data.dtype)
-
-    if data_t == np.float64_t:
-        if (c_wt.double_dec_a(&data[0], data.size, w.w,
-                              &cA[0], cA.size, mode_) < 0
-            or
-            c_wt.double_dec_d(&data[0], data.size, w.w,
-                              &cD[0], cD.size, mode_) < 0):
-            raise RuntimeError("C dwt failed.")
-    elif data_t == np.float32_t:
-        if (c_wt.float_dec_a(&data[0], data.size, w.w,
-                             &cA[0], cA.size, mode_) < 0
-            or
-            c_wt.float_dec_d(&data[0], data.size, w.w,
-                             &cD[0], cD.size, mode_) < 0):
-            raise RuntimeError("C dwt failed.")
-    else:
-        raise RuntimeError("Invalid data type.")
-
-    return (cA, cD)
+    return dwt_axis(data, wavelet, mode, axis=axis)
 
 
 cpdef dwt_axis(np.ndarray data, object wavelet, object mode='sym', unsigned int axis=0):
@@ -876,7 +844,8 @@ cdef np.dtype _check_dtype(data):
     return dt
 
 
-def idwt(cA, cD, object wavelet, object mode='sym', int correct_size=0):
+def idwt(cA, cD, object wavelet, object mode='sym', int correct_size=0,
+         int axis=-1):
     """
     idwt(cA, cD, wavelet, mode='sym', correct_size=0)
 
@@ -900,6 +869,9 @@ def idwt(cA, cD, object wavelet, object mode='sym', int correct_size=0):
         set to True, length of `cA` may be greater by one than length of `cD`.
         Useful when doing multilevel decomposition and reconstruction of
         non-dyadic length signals.
+    axis: int, optional
+        Axis over which to compute the inverse DWT. If not given, the
+        last axis is used.
 
     Returns
     -------
@@ -928,13 +900,9 @@ def idwt(cA, cD, object wavelet, object mode='sym', int correct_size=0):
     if cA is not None:
         dt = _check_dtype(cA)
         cA = np.array(cA, dtype=dt)
-        if cA.ndim != 1:
-            raise ValueError("idwt requires 1D coefficient arrays.")
     if cD is not None:
         dt = _check_dtype(cD)
         cD = np.array(cD, dtype=dt)
-        if cD.ndim != 1:
-            raise ValueError("idwt requires 1D coefficient arrays.")
 
     if cA is not None and cD is not None:
         if cA.dtype != cD.dtype:
@@ -946,7 +914,9 @@ def idwt(cA, cD, object wavelet, object mode='sym', int correct_size=0):
     elif cD is None:
         cD = np.zeros_like(cA)
 
-    return _idwt(cA, cD, wavelet, mode, correct_size)
+    axis = axis % cA.ndim
+
+    return idwt_axis(cA, cD, wavelet, mode, axis=axis)
 
 
 def _idwt(np.ndarray[data_t, ndim=1, mode="c"] cA,
