@@ -159,9 +159,9 @@ def dwtn(data, wavelet, mode='symmetric', axis=None):
     return dict(coeffs)
 
 
-def idwtn(coeffs, wavelet, mode='symmetric'):
+def idwtn(coeffs, wavelet, mode='symmetric', axis=None):
     """
-    Single-level n-dimensional Discrete Wavelet Transform.
+    Single-level n-dimensional Inverse Discrete Wavelet Transform.
 
     Parameters
     ----------
@@ -173,6 +173,10 @@ def idwtn(coeffs, wavelet, mode='symmetric'):
     mode : str, optional
         Signal extension mode used in the decomposition,
         see Modes (default: 'symmetric').
+    axis : int or sequence of ints, optional
+        Axes over which to compute the IDWT. Repeated elements mean the IDWT
+        will be performed multiple times along these axes. A value of `None`
+        (the default) selects all axes.
 
     Returns
     -------
@@ -206,9 +210,17 @@ def idwtn(coeffs, wavelet, mode='symmetric'):
     if any(s != coeff_shape for s in coeff_shapes):
         raise ValueError("`coeffs` must all be of equal size (or None)")
 
-    for axis in reversed(range(dims)):
+    if axis is None:
+        axis = range(dims)
+
+    try:
+        axes = iter(axis)
+    except TypeError:
+        axes = (axis,)
+
+    for key_length, axis in reversed(list(enumerate(sorted(axes)))):
         new_coeffs = {}
-        new_keys = [''.join(coeff) for coeff in product('ad', repeat=axis)]
+        new_keys = [''.join(coeff) for coeff in product('ad', repeat=key_length)]
 
         for key in new_keys:
             L = coeffs.get(key + 'a', None)
