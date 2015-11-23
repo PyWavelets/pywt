@@ -56,40 +56,8 @@ def dwt2(data, wavelet, mode='symmetric'):
     if data.ndim != 2:
         raise ValueError("Expected 2-D data array")
 
-    if not isinstance(wavelet, Wavelet):
-        wavelet = Wavelet(wavelet)
-
-    mode = Modes.from_object(mode)
-
-    # filter rows
-    H, L = [], []
-    for row in data:
-        cA, cD = dwt(row, wavelet, mode)
-        L.append(cA)
-        H.append(cD)
-
-    # filter columns
-    H = np.transpose(H)
-    L = np.transpose(L)
-
-    LL, HL = [], []
-    for row in L:
-        cA, cD = dwt(row, wavelet, mode)
-        LL.append(cA)
-        HL.append(cD)
-
-    LH, HH = [], []
-    for row in H:
-        cA, cD = dwt(row, wavelet, mode)
-        LH.append(cA)
-        HH.append(cD)
-
-    # build result structure: (approx,
-    #                          (horizontal, vertical, diagonal))
-    ret = (np.transpose(LL),
-           (np.transpose(HL), np.transpose(LH), np.transpose(HH)))
-
-    return ret
+    coefs = dwtn(data, wavelet, mode)
+    return coefs['aa'], (coefs['da'], coefs['ad'], coefs['dd'])
 
 
 def idwt2(coeffs, wavelet, mode='symmetric'):
