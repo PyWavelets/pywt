@@ -1,4 +1,9 @@
-def _dwt(np.ndarray[data_t, ndim=1] data, object wavelet, object mode='symmetric'):
+from _pywt cimport c_wavelet_from_object, Wavelet, _check_dtype
+from _pywt import _try_mode
+
+cimport common, c_wt
+
+cpdef _dwt(np.ndarray[data_t, ndim=1] data, object wavelet, object mode='symmetric'):
     """See `dwt` docstring for details."""
     cdef np.ndarray[data_t, ndim=1, mode="c"] cA, cD
     cdef Wavelet w
@@ -35,11 +40,10 @@ def _dwt(np.ndarray[data_t, ndim=1] data, object wavelet, object mode='symmetric
     return (cA, cD)
 
 
-def _downcoef(part, np.ndarray[data_t, ndim=1, mode="c"] data,
-              object wavelet, object mode='symmetric', int level=1):
+cpdef _downcoef(part, np.ndarray[data_t, ndim=1, mode="c"] data,
+                object wavelet, object mode='symmetric', int level=1):
     cdef np.ndarray[data_t, ndim=1, mode="c"] coeffs
     cdef int i, do_dec_a
-    cdef index_t dec_len
     cdef Wavelet w
     cdef common.MODE mode_
 
@@ -138,12 +142,12 @@ cpdef dwt_axis(np.ndarray data, object wavelet, object mode='symmetric', unsigne
     return (cA, cD)
 
 
-def _idwt(np.ndarray[data_t, ndim=1, mode="c"] cA,
-          np.ndarray[data_t, ndim=1, mode="c"] cD,
-          object wavelet, object mode='symmetric'):
+cpdef _idwt(np.ndarray[data_t, ndim=1, mode="c"] cA,
+            np.ndarray[data_t, ndim=1, mode="c"] cD,
+            object wavelet, object mode='symmetric'):
     """See `idwt` for details"""
 
-    cdef index_t input_len
+    cdef size_t input_len, rec_len
 
     cdef Wavelet w
     cdef common.MODE mode_
@@ -152,7 +156,6 @@ def _idwt(np.ndarray[data_t, ndim=1, mode="c"] cA,
     mode_ = _try_mode(mode)
 
     cdef np.ndarray[data_t, ndim=1, mode="c"] rec
-    cdef index_t rec_len
 
     # check for size difference between arrays
     if cA.size != cD.size:
@@ -193,14 +196,14 @@ def _idwt(np.ndarray[data_t, ndim=1, mode="c"] cA,
     return rec
 
 
-def _upcoef(part, np.ndarray[data_t, ndim=1, mode="c"] coeffs, wavelet,
-            int level=1, int take=0):
+cpdef _upcoef(part, np.ndarray[data_t, ndim=1, mode="c"] coeffs, wavelet,
+              int level=1, int take=0):
     cdef Wavelet w
     cdef np.ndarray[data_t, ndim=1, mode="c"] rec
     cdef int i, do_rec_a
-    cdef index_t rec_len, left_bound, right_bound
-
-    rec_len = 0
+    cdef size_t rec_len = 0
+    # constructed from (rec_len - take) iff take < rec_len
+    cdef size_t left_bound, right_bound
 
     if part not in ('a', 'd'):
         raise ValueError("Argument 1 must be 'a' or 'd', not '%s'." % part)

@@ -2,29 +2,23 @@
 # See COPYING for license details.
 
 __doc__ = """Pyrex wrapper for low-level C wavelet transform implementation."""
-__all__ = ['MODES', 'Modes', 'Wavelet', 'dwt', 'dwt_coeff_len', 'dwt_max_level',
-           'idwt', 'swt', 'swt_max_level', 'upcoef', 'downcoef',
-           'wavelist', 'families']
+__all__ = ['MODES', 'Modes', 'Wavelet', 'dwt_coeff_len', 'dwt_max_level',
+           'swt', 'swt_max_level', 'wavelist', 'families']
 
 ###############################################################################
 # imports
 import warnings
 
 cimport c_wt
-cimport wavelet
 cimport common
+
+from _dwt import _dwt, _downcoef, dwt_axis, _idwt, _upcoef, idwt_axis
+from dwt import upcoef
 
 from libc.math cimport pow, sqrt
 
-ctypedef Py_ssize_t index_t
-
 import numpy as np
 cimport numpy as np
-
-
-ctypedef fused data_t:
-    np.float32_t
-    np.float64_t
 
 
 ###############################################################################
@@ -267,10 +261,6 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
     filters - just like the Wavelet instance itself.
 
     """
-    cdef wavelet.Wavelet* w
-
-    cdef readonly name
-    cdef readonly number
 
     #cdef readonly properties
     def __cinit__(self, name=u"", object filter_bank=None):
@@ -527,10 +517,12 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
                                                           keep_length)
 
             # phi, psi, x
-            return [np.concatenate(([0.], keep(upcoef('a', [n], self, level),
-                                    keep_length), np.zeros(right_extent_length))),
-                    np.concatenate(([0.], keep(upcoef('d', [n], self, level),
-                                    keep_length), np.zeros(right_extent_length))),
+            return [np.concatenate(([0.], keep(upcoef('a', [n], self,
+                                                      level), keep_length),
+                                    np.zeros(right_extent_length))),
+                    np.concatenate(([0.], keep(upcoef('d', [n], self,
+                                                      level), keep_length),
+                                    np.zeros(right_extent_length))),
                     np.linspace(0.0, (output_length-1)/p, output_length)]
         else:
             mul = 1
@@ -546,8 +538,9 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
             output_length = fix_output_length(output_length, keep_length)
             right_extent_length = get_right_extent_length(output_length, keep_length)
 
-            phi_d  = np.concatenate(([0.], keep(upcoef('a', [n], other, level),
-                                     keep_length), np.zeros(right_extent_length)))
+            phi_d  = np.concatenate(([0.], keep(upcoef('a', [n], other,
+                                                       level), keep_length),
+                                     np.zeros(right_extent_length)))
             psi_d  = np.concatenate(([0.], keep(upcoef('d', [mul*n], other,
                                                        level), keep_length),
                                      np.zeros(right_extent_length)))
@@ -558,8 +551,9 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
             output_length = fix_output_length(output_length, keep_length)
             right_extent_length = get_right_extent_length(output_length, keep_length)
 
-            phi_r  = np.concatenate(([0.], keep(upcoef('a', [n], self, level),
-                                     keep_length), np.zeros(right_extent_length)))
+            phi_r  = np.concatenate(([0.], keep(upcoef('a', [n], self,
+                                                       level), keep_length),
+                                     np.zeros(right_extent_length)))
             psi_r  = np.concatenate(([0.], keep(upcoef('d', [mul*n], self,
                                                        level), keep_length),
                                      np.zeros(right_extent_length)))
@@ -609,11 +603,12 @@ cdef index_t get_right_extent_length(index_t output_length, index_t keep_length)
     return output_length - keep_length - 1
 
 
+# TODO: just cpdef?
 def wavelet_from_object(wavelet):
     return c_wavelet_from_object(wavelet)
 
 
-cdef c_wavelet_from_object(wavelet):
+cdef c_wavelet_from_object(object wavelet):
     if isinstance(wavelet, Wavelet):
         return wavelet
     else:
@@ -716,7 +711,7 @@ def _try_mode(mode):
         raise TypeError("Invalid mode: {0}".format(str(mode)))
 
 
-cdef np.dtype _check_dtype(data):
+cdef np.dtype _check_dtype(np.ndarray data):
     """Check for cA/cD input what (if any) the dtype is."""
     cdef np.dtype dt
     try:

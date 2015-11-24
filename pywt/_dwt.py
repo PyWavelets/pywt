@@ -1,4 +1,4 @@
-def dwt(object data, object wavelet, object mode='symmetric'):
+def dwt(data, wavelet, mode='symmetric'):
     """
     (cA, cD) = dwt(data, wavelet, mode='symmetric')
 
@@ -95,7 +95,7 @@ def downcoef(part, data, wavelet, mode='symmetric', level=1):
     return _downcoef(part, data, wavelet, mode, level)
 
 
-def idwt(cA, cD, object wavelet, object mode='symmetric'):
+def idwt(cA, cD, wavelet, mode='symmetric'):
     """
     idwt(cA, cD, wavelet, mode='symmetric')
 
