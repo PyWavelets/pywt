@@ -31,10 +31,10 @@ def dwt2(data, wavelet, mode='symmetric', axis=None):
         Wavelet to use
     mode : str, optional
         Signal extension mode, see Modes (default: 'symmetric')
-    axis : int or sequence of ints, optional
+    axis : 2-tuple of ints, optional
         Axes over which to compute the DWT. Repeated elements mean the DWT will
         be performed multiple times along these axes. A value of `None` (the
-        default) selects all axes.
+        default) selects the last two axes.
 
     Returns
     -------
@@ -58,10 +58,10 @@ def dwt2(data, wavelet, mode='symmetric', axis=None):
     """
     data = np.asarray(data)
     if axis is None:
-        axis = range(data.ndim)
-    axes = list(axis)
+        axis = range(-2, 0)
+    axes = tuple(axis)
     if len(axes) != 2:
-        raise ValueError("Expected 2-D data array")
+        raise ValueError("Expected 2 axes")
 
     coefs = dwtn(data, wavelet, mode, axes)
     return coefs['aa'], (coefs['da'], coefs['ad'], coefs['dd'])
@@ -82,10 +82,10 @@ def idwt2(coeffs, wavelet, mode='symmetric', axis=None):
         Wavelet to use
     mode : str, optional
         Signal extension mode, see Modes (default: 'symmetric')
-    axis : int or sequence of ints, optional
+    axis : 2-tuple of ints, optional
         Axes over which to compute the IDWT. Repeated elements mean the IDWT
         will be performed multiple times along these axes. A value of `None`
-        (the default) selects all axes.
+        (the default) selects the last two axes.
 
     Examples
     --------
@@ -100,12 +100,10 @@ def idwt2(coeffs, wavelet, mode='symmetric', axis=None):
     # L -low-pass data, H - high-pass data
     LL, (HL, LH, HH) = coeffs
     if axis is None:
-        if not all(c.ndim == 2 for c in (LL, HL, LH, HL) if c is not None):
-            raise TypeError("All input coefficients arrays must be 2D.")
-        axis = range(2)
-    axes = list(axis)
+        axis = range(-2, 0)
+    axes = tuple(axis)
     if len(axes) != 2:
-        raise ValueError("Expected 2-D data array")
+        raise ValueError("Expected 2 axes")
 
     coeffs = {'aa': LL, 'da': HL, 'ad': LH, 'dd': HH}
     return idwtn(coeffs, wavelet, mode)
@@ -123,7 +121,7 @@ def dwtn(data, wavelet, mode='symmetric', axis=None):
         Wavelet to use.
     mode : str, optional
         Signal extension mode, see `Modes`.  Default is 'symmetric'.
-    axis : int or sequence of ints, optional
+    axis : sequence of ints, optional
         Axes over which to compute the DWT. Repeated elements mean the DWT will
         be performed multiple times along these axes. A value of `None` (the
         default) selects all axes.
@@ -160,11 +158,7 @@ def dwtn(data, wavelet, mode='symmetric', axis=None):
     # Parameter is named 'axis' for consistency with numpy
     if axis is None:
         axis = range(data.ndim)
-    try:
-        axes = iter(axis)
-    except TypeError:
-        axes = (axis,)
-    axes = (a + data.ndim if a < 0 else a for a in axes)
+    axes = (a + data.ndim if a < 0 else a for a in axis)
 
     for axis in sorted(axes):
         new_coeffs = []
@@ -190,7 +184,7 @@ def idwtn(coeffs, wavelet, mode='symmetric', axis=None):
     mode : str, optional
         Signal extension mode used in the decomposition,
         see Modes (default: 'symmetric').
-    axis : int or sequence of ints, optional
+    axis : sequence of ints, optional
         Axes over which to compute the IDWT. Repeated elements mean the IDWT
         will be performed multiple times along these axes. A value of `None`
         (the default) selects all axes.
@@ -229,12 +223,7 @@ def idwtn(coeffs, wavelet, mode='symmetric', axis=None):
 
     if axis is None:
         axis = range(ndim)
-
-    try:
-        axes = iter(axis)
-    except TypeError:
-        axes = (axis,)
-    axes = (a + ndim if a < 0 else a for a in axes)
+    axes = (a + ndim if a < 0 else a for a in axis)
 
     for key_length, axis in reversed(list(enumerate(sorted(axes)))):
         new_coeffs = {}
