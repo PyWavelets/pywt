@@ -164,6 +164,7 @@ def dwtn(data, wavelet, mode='symmetric', axis=None):
         axes = iter(axis)
     except TypeError:
         axes = (axis,)
+    axes = (a + data.ndim if a < 0 else a for a in axes)
 
     for axis in sorted(axes):
         new_coeffs = []
@@ -214,11 +215,11 @@ def idwtn(coeffs, wavelet, mode='symmetric', axis=None):
         return (idwtn(real_coeffs, wavelet, mode)
                 + 1j * idwtn(imag_coeffs, wavelet, mode))
 
-    dims = max(len(key) for key in coeffs.keys())
+    ndim = max(len(key) for key in coeffs.keys())
 
     try:
         coeff_shapes = (v.shape for k, v in coeffs.items()
-                        if v is not None and len(k) == dims)
+                        if v is not None and len(k) == ndim)
         coeff_shape = next(coeff_shapes)
     except StopIteration:
         raise ValueError("`coeffs` must contain at least one non-null wavelet "
@@ -227,12 +228,13 @@ def idwtn(coeffs, wavelet, mode='symmetric', axis=None):
         raise ValueError("`coeffs` must all be of equal size (or None)")
 
     if axis is None:
-        axis = range(dims)
+        axis = range(ndim)
 
     try:
         axes = iter(axis)
     except TypeError:
         axes = (axis,)
+    axes = (a + ndim if a < 0 else a for a in axes)
 
     for key_length, axis in reversed(list(enumerate(sorted(axes)))):
         new_coeffs = {}

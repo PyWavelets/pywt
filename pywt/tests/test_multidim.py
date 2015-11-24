@@ -238,6 +238,19 @@ def test_idwtn_axis():
     assert_allclose(pywt.idwtn(coefs, 'haar', axis=(1, 1)), data, atol=1e-14)
 
 
+def test_netagive_axis():
+    data = np.array([[0, 1, 2, 3],
+                     [1, 1, 1, 1],
+                     [1, 4, 2, 8]])
+    coefs1 = pywt.dwtn(data, 'haar', axis=(1, 1))
+    coefs2 = pywt.dwtn(data, 'haar', axis=(-1, -1))
+    assert_equal(coefs1, coefs2)
+
+    rec1 = pywt.idwtn(coefs1, 'haar', axis=(1, 1))
+    rec2 = pywt.idwtn(coefs1, 'haar', axis=(-1, -1))
+    assert_equal(rec1, rec2)
+
+
 def test_dwtn_idwtn_dtypes():
     wavelet = pywt.Wavelet('haar')
     for dt_in, dt_out in zip(dtypes_in, dtypes_out):
