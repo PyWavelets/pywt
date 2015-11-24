@@ -18,6 +18,26 @@ New features
 Deprecated features
 ===================
 
+A number of functions have been renamed, the old names are deprecated and will
+be removed in a future release:
+
+- ``intwave``, renamed to ``integrate_wavelet``
+- ``centrfrq``, renamed to ``central_frequency``
+- ``scal2frq``, renamed to ``scale2frequency``
+- ``orthfilt``, renamed to ``orthogonal_filter_bank``
+
+Integration of general signals (i.e. not wavelets) with ``integrate_wavelet``
+is deprecated.
+
+The ``MODES`` object and its attributes are deprecated.  The new name is
+``Modes``, and the attribute names are expanded:
+
+- ``zpd``, renamed to ``zero``
+- ``cpd``, renamed to ``constant``
+- ``sp1``, renamed to ``smooth``
+- ``sym``, renamed to ``symmetric``
+- ``ppd``, renamed to ``periodic``
+- ``per``, renamed to ``periodization``
 
 Backwards incompatible changes
 ==============================
