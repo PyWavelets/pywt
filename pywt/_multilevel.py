@@ -269,8 +269,10 @@ def iswt(coeffs, wavelet):
 
             # perform the inverse dwt on the selected indices,
             # making sure to use periodic boundary conditions
-            x1 = idwt(output[even_indices], cD[even_indices], wavelet, 'per')
-            x2 = idwt(output[odd_indices], cD[odd_indices], wavelet, 'per')
+            x1 = idwt(output[even_indices], cD[even_indices],
+                      wavelet, 'periodization')
+            x2 = idwt(output[odd_indices], cD[odd_indices],
+                      wavelet, 'periodization')
 
             # perform a circular shift right
             x2 = np.roll(x2, 1)
@@ -355,22 +357,22 @@ def iswt2(coeffs, wavelet):
                                  (cH[even_idx_h, even_idx_w],
                                   cV[even_idx_h, even_idx_w],
                                   cD[even_idx_h, even_idx_w])),
-                                wavelet, 'per')
+                                wavelet, 'periodization')
                 x2 = idwt2((output[even_idx_h, odd_idx_w],
                                  (cH[even_idx_h, odd_idx_w],
                                   cV[even_idx_h, odd_idx_w],
                                   cD[even_idx_h, odd_idx_w])),
-                                wavelet, 'per')
+                                wavelet, 'periodization')
                 x3 = idwt2((output[odd_idx_h, even_idx_w],
                                  (cH[odd_idx_h, even_idx_w],
                                   cV[odd_idx_h, even_idx_w],
                                   cD[odd_idx_h, even_idx_w])),
-                                wavelet, 'per')
+                                wavelet, 'periodization')
                 x4 = idwt2((output[odd_idx_h, odd_idx_w],
                                  (cH[odd_idx_h, odd_idx_w],
                                   cV[odd_idx_h, odd_idx_w],
                                   cD[odd_idx_h, odd_idx_w])),
-                                wavelet, 'per')
+                                wavelet, 'periodization')
 
                 # perform a circular shifts
                 x2 = np.roll(x2, 1, axis=1)
