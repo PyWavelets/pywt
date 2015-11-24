@@ -430,8 +430,7 @@ class Node(BaseNode):
             raise ValueError("Node is a leaf node and cannot be reconstructed"
                              " from subnodes.")
         else:
-            rec = idwt(data_a, data_d, self.wavelet, self.mode,
-                       correct_size=True)
+            rec = idwt(data_a, data_d, self.wavelet, self.mode)
             if update:
                 self.data = rec
             return rec

@@ -1,5 +1,11 @@
 Changelog
 
+0.4.0
+    changes:
+      - idwt no longer takes a 'correct_length' parameter.
+        - Sizes of the arrays passed to all idwt functions must match exactly.
+        - use 'multilevel.wavecrec' for multilevel transforms
+
 0.3.0
     A major refactoring, providing support for Python 3.x while maintaining
     full backwards compatiblity.

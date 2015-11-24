@@ -31,6 +31,12 @@ def test_waverec():
     assert_allclose(pywt.waverec(coeffs, 'db1'), x, rtol=1e-12)
 
 
+def test_waverec_odd_length():
+    x = [3, 7, 1, 1, -2, 5]
+    coeffs = pywt.wavedec(x, 'db1')
+    assert_allclose(pywt.waverec(coeffs, 'db1'), x, rtol=1e-12)
+
+
 def test_waverec_complex():
     x = np.array([3, 7, 1, 1, -2, 5, 4, 6])
     x = x + 1j
@@ -172,6 +178,19 @@ def test_wavedec2_complex():
     coeffs = pywt.wavedec2(data, 'db1')
     assert_(len(coeffs) == 3)
     assert_allclose(pywt.waverec2(coeffs, 'db1'), data, rtol=1e-12)
+
+
+def test_waverec2_odd_length():
+    x = np.ones((10, 6))
+    coeffs = pywt.wavedec2(x, 'db1')
+    assert_allclose(pywt.waverec2(coeffs, 'db1'), x, rtol=1e-12)
+
+
+def test_waverec2_none_coeffs():
+    x = np.arange(24).reshape(6, 4)
+    coeffs = pywt.wavedec2(x, 'db1')
+    coeffs[1] = (None, None, None)
+    assert_(x.shape == pywt.waverec2(coeffs, 'db1').shape)
 
 
 if __name__ == '__main__':

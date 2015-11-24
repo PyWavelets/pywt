@@ -340,48 +340,24 @@ int CAT(TYPE, _rec_d)(const TYPE * const restrict coeffs_d, const size_t coeffs_
 
 
 /*
- * IDWT reconstruction from approximation and detail coeffs
+ * IDWT reconstruction from approximation and detail coeffs, either of which may
+ * be NULL.
  *
- * If fix_size_diff is 1 then coeffs arrays can differ by one in length (this
- * is useful in multilevel decompositions and reconstructions of odd-length
- * signals).  Requires zero-filled output buffer.
+ * Requires zero-filled output buffer.
  */
 int CAT(TYPE, _idwt)(const TYPE * const restrict coeffs_a, const size_t coeffs_a_len,
                      const TYPE * const restrict coeffs_d, const size_t coeffs_d_len,
-                     const Wavelet * const restrict wavelet,
                      TYPE * const restrict output, const size_t output_len,
-                     const MODE mode, const int fix_size_diff){
-
+                     const Wavelet * const restrict wavelet, const MODE mode){
     size_t input_len;
-
-    /*
-     * If one of coeffs array is NULL then the reconstruction will be performed
-     * using the other one
-     */
-
     if(coeffs_a != NULL && coeffs_d != NULL){
-
-        if(fix_size_diff){
-            if( (coeffs_a_len > coeffs_d_len ? coeffs_a_len - coeffs_d_len
-                                             : coeffs_d_len-coeffs_a_len) > 1){ /* abs(a-b) */
-                goto error;
-            }
-
-            input_len = coeffs_a_len>coeffs_d_len ? coeffs_d_len
-                                                  : coeffs_a_len; /* min */
-        } else {
-            if(coeffs_a_len != coeffs_d_len)
-                goto error;
-
-            input_len = coeffs_a_len;
-        }
-
+        if(coeffs_a_len != coeffs_d_len)
+            goto error;
+        input_len = coeffs_a_len;
     } else if(coeffs_a != NULL){
         input_len  = coeffs_a_len;
-
     } else if (coeffs_d != NULL){
         input_len = coeffs_d_len;
-
     } else {
         goto error;
     }

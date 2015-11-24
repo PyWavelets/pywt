@@ -22,6 +22,11 @@ Deprecated features
 Backwards incompatible changes
 ==============================
 
+``idwt`` no longer takes a ``correct_length`` parameter. As a consequence,
+``idwt2`` inputs must match exactly in length. For multilevel transforms, where
+arrays differing in size by one element may be produced, use the ``waverec``
+functions from the ``multilevel`` module instead.
+
 
 Other changes
 =============

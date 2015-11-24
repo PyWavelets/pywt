@@ -928,9 +928,9 @@ cdef np.dtype _check_dtype(data):
     return dt
 
 
-def idwt(cA, cD, object wavelet, object mode='symmetric', int correct_size=0):
+def idwt(cA, cD, object wavelet, object mode='symmetric'):
     """
-    idwt(cA, cD, wavelet, mode='symmetric', correct_size=0)
+    idwt(cA, cD, wavelet, mode='symmetric')
 
     Single level Inverse Discrete Wavelet Transform
 
@@ -946,12 +946,6 @@ def idwt(cA, cD, object wavelet, object mode='symmetric', int correct_size=0):
         Wavelet to use
     mode : str, optional (default: 'symmetric')
         Signal extension mode, see Modes
-    correct_size : int, optional (default: 0)
-        Under normal conditions (all data lengths dyadic) `cA` and `cD`
-        coefficients lists must have the same lengths. With `correct_size`
-        set to True, length of `cA` may be greater by one than length of `cD`.
-        Useful when doing multilevel decomposition and reconstruction of
-        non-dyadic length signals.
 
     Returns
     -------
@@ -974,8 +968,8 @@ def idwt(cA, cD, object wavelet, object mode='symmetric', int correct_size=0):
         elif cD is None:
             cA = np.asarray(cA)
             cD = np.zeros_like(cA)
-        return (idwt(cA.real, cD.real, wavelet, mode, correct_size) +
-                1j*idwt(cA.imag, cD.imag, wavelet, mode, correct_size))
+        return (idwt(cA.real, cD.real, wavelet, mode) +
+                1j*idwt(cA.imag, cD.imag, wavelet, mode))
 
     if cA is not None:
         dt = _check_dtype(cA)
@@ -998,12 +992,12 @@ def idwt(cA, cD, object wavelet, object mode='symmetric', int correct_size=0):
     elif cD is None:
         cD = np.zeros_like(cA)
 
-    return _idwt(cA, cD, wavelet, mode, correct_size)
+    return _idwt(cA, cD, wavelet, mode)
 
 
 def _idwt(np.ndarray[data_t, ndim=1, mode="c"] cA,
           np.ndarray[data_t, ndim=1, mode="c"] cD,
-          object wavelet, object mode='symmetric', int correct_size=0):
+          object wavelet, object mode='symmetric'):
     """See `idwt` for details"""
 
     cdef index_t input_len
@@ -1016,20 +1010,10 @@ def _idwt(np.ndarray[data_t, ndim=1, mode="c"] cA,
 
     cdef np.ndarray[data_t, ndim=1, mode="c"] rec
     cdef index_t rec_len
-    cdef index_t size_diff
 
     # check for size difference between arrays
-    size_diff = cA.size - cD.size
-    if size_diff:
-        if correct_size:
-            if size_diff < 0 or size_diff > 1:
-                msg = ("Coefficients arrays must satisfy "
-                       "(0 <= len(cA) - len(cD) <= 1).")
-                raise ValueError(msg)
-            input_len = cA.size - size_diff
-        else:
-            msg = "Coefficients arrays must have the same size."
-            raise ValueError(msg)
+    if cA.size != cD.size:
+        raise ValueError("Coefficients arrays must have the same size.")
     else:
         input_len = cA.size
 
@@ -1050,15 +1034,15 @@ def _idwt(np.ndarray[data_t, ndim=1, mode="c"] cA,
     # reconstruction of non-null part will be performed
     if data_t is np.float64_t:
         if c_wt.double_idwt(&cA[0], cA.size,
-                            &cD[0], cD.size, w.w,
-                            &rec[0], rec.size, mode_,
-                            correct_size) < 0:
+                            &cD[0], cD.size,
+                            &rec[0], rec.size,
+                            w.w, mode_) < 0:
             raise RuntimeError("C idwt failed.")
     elif data_t == np.float32_t:
         if c_wt.float_idwt(&cA[0], cA.size,
-                           &cD[0], cD.size, w.w,
-                           &rec[0], rec.size, mode_,
-                           correct_size) < 0:
+                           &cD[0], cD.size,
+                           &rec[0], rec.size,
+                           w.w, mode_) < 0:
             raise RuntimeError("C idwt failed.")
     else:
         raise RuntimeError("Invalid data type.")

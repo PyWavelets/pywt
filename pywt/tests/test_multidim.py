@@ -226,5 +226,12 @@ def test_dwtn_idwtn_dtypes():
         assert_(x_roundtrip.dtype == dt_out, "idwtn: " + errmsg)
 
 
+def test_idwt2_size_mismatch_error():
+    LL = np.zeros((6, 6))
+    LH = HL = HH = np.zeros((5, 5))
+
+    assert_raises(ValueError, pywt.idwt2, (LL, (LH, HL, HH)), wavelet='haar')
+
+
 if __name__ == '__main__':
     run_module_suite()

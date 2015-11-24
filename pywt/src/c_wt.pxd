@@ -34,9 +34,8 @@ cdef extern from "wt.h":
 
     cdef int double_idwt(double * const coeffs_a, const size_t coeffs_a_len,
                          double * const coeffs_d, const size_t coeffs_d_len,
-                         const Wavelet * const wavelet,
                          double * const output, const size_t output_len,
-                         const MODE mode, const int correct_size)
+                         const Wavelet * const wavelet, const MODE mode)
 
     cdef int double_swt_a(double input[], index_t input_len, Wavelet* wavelet,
                           double output[], index_t output_len, int level)
@@ -71,9 +70,8 @@ cdef extern from "wt.h":
 
     cdef int float_idwt(const float * const coeffs_a, const size_t coeffs_a_len,
                         const float * const coeffs_d, const size_t coeffs_d_len,
-                        const Wavelet * const wavelet,
                         float * const output, const size_t output_len,
-                        const MODE mode, const int correct_size)
+                        const Wavelet * const wavelet, const MODE mode)
 
     cdef int float_swt_a(float input[], index_t input_len, Wavelet* wavelet,
                          float output[], index_t output_len, int level)
