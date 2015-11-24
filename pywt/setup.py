@@ -17,7 +17,7 @@ def configuration(parent_package='', top_path=None):
 
     # add main PyWavelets module
     config.add_extension(
-        '_pywt',
+        '_extensions._pywt',
         sources=["src/{0}.c".format(s) for s in sources],
         depends=(["src/{0}.template.c".format(s) for s in source_templates]
                  + ["src/{0}.template.h".format(s) for s in header_templates]
