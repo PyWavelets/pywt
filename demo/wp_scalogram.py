@@ -17,7 +17,7 @@ interpolation = 'nearest'
 cmap = plt.cm.cool
 
 # Construct wavelet packet
-wp = pywt.WaveletPacket(data, wavelet, 'sym', maxlevel=level)
+wp = pywt.WaveletPacket(data, wavelet, 'symmetric', maxlevel=level)
 nodes = wp.get_level(level, order=order)
 labels = [n.path for n in nodes]
 values = np.array([n.data for n in nodes], 'd')

@@ -86,7 +86,7 @@ def load_image(path, mode=None, size=None):
     return im
 
 
-def blend_images(base, texture, wavelet, level, mode='sp1', base_gain=None,
+def blend_images(base, texture, wavelet, level, mode='smooth', base_gain=None,
                  texture_gain=None):
     """Blend loaded images at `level` of granularity using `wavelet`"""
 
@@ -150,7 +150,8 @@ def main():
                       type="int", default=4,
                       help="decomposition level [default: %default]")
     parser.add_option("-m", "--mode", dest="mode", metavar="MODE",
-                      default='sym', help="decomposition mode. Adjust this if"
+                      default='symmetric',
+                      help="decomposition mode. Adjust this if"
                       " getting edge artifacts [default: %default]")
     parser.add_option("-x", "--base_gain", dest="base_gain", metavar="BG",
                       type="float", default=None,

@@ -2,12 +2,13 @@
 # See COPYING for license details.
 
 __doc__ = """Pyrex wrapper for low-level C wavelet transform implementation."""
-__all__ = ['MODES', 'Wavelet', 'dwt', 'dwt_coeff_len', 'dwt_max_level',
+__all__ = ['MODES', 'Modes', 'Wavelet', 'dwt', 'dwt_coeff_len', 'dwt_max_level',
            'idwt', 'swt', 'swt_max_level', 'upcoef', 'downcoef',
            'wavelist', 'families']
 
 ###############################################################################
 # imports
+import warnings
 
 cimport c_wt
 cimport wavelet
@@ -16,8 +17,6 @@ cimport common
 from libc.math cimport pow, sqrt
 
 ctypedef Py_ssize_t index_t
-
-import warnings
 
 import numpy as np
 cimport numpy as np
@@ -29,63 +28,76 @@ ctypedef fused data_t:
 
 
 ###############################################################################
-# MODES
+# Modes
+_old_modes = ['zpd',
+              'cpd',
+              'sym',
+              'ppd',
+              'sp1',
+              'per',
+              ]
+
+_attr_deprecation_msg = ('{old} has been renamed to {new} and will '
+                         'be unavailable in a future version '
+                         'of pywt.')
 
 class _Modes(object):
     """
     Because the most common and practical way of representing digital signals
-    in computer science is with finite arrays of values, some extrapolation
-    of the input data has to be performed in order to extend the signal before
-    computing the :ref:`Discrete Wavelet Transform <ref-dwt>` using the cascading
-    filter banks algorithm.
+    in computer science is with finite arrays of values, some extrapolation of
+    the input data has to be performed in order to extend the signal before
+    computing the :ref:`Discrete Wavelet Transform <ref-dwt>` using the
+    cascading filter banks algorithm.
 
-    Depending on the extrapolation method, significant artifacts at the signal's
-    borders can be introduced during that process, which in turn may lead to
-    inaccurate computations of the :ref:`DWT <ref-dwt>` at the signal's ends.
+    Depending on the extrapolation method, significant artifacts at the
+    signal's borders can be introduced during that process, which in turn may
+    lead to inaccurate computations of the :ref:`DWT <ref-dwt>` at the signal's
+    ends.
 
-    PyWavelets provides several methods of signal extrapolation that can be used to
-    minimize this negative effect:
+    PyWavelets provides several methods of signal extrapolation that can be
+    used to minimize this negative effect:
 
-    zpd - zero-padding                   0  0 | x1 x2 ... xn | 0  0
-    cpd - constant-padding              x1 x1 | x1 x2 ... xn | xn xn
-    sym - symmetric-padding             x2 x1 | x1 x2 ... xn | xn xn-1
-    ppd - periodic-padding            xn-1 xn | x1 x2 ... xn | x1 x2
-    sp1 - smooth-padding               (1st derivative interpolation)
+    zero - zero-padding                   0  0 | x1 x2 ... xn | 0  0
+    constant - constant-padding              x1 x1 | x1 x2 ... xn | xn xn
+    symmetric - symmetric-padding             x2 x1 | x1 x2 ... xn | xn xn-1
+    periodic - periodic-padding            xn-1 xn | x1 x2 ... xn | x1 x2
+    smooth - smooth-padding               (1st derivative interpolation)
 
-    DWT performed for these extension modes is slightly redundant, but ensure
-    a perfect reconstruction for IDWT. To receive the smallest possible number of coefficients,
-    computations can be performed with the periodization mode:
+    DWT performed for these extension modes is slightly redundant, but ensure a
+    perfect reconstruction for IDWT. To receive the smallest possible number of
+    coefficients, computations can be performed with the periodization mode:
 
-    per - periodization - like periodic-padding but gives the smallest possible number
-          of decomposition coefficients. IDWT must be performed with the same mode.
+    periodization - like periodic-padding but gives the smallest possible
+                    number of decomposition coefficients. IDWT must be
+                    performed with the same mode.
 
     Examples
     --------
     >>> import pywt
-    >>> pywt.MODES.modes
-        ['zpd', 'cpd', 'sym', 'ppd', 'sp1', 'per']
+    >>> pywt.Modes.modes
+        ['zero', 'constant', 'symmetric', 'periodic', 'smooth', 'periodization']
     >>> # The different ways of passing wavelet and mode parameters
-    >>> (a, d) = pywt.dwt([1,2,3,4,5,6], 'db2', 'sp1')
-    >>> (a, d) = pywt.dwt([1,2,3,4,5,6], pywt.Wavelet('db2'), pywt.MODES.sp1)
+    >>> (a, d) = pywt.dwt([1,2,3,4,5,6], 'db2', 'smooth')
+    >>> (a, d) = pywt.dwt([1,2,3,4,5,6], pywt.Wavelet('db2'), pywt.Modes.smooth)
 
     Notes
     -----
-    Extending data in context of PyWavelets does not mean reallocation of the data
-    in computer's physical memory and copying values, but rather computing
-    the extra values only when they are needed.
-    This feature saves extra memory and CPU resources and helps to avoid page
-    swapping when handling relatively big data arrays on computers with low
-    physical memory.
+    Extending data in context of PyWavelets does not mean reallocation of the
+    data in computer's physical memory and copying values, but rather computing
+    the extra values only when they are needed.  This feature saves extra
+    memory and CPU resources and helps to avoid page swapping when handling
+    relatively big data arrays on computers with low physical memory.
 
     """
-    zpd = common.MODE_ZEROPAD
-    cpd = common.MODE_CONSTANT_EDGE
-    sym = common.MODE_SYMMETRIC
-    ppd = common.MODE_PERIODIC
-    sp1 = common.MODE_SMOOTH
-    per = common.MODE_PERIODIZATION
+    zero = common.MODE_ZEROPAD
+    constant = common.MODE_CONSTANT_EDGE
+    symmetric = common.MODE_SYMMETRIC
+    periodic = common.MODE_PERIODIC
+    smooth = common.MODE_SMOOTH
+    periodization = common.MODE_PERIODIZATION
 
-    modes = ["zpd", "cpd", "sym", "ppd", "sp1", "per"]
+    modes = ["zero", "constant", "symmetric", "periodic", "smooth",
+             "periodization"]
 
     def from_object(self, mode):
         if isinstance(mode, int):
@@ -94,16 +106,49 @@ class _Modes(object):
             m = mode
         else:
             try:
-                m = getattr(MODES, mode)
+                m = getattr(Modes, mode)
             except AttributeError:
                 raise ValueError("Unknown mode name '%s'." % mode)
 
         return m
 
+    def __getattr__(self, mode):
+        # catch deprecated mode names
+        if mode in _old_modes:
+            new_mode = Modes.modes[_old_modes.index(mode)]
+            warnings.warn(_attr_deprecation_msg.format(old=mode, new=new_mode),
+                          DeprecationWarning)
+            mode = new_mode
+        return Modes.__getattribute__(mode)
 
-# All capitals for backwards compatibility
-MODES = _Modes()
 
+Modes = _Modes()
+
+
+class _DeprecatedMODES(_Modes):
+    msg = ("MODES has been renamed to Modes and will be "
+           "removed in a future version of pywt.")
+
+    def __getattribute__(self, attr):
+        """Override so that deprecation warning is shown
+        every time MODES is used.
+
+        N.B. have to use __getattribute__ as well as __getattr__
+        to ensure warning on e.g. `MODES.symmetric`.
+        """
+        if not attr.startswith('_'):
+            warnings.warn(_DeprecatedMODES.msg, DeprecationWarning)
+        return _Modes.__getattribute__(self, attr)
+
+    def __getattr__(self, attr):
+        """Override so that deprecation warning is shown
+        every time MODES is used.
+        """
+        warnings.warn(_DeprecatedMODES.msg, DeprecationWarning)
+        return _Modes.__getattr__(self, attr)
+
+
+MODES = _DeprecatedMODES()
 
 ###############################################################################
 # Wavelet
@@ -536,6 +581,13 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
             s.append(x.rstrip())
         return u'\n'.join(s)
 
+    def __repr__(self):
+        repr = "{module}.{classname}(name='{name}', filter_bank={filter_bank})"
+        return repr.format(module=type(self).__module__,
+                           classname=type(self).__name__,
+                           name=self.name,
+                           filter_bank=self.filter_bank)
+
 
 cdef index_t get_keep_length(index_t output_length,
                              int level, index_t filter_length):
@@ -604,9 +656,9 @@ def dwt_max_level(data_len, filter_len):
         return common.dwt_max_level(data_len, filter_len)
 
 
-def dwt(object data, object wavelet, object mode='sym'):
+def dwt(object data, object wavelet, object mode='symmetric'):
     """
-    (cA, cD) = dwt(data, wavelet, mode='sym')
+    (cA, cD) = dwt(data, wavelet, mode='symmetric')
 
     Single level Discrete Wavelet Transform.
 
@@ -616,8 +668,8 @@ def dwt(object data, object wavelet, object mode='sym'):
         Input signal
     wavelet : Wavelet object or name
         Wavelet to use
-    mode : str, optional (default: 'sym')
-        Signal extension mode, see MODES
+    mode : str, optional (default: 'symmetric')
+        Signal extension mode, see Modes
 
     Returns
     -------
@@ -656,7 +708,7 @@ def dwt(object data, object wavelet, object mode='sym'):
     return _dwt(data, wavelet, mode)
 
 
-def _dwt(np.ndarray[data_t, ndim=1] data, object wavelet, object mode='sym'):
+def _dwt(np.ndarray[data_t, ndim=1] data, object wavelet, object mode='symmetric'):
     """See `dwt` docstring for details."""
     cdef np.ndarray[data_t, ndim=1, mode="c"] cA, cD
     cdef Wavelet w
@@ -693,7 +745,7 @@ def _dwt(np.ndarray[data_t, ndim=1] data, object wavelet, object mode='sym'):
     return (cA, cD)
 
 
-cpdef dwt_axis(np.ndarray data, object wavelet, object mode='sym', unsigned int axis=0):
+cpdef dwt_axis(np.ndarray data, object wavelet, object mode='symmetric', unsigned int axis=0):
     cdef Wavelet w = c_wavelet_from_object(wavelet)
     cdef common.MODE _mode = _try_mode(mode)
     cdef common.ArrayInfo data_info, output_info
@@ -741,7 +793,7 @@ cpdef dwt_axis(np.ndarray data, object wavelet, object mode='sym', unsigned int 
 
 
 cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d, object wavelet,
-                object mode='sym', unsigned int axis=0):
+                object mode='symmetric', unsigned int axis=0):
     cdef Wavelet w = c_wavelet_from_object(wavelet)
     cdef common.ArrayInfo a_info, d_info, output_info
     cdef np.ndarray output
@@ -805,9 +857,9 @@ cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d, object wavelet,
     return output
 
 
-def dwt_coeff_len(data_len, filter_len, mode='sym'):
+def dwt_coeff_len(data_len, filter_len, mode='symmetric'):
     """
-    dwt_coeff_len(data_len, filter_len, mode='sym')
+    dwt_coeff_len(data_len, filter_len, mode='symmetric')
 
     Returns length of dwt output for given data length, filter length and mode
 
@@ -817,8 +869,8 @@ def dwt_coeff_len(data_len, filter_len, mode='sym'):
         Data length.
     filter_len : int
         Filter length.
-    mode : str, optional (default: 'sym')
-        Signal extension mode, see MODES
+    mode : str, optional (default: 'symmetric')
+        Signal extension mode, see Modes
 
     Returns
     -------
@@ -856,7 +908,7 @@ def dwt_coeff_len(data_len, filter_len, mode='sym'):
 
 def _try_mode(mode):
     try:
-        return MODES.from_object(mode)
+        return Modes.from_object(mode)
     except ValueError as e:
         if "Unknown mode name" in str(e):
             raise
@@ -876,9 +928,9 @@ cdef np.dtype _check_dtype(data):
     return dt
 
 
-def idwt(cA, cD, object wavelet, object mode='sym', int correct_size=0):
+def idwt(cA, cD, object wavelet, object mode='symmetric', int correct_size=0):
     """
-    idwt(cA, cD, wavelet, mode='sym', correct_size=0)
+    idwt(cA, cD, wavelet, mode='symmetric', correct_size=0)
 
     Single level Inverse Discrete Wavelet Transform
 
@@ -892,8 +944,8 @@ def idwt(cA, cD, object wavelet, object mode='sym', int correct_size=0):
         with same shape as `cA`.
     wavelet : Wavelet object or name
         Wavelet to use
-    mode : str, optional (default: 'sym')
-        Signal extension mode, see MODES
+    mode : str, optional (default: 'symmetric')
+        Signal extension mode, see Modes
     correct_size : int, optional (default: 0)
         Under normal conditions (all data lengths dyadic) `cA` and `cD`
         coefficients lists must have the same lengths. With `correct_size`
@@ -951,7 +1003,7 @@ def idwt(cA, cD, object wavelet, object mode='sym', int correct_size=0):
 
 def _idwt(np.ndarray[data_t, ndim=1, mode="c"] cA,
           np.ndarray[data_t, ndim=1, mode="c"] cD,
-          object wavelet, object mode='sym', int correct_size=0):
+          object wavelet, object mode='symmetric', int correct_size=0):
     """See `idwt` for details"""
 
     cdef index_t input_len
@@ -1052,7 +1104,7 @@ def upcoef(part, coeffs, wavelet, level=1, take=0):
     --------
     >>> import pywt
     >>> data = [1,2,3,4,5,6]
-    >>> (cA, cD) = pywt.dwt(data, 'db2', 'sp1')
+    >>> (cA, cD) = pywt.dwt(data, 'db2', 'smooth')
     >>> pywt.upcoef('a', cA, 'db2') + pywt.upcoef('d', cD, 'db2')
     [-0.25       -0.4330127   1.          2.          3.          4.          5.
       6.          1.78589838 -1.03108891]
@@ -1140,9 +1192,9 @@ def _upcoef(part, np.ndarray[data_t, ndim=1, mode="c"] coeffs, wavelet,
     return rec
 
 
-def downcoef(part, data, wavelet, mode='sym', level=1):
+def downcoef(part, data, wavelet, mode='symmetric', level=1):
     """
-    downcoef(part, data, wavelet, mode='sym', level=1)
+    downcoef(part, data, wavelet, mode='symmetric', level=1)
 
     Partial Discrete Wavelet Transform data decomposition.
 
@@ -1162,7 +1214,7 @@ def downcoef(part, data, wavelet, mode='sym', level=1):
     wavelet : Wavelet object or name
         Wavelet to use
     mode : str, optional
-        Signal extension mode, see `MODES`.  Default is 'sym'.
+        Signal extension mode, see `Modes`.  Default is 'symmetric'.
     level : int, optional
         Decomposition level.  Default is 1.
 
@@ -1186,7 +1238,7 @@ def downcoef(part, data, wavelet, mode='sym', level=1):
 
 
 def _downcoef(part, np.ndarray[data_t, ndim=1, mode="c"] data,
-              object wavelet, object mode='sym', int level=1):
+              object wavelet, object mode='symmetric', int level=1):
     cdef np.ndarray[data_t, ndim=1, mode="c"] coeffs
     cdef int i, do_dec_a
     cdef index_t dec_len

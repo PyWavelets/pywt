@@ -12,7 +12,7 @@ __all__ = ["BaseNode", "Node", "WaveletPacket", "Node2D", "WaveletPacket2D"]
 import numpy as np
 
 from ._pywt import Wavelet, dwt, idwt, dwt_max_level
-from .multidim import dwt2, idwt2
+from ._multidim import dwt2, idwt2
 
 
 def get_graycode_order(level, x='a', y='d'):
@@ -351,7 +351,7 @@ class BaseNode(object):
                 if subnode is not None:
                     subnode.walk(func, args, kwargs, decompose)
 
-    def walk_depth(self, func, args=(), kwargs=None, decompose=False):
+    def walk_depth(self, func, args=(), kwargs=None, decompose=True):
         """
         Walk tree and call func on every node starting from the bottom-most
         nodes.
@@ -533,7 +533,7 @@ class WaveletPacket(Node):
         If None, it will be calculated based on the `wavelet` and `data`
         length using `pywt.dwt_max_level`.
     """
-    def __init__(self, data, wavelet, mode='sym', maxlevel=None):
+    def __init__(self, data, wavelet, mode='symmetric', maxlevel=None):
         super(WaveletPacket, self).__init__(None, data, "")
 
         if not isinstance(wavelet, Wavelet):
@@ -635,7 +635,7 @@ class WaveletPacket2D(Node2D):
         If None, it will be calculated based on the `wavelet` and `data`
         length using `pywt.dwt_max_level`.
     """
-    def __init__(self, data, wavelet, mode='sp1', maxlevel=None):
+    def __init__(self, data, wavelet, mode='smooth', maxlevel=None):
         super(WaveletPacket2D, self).__init__(None, data, "")
 
         if not isinstance(wavelet, Wavelet):

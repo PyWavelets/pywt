@@ -31,7 +31,7 @@ Start with preparing test data:
 
 Now create a :class:`2D Wavelet Packet <WaveletPacket2D>` object:
 
-    >>> wp = pywt.WaveletPacket2D(data=x, wavelet='db1', mode='sym')
+    >>> wp = pywt.WaveletPacket2D(data=x, wavelet='db1', mode='symmetric')
 
 The input *data* and decomposition coefficients are stored in the
 :attr:`WaveletPacket2D.data` attribute:
@@ -257,7 +257,7 @@ Reconstructing data from Wavelet Packets:
 Let's create a new empty 2D Wavelet Packet structure and set its nodes
 values with known data from the previous examples:
 
-    >>> new_wp = pywt.WaveletPacket2D(data=None, wavelet='db1', mode='sym')
+    >>> new_wp = pywt.WaveletPacket2D(data=None, wavelet='db1', mode='symmetric')
 
     >>> new_wp['vh'] = wp['vh'].data # [[0.0, 0.0], [0.0, 0.0]]
     >>> new_wp['vv'] = wp['vh'].data # [[0.0, 0.0], [0.0, 0.0]]
@@ -384,7 +384,7 @@ Lazy evaluation:
           this example.
 
 >>> x = numpy.array([[1, 2, 3, 4, 5, 6, 7, 8]] * 8)
->>> wp = pywt.WaveletPacket2D(data=x, wavelet='db1', mode='sym')
+>>> wp = pywt.WaveletPacket2D(data=x, wavelet='db1', mode='symmetric')
 
 1) At first the wp's attribute `a` is ``None``
 

@@ -23,7 +23,7 @@ Create Wavelet Packet structure
 Ok, let's create a sample :class:`WaveletPacket`:
 
     >>> x = [1, 2, 3, 4, 5, 6, 7, 8]
-    >>> wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='sym')
+    >>> wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='symmetric')
 
 The input *data* and decomposition coefficients are stored in the
 :attr:`WaveletPacket.data` attribute:
@@ -53,7 +53,7 @@ Accessing subnodes:
 ~~~~~~~~~~~~~~~~~~~
 
 >>> x = [1, 2, 3, 4, 5, 6, 7, 8]
->>> wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='sym')
+>>> wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='symmetric')
 
 First check what is the maximum level of decomposition:
 
@@ -116,7 +116,7 @@ Each tree node has a set of attributes: :attr:`~Node.data`, :attr:`~Node.path`,
 :attr:`~Node.maxlevel` and :attr:`~Node.mode`.
 
 >>> x = [1, 2, 3, 4, 5, 6, 7, 8]
->>> wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='sym')
+>>> wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='symmetric')
 
 >>> print wp['ad'].data
 [-2. -2.]
@@ -144,7 +144,7 @@ Collecting nodes
 ~~~~~~~~~~~~~~~~
 
 >>> x = [1, 2, 3, 4, 5, 6, 7, 8]
->>> wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='sym')
+>>> wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='symmetric')
 
 
 We can get all nodes on the particular level either in ``natural`` order:
@@ -165,13 +165,13 @@ Reconstructing data from Wavelet Packets:
 -----------------------------------------
 
 >>> x = [1, 2, 3, 4, 5, 6, 7, 8]
->>> wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='sym')
+>>> wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='symmetric')
 
 
 Now create a new :class:`Wavelet Packet <WaveletPacket>` and set its nodes with
 some data.
 
-    >>> new_wp = pywt.WaveletPacket(data=None, wavelet='db1', mode='sym')
+    >>> new_wp = pywt.WaveletPacket(data=None, wavelet='db1', mode='symmetric')
 
     >>> new_wp['aa'] = wp['aa'].data
     >>> new_wp['ad'] = [-2., -2.]
@@ -214,7 +214,7 @@ Removing nodes from Wavelet Packet tree:
 Let's create a sample data:
 
     >>> x = [1, 2, 3, 4, 5, 6, 7, 8]
-    >>> wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='sym')
+    >>> wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='symmetric')
 
 First, start with a tree decomposition at level 2. Leaf nodes in the tree are:
 
@@ -274,7 +274,7 @@ Lazy evaluation:
           this example.
 
 >>> x = [1, 2, 3, 4, 5, 6, 7, 8]
->>> wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='sym')
+>>> wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='symmetric')
 
 1) At first the wp's attribute `a` is None
 

@@ -22,8 +22,12 @@ if _matlab_missing:
 size_set = 'reduced'
 
 # list of mode names in pywt and matlab
-modes = [('zpd', 'zpd'), ('cpd', 'sp0'), ('sym', 'sym'),
-         ('ppd', 'ppd'), ('sp1', 'sp1'), ('per', 'per')]
+modes = [('zero', 'zpd'),
+         ('constant', 'sp0'),
+         ('symmetric', 'sym'),
+         ('periodic', 'ppd'),
+         ('smooth', 'sp1'),
+         ('periodization', 'per')]
 
 families = ('db', 'sym', 'coif', 'bior', 'rbio')
 wavelets = sum([pywt.wavelist(name) for name in families], [])

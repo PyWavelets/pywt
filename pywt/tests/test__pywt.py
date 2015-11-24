@@ -3,14 +3,14 @@
 from __future__ import division, print_function, absolute_import
 
 import numpy as np
-from numpy.testing import run_module_suite, assert_allclose
+from numpy.testing import run_module_suite, assert_allclose, assert_
 
 import pywt
 
 
 def test_upcoef_docstring():
     data = [1, 2, 3, 4, 5, 6]
-    (cA, cD) = pywt.dwt(data, 'db2', 'sp1')
+    (cA, cD) = pywt.dwt(data, 'db2', 'smooth')
     rec = pywt.upcoef('a', cA, 'db2') + pywt.upcoef('d', cD, 'db2')
     expect = [-0.25, -0.4330127, 1., 2., 3., 4., 5.,
               6., 1.78589838, -1.03108891]
@@ -68,6 +68,15 @@ def test_upcoef_multilevel():
     # call with level=nlevels once
     a3 = pywt.upcoef('a', r, 'haar', level=nlevels)
     assert_allclose(a1, a3)
+
+
+def test_wavelet_repr():
+    from pywt import _pywt
+    wavelet = _pywt.Wavelet('sym8')
+
+    repr_wavelet = eval(wavelet.__repr__())
+
+    assert_(wavelet.__repr__() == repr_wavelet.__repr__())
 
 
 if __name__ == '__main__':

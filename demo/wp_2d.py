@@ -12,7 +12,7 @@ im = Image.open("data/aero.png").convert('L')
 arr = np.fromstring(im.tostring(), np.uint8)
 arr.shape = (im.size[1], im.size[0])
 
-wp2 = WaveletPacket2D(arr, 'db2', 'sym', maxlevel=2)
+wp2 = WaveletPacket2D(arr, 'db2', 'symmetric', maxlevel=2)
 
 # Show original figure
 plt.imshow(arr, interpolation="nearest", cmap=plt.cm.gray)

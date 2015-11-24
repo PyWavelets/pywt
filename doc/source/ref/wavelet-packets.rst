@@ -242,7 +242,7 @@ WaveletPacket and WaveletPacket tree Node
 
 .. class:: WaveletPacket(Node)
 
-  .. method:: __init__(data, wavelet, [mode='sym', [maxlevel=None]])
+  .. method:: __init__(data, wavelet, [mode='symmetric', [maxlevel=None]])
 
      :param data: data associated with the node. 1D numeric array.
 
@@ -297,7 +297,7 @@ WaveletPacket2D and WaveletPacket2D tree Node2D
 
 .. class:: WaveletPacket2D(Node2D)
 
-  .. method:: __init__(data, wavelet, [mode='sym', [maxlevel=None]])
+  .. method:: __init__(data, wavelet, [mode='symmetric', [maxlevel=None]])
 
      :param data: data associated with the node. 2D numeric array.
 

@@ -24,7 +24,7 @@ Multilevel DWT decomposition
 >>> pywt.dwt_max_level(len(x), db1)
 3
 
->>> cA2, cD2, cD1 = pywt.wavedec(x, db1, mode='cpd', level=2)
+>>> cA2, cD2, cD1 = pywt.wavedec(x, db1, mode='constant', level=2)
 
 
 Multilevel IDWT reconstruction

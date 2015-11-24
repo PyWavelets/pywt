@@ -16,7 +16,7 @@ data1 = np.concatenate((np.arange(1, 400),
 x = np.linspace(0.082, 2.128, num=1024)[::-1]
 data2 = np.sin(40 * np.log(x)) * np.sign((np.log(x)))
 
-mode = pywt.MODES.sp1DWT = 1
+mode = pywt.Modes.sp1DWT = 1
 
 
 def plot_coeffs(data, w, title, use_dwt=True):

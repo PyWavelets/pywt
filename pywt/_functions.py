@@ -9,16 +9,23 @@ Other wavelet related functions.
 
 from __future__ import division, print_function, absolute_import
 
+import warnings
+
 import numpy as np
 from numpy.fft import fft
 
 from ._pywt import Wavelet
 
 
-__all__ = ["intwave", "centfrq", "scal2frq", "qmf", "orthfilt"]
+__all__ = ["integrate_wavelet", "central_frequency", "scale2frequency", "qmf",
+           "orthogonal_filter_bank",
+           "intwave", "centrfrq", "scal2frq", "orthfilt"]
 
 
 WAVELET_CLASSES = (Wavelet)
+
+_DEPRECATION_MSG = ("`{old}` has been renamed to `{new}` and will "
+                    "be removed in a future version of pywt.")
 
 
 def wavelet_for_name(name):
@@ -39,16 +46,39 @@ def _integrate(arr, step):
     return integral
 
 
-def intwave(wavelet, precision=8):
+def intwave(*args, **kwargs):
+    msg = _DEPRECATION_MSG.format(old='intwave', new='integrate_wavelet')
+    warnings.warn(msg, DeprecationWarning)
+    return integrate_wavelet(*args, **kwargs)
+
+
+def centrfrq(*args, **kwargs):
+    msg = _DEPRECATION_MSG.format(old='centrfrq', new='central_frequency')
+    warnings.warn(msg, DeprecationWarning)
+    return central_frequency(*args, **kwargs)
+
+
+def scal2frq(*args, **kwargs):
+    msg = _DEPRECATION_MSG.format(old='scal2frq', new='scale2frequency')
+    warnings.warn(msg, DeprecationWarning)
+    return scale2frequency(*args, **kwargs)
+
+
+def orthfilt(*args, **kwargs):
+    msg = _DEPRECATION_MSG.format(old='orthfilt', new='orthogonal_filter_bank')
+    warnings.warn(msg, DeprecationWarning)
+    return orthogonal_filter_bank(*args, **kwargs)
+
+
+def integrate_wavelet(wavelet, precision=8):
     """
     Integrate `psi` wavelet function from -Inf to x using the rectangle
     integration method.
 
     Parameters
     ----------
-    wavelet : Wavelet instance, str or tuple
+    wavelet : Wavelet instance or str
         Wavelet to integrate.  If a string, should be the name of a wavelet.
-        If a tuple, should contain ``(wavelet function approx., x grid)``.
     precision : int, optional
         Precision that will be used for wavelet function
         approximation computed with the wavefun(level=precision)
@@ -60,51 +90,53 @@ def intwave(wavelet, precision=8):
         for orthogonal wavelets
     [int_psi_d, int_psi_r, x] :
         for other wavelets
-    [int_function, x] :
-        for (function approx., x grid) pair
 
-    Notes
-    -----
-    (function_approx, x) :
-        Function to integrate on the x grid. Used instead
-        of Wavelet object to allow custom wavelet functions.
 
     Examples
     --------
     >>> import pywt
     >>> wavelet1 = pywt.Wavelet('db2')
-    >>> [int_psi, x] = pywt.intwave(wavelet1, precision=5)
+    >>> [int_psi, x] = pywt.integrate_wavelet(wavelet1, precision=5)
     >>> wavelet2 = pywt.Wavelet('bior1.3')
-    >>> [int_psi_d, int_psi_r, x] = pywt.intwave(wavelet2, precision=5)
+    >>> [int_psi_d, int_psi_r, x] = pywt.integrate_wavelet(wavelet2,
+                                                           precision=5)
 
     """
     # FIXME: this function should really use scipy.integrate.quad
 
-    if isinstance(wavelet, tuple):
+    if type(wavelet) is str:
+        wavelet = wavelet_for_name(wavelet)
+    elif type(wavelet) in (tuple, list):
+        msg = ("Integration of a general signal is deprecated "
+               "and will be removed in a future version of pywt.")
+        warnings.warn(msg, DeprecationWarning)
+    elif not isinstance(wavelet, WAVELET_CLASSES):
+        print("wavelet must be either string or Wavelet instance!")
+
+    if type(wavelet) in (tuple, list):
         psi, x = np.asarray(wavelet[0]), np.asarray(wavelet[1])
         step = x[1] - x[0]
         return _integrate(psi, step), x
 
-    else:
-        if not isinstance(wavelet, WAVELET_CLASSES):
-            wavelet = wavelet_for_name(wavelet)
+    functions_approximations = wavelet.wavefun(precision)
 
-        functions_approximations = wavelet.wavefun(precision)
-        if len(functions_approximations) == 2:      # continuous wavelet
-            psi, x = functions_approximations
-            step = x[1] - x[0]
-            return _integrate(psi, step), x
-        elif len(functions_approximations) == 3:    # orthogonal wavelet
-            phi, psi, x = functions_approximations
-            step = x[1] - x[0]
-            return _integrate(psi, step), x
-        else:                                       # biorthogonal wavelet
-            phi_d, psi_d, phi_r, psi_r, x = functions_approximations
-            step = x[1] - x[0]
-            return _integrate(psi_d, step), _integrate(psi_r, step), x
+    if len(functions_approximations) == 2:      # continuous wavelet
+        psi, x = functions_approximations
+        step = x[1] - x[0]
+        return _integrate(psi, step), x
+
+    elif len(functions_approximations) == 3:    # orthogonal wavelet
+        phi, psi, x = functions_approximations
+        step = x[1] - x[0]
+        return _integrate(psi, step), x
+
+    else:                                       # biorthogonal wavelet
+        phi_d, psi_d, phi_r, psi_r, x = functions_approximations
+        step = x[1] - x[0]
+        return _integrate(psi_d, step), _integrate(psi_r, step), x
 
 
-def centfrq(wavelet, precision=8):
+def central_frequency(wavelet, precision=8):
     """
     Computes the central frequency of the `psi` wavelet function.
 
@@ -112,7 +144,6 @@ def centfrq(wavelet, precision=8):
     ----------
     wavelet : Wavelet instance, str or tuple
         Wavelet to integrate.  If a string, should be the name of a wavelet.
-        If a tuple, should contain ``(wavelet function approx., x grid)``.
     precision : int, optional
         Precision that will be used for wavelet function
         approximation computed with the wavefun(level=precision)
@@ -122,27 +153,21 @@ def centfrq(wavelet, precision=8):
     -------
     scalar
 
-    Notes
-    -----
-    (function_approx, xgrid) :
-        Function defined on xgrid. Used instead
-        of Wavelet object to allow custom wavelet functions.
     """
 
-    # FIXME: `wavelet` handling should be identical to intwave, factor out
-    if isinstance(wavelet, tuple):
-        psi, x = np.asarray(wavelet[0]), np.asarray(wavelet[1])
-    else:
-        if not isinstance(wavelet, WAVELET_CLASSES):
-            wavelet = wavelet_for_name(wavelet)
-        functions_approximations = wavelet.wavefun(precision)
+    if type(wavelet) is str:
+        wavelet = wavelet_for_name(wavelet)
+    elif not isinstance(wavelet, WAVELET_CLASSES):
+        print("wavelet must be either string or Wavelet instance!")
 
-        if len(functions_approximations) == 2:
-            psi, x = functions_approximations
-        else:
-            # (psi, x)   for (phi, psi, x)
-            # (psi_d, x) for (phi_d, psi_d, phi_r, psi_r, x)
-            psi, x = functions_approximations[1], functions_approximations[-1]
+    functions_approximations = wavelet.wavefun(precision)
+
+    if len(functions_approximations) == 2:
+        psi, x = functions_approximations
+    else:
+        # (psi, x)   for (phi, psi, x)
+        # (psi_d, x) for (phi_d, psi_d, phi_r, psi_r, x)
+        psi, x = functions_approximations[1], functions_approximations[-1]
 
     domain = float(x[-1] - x[0])
     assert domain > 0
@@ -154,17 +179,14 @@ def centfrq(wavelet, precision=8):
     return 1.0 / (domain / (index - 1))
 
 
-def scal2frq(wavelet, scale, delta, precision=8):
+def scale2frequency(wavelet, scale, precision=8):
     """
 
     Parameters
     ----------
-    wavelet : Wavelet instance, str or tuple
+    wavelet : Wavelet instance or str
         Wavelet to integrate.  If a string, should be the name of a wavelet.
-        If a tuple, should contain ``(wavelet function approx., x grid)``.
     scale : scalar
-    delta : scalar
-        sampling
     precision : int, optional
         Precision that will be used for wavelet function approximation computed
         with ``wavelet.wavefun(level=precision)``.  Default is 8.
@@ -173,14 +195,8 @@ def scal2frq(wavelet, scale, delta, precision=8):
     -------
     freq : scalar
 
-    Notes
-    -----
-    (function_approx, xgrid) :
-        Function defined on xgrid. Used instead
-        of Wavelet object to allow custom wavelet functions.
-
     """
-    return centfrq(wavelet, precision=precision) / (scale * delta)
+    return central_frequency(wavelet, precision=precision) / scale
 
 
 def qmf(filter):
@@ -206,7 +222,7 @@ def qmf(filter):
     return qm_filter
 
 
-def orthfilt(scaling_filter):
+def orthogonal_filter_bank(scaling_filter):
     """
     Returns the orthogonal filter bank.
 

@@ -11,7 +11,7 @@ import pywt
 
 def test_traversing_tree_2d():
     x = np.array([[1, 2, 3, 4, 5, 6, 7, 8]] * 8, dtype=np.float64)
-    wp = pywt.WaveletPacket2D(data=x, wavelet='db1', mode='sym')
+    wp = pywt.WaveletPacket2D(data=x, wavelet='db1', mode='symmetric')
 
     assert_(np.all(wp.data == x))
     assert_(wp.path == '')
@@ -35,7 +35,7 @@ def test_traversing_tree_2d():
 
 def test_accessing_node_atributes_2d():
     x = np.array([[1, 2, 3, 4, 5, 6, 7, 8]] * 8, dtype=np.float64)
-    wp = pywt.WaveletPacket2D(data=x, wavelet='db1', mode='sym')
+    wp = pywt.WaveletPacket2D(data=x, wavelet='db1', mode='symmetric')
 
     assert_allclose(wp['av'].data, np.zeros((2, 2)) - 4, rtol=1e-12)
     assert_(wp['av'].path == 'av')
@@ -46,12 +46,12 @@ def test_accessing_node_atributes_2d():
                     rtol=1e-12)
     assert_(wp['av'].level == 2)
     assert_(wp['av'].maxlevel == 3)
-    assert_(wp['av'].mode == 'sym')
+    assert_(wp['av'].mode == 'symmetric')
 
 
 def test_collecting_nodes_2d():
     x = np.array([[1, 2, 3, 4, 5, 6, 7, 8]] * 8, dtype=np.float64)
-    wp = pywt.WaveletPacket2D(data=x, wavelet='db1', mode='sym')
+    wp = pywt.WaveletPacket2D(data=x, wavelet='db1', mode='symmetric')
 
     assert_(len(wp.get_level(0)) == 1)
     assert_(wp.get_level(0)[0].path == '')
@@ -84,9 +84,9 @@ def test_collecting_nodes_2d():
 
 def test_data_reconstruction_2d():
     x = np.array([[1, 2, 3, 4, 5, 6, 7, 8]] * 8, dtype=np.float64)
-    wp = pywt.WaveletPacket2D(data=x, wavelet='db1', mode='sym')
+    wp = pywt.WaveletPacket2D(data=x, wavelet='db1', mode='symmetric')
 
-    new_wp = pywt.WaveletPacket2D(data=None, wavelet='db1', mode='sym')
+    new_wp = pywt.WaveletPacket2D(data=None, wavelet='db1', mode='symmetric')
     new_wp['vh'] = wp['vh'].data
     new_wp['vv'] = wp['vh'].data
     new_wp['vd'] = np.zeros((2, 2), dtype=np.float64)
@@ -105,9 +105,9 @@ def test_data_reconstruction_2d():
 
 def test_data_reconstruction_delete_nodes_2d():
     x = np.array([[1, 2, 3, 4, 5, 6, 7, 8]] * 8, dtype=np.float64)
-    wp = pywt.WaveletPacket2D(data=x, wavelet='db1', mode='sym')
+    wp = pywt.WaveletPacket2D(data=x, wavelet='db1', mode='symmetric')
 
-    new_wp = pywt.WaveletPacket2D(data=None, wavelet='db1', mode='sym')
+    new_wp = pywt.WaveletPacket2D(data=None, wavelet='db1', mode='symmetric')
     new_wp['vh'] = wp['vh'].data
     new_wp['vv'] = wp['vh'].data
     new_wp['vd'] = np.zeros((2, 2), dtype=np.float64)
@@ -136,7 +136,7 @@ def test_lazy_evaluation_2D():
     # Note: internal implementation detail not to be relied on.  Testing for
     # now for backwards compatibility, but this test may be broken in needed.
     x = np.array([[1, 2, 3, 4, 5, 6, 7, 8]] * 8)
-    wp = pywt.WaveletPacket2D(data=x, wavelet='db1', mode='sym')
+    wp = pywt.WaveletPacket2D(data=x, wavelet='db1', mode='symmetric')
 
     assert_(wp.a is None)
     assert_allclose(wp['a'].data, np.array([[3., 7., 11., 15.]] * 4),
