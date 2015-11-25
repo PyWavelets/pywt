@@ -108,6 +108,7 @@ def test_waverec_all_wavelets_modes():
 # 1d multilevel swt tests
 ####
 
+
 def test_swt_decomposition():
     x = [3, 7, 1, 3, -2, 6, 4, 6]
     db1 = pywt.Wavelet('db1')
@@ -205,10 +206,10 @@ def test_swt2_iswt2_integration():
         Y = pywt.iswt2(coeffs, current_wavelet)
         assert_allclose(Y, X, rtol=1e-5, atol=1e-5)
 
-
 ####
 # 2d multilevel dwt function tests
 ####
+
 
 def test_waverec2_accuracies():
     rstate = np.random.RandomState(1234)
@@ -273,6 +274,7 @@ def test_waverec2_none_coeffs():
 ####
 # nd multilevel dwt function tests
 ####
+
 
 def test_waverecn():
     rstate = np.random.RandomState(1234)

@@ -5,7 +5,7 @@ from __future__ import division, print_function, absolute_import
 import numpy as np
 from itertools import combinations
 from numpy.testing import (run_module_suite, assert_allclose, assert_,
-                           assert_raises, assert_warns)
+                           assert_raises, assert_warns, assert_equal)
 
 import pywt
 
