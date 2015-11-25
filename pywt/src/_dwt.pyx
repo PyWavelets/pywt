@@ -196,6 +196,7 @@ cpdef _idwt(np.ndarray[data_t, ndim=1, mode="c"] cA,
     return rec
 
 
+# TODO: type wavelet, part
 cpdef _upcoef(part, np.ndarray[data_t, ndim=1, mode="c"] coeffs, wavelet,
               int level, int take):
     cdef Wavelet w
