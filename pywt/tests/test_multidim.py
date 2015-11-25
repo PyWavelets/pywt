@@ -212,50 +212,50 @@ def test_dwt2_idwt2_dtypes():
         assert_(x_roundtrip.dtype == dt_out, "idwt2: " + errmsg)
 
 
-def test_dwtn_axis():
+def test_dwtn_axes():
     data = np.array([[0, 1, 2, 3],
                      [1, 1, 1, 1],
                      [1, 4, 2, 8]])
 
-    coefs = pywt.dwtn(data, 'haar', axis=(1,))
+    coefs = pywt.dwtn(data, 'haar', axes=(1,))
     expected_a = list(map(lambda x: pywt.dwt(x, 'haar')[0], data))
     assert_equal(coefs['a'], expected_a)
     expected_d = list(map(lambda x: pywt.dwt(x, 'haar')[1], data))
     assert_equal(coefs['d'], expected_d)
 
-    coefs = pywt.dwtn(data, 'haar', axis=(1, 1))
+    coefs = pywt.dwtn(data, 'haar', axes=(1, 1))
     expected_aa = list(map(lambda x: pywt.dwt(x, 'haar')[0], expected_a))
     assert_equal(coefs['aa'], expected_aa)
     expected_ad = list(map(lambda x: pywt.dwt(x, 'haar')[1], expected_a))
     assert_equal(coefs['ad'], expected_ad)
 
 
-def test_idwtn_axis():
+def test_idwtn_axes():
     data = np.array([[0, 1, 2, 3],
                      [1, 1, 1, 1],
                      [1, 4, 2, 8]])
-    coefs = pywt.dwtn(data, 'haar', axis=(1, 1))
-    assert_allclose(pywt.idwtn(coefs, 'haar', axis=(1, 1)), data, atol=1e-14)
+    coefs = pywt.dwtn(data, 'haar', axes=(1, 1))
+    assert_allclose(pywt.idwtn(coefs, 'haar', axes=(1, 1)), data, atol=1e-14)
 
 
-def test_idwt2_axis():
+def test_idwt2_axes():
     data = np.array([[0, 1, 2, 3],
                      [1, 1, 1, 1],
                      [1, 4, 2, 8]])
-    coefs = pywt.dwt2(data, 'haar', axis=(1, 1))
-    assert_allclose(pywt.idwt2(coefs, 'haar', axis=(1, 1)), data, atol=1e-14)
+    coefs = pywt.dwt2(data, 'haar', axes=(1, 1))
+    assert_allclose(pywt.idwt2(coefs, 'haar', axes=(1, 1)), data, atol=1e-14)
 
 
-def test_negative_axis():
+def test_negative_axes():
     data = np.array([[0, 1, 2, 3],
                      [1, 1, 1, 1],
                      [1, 4, 2, 8]])
-    coefs1 = pywt.dwtn(data, 'haar', axis=(1, 1))
-    coefs2 = pywt.dwtn(data, 'haar', axis=(-1, -1))
+    coefs1 = pywt.dwtn(data, 'haar', axes=(1, 1))
+    coefs2 = pywt.dwtn(data, 'haar', axes=(-1, -1))
     assert_equal(coefs1, coefs2)
 
-    rec1 = pywt.idwtn(coefs1, 'haar', axis=(1, 1))
-    rec2 = pywt.idwtn(coefs1, 'haar', axis=(-1, -1))
+    rec1 = pywt.idwtn(coefs1, 'haar', axes=(1, 1))
+    rec2 = pywt.idwtn(coefs1, 'haar', axes=(-1, -1))
     assert_equal(rec1, rec2)
 
 
