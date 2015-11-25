@@ -2,7 +2,6 @@
 # Windows
 # https://ci.appveyor.com/project/PyWavelets/pywt
 
-
 environment:
   global:
     # SDK v7.0 MSVC Express 2008's SetEnv.cmd script will fail if the
