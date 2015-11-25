@@ -3,7 +3,7 @@ from _pywt import _try_mode
 
 cimport common, c_wt
 
-cpdef _dwt(np.ndarray[data_t, ndim=1] data, object wavelet, object mode='symmetric'):
+cpdef _dwt(np.ndarray[data_t, ndim=1] data, object wavelet, object mode):
     """See `dwt` docstring for details."""
     cdef np.ndarray[data_t, ndim=1, mode="c"] cA, cD
     cdef Wavelet w
@@ -41,7 +41,7 @@ cpdef _dwt(np.ndarray[data_t, ndim=1] data, object wavelet, object mode='symmetr
 
 
 cpdef _downcoef(part, np.ndarray[data_t, ndim=1, mode="c"] data,
-                object wavelet, object mode='symmetric', int level=1):
+                object wavelet, object mode, int level):
     cdef np.ndarray[data_t, ndim=1, mode="c"] coeffs
     cdef int i, do_dec_a
     cdef Wavelet w
@@ -95,7 +95,7 @@ cpdef _downcoef(part, np.ndarray[data_t, ndim=1, mode="c"] data,
     return coeffs
 
 
-cpdef dwt_axis(np.ndarray data, object wavelet, object mode='symmetric', unsigned int axis=0):
+cpdef dwt_axis(np.ndarray data, object wavelet, object mode, unsigned int axis):
     cdef Wavelet w = c_wavelet_from_object(wavelet)
     cdef common.MODE _mode = _try_mode(mode)
     cdef common.ArrayInfo data_info, output_info
@@ -144,7 +144,7 @@ cpdef dwt_axis(np.ndarray data, object wavelet, object mode='symmetric', unsigne
 
 cpdef _idwt(np.ndarray[data_t, ndim=1, mode="c"] cA,
             np.ndarray[data_t, ndim=1, mode="c"] cD,
-            object wavelet, object mode='symmetric'):
+            object wavelet, object mode):
     """See `idwt` for details"""
 
     cdef size_t input_len, rec_len
@@ -197,7 +197,7 @@ cpdef _idwt(np.ndarray[data_t, ndim=1, mode="c"] cA,
 
 
 cpdef _upcoef(part, np.ndarray[data_t, ndim=1, mode="c"] coeffs, wavelet,
-              int level=1, int take=0):
+              int level, int take):
     cdef Wavelet w
     cdef np.ndarray[data_t, ndim=1, mode="c"] rec
     cdef int i, do_rec_a
@@ -267,7 +267,7 @@ cpdef _upcoef(part, np.ndarray[data_t, ndim=1, mode="c"] coeffs, wavelet,
 
 
 cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d, object wavelet,
-                object mode='symmetric', unsigned int axis=0):
+                object mode, unsigned int axis):
     cdef Wavelet w = c_wavelet_from_object(wavelet)
     cdef common.ArrayInfo a_info, d_info, output_info
     cdef np.ndarray output
