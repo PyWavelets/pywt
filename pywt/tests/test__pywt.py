@@ -79,5 +79,13 @@ def test_wavelet_repr():
     assert_(wavelet.__repr__() == repr_wavelet.__repr__())
 
 
+def test_dwt_max_level():
+    assert_(pywt.dwt_max_level(16, 2) == 4)
+    assert_(pywt.dwt_max_level(16, 8) == 1)
+    assert_(pywt.dwt_max_level(16, 9) == 1)
+    assert_(pywt.dwt_max_level(16, 10) == 0)
+    assert_(pywt.dwt_max_level(16, 18) == 0)
+
+
 if __name__ == '__main__':
     run_module_suite()
