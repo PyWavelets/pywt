@@ -66,7 +66,7 @@ size_t swt_buffer_length(size_t input_len){
 }
 
 unsigned char dwt_max_level(size_t input_len, size_t filter_len){
-    if(input_len < 1 || filter_len < 2)
+    if(input_len < 1 || filter_len < 2 || input_len < filter_len)
         return 0;
 
     return uint_log2(input_len/(filter_len-1));
