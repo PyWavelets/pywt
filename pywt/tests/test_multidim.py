@@ -238,6 +238,14 @@ def test_idwtn_axis():
     assert_allclose(pywt.idwtn(coefs, 'haar', axis=(1, 1)), data, atol=1e-14)
 
 
+def test_idwt2_axis():
+    data = np.array([[0, 1, 2, 3],
+                     [1, 1, 1, 1],
+                     [1, 4, 2, 8]])
+    coefs = pywt.dwt2(data, 'haar', axis=(1, 1))
+    assert_allclose(pywt.idwt2(coefs, 'haar', axis=(1, 1)), data, atol=1e-14)
+
+
 def test_negative_axis():
     data = np.array([[0, 1, 2, 3],
                      [1, 1, 1, 1],

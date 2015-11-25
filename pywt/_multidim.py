@@ -106,7 +106,7 @@ def idwt2(coeffs, wavelet, mode='symmetric', axis=None):
         raise ValueError("Expected 2 axes")
 
     coeffs = {'aa': LL, 'da': HL, 'ad': LH, 'dd': HH}
-    return idwtn(coeffs, wavelet, mode)
+    return idwtn(coeffs, wavelet, mode, axis)
 
 
 def dwtn(data, wavelet, mode='symmetric', axis=None):
