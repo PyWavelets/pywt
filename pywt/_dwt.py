@@ -3,6 +3,7 @@ from ._extensions._dwt import _dwt, _idwt, _upcoef, _downcoef
 
 import numpy as np
 
+
 def dwt(data, wavelet, mode='symmetric'):
     """
     (cA, cD) = dwt(data, wavelet, mode='symmetric')
@@ -45,7 +46,7 @@ def dwt(data, wavelet, mode='symmetric'):
         data = np.asarray(data)
         cA_r, cD_r = dwt(data.real, wavelet, mode)
         cA_i, cD_i = dwt(data.imag, wavelet, mode)
-        return  (cA_r + 1j*cA_i, cD_r + 1j*cD_i)
+        return (cA_r + 1j*cA_i, cD_r + 1j*cD_i)
 
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(data)
