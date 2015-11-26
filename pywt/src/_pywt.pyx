@@ -12,7 +12,7 @@ import warnings
 cimport c_wt
 cimport common
 
-from _dwt cimport _dwt, _downcoef, dwt_axis, _idwt, _upcoef, idwt_axis
+from ._dwt cimport _upcoef
 
 from libc.math cimport pow, sqrt
 

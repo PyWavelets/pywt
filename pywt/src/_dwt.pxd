@@ -1,5 +1,5 @@
+from ._pywt cimport data_t, index_t, Wavelet
 cimport numpy as np
-from _pywt cimport data_t, index_t
 
 cpdef _dwt(np.ndarray[data_t, ndim=1] data, object wavelet, object mode)
 

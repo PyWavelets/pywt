@@ -10,19 +10,29 @@ def configuration(parent_package='', top_path=None):
 
     config.add_data_dir('tests')
 
-    sources = ["_pywt", "_dwt",
-               "c/common", "c/convolution", "c/wavelets", "c/wt"]
+    sources = ["c/common", "c/convolution", "c/wavelets", "c/wt"]
     source_templates = ["c/convolution", "c/wt"]
     headers = ["c/templating", "c/wavelets_coeffs"]
     header_templates = ["c/convolution", "c/wt", "c/wavelets_coeffs"]
 
+    sources = ["src/{0}.c".format(s) for s in sources]
+    depends = (["src/{0}.template.c".format(s) for s in source_templates]
+               + ["src/{0}.template.h".format(s) for s in header_templates]
+               + ["src/{0}.h".format(s) for s in headers]
+               + ["src/{0}.h".format(s) for s in sources])
+
     config.add_extension(
         '_extensions._pywt',
-        sources=["src/{0}.c".format(s) for s in sources],
-        depends=(["src/{0}.template.c".format(s) for s in source_templates]
-                 + ["src/{0}.template.h".format(s) for s in header_templates]
-                 + ["src/{0}.h".format(s) for s in headers]
-                 + ["src/{0}.h".format(s) for s in sources]),
+        sources=["src/_pywt.c"] + sources,
+        depends=depends,
+        include_dirs=["src", "src/c", np.get_include()],
+        define_macros=[("PY_EXTENSION", None)],
+    )
+
+    config.add_extension(
+        '_extensions._dwt',
+        sources=["src/_dwt.c"] + sources,
+        depends=depends,
         include_dirs=["src", "src/c", np.get_include()],
         define_macros=[("PY_EXTENSION", None)],
     )
