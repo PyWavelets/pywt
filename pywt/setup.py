@@ -15,7 +15,7 @@ def configuration(parent_package='', top_path=None):
     headers = ["c/templating", "c/wavelets_coeffs"]
     header_templates = ["c/convolution", "c/wt", "c/wavelets_coeffs"]
 
-    sources = ["_extensions/{0}.c".format(s) for s in sources]
+    c_files = ["_extensions/{0}.c".format(s) for s in sources]
     depends = (["_extensions/{0}.template.c".format(s) for s in source_templates]
                + ["_extensions/{0}.template.h".format(s) for s in header_templates]
                + ["_extensions/{0}.h".format(s) for s in headers]
@@ -23,7 +23,7 @@ def configuration(parent_package='', top_path=None):
 
     config.add_extension(
         '_extensions._pywt',
-        sources=["_extensions/_pywt.c"] + sources,
+        sources=["_extensions/_pywt.c"] + c_files,
         depends=depends,
         include_dirs=["_extensions", "_extensions/c", np.get_include()],
         define_macros=[("PY_EXTENSION", None)],
@@ -31,7 +31,7 @@ def configuration(parent_package='', top_path=None):
 
     config.add_extension(
         '_extensions._dwt',
-        sources=["_extensions/_dwt.c"] + sources,
+        sources=["_extensions/_dwt.c"] + c_files,
         depends=depends,
         include_dirs=["_extensions", "_extensions/c", np.get_include()],
         define_macros=[("PY_EXTENSION", None)],
