@@ -2,10 +2,10 @@ from ._pywt cimport c_wavelet_from_object, _check_dtype
 cimport common, c_wt
 cimport numpy as np
 
-from ._pywt import _try_mode
-
 cpdef _dwt(np.ndarray[data_t, ndim=1] data, object wavelet, object mode):
     """See `dwt` docstring for details."""
+    from ._pywt import _try_mode
+
     cdef np.ndarray[data_t, ndim=1, mode="c"] cA, cD
     cdef Wavelet w
     cdef common.MODE mode_
@@ -43,6 +43,8 @@ cpdef _dwt(np.ndarray[data_t, ndim=1] data, object wavelet, object mode):
 
 cpdef _downcoef(part, np.ndarray[data_t, ndim=1, mode="c"] data,
                 object wavelet, object mode, int level):
+    from ._pywt import _try_mode
+
     cdef np.ndarray[data_t, ndim=1, mode="c"] coeffs
     cdef int i, do_dec_a
     cdef Wavelet w
@@ -97,6 +99,8 @@ cpdef _downcoef(part, np.ndarray[data_t, ndim=1, mode="c"] data,
 
 
 cpdef dwt_axis(np.ndarray data, object wavelet, object mode, unsigned int axis):
+    from ._pywt import _try_mode
+
     cdef Wavelet w = c_wavelet_from_object(wavelet)
     cdef common.MODE _mode = _try_mode(mode)
     cdef common.ArrayInfo data_info, output_info
@@ -147,6 +151,7 @@ cpdef _idwt(np.ndarray[data_t, ndim=1, mode="c"] cA,
             np.ndarray[data_t, ndim=1, mode="c"] cD,
             object wavelet, object mode):
     """See `idwt` for details"""
+    from ._pywt import _try_mode
 
     cdef size_t input_len, rec_len
 
@@ -270,6 +275,8 @@ cpdef _upcoef(part, np.ndarray[data_t, ndim=1, mode="c"] coeffs, wavelet,
 
 cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d, object wavelet,
                 object mode, unsigned int axis):
+    from ._pywt import _try_mode
+
     cdef Wavelet w = c_wavelet_from_object(wavelet)
     cdef common.ArrayInfo a_info, d_info, output_info
     cdef np.ndarray output
