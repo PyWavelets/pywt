@@ -12,7 +12,8 @@ from __future__ import division, print_function, absolute_import
 
 import numpy as np
 
-from ._extensions._pywt import Wavelet, dwt_max_level
+from ._extensions._pywt import Wavelet
+from ._extensions._dwt import dwt_max_level
 from ._dwt import dwt, idwt
 from ._multidim import dwt2, idwt2
 

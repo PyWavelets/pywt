@@ -340,3 +340,84 @@ cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d, object wavelet,
             raise RuntimeError("C inverse wavelet transform failed")
 
     return output
+
+
+def dwt_max_level(data_len, filter_len):
+    """
+    dwt_max_level(data_len, filter_len)
+
+    Compute the maximum useful level of decomposition.
+
+    Parameters
+    ----------
+    data_len : int
+        Input data length.
+    filter_len : int
+        Wavelet filter length.
+
+    Returns
+    -------
+    max_level : int
+        Maximum level.
+
+    Examples
+    --------
+    >>> import pywt
+    >>> w = pywt.Wavelet('sym5')
+    >>> pywt.dwt_max_level(data_len=1000, filter_len=w.dec_len)
+    6
+    >>> pywt.dwt_max_level(1000, w)
+    6
+    """
+    if isinstance(filter_len, Wavelet):
+        return common.dwt_max_level(data_len, filter_len.dec_len)
+    else:
+        return common.dwt_max_level(data_len, filter_len)
+
+
+def dwt_coeff_len(data_len, filter_len, mode='symmetric'):
+    """
+    dwt_coeff_len(data_len, filter_len, mode='symmetric')
+
+    Returns length of dwt output for given data length, filter length and mode
+
+    Parameters
+    ----------
+    data_len : int
+        Data length.
+    filter_len : int
+        Filter length.
+    mode : str, optional (default: 'symmetric')
+        Signal extension mode, see Modes
+
+    Returns
+    -------
+    len : int
+        Length of dwt output.
+
+    Notes
+    -----
+    For all modes except periodization::
+
+        len(cA) == len(cD) == floor((len(data) + wavelet.dec_len - 1) / 2)
+
+    for periodization mode ("per")::
+
+        len(cA) == len(cD) == ceil(len(data) / 2)
+
+    """
+    from ._pywt import _try_mode
+
+    cdef index_t filter_len_
+
+    if isinstance(filter_len, Wavelet):
+        filter_len_ = filter_len.dec_len
+    else:
+        filter_len_ = filter_len
+
+    if data_len < 1:
+        raise ValueError("Value of data_len value must be greater than zero.")
+    if filter_len_ < 1:
+        raise ValueError("Value of filter_len must be greater than zero.")
+
+    return common.dwt_buffer_length(data_len, filter_len_, _try_mode(mode))
