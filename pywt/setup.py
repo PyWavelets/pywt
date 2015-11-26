@@ -37,6 +37,14 @@ def configuration(parent_package='', top_path=None):
         define_macros=[("PY_EXTENSION", None)],
     )
 
+    config.add_extension(
+        '_extensions._swt',
+        sources=["_extensions/_swt.c"] + c_files,
+        depends=depends,
+        include_dirs=["_extensions", "_extensions/c", np.get_include()],
+        define_macros=[("PY_EXTENSION", None)],
+    )
+
     config.make_config_py()
     return config
 

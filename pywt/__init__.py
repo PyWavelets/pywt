@@ -14,12 +14,14 @@ from __future__ import division, print_function, absolute_import
 
 from ._extensions._pywt import *
 from ._extensions._dwt import dwt_coeff_len, dwt_max_level
+from ._extensions._swt import swt_max_level
 from ._functions import *
 from ._multilevel import *
 from ._multidim import *
 from ._thresholding import *
 from ._wavelet_packets import *
 from ._dwt import *
+from ._swt import *
 
 
 __all__ = [s for s in dir() if not s.startswith('_')]

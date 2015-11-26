@@ -15,8 +15,9 @@ from itertools import cycle, product
 
 import numpy as np
 
-from ._extensions._pywt import Wavelet, Modes, swt
+from ._extensions._pywt import Wavelet, Modes
 from ._extensions._dwt import dwt_axis, idwt_axis
+from ._swt import swt
 
 
 def dwt2(data, wavelet, mode='symmetric'):

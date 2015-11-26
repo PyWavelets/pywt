@@ -1,3 +1,10 @@
+from ._pywt cimport data_t, index_t, Wavelet
+from ._pywt cimport c_wavelet_from_object, _check_dtype
+cimport common, c_wt
+
+cimport numpy as np
+import numpy as np
+
 def swt_max_level(input_len):
     """
     swt_max_level(input_len)

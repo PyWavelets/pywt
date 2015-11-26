@@ -2,8 +2,7 @@
 # See COPYING for license details.
 
 __doc__ = """Pyrex wrapper for low-level C wavelet transform implementation."""
-__all__ = ['MODES', 'Modes', 'Wavelet', 'swt', 'swt_max_level', 'wavelist',
-           'families']
+__all__ = ['MODES', 'Modes', 'Wavelet', 'wavelist', 'families']
 
 ###############################################################################
 # imports
