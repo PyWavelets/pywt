@@ -502,7 +502,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
         cdef Wavelet other "other"
         cdef phi_d, psi_d, phi_r, psi_r
 
-        n = pow(sqrt(2.), <double>level)
+        n = np.array([pow(sqrt(2.), <double>level)])
         p = (pow(2., <double>level))
 
         if self.w.orthogonal:
@@ -708,7 +708,8 @@ def _try_mode(mode):
         raise TypeError("Invalid mode: {0}".format(str(mode)))
 
 
-cdef np.dtype _check_dtype(np.ndarray data):
+# FIXME: returns float64 if non-array is passed, might be wrong
+cpdef np.dtype _check_dtype(data):
     """Check for cA/cD input what (if any) the dtype is."""
     cdef np.dtype dt
     try:

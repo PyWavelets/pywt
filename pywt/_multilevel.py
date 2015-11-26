@@ -13,7 +13,7 @@ from __future__ import division, print_function, absolute_import
 import numpy as np
 
 from ._extensions._pywt import Wavelet, dwt_max_level
-from ._extensions._dwt import _dwt, _idwt
+from ._dwt import dwt, idwt
 from ._multidim import dwt2, idwt2
 
 __all__ = ['wavedec', 'waverec', 'wavedec2', 'waverec2', 'iswt', 'iswt2']

@@ -1,3 +1,8 @@
+from ._extensions._pywt import _check_dtype
+from ._extensions._dwt import _dwt, _idwt, _upcoef, _downcoef
+
+import numpy as np
+
 def dwt(data, wavelet, mode='symmetric'):
     """
     (cA, cD) = dwt(data, wavelet, mode='symmetric')

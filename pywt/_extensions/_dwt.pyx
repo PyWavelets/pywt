@@ -1,6 +1,8 @@
 from ._pywt cimport c_wavelet_from_object, _check_dtype
 cimport common, c_wt
+
 cimport numpy as np
+import numpy as np
 
 cpdef _dwt(np.ndarray[data_t, ndim=1] data, object wavelet, object mode):
     """See `dwt` docstring for details."""
