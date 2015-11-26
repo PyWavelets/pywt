@@ -21,6 +21,11 @@ def configuration(parent_package='', top_path=None):
                + ["_extensions/{0}.h".format(s) for s in headers]
                + ["_extensions/{0}.h".format(s) for s in sources])
 
+    config.add_subpackage(
+        '_extensions',
+        subpackage_path="_extensions",
+    )
+
     config.add_extension(
         '_extensions._pywt',
         sources=["_extensions/_pywt.c"] + c_files,
