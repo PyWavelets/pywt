@@ -260,7 +260,6 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
 
     """
 
-    #cdef readonly properties
     def __cinit__(self, name=u"", object filter_bank=None):
         cdef object family_code, family_number
         cdef object filters
@@ -597,15 +596,6 @@ cdef index_t fix_output_length(index_t output_length, index_t keep_length):
 
 cdef index_t get_right_extent_length(index_t output_length, index_t keep_length):
     return output_length - keep_length - 1
-
-
-def _try_mode(mode):
-    try:
-        return Modes.from_object(mode)
-    except ValueError as e:
-        if "Unknown mode name" in str(e):
-            raise
-        raise TypeError("Invalid mode: {0}".format(str(mode)))
 
 
 # FIXME: returns float64 if non-array is passed, might be wrong

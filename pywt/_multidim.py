@@ -139,6 +139,7 @@ def dwtn(data, wavelet, mode='symmetric'):
 
     if not isinstance(wavelet, Wavelet):
         wavelet = Wavelet(wavelet)
+    mode = Modes.from_object(mode)
 
     coeffs = [('', data)]
     for axis in range(data.ndim):

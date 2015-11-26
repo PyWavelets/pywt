@@ -1,4 +1,4 @@
-from ._extensions._pywt import _check_dtype, Wavelet
+from ._extensions._pywt import _check_dtype, Wavelet, Modes
 from ._extensions._dwt import _dwt, _idwt, _upcoef, _downcoef
 
 import numpy as np
@@ -55,6 +55,7 @@ def dwt(data, wavelet, mode='symmetric'):
 
     if not isinstance(wavelet, Wavelet):
         wavelet = Wavelet(wavelet)
+    mode = Modes.from_object(mode)
     return _dwt(data, wavelet, mode)
 
 
@@ -103,6 +104,7 @@ def downcoef(part, data, wavelet, mode='symmetric', level=1):
 
     if not isinstance(wavelet, Wavelet):
         wavelet = Wavelet(wavelet)
+    mode = Modes.from_object(mode)
     return _downcoef(part, data, wavelet, mode, level)
 
 
@@ -172,6 +174,7 @@ def idwt(cA, cD, wavelet, mode='symmetric'):
 
     if not isinstance(wavelet, Wavelet):
         wavelet = Wavelet(wavelet)
+    mode = Modes.from_object(mode)
     return _idwt(cA, cD, wavelet, mode)
 
 

@@ -4,17 +4,12 @@ cimport common, c_wt
 cimport numpy as np
 import numpy as np
 
-cpdef _dwt(np.ndarray[data_t, ndim=1] data, Wavelet wavelet, object mode):
+cpdef _dwt(np.ndarray[data_t, ndim=1] data, Wavelet wavelet, common.MODE mode):
     """See `dwt` docstring for details."""
-    from ._pywt import _try_mode
-
     cdef np.ndarray[data_t, ndim=1, mode="c"] cA, cD
-    cdef common.MODE mode_
-
-    mode_ = _try_mode(mode)
 
     data = np.array(data)
-    output_len = common.dwt_buffer_length(data.size, wavelet.dec_len, mode_)
+    output_len = common.dwt_buffer_length(data.size, wavelet.dec_len, mode)
     if output_len < 1:
         raise RuntimeError("Invalid output length.")
 
@@ -23,17 +18,17 @@ cpdef _dwt(np.ndarray[data_t, ndim=1] data, Wavelet wavelet, object mode):
 
     if data_t == np.float64_t:
         if (c_wt.double_dec_a(&data[0], data.size, wavelet.w,
-                              &cA[0], cA.size, mode_) < 0
+                              &cA[0], cA.size, mode) < 0
             or
             c_wt.double_dec_d(&data[0], data.size, wavelet.w,
-                              &cD[0], cD.size, mode_) < 0):
+                              &cD[0], cD.size, mode) < 0):
             raise RuntimeError("C dwt failed.")
     elif data_t == np.float32_t:
         if (c_wt.float_dec_a(&data[0], data.size, wavelet.w,
-                             &cA[0], cA.size, mode_) < 0
+                             &cA[0], cA.size, mode) < 0
             or
             c_wt.float_dec_d(&data[0], data.size, wavelet.w,
-                             &cD[0], cD.size, mode_) < 0):
+                             &cD[0], cD.size, mode) < 0):
             raise RuntimeError("C dwt failed.")
     else:
         raise RuntimeError("Invalid data type.")
@@ -42,14 +37,9 @@ cpdef _dwt(np.ndarray[data_t, ndim=1] data, Wavelet wavelet, object mode):
 
 
 cpdef _downcoef(part, np.ndarray[data_t, ndim=1, mode="c"] data,
-                Wavelet wavelet, object mode, int level):
-    from ._pywt import _try_mode
-
+                Wavelet wavelet, common.MODE mode, int level):
     cdef np.ndarray[data_t, ndim=1, mode="c"] coeffs
     cdef int i, do_dec_a
-    cdef common.MODE mode_
-
-    mode_ = _try_mode(mode)
 
     if part not in ('a', 'd'):
         raise ValueError("Argument 1 must be 'a' or 'd', not '%s'." % part)
@@ -59,7 +49,7 @@ cpdef _downcoef(part, np.ndarray[data_t, ndim=1, mode="c"] data,
         raise ValueError("Value of level must be greater than 0.")
 
     for i in range(level):
-        output_len = common.dwt_buffer_length(data.size, wavelet.dec_len, mode_)
+        output_len = common.dwt_buffer_length(data.size, wavelet.dec_len, mode)
         if output_len < 1:
             raise RuntimeError("Invalid output length.")
         coeffs = np.zeros(output_len, dtype=data.dtype)
@@ -72,22 +62,22 @@ cpdef _downcoef(part, np.ndarray[data_t, ndim=1, mode="c"] data,
         if do_dec_a or (i < level - 1):
             if data_t is np.float64_t:
                 if c_wt.double_dec_a(&data[0], data.size, wavelet.w,
-                                     &coeffs[0], coeffs.size, mode_) < 0:
+                                     &coeffs[0], coeffs.size, mode) < 0:
                     raise RuntimeError("C dec_a failed.")
             elif data_t is np.float32_t:
                 if c_wt.float_dec_a(&data[0], data.size, wavelet.w,
-                                    &coeffs[0], coeffs.size, mode_) < 0:
+                                    &coeffs[0], coeffs.size, mode) < 0:
                     raise RuntimeError("C dec_a failed.")
             else:
                 raise RuntimeError("Invalid data type.")
         else:
             if data_t is np.float64_t:
                 if c_wt.double_dec_d(&data[0], data.size, wavelet.w,
-                                     &coeffs[0], coeffs.size, mode_) < 0:
+                                     &coeffs[0], coeffs.size, mode) < 0:
                     raise RuntimeError("C dec_d failed.")
             elif data_t is np.float32_t:
                 if c_wt.float_dec_d(&data[0], data.size, wavelet.w,
-                                    &coeffs[0], coeffs.size, mode_) < 0:
+                                    &coeffs[0], coeffs.size, mode) < 0:
                     raise RuntimeError("C dec_d failed.")
             else:
                 raise RuntimeError("Invalid data type.")
@@ -96,10 +86,7 @@ cpdef _downcoef(part, np.ndarray[data_t, ndim=1, mode="c"] data,
     return coeffs
 
 
-cpdef dwt_axis(np.ndarray data, Wavelet wavelet, object mode, unsigned int axis):
-    from ._pywt import _try_mode
-
-    cdef common.MODE _mode = _try_mode(mode)
+cpdef dwt_axis(np.ndarray data, Wavelet wavelet, common.MODE mode, unsigned int axis):
     cdef common.ArrayInfo data_info, output_info
     cdef np.ndarray cD, cA
     cdef size_t[::1] output_shape
@@ -108,7 +95,7 @@ cpdef dwt_axis(np.ndarray data, Wavelet wavelet, object mode, unsigned int axis)
 
     output_shape = (<size_t [:data.ndim]> <size_t *> data.shape).copy()
     output_shape[axis] = common.dwt_buffer_length(data.shape[axis],
-                                                  wavelet.dec_len, _mode)
+                                                  wavelet.dec_len, mode)
 
     cA = np.empty(output_shape, data.dtype)
     cD = np.empty(output_shape, data.dtype)
@@ -124,20 +111,20 @@ cpdef dwt_axis(np.ndarray data, Wavelet wavelet, object mode, unsigned int axis)
     if data.dtype == np.float64:
         if c_wt.double_downcoef_axis(<double *> data.data, data_info,
                                      <double *> cA.data, output_info,
-                                     wavelet.w, axis, common.COEF_APPROX, _mode):
+                                     wavelet.w, axis, common.COEF_APPROX, mode):
             raise RuntimeError("C wavelet transform failed")
         if c_wt.double_downcoef_axis(<double *> data.data, data_info,
                                      <double *> cD.data, output_info,
-                                     wavelet.w, axis, common.COEF_DETAIL, _mode):
+                                     wavelet.w, axis, common.COEF_DETAIL, mode):
             raise RuntimeError("C wavelet transform failed")
     elif data.dtype == np.float32:
         if c_wt.float_downcoef_axis(<float *> data.data, data_info,
                                     <float *> cA.data, output_info,
-                                    wavelet.w, axis, common.COEF_APPROX, _mode):
+                                    wavelet.w, axis, common.COEF_APPROX, mode):
             raise RuntimeError("C wavelet transform failed")
         if c_wt.float_downcoef_axis(<float *> data.data, data_info,
                                     <float *> cD.data, output_info,
-                                    wavelet.w, axis, common.COEF_DETAIL, _mode):
+                                    wavelet.w, axis, common.COEF_DETAIL, mode):
             raise RuntimeError("C wavelet transform failed")
     else:
         raise TypeError("Array must be floating point, not {}"
@@ -147,15 +134,9 @@ cpdef dwt_axis(np.ndarray data, Wavelet wavelet, object mode, unsigned int axis)
 
 cpdef _idwt(np.ndarray[data_t, ndim=1, mode="c"] cA,
             np.ndarray[data_t, ndim=1, mode="c"] cD,
-            Wavelet wavelet, object mode):
+            Wavelet wavelet, common.MODE mode):
     """See `idwt` for details"""
-    from ._pywt import _try_mode
-
     cdef size_t input_len, rec_len
-
-    cdef common.MODE mode_
-
-    mode_ = _try_mode(mode)
 
     cdef np.ndarray[data_t, ndim=1, mode="c"] rec
 
@@ -166,7 +147,7 @@ cpdef _idwt(np.ndarray[data_t, ndim=1, mode="c"] cA,
         input_len = cA.size
 
     # find reconstruction buffer length
-    rec_len = common.idwt_buffer_length(input_len, wavelet.rec_len, mode_)
+    rec_len = common.idwt_buffer_length(input_len, wavelet.rec_len, mode)
     if rec_len < 1:
         msg = ("Invalid coefficient arrays length for specified wavelet. "
                "Wavelet and mode must be the same as used for decomposition.")
@@ -184,13 +165,13 @@ cpdef _idwt(np.ndarray[data_t, ndim=1, mode="c"] cA,
         if c_wt.double_idwt(&cA[0], cA.size,
                             &cD[0], cD.size,
                             &rec[0], rec.size,
-                            wavelet.w, mode_) < 0:
+                            wavelet.w, mode) < 0:
             raise RuntimeError("C idwt failed.")
     elif data_t == np.float32_t:
         if c_wt.float_idwt(&cA[0], cA.size,
                            &cD[0], cD.size,
                            &rec[0], rec.size,
-                           wavelet.w, mode_) < 0:
+                           wavelet.w, mode) < 0:
             raise RuntimeError("C idwt failed.")
     else:
         raise RuntimeError("Invalid data type.")
@@ -267,14 +248,11 @@ cpdef _upcoef(part, np.ndarray[data_t, ndim=1, mode="c"] coeffs,
 
 
 cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d, Wavelet wavelet,
-                object mode, unsigned int axis):
-    from ._pywt import _try_mode
-
+                common.MODE mode, unsigned int axis):
     cdef common.ArrayInfo a_info, d_info, output_info
     cdef np.ndarray output
     cdef np.dtype output_dtype
     cdef size_t[::1] output_shape
-    cdef common.MODE _mode = _try_mode(mode)
 
     if coefs_a is not None:
         if coefs_d is not None and coefs_d.dtype.itemsize > coefs_a.dtype.itemsize:
@@ -296,12 +274,12 @@ cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d, Wavelet wavelet,
     if coefs_a is not None:
         output_shape = (<size_t [:coefs_a.ndim]> <size_t *> coefs_a.shape).copy()
         output_shape[axis] = common.idwt_buffer_length(coefs_a.shape[axis],
-                                                       wavelet.rec_len, _mode)
+                                                       wavelet.rec_len, mode)
         output_dtype = coefs_a.dtype
     elif coefs_d is not None:
         output_shape = (<size_t [:coefs_d.ndim]> <size_t *> coefs_d.shape).copy()
         output_shape[axis] = common.idwt_buffer_length(coefs_d.shape[axis],
-                                                       wavelet.rec_len, _mode)
+                                                       wavelet.rec_len, mode)
         output_dtype = coefs_d.dtype
     else:
         return None;
@@ -318,7 +296,7 @@ cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d, Wavelet wavelet,
                                  <double *> coefs_d.data if coefs_d is not None else NULL,
                                  &d_info if coefs_d is not None else NULL,
                                  <double *> output.data, output_info,
-                                 wavelet.w, axis, _mode):
+                                 wavelet.w, axis, mode):
             raise RuntimeError("C inverse wavelet transform failed")
     if output.dtype == np.float32:
         if c_wt.float_idwt_axis(<float *> coefs_a.data if coefs_a is not None else NULL,
@@ -326,7 +304,7 @@ cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d, Wavelet wavelet,
                                 <float *> coefs_d.data if coefs_d is not None else NULL,
                                 &d_info if coefs_d is not None else NULL,
                                 <float *> output.data, output_info,
-                                wavelet.w, axis, _mode):
+                                wavelet.w, axis, mode):
             raise RuntimeError("C inverse wavelet transform failed")
 
     return output
@@ -396,7 +374,7 @@ def dwt_coeff_len(data_len, filter_len, mode='symmetric'):
         len(cA) == len(cD) == ceil(len(data) / 2)
 
     """
-    from ._pywt import _try_mode
+    from _pywt import Modes
 
     cdef index_t filter_len_
 
@@ -410,4 +388,4 @@ def dwt_coeff_len(data_len, filter_len, mode='symmetric'):
     if filter_len_ < 1:
         raise ValueError("Value of filter_len must be greater than zero.")
 
-    return common.dwt_buffer_length(data_len, filter_len_, _try_mode(mode))
+    return common.dwt_buffer_length(data_len, filter_len_, Modes.from_object(mode))
