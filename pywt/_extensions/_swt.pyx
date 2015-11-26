@@ -1,5 +1,5 @@
 from ._pywt cimport data_t, index_t, Wavelet
-from ._pywt cimport c_wavelet_from_object, _check_dtype
+from ._pywt cimport _check_dtype
 cimport common, c_wt
 
 cimport numpy as np
@@ -26,17 +26,14 @@ def swt_max_level(input_len):
     return common.swt_max_level(input_len)
 
 
-def _swt(np.ndarray[data_t, ndim=1, mode="c"] data, object wavelet,
-         object level=None, int start_level=0):
+def _swt(np.ndarray[data_t, ndim=1, mode="c"] data,
+         Wavelet wavelet, object level=None, int start_level=0):
     """See `swt` for details."""
     cdef np.ndarray[data_t, ndim=1, mode="c"] cA, cD
-    cdef Wavelet w
     cdef int i, end_level, level_
 
     if data.size % 2:
         raise ValueError("Length of data must be even.")
-
-    w = c_wavelet_from_object(wavelet)
 
     if level is None:
         level_ = common.swt_max_level(data.size)
@@ -70,11 +67,11 @@ def _swt(np.ndarray[data_t, ndim=1, mode="c"] data, object wavelet,
         cD = np.zeros(output_len, dtype=data.dtype)
 
         if data_t is np.float64_t:
-            if c_wt.double_swt_d(&data[0], data.size, w.w,
+            if c_wt.double_swt_d(&data[0], data.size, wavelet.w,
                                  &cD[0], cD.size, i) < 0:
                 raise RuntimeError("C swt failed.")
         elif data_t is np.float32_t:
-            if c_wt.float_swt_d(&data[0], data.size, w.w,
+            if c_wt.float_swt_d(&data[0], data.size, wavelet.w,
                                 &cD[0], cD.size, i) < 0:
                 raise RuntimeError("C swt failed.")
         else:
@@ -84,11 +81,11 @@ def _swt(np.ndarray[data_t, ndim=1, mode="c"] data, object wavelet,
         cA = np.zeros(output_len, dtype=data.dtype)
 
         if data_t is np.float64_t:
-            if c_wt.double_swt_a(&data[0], data.size, w.w,
+            if c_wt.double_swt_a(&data[0], data.size, wavelet.w,
                                  &cA[0], cA.size, i) < 0:
                 raise RuntimeError("C swt failed.")
         elif data_t is np.float32_t:
-            if c_wt.float_swt_a(&data[0], data.size, w.w,
+            if c_wt.float_swt_a(&data[0], data.size, wavelet.w,
                                 &cA[0], cA.size, i) < 0:
                 raise RuntimeError("C swt failed.")
         else:

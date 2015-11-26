@@ -599,18 +599,6 @@ cdef index_t get_right_extent_length(index_t output_length, index_t keep_length)
     return output_length - keep_length - 1
 
 
-# TODO: just cpdef?
-def wavelet_from_object(wavelet):
-    return c_wavelet_from_object(wavelet)
-
-
-cdef c_wavelet_from_object(object wavelet):
-    if isinstance(wavelet, Wavelet):
-        return wavelet
-    else:
-        return Wavelet(wavelet)
-
-
 def _try_mode(mode):
     try:
         return Modes.from_object(mode)

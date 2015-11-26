@@ -13,5 +13,4 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
     cdef readonly name
     cdef readonly number
 
-cdef c_wavelet_from_object(object wavelet)
 cpdef np.dtype _check_dtype(data)

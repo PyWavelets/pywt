@@ -1,4 +1,4 @@
-from ._extensions._pywt import _check_dtype
+from ._extensions._pywt import _check_dtype, Wavelet
 from ._extensions._swt import _swt
 
 import numpy as np
@@ -50,4 +50,7 @@ def swt(data, wavelet, level=None, start_level=0):
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(data)
     data = np.array(data, dtype=dt)
+
+    if not isinstance(wavelet, Wavelet):
+        wavelet = Wavelet(wavelet)
     return _swt(data, wavelet, level, start_level)

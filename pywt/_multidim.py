@@ -136,8 +136,11 @@ def dwtn(data, wavelet, mode='symmetric'):
         raise TypeError("Input must be a numeric array-like")
     if data.ndim < 1:
         raise ValueError("Input data must be at least 1D")
-    coeffs = [('', data)]
 
+    if not isinstance(wavelet, Wavelet):
+        wavelet = Wavelet(wavelet)
+
+    coeffs = [('', data)]
     for axis in range(data.ndim):
         new_coeffs = []
         for subband, x in coeffs:

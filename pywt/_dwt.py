@@ -1,4 +1,4 @@
-from ._extensions._pywt import _check_dtype
+from ._extensions._pywt import _check_dtype, Wavelet
 from ._extensions._dwt import _dwt, _idwt, _upcoef, _downcoef
 
 import numpy as np
@@ -47,12 +47,14 @@ def dwt(data, wavelet, mode='symmetric'):
         cA_r, cD_r = dwt(data.real, wavelet, mode)
         cA_i, cD_i = dwt(data.imag, wavelet, mode)
         return (cA_r + 1j*cA_i, cD_r + 1j*cD_i)
-
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(data)
     data = np.array(data, dtype=dt)
     if data.ndim != 1:
         raise ValueError("dwt requires a 1D data array.")
+
+    if not isinstance(wavelet, Wavelet):
+        wavelet = Wavelet(wavelet)
     return _dwt(data, wavelet, mode)
 
 
@@ -98,6 +100,9 @@ def downcoef(part, data, wavelet, mode='symmetric', level=1):
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(data)
     data = np.array(data, dtype=dt)
+
+    if not isinstance(wavelet, Wavelet):
+        wavelet = Wavelet(wavelet)
     return _downcoef(part, data, wavelet, mode, level)
 
 
@@ -165,6 +170,8 @@ def idwt(cA, cD, wavelet, mode='symmetric'):
     elif cD is None:
         cD = np.zeros_like(cA)
 
+    if not isinstance(wavelet, Wavelet):
+        wavelet = Wavelet(wavelet)
     return _idwt(cA, cD, wavelet, mode)
 
 
@@ -218,4 +225,7 @@ def upcoef(part, coeffs, wavelet, level=1, take=0):
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(coeffs)
     coeffs = np.array(coeffs, dtype=dt)
+
+    if not isinstance(wavelet, Wavelet):
+        wavelet = Wavelet(wavelet)
     return _upcoef(part, coeffs, wavelet, level, take)
