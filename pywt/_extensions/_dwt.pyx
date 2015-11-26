@@ -1,4 +1,4 @@
-from ._pywt cimport c_wavelet_from_object, _check_dtype
+from ._pywt cimport c_wavelet_from_object, _check_dtype, Wavelet
 cimport common, c_wt
 
 cimport numpy as np
