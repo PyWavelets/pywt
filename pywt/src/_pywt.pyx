@@ -898,13 +898,9 @@ def idwt(cA, cD, object wavelet, object mode='symmetric', int axis=-1):
     if cA is not None:
         dt = _check_dtype(cA)
         cA = np.array(cA, dtype=dt)
-        if cA.ndim != 1:
-            raise ValueError("idwt requires 1D coefficient arrays.")
     if cD is not None:
         dt = _check_dtype(cD)
         cD = np.array(cD, dtype=dt)
-        if cD.ndim != 1:
-            raise ValueError("idwt requires 1D coefficient arrays.")
 
     if cA is not None and cD is not None:
         if cA.dtype != cD.dtype:
