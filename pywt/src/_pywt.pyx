@@ -869,7 +869,7 @@ cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d, object wavelet,
                                  <double *> output.data, output_info,
                                  w.w, axis, _mode):
             raise RuntimeError("C inverse wavelet transform failed")
-    if output.dtype == np.float32:
+    elif output.dtype == np.float32:
         if c_wt.float_idwt_axis(<float *> coefs_a.data if coefs_a is not None else NULL,
                                 &a_info if coefs_a is not None else NULL,
                                 <float *> coefs_d.data if coefs_d is not None else NULL,
@@ -877,6 +877,9 @@ cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d, object wavelet,
                                 <float *> output.data, output_info,
                                 w.w, axis, _mode):
             raise RuntimeError("C inverse wavelet transform failed")
+    else:
+        raise TypeError("Array must be floating point, not {}"
+                        .format(output.dtype))
 
     return output
 
