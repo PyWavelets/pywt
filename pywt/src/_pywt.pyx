@@ -850,7 +850,7 @@ def dwt_coeff_len(data_len, filter_len, mode='symmetric'):
 
 ###############################################################################
 # idwt
-def idwt(cA, cD, object wavelet, object mode='symmetric'):
+def idwt(cA, cD, object wavelet, object mode='symmetric', int axis=-1):
     """
     idwt(cA, cD, wavelet, mode='symmetric')
 
@@ -914,12 +914,11 @@ def idwt(cA, cD, object wavelet, object mode='symmetric'):
     elif cD is None:
         cD = np.zeros_like(cA)
 
-    return _idwt(cA, cD, wavelet, mode)
+    return _idwt(cA, cD, wavelet, mode, axis=axis)
 
 
-def _idwt(np.ndarray[data_t, ndim=1, mode="c"] cA,
-          np.ndarray[data_t, ndim=1, mode="c"] cD,
-          object wavelet, object mode='symmetric'):
+def _idwt(np.ndarray cA, np.ndarray cD,
+          object wavelet, object mode='symmetric', int axis=-1):
     """See `idwt` for details"""
 
     cdef index_t input_len
@@ -941,7 +940,10 @@ def _idwt(np.ndarray[data_t, ndim=1, mode="c"] cA,
                "Wavelet and mode must be the same as used for decomposition.")
         raise ValueError(msg)
 
-    rec = idwt_axis(cA, cD, wavelet, mode)
+    # convert negative axes
+    axis = axis % cA.ndim
+
+    rec = idwt_axis(cA, cD, wavelet, mode, axis=axis)
     return rec
 
 
