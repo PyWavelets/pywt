@@ -694,6 +694,10 @@ def dwt(object data, object wavelet, object mode='symmetric', int axis=-1):
         Wavelet to use
     mode : str, optional (default: 'symmetric')
         Signal extension mode, see Modes
+    axis: int, optional
+        Axis over which to compute the DWT. If not given, the
+        last axis is used.
+
 
     Returns
     -------
