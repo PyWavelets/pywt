@@ -19,7 +19,7 @@ from ._pywt import Wavelet, Modes
 from ._pywt import swt, dwt_axis, idwt_axis
 
 
-def dwt2(data, wavelet, mode='symmetric', axes=None):
+def dwt2(data, wavelet, mode='symmetric', axes=(-2, -1)):
     """
     2D Discrete Wavelet Transform.
 
@@ -33,8 +33,7 @@ def dwt2(data, wavelet, mode='symmetric', axes=None):
         Signal extension mode, see Modes (default: 'symmetric')
     axes : 2-tuple of ints, optional
         Axes over which to compute the DWT. Repeated elements mean the DWT will
-        be performed multiple times along these axes. A value of `None` (the
-        default) selects the last two axes.
+        be performed multiple times along these axes.
 
     Returns
     -------
@@ -57,8 +56,6 @@ def dwt2(data, wavelet, mode='symmetric', axes=None):
 
     """
     data = np.asarray(data)
-    if axes is None:
-        axes = range(-2, 0)
     axes = tuple(axes)
     if len(axes) != 2:
         raise ValueError("Expected 2 axes")
@@ -67,7 +64,7 @@ def dwt2(data, wavelet, mode='symmetric', axes=None):
     return coefs['aa'], (coefs['da'], coefs['ad'], coefs['dd'])
 
 
-def idwt2(coeffs, wavelet, mode='symmetric', axes=None):
+def idwt2(coeffs, wavelet, mode='symmetric', axes=(-2, -1)):
     """
     2-D Inverse Discrete Wavelet Transform.
 
@@ -84,8 +81,7 @@ def idwt2(coeffs, wavelet, mode='symmetric', axes=None):
         Signal extension mode, see Modes (default: 'symmetric')
     axes : 2-tuple of ints, optional
         Axes over which to compute the IDWT. Repeated elements mean the IDWT
-        will be performed multiple times along these axes. A value of `None`
-        (the default) selects the last two axes.
+        will be performed multiple times along these axes.
 
     Examples
     --------
@@ -99,8 +95,6 @@ def idwt2(coeffs, wavelet, mode='symmetric', axes=None):
     """
     # L -low-pass data, H - high-pass data
     LL, (HL, LH, HH) = coeffs
-    if axes is None:
-        axes = range(-2, 0)
     axes = tuple(axes)
     if len(axes) != 2:
         raise ValueError("Expected 2 axes")
