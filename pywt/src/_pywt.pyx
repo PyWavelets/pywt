@@ -620,6 +620,30 @@ cdef c_wavelet_from_object(wavelet):
         return Wavelet(wavelet)
 
 
+def _try_mode(mode):
+    try:
+        return Modes.from_object(mode)
+    except ValueError as e:
+        if "Unknown mode name" in str(e):
+            raise
+        raise TypeError("Invalid mode: {0}".format(str(mode)))
+
+
+cdef np.dtype _check_dtype(data):
+    """Check for cA/cD input what (if any) the dtype is."""
+    cdef np.dtype dt
+    try:
+        dt = data.dtype
+        if dt not in (np.float64, np.float32):
+            # integer input was always accepted; convert to float64
+            dt = np.dtype('float64')
+    except AttributeError:
+        dt = np.dtype('float64')
+    return dt
+
+
+
+
 ###############################################################################
 # DWT
 
@@ -905,29 +929,6 @@ def dwt_coeff_len(data_len, filter_len, mode='symmetric'):
 
 ###############################################################################
 # idwt
-
-def _try_mode(mode):
-    try:
-        return Modes.from_object(mode)
-    except ValueError as e:
-        if "Unknown mode name" in str(e):
-            raise
-        raise TypeError("Invalid mode: {0}".format(str(mode)))
-
-
-cdef np.dtype _check_dtype(data):
-    """Check for cA/cD input what (if any) the dtype is."""
-    cdef np.dtype dt
-    try:
-        dt = data.dtype
-        if dt not in (np.float64, np.float32):
-            # integer input was always accepted; convert to float64
-            dt = np.dtype('float64')
-    except AttributeError:
-        dt = np.dtype('float64')
-    return dt
-
-
 def idwt(cA, cD, object wavelet, object mode='symmetric'):
     """
     idwt(cA, cD, wavelet, mode='symmetric')
