@@ -97,5 +97,32 @@ def test_idwt_invalid_input():
     assert_raises(ValueError, pywt.idwt, [1, 2, 4], [4, 1, 3], 'db4', 'symmetric')
 
 
+def test_dwt_idwt_axis():
+    x = [[3, 7, 1, 1],
+         [-2, 5, 4, 6]]
+
+    cA, cD = pywt.dwt(x, 'db2', axis=-1)
+
+    cA0, cD0 = pywt.dwt(x[0], 'db2')
+    cA1, cD1 = pywt.dwt(x[1], 'db2')
+
+    assert_allclose(cA[0], cA0)
+    assert_allclose(cA[1], cA1)
+
+    assert_allclose(cD[0], cD0)
+    assert_allclose(cD[1], cD1)
+
+
+def test_dwt_idwt_axis_excess():
+    x = [[3, 7, 1, 1],
+         [-2, 5, 4, 6]]
+    # can't transform over axes that aren't there
+    assert_raises(ValueError,
+                  pywt.dwt, x, 'db2', 'symmetric', axis=2)
+
+    assert_raises(ValueError,
+                  pywt.idwt, [1, 2, 4], [4, 1, 3], 'db2', 'symmetric', axis=1)
+
+
 if __name__ == '__main__':
     run_module_suite()
