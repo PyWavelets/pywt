@@ -10,8 +10,6 @@ and Inverse Discrete Wavelet Transform.
 
 from __future__ import division, print_function, absolute_import
 
-import functools
-import warnings
 import numpy as np
 
 from ._pywt import Wavelet
@@ -432,7 +430,7 @@ def wavedecn(data, wavelet, mode='symmetric', level=None):
     mode : str, optional
         Signal extension mode, see MODES (default: 'sym')
     level : int, optional
-        Decomposition level (must be >= 0). If level is None (default) then it
+        Dxecomposition level (must be >= 0). If level is None (default) then it
         will be calculated using the ``dwt_max_level`` function.
 
     Returns
@@ -563,16 +561,8 @@ def waverecn(coeffs, wavelet, mode='symmetric'):
 
     a, ds = coeffs[0], coeffs[1:]
 
-    # Ignore any invalid keys
-    # Remove try/except clause around ValueError in a future release
-    try:
-        ds = list(map(_fix_coeffs, ds))
-    except ValueError:
-        ds = list(map(functools.partial(_fix_coeffs, nocheck=True), ds))
-        msg = ("Support for coefficient dictionaries containing "
-               "coefficients=None or invalid keys is depricated and will "
-               "raise an exception in a future release")
-        warnings.warn(msg, DeprecationWarning)
+    # Raise error for invalid key combinations
+    ds = list(map(_fix_coeffs, ds))
 
     if not ds:
         # level 0 transform (just returns the approximation coefficients)

@@ -5,7 +5,7 @@ from __future__ import division, print_function, absolute_import
 import numpy as np
 from itertools import combinations
 from numpy.testing import (run_module_suite, assert_allclose, assert_,
-                           assert_raises, assert_warns, assert_equal)
+                           assert_raises, assert_equal)
 
 import pywt
 
@@ -174,7 +174,7 @@ def test_idwtn_missing():
                             pywt.idwtn(missing_coefs, 'haar'), atol=1e-15)
 
 
-def test_ignore_invalid_keys():
+def test_error_on_invalid_keys():
     data = np.array([
         [0, 4, 1, 5, 1, 4],
         [0, 5, 6, 3, 2, 1],
@@ -183,12 +183,18 @@ def test_ignore_invalid_keys():
     wavelet = pywt.Wavelet('haar')
 
     LL, (HL, LH, HH) = pywt.dwt2(data, wavelet)
-    d = {'aa': LL, 'da': HL, 'ad': LH, 'dd': HH,
-         'foo': LH, 'a': HH}
 
-    assert_allclose(pywt.idwt2((LL, (HL, LH, HH)), wavelet),
-                    assert_warns(DeprecationWarning, pywt.idwtn, d, wavelet),
-                    atol=1e-15)
+    # unexpected key
+    d = {'aa': LL, 'da': HL, 'ad': LH, 'dd': HH, 'ff': LH}
+    assert_raises(ValueError, pywt.idwtn, d, wavelet)
+
+    # a key whose value is None
+    d = {'aa': LL, 'da': HL, 'ad': LH, 'dd': None}
+    assert_raises(ValueError, pywt.idwtn, d, wavelet)
+
+    # mismatched key lengths
+    d = {'a': LL, 'da': HL, 'ad': LH, 'dd': HH}
+    assert_raises(ValueError, pywt.idwtn, d, wavelet)
 
 
 def test_error_mismatched_size():

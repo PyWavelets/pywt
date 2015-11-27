@@ -169,23 +169,25 @@ def dwtn(data, wavelet, mode='symmetric', axes=None):
     return dict(coeffs)
 
 
-# The nocheck argument can be removed in a future release
-# it is only here to allow the previous idwtn behaviour during deprecation
-def _fix_coeffs(coeffs, nocheck=False):
-    if not nocheck:
-        missing_keys = [k for k, v in coeffs.items() if
-                        v is None]
-        if missing_keys:
-            raise ValueError(
-                "The following detail coefficients were set to None: "
-                "{}.".format(missing_keys))
+def _fix_coeffs(coeffs):
+    missing_keys = [k for k, v in coeffs.items() if
+                    v is None]
+    if missing_keys:
+        raise ValueError(
+            "The following detail coefficients were set to None: "
+            "{}.".format(missing_keys))
 
-        invalid_keys = [k for k, v in coeffs.items() if
-                        not set(k) <= set('ad')]
-        if invalid_keys:
-            raise ValueError(
-                "The following invalid keys were found in the detail "
-                "coefficient dictionary: {}.".format(invalid_keys))
+    invalid_keys = [k for k, v in coeffs.items() if
+                    not set(k) <= set('ad')]
+    if invalid_keys:
+        raise ValueError(
+            "The following invalid keys were found in the detail "
+            "coefficient dictionary: {}.".format(invalid_keys))
+
+    key_lengths = [len(k) for k in coeffs.keys()]
+    if len(np.unique(key_lengths)) > 1:
+        raise ValueError(
+            "All detail coefficient names must have equal length.")
 
     return dict((k, np.asarray(v)) for k, v in coeffs.items()
                 if v is not None and set(k) <= set('ad'))
@@ -223,16 +225,8 @@ def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
         wavelet = Wavelet(wavelet)
     mode = Modes.from_object(mode)
 
-    # Ignore any invalid keys
-    # Remove try/except clause around ValueError in a future release
-    try:
-        coeffs = _fix_coeffs(coeffs)
-    except ValueError:
-        coeffs = _fix_coeffs(coeffs, nocheck=True)
-        msg = ("Support for coefficient dictionaries containing "
-               "coefficients=None or invalid keys is depricated and will "
-               "raise an exception in a future release.")
-        warnings.warn(msg, DeprecationWarning)
+    # Raise error for invalid key combinations
+    coeffs = _fix_coeffs(coeffs)
 
     if any(np.iscomplexobj(v) for v in coeffs.values()):
         real_coeffs = dict((k, v.real) for k, v in coeffs.items())

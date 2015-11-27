@@ -296,32 +296,23 @@ def test_waverecn_empty_coeff():
     coeffs = [np.ones((2, 2, 2)), {}, {}, {'daa': np.ones((8, 8, 8))}]
     assert_equal(pywt.waverecn(coeffs, 'db1').shape, (16, 16, 16))
 
-    # no valid coeffs: raise Error
+
+def test_waverecn_invalid_coeffs():
+    # approximation coeffs as None and no valid detail oeffs
     coeffs = [None, {}]
     assert_raises(ValueError, pywt.waverecn, coeffs, 'db1')
 
-    # use of None in coefficient list is deprecated
-    coeffs = [None, {}, {'daa': np.ones((3, 4, 2))}]
-    assert_equal(
-        assert_warns(DeprecationWarning, pywt.waverecn, coeffs, 'db1').shape,
-        (6, 8, 4))
-    coeffs = [None, {'daa': np.ones((4, 4, 4))}]
-    assert_equal(
-        assert_warns(DeprecationWarning, pywt.waverecn, coeffs, 'db1').shape,
-        (8, 8, 8))
+    # use of None for a coefficient value
+    coeffs = [np.ones((2, 2, 2)), {}, {'daa': None}, ]
+    assert_raises(ValueError, pywt.waverecn, coeffs, 'db1')
 
-    # invalid keys in coefficient list is deprecated
+    # invalid key names in coefficient list
     coeffs = [np.ones((4, 4, 4)), {'daa': np.ones((4, 4, 4)), 'foo': {}}]
-    assert_equal(
-        assert_warns(DeprecationWarning, pywt.waverecn, coeffs, 'db1').shape,
-        (8, 8, 8))
+    assert_raises(ValueError, pywt.waverecn, coeffs, 'db1')
 
-
-def test_waverecn_invalid_coeffs():
-    # coeff dict with invalid keys is being deprecated
-    coeffs = [np.ones((4, 4, 4)),
-              {'ada': np.ones((4, 4, 4)), 'dk': 'foo', 'aad': None}]
-    assert_warns(DeprecationWarning, pywt.waverecn, coeffs, 'db1')
+    # mismatched key name lengths
+    coeffs = [np.ones((4, 4, 4)), {'daa': np.ones((4, 4, 4)), 'da': {}}]
+    assert_raises(ValueError, pywt.waverecn, coeffs, 'db1')
 
 
 def test_waverecn_invalid_coeffs2():
