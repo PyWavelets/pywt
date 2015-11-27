@@ -56,14 +56,6 @@ def test_dwt_idwt_basic_complex():
     assert_allclose(x_roundtrip, x, rtol=1e-10)
 
 
-def test_dwt_input_error():
-    data = np.ones((16, 1))
-    assert_raises(ValueError, pywt.dwt, data, 'haar')
-
-    cA, cD = pywt.dwt(data[:, 0], 'haar')
-    assert_raises(ValueError, pywt.idwt, cA[:, np.newaxis], cD, 'haar')
-
-
 def test_dwt_wavelet_kwd():
     x = np.array([3, 7, 1, 1, -2, 5, 4, 6])
     w = pywt.Wavelet('sym3')
