@@ -915,15 +915,10 @@ def _idwt(np.ndarray[data_t, ndim=1, mode="c"] cA,
     """See `idwt` for details"""
 
     cdef index_t input_len
-
-    cdef Wavelet w
-    cdef common.MODE mode_
-
-    w = c_wavelet_from_object(wavelet)
-    mode_ = _try_mode(mode)
-
-    cdef np.ndarray[data_t, ndim=1, mode="c"] rec
     cdef index_t rec_len
+
+    cdef Wavelet w = c_wavelet_from_object(wavelet)
+    cdef common.MODE  mode_ = _try_mode(mode)
 
     # check for size difference between arrays
     if cA.size != cD.size:
@@ -938,29 +933,7 @@ def _idwt(np.ndarray[data_t, ndim=1, mode="c"] cA,
                "Wavelet and mode must be the same as used for decomposition.")
         raise ValueError(msg)
 
-    # allocate buffer
-    if cA is not None:
-        rec = np.zeros(rec_len, dtype=cA.dtype)
-    else:
-        rec = np.zeros(rec_len, dtype=cD.dtype)
-
-    # call idwt func.  one of cA/cD can be None, then only
-    # reconstruction of non-null part will be performed
-    if data_t is np.float64_t:
-        if c_wt.double_idwt(&cA[0], cA.size,
-                            &cD[0], cD.size,
-                            &rec[0], rec.size,
-                            w.w, mode_) < 0:
-            raise RuntimeError("C idwt failed.")
-    elif data_t == np.float32_t:
-        if c_wt.float_idwt(&cA[0], cA.size,
-                           &cD[0], cD.size,
-                           &rec[0], rec.size,
-                           w.w, mode_) < 0:
-            raise RuntimeError("C idwt failed.")
-    else:
-        raise RuntimeError("Invalid data type.")
-
+    rec = idwt_axis(cA, cD, wavelet, mode)
     return rec
 
 
