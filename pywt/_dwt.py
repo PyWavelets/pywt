@@ -56,7 +56,9 @@ def dwt(data, wavelet, mode='symmetric'):
     if not isinstance(wavelet, Wavelet):
         wavelet = Wavelet(wavelet)
     mode = Modes.from_object(mode)
-    return _dwt(data, wavelet, mode)
+
+    cA, cD = _dwt(data, wavelet, mode)
+    return np.asarray(cA), np.asarray(cD)
 
 
 def downcoef(part, data, wavelet, mode='symmetric', level=1):
@@ -175,7 +177,9 @@ def idwt(cA, cD, wavelet, mode='symmetric'):
     if not isinstance(wavelet, Wavelet):
         wavelet = Wavelet(wavelet)
     mode = Modes.from_object(mode)
-    return _idwt(cA, cD, wavelet, mode)
+
+    rec =  _idwt(cA, cD, wavelet, mode)
+    return np.asarray(rec)
 
 
 def upcoef(part, coeffs, wavelet, level=1, take=0):
