@@ -746,6 +746,8 @@ def _dwt(np.ndarray data, object wavelet, object mode='symmetric', int axis=-1):
     if output_len < 1:
         raise RuntimeError("Invalid output length.")
 
+    if axis >= data.ndim:
+        raise ValueError("Axis greater than data dimensions")
     # convert negative axes
     axis = axis % data.ndim
 
@@ -938,6 +940,8 @@ def _idwt(np.ndarray cA, np.ndarray cD,
                "Wavelet and mode must be the same as used for decomposition.")
         raise ValueError(msg)
 
+    if axis >= cA.ndim:
+        raise ValueError("Axis greater than coefficient dimension")
     # convert negative axes
     axis = axis % cA.ndim
 
