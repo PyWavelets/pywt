@@ -153,7 +153,7 @@ def dwtn(data, wavelet, mode='symmetric', axes=None):
         axes = range(data.ndim)
     axes = (a + data.ndim if a < 0 else a for a in axes)
 
-    for axis in sorted(axes):
+    for axis in axes:
         new_coeffs = []
         for subband, x in coeffs:
             cA, cD = dwt_axis(x, wavelet, mode, axis)
@@ -218,7 +218,7 @@ def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
         axes = range(ndim)
     axes = (a + ndim if a < 0 else a for a in axes)
 
-    for key_length, axis in reversed(list(enumerate(sorted(axes)))):
+    for key_length, axis in reversed(list(enumerate(axes))):
         new_coeffs = {}
         new_keys = [''.join(coeff) for coeff in product('ad', repeat=key_length)]
 
