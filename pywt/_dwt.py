@@ -113,7 +113,8 @@ def downcoef(part, data, wavelet, mode='symmetric', level=1):
     if level < 1:
         raise ValueError("Value of level must be greater than 0.")
 
-    return _downcoef(part == 'a', data, wavelet, mode, level)
+    coef = _downcoef(part == 'a', data, wavelet, mode, level)
+    return np.asarray(coef)
 
 
 def idwt(cA, cD, wavelet, mode='symmetric'):

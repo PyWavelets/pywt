@@ -36,15 +36,14 @@ cpdef _dwt(data_t[::1] data, Wavelet wavelet, common.MODE mode):
     return (cA, cD)
 
 
-cpdef _downcoef(bint do_dec_a, np.ndarray[data_t, ndim=1, mode="c"] data,
+cpdef _downcoef(bint do_dec_a, data_t[::1] data,
                 Wavelet wavelet, common.MODE mode, unsigned int level):
-    cdef np.ndarray[data_t, ndim=1, mode="c"] coeffs
+    cdef data_t[::1] coeffs
 
     for i in range(level):
         output_len = common.dwt_buffer_length(data.size, wavelet.dec_len, mode)
         if output_len < 1:
             raise RuntimeError("Invalid output length.")
-        coeffs = np.zeros(output_len, dtype=data.dtype)
 
         # To mirror multi-level wavelet decomposition behaviour, when detail
         # coefficients are requested, the dec_d variant is only called at the
@@ -53,26 +52,26 @@ cpdef _downcoef(bint do_dec_a, np.ndarray[data_t, ndim=1, mode="c"] data,
         # detail filter on the approximation coefficients of level n-1.
         if do_dec_a or (i < level - 1):
             if data_t is np.float64_t:
+                coeffs = np.zeros(output_len, dtype=np.float64)
                 if c_wt.double_dec_a(&data[0], data.size, wavelet.w,
                                      &coeffs[0], coeffs.size, mode) < 0:
                     raise RuntimeError("C dec_a failed.")
             elif data_t is np.float32_t:
+                coeffs = np.zeros(output_len, dtype=np.float32)
                 if c_wt.float_dec_a(&data[0], data.size, wavelet.w,
                                     &coeffs[0], coeffs.size, mode) < 0:
                     raise RuntimeError("C dec_a failed.")
-            else:
-                raise RuntimeError("Invalid data type.")
         else:
             if data_t is np.float64_t:
+                coeffs = np.zeros(output_len, dtype=np.float64)
                 if c_wt.double_dec_d(&data[0], data.size, wavelet.w,
                                      &coeffs[0], coeffs.size, mode) < 0:
                     raise RuntimeError("C dec_d failed.")
             elif data_t is np.float32_t:
+                coeffs = np.zeros(output_len, dtype=np.float32)
                 if c_wt.float_dec_d(&data[0], data.size, wavelet.w,
                                     &coeffs[0], coeffs.size, mode) < 0:
                     raise RuntimeError("C dec_d failed.")
-            else:
-                raise RuntimeError("Invalid data type.")
         data = coeffs
 
     return data
