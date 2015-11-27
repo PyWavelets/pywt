@@ -731,8 +731,6 @@ def dwt(object data, object wavelet, object mode='symmetric', int axis=-1):
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(data)
     data = np.array(data, dtype=dt)
-    if data.ndim != 1:
-        raise ValueError("dwt requires a 1D data array.")
 
     return _dwt(data, wavelet, mode, axis=axis)
 
