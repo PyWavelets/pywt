@@ -107,7 +107,13 @@ def downcoef(part, data, wavelet, mode='symmetric', level=1):
     if not isinstance(wavelet, Wavelet):
         wavelet = Wavelet(wavelet)
     mode = Modes.from_object(mode)
-    return _downcoef(part, data, wavelet, mode, level)
+
+    if part not in 'ad':
+        raise ValueError("'part' must be 'a' or 'd', not '%s'." % part)
+    if level < 1:
+        raise ValueError("Value of level must be greater than 0.")
+
+    return _downcoef(part == 'a', data, wavelet, mode, level)
 
 
 def idwt(cA, cD, wavelet, mode='symmetric'):
@@ -178,7 +184,7 @@ def idwt(cA, cD, wavelet, mode='symmetric'):
         wavelet = Wavelet(wavelet)
     mode = Modes.from_object(mode)
 
-    rec =  _idwt(cA, cD, wavelet, mode)
+    rec = _idwt(cA, cD, wavelet, mode)
     return np.asarray(rec)
 
 

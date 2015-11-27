@@ -36,17 +36,9 @@ cpdef _dwt(data_t[::1] data, Wavelet wavelet, common.MODE mode):
     return (cA, cD)
 
 
-cpdef _downcoef(part, np.ndarray[data_t, ndim=1, mode="c"] data,
-                Wavelet wavelet, common.MODE mode, int level):
+cpdef _downcoef(bint do_dec_a, np.ndarray[data_t, ndim=1, mode="c"] data,
+                Wavelet wavelet, common.MODE mode, unsigned int level):
     cdef np.ndarray[data_t, ndim=1, mode="c"] coeffs
-    cdef int i, do_dec_a
-
-    if part not in ('a', 'd'):
-        raise ValueError("Argument 1 must be 'a' or 'd', not '%s'." % part)
-    do_dec_a = (part == 'a')
-
-    if level < 1:
-        raise ValueError("Value of level must be greater than 0.")
 
     for i in range(level):
         output_len = common.dwt_buffer_length(data.size, wavelet.dec_len, mode)
@@ -83,7 +75,7 @@ cpdef _downcoef(part, np.ndarray[data_t, ndim=1, mode="c"] data,
                 raise RuntimeError("Invalid data type.")
         data = coeffs
 
-    return coeffs
+    return data
 
 
 cpdef dwt_axis(np.ndarray data, Wavelet wavelet, common.MODE mode, unsigned int axis):
