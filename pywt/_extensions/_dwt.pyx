@@ -161,11 +161,11 @@ cpdef _idwt(data_t[::1] cA, data_t[::1] cD,
 
 
 # TODO: type wavelet, part
-cpdef _upcoef(bint do_rec_a, np.ndarray[data_t, ndim=1, mode="c"] coeffs,
+cpdef _upcoef(bint do_rec_a, data_t[::1] coeffs,
               Wavelet wavelet, unsigned int level, unsigned int take):
-    cdef np.ndarray[data_t, ndim=1, mode="c"] rec
+    cdef data_t[::1] rec
     cdef size_t rec_len = 0
-    # constructed from (rec_len - take) iff take < rec_len
+    # constructed from (rec_len - take) iff take < rec_len therefore always > 0
     cdef size_t left_bound, right_bound
 
     for i in range(level):
@@ -174,35 +174,32 @@ cpdef _upcoef(bint do_rec_a, np.ndarray[data_t, ndim=1, mode="c"] coeffs,
         if rec_len < 1:
             raise RuntimeError("Invalid output length.")
 
-        # reconstruct
-        rec = np.zeros(rec_len, dtype=coeffs.dtype)
-
         # To mirror multi-level wavelet reconstruction behaviour, when detail
         # reconstruction is requested, the dec_d variant is only called at the
         # first level to generate the approximation coefficients at the second
         # level.  Subsequent levels apply the reconstruction filter.
         if (i > 0) or do_rec_a:
             if data_t is np.float64_t:
+                rec = np.zeros(rec_len, dtype=np.float64)
                 if c_wt.double_rec_a(&coeffs[0], coeffs.size, wavelet.w,
                                      &rec[0], rec.size) < 0:
                     raise RuntimeError("C rec_a failed.")
             elif data_t is np.float32_t:
+                rec = np.zeros(rec_len, dtype=np.float32)
                 if c_wt.float_rec_a(&coeffs[0], coeffs.size, wavelet.w,
                                     &rec[0], rec.size) < 0:
                     raise RuntimeError("C rec_a failed.")
-            else:
-                raise RuntimeError("Invalid data type.")
         else:
             if data_t is np.float64_t:
+                rec = np.zeros(rec_len, dtype=np.float64)
                 if c_wt.double_rec_d(&coeffs[0], coeffs.size, wavelet.w,
                                      &rec[0], rec.size) < 0:
                     raise RuntimeError("C rec_d failed.")
             elif data_t is np.float32_t:
+                rec = np.zeros(rec_len, dtype=np.float32)
                 if c_wt.float_rec_d(&coeffs[0], coeffs.size, wavelet.w,
                                     &rec[0], rec.size) < 0:
                     raise RuntimeError("C rec_d failed.")
-            else:
-                raise RuntimeError("Invalid data type.")
         # TODO: this algorithm needs some explaining
         coeffs = rec
 
@@ -211,7 +208,6 @@ cpdef _upcoef(bint do_rec_a, np.ndarray[data_t, ndim=1, mode="c"] coeffs,
         if (rec_len-take) % 2:
             # right_bound must never be zero for indexing to work
             right_bound = right_bound + 1
-
         return coeffs[left_bound:-right_bound]
     return coeffs
 

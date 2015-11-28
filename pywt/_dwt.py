@@ -247,4 +247,5 @@ def upcoef(part, coeffs, wavelet, level=1, take=0):
         raise ValueError("'part' must be 'a' or 'd', not '%s'." % part)
     if level < 1:
         raise ValueError("Value of level must be greater than 0.")
-    return _upcoef(part == 'a', coeffs, wavelet, level, take)
+    rec = _upcoef(part == 'a', coeffs, wavelet, level, take)
+    return np.asarray(rec)

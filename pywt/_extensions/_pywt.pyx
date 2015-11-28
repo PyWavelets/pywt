@@ -495,12 +495,13 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
         cdef index_t right_extent_length "right_extent_length"
         cdef index_t output_length "output_length"
         cdef index_t keep_length "keep_length"
-        cdef np.ndarray[np.float64_t, ndim=1, mode="c"] n "n"
+        cdef np.float64_t[::1] n
         cdef double p "p"
         cdef Wavelet other "other"
         cdef phi_d, psi_d, phi_r, psi_r
 
-        n = np.array([pow(sqrt(2.), <double>level)])
+        n = np.empty(1, np.float64)
+        n[0] = pow(sqrt(2.), <double>level)
         p = (pow(2., <double>level))
 
         if self.w.orthogonal:
@@ -523,7 +524,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
         else:
             if self.w.biorthogonal:
                 if (self.w.vanishing_moments_psi % 4) != 1:
-                    n *= -1
+                    n[0] *= -1
 
             other = Wavelet(filter_bank=self.inverse_filter_bank)
 
