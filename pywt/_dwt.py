@@ -242,4 +242,9 @@ def upcoef(part, coeffs, wavelet, level=1, take=0):
 
     if not isinstance(wavelet, Wavelet):
         wavelet = Wavelet(wavelet)
-    return _upcoef(part, coeffs, wavelet, level, take)
+
+    if part not in 'ad':
+        raise ValueError("'part' must be 'a' or 'd', not '%s'." % part)
+    if level < 1:
+        raise ValueError("Value of level must be greater than 0.")
+    return _upcoef(part == 'a', coeffs, wavelet, level, take)

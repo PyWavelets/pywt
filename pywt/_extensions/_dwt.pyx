@@ -161,20 +161,12 @@ cpdef _idwt(data_t[::1] cA, data_t[::1] cD,
 
 
 # TODO: type wavelet, part
-cpdef _upcoef(part, np.ndarray[data_t, ndim=1, mode="c"] coeffs,
-              Wavelet wavelet, int level, int take):
+cpdef _upcoef(bint do_rec_a, np.ndarray[data_t, ndim=1, mode="c"] coeffs,
+              Wavelet wavelet, unsigned int level, unsigned int take):
     cdef np.ndarray[data_t, ndim=1, mode="c"] rec
-    cdef int i, do_rec_a
     cdef size_t rec_len = 0
     # constructed from (rec_len - take) iff take < rec_len
     cdef size_t left_bound, right_bound
-
-    if part not in ('a', 'd'):
-        raise ValueError("Argument 1 must be 'a' or 'd', not '%s'." % part)
-    do_rec_a = (part == 'a')
-
-    if level < 1:
-        raise ValueError("Value of level must be greater than 0.")
 
     for i in range(level):
         # output len
@@ -189,7 +181,7 @@ cpdef _upcoef(part, np.ndarray[data_t, ndim=1, mode="c"] coeffs,
         # reconstruction is requested, the dec_d variant is only called at the
         # first level to generate the approximation coefficients at the second
         # level.  Subsequent levels apply the reconstruction filter.
-        if do_rec_a:
+        if (i > 0) or do_rec_a:
             if data_t is np.float64_t:
                 if c_wt.double_rec_a(&coeffs[0], coeffs.size, wavelet.w,
                                      &rec[0], rec.size) < 0:
@@ -211,9 +203,6 @@ cpdef _upcoef(part, np.ndarray[data_t, ndim=1, mode="c"] coeffs,
                     raise RuntimeError("C rec_d failed.")
             else:
                 raise RuntimeError("Invalid data type.")
-            # switch to approximation filter for subsequent levels
-            do_rec_a = 1
-
         # TODO: this algorithm needs some explaining
         coeffs = rec
 
@@ -223,9 +212,8 @@ cpdef _upcoef(part, np.ndarray[data_t, ndim=1, mode="c"] coeffs,
             # right_bound must never be zero for indexing to work
             right_bound = right_bound + 1
 
-        return rec[left_bound:-right_bound]
-
-    return rec
+        return coeffs[left_bound:-right_bound]
+    return coeffs
 
 
 cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d, Wavelet wavelet,

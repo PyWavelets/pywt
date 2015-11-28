@@ -513,10 +513,10 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
                                                           keep_length)
 
             # phi, psi, x
-            return [np.concatenate(([0.], keep(_upcoef('a', n, self, level, 0),
+            return [np.concatenate(([0.], keep(_upcoef(True, n, self, level, 0),
                                                keep_length),
                                     np.zeros(right_extent_length))),
-                    np.concatenate(([0.], keep(_upcoef('d', n, self, level, 0),
+                    np.concatenate(([0.], keep(_upcoef(False, n, self, level, 0),
                                                keep_length),
                                     np.zeros(right_extent_length))),
                     np.linspace(0.0, (output_length-1)/p, output_length)]
@@ -533,10 +533,10 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
             output_length = fix_output_length(output_length, keep_length)
             right_extent_length = get_right_extent_length(output_length, keep_length)
 
-            phi_d  = np.concatenate(([0.], keep(_upcoef('a', n, other, level, 0),
+            phi_d  = np.concatenate(([0.], keep(_upcoef(True, n, other, level, 0),
                                                 keep_length),
                                      np.zeros(right_extent_length)))
-            psi_d  = np.concatenate(([0.], keep(_upcoef('d', n, other, level, 0),
+            psi_d  = np.concatenate(([0.], keep(_upcoef(False, n, other, level, 0),
                                                 keep_length),
                                      np.zeros(right_extent_length)))
 
@@ -546,10 +546,10 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
             output_length = fix_output_length(output_length, keep_length)
             right_extent_length = get_right_extent_length(output_length, keep_length)
 
-            phi_r  = np.concatenate(([0.], keep(_upcoef('a', n, self, level, 0),
+            phi_r  = np.concatenate(([0.], keep(_upcoef(True, n, self, level, 0),
                                                 keep_length),
                                      np.zeros(right_extent_length)))
-            psi_r  = np.concatenate(([0.], keep(_upcoef('d', n, self, level, 0),
+            psi_r  = np.concatenate(([0.], keep(_upcoef(False, n, self, level, 0),
                                                 keep_length),
                                      np.zeros(right_extent_length)))
 
