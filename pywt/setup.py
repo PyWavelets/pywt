@@ -29,7 +29,7 @@ def configuration(parent_package='', top_path=None):
     config.add_extension(
         '_extensions._pywt',
         sources=["_extensions/_pywt.c"] + c_files,
-        depends=depends,
+        depends=["_extensions/_dwt.c"] + depends,
         include_dirs=["_extensions", "_extensions/c", np.get_include()],
         define_macros=[("PY_EXTENSION", None)],
     )
@@ -37,7 +37,7 @@ def configuration(parent_package='', top_path=None):
     config.add_extension(
         '_extensions._dwt',
         sources=["_extensions/_dwt.c"] + c_files,
-        depends=depends,
+        depends=["_extensions/_pywt.c"] + depends,
         include_dirs=["_extensions", "_extensions/c", np.get_include()],
         define_macros=[("PY_EXTENSION", None)],
     )
@@ -45,7 +45,7 @@ def configuration(parent_package='', top_path=None):
     config.add_extension(
         '_extensions._swt',
         sources=["_extensions/_swt.c"] + c_files,
-        depends=depends,
+        depends=["_extensions/_pywt.c"] + depends,
         include_dirs=["_extensions", "_extensions/c", np.get_include()],
         define_macros=[("PY_EXTENSION", None)],
     )
