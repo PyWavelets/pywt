@@ -14,9 +14,7 @@ void *wtcalloc(size_t len, size_t size){
 
 /* Returns the floor of the base-2 log of it's input
  *
- * x = 0
- *    MSVC: returns 0
- *    Undefined on GCC/clang
+ * Undefined for x = 0
  */
 unsigned char uint_log2(unsigned long x){
 #if defined(_MSC_VER)
@@ -66,7 +64,7 @@ size_t swt_buffer_length(size_t input_len){
 }
 
 unsigned char dwt_max_level(size_t input_len, size_t filter_len){
-    if(input_len < 1 || filter_len < 2 || input_len < filter_len)
+    if(filter_len <= 1 || input_len < (filter_len-1))
         return 0;
 
     return uint_log2(input_len/(filter_len-1));
