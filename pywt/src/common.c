@@ -14,21 +14,23 @@ void *wtcalloc(size_t len, size_t size){
 
 /* Returns the floor of the base-2 log of it's input
  *
- * x = 0
- *    MSVC: returns 0
- *    Undefined on GCC/clang
+ * Undefined for x = 0
  */
-unsigned char uint_log2(unsigned long x){
+unsigned char size_log2(size_t x){
 #if defined(_MSC_VER)
     unsigned long i;
+#if defined (_WIN64)
+    _BitScanReverse64(&i, x);
+#else
     _BitScanReverse(&i, x);
+#endif /* _WIN64 */
     return i;
 #else
     // GCC and clang
     // Safe cast: 0 <= clzl < arch_bits (64) where result is defined
     unsigned char leading_zeros = (unsigned char) __builtin_clzl(x);
-    return sizeof(unsigned long) * 8 - leading_zeros - 1;
-#endif
+    return sizeof(size_t) * 8 - leading_zeros - 1;
+#endif /* _MSC_VER */
 }
 
 /* buffers and max levels params */
@@ -66,10 +68,10 @@ size_t swt_buffer_length(size_t input_len){
 }
 
 unsigned char dwt_max_level(size_t input_len, size_t filter_len){
-    if(input_len < 1 || filter_len < 2)
+    if(filter_len <= 1 || input_len < (filter_len-1))
         return 0;
 
-    return uint_log2(input_len/(filter_len-1));
+    return size_log2(input_len/(filter_len-1));
 }
 
 unsigned char swt_max_level(size_t input_len){
