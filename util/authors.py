@@ -26,6 +26,7 @@ else:
 
 NAME_MAP = {
     u('Helder'): u('Helder Oliveira'),
+    u('Kai'): u('Kai Wohlfahrt'),
 }
 
 
