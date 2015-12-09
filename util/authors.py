@@ -87,13 +87,14 @@ def main():
 
     # Sort
     def name_key(fullname):
-        m = re.search(u(' [a-z ]*[A-Za-z-]+$'), fullname)
+        m = re.search(u(' [a-z ]*[A-Za-z-\']+$'), fullname)
         if m:
             forename = fullname[:m.start()].strip()
             surname = fullname[m.start():].strip()
         else:
             forename = ""
             surname = fullname.strip()
+        surname = surname.replace('\'', '')
         if surname.startswith(u('van der ')):
             surname = surname[8:]
         if surname.startswith(u('de ')):
