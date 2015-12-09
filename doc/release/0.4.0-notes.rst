@@ -2,17 +2,50 @@
 PyWavelets 0.4.0 Release Notes
 ==============================
 
-.. note:: PyWavelets 0.4.0 is not released yet!
-
 .. contents::
 
-
+PyWavelets 0.4.0 is the culmination of XX months of work.  In addition to
+several new features some changes and deprecations have been made to streamline
+the API.
 
 This release requires Python 2.6, 2.7 or 3.3-3.5 and NumPy 1.6.2 or greater.
+
+Highlights of this release include:
+
+.. TODO
 
 
 New features
 ============
+
+1D and 2D stationary wavelet transforms
+---------------------------------------
+1D (``iswt``) and 2D (``iswt2``) stationary wavelet transforms were added.
+These currently only support even length inputs
+
+
+Faster 2D and nD wavelet transforms
+-----------------------------------
+The multidimensional DWT and IDWT code was refactored and is now an order of
+magnitude faster than in previous releases.  The following functions benefit:
+``dwt2``, ``idwt2``, ``dwtn``, ``idwtn``.
+
+
+Complex floating point support
+------------------------------
+64 and 128-bit complex data types are now supported by all wavelet transforms.
+
+
+nD implementation of the multilevel DWT and IDWT
+------------------------------------------------
+The existing 1D and 2D multilevel transforms were supplemented with an nD
+implementation.
+
+
+Wavelet transforms can be applied along a specific axis/axes
+------------------------------------------------------------
+All wavelet transform functions now support explicit specification of the axis
+or axes upon which to perform the transform.
 
 
 Deprecated features
@@ -47,6 +80,13 @@ Backwards incompatible changes
 arrays differing in size by one element may be produced, use the ``waverec``
 functions from the ``multilevel`` module instead.
 
+Bugs Fixed
+==========
+
+float32 inputs were not always respected. All transforms now return float32
+outputs when called using float32 inputs.
+
+incorrect detail coefficients were returned by downcoef when level > 1
 
 Other changes
 =============
@@ -54,6 +94,19 @@ Other changes
 
 Authors
 =======
+
+* Thomas Arildsen +
+* François Boulogne
+* Ralf Gommers
+* Gregory R. Lee
+* Michael Marino +
+* Aaron O'Leary +
+* Daniele Tricoli +
+* Kai Wohlfahrt
+
+A total of 8 people contributed to this release.
+People with a "+" by their names contributed a patch for the first time.
+This list of names is automatically generated, and may not be fully complete.
 
 
 Issues closed for v0.4.0
