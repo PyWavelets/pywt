@@ -120,6 +120,11 @@ def dwtn(data, wavelet, mode='symmetric', axes=None):
         be performed multiple times along these axes. A value of `None` (the
         default) selects all axes.
 
+        Axes may be repeated, but information about the original size may be
+        lost if it is not divisible (2 ** nrepeats). The reconstruction will
+        larger, with additional values derived according to `mode` parameter.
+        `pywt.wavedecn` should be used for multilevel decomposition.
+
     Returns
     -------
     coeffs : dict
@@ -181,6 +186,9 @@ def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
         Axes over which to compute the IDWT. Repeated elements mean the IDWT
         will be performed multiple times along these axes. A value of `None`
         (the default) selects all axes.
+
+        For the most accurate reconstruction, the axes should be provided in
+        the same order as they were provided to `dwtn`.
 
     Returns
     -------
