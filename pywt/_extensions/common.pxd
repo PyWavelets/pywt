@@ -1,4 +1,4 @@
-cdef extern from "common.h":
+cdef extern from "c/common.h":
     ctypedef int index_t
 
     cdef void* wtmalloc(long size)

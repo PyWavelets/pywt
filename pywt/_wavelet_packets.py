@@ -11,7 +11,9 @@ __all__ = ["BaseNode", "Node", "WaveletPacket", "Node2D", "WaveletPacket2D"]
 
 import numpy as np
 
-from ._pywt import Wavelet, dwt, idwt, dwt_max_level
+from ._extensions._pywt import Wavelet
+from ._extensions._dwt import dwt_max_level
+from ._dwt import dwt, idwt
 from ._multidim import dwt2, idwt2
 
 

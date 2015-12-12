@@ -15,8 +15,9 @@ from itertools import cycle, product
 
 import numpy as np
 
-from ._pywt import Wavelet, Modes
-from ._pywt import dwt, idwt, swt, dwt_axis, idwt_axis
+from ._extensions._pywt import Wavelet, Modes
+from ._extensions._dwt import dwt_axis, idwt_axis
+from ._swt import swt
 
 
 def dwt2(data, wavelet, mode='symmetric'):
@@ -135,8 +136,12 @@ def dwtn(data, wavelet, mode='symmetric'):
         raise TypeError("Input must be a numeric array-like")
     if data.ndim < 1:
         raise ValueError("Input data must be at least 1D")
-    coeffs = [('', data)]
 
+    if not isinstance(wavelet, Wavelet):
+        wavelet = Wavelet(wavelet)
+    mode = Modes.from_object(mode)
+
+    coeffs = [('', data)]
     for axis in range(data.ndim):
         new_coeffs = []
         for subband, x in coeffs:

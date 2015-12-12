@@ -1,6 +1,6 @@
 from common cimport index_t
 
-cdef extern from "wavelets.h":
+cdef extern from "c/wavelets.h":
     ctypedef enum SYMMETRY:
         ASYMMETRIC
         NEAR_SYMMETRIC
@@ -35,8 +35,6 @@ cdef extern from "wavelets.h":
         char* family_name
         char* short_name
 
-
-cdef extern from "wavelets.h":
     cdef Wavelet* wavelet(char name, int type)
     cdef Wavelet* blank_wavelet(size_t filter_length)
     cdef void free_wavelet(Wavelet* wavelet)

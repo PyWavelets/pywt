@@ -14,7 +14,7 @@ import warnings
 import numpy as np
 from numpy.fft import fft
 
-from ._pywt import Wavelet
+from ._extensions._pywt import Wavelet
 
 
 __all__ = ["integrate_wavelet", "central_frequency", "scale2frequency", "qmf",
