@@ -977,6 +977,56 @@ def _idwt(np.ndarray cA, np.ndarray cD,
     return rec
 
 
+def idwt_single(np.ndarray[data_t, ndim=1, mode="c"] cA,
+                np.ndarray[data_t, ndim=1, mode="c"] cD,
+                object wavelet, object mode='symmetric'):
+
+    cdef Wavelet w = c_wavelet_from_object(wavelet)
+    cdef common.MODE mode_ = _try_mode(mode)
+
+    cdef np.ndarray[data_t, ndim=1, mode="c"] rec
+    cdef index_t input_len
+    cdef index_t rec_len
+
+    # check for size difference between arrays
+    if cA.size != cD.size:
+        raise ValueError("Coefficients arrays must have the same size.")
+    else:
+        input_len = cA.size
+
+    # find reconstruction buffer length
+    rec_len = common.idwt_buffer_length(input_len, w.rec_len, mode_)
+    if rec_len < 1:
+        msg = ("Invalid coefficient arrays length for specified wavelet. "
+               "Wavelet and mode must be the same as used for decomposition.")
+        raise ValueError(msg)
+
+    # allocate buffer
+    if cA is not None:
+        rec = np.zeros(rec_len, dtype=cA.dtype)
+    else:
+        rec = np.zeros(rec_len, dtype=cD.dtype)
+
+    # call idwt func.  one of cA/cD can be None, then only
+    # reconstruction of non-null part will be performed
+    if data_t is np.float64_t:
+        if c_wt.double_idwt(&cA[0], cA.size,
+                            &cD[0], cD.size,
+                            &rec[0], rec.size,
+                            w.w, mode_) < 0:
+            raise RuntimeError("C idwt failed.")
+    elif data_t == np.float32_t:
+        if c_wt.float_idwt(&cA[0], cA.size,
+                           &cD[0], cD.size,
+                           &rec[0], rec.size,
+                           w.w, mode_) < 0:
+            raise RuntimeError("C idwt failed.")
+    else:
+        raise RuntimeError("Invalid data type.")
+
+    return rec
+
+
 cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d, object wavelet,
                 object mode='symmetric', unsigned int axis=0):
     cdef Wavelet w = c_wavelet_from_object(wavelet)
