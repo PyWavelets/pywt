@@ -9,47 +9,13 @@ Wavelets
 Wavelet ``families()``
 ----------------------
 
-.. function:: families()
-
-  Returns a list of available built-in wavelet families. Currently the built-in
-  families are:
-
-  * Haar (``haar``)
-  * Daubechies (``db``)
-  * Symlets (``sym``)
-  * Coiflets (``coif``)
-  * Biorthogonal (``bior``)
-  * Reverse biorthogonal (``rbio``)
-  * `"Discrete"` FIR approximation of Meyer wavelet (``dmey``)
-
-  **Example:**
-
-  .. sourcecode:: python
-
-    >>> import pywt
-    >>> print pywt.families()
-    ['haar', 'db', 'sym', 'coif', 'bior', 'rbio', 'dmey']
+.. autofunction:: families
 
 
 Built-in wavelets - ``wavelist()``
 ----------------------------------
 
-.. function:: wavelist([family])
-
-  The :func:`wavelist` function returns a list of names of the built-in
-  wavelets.
-
-  If the *family* name is ``None`` then names of all the built-in wavelets
-  are returned. Otherwise the function returns names of wavelets that belong
-  to the given family.
-
-  **Example:**
-
-  .. sourcecode:: python
-
-    >>> import pywt
-    >>> print pywt.wavelist('coif')
-    ['coif1', 'coif2', 'coif3', 'coif4', 'coif5']
+.. autofunction:: wavelist
 
   Custom user wavelets are also supported through the :class:`Wavelet` object
   constructor as described below.
