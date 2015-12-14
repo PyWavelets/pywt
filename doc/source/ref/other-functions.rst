@@ -22,7 +22,7 @@ Single-level n-dimensional Discrete Wavelet Transform.
    Results are arranged in a dictionary, where key specifies
    the transform type on each dimension and value is a n-dimensional
    coefficients array.
-    
+
    For example, for a 2D case the result will look something like this::
 
       {

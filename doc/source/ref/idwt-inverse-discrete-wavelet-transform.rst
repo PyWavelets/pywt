@@ -89,7 +89,7 @@ Direct reconstruction with ``upcoef``
   Direct reconstruction from coefficients.
 
   :param part: Defines the input coefficients type:
-  
+
       - **'a'** - approximations reconstruction is performed
       - **'d'** - details reconstruction is performed
 
