@@ -138,19 +138,6 @@ must have the same size.
     ...
     ValueError: Coefficients arrays must have the same size.
 
-But for some applications like multilevel DWT and IDWT it is sometimes convenient
-to allow for a small departure from this behaviour. When the *correct_size* flag
-is set, the approximation coefficients array can be larger from the details
-coefficient array by one element:
-
-    >>> print pywt.idwt([1, 2, 3, 4, 5], [1, 2, 3, 4], 'db2', 'symmetric', correct_size=True)
-    [ 1.76776695  0.61237244  3.18198052  0.61237244  4.59619408  0.61237244]
-
-    >>> print pywt.idwt([1, 2, 3, 4], [1, 2, 3, 4, 5], 'db2', 'symmetric', correct_size=True)
-    Traceback (most recent call last):
-    ...
-    ValueError: Coefficients arrays must satisfy (0 <= len(cA) - len(cD) <= 1).
-
 
 Not every coefficient array can be used in :func:`IDWT <idwt>`. In the
 following example the :func:`idwt` will fail because the input arrays are

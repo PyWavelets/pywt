@@ -11,7 +11,7 @@ Inverse Discrete Wavelet Transform (IDWT)
 Single level ``idwt``
 ---------------------
 
-.. function:: idwt(cA, cD, wavelet[, mode='symmetric'[, correct_size=0]])
+.. function:: idwt(cA, cD, wavelet[, mode='symmetric'])
 
   The :func:`idwt` function reconstructs data from the given coefficients by
   performing single level Inverse Discrete Wavelet Transform.
@@ -24,16 +24,6 @@ Single level ``idwt``
 
   :param mode: |mode| This is only important when DWT was performed in
                :ref:`periodization <Modes.periodization>` mode.
-
-  :param correct_size: Typically, *cA* and *cD* coefficients lists must have
-                       equal lengths in order to perform IDWT. Setting
-                       *correct_size* to `True` allows *cA* to be greater in
-                       size by one element compared to the *cD* size. This
-                       option is very useful when doing multilevel decomposition
-                       and reconstruction (as for example with the
-                       :func:`wavedec` function) of non-dyadic length signals
-                       when such minor differences can occur at various levels
-                       of IDWT.
 
   **Example:**
 
