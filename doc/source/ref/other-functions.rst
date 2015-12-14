@@ -8,12 +8,6 @@ Other functions
 ===============
 
 
-Single-level n-dimensional Discrete Wavelet Transform.
-------------------------------------------------------
-
-.. autofunction:: dwtn
-
-
 Integrating wavelet functions
 -----------------------------
 
