@@ -113,6 +113,42 @@ def test_dwt_single_axis():
     assert_allclose(cD[1], cD1)
 
 
+def test_idwt_single_axis():
+    x = [[3, 7, 1, 1],
+         [-2, 5, 4, 6]]
+
+    cA, cD = pywt.dwt(x, 'db2', axis=-1)
+
+    x0 = pywt.idwt(cA[0], cD[0], 'db2', axis=-1)
+    x1 = pywt.idwt(cA[1], cD[1], 'db2', axis=-1)
+
+    assert_allclose(x[0], x0)
+    assert_allclose(x[1], x1)
+
+
+def test_dwt_axis_arg():
+    x = [[3, 7, 1, 1],
+         [-2, 5, 4, 6]]
+
+    cA_, cD_ = pywt.dwt(x, 'db2', axis=-1)
+    cA, cD = pywt.dwt(x, 'db2', axis=1)
+
+    assert_allclose(cA_, cA)
+    assert_allclose(cD_, cD)
+
+
+def test_idwt_axis_arg():
+    x = [[3, 7, 1, 1],
+         [-2, 5, 4, 6]]
+
+    cA, cD = pywt.dwt(x, 'db2', axis=1)
+
+    x_ = pywt.idwt(cA, cD, 'db2', axis=-1)
+    x = pywt.idwt(cA, cD, 'db2', axis=1)
+
+    assert_allclose(x_, x)
+
+
 def test_dwt_idwt_axis_excess():
     x = [[3, 7, 1, 1],
          [-2, 5, 4, 6]]
