@@ -11,7 +11,7 @@ Inverse Discrete Wavelet Transform (IDWT)
 Single level ``idwt``
 ---------------------
 
-.. function:: idwt(cA, cD, wavelet[, mode='symmetric'])
+.. function:: idwt(cA, cD, wavelet[, mode='symmetric', axis=-1])
 
   The :func:`idwt` function reconstructs data from the given coefficients by
   performing single level Inverse Discrete Wavelet Transform.
@@ -24,6 +24,9 @@ Single level ``idwt``
 
   :param mode: |mode| This is only important when DWT was performed in
                :ref:`periodization <Modes.periodization>` mode.
+
+  :param axis: |axis| This should be the same as the axis used in the
+               DWT that produced the coefficients.
 
   **Example:**
 
