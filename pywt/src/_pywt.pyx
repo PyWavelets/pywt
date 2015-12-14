@@ -942,38 +942,20 @@ def idwt(cA, cD, object wavelet, object mode='symmetric', int axis=-1):
     elif cD is None:
         cD = np.zeros_like(cA)
 
-    return _idwt(cA, cD, wavelet, mode, axis=axis)
+    # cA and cD should be same dimension by here
+    ndim = cA.ndim
 
+    if axis >= ndim or abs(axis) > ndim:
+        raise ValueError("Axis greater than coefficient dimensions")
 
-def _idwt(np.ndarray cA, np.ndarray cD,
-          object wavelet, object mode='symmetric', int axis=-1):
-    """See `idwt` for details"""
-
-    cdef index_t input_len
-    cdef index_t rec_len
-
-    cdef Wavelet w = c_wavelet_from_object(wavelet)
-    cdef common.MODE  mode_ = _try_mode(mode)
-
-    # check for size difference between arrays
-    if cA.size != cD.size:
-        raise ValueError("Coefficients arrays must have the same size.")
-    else:
-        input_len = cA.size
-
-    # find reconstruction buffer length
-    rec_len = common.idwt_buffer_length(input_len, w.rec_len, mode_)
-    if rec_len < 1:
-        msg = ("Invalid coefficient arrays length for specified wavelet. "
-               "Wavelet and mode must be the same as used for decomposition.")
-        raise ValueError(msg)
-
-    if axis >= cA.ndim:
-        raise ValueError("Axis greater than coefficient dimension")
     # convert negative axes
-    axis = axis % cA.ndim
+    axis = axis % ndim
 
-    rec = idwt_axis(cA, cD, wavelet, mode, axis=axis)
+    if ndim == 1:
+        rec = idwt_single(cA, cD, wavelet, mode)
+    else:
+        rec = idwt_axis(cA, cD, wavelet, mode, axis=axis)
+
     return rec
 
 
