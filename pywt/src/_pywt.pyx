@@ -732,26 +732,17 @@ def dwt(object data, object wavelet, object mode='symmetric', int axis=-1):
     dt = _check_dtype(data)
     data = np.array(data, dtype=dt)
 
-    return _dwt(data, wavelet, mode, axis=axis)
-
-
-def _dwt(np.ndarray data, object wavelet, object mode='symmetric', int axis=-1):
-    """See `dwt` docstring for details."""
-    cdef np.ndarray cA, cD
-
-    cdef Wavelet w = c_wavelet_from_object(wavelet)
-    cdef common.MODE mode_ = _try_mode(mode)
-
-    output_len = common.dwt_buffer_length(data.size, w.dec_len, mode_)
-    if output_len < 1:
-        raise RuntimeError("Invalid output length.")
-
-    if axis >= data.ndim:
+    if axis >= data.ndim or abs(axis) > data.ndim:
         raise ValueError("Axis greater than data dimensions")
+
     # convert negative axes
     axis = axis % data.ndim
 
-    cA, cD = dwt_axis(data, wavelet, mode, axis=axis)
+    if data.ndim == 1:
+        cA, cD = dwt_single(data, wavelet, mode)
+    else:
+        cA, cD = dwt_axis(data, wavelet, mode, axis=axis)
+
     return (cA, cD)
 
 
