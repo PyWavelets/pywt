@@ -15,7 +15,7 @@ functions used to perform single- and multilevel Discrete Wavelet Transforms.
 Single level ``dwt``
 --------------------
 
-.. function:: dwt(data, wavelet[, mode='symmetric'])
+.. function:: dwt(data, wavelet[, mode='symmetric', axis=-1])
 
   The :func:`dwt` function is used to perform single level, one dimensional
   Discrete Wavelet Transform.
@@ -29,6 +29,8 @@ Single level ``dwt``
   :param wavelet: |wavelet|
 
   :param mode: |mode|
+
+  :param axis: |axis|
 
   The transform coefficients are returned as two arrays containing
   approximation (*cA*) and detail (*cD*) coefficients respectively. Length
@@ -44,6 +46,10 @@ Single level ``dwt``
   * for :ref:`periodization <Modes.periodization>` mode (``"periodization"``)::
 
       len(cA) == len(cD) == ceil(len(data) / 2)
+
+  The transform can be performed over one axis of multi-dimensional
+  data. By default this is the last axis. For multi-dimensional transforms
+  see the :ref:`2D transforms <ref-dwt2>` section.
 
   **Example:**
 
