@@ -36,3 +36,16 @@ Central frequency of *psi* wavelet function
 -------------------------------------------
 
 .. autofunction:: central_frequency
+
+.. autofunction:: scale2frequency
+
+
+Quadrature Mirror Filter
+------------------------
+
+.. autofunction:: qmf
+
+Orthogonal Filter Banks
+-----------------------
+
+.. autofunction:: orthogonal_filter_bank
