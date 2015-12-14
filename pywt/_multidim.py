@@ -121,9 +121,9 @@ def dwtn(data, wavelet, mode='symmetric', axes=None):
         default) selects all axes.
 
         Axes may be repeated, but information about the original size may be
-        lost if it is not divisible (2 ** nrepeats). The reconstruction will
-        larger, with additional values derived according to `mode` parameter.
-        `pywt.wavedecn` should be used for multilevel decomposition.
+        lost if it is not divisible by `2 ** nrepeats`. The reconstruction will
+        be larger, with additional values derived according to the `mode`
+        parameter. `pywt.wavedecn` should be used for multilevel decomposition.
 
     Returns
     -------
