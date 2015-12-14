@@ -97,7 +97,7 @@ def test_idwt_invalid_input():
     assert_raises(ValueError, pywt.idwt, [1, 2, 4], [4, 1, 3], 'db4', 'symmetric')
 
 
-def test_dwt_idwt_axis():
+def test_dwt_single_axis():
     x = [[3, 7, 1, 1],
          [-2, 5, 4, 6]]
 
