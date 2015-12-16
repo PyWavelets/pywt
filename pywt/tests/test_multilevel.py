@@ -239,7 +239,6 @@ def test_multilevel_dtypes_2d():
         assert_(x_roundtrip.dtype == dt_out, "waverec2: " + errmsg)
 
 
-@dec.skipif('PYWT_XSLOW' not in os.environ)
 @dec.slow
 def test_waverec2_all_wavelets_modes():
     # test 2D case using all wavelets and modes
