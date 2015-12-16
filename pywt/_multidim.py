@@ -188,8 +188,18 @@ def _fix_coeffs(coeffs):
         raise ValueError(
             "All detail coefficient names must have equal length.")
 
-    return dict((k, np.asarray(v)) for k, v in coeffs.items()
-                if v is not None and set(k) <= set('ad'))
+    # make sure the entries of coeffs are all numpy arrays
+    coeffs = dict((k, np.asarray(v)) for k, v in coeffs.items())
+
+    ndim = np.unique(key_lengths)
+    coefficient_dims = [v.ndim for k, v in coeffs.items()]
+    if np.any(coefficient_dims != ndim):
+        raise ValueError(
+            "Invalid coefficient array dimensions.  For keys of length"
+            "{}, each coefficient array must be {}-dimensional".format(
+                ndim, ndim))
+
+    return coeffs
 
 
 def idwtn(coeffs, wavelet, mode='symmetric', axes=None):

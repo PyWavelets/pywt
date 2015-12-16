@@ -307,12 +307,24 @@ def test_waverecn_invalid_coeffs():
     assert_raises(ValueError, pywt.waverecn, coeffs, 'db1')
 
     # invalid key names in coefficient list
-    coeffs = [np.ones((4, 4, 4)), {'daa': np.ones((4, 4, 4)), 'foo': {}}]
+    coeffs = [np.ones((4, 4, 4)), {'daa': np.ones((4, 4, 4)),
+                                   'foo': np.ones((4, 4, 4))}]
     assert_raises(ValueError, pywt.waverecn, coeffs, 'db1')
 
     # mismatched key name lengths
-    coeffs = [np.ones((4, 4, 4)), {'daa': np.ones((4, 4, 4)), 'da': {}}]
+    coeffs = [np.ones((4, 4, 4)), {'daa': np.ones((4, 4, 4)),
+                                   'da': np.ones((4, 4, 4))}]
     assert_raises(ValueError, pywt.waverecn, coeffs, 'db1')
+
+    # key name lengths don't match the array dimensions
+    coeffs = [[[[1.0]]], {'ad': [[[0.0]]], 'da': [[[0.0]]], 'dd': [[[0.0]]]}]
+    assert_raises(ValueError, pywt.waverecn, coeffs, 'db1')
+
+
+def test_waverecn_lists():
+    # support coefficient arrays specified as lists instead of arrays
+    coeffs = [[[1.0]], {'ad': [[0.0]], 'da': [[0.0]], 'dd': [[0.0]]}]
+    assert_equal(pywt.waverecn(coeffs, 'db1').shape, (2, 2))
 
 
 def test_waverecn_invalid_coeffs2():
