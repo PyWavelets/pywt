@@ -231,7 +231,7 @@ def waverec2(coeffs, wavelet, mode='symmetric'):
             if not all(s == d_shape for s in d_shapes):
                 raise ValueError("All detail shapes must be the same length.")
             idxs = tuple(slice(None, -1 if a_len == d_len + 1 else None)
-                        for a_len, d_len in zip(a.shape, d_shape))
+                         for a_len, d_len in zip(a.shape, d_shape))
         a = idwt2((a[idxs], d), wavelet, mode)
 
     return a
@@ -268,7 +268,7 @@ def iswt(coeffs, wavelet):
 
     # num_levels, equivalent to the decomposition level, n
     num_levels = len(coeffs)
-    for j in range(num_levels,0,-1):
+    for j in range(num_levels, 0, -1):
         step_size = int(pow(2, j-1))
         last_index = step_size
         _, cD = coeffs[num_levels - j]
@@ -348,13 +348,15 @@ def iswt2(coeffs, wavelet):
 
     # num_levels, equivalent to the decomposition level, n
     num_levels = len(coeffs)
-    for j in range(num_levels,0,-1):
+    for j in range(num_levels, 0, -1):
         step_size = int(pow(2, j-1))
         last_index = step_size
         _, (cH, cV, cD) = coeffs[j-1]
         # We are going to assume cH, cV, and cD are square and of equal size
-        if (cH.shape != cV.shape) or (cH.shape != cD.shape) or (cH.shape[0] != cH.shape[1]):
-            raise RuntimeError("Mismatch in shape of intermediate coefficient arrays")
+        if (cH.shape != cV.shape) or (cH.shape != cD.shape) or (
+                cH.shape[0] != cH.shape[1]):
+            raise RuntimeError(
+                "Mismatch in shape of intermediate coefficient arrays")
         for first_h in range(last_index):  # 0 to last_index - 1
             for first_w in range(last_index):  # 0 to last_index - 1
                 # Getting the indices that we will transform
@@ -369,25 +371,25 @@ def iswt2(coeffs, wavelet):
                 # perform the inverse dwt on the selected indices,
                 # making sure to use periodic boundary conditions
                 x1 = idwt2((output[even_idx_h, even_idx_w],
-                                 (cH[even_idx_h, even_idx_w],
-                                  cV[even_idx_h, even_idx_w],
-                                  cD[even_idx_h, even_idx_w])),
-                                wavelet, 'periodization')
+                           (cH[even_idx_h, even_idx_w],
+                            cV[even_idx_h, even_idx_w],
+                            cD[even_idx_h, even_idx_w])),
+                           wavelet, 'periodization')
                 x2 = idwt2((output[even_idx_h, odd_idx_w],
-                                 (cH[even_idx_h, odd_idx_w],
-                                  cV[even_idx_h, odd_idx_w],
-                                  cD[even_idx_h, odd_idx_w])),
-                                wavelet, 'periodization')
+                           (cH[even_idx_h, odd_idx_w],
+                            cV[even_idx_h, odd_idx_w],
+                            cD[even_idx_h, odd_idx_w])),
+                           wavelet, 'periodization')
                 x3 = idwt2((output[odd_idx_h, even_idx_w],
-                                 (cH[odd_idx_h, even_idx_w],
-                                  cV[odd_idx_h, even_idx_w],
-                                  cD[odd_idx_h, even_idx_w])),
-                                wavelet, 'periodization')
+                           (cH[odd_idx_h, even_idx_w],
+                            cV[odd_idx_h, even_idx_w],
+                            cD[odd_idx_h, even_idx_w])),
+                           wavelet, 'periodization')
                 x4 = idwt2((output[odd_idx_h, odd_idx_w],
-                                 (cH[odd_idx_h, odd_idx_w],
-                                  cV[odd_idx_h, odd_idx_w],
-                                  cD[odd_idx_h, odd_idx_w])),
-                                wavelet, 'periodization')
+                           (cH[odd_idx_h, odd_idx_w],
+                            cV[odd_idx_h, odd_idx_w],
+                            cD[odd_idx_h, odd_idx_w])),
+                           wavelet, 'periodization')
 
                 # perform a circular shifts
                 x2 = np.roll(x2, 1, axis=1)
