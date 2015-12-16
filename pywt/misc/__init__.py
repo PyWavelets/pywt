@@ -20,8 +20,8 @@ def ascent():
 
     Examples
     --------
-    >>> import scipy.misc
-    >>> ascent = scipy.misc.ascent()
+    >>> import pywt.misc
+    >>> ascent = pywt.misc.ascent()
     >>> ascent.shape
     (512, 512)
     >>> ascent.max()
@@ -59,8 +59,8 @@ def face(gray=False):
 
     Examples
     --------
-    >>> import scipy.misc
-    >>> face = scipy.misc.face()
+    >>> import pywt.misc
+    >>> face = pywt.misc.face()
     >>> face.shape
     (768, 1024, 3)
     >>> face.max()
