@@ -4,7 +4,7 @@
 # See COPYING for license details.
 
 """
-2D Discrete Wavelet Transform and Inverse Discrete Wavelet Transform.
+2D and nD Discrete Wavelet Transforms and Inverse Discrete Wavelet Transforms.
 """
 
 from __future__ import division, print_function, absolute_import
