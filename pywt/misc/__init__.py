@@ -1,3 +1,6 @@
+import numpy as np
+
+
 def ascent():
     """
     Get an 8-bit grayscale bit-depth, 512 x 512 derived image for easy use in demos
@@ -33,7 +36,7 @@ def ascent():
     import os
     fname = os.path.join(os.path.dirname(__file__),'ascent.dat')
     with open(fname, 'rb') as f:
-        ascent = array(pickle.load(f))
+        ascent = np.array(pickle.load(f))
     return ascent
 
 
@@ -75,7 +78,7 @@ def face(gray=False):
     with open(os.path.join(os.path.dirname(__file__), 'face.dat'), 'rb') as f:
         rawdata = f.read()
     data = bz2.decompress(rawdata)
-    face = fromstring(data, dtype='uint8')
+    face = np.fromstring(data, dtype='uint8')
     face.shape = (768, 1024, 3)
     if gray is True:
         face = (0.21 * face[:,:,0] + 0.71 * face[:,:,1] + 0.07 * face[:,:,2]).astype('uint8')
