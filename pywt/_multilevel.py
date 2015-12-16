@@ -45,8 +45,8 @@ def wavedec(data, wavelet, mode='symmetric', level=None):
 
     Examples
     --------
-    >>> from pywt import multilevel
-    >>> coeffs = multilevel.wavedec([1,2,3,4,5,6,7,8], 'db1', level=2)
+    >>> from pywt import wavedec
+    >>> coeffs = wavedec([1,2,3,4,5,6,7,8], 'db1', level=2)
     >>> cA2, cD2, cD1 = coeffs
     >>> cD1
     array([-0.70710678, -0.70710678, -0.70710678, -0.70710678])
@@ -94,9 +94,9 @@ def waverec(coeffs, wavelet, mode='symmetric'):
 
     Examples
     --------
-    >>> from pywt import multilevel
-    >>> coeffs = multilevel.wavedec([1,2,3,4,5,6,7,8], 'db2', level=2)
-    >>> multilevel.waverec(coeffs, 'db2')
+    >>> import pywt
+    >>> coeffs = pywt.wavedec([1,2,3,4,5,6,7,8], 'db2', level=2)
+    >>> pywt.waverec(coeffs, 'db2')
     array([ 1.,  2.,  3.,  4.,  5.,  6.,  7.,  8.])
     """
 
@@ -140,12 +140,12 @@ def wavedec2(data, wavelet, mode='symmetric', level=None):
 
     Examples
     --------
-    >>> from pywt import multilevel
-    >>> coeffs = multilevel.wavedec2(np.ones((4,4)), 'db1')
+    >>> import pywt
+    >>> coeffs = pywt.wavedec2(np.ones((4,4)), 'db1')
     >>> # Levels:
     >>> len(coeffs)-1
     2
-    >>> multilevel.waverec2(coeffs, 'db1')
+    >>> pywt.waverec2(coeffs, 'db1')
     array([[ 1.,  1.,  1.,  1.],
            [ 1.,  1.,  1.,  1.],
            [ 1.,  1.,  1.,  1.],
@@ -197,12 +197,12 @@ def waverec2(coeffs, wavelet, mode='symmetric'):
 
     Examples
     --------
-    >>> from pywt import multilevel
-    >>> coeffs = multilevel.wavedec2(np.ones((4,4)), 'db1')
+    >>> import pywt
+    >>> coeffs = pywt.wavedec2(np.ones((4,4)), 'db1')
     >>> # Levels:
     >>> len(coeffs)-1
     2
-    >>> multilevel.waverec2(coeffs, 'db1')
+    >>> pywt.waverec2(coeffs, 'db1')
     array([[ 1.,  1.,  1.,  1.],
            [ 1.,  1.,  1.,  1.],
            [ 1.,  1.,  1.,  1.],
@@ -333,9 +333,9 @@ def iswt2(coeffs, wavelet):
     Examples
     --------
     >>> import pywt
-    >>> coeffs = coeffs = pywt.swt2([[1,2,3,4],[5,6,7,8],
-                                     [9,10,11,12],[13,14,15,16]],
-                                    'db1', level=2)
+    >>> coeffs = pywt.swt2([[1,2,3,4],[5,6,7,8],
+                            [9,10,11,12],[13,14,15,16]],
+                           'db1', level=2)
     >>> pywt.iswt2(coeffs, 'db1')
     array([[  1.,   2.,   3.,   4.],
            [  5.,   6.,   7.,   8.],
