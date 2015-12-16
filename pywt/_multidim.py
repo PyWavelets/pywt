@@ -100,6 +100,10 @@ def idwt2(coeffs, wavelet, mode='symmetric', axes=(-2, -1)):
         raise ValueError("Expected 2 axes")
 
     coeffs = {'aa': LL, 'da': HL, 'ad': LH, 'dd': HH}
+
+    # drop the keys corresponding to value = None
+    coeffs = dict((k, v) for k, v in coeffs.items() if v is not None)
+
     return idwtn(coeffs, wavelet, mode, axes)
 
 
