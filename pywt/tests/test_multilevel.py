@@ -6,7 +6,7 @@ import os
 import numpy as np
 from numpy.testing import (run_module_suite, assert_almost_equal,
                            assert_allclose, assert_, assert_equal,
-                           assert_raises, assert_warns, dec)
+                           assert_raises, dec)
 
 import pywt
 

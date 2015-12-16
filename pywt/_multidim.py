@@ -11,7 +11,6 @@ from __future__ import division, print_function, absolute_import
 
 __all__ = ['dwt2', 'idwt2', 'swt2', 'dwtn', 'idwtn']
 
-import warnings
 from itertools import product
 
 import numpy as np
