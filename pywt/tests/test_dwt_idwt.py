@@ -56,14 +56,6 @@ def test_dwt_idwt_basic_complex():
     assert_allclose(x_roundtrip, x, rtol=1e-10)
 
 
-def test_dwt_input_error():
-    data = np.ones((16, 1))
-    assert_raises(ValueError, pywt.dwt, data, 'haar')
-
-    cA, cD = pywt.dwt(data[:, 0], 'haar')
-    assert_raises(ValueError, pywt.idwt, cA[:, np.newaxis], cD, 'haar')
-
-
 def test_dwt_wavelet_kwd():
     x = np.array([3, 7, 1, 1, -2, 5, 4, 6])
     w = pywt.Wavelet('sym3')
@@ -103,6 +95,69 @@ def test_idwt_none_input():
 def test_idwt_invalid_input():
     # Too short, min length is 4 for 'db4':
     assert_raises(ValueError, pywt.idwt, [1, 2, 4], [4, 1, 3], 'db4', 'symmetric')
+
+
+def test_dwt_single_axis():
+    x = [[3, 7, 1, 1],
+         [-2, 5, 4, 6]]
+
+    cA, cD = pywt.dwt(x, 'db2', axis=-1)
+
+    cA0, cD0 = pywt.dwt(x[0], 'db2')
+    cA1, cD1 = pywt.dwt(x[1], 'db2')
+
+    assert_allclose(cA[0], cA0)
+    assert_allclose(cA[1], cA1)
+
+    assert_allclose(cD[0], cD0)
+    assert_allclose(cD[1], cD1)
+
+
+def test_idwt_single_axis():
+    x = [[3, 7, 1, 1],
+         [-2, 5, 4, 6]]
+
+    cA, cD = pywt.dwt(x, 'db2', axis=-1)
+
+    x0 = pywt.idwt(cA[0], cD[0], 'db2', axis=-1)
+    x1 = pywt.idwt(cA[1], cD[1], 'db2', axis=-1)
+
+    assert_allclose(x[0], x0)
+    assert_allclose(x[1], x1)
+
+
+def test_dwt_axis_arg():
+    x = [[3, 7, 1, 1],
+         [-2, 5, 4, 6]]
+
+    cA_, cD_ = pywt.dwt(x, 'db2', axis=-1)
+    cA, cD = pywt.dwt(x, 'db2', axis=1)
+
+    assert_allclose(cA_, cA)
+    assert_allclose(cD_, cD)
+
+
+def test_idwt_axis_arg():
+    x = [[3, 7, 1, 1],
+         [-2, 5, 4, 6]]
+
+    cA, cD = pywt.dwt(x, 'db2', axis=1)
+
+    x_ = pywt.idwt(cA, cD, 'db2', axis=-1)
+    x = pywt.idwt(cA, cD, 'db2', axis=1)
+
+    assert_allclose(x_, x)
+
+
+def test_dwt_idwt_axis_excess():
+    x = [[3, 7, 1, 1],
+         [-2, 5, 4, 6]]
+    # can't transform over axes that aren't there
+    assert_raises(ValueError,
+                  pywt.dwt, x, 'db2', 'symmetric', axis=2)
+
+    assert_raises(ValueError,
+                  pywt.idwt, [1, 2, 4], [4, 1, 3], 'db2', 'symmetric', axis=1)
 
 
 if __name__ == '__main__':

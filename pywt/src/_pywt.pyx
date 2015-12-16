@@ -620,6 +620,30 @@ cdef c_wavelet_from_object(wavelet):
         return Wavelet(wavelet)
 
 
+def _try_mode(mode):
+    try:
+        return Modes.from_object(mode)
+    except ValueError as e:
+        if "Unknown mode name" in str(e):
+            raise
+        raise TypeError("Invalid mode: {0}".format(str(mode)))
+
+
+cdef np.dtype _check_dtype(data):
+    """Check for cA/cD input what (if any) the dtype is."""
+    cdef np.dtype dt
+    try:
+        dt = data.dtype
+        if dt not in (np.float64, np.float32):
+            # integer input was always accepted; convert to float64
+            dt = np.dtype('float64')
+    except AttributeError:
+        dt = np.dtype('float64')
+    return dt
+
+
+
+
 ###############################################################################
 # DWT
 
@@ -656,7 +680,7 @@ def dwt_max_level(data_len, filter_len):
         return common.dwt_max_level(data_len, filter_len)
 
 
-def dwt(object data, object wavelet, object mode='symmetric'):
+def dwt(object data, object wavelet, object mode='symmetric', int axis=-1):
     """
     (cA, cD) = dwt(data, wavelet, mode='symmetric')
 
@@ -670,6 +694,10 @@ def dwt(object data, object wavelet, object mode='symmetric'):
         Wavelet to use
     mode : str, optional (default: 'symmetric')
         Signal extension mode, see Modes
+    axis: int, optional
+        Axis over which to compute the DWT. If not given, the
+        last axis is used.
+
 
     Returns
     -------
@@ -703,21 +731,31 @@ def dwt(object data, object wavelet, object mode='symmetric'):
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(data)
     data = np.array(data, dtype=dt)
-    if data.ndim != 1:
-        raise ValueError("dwt requires a 1D data array.")
-    return _dwt(data, wavelet, mode)
+
+    if axis >= data.ndim or abs(axis) > data.ndim:
+        raise ValueError("Axis greater than data dimensions")
+
+    # convert negative axes
+    axis = axis % data.ndim
+
+    if data.ndim == 1:
+        cA, cD = dwt_single(data, wavelet, mode)
+    else:
+        cA, cD = dwt_axis(data, wavelet, mode, axis=axis)
+
+    return (cA, cD)
 
 
-def _dwt(np.ndarray[data_t, ndim=1] data, object wavelet, object mode='symmetric'):
-    """See `dwt` docstring for details."""
+def dwt_single(np.ndarray[data_t, ndim=1] data, object wavelet,
+                                                object mode='symmetric'):
     cdef np.ndarray[data_t, ndim=1, mode="c"] cA, cD
-    cdef Wavelet w
-    cdef common.MODE mode_
+    cdef Wavelet w = c_wavelet_from_object(wavelet)
+    cdef common.MODE mode_ = _try_mode(mode)
 
-    w = c_wavelet_from_object(wavelet)
-    mode_ = _try_mode(mode)
+    cdef size_t output_len
 
-    data = np.array(data)
+    data = data.astype(_check_dtype(data), copy=True)
+
     output_len = common.dwt_buffer_length(data.size, w.dec_len, mode_)
     if output_len < 1:
         raise RuntimeError("Invalid output length.")
@@ -792,6 +830,185 @@ cpdef dwt_axis(np.ndarray data, object wavelet, object mode='symmetric', unsigne
     return (cA, cD)
 
 
+def dwt_coeff_len(data_len, filter_len, mode='symmetric'):
+    """
+    dwt_coeff_len(data_len, filter_len, mode='symmetric')
+
+    Returns length of dwt output for given data length, filter length and mode
+
+    Parameters
+    ----------
+    data_len : int
+        Data length.
+    filter_len : int
+        Filter length.
+    mode : str, optional (default: 'symmetric')
+        Signal extension mode, see Modes
+
+    Returns
+    -------
+    len : int
+        Length of dwt output.
+
+    Notes
+    -----
+    For all modes except periodization::
+
+        len(cA) == len(cD) == floor((len(data) + wavelet.dec_len - 1) / 2)
+
+    for periodization mode ("per")::
+
+        len(cA) == len(cD) == ceil(len(data) / 2)
+
+    """
+    cdef index_t filter_len_
+
+    if isinstance(filter_len, Wavelet):
+        filter_len_ = filter_len.dec_len
+    else:
+        filter_len_ = filter_len
+
+    if data_len < 1:
+        raise ValueError("Value of data_len value must be greater than zero.")
+    if filter_len_ < 1:
+        raise ValueError("Value of filter_len must be greater than zero.")
+
+    return common.dwt_buffer_length(data_len, filter_len_, _try_mode(mode))
+
+
+###############################################################################
+# idwt
+def idwt(cA, cD, object wavelet, object mode='symmetric', int axis=-1):
+    """
+    idwt(cA, cD, wavelet, mode='symmetric')
+
+    Single level Inverse Discrete Wavelet Transform
+
+    Parameters
+    ----------
+    cA : array_like or None
+        Approximation coefficients.  If None, will be set to array of zeros
+        with same shape as `cD`.
+    cD : array_like or None
+        Detail coefficients.  If None, will be set to array of zeros
+        with same shape as `cA`.
+    wavelet : Wavelet object or name
+        Wavelet to use
+    mode : str, optional (default: 'symmetric')
+        Signal extension mode, see Modes
+    axis: int, optional
+        Axis over which to compute the inverse DWT. If not given, the
+        last axis is used.
+
+
+    Returns
+    -------
+    rec: array_like
+        Single level reconstruction of signal from given coefficients.
+
+    """
+    # accept array_like input; make a copy to ensure a contiguous array
+
+    if cA is None and cD is None:
+        raise ValueError("At least one coefficient parameter must be "
+                         "specified.")
+
+    # for complex inputs: compute real and imaginary separately then combine
+    if ((cA is not None) and np.iscomplexobj(cA)) or ((cD is not None) and
+            np.iscomplexobj(cD)):
+        if cA is None:
+            cD = np.asarray(cD)
+            cA = np.zeros_like(cD)
+        elif cD is None:
+            cA = np.asarray(cA)
+            cD = np.zeros_like(cA)
+        return (idwt(cA.real, cD.real, wavelet, mode) +
+                1j*idwt(cA.imag, cD.imag, wavelet, mode))
+
+    if cA is not None:
+        dt = _check_dtype(cA)
+        cA = np.array(cA, dtype=dt)
+    if cD is not None:
+        dt = _check_dtype(cD)
+        cD = np.array(cD, dtype=dt)
+
+    if cA is not None and cD is not None:
+        if cA.dtype != cD.dtype:
+            # need to upcast to common type
+            cA = cA.astype(np.float64)
+            cD = cD.astype(np.float64)
+    elif cA is None:
+        cA = np.zeros_like(cD)
+    elif cD is None:
+        cD = np.zeros_like(cA)
+
+    # cA and cD should be same dimension by here
+    ndim = cA.ndim
+
+    if axis >= ndim or abs(axis) > ndim:
+        raise ValueError("Axis greater than coefficient dimensions")
+
+    # convert negative axes
+    axis = axis % ndim
+
+    if ndim == 1:
+        rec = idwt_single(cA, cD, wavelet, mode)
+    else:
+        rec = idwt_axis(cA, cD, wavelet, mode, axis=axis)
+
+    return rec
+
+
+def idwt_single(np.ndarray[data_t, ndim=1, mode="c"] cA,
+                np.ndarray[data_t, ndim=1, mode="c"] cD,
+                object wavelet, object mode='symmetric'):
+
+    cdef Wavelet w = c_wavelet_from_object(wavelet)
+    cdef common.MODE mode_ = _try_mode(mode)
+
+    cdef np.ndarray[data_t, ndim=1, mode="c"] rec
+    cdef index_t input_len
+    cdef index_t rec_len
+
+    # check for size difference between arrays
+    if cA.size != cD.size:
+        raise ValueError("Coefficients arrays must have the same size.")
+    else:
+        input_len = cA.size
+
+    # find reconstruction buffer length
+    rec_len = common.idwt_buffer_length(input_len, w.rec_len, mode_)
+    if rec_len < 1:
+        msg = ("Invalid coefficient arrays length for specified wavelet. "
+               "Wavelet and mode must be the same as used for decomposition.")
+        raise ValueError(msg)
+
+    # allocate buffer
+    if cA is not None:
+        rec = np.zeros(rec_len, dtype=cA.dtype)
+    else:
+        rec = np.zeros(rec_len, dtype=cD.dtype)
+
+    # call idwt func.  one of cA/cD can be None, then only
+    # reconstruction of non-null part will be performed
+    if data_t is np.float64_t:
+        if c_wt.double_idwt(&cA[0], cA.size,
+                            &cD[0], cD.size,
+                            &rec[0], rec.size,
+                            w.w, mode_) < 0:
+            raise RuntimeError("C idwt failed.")
+    elif data_t == np.float32_t:
+        if c_wt.float_idwt(&cA[0], cA.size,
+                           &cD[0], cD.size,
+                           &rec[0], rec.size,
+                           w.w, mode_) < 0:
+            raise RuntimeError("C idwt failed.")
+    else:
+        raise RuntimeError("Invalid data type.")
+
+    return rec
+
+
 cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d, object wavelet,
                 object mode='symmetric', unsigned int axis=0):
     cdef Wavelet w = c_wavelet_from_object(wavelet)
@@ -845,7 +1062,7 @@ cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d, object wavelet,
                                  <double *> output.data, output_info,
                                  w.w, axis, _mode):
             raise RuntimeError("C inverse wavelet transform failed")
-    if output.dtype == np.float32:
+    elif output.dtype == np.float32:
         if c_wt.float_idwt_axis(<float *> coefs_a.data if coefs_a is not None else NULL,
                                 &a_info if coefs_a is not None else NULL,
                                 <float *> coefs_d.data if coefs_d is not None else NULL,
@@ -853,201 +1070,11 @@ cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d, object wavelet,
                                 <float *> output.data, output_info,
                                 w.w, axis, _mode):
             raise RuntimeError("C inverse wavelet transform failed")
+    else:
+        raise TypeError("Array must be floating point, not {}"
+                        .format(output.dtype))
 
     return output
-
-
-def dwt_coeff_len(data_len, filter_len, mode='symmetric'):
-    """
-    dwt_coeff_len(data_len, filter_len, mode='symmetric')
-
-    Returns length of dwt output for given data length, filter length and mode
-
-    Parameters
-    ----------
-    data_len : int
-        Data length.
-    filter_len : int
-        Filter length.
-    mode : str, optional (default: 'symmetric')
-        Signal extension mode, see Modes
-
-    Returns
-    -------
-    len : int
-        Length of dwt output.
-
-    Notes
-    -----
-    For all modes except periodization::
-
-        len(cA) == len(cD) == floor((len(data) + wavelet.dec_len - 1) / 2)
-
-    for periodization mode ("per")::
-
-        len(cA) == len(cD) == ceil(len(data) / 2)
-
-    """
-    cdef index_t filter_len_
-
-    if isinstance(filter_len, Wavelet):
-        filter_len_ = filter_len.dec_len
-    else:
-        filter_len_ = filter_len
-
-    if data_len < 1:
-        raise ValueError("Value of data_len value must be greater than zero.")
-    if filter_len_ < 1:
-        raise ValueError("Value of filter_len must be greater than zero.")
-
-    return common.dwt_buffer_length(data_len, filter_len_, _try_mode(mode))
-
-
-###############################################################################
-# idwt
-
-def _try_mode(mode):
-    try:
-        return Modes.from_object(mode)
-    except ValueError as e:
-        if "Unknown mode name" in str(e):
-            raise
-        raise TypeError("Invalid mode: {0}".format(str(mode)))
-
-
-cdef np.dtype _check_dtype(data):
-    """Check for cA/cD input what (if any) the dtype is."""
-    cdef np.dtype dt
-    try:
-        dt = data.dtype
-        if dt not in (np.float64, np.float32):
-            # integer input was always accepted; convert to float64
-            dt = np.dtype('float64')
-    except AttributeError:
-        dt = np.dtype('float64')
-    return dt
-
-
-def idwt(cA, cD, object wavelet, object mode='symmetric'):
-    """
-    idwt(cA, cD, wavelet, mode='symmetric')
-
-    Single level Inverse Discrete Wavelet Transform
-
-    Parameters
-    ----------
-    cA : array_like or None
-        Approximation coefficients.  If None, will be set to array of zeros
-        with same shape as `cD`.
-    cD : array_like or None
-        Detail coefficients.  If None, will be set to array of zeros
-        with same shape as `cA`.
-    wavelet : Wavelet object or name
-        Wavelet to use
-    mode : str, optional (default: 'symmetric')
-        Signal extension mode, see Modes
-
-    Returns
-    -------
-    rec: array_like
-        Single level reconstruction of signal from given coefficients.
-
-    """
-    # accept array_like input; make a copy to ensure a contiguous array
-
-    if cA is None and cD is None:
-        raise ValueError("At least one coefficient parameter must be "
-                         "specified.")
-
-    # for complex inputs: compute real and imaginary separately then combine
-    if ((cA is not None) and np.iscomplexobj(cA)) or ((cD is not None) and
-            np.iscomplexobj(cD)):
-        if cA is None:
-            cD = np.asarray(cD)
-            cA = np.zeros_like(cD)
-        elif cD is None:
-            cA = np.asarray(cA)
-            cD = np.zeros_like(cA)
-        return (idwt(cA.real, cD.real, wavelet, mode) +
-                1j*idwt(cA.imag, cD.imag, wavelet, mode))
-
-    if cA is not None:
-        dt = _check_dtype(cA)
-        cA = np.array(cA, dtype=dt)
-        if cA.ndim != 1:
-            raise ValueError("idwt requires 1D coefficient arrays.")
-    if cD is not None:
-        dt = _check_dtype(cD)
-        cD = np.array(cD, dtype=dt)
-        if cD.ndim != 1:
-            raise ValueError("idwt requires 1D coefficient arrays.")
-
-    if cA is not None and cD is not None:
-        if cA.dtype != cD.dtype:
-            # need to upcast to common type
-            cA = cA.astype(np.float64)
-            cD = cD.astype(np.float64)
-    elif cA is None:
-        cA = np.zeros_like(cD)
-    elif cD is None:
-        cD = np.zeros_like(cA)
-
-    return _idwt(cA, cD, wavelet, mode)
-
-
-def _idwt(np.ndarray[data_t, ndim=1, mode="c"] cA,
-          np.ndarray[data_t, ndim=1, mode="c"] cD,
-          object wavelet, object mode='symmetric'):
-    """See `idwt` for details"""
-
-    cdef index_t input_len
-
-    cdef Wavelet w
-    cdef common.MODE mode_
-
-    w = c_wavelet_from_object(wavelet)
-    mode_ = _try_mode(mode)
-
-    cdef np.ndarray[data_t, ndim=1, mode="c"] rec
-    cdef index_t rec_len
-
-    # check for size difference between arrays
-    if cA.size != cD.size:
-        raise ValueError("Coefficients arrays must have the same size.")
-    else:
-        input_len = cA.size
-
-    # find reconstruction buffer length
-    rec_len = common.idwt_buffer_length(input_len, w.rec_len, mode_)
-    if rec_len < 1:
-        msg = ("Invalid coefficient arrays length for specified wavelet. "
-               "Wavelet and mode must be the same as used for decomposition.")
-        raise ValueError(msg)
-
-    # allocate buffer
-    if cA is not None:
-        rec = np.zeros(rec_len, dtype=cA.dtype)
-    else:
-        rec = np.zeros(rec_len, dtype=cD.dtype)
-
-    # call idwt func.  one of cA/cD can be None, then only
-    # reconstruction of non-null part will be performed
-    if data_t is np.float64_t:
-        if c_wt.double_idwt(&cA[0], cA.size,
-                            &cD[0], cD.size,
-                            &rec[0], rec.size,
-                            w.w, mode_) < 0:
-            raise RuntimeError("C idwt failed.")
-    elif data_t == np.float32_t:
-        if c_wt.float_idwt(&cA[0], cA.size,
-                           &cD[0], cD.size,
-                           &rec[0], rec.size,
-                           w.w, mode_) < 0:
-            raise RuntimeError("C idwt failed.")
-    else:
-        raise RuntimeError("Invalid data type.")
-
-    return rec
 
 
 ###############################################################################

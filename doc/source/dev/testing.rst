@@ -42,5 +42,5 @@ To for example run tests for Python 2.7 and Python 3.4 use::
 For more information see the `Tox`_ documentation.
 
 
-.. _nose: http://nose.readthedocs.org/en/latest/ 
-.. _Tox: http://tox.testrun.org/ 
+.. _nose: http://nose.readthedocs.org/en/latest/
+.. _Tox: http://tox.testrun.org/
