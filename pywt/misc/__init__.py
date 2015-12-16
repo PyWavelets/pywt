@@ -122,3 +122,34 @@ def aero():
     with open(fname, 'rb') as f:
         aero = np.load(f)
     return aero
+
+
+def ecg():
+    """
+    Get 1024 points of an ECG timeseries.
+
+    Parameters
+    ----------
+    None
+
+    Returns
+    -------
+    ecg : ndarray
+       convenient timeseries to use for testing and demonstration
+
+    Examples
+    --------
+    >>> import pywt.misc
+    >>> ecg = pywt.misc.ecg()
+    >>> ecg.shape
+    (1024,)
+
+    >>> import matplotlib.pyplot as plt
+    >>> plt.plot(ecg)
+    >>> plt.show()
+    """
+    import os
+    fname = os.path.join(os.path.dirname(__file__), 'ecg.npy')
+    with open(fname, 'rb') as f:
+        ecg = np.load(f)
+    return ecg
