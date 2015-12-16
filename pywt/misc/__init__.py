@@ -1,3 +1,7 @@
+import bz2
+import os
+import pickle
+
 import numpy as np
 
 
@@ -33,8 +37,6 @@ def ascent():
     >>> plt.show()
 
     """
-    import pickle
-    import os
     fname = os.path.join(os.path.dirname(__file__), 'ascent.dat')
     with open(fname, 'rb') as f:
         ascent = np.array(pickle.load(f))
@@ -74,8 +76,6 @@ def face(gray=False):
     >>> plt.show()
 
     """
-    import bz2
-    import os
     with open(os.path.join(os.path.dirname(__file__), 'face.dat'), 'rb') as f:
         rawdata = f.read()
     data = bz2.decompress(rawdata)
@@ -117,7 +117,6 @@ def aero():
     >>> plt.show()
 
     """
-    import os
     fname = os.path.join(os.path.dirname(__file__), 'aero.dat')
     with open(fname, 'rb') as f:
         aero = np.load(f)
@@ -148,7 +147,6 @@ def ecg():
     >>> plt.plot(ecg)
     >>> plt.show()
     """
-    import os
     fname = os.path.join(os.path.dirname(__file__), 'ecg.npy')
     with open(fname, 'rb') as f:
         ecg = np.load(f)
