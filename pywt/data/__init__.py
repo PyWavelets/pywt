@@ -24,8 +24,8 @@ def ascent():
 
     Examples
     --------
-    >>> import pywt.misc
-    >>> ascent = pywt.misc.ascent()
+    >>> import pywt.data
+    >>> ascent = pywt.data.ascent()
     >>> ascent.shape
     (512, 512)
     >>> ascent.max()
@@ -61,8 +61,8 @@ def face(gray=False):
 
     Examples
     --------
-    >>> import pywt.misc
-    >>> face = pywt.misc.face()
+    >>> import pywt.data
+    >>> face = pywt.data.face()
     >>> face.shape
     (768, 1024, 3)
     >>> face.max()
@@ -104,8 +104,8 @@ def aero():
 
     Examples
     --------
-    >>> import pywt.misc
-    >>> aero = pywt.misc.ascent()
+    >>> import pywt.data
+    >>> aero = pywt.data.ascent()
     >>> aero.shape
     (512, 512)
     >>> aero.max()
@@ -138,8 +138,8 @@ def ecg():
 
     Examples
     --------
-    >>> import pywt.misc
-    >>> ecg = pywt.misc.ecg()
+    >>> import pywt.data
+    >>> ecg = pywt.data.ecg()
     >>> ecg.shape
     (1024,)
 

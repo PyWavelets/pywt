@@ -5,10 +5,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 import pywt
-import pywt.misc
+import pywt.data
 
 
-ecg = pywt.misc.ecg()
+ecg = pywt.data.ecg()
 
 data1 = np.concatenate((np.arange(1, 400),
                         np.arange(398, 600),

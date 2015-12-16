@@ -7,10 +7,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from pywt import WaveletPacket
-import pywt.misc
+import pywt.data
 
 
-ecg = pywt.misc.ecg()
+ecg = pywt.data.ecg()
 
 wp = WaveletPacket(ecg, 'sym5', maxlevel=4)
 

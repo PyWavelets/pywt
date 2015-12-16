@@ -5,10 +5,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from pywt import WaveletPacket2D
-import pywt.misc
+import pywt.data
 
 
-arr = pywt.misc.aero()
+arr = pywt.data.aero()
 
 wp2 = WaveletPacket2D(arr, 'db2', 'symmetric', maxlevel=2)
 

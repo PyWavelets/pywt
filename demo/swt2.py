@@ -6,10 +6,10 @@ import matplotlib.pyplot as plt
 from PIL import Image
 
 import pywt
-import pywt.misc
+import pywt.data
 
 
-arr = pywt.misc.aero()
+arr = pywt.data.aero()
 
 plt.imshow(arr, interpolation="nearest", cmap=plt.cm.gray)
 

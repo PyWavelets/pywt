@@ -5,11 +5,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 import pywt
-import pywt.misc
+import pywt.data
 
 
 # Load image
-original = pywt.misc.aero()
+original = pywt.data.aero()
 
 # Wavelet transform of image, and plot approximation and details
 titles = ['Approximation', ' Horizontal detail',
