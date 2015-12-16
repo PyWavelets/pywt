@@ -110,7 +110,7 @@ def waverec(coeffs, wavelet, mode='symmetric'):
     a, ds = coeffs[0], coeffs[1:]
 
     for d in ds:
-        if len(a) == len(d) + 1:
+        if (a is not None) and (d is not None) and (len(a) == len(d) + 1):
             a = a[:-1]
         a = idwt(a, d, wavelet, mode)
 
