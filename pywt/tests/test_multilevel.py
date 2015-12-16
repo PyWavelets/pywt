@@ -31,6 +31,16 @@ def test_waverec():
     assert_allclose(pywt.waverec(coeffs, 'db1'), x, rtol=1e-12)
 
 
+def test_waverec_none():
+    x = [3, 7, 1, 1, -2, 5, 4, 6]
+    coeffs = pywt.wavedec(x, 'db1')
+
+    # set some coefficients to None
+    coeffs[2] = None
+    coeffs[0] = None
+    assert_(pywt.waverec(coeffs, 'db1').size, len(x))
+
+
 def test_waverec_odd_length():
     x = [3, 7, 1, 1, -2, 5]
     coeffs = pywt.wavedec(x, 'db1')
