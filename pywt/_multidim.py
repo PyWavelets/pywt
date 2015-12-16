@@ -19,7 +19,7 @@ from ._pywt import Wavelet, Modes
 from ._pywt import swt, dwt_axis, idwt_axis
 
 
-def dwt2(data, wavelet, mode='symmetric'):
+def dwt2(data, wavelet, mode='symmetric', axes=(-2, -1)):
     """
     2D Discrete Wavelet Transform.
 
@@ -31,6 +31,9 @@ def dwt2(data, wavelet, mode='symmetric'):
         Wavelet to use
     mode : str, optional
         Signal extension mode, see Modes (default: 'symmetric')
+    axes : 2-tuple of ints, optional
+        Axes over which to compute the DWT. Repeated elements mean the DWT will
+        be performed multiple times along these axes.
 
     Returns
     -------
@@ -53,14 +56,15 @@ def dwt2(data, wavelet, mode='symmetric'):
 
     """
     data = np.asarray(data)
-    if data.ndim != 2:
-        raise ValueError("Expected 2-D data array")
+    axes = tuple(axes)
+    if len(axes) != 2:
+        raise ValueError("Expected 2 axes")
 
-    coefs = dwtn(data, wavelet, mode)
+    coefs = dwtn(data, wavelet, mode, axes)
     return coefs['aa'], (coefs['da'], coefs['ad'], coefs['dd'])
 
 
-def idwt2(coeffs, wavelet, mode='symmetric'):
+def idwt2(coeffs, wavelet, mode='symmetric', axes=(-2, -1)):
     """
     2-D Inverse Discrete Wavelet Transform.
 
@@ -75,6 +79,9 @@ def idwt2(coeffs, wavelet, mode='symmetric'):
         Wavelet to use
     mode : str, optional
         Signal extension mode, see Modes (default: 'symmetric')
+    axes : 2-tuple of ints, optional
+        Axes over which to compute the IDWT. Repeated elements mean the IDWT
+        will be performed multiple times along these axes.
 
     Examples
     --------
@@ -88,14 +95,15 @@ def idwt2(coeffs, wavelet, mode='symmetric'):
     """
     # L -low-pass data, H - high-pass data
     LL, (HL, LH, HH) = coeffs
-    if not all(c.ndim == 2 for c in (LL, HL, LH, HL) if c is not None):
-        raise TypeError("All input coefficients arrays must be 2D.")
+    axes = tuple(axes)
+    if len(axes) != 2:
+        raise ValueError("Expected 2 axes")
 
     coeffs = {'aa': LL, 'da': HL, 'ad': LH, 'dd': HH}
-    return idwtn(coeffs, wavelet, mode)
+    return idwtn(coeffs, wavelet, mode, axes)
 
 
-def dwtn(data, wavelet, mode='symmetric'):
+def dwtn(data, wavelet, mode='symmetric', axes=None):
     """
     Single-level n-dimensional Discrete Wavelet Transform.
 
@@ -107,6 +115,15 @@ def dwtn(data, wavelet, mode='symmetric'):
         Wavelet to use.
     mode : str, optional
         Signal extension mode, see `Modes`.  Default is 'symmetric'.
+    axes : sequence of ints, optional
+        Axes over which to compute the DWT. Repeated elements mean the DWT will
+        be performed multiple times along these axes. A value of `None` (the
+        default) selects all axes.
+
+        Axes may be repeated, but information about the original size may be
+        lost if it is not divisible by `2 ** nrepeats`. The reconstruction will
+        be larger, with additional values derived according to the `mode`
+        parameter. `pywt.wavedecn` should be used for multilevel decomposition.
 
     Returns
     -------
@@ -137,7 +154,11 @@ def dwtn(data, wavelet, mode='symmetric'):
         raise ValueError("Input data must be at least 1D")
     coeffs = [('', data)]
 
-    for axis in range(data.ndim):
+    if axes is None:
+        axes = range(data.ndim)
+    axes = (a + data.ndim if a < 0 else a for a in axes)
+
+    for axis in axes:
         new_coeffs = []
         for subband, x in coeffs:
             cA, cD = dwt_axis(x, wavelet, mode, axis)
@@ -147,9 +168,9 @@ def dwtn(data, wavelet, mode='symmetric'):
     return dict(coeffs)
 
 
-def idwtn(coeffs, wavelet, mode='symmetric'):
+def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
     """
-    Single-level n-dimensional Discrete Wavelet Transform.
+    Single-level n-dimensional Inverse Discrete Wavelet Transform.
 
     Parameters
     ----------
@@ -161,6 +182,13 @@ def idwtn(coeffs, wavelet, mode='symmetric'):
     mode : str, optional
         Signal extension mode used in the decomposition,
         see Modes (default: 'symmetric').
+    axes : sequence of ints, optional
+        Axes over which to compute the IDWT. Repeated elements mean the IDWT
+        will be performed multiple times along these axes. A value of `None`
+        (the default) selects all axes.
+
+        For the most accurate reconstruction, the axes should be provided in
+        the same order as they were provided to `dwtn`.
 
     Returns
     -------
@@ -182,11 +210,11 @@ def idwtn(coeffs, wavelet, mode='symmetric'):
         return (idwtn(real_coeffs, wavelet, mode)
                 + 1j * idwtn(imag_coeffs, wavelet, mode))
 
-    dims = max(len(key) for key in coeffs.keys())
+    ndim = max(len(key) for key in coeffs.keys())
 
     try:
         coeff_shapes = (v.shape for k, v in coeffs.items()
-                        if v is not None and len(k) == dims)
+                        if v is not None and len(k) == ndim)
         coeff_shape = next(coeff_shapes)
     except StopIteration:
         raise ValueError("`coeffs` must contain at least one non-null wavelet "
@@ -194,9 +222,13 @@ def idwtn(coeffs, wavelet, mode='symmetric'):
     if any(s != coeff_shape for s in coeff_shapes):
         raise ValueError("`coeffs` must all be of equal size (or None)")
 
-    for axis in reversed(range(dims)):
+    if axes is None:
+        axes = range(ndim)
+    axes = (a + ndim if a < 0 else a for a in axes)
+
+    for key_length, axis in reversed(list(enumerate(axes))):
         new_coeffs = {}
-        new_keys = [''.join(coeff) for coeff in product('ad', repeat=axis)]
+        new_keys = [''.join(coeff) for coeff in product('ad', repeat=key_length)]
 
         for key in new_keys:
             L = coeffs.get(key + 'a', None)
