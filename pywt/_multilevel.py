@@ -567,8 +567,20 @@ def waverecn(coeffs, wavelet, mode='symmetric'):
     if a is None and not any(ds):
         raise ValueError("At least one coefficient must contain a valid value.")
 
+    coeff_ndims = []
     if a is not None:
         a = np.asarray(a)
+        coeff_ndims.append(a.ndim)
+    for d in ds:
+        coeff_ndims += [v.ndim for k, v in d.items()]
+
+    # test that all coefficients have a matching number of dimensions
+    unique_coeff_ndims = np.unique(coeff_ndims)
+    if len(unique_coeff_ndims) == 1:
+        ndim = unique_coeff_ndims[0]
+    else:
+        raise ValueError(
+            "All coefficients must have a matching number of dimensions")
 
     for idx, d in enumerate(ds):
         if a is None and not d:
@@ -578,7 +590,6 @@ def waverecn(coeffs, wavelet, mode='symmetric'):
         # stored detail coefficients by 1 on any given axis.
         if idx > 0:
             a = _match_coeff_dims(a, d)
-        ndim = max(len(key) for key in d.keys()) if d else a.ndim
         d['a' * ndim] = a
         a = idwtn(d, wavelet, mode)
 
