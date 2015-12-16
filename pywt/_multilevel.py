@@ -487,9 +487,6 @@ def wavedecn(data, wavelet, mode='symmetric', level=None):
     coeffs_list.append(a)
     coeffs_list.reverse()
 
-    if len(coeffs_list) < level + 1:
-        raise ValueError("incomplete coefficient list encountered")
-
     return coeffs_list
 
 
