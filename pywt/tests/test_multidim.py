@@ -267,6 +267,22 @@ def test_idwt2_axes():
     assert_allclose(pywt.idwt2(coefs, 'haar', axes=(1, 1)), data, atol=1e-14)
 
 
+def test_idwt2_axes_subsets():
+    data = np.array(np.random.standard_normal((4, 4, 4)))
+    # test all combinations of 2 out of 3 axes transformed
+    for axes in combinations((0, 1, 2), 2):
+        coefs = pywt.dwt2(data, 'haar', axes=axes)
+        assert_allclose(pywt.idwt2(coefs, 'haar', axes=axes), data, atol=1e-14)
+
+
+def test_idwtn_axes_subsets():
+    data = np.array(np.random.standard_normal((4, 4, 4, 4)))
+    # test all combinations of 3 out of 4 axes transformed
+    for axes in combinations((0, 1, 2, 3), 3):
+        coefs = pywt.dwtn(data, 'haar', axes=axes)
+        assert_allclose(pywt.idwtn(coefs, 'haar', axes=axes), data, atol=1e-14)
+
+
 def test_negative_axes():
     data = np.array([[0, 1, 2, 3],
                      [1, 1, 1, 1],
