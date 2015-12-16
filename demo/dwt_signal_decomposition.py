@@ -1,15 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
-
 import numpy as np
 import matplotlib.pyplot as plt
 
 import pywt
+import pywt.misc
 
 
-ecg = np.load(os.path.join('data', 'ecg.npy'))
+ecg = pywt.misc.ecg()
 
 data1 = np.concatenate((np.arange(1, 400),
                         np.arange(398, 600),
