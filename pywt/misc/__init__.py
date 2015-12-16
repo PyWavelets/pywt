@@ -117,9 +117,8 @@ def aero():
     >>> plt.show()
 
     """
-    import pickle
     import os
     fname = os.path.join(os.path.dirname(__file__), 'aero.dat')
     with open(fname, 'rb') as f:
-        aero = np.array(pickle.load(f))
+        aero = np.load(f)
     return aero
