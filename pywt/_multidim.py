@@ -4,19 +4,19 @@
 # See COPYING for license details.
 
 """
-2D Discrete Wavelet Transform and Inverse Discrete Wavelet Transform.
+2D and nD Discrete Wavelet Transforms and Inverse Discrete Wavelet Transforms.
 """
 
 from __future__ import division, print_function, absolute_import
 
 __all__ = ['dwt2', 'idwt2', 'swt2', 'dwtn', 'idwtn']
 
-from itertools import cycle, product
+from itertools import product
 
 import numpy as np
 
 from ._pywt import Wavelet, Modes
-from ._pywt import dwt, idwt, swt, dwt_axis, idwt_axis
+from ._pywt import swt, dwt_axis, idwt_axis
 
 
 def dwt2(data, wavelet, mode='symmetric'):
