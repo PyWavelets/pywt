@@ -5,6 +5,9 @@ import pickle
 import numpy as np
 
 
+__all__ = ['ascent', 'face', 'aero', 'ecg']
+
+
 def ascent():
     """
     Get an 8-bit grayscale bit-depth, 512 x 512 derived image for
