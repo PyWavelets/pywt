@@ -3,7 +3,8 @@ import numpy as np
 
 def ascent():
     """
-    Get an 8-bit grayscale bit-depth, 512 x 512 derived image for easy use in demos
+    Get an 8-bit grayscale bit-depth, 512 x 512 derived image for
+    easy use in demos
 
     The image is derived from accent-to-the-top.jpg at
     http://www.public-domain-image.com/people-public-domain-images-pictures/
@@ -34,7 +35,7 @@ def ascent():
     """
     import pickle
     import os
-    fname = os.path.join(os.path.dirname(__file__),'ascent.dat')
+    fname = os.path.join(os.path.dirname(__file__), 'ascent.dat')
     with open(fname, 'rb') as f:
         ascent = np.array(pickle.load(f))
     return ascent
@@ -81,13 +82,16 @@ def face(gray=False):
     face = np.fromstring(data, dtype='uint8')
     face.shape = (768, 1024, 3)
     if gray is True:
-        face = (0.21 * face[:,:,0] + 0.71 * face[:,:,1] + 0.07 * face[:,:,2]).astype('uint8')
+        face = (0.21 * face[:, :, 0]
+                + 0.71 * face[:, :, 1]
+                + 0.07 * face[:, :, 2]).astype('uint8')
     return face
 
 
 def aero():
     """
-    Get an 8-bit grayscale bit-depth, 512 x 512 derived image for easy use in demos
+    Get an 8-bit grayscale bit-depth, 512 x 512 derived image for
+    easy use in demos
 
     Parameters
     ----------
