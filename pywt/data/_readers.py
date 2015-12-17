@@ -74,6 +74,38 @@ def aero():
     return aero
 
 
+def camera():
+    """
+    Get an 8-bit grayscale bit-depth, 512 x 512 derived image for
+    easy use in demos
+
+    Parameters
+    ----------
+    None
+
+    Returns
+    -------
+    camera : ndarray
+       convenient image to use for testing and demonstration
+
+    Examples
+    --------
+    >>> import pywt.data
+    >>> camera = pywt.data.ascent()
+    >>> camera.shape
+    (512, 512)
+
+    >>> import matplotlib.pyplot as plt
+    >>> plt.gray()
+    >>> plt.imshow(camera)
+    >>> plt.show()
+
+    """
+    fname = os.path.join(os.path.dirname(__file__), 'camera.npz')
+    camera = np.load(fname)['data']
+    return camera
+
+
 def ecg():
     """
     Get 1024 points of an ECG timeseries.
