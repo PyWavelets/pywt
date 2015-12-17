@@ -24,16 +24,6 @@ def test_data_ascent():
     assert_allclose(ascent[:3, :3], ref)
 
 
-def test_data_face():
-    face = pywt.data.face()
-
-    ref = np.array([[121, 112, 131],
-                    [138, 129, 148],
-                    [153, 144, 165]])
-
-    assert_allclose(face[0, :3, :3], ref)
-
-
 def test_data_ecg():
     ecg = pywt.data.ecg()
 
