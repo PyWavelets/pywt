@@ -682,7 +682,7 @@ def dwt_max_level(data_len, filter_len):
 
 def dwt(object data, object wavelet, object mode='symmetric', int axis=-1):
     """
-    (cA, cD) = dwt(data, wavelet, mode='symmetric')
+    dwt(data, wavelet, mode='symmetric', axis=-1)
 
     Single level Discrete Wavelet Transform.
 
@@ -692,7 +692,7 @@ def dwt(object data, object wavelet, object mode='symmetric', int axis=-1):
         Input signal
     wavelet : Wavelet object or name
         Wavelet to use
-    mode : str, optional (default: 'symmetric')
+    mode : str, optional
         Signal extension mode, see Modes
     axis: int, optional
         Axis over which to compute the DWT. If not given, the
@@ -706,11 +706,14 @@ def dwt(object data, object wavelet, object mode='symmetric', int axis=-1):
 
     Notes
     -----
-    Length of coefficients arrays depends on the selected mode:
-    for all modes except periodization:
-        len(cA) == len(cD) == floor((len(data) + wavelet.dec_len - 1) / 2)
-    for periodization mode ("per"):
-        len(cA) == len(cD) == ceil(len(data) / 2)
+    Length of coefficients arrays depends on the selected mode.
+    For all modes except periodization:
+
+        ``len(cA) == len(cD) == floor((len(data) + wavelet.dec_len - 1) / 2)``
+
+    For periodization mode ("per"):
+
+        ``len(cA) == len(cD) == ceil(len(data) / 2)``
 
     Examples
     --------
@@ -880,9 +883,9 @@ def dwt_coeff_len(data_len, filter_len, mode='symmetric'):
 # idwt
 def idwt(cA, cD, object wavelet, object mode='symmetric', int axis=-1):
     """
-    idwt(cA, cD, wavelet, mode='symmetric')
+    idwt(cA, cD, wavelet, mode='symmetric', axis=-1)
 
-    Single level Inverse Discrete Wavelet Transform
+    Single level Inverse Discrete Wavelet Transform.
 
     Parameters
     ----------
