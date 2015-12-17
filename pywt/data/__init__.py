@@ -150,7 +150,7 @@ def ecg():
     >>> plt.plot(ecg)
     >>> plt.show()
     """
-    fname = os.path.join(os.path.dirname(__file__), 'ecg.npy')
+    fname = os.path.join(os.path.dirname(__file__), 'ecg.dat')
     with open(fname, 'rb') as f:
         ecg = np.load(f)
     return ecg
