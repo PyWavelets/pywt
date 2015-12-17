@@ -29,5 +29,4 @@ dat_fname = sys.argv[2]
 
 data = imread(image_fname)
 
-with open(dat_fname, 'w') as dat_file:
-    np.save(dat_file, data)
+np.savez_compressed(dat_fname, data=data)
