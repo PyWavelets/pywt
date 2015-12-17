@@ -5,12 +5,13 @@ PyWavelets 0.4.0 Release Notes
 .. contents::
 
 PyWavelets 0.4.0 is the culmination of 6 months of work.  In addition to
-several new features some changes and deprecations have been made to streamline
+several new features, some changes and deprecations have been made to streamline
 the API.
 
 This release requires Python 2.6, 2.7 or 3.3-3.5 and NumPy 1.6.2 or greater.
 
 Highlights of this release include:
+
 - 1D and 2D stationary wavelet transforms
 - Substantially faster 2D and nD discrete wavelet transforms
 - Complex number support
@@ -88,7 +89,7 @@ Bugs Fixed
 float32 inputs were not always respected. All transforms now return float32
 outputs when called using float32 inputs.
 
-incorrect detail coefficients were returned by downcoef when level > 1
+Incorrect detail coefficients were returned by `downcoef` when `level > 1`.
 
 Other changes
 =============
