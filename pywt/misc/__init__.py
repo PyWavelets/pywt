@@ -83,3 +83,39 @@ def face(gray=False):
     if gray is True:
         face = (0.21 * face[:,:,0] + 0.71 * face[:,:,1] + 0.07 * face[:,:,2]).astype('uint8')
     return face
+
+
+def aero():
+    """
+    Get an 8-bit grayscale bit-depth, 512 x 512 derived image for easy use in demos
+
+    Parameters
+    ----------
+    None
+
+    Returns
+    -------
+    aero : ndarray
+       convenient image to use for testing and demonstration
+
+    Examples
+    --------
+    >>> import pywt.misc
+    >>> aero = pywt.misc.ascent()
+    >>> aero.shape
+    (512, 512)
+    >>> aero.max()
+    255
+
+    >>> import matplotlib.pyplot as plt
+    >>> plt.gray()
+    >>> plt.imshow(aero)
+    >>> plt.show()
+
+    """
+    import pickle
+    import os
+    fname = os.path.join(os.path.dirname(__file__), 'aero.dat')
+    with open(fname, 'rb') as f:
+        aero = np.array(pickle.load(f))
+    return aero
