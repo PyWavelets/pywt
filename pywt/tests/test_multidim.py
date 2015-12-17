@@ -43,6 +43,20 @@ def test_3D_reconstruct():
                         rtol=1e-13, atol=1e-13)
 
 
+def test_dwdtn_idwtn_allwavelets():
+    rstate = np.random.RandomState(1234)
+    r = rstate.randn(16, 16)
+    # test 2D case only for all wavelet types
+    wavelist = pywt.wavelist()
+    if 'dmey' in wavelist:
+        wavelist.remove('dmey')
+    for wavelet in wavelist:
+        for mode in pywt.Modes.modes:
+            coeffs = pywt.dwtn(r, wavelet, mode=mode)
+            assert_allclose(pywt.idwtn(coeffs, wavelet, mode=mode),
+                            r, rtol=1e-7, atol=1e-7)
+
+
 def test_stride():
     wavelet = pywt.Wavelet('haar')
 
@@ -160,7 +174,7 @@ def test_idwtn_missing():
                             pywt.idwtn(missing_coefs, 'haar'), atol=1e-15)
 
 
-def test_ignore_invalid_keys():
+def test_error_on_invalid_keys():
     data = np.array([
         [0, 4, 1, 5, 1, 4],
         [0, 5, 6, 3, 2, 1],
@@ -169,11 +183,18 @@ def test_ignore_invalid_keys():
     wavelet = pywt.Wavelet('haar')
 
     LL, (HL, LH, HH) = pywt.dwt2(data, wavelet)
-    d = {'aa': LL, 'da': HL, 'ad': LH, 'dd': HH,
-         'foo': LH, 'a': HH}
 
-    assert_allclose(pywt.idwt2((LL, (HL, LH, HH)), wavelet),
-                    pywt.idwtn(d, wavelet), atol=1e-15)
+    # unexpected key
+    d = {'aa': LL, 'da': HL, 'ad': LH, 'dd': HH, 'ff': LH}
+    assert_raises(ValueError, pywt.idwtn, d, wavelet)
+
+    # a key whose value is None
+    d = {'aa': LL, 'da': HL, 'ad': LH, 'dd': None}
+    assert_raises(ValueError, pywt.idwtn, d, wavelet)
+
+    # mismatched key lengths
+    d = {'a': LL, 'da': HL, 'ad': LH, 'dd': HH}
+    assert_raises(ValueError, pywt.idwtn, d, wavelet)
 
 
 def test_error_mismatched_size():
@@ -244,6 +265,22 @@ def test_idwt2_axes():
                      [1, 4, 2, 8]])
     coefs = pywt.dwt2(data, 'haar', axes=(1, 1))
     assert_allclose(pywt.idwt2(coefs, 'haar', axes=(1, 1)), data, atol=1e-14)
+
+
+def test_idwt2_axes_subsets():
+    data = np.array(np.random.standard_normal((4, 4, 4)))
+    # test all combinations of 2 out of 3 axes transformed
+    for axes in combinations((0, 1, 2), 2):
+        coefs = pywt.dwt2(data, 'haar', axes=axes)
+        assert_allclose(pywt.idwt2(coefs, 'haar', axes=axes), data, atol=1e-14)
+
+
+def test_idwtn_axes_subsets():
+    data = np.array(np.random.standard_normal((4, 4, 4, 4)))
+    # test all combinations of 3 out of 4 axes transformed
+    for axes in combinations((0, 1, 2, 3), 3):
+        coefs = pywt.dwtn(data, 'haar', axes=axes)
+        assert_allclose(pywt.idwtn(coefs, 'haar', axes=axes), data, atol=1e-14)
 
 
 def test_negative_axes():

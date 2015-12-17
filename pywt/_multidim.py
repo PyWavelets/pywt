@@ -100,6 +100,10 @@ def idwt2(coeffs, wavelet, mode='symmetric', axes=(-2, -1)):
         raise ValueError("Expected 2 axes")
 
     coeffs = {'aa': LL, 'da': HL, 'ad': LH, 'dd': HH}
+
+    # drop the keys corresponding to value = None
+    coeffs = dict((k, v) for k, v in coeffs.items() if v is not None)
+
     return idwtn(coeffs, wavelet, mode, axes)
 
 
@@ -168,6 +172,29 @@ def dwtn(data, wavelet, mode='symmetric', axes=None):
     return dict(coeffs)
 
 
+def _fix_coeffs(coeffs):
+    missing_keys = [k for k, v in coeffs.items() if
+                    v is None]
+    if missing_keys:
+        raise ValueError(
+            "The following detail coefficients were set to None: "
+            "{}.".format(missing_keys))
+
+    invalid_keys = [k for k, v in coeffs.items() if
+                    not set(k) <= set('ad')]
+    if invalid_keys:
+        raise ValueError(
+            "The following invalid keys were found in the detail "
+            "coefficient dictionary: {}.".format(invalid_keys))
+
+    key_lengths = [len(k) for k in coeffs.keys()]
+    if len(np.unique(key_lengths)) > 1:
+        raise ValueError(
+            "All detail coefficient names must have equal length.")
+
+    return dict((k, np.asarray(v)) for k, v in coeffs.items())
+
+
 def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
     """
     Single-level n-dimensional Inverse Discrete Wavelet Transform.
@@ -200,9 +227,8 @@ def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
         wavelet = Wavelet(wavelet)
     mode = Modes.from_object(mode)
 
-    # Ignore any invalid keys
-    coeffs = dict((k, np.asarray(v)) for k, v in coeffs.items()
-                  if v is not None and set(k) <= set('ad'))
+    # Raise error for invalid key combinations
+    coeffs = _fix_coeffs(coeffs)
 
     if any(np.iscomplexobj(v) for v in coeffs.values()):
         real_coeffs = dict((k, v.real) for k, v in coeffs.items())

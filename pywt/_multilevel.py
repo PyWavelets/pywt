@@ -14,9 +14,28 @@ import numpy as np
 
 from ._pywt import Wavelet
 from ._pywt import dwt, idwt, dwt_max_level
-from ._multidim import dwt2, idwt2
+from ._multidim import dwt2, idwt2, dwtn, idwtn, _fix_coeffs
 
-__all__ = ['wavedec', 'waverec', 'wavedec2', 'waverec2', 'iswt', 'iswt2']
+__all__ = ['wavedec', 'waverec', 'wavedec2', 'waverec2', 'wavedecn',
+           'waverecn', 'iswt', 'iswt2']
+
+
+def _check_level(size, dec_len, level):
+    """
+    Set the default decomposition level or check if requested level is valid.
+    """
+    if level is None:
+        level = dwt_max_level(size, dec_len)
+    elif level < 0:
+        raise ValueError(
+            "Level value of %d is too low . Minimum level is 0." % level)
+    else:
+        max_level = dwt_max_level(size, dec_len)
+        if level > max_level:
+            raise ValueError(
+                "Level value of %d is too high.  Maximum allowed is %d." % (
+                    level, max_level))
+    return level
 
 
 def wavedec(data, wavelet, mode='symmetric', level=None):
@@ -32,8 +51,8 @@ def wavedec(data, wavelet, mode='symmetric', level=None):
     mode : str, optional
         Signal extension mode, see Modes (default: 'symmetric')
     level : int, optional
-        Decomposition level. If level is None (default) then it will be
-        calculated using `dwt_max_level` function.
+        Decomposition level (must be >= 0). If level is None (default) then it
+        will be calculated using the ``dwt_max_level`` function.
 
     Returns
     -------
@@ -56,15 +75,12 @@ def wavedec(data, wavelet, mode='symmetric', level=None):
     array([  5.,  13.])
 
     """
+    data = np.asarray(data)
 
     if not isinstance(wavelet, Wavelet):
         wavelet = Wavelet(wavelet)
 
-    if level is None:
-        level = dwt_max_level(len(data), wavelet.dec_len)
-    elif level < 0:
-        raise ValueError(
-            "Level value of %d is too low . Minimum level is 0." % level)
+    level = _check_level(min(data.shape), wavelet.dec_len, level)
 
     coeffs_list = []
 
@@ -103,9 +119,12 @@ def waverec(coeffs, wavelet, mode='symmetric'):
     if not isinstance(coeffs, (list, tuple)):
         raise ValueError("Expected sequence of coefficient arrays.")
 
-    if len(coeffs) < 2:
+    if len(coeffs) < 1:
         raise ValueError(
-            "Coefficient list too short (minimum 2 arrays required).")
+            "Coefficient list too short (minimum 1 arrays required).")
+    elif len(coeffs) == 1:
+        # level 0 transform (just returns the approximation coefficients)
+        return coeffs[0]
 
     a, ds = coeffs[0], coeffs[1:]
 
@@ -130,8 +149,8 @@ def wavedec2(data, wavelet, mode='symmetric', level=None):
     mode : str, optional
         Signal extension mode, see Modes (default: 'symmetric')
     level : int, optional
-        Decomposition level. If level is None (default) then it will be
-        calculated using `dwt_max_level` function.
+        Decomposition level (must be >= 0). If level is None (default) then it
+        will be calculated using the ``dwt_max_level`` function.
 
     Returns
     -------
@@ -151,7 +170,6 @@ def wavedec2(data, wavelet, mode='symmetric', level=None):
            [ 1.,  1.,  1.,  1.],
            [ 1.,  1.,  1.,  1.]])
     """
-
     data = np.asarray(data)
 
     if data.ndim != 2:
@@ -160,12 +178,7 @@ def wavedec2(data, wavelet, mode='symmetric', level=None):
     if not isinstance(wavelet, Wavelet):
         wavelet = Wavelet(wavelet)
 
-    if level is None:
-        size = min(data.shape)
-        level = dwt_max_level(size, wavelet.dec_len)
-    elif level < 0:
-        raise ValueError(
-            "Level value of %d is too low . Minimum level is 0." % level)
+    level = _check_level(min(data.shape), wavelet.dec_len, level)
 
     coeffs_list = []
 
@@ -212,9 +225,12 @@ def waverec2(coeffs, wavelet, mode='symmetric'):
     if not isinstance(coeffs, (list, tuple)):
         raise ValueError("Expected sequence of coefficient arrays.")
 
-    if len(coeffs) < 2:
+    if len(coeffs) < 1:
         raise ValueError(
-            "Coefficient list too short (minimum 2 arrays required).")
+            "Coefficient list too short (minimum 1 array required).")
+    elif len(coeffs) == 1:
+        # level 0 transform (just returns the approximation coefficients)
+        return coeffs[0]
 
     a, ds = coeffs[0], coeffs[1:]
     a = np.asarray(a)
@@ -399,3 +415,178 @@ def iswt2(coeffs, wavelet):
                 output[indices_h, indices_w] = (x1 + x2 + x3 + x4) / 4
 
     return output
+
+
+def wavedecn(data, wavelet, mode='symmetric', level=None):
+    """
+    Multilevel nD Discrete Wavelet Transform.
+
+    Parameters
+    ----------
+    data : ndarray
+        nD input data
+    wavelet : Wavelet object or name string
+        Wavelet to use
+    mode : str, optional
+        Signal extension mode, see MODES (default: 'sym')
+    level : int, optional
+        Dxecomposition level (must be >= 0). If level is None (default) then it
+        will be calculated using the ``dwt_max_level`` function.
+
+    Returns
+    -------
+    [cAn, {details_level_n}, ... {details_level_1}] : list
+        Coefficients list
+
+    Examples
+    --------
+    >>> from pywt import multilevel
+    >>> coeffs = multilevel.wavedecn(np.ones((4, 4, 4)), 'db1')
+    >>> # Levels:
+    >>> len(coeffs)-1
+    3
+    >>> multilevel.waverecn(coeffs, 'db1')
+    array([[[ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.]],
+
+       [[ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.]],
+
+       [[ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.]],
+
+       [[ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.]]])
+
+    """
+    data = np.asarray(data)
+
+    if len(data.shape) < 1:
+        raise ValueError("Expected at least 1D input data.")
+
+    if not isinstance(wavelet, Wavelet):
+        wavelet = Wavelet(wavelet)
+
+    level = _check_level(min(data.shape), wavelet.dec_len, level)
+    coeffs_list = []
+
+    a = data
+    for i in range(level):
+        coeffs = dwtn(a, wavelet, mode)
+        a = coeffs.pop('a' * data.ndim)
+        coeffs_list.append(coeffs)
+
+    coeffs_list.append(a)
+    coeffs_list.reverse()
+
+    return coeffs_list
+
+
+def _match_coeff_dims(a_coeff, d_coeff_dict):
+    # For each axis, compare the approximation coeff shape to one of the
+    # stored detail coeffs and truncate the last element along the axis
+    # if necessary.
+    if a_coeff is None:
+        return None
+    if not d_coeff_dict:
+        return a_coeff
+    d_coeff = d_coeff_dict[next(iter(d_coeff_dict))]
+    size_diffs = np.subtract(a_coeff.shape, d_coeff.shape)
+    if np.any((size_diffs < 0) | (size_diffs > 1)):
+        raise ValueError("incompatible coefficient array sizes")
+    return a_coeff[[slice(s) for s in d_coeff.shape]]
+
+
+def waverecn(coeffs, wavelet, mode='symmetric'):
+    """
+    Multilevel nD Inverse Discrete Wavelet Transform.
+
+    coeffs : array_like
+        Coefficients list [cAn, {details_level_n}, ... {details_level_1}]
+    wavelet : Wavelet object or name string
+        Wavelet to use
+    mode : str, optional
+        Signal extension mode, see MODES (default: 'sym')
+
+    Returns
+    -------
+    nD array of reconstructed data.
+
+    Examples
+    --------
+    >>> from pywt import multilevel
+    >>> coeffs = multilevel.wavedecn(np.ones((4, 4, 4)), 'db1')
+    >>> # Levels:
+    >>> len(coeffs)-1
+    2
+    >>> multilevel.waverecn(coeffs, 'db1')
+    array([[[ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.]],
+
+       [[ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.]],
+
+       [[ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.]],
+
+       [[ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.],
+        [ 1.,  1.,  1.,  1.]]])
+    """
+    if len(coeffs) < 1:
+        raise ValueError(
+            "Coefficient list too short (minimum 1 array required).")
+
+    a, ds = coeffs[0], coeffs[1:]
+
+    # Raise error for invalid key combinations
+    ds = list(map(_fix_coeffs, ds))
+
+    if not ds:
+        # level 0 transform (just returns the approximation coefficients)
+        return coeffs[0]
+    if a is None and not any(ds):
+        raise ValueError("At least one coefficient must contain a valid value.")
+
+    coeff_ndims = []
+    if a is not None:
+        a = np.asarray(a)
+        coeff_ndims.append(a.ndim)
+    for d in ds:
+        coeff_ndims += [v.ndim for k, v in d.items()]
+
+    # test that all coefficients have a matching number of dimensions
+    unique_coeff_ndims = np.unique(coeff_ndims)
+    if len(unique_coeff_ndims) == 1:
+        ndim = unique_coeff_ndims[0]
+    else:
+        raise ValueError(
+            "All coefficients must have a matching number of dimensions")
+
+    for idx, d in enumerate(ds):
+        if a is None and not d:
+            continue
+        # The following if statement handles the case where the approximation
+        # coefficient returned at the previous level may exceed the size of the
+        # stored detail coefficients by 1 on any given axis.
+        if idx > 0:
+            a = _match_coeff_dims(a, d)
+        d['a' * ndim] = a
+        a = idwtn(d, wavelet, mode)
+
+    return a
