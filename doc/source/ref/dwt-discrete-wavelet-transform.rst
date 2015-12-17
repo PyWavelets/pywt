@@ -17,13 +17,13 @@ Single level ``dwt``
 
 .. autofunction:: dwt
 
-  See the :ref:`signal extension modes <ref-modes>` section for the list of
-  available options and the :func:`dwt_coeff_len` function for information on
-  getting the expected result length:
+See the :ref:`signal extension modes <ref-modes>` section for the list of
+available options and the :func:`dwt_coeff_len` function for information on
+getting the expected result length.
 
-  The transform can be performed over one axis of multi-dimensional
-  data. By default this is the last axis. For multi-dimensional transforms
-  see the :ref:`2D transforms <ref-dwt2>` section.
+The transform can be performed over one axis of multi-dimensional
+data. By default this is the last axis. For multi-dimensional transforms
+see the :ref:`2D transforms <ref-dwt2>` section.
 
 
 Multilevel decomposition using ``wavedec``
@@ -45,6 +45,7 @@ Maximum decomposition level - ``dwt_max_level``
 
 
 .. _`dwt_coeff_len`:
+
 Result coefficients length - ``dwt_coeff_len``
 ----------------------------------------------
 

@@ -16,9 +16,9 @@ Single level - ``idwtn``
 .. autofunction:: idwtn
 
 Multilevel decomposition - ``wavedecn``
------------------------------------
+---------------------------------------
 .. autofunction:: wavedecn
 
 Multilevel reconstruction - ``waverecn``
--------------------------------------
+----------------------------------------
 .. autofunction:: waverecn
