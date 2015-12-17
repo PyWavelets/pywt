@@ -1,5 +1,4 @@
 import os
-import pickle
 
 import numpy as np
 
@@ -36,9 +35,8 @@ def ascent():
     >>> plt.show()
 
     """
-    fname = os.path.join(os.path.dirname(__file__), 'ascent.dat')
-    with open(fname, 'rb') as f:
-        ascent = np.array(pickle.load(f))
+    fname = os.path.join(os.path.dirname(__file__), 'ascent.npz')
+    ascent = np.load(fname)['data']
     return ascent
 
 
@@ -71,9 +69,8 @@ def aero():
     >>> plt.show()
 
     """
-    fname = os.path.join(os.path.dirname(__file__), 'aero.dat')
-    with open(fname, 'rb') as f:
-        aero = np.load(f)
+    fname = os.path.join(os.path.dirname(__file__), 'aero.npz')
+    aero = np.load(fname)['data']
     return aero
 
 
@@ -101,7 +98,6 @@ def ecg():
     >>> plt.plot(ecg)
     >>> plt.show()
     """
-    fname = os.path.join(os.path.dirname(__file__), 'ecg.dat')
-    with open(fname, 'rb') as f:
-        ecg = np.load(f)
+    fname = os.path.join(os.path.dirname(__file__), 'ecg.npy')
+    ecg = np.load(fname)
     return ecg
