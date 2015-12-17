@@ -2,7 +2,7 @@ Changelog
 
 0.4.0
     changes:
-      - idwt no longer takes a 'correct_length' parameter.
+      - idwt no longer takes a 'correct_size' parameter.
         - Sizes of the arrays passed to all idwt functions must match exactly.
         - use 'multilevel.wavecrec' for multilevel transforms
 
