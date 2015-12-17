@@ -10,16 +10,24 @@ a C compiler and prepare the build environment.
 Installing Windows SDK C/C++ compiler
 -------------------------------------
 
-Microsoft Visual C++ 2008 (Microsoft Visual Studio 9.0) is the compiler that
-is suitable for building extensions for Python 2.6, 2.7, 3.0, 3.1 and 3.2
-(both 32 and 64 bit).
+Depending on your Python version, a different version of the Microsoft Visual
+C++ compiler will be required to build extensions. The same compiler that was
+used to build Python itself should be used.
+
+For official binary builds of Python 2.6 to 3.2, this will be VS 2008. Python
+3.3 and 3.4 were compiled with VS 2010, and for Python 3.5 it will be MSVC 2015.
+
+The MSVC version should be printed when starting a Python REPL, and can be
+checked against the note below:
 
 .. note:: For reference:
 
      - the *MSC v.1500* in the Python version string is Microsoft Visual
        C++ 2008 (Microsoft Visual Studio 9.0 with msvcr90.dll runtime)
      - *MSC v.1600* is MSVC 2010 (10.0 with msvcr100.dll runtime)
-     - *MSC v.1700* is MSVC 2011 (11.0)
+     - *MSC v.1700* is MSVC 2012 (11.0)
+     - *MSC v.1800* is MSVC 2013 (12.0)
+     - *MSC v.1900* is MSVC 2015 (14.0)
 
      ::
 
