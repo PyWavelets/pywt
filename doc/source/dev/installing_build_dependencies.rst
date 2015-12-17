@@ -61,7 +61,7 @@ via::
 
 
 .. _virtualenv: http://pypi.python.org/pypi/virtualenv
-.. _numpy: http://numpy.scipy.org/
+.. _numpy: http://numpy.org/
 .. _Cython: http://cython.org/
 .. _Sphinx: http://sphinx.pocoo.org
 .. _numpydoc: https://github.com/numpy/numpydoc
