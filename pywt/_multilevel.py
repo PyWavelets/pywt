@@ -548,10 +548,6 @@ def waverecn(coeffs, wavelet, mode='symmetric'):
         [ 1.,  1.,  1.,  1.],
         [ 1.,  1.,  1.,  1.]]])
     """
-
-    if not isinstance(coeffs, (list, tuple)):
-        raise ValueError("Expected sequence of coefficient arrays.")
-
     if len(coeffs) < 1:
         raise ValueError(
             "Coefficient list too short (minimum 1 array required).")
