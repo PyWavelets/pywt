@@ -24,6 +24,16 @@ def test_data_ascent():
     assert_allclose(ascent[:3, :3], ref)
 
 
+def test_data_camera():
+    ascent = pywt.data.camera()
+
+    ref = np.array([[156, 157, 160],
+                    [156, 157, 159],
+                    [158, 157, 156]])
+
+    assert_allclose(ascent[:3, :3], ref)
+
+
 def test_data_ecg():
     ecg = pywt.data.ecg()
 
