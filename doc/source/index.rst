@@ -80,7 +80,7 @@ For more usage examples see the `demo`_ directory in the source package.
 State of development & Contributing
 -----------------------------------
 
-PyWavelets started in 2006 as an academic project for a master thesis
+PyWavelets started in 2006 as an academic project for a masters thesis
 on `Analysis and Classification of Medical Signals using Wavelet Transforms`
 and was maintained until 2012 by its `original developer`_.  In 2013
 maintenance was taken over in a `new repo <https://github.com/PyWavelets/pywt>`_)
