@@ -116,7 +116,7 @@ After completing these steps continue with
 
 
 .. _Python: http://python.org/
-.. _numpy: http://numpy.scipy.org/
+.. _numpy: http://numpy.org/
 .. _Cython: http://cython.org/
 .. _Sphinx: http://sphinx.pocoo.org/
 .. _MinGW C compiler: http://sourceforge.net/projects/mingwbuilds/

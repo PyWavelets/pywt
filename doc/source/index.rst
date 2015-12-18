@@ -1,19 +1,19 @@
 PyWavelets - Discrete Wavelet Transform in Python
 =================================================
 
-PyWavelets is a free Open Source wavelet transform software for Python_
-programming language. It is written in Python, Cython and C for a mix of easy
-and powerful high-level interface and the best performance.
+PyWavelets is free and Open Source wavelet transform software for the Python_
+programming language. It combines a simple high level interface with low level
+C and Cython performance.
 
-PyWavelets is very easy to start with and use. Just install the package, open
-the Python interactive shell and type:
+PyWavelets is very easy to use and get started with. Just install the package,
+open the Python interactive shell and type:
 
   .. sourcecode:: python
 
     >>> import pywt
     >>> cA, cD = pywt.dwt([1, 2, 3, 4], 'db1')
 
-Voilà! Computing wavelet transforms never before has been so simple :)
+Voilà! Computing wavelet transforms has never been so simple :)
 
 Main features
 -------------
@@ -21,12 +21,14 @@ Main features
 The main features of PyWavelets are:
 
   * 1D, 2D and nD Forward and Inverse Discrete Wavelet Transform (DWT and IDWT)
+  * 1D, 2D and nD Multilevel DWT and IDWT
   * 1D and 2D Stationary Wavelet Transform (Undecimated Wavelet Transform)
   * 1D and 2D Wavelet Packet decomposition and reconstruction
   * Approximating wavelet and scaling functions
   * Over seventy `built-in wavelet filters`_
     and custom wavelets supported
   * Single and double precision calculations
+  * Real and complex calculations
   * Results compatible with Matlab Wavelet Toolbox (TM)
 
 Requirements
@@ -61,8 +63,8 @@ Prebuilt Windows binaries and source code packages are also
 available from `Python Package Index`_.
 
 Binary packages for several Linux distributors are maintained by Open Source
-community contributors. Query your Linux package manager tool
-for `python-pywavelets`, `python-wavelets`, `python-pywt` or similar package name.
+community contributors. Query your Linux package manager tool for
+`python-pywavelets`, `python-wavelets`, `python-pywt` or similar package name.
 
 .. seealso::  :ref:`Development notes <dev-index>` section contains more
               information on building and installing from source code.
@@ -78,7 +80,7 @@ For more usage examples see the `demo`_ directory in the source package.
 State of development & Contributing
 -----------------------------------
 
-PyWavelets started in 2006 as an academic project for a master thesis
+PyWavelets started in 2006 as an academic project for a masters thesis
 on `Analysis and Classification of Medical Signals using Wavelet Transforms`
 and was maintained until 2012 by its `original developer`_.  In 2013
 maintenance was taken over in a `new repo <https://github.com/PyWavelets/pywt>`_)
