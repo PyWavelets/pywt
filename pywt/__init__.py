@@ -19,6 +19,7 @@ from ._multidim import *
 from ._thresholding import *
 from ._wavelet_packets import *
 
+from . import data
 
 __all__ = [s for s in dir() if not s.startswith('_')]
 try:

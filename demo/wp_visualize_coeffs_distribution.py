@@ -7,9 +7,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from pywt import WaveletPacket
+import pywt.data
 
 
-ecg = np.load(os.path.join('data', 'ecg.npy'))
+ecg = pywt.data.ecg()
+
 wp = WaveletPacket(ecg, 'sym5', maxlevel=4)
 
 fig = plt.figure()

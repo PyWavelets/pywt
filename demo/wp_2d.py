@@ -3,14 +3,12 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-from PIL import Image
 
 from pywt import WaveletPacket2D
+import pywt.data
 
 
-im = Image.open("data/aero.png").convert('L')
-arr = np.fromstring(im.tostring(), np.uint8)
-arr.shape = (im.size[1], im.size[0])
+arr = pywt.data.aero()
 
 wp2 = WaveletPacket2D(arr, 'db2', 'symmetric', maxlevel=2)
 

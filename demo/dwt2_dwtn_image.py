@@ -3,13 +3,13 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy import ndimage
 
 import pywt
+import pywt.data
 
 
 # Load image
-original = ndimage.imread('data/aero.png', mode='L')
+original = pywt.data.aero()
 
 # Wavelet transform of image, and plot approximation and details
 titles = ['Approximation', ' Horizontal detail',

@@ -1,16 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import numpy as np
 import matplotlib.pyplot as plt
-from PIL import Image
 
 import pywt
+import pywt.data
 
 
-im = Image.open("data/aero.png").convert('L')
-arr = np.fromstring(im.tostring(), np.uint8)
-arr.shape = (im.size[1], im.size[0])
+arr = pywt.data.aero()
 
 plt.imshow(arr, interpolation="nearest", cmap=plt.cm.gray)
 
