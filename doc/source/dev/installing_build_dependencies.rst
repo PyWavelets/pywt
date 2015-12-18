@@ -54,8 +54,14 @@ nicely looking html documentation. Install it with::
 
     pip install Sphinx
 
+numpydoc_ is used to format the API docmentation appropriately.  Install it
+via::
+
+    pip install numpydoc
+
 
 .. _virtualenv: http://pypi.python.org/pypi/virtualenv
 .. _numpy: http://numpy.scipy.org/
 .. _Cython: http://cython.org/
 .. _Sphinx: http://sphinx.pocoo.org
+.. _numpydoc: https://github.com/numpy/numpydoc
