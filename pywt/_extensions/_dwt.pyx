@@ -6,19 +6,8 @@ cimport numpy as np
 import numpy as np
 
 from ._pywt cimport Wavelet, c_wavelet_from_object, _check_dtype, data_t
-
-
-# FIXME: To be removed, was only to match old API wrt exceptions
-def _try_mode(mode):
-    # FIXME: Hack to import constructed Modes object
-    from ._pywt import Modes
-
-    try:
-        return Modes.from_object(mode)
-    except ValueError as e:
-        if "Unknown mode name" in str(e):
-            raise
-        raise TypeError("Invalid mode: {0}".format(str(mode)))
+# FIXME: This should be moved to pure python anyway
+from ._pywt import Modes
 
 
 def dwt_max_level(data_len, filter_len):
@@ -97,14 +86,14 @@ def dwt_coeff_len(data_len, filter_len, mode='symmetric'):
     if filter_len_ < 1:
         raise ValueError("Value of filter_len must be greater than zero.")
 
-    return common.dwt_buffer_length(data_len, filter_len_, _try_mode(mode))
+    return common.dwt_buffer_length(data_len, filter_len_, Modes.from_object(mode))
 
 
 def dwt_single(np.ndarray[data_t, ndim=1] data, object wavelet,
                                                 object mode='symmetric'):
     cdef np.ndarray[data_t, ndim=1, mode="c"] cA, cD
     cdef Wavelet w = c_wavelet_from_object(wavelet)
-    cdef common.MODE mode_ = _try_mode(mode)
+    cdef common.MODE mode_ = Modes.from_object(mode)
 
     cdef size_t output_len
 
@@ -139,7 +128,7 @@ def dwt_single(np.ndarray[data_t, ndim=1] data, object wavelet,
 
 cpdef dwt_axis(np.ndarray data, object wavelet, object mode='symmetric', unsigned int axis=0):
     cdef Wavelet w = c_wavelet_from_object(wavelet)
-    cdef common.MODE _mode = _try_mode(mode)
+    cdef common.MODE _mode = Modes.from_object(mode)
     cdef common.ArrayInfo data_info, output_info
     cdef np.ndarray cD, cA
     cdef size_t[::1] output_shape
@@ -189,7 +178,7 @@ def idwt_single(np.ndarray[data_t, ndim=1, mode="c"] cA,
                 object wavelet, object mode='symmetric'):
 
     cdef Wavelet w = c_wavelet_from_object(wavelet)
-    cdef common.MODE mode_ = _try_mode(mode)
+    cdef common.MODE mode_ = Modes.from_object(mode)
 
     cdef np.ndarray[data_t, ndim=1, mode="c"] rec
     cdef index_t input_len
@@ -241,7 +230,7 @@ cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d, object wavelet,
     cdef np.ndarray output
     cdef np.dtype output_dtype
     cdef size_t[::1] output_shape
-    cdef common.MODE _mode = _try_mode(mode)
+    cdef common.MODE _mode = Modes.from_object(mode)
 
     if coefs_a is not None:
         if coefs_d is not None and coefs_d.dtype.itemsize > coefs_a.dtype.itemsize:
@@ -381,7 +370,7 @@ def _downcoef(part, np.ndarray[data_t, ndim=1, mode="c"] data,
     cdef common.MODE mode_
 
     w = c_wavelet_from_object(wavelet)
-    mode_ = _try_mode(mode)
+    mode_ = Modes.from_object(mode)
 
     if part not in ('a', 'd'):
         raise ValueError("Argument 1 must be 'a' or 'd', not '%s'." % part)
