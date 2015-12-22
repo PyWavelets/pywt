@@ -139,14 +139,12 @@ def idwt_single(data_t[::1] cA, data_t[::1] cD, Wavelet wavelet, MODE mode):
     return rec
 
 
-cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d, object wavelet,
-                object mode='symmetric', unsigned int axis=0):
-    cdef Wavelet w = c_wavelet_from_object(wavelet)
+cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d,
+                Wavelet wavelet, MODE mode, unsigned int axis=0):
     cdef common.ArrayInfo a_info, d_info, output_info
     cdef np.ndarray output
     cdef np.dtype output_dtype
     cdef size_t[::1] output_shape
-    cdef common.MODE _mode = Modes.from_object(mode)
 
     if coefs_a is not None:
         if coefs_d is not None and coefs_d.dtype.itemsize > coefs_a.dtype.itemsize:
@@ -168,12 +166,12 @@ cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d, object wavelet,
     if coefs_a is not None:
         output_shape = (<size_t [:coefs_a.ndim]> <size_t *> coefs_a.shape).copy()
         output_shape[axis] = common.idwt_buffer_length(coefs_a.shape[axis],
-                                                       w.rec_len, _mode)
+                                                       wavelet.rec_len, mode)
         output_dtype = coefs_a.dtype
     elif coefs_d is not None:
         output_shape = (<size_t [:coefs_d.ndim]> <size_t *> coefs_d.shape).copy()
         output_shape[axis] = common.idwt_buffer_length(coefs_d.shape[axis],
-                                                       w.rec_len, _mode)
+                                                       wavelet.rec_len, mode)
         output_dtype = coefs_d.dtype
     else:
         return None;
@@ -190,7 +188,7 @@ cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d, object wavelet,
                                  <double *> coefs_d.data if coefs_d is not None else NULL,
                                  &d_info if coefs_d is not None else NULL,
                                  <double *> output.data, output_info,
-                                 w.w, axis, _mode):
+                                 wavelet.w, axis, mode):
             raise RuntimeError("C inverse wavelet transform failed")
     elif output.dtype == np.float32:
         if c_wt.float_idwt_axis(<float *> coefs_a.data if coefs_a is not None else NULL,
@@ -198,7 +196,7 @@ cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d, object wavelet,
                                 <float *> coefs_d.data if coefs_d is not None else NULL,
                                 &d_info if coefs_d is not None else NULL,
                                 <float *> output.data, output_info,
-                                w.w, axis, _mode):
+                                wavelet.w, axis, mode):
             raise RuntimeError("C inverse wavelet transform failed")
     else:
         raise TypeError("Array must be floating point, not {}"
