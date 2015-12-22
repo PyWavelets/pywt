@@ -56,9 +56,8 @@ def dwt_single(data_t[::1] data, Wavelet wavelet, MODE mode):
     return (cA, cD)
 
 
-cpdef dwt_axis(np.ndarray data, object wavelet, object mode='symmetric', unsigned int axis=0):
-    cdef Wavelet w = c_wavelet_from_object(wavelet)
-    cdef common.MODE _mode = Modes.from_object(mode)
+cpdef dwt_axis(np.ndarray data, Wavelet wavelet, MODE mode, unsigned int axis=0):
+    # memory-views do not support n-dimensional arrays, use np.ndarray instead
     cdef common.ArrayInfo data_info, output_info
     cdef np.ndarray cD, cA
     cdef size_t[::1] output_shape
@@ -66,7 +65,7 @@ cpdef dwt_axis(np.ndarray data, object wavelet, object mode='symmetric', unsigne
     data = data.astype(_check_dtype(data), copy=False)
 
     output_shape = (<size_t [:data.ndim]> <size_t *> data.shape).copy()
-    output_shape[axis] = common.dwt_buffer_length(data.shape[axis], w.dec_len, _mode)
+    output_shape[axis] = common.dwt_buffer_length(data.shape[axis], wavelet.dec_len, mode)
 
     cA = np.empty(output_shape, data.dtype)
     cD = np.empty(output_shape, data.dtype)
@@ -82,20 +81,20 @@ cpdef dwt_axis(np.ndarray data, object wavelet, object mode='symmetric', unsigne
     if data.dtype == np.float64:
         if c_wt.double_downcoef_axis(<double *> data.data, data_info,
                                      <double *> cA.data, output_info,
-                                     w.w, axis, common.COEF_APPROX, _mode):
+                                     wavelet.w, axis, common.COEF_APPROX, mode):
             raise RuntimeError("C wavelet transform failed")
         if c_wt.double_downcoef_axis(<double *> data.data, data_info,
                                      <double *> cD.data, output_info,
-                                     w.w, axis, common.COEF_DETAIL, _mode):
+                                     wavelet.w, axis, common.COEF_DETAIL, mode):
             raise RuntimeError("C wavelet transform failed")
     elif data.dtype == np.float32:
         if c_wt.float_downcoef_axis(<float *> data.data, data_info,
                                     <float *> cA.data, output_info,
-                                    w.w, axis, common.COEF_APPROX, _mode):
+                                    wavelet.w, axis, common.COEF_APPROX, mode):
             raise RuntimeError("C wavelet transform failed")
         if c_wt.float_downcoef_axis(<float *> data.data, data_info,
                                     <float *> cD.data, output_info,
-                                    w.w, axis, common.COEF_DETAIL, _mode):
+                                    wavelet.w, axis, common.COEF_DETAIL, mode):
             raise RuntimeError("C wavelet transform failed")
     else:
         raise TypeError("Array must be floating point, not {}"

@@ -57,7 +57,6 @@ def dwt2(data, wavelet, mode='symmetric', axes=(-2, -1)):
            [ 0.,  0.]])
 
     """
-    data = np.asarray(data)
     axes = tuple(axes)
     if len(axes) != 2:
         raise ValueError("Expected 2 axes")
@@ -159,12 +158,16 @@ def dwtn(data, wavelet, mode='symmetric', axes=None):
         raise TypeError("Input must be a numeric array-like")
     if data.ndim < 1:
         raise ValueError("Input data must be at least 1D")
-    coeffs = [('', data)]
 
     if axes is None:
         axes = range(data.ndim)
     axes = (a + data.ndim if a < 0 else a for a in axes)
 
+    mode = Modes.from_object(mode)
+    if not isinstance(wavelet, Wavelet):
+        wavelet = Wavelet(wavelet)
+
+    coeffs = [('', data)]
     for axis in axes:
         new_coeffs = []
         for subband, x in coeffs:
