@@ -132,15 +132,19 @@ def dwt(data, wavelet, mode='symmetric', axis=-1):
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(data)
     data = np.array(data, dtype=dt)
+    mode = Modes.from_object(mode)
+    if not isinstance(wavelet, Wavelet):
+        wavelet = Wavelet(wavelet)
 
-    if axis >= data.ndim or abs(axis) > data.ndim:
+    if axis < 0:
+        axis = axis + data.ndim
+    if not 0 <= axis < data.ndim:
         raise ValueError("Axis greater than data dimensions")
-
-    # convert negative axes
-    axis = axis % data.ndim
 
     if data.ndim == 1:
         cA, cD = dwt_single(data, wavelet, mode)
+        # TODO: Check whether this makes a copy
+        cA, cD = np.asarray(cA, dt), np.asarray(cD, dt)
     else:
         cA, cD = dwt_axis(data, wavelet, mode, axis=axis)
 

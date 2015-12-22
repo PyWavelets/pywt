@@ -23,39 +23,35 @@ cpdef dwt_coeff_len(size_t data_len, size_t filter_len, MODE mode):
     return common.dwt_buffer_length(data_len, filter_len, mode)
 
 
-def dwt_single(np.ndarray[data_t, ndim=1] data, object wavelet,
-                                                object mode='symmetric'):
-    cdef np.ndarray[data_t, ndim=1, mode="c"] cA, cD
-    cdef Wavelet w = c_wavelet_from_object(wavelet)
-    cdef common.MODE mode_ = Modes.from_object(mode)
+def dwt_single(data_t[::1] data, Wavelet wavelet, MODE mode):
+    cdef data_t[::1] cA, cD
+    cdef size_t output_len = dwt_coeff_len(data.size, wavelet.dec_len, mode)
 
-    cdef size_t output_len
-
-    data = data.astype(_check_dtype(data), copy=True)
-
-    output_len = common.dwt_buffer_length(data.size, w.dec_len, mode_)
     if output_len < 1:
         raise RuntimeError("Invalid output length.")
 
-    cA = np.zeros(output_len, data.dtype)
-    cD = np.zeros(output_len, data.dtype)
+    if data_t is np.float64_t:
+        # TODO: Don't think these have to be 0-initialized
+        # TODO: Check other methods of allocating (e.g. Cython/CPython arrays)
+        cA = np.zeros(output_len, np.float64)
+        cD = np.zeros(output_len, np.float64)
 
-    if data_t == np.float64_t:
-        if (c_wt.double_dec_a(&data[0], data.size, w.w,
-                              &cA[0], cA.size, mode_) < 0
+        if (c_wt.double_dec_a(&data[0], data.size, wavelet.w,
+                              &cA[0], cA.size, mode) < 0
             or
-            c_wt.double_dec_d(&data[0], data.size, w.w,
-                              &cD[0], cD.size, mode_) < 0):
+            c_wt.double_dec_d(&data[0], data.size, wavelet.w,
+                              &cD[0], cD.size, mode) < 0):
             raise RuntimeError("C dwt failed.")
-    elif data_t == np.float32_t:
-        if (c_wt.float_dec_a(&data[0], data.size, w.w,
-                             &cA[0], cA.size, mode_) < 0
+    elif data_t is np.float32_t:
+        cA = np.zeros(output_len, np.float32)
+        cD = np.zeros(output_len, np.float32)
+
+        if (c_wt.float_dec_a(&data[0], data.size, wavelet.w,
+                             &cA[0], cA.size, mode) < 0
             or
-            c_wt.float_dec_d(&data[0], data.size, w.w,
-                             &cD[0], cD.size, mode_) < 0):
+            c_wt.float_dec_d(&data[0], data.size, wavelet.w,
+                             &cD[0], cD.size, mode) < 0):
             raise RuntimeError("C dwt failed.")
-    else:
-        raise RuntimeError("Invalid data type.")
 
     return (cA, cD)
 
