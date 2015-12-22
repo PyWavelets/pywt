@@ -5,7 +5,7 @@ from common cimport MODE, index_t, ArrayInfo, Coefficient
 from wavelet cimport Wavelet
 
 
-cdef extern from "wt.h":
+cdef extern from "c/wt.h":
     # Cython does not know the 'restrict' keyword
     cdef int double_downcoef_axis(const double * const input, const ArrayInfo input_info,
                                   double * const output, const ArrayInfo output_info,
