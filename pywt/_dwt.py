@@ -180,6 +180,7 @@ def idwt(cA, cD, wavelet, mode='symmetric', axis=-1):
         Single level reconstruction of signal from given coefficients.
 
     """
+    # TODO: Lots of possible allocations to eliminate (zeros_like, asarray(rec))
     # accept array_like input; make a copy to ensure a contiguous array
 
     if cA is None and cD is None:
@@ -187,8 +188,9 @@ def idwt(cA, cD, wavelet, mode='symmetric', axis=-1):
                          "specified.")
 
     # for complex inputs: compute real and imaginary separately then combine
-    if ((cA is not None) and np.iscomplexobj(cA)) or ((cD is not None) and
-            np.iscomplexobj(cD)):
+    # FIXME: np.iscomplexobj(None) is False
+    if ((cA is not None and np.iscomplexobj(cA)) or
+        (cD is not None and np.iscomplexobj(cD))):
         if cA is None:
             cD = np.asarray(cD)
             cA = np.zeros_like(cD)
@@ -218,14 +220,18 @@ def idwt(cA, cD, wavelet, mode='symmetric', axis=-1):
     # cA and cD should be same dimension by here
     ndim = cA.ndim
 
-    if axis >= ndim or abs(axis) > ndim:
-        raise ValueError("Axis greater than coefficient dimensions")
+    mode = Modes.from_object(mode)
+    if not isinstance(wavelet, Wavelet):
+        wavelet = Wavelet(wavelet)
 
-    # convert negative axes
-    axis = axis % ndim
+    if axis < 0:
+        axis = axis + ndim
+    if not 0 <= axis < ndim:
+        raise ValueError("Axis greater than coefficient dimensions")
 
     if ndim == 1:
         rec = idwt_single(cA, cD, wavelet, mode)
+        rec = np.asarray(rec, dt)
     else:
         rec = idwt_axis(cA, cD, wavelet, mode, axis=axis)
 
