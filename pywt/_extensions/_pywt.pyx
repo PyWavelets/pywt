@@ -2,29 +2,18 @@
 # See COPYING for license details.
 
 __doc__ = """Pyrex wrapper for low-level C wavelet transform implementation."""
-__all__ = ['MODES', 'Modes', 'Wavelet', 'dwt', 'dwt_coeff_len', 'dwt_max_level',
-           'idwt', 'swt', 'swt_max_level', 'upcoef', 'downcoef',
-           'wavelist', 'families']
+__all__ = ['MODES', 'Modes', 'Wavelet', 'swt', 'swt_max_level', 'wavelist', 'families']
 
 ###############################################################################
 # imports
 import warnings
 
 cimport c_wt
-cimport wavelet
 cimport common
 
 from libc.math cimport pow, sqrt
 
-ctypedef Py_ssize_t index_t
-
 import numpy as np
-cimport numpy as np
-
-
-ctypedef fused data_t:
-    np.float32_t
-    np.float64_t
 
 
 ###############################################################################
@@ -266,11 +255,6 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
     filters - just like the Wavelet instance itself.
 
     """
-    cdef wavelet.Wavelet* w
-
-    cdef readonly name
-    cdef readonly number
-
     #cdef readonly properties
     def __cinit__(self, name=u"", object filter_bank=None):
         cdef object family_code, family_number
@@ -503,6 +487,9 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
         >>> phi_d, psi_d, phi_r, psi_r, x = wavelet.wavefun(level=5)
 
         """
+        # FIXME: Replace with cimport from ._dwt
+        from .._dwt import upcoef
+
         cdef index_t filter_length "filter_length"
         cdef index_t right_extent_length "right_extent_length"
         cdef index_t output_length "output_length"
@@ -619,16 +606,7 @@ cdef c_wavelet_from_object(wavelet):
         return Wavelet(wavelet)
 
 
-def _try_mode(mode):
-    try:
-        return Modes.from_object(mode)
-    except ValueError as e:
-        if "Unknown mode name" in str(e):
-            raise
-        raise TypeError("Invalid mode: {0}".format(str(mode)))
-
-
-cdef np.dtype _check_dtype(data):
+cpdef np.dtype _check_dtype(data):
     """Check for cA/cD input what (if any) the dtype is."""
     cdef np.dtype dt
     try:

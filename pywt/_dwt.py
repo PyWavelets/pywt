@@ -1,4 +1,12 @@
-def dwt(object data, object wavelet, object mode='symmetric', int axis=-1):
+import numpy as np
+
+from ._extensions._pywt import _check_dtype
+from ._extensions._dwt import (dwt_single, dwt_axis, idwt_single, idwt_axis,
+                               _upcoef, _downcoef, dwt_max_level, dwt_coeff_len)
+
+__all__ = ["dwt", "idwt", "downcoef", "upcoef", "dwt_max_level", "dwt_coeff_len"]
+
+def dwt(data, wavelet, mode='symmetric', axis=-1):
     """
     dwt(data, wavelet, mode='symmetric', axis=-1)
 
@@ -67,7 +75,7 @@ def dwt(object data, object wavelet, object mode='symmetric', int axis=-1):
     return (cA, cD)
 
 
-def idwt(cA, cD, object wavelet, object mode='symmetric', int axis=-1):
+def idwt(cA, cD, wavelet, mode='symmetric', axis=-1):
     """
     idwt(cA, cD, wavelet, mode='symmetric', axis=-1)
 

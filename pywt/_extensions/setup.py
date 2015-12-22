@@ -8,15 +8,25 @@ def configuration(parent_package='', top_path=None):
 
     config = Configuration('_extensions', parent_package, top_path)
 
-    sources = ["_pywt", "c/common", "c/convolution", "c/wavelets", "c/wt"]
+    sources = ["c/common", "c/convolution", "c/wavelets", "c/wt"]
     source_templates = ["c/convolution", "c/wt"]
     headers = ["c/templating", "c/wavelets_coeffs"]
     header_templates = ["c/convolution", "c/wt", "c/wavelets_coeffs"]
 
-    # add main PyWavelets module
     config.add_extension(
         '_pywt',
-        sources=["{0}.c".format(s) for s in sources],
+        sources=["{0}.c".format(s) for s in ["_pywt"] + sources],
+        depends=(["{0}.template.c".format(s) for s in source_templates]
+                 + ["{0}.template.h".format(s) for s in header_templates]
+                 + ["{0}.h".format(s) for s in headers]
+                 + ["{0}.h".format(s) for s in sources]),
+        include_dirs=["c", np.get_include()],
+        define_macros=[("PY_EXTENSION", None)],
+    )
+
+    config.add_extension(
+        '_dwt',
+        sources=["{0}.c".format(s) for s in ["_dwt"] + sources],
         depends=(["{0}.template.c".format(s) for s in source_templates]
                  + ["{0}.template.h".format(s) for s in header_templates]
                  + ["{0}.h".format(s) for s in headers]

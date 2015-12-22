@@ -1,3 +1,26 @@
+cimport common, c_wt
+# FIXME: See where this can be replaced with size_t
+from common cimport index_t
+
+cimport numpy as np
+import numpy as np
+
+from ._pywt cimport Wavelet, c_wavelet_from_object, _check_dtype, data_t
+
+
+# FIXME: To be removed, was only to match old API wrt exceptions
+def _try_mode(mode):
+    # FIXME: Hack to import constructed Modes object
+    from ._pywt import Modes
+
+    try:
+        return Modes.from_object(mode)
+    except ValueError as e:
+        if "Unknown mode name" in str(e):
+            raise
+        raise TypeError("Invalid mode: {0}".format(str(mode)))
+
+
 def dwt_max_level(data_len, filter_len):
     """
     dwt_max_level(data_len, filter_len)
