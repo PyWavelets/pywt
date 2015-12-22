@@ -1,10 +1,82 @@
 import numpy as np
 
-from ._extensions._pywt import _check_dtype
+from ._extensions._pywt import Wavelet, Modes, _check_dtype
 from ._extensions._dwt import (dwt_single, dwt_axis, idwt_single, idwt_axis,
-                               _upcoef, _downcoef, dwt_max_level, dwt_coeff_len)
+                               _upcoef, _downcoef,
+                               dwt_max_level as _dwt_max_level,
+                               dwt_coeff_len as _dwt_coeff_len)
 
 __all__ = ["dwt", "idwt", "downcoef", "upcoef", "dwt_max_level", "dwt_coeff_len"]
+
+def dwt_max_level(data_len, filter_len):
+    """
+    dwt_max_level(data_len, filter_len)
+
+    Compute the maximum useful level of decomposition.
+
+    Parameters
+    ----------
+    data_len : int
+        Input data length.
+    filter_len : int
+        Wavelet filter length.
+
+    Returns
+    -------
+    max_level : int
+        Maximum level.
+
+    Examples
+    --------
+    >>> import pywt
+    >>> w = pywt.Wavelet('sym5')
+    >>> pywt.dwt_max_level(data_len=1000, filter_len=w.dec_len)
+    6
+    >>> pywt.dwt_max_level(1000, w)
+    6
+    """
+    if isinstance(filter_len, Wavelet):
+        filter_len = filter_len.dec_len
+
+    return _dwt_max_level(data_len, filter_len)
+
+
+def dwt_coeff_len(data_len, filter_len, mode):
+    """
+    dwt_coeff_len(data_len, filter_len, mode='symmetric')
+
+    Returns length of dwt output for given data length, filter length and mode
+
+    Parameters
+    ----------
+    data_len : int
+        Data length.
+    filter_len : int
+        Filter length.
+    mode : str, optional (default: 'symmetric')
+        Signal extension mode, see Modes
+
+    Returns
+    -------
+    len : int
+        Length of dwt output.
+
+    Notes
+    -----
+    For all modes except periodization::
+
+        len(cA) == len(cD) == floor((len(data) + wavelet.dec_len - 1) / 2)
+
+    for periodization mode ("per")::
+
+        len(cA) == len(cD) == ceil(len(data) / 2)
+
+    """
+    if isinstance(filter_len, Wavelet):
+        filter_len = filter_len.dec_len
+
+    return _dwt_coeff_len(data_len, filter_len, Modes.from_object(mode))
+
 
 def dwt(data, wavelet, mode='symmetric', axis=-1):
     """
