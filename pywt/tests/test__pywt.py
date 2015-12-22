@@ -74,7 +74,7 @@ def test_upcoef_multilevel():
 
 
 def test_wavelet_repr():
-    from pywt import _pywt
+    from pywt._extensions import _pywt
     wavelet = _pywt.Wavelet('sym8')
 
     repr_wavelet = eval(wavelet.__repr__())

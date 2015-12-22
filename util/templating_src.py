@@ -35,6 +35,6 @@ def expand_files(glob_pattern):
 
 if __name__ == '__main__':
     cwd = os.path.abspath(os.path.dirname(__file__))
-    templates_glob = os.path.join(cwd, '..', 'pywt', "src", "c", "*.[ch].src")
+    templates_glob = os.path.join(cwd, '..', 'pywt', "_extensions", "c", "*.[ch].src")
     expand_files(templates_glob)
 
