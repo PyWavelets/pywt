@@ -205,62 +205,46 @@ cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d,
     return output
 
 
-def _upcoef(part, np.ndarray[data_t, ndim=1, mode="c"] coeffs, wavelet,
-            int level=1, int take=0):
-    cdef Wavelet w
-    cdef np.ndarray[data_t, ndim=1, mode="c"] rec
-    cdef int i, do_rec_a
-    cdef index_t rec_len, left_bound, right_bound
+def upcoef(bint do_rec_a, data_t[::1] coeffs, Wavelet wavelet, int level, int take):
+    cdef data_t[::1] rec
+    cdef int i
+    cdef size_t rec_len, left_bound, right_bound
 
     rec_len = 0
-
-    if part not in ('a', 'd'):
-        raise ValueError("Argument 1 must be 'a' or 'd', not '%s'." % part)
-    do_rec_a = (part == 'a')
-
-    w = c_wavelet_from_object(wavelet)
 
     if level < 1:
         raise ValueError("Value of level must be greater than 0.")
 
     for i in range(level):
         # output len
-        rec_len = common.reconstruction_buffer_length(coeffs.size, w.dec_len)
+        rec_len = common.reconstruction_buffer_length(coeffs.size, wavelet.dec_len)
         if rec_len < 1:
             raise RuntimeError("Invalid output length.")
-
-        # reconstruct
-        rec = np.zeros(rec_len, dtype=coeffs.dtype)
 
         # To mirror multi-level wavelet reconstruction behaviour, when detail
         # reconstruction is requested, the dec_d variant is only called at the
         # first level to generate the approximation coefficients at the second
         # level.  Subsequent levels apply the reconstruction filter.
-        if do_rec_a:
-            if data_t is np.float64_t:
-                if c_wt.double_rec_a(&coeffs[0], coeffs.size, w.w,
+        if data_t is np.float64_t:
+            rec = np.zeros(rec_len, dtype=np.float64)
+            if do_rec_a or i > 0:
+                if c_wt.double_rec_a(&coeffs[0], coeffs.size, wavelet.w,
                                      &rec[0], rec.size) < 0:
                     raise RuntimeError("C rec_a failed.")
-            elif data_t is np.float32_t:
-                if c_wt.float_rec_a(&coeffs[0], coeffs.size, w.w,
+            else:
+                if c_wt.double_rec_d(&coeffs[0], coeffs.size, wavelet.w,
+                                     &rec[0], rec.size) < 0:
+                    raise RuntimeError("C rec_d failed.")
+        elif data_t is np.float32_t:
+            rec = np.zeros(rec_len, dtype=np.float32)
+            if do_rec_a or i > 0:
+                if c_wt.float_rec_a(&coeffs[0], coeffs.size, wavelet.w,
                                     &rec[0], rec.size) < 0:
                     raise RuntimeError("C rec_a failed.")
             else:
-                raise RuntimeError("Invalid data type.")
-        else:
-            if data_t is np.float64_t:
-                if c_wt.double_rec_d(&coeffs[0], coeffs.size, w.w,
-                                     &rec[0], rec.size) < 0:
-                    raise RuntimeError("C rec_d failed.")
-            elif data_t is np.float32_t:
-                if c_wt.float_rec_d(&coeffs[0], coeffs.size, w.w,
+                if c_wt.float_rec_d(&coeffs[0], coeffs.size, wavelet.w,
                                     &rec[0], rec.size) < 0:
                     raise RuntimeError("C rec_d failed.")
-            else:
-                raise RuntimeError("Invalid data type.")
-            # switch to approximation filter for subsequent levels
-            do_rec_a = 1
-
         # TODO: this algorithm needs some explaining
         coeffs = rec
 

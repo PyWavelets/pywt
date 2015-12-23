@@ -2,7 +2,7 @@ import numpy as np
 
 from ._extensions._pywt import Wavelet, Modes, _check_dtype
 from ._extensions._dwt import (dwt_single, dwt_axis, idwt_single, idwt_axis,
-                               _upcoef, _downcoef,
+                               upcoef as _upcoef, _downcoef,
                                dwt_max_level as _dwt_max_level,
                                dwt_coeff_len as _dwt_coeff_len)
 
@@ -333,4 +333,8 @@ def upcoef(part, coeffs, wavelet, level=1, take=0):
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(coeffs)
     coeffs = np.array(coeffs, dtype=dt)
-    return _upcoef(part, coeffs, wavelet, level, take)
+    if not isinstance(wavelet, Wavelet):
+        wavelet = Wavelet(wavelet)
+    if part not in 'ad':
+         raise ValueError("Argument 1 must be 'a' or 'd', not '%s'." % part)
+    return np.asarray(_upcoef(part == 'a', coeffs, wavelet, level, take))
