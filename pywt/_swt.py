@@ -1,5 +1,5 @@
 from ._extensions._swt import swt_max_level, swt as _swt
-from ._extensions._pywt import _check_dtype
+from ._extensions._pywt import Wavelet, _check_dtype
 
 import numpy as np
 
@@ -51,5 +51,11 @@ def swt(data, wavelet, level=None, start_level=0):
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(data)
     data = np.array(data, dtype=dt)
-    return _swt(data, wavelet, level, start_level)
+    if not isinstance(wavelet, Wavelet):
+        wavelet = Wavelet(wavelet)
+    if level is None:
+        level = swt_max_level(len(data))
+
+    ret = _swt(data, wavelet, level, start_level)
+    return [(np.asarray(cA), np.asarray(cD)) for cA, cD in ret]
 
