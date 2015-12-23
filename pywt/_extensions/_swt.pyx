@@ -6,6 +6,7 @@ cimport numpy as np
 
 from ._pywt cimport c_wavelet_from_object, data_t, Wavelet
 
+
 def swt_max_level(size_t input_len):
     """
     swt_max_level(input_len)

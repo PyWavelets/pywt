@@ -8,6 +8,7 @@ from ._extensions._dwt import (dwt_single, dwt_axis, idwt_single, idwt_axis,
 
 __all__ = ["dwt", "idwt", "downcoef", "upcoef", "dwt_max_level", "dwt_coeff_len"]
 
+
 def dwt_max_level(data_len, filter_len):
     """
     dwt_max_level(data_len, filter_len)
@@ -127,7 +128,7 @@ def dwt(data, wavelet, mode='symmetric', axis=-1):
         data = np.asarray(data)
         cA_r, cD_r = dwt(data.real, wavelet, mode)
         cA_i, cD_i = dwt(data.imag, wavelet, mode)
-        return  (cA_r + 1j*cA_i, cD_r + 1j*cD_i)
+        return (cA_r + 1j*cA_i, cD_r + 1j*cD_i)
 
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(data)
@@ -191,6 +192,7 @@ def idwt(cA, cD, wavelet, mode='symmetric', axis=-1):
     # FIXME: np.iscomplexobj(None) is False
     if ((cA is not None and np.iscomplexobj(cA)) or
         (cD is not None and np.iscomplexobj(cD))):
+
         if cA is None:
             cD = np.asarray(cD)
             cA = np.zeros_like(cD)
@@ -341,5 +343,5 @@ def upcoef(part, coeffs, wavelet, level=1, take=0):
     if not isinstance(wavelet, Wavelet):
         wavelet = Wavelet(wavelet)
     if part not in 'ad':
-         raise ValueError("Argument 1 must be 'a' or 'd', not '%s'." % part)
+        raise ValueError("Argument 1 must be 'a' or 'd', not '%s'." % part)
     return np.asarray(_upcoef(part == 'a', coeffs, wavelet, level, take))

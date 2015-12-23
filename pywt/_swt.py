@@ -5,6 +5,7 @@ import numpy as np
 
 __all__ = ["swt", "swt_max_level"]
 
+
 def swt(data, wavelet, level=None, start_level=0):
     """
     swt(data, wavelet, level=None, start_level=0)
@@ -58,4 +59,3 @@ def swt(data, wavelet, level=None, start_level=0):
 
     ret = _swt(data, wavelet, level, start_level)
     return [(np.asarray(cA), np.asarray(cD)) for cA, cD in ret]
-
