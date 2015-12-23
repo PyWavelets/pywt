@@ -259,57 +259,44 @@ def upcoef(bint do_rec_a, data_t[::1] coeffs, Wavelet wavelet, int level, int ta
     return rec
 
 
-def _downcoef(part, np.ndarray[data_t, ndim=1, mode="c"] data,
-              object wavelet, object mode='symmetric', int level=1):
-    cdef np.ndarray[data_t, ndim=1, mode="c"] coeffs
-    cdef int i, do_dec_a
-    cdef index_t dec_len
-    cdef Wavelet w
-    cdef common.MODE mode_
-
-    w = c_wavelet_from_object(wavelet)
-    mode_ = Modes.from_object(mode)
-
-    if part not in ('a', 'd'):
-        raise ValueError("Argument 1 must be 'a' or 'd', not '%s'." % part)
-    do_dec_a = (part == 'a')
+def downcoef(bint do_dec_a, data_t[::1] data, Wavelet wavelet, MODE mode, int level):
+    cdef data_t[::1] coeffs
+    cdef int i
+    cdef size_t output_len
 
     if level < 1:
         raise ValueError("Value of level must be greater than 0.")
 
     for i in range(level):
-        output_len = common.dwt_buffer_length(data.size, w.dec_len, mode_)
+        output_len = common.dwt_buffer_length(data.size, wavelet.dec_len, mode)
         if output_len < 1:
             raise RuntimeError("Invalid output length.")
-        coeffs = np.zeros(output_len, dtype=data.dtype)
 
         # To mirror multi-level wavelet decomposition behaviour, when detail
         # coefficients are requested, the dec_d variant is only called at the
         # final level.  All prior levels use dec_a.  In other words, the detail
         # coefficients at level n are those produced via the operation of the
         # detail filter on the approximation coefficients of level n-1.
-        if do_dec_a or (i < level - 1):
-            if data_t is np.float64_t:
-                if c_wt.double_dec_a(&data[0], data.size, w.w,
-                                     &coeffs[0], coeffs.size, mode_) < 0:
-                    raise RuntimeError("C dec_a failed.")
-            elif data_t is np.float32_t:
-                if c_wt.float_dec_a(&data[0], data.size, w.w,
-                                    &coeffs[0], coeffs.size, mode_) < 0:
+        if data_t is np.float64_t:
+            coeffs = np.zeros(output_len, dtype=np.float64)
+            if do_dec_a or (i < level - 1):
+                if c_wt.double_dec_a(&data[0], data.size, wavelet.w,
+                                     &coeffs[0], coeffs.size, mode) < 0:
                     raise RuntimeError("C dec_a failed.")
             else:
-                raise RuntimeError("Invalid data type.")
-        else:
-            if data_t is np.float64_t:
-                if c_wt.double_dec_d(&data[0], data.size, w.w,
-                                     &coeffs[0], coeffs.size, mode_) < 0:
+                if c_wt.double_dec_d(&data[0], data.size, wavelet.w,
+                                     &coeffs[0], coeffs.size, mode) < 0:
                     raise RuntimeError("C dec_d failed.")
-            elif data_t is np.float32_t:
-                if c_wt.float_dec_d(&data[0], data.size, w.w,
-                                    &coeffs[0], coeffs.size, mode_) < 0:
-                    raise RuntimeError("C dec_d failed.")
+        elif data_t is np.float32_t:
+            coeffs = np.zeros(output_len, dtype=np.float32)
+            if do_dec_a or (i < level - 1):
+                if c_wt.float_dec_a(&data[0], data.size, wavelet.w,
+                                    &coeffs[0], coeffs.size, mode) < 0:
+                    raise RuntimeError("C dec_a failed.")
             else:
-                raise RuntimeError("Invalid data type.")
+                if c_wt.float_dec_d(&data[0], data.size, wavelet.w,
+                                    &coeffs[0], coeffs.size, mode) < 0:
+                    raise RuntimeError("C dec_d failed.")
         data = coeffs
 
     return coeffs
