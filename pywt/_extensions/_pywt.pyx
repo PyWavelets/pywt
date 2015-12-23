@@ -10,6 +10,7 @@ import warnings
 
 cimport c_wt
 cimport common
+from ._dwt cimport upcoef
 
 from libc.math cimport pow, sqrt
 
@@ -487,14 +488,13 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
         >>> phi_d, psi_d, phi_r, psi_r, x = wavelet.wavefun(level=5)
 
         """
-        # FIXME: Replace with cimport from ._dwt
-        from .._dwt import upcoef
-
         cdef index_t filter_length "filter_length"
         cdef index_t right_extent_length "right_extent_length"
         cdef index_t output_length "output_length"
         cdef index_t keep_length "keep_length"
-        cdef double n "n"
+        cdef np.float64_t n, n_mul
+        cdef np.float64_t[::1] n_arr = <np.float64_t[:1]> &n,
+        cdef np.float64_t[::1] n_mul_arr = <np.float64_t[:1]> &n_mul
         cdef double p "p"
         cdef double mul "mul"
         cdef Wavelet other "other"
@@ -513,16 +513,19 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
                                                           keep_length)
 
             # phi, psi, x
-            return [np.concatenate(([0.], keep(upcoef('a', [n], self, level),
-                                    keep_length), np.zeros(right_extent_length))),
-                    np.concatenate(([0.], keep(upcoef('d', [n], self, level),
-                                    keep_length), np.zeros(right_extent_length))),
+            return [np.concatenate(([0.],
+                                    keep(upcoef(True, n_arr, self, level, 0), keep_length),
+                                    np.zeros(right_extent_length))),
+                    np.concatenate(([0.],
+                                    keep(upcoef(False, n_arr, self, level, 0), keep_length),
+                                    np.zeros(right_extent_length))),
                     np.linspace(0.0, (output_length-1)/p, output_length)]
         else:
-            mul = 1
-            if self.w.biorthogonal:
-                if (self.w.vanishing_moments_psi % 4) != 1:
-                    mul = -1
+            if self.w.biorthogonal and (self.w.vanishing_moments_psi % 4) != 1:
+                # FIXME: I don't think this branch is well tested
+                n_mul = -n
+            else:
+                n_mul = n
 
             other = Wavelet(filter_bank=self.inverse_filter_bank)
 
@@ -532,10 +535,12 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
             output_length = fix_output_length(output_length, keep_length)
             right_extent_length = get_right_extent_length(output_length, keep_length)
 
-            phi_d  = np.concatenate(([0.], keep(upcoef('a', [n], other, level),
-                                     keep_length), np.zeros(right_extent_length)))
-            psi_d  = np.concatenate(([0.], keep(upcoef('d', [mul*n], other,
-                                                       level), keep_length),
+            phi_d  = np.concatenate(([0.],
+                                     keep(upcoef(True, n_arr, other, level, 0), keep_length),
+                                     np.zeros(right_extent_length)))
+            psi_d  = np.concatenate(([0.],
+                                     keep(upcoef(False, n_mul_arr, other, level, 0),
+                                          keep_length),
                                      np.zeros(right_extent_length)))
 
             filter_length = self.w.dec_len
@@ -544,10 +549,12 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
             output_length = fix_output_length(output_length, keep_length)
             right_extent_length = get_right_extent_length(output_length, keep_length)
 
-            phi_r  = np.concatenate(([0.], keep(upcoef('a', [n], self, level),
-                                     keep_length), np.zeros(right_extent_length)))
-            psi_r  = np.concatenate(([0.], keep(upcoef('d', [mul*n], self,
-                                                       level), keep_length),
+            phi_r  = np.concatenate(([0.],
+                                     keep(upcoef(True, n_arr, self, level, 0), keep_length),
+                                     np.zeros(right_extent_length)))
+            psi_r  = np.concatenate(([0.],
+                                     keep(upcoef(False, n_mul_arr, self, level, 0),
+                                          keep_length),
                                      np.zeros(right_extent_length)))
 
             return [phi_d, psi_d, phi_r, psi_r,
@@ -767,6 +774,7 @@ def _swt(np.ndarray[data_t, ndim=1, mode="c"] data, object wavelet,
     return ret
 
 
+# TODO: Can this be replaced by the take parameter of upcoef? Or vice-versa?
 def keep(arr, keep_length):
     length = len(arr)
     if keep_length < length:

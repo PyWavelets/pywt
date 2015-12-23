@@ -1,10 +1,9 @@
 cimport common, c_wt
 from common cimport index_t, MODE
+from ._pywt cimport _check_dtype
 
 cimport numpy as np
 import numpy as np
-
-from ._pywt cimport Wavelet, data_t, _check_dtype
 
 
 cpdef dwt_max_level(size_t data_len, size_t filter_len):
