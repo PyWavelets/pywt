@@ -1,13 +1,10 @@
 cimport common, c_wt
-# FIXME: See where this can be replaced with size_t
 from common cimport index_t, MODE
 
 cimport numpy as np
 import numpy as np
 
-from ._pywt cimport Wavelet, c_wavelet_from_object, _check_dtype, data_t
-# FIXME: This should be moved to pure python anyway
-from ._pywt import Modes
+from ._pywt cimport Wavelet, data_t, _check_dtype
 
 
 cpdef dwt_max_level(size_t data_len, size_t filter_len):
