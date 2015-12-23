@@ -1,3 +1,11 @@
+cimport common
+cimport c_wt
+
+import numpy as np
+cimport numpy as np
+
+from ._pywt cimport c_wavelet_from_object, data_t, Wavelet
+
 def swt_max_level(input_len):
     """
     swt_max_level(input_len)
@@ -19,8 +27,8 @@ def swt_max_level(input_len):
     return common.swt_max_level(input_len)
 
 
-def _swt(np.ndarray[data_t, ndim=1, mode="c"] data, object wavelet,
-         object level=None, int start_level=0):
+def swt(np.ndarray[data_t, ndim=1, mode="c"] data, object wavelet,
+        object level=None, int start_level=0):
     """See `swt` for details."""
     cdef np.ndarray[data_t, ndim=1, mode="c"] cA, cD
     cdef Wavelet w

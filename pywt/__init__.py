@@ -19,6 +19,7 @@ from ._multidim import *
 from ._thresholding import *
 from ._wavelet_packets import *
 from ._dwt import *
+from ._swt import *
 
 from . import data
 

@@ -1,4 +1,11 @@
-def swt(data, object wavelet, object level=None, int start_level=0):
+from ._extensions._swt import swt_max_level, swt as _swt
+from ._extensions._pywt import _check_dtype
+
+import numpy as np
+
+__all__ = ["swt", "swt_max_level"]
+
+def swt(data, wavelet, level=None, start_level=0):
     """
     swt(data, wavelet, level=None, start_level=0)
 
