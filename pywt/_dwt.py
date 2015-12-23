@@ -189,10 +189,7 @@ def idwt(cA, cD, wavelet, mode='symmetric', axis=-1):
                          "specified.")
 
     # for complex inputs: compute real and imaginary separately then combine
-    # FIXME: np.iscomplexobj(None) is False
-    if ((cA is not None and np.iscomplexobj(cA)) or
-        (cD is not None and np.iscomplexobj(cD))):
-
+    if np.iscomplexobj(cA) or np.iscomplexobj(cD):
         if cA is None:
             cD = np.asarray(cD)
             cA = np.zeros_like(cD)
