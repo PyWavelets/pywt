@@ -428,7 +428,7 @@ def wavedecn(data, wavelet, mode='symmetric', level=None):
     wavelet : Wavelet object or name string
         Wavelet to use
     mode : str, optional
-        Signal extension mode, see MODES (default: 'sym')
+        Signal extension mode, see Modes (default: 'symmetric')
     level : int, optional
         Dxecomposition level (must be >= 0). If level is None (default) then it
         will be calculated using the ``dwt_max_level`` function.
@@ -514,7 +514,7 @@ def waverecn(coeffs, wavelet, mode='symmetric'):
     wavelet : Wavelet object or name string
         Wavelet to use
     mode : str, optional
-        Signal extension mode, see MODES (default: 'sym')
+        Signal extension mode, see Modes (default: 'symmetric')
 
     Returns
     -------
