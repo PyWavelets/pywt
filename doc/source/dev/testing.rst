@@ -28,7 +28,7 @@ Tests are implemented with `nose`_, so use one of:
 
     $ nosetests pywt
 
-    >>> pywt.test()
+    >>> pywt.test()  # doctest: +SKIP
 
 
 Running tests with Tox

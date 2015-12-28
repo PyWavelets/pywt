@@ -111,8 +111,8 @@ def waverec(coeffs, wavelet, mode='symmetric'):
     Examples
     --------
     >>> import pywt
-    >>> coeffs = pywt.wavedec([1,2,3,4,5,6,7,8], 'db2', level=2)
-    >>> pywt.waverec(coeffs, 'db2')
+    >>> coeffs = pywt.wavedec([1,2,3,4,5,6,7,8], 'db1', level=2)
+    >>> pywt.waverec(coeffs, 'db1')
     array([ 1.,  2.,  3.,  4.,  5.,  6.,  7.,  8.])
     """
 
@@ -160,6 +160,7 @@ def wavedec2(data, wavelet, mode='symmetric', level=None):
     Examples
     --------
     >>> import pywt
+    >>> import numpy as np
     >>> coeffs = pywt.wavedec2(np.ones((4,4)), 'db1')
     >>> # Levels:
     >>> len(coeffs)-1
@@ -211,6 +212,7 @@ def waverec2(coeffs, wavelet, mode='symmetric'):
     Examples
     --------
     >>> import pywt
+    >>> import numpy as np
     >>> coeffs = pywt.wavedec2(np.ones((4,4)), 'db1')
     >>> # Levels:
     >>> len(coeffs)-1
@@ -440,31 +442,16 @@ def wavedecn(data, wavelet, mode='symmetric', level=None):
 
     Examples
     --------
-    >>> from pywt import multilevel
-    >>> coeffs = multilevel.wavedecn(np.ones((4, 4, 4)), 'db1')
+    >>> import numpy as np
+    >>> from pywt import wavedecn, waverecn
+    >>> data = np.ones((4, 4, 4))
+    >>> coeffs = wavedecn(data, 'db1')
     >>> # Levels:
     >>> len(coeffs)-1
-    3
-    >>> multilevel.waverecn(coeffs, 'db1')
-    array([[[ 1.,  1.,  1.,  1.],
-        [ 1.,  1.,  1.,  1.],
-        [ 1.,  1.,  1.,  1.],
-        [ 1.,  1.,  1.,  1.]],
-
-       [[ 1.,  1.,  1.,  1.],
-        [ 1.,  1.,  1.,  1.],
-        [ 1.,  1.,  1.,  1.],
-        [ 1.,  1.,  1.,  1.]],
-
-       [[ 1.,  1.,  1.,  1.],
-        [ 1.,  1.,  1.,  1.],
-        [ 1.,  1.,  1.,  1.],
-        [ 1.,  1.,  1.,  1.]],
-
-       [[ 1.,  1.,  1.,  1.],
-        [ 1.,  1.,  1.,  1.],
-        [ 1.,  1.,  1.,  1.],
-        [ 1.,  1.,  1.,  1.]]])
+    2
+    >>> rec = waverecn(coeffs, 'db1')
+    >>> np.max(data-rec) < 1e-14
+    True
 
     """
     data = np.asarray(data)
@@ -522,31 +509,16 @@ def waverecn(coeffs, wavelet, mode='symmetric'):
 
     Examples
     --------
-    >>> from pywt import multilevel
-    >>> coeffs = multilevel.wavedecn(np.ones((4, 4, 4)), 'db1')
+    >>> import numpy as np
+    >>> from pywt import wavedecn, waverecn
+    >>> data = np.ones((4, 4, 4))
+    >>> coeffs = wavedecn(data, 'db1')
     >>> # Levels:
     >>> len(coeffs)-1
     2
-    >>> multilevel.waverecn(coeffs, 'db1')
-    array([[[ 1.,  1.,  1.,  1.],
-        [ 1.,  1.,  1.,  1.],
-        [ 1.,  1.,  1.,  1.],
-        [ 1.,  1.,  1.,  1.]],
-
-       [[ 1.,  1.,  1.,  1.],
-        [ 1.,  1.,  1.,  1.],
-        [ 1.,  1.,  1.,  1.],
-        [ 1.,  1.,  1.,  1.]],
-
-       [[ 1.,  1.,  1.,  1.],
-        [ 1.,  1.,  1.,  1.],
-        [ 1.,  1.,  1.,  1.],
-        [ 1.,  1.,  1.,  1.]],
-
-       [[ 1.,  1.,  1.,  1.],
-        [ 1.,  1.,  1.,  1.],
-        [ 1.,  1.,  1.,  1.],
-        [ 1.,  1.,  1.,  1.]]])
+    >>> rec = waverecn(coeffs, 'db1')
+    >>> np.max(data-rec) < 1e-14
+    True
     """
     if len(coeffs) < 1:
         raise ValueError(

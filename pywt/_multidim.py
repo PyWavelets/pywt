@@ -43,6 +43,7 @@ def dwt2(data, wavelet, mode='symmetric', axes=(-2, -1)):
 
     Examples
     --------
+    >>> import numpy as np
     >>> import pywt
     >>> data = np.ones((4,4), dtype=np.float64)
     >>> coeffs = pywt.dwt2(data, 'haar')
@@ -85,6 +86,7 @@ def idwt2(coeffs, wavelet, mode='symmetric', axes=(-2, -1)):
 
     Examples
     --------
+    >>> import numpy as np
     >>> import pywt
     >>> data = np.array([[1,2], [3,4]], dtype=np.float64)
     >>> coeffs = pywt.dwt2(data, 'haar')

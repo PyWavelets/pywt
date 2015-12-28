@@ -26,7 +26,7 @@ The :func:`wavelist` function with family name passed as an argument is used to
 obtain the list of wavelet names in each family.
 
     >>> for family in pywt.families():
-    ...     print "%s family:" % family, ', '.join(pywt.wavelist(family))
+    ...     print("%s family:" % family, ', '.join(pywt.wavelist(family)))
     haar family: haar
     db family: db1, db2, db3, db4, db5, db6, db7, db8, db9, db10, db11, db12, db13, db14, db15, db16, db17, db18, db19, db20
     sym family: sym2, sym3, sym4, sym5, sym6, sym7, sym8, sym9, sym10, sym11, sym12, sym13, sym14, sym15, sym16, sym17, sym18, sym19, sym20
@@ -62,7 +62,7 @@ First, let's try printing a :class:`Wavelet` object. This shows a brief
 information about its name, its family name and some properties like
 orthogonality and symmetry.
 
-    >>> print w
+    >>> print(w)
     Wavelet db3
       Family name:    Daubechies
       Short name:     db
@@ -79,7 +79,7 @@ corresponds to lowpass and highpass decomposition filters and lowpass and
 highpass reconstruction filters respectively:
 
     >>> def print_array(arr):
-    ...     print "[%s]" % ", ".join(["%.14f" % x for x in arr])
+    ...     print("[%s]" % ", ".join(["%.14f" % x for x in arr]))
 
     >>> print_array(w.dec_lo)
     [0.03522629188210, -0.08544127388224, -0.13501102001039, 0.45987750211933, 0.80689150931334, 0.33267055295096]
@@ -101,11 +101,11 @@ Other Wavelet's properties are:
 
     Wavelet :attr:`~Wavelet.name`, :attr:`~Wavelet.short_family_name` and :attr:`~Wavelet.family_name`:
 
-        >>> print w.name
+        >>> print(w.name)
         db3
-        >>> print w.short_family_name
+        >>> print(w.short_family_name)
         db
-        >>> print w.family_name
+        >>> print(w.family_name)
         Daubechies
 
     - Decomposition (:attr:`~Wavelet.dec_len`) and reconstruction
@@ -125,7 +125,7 @@ Other Wavelet's properties are:
 
     - Symmetry (:attr:`~Wavelet.symmetry`):
 
-        >>> print w.symmetry
+        >>> print(w.symmetry)
         asymmetric
 
     - Number of vanishing moments for the scaling function *phi*
@@ -166,7 +166,7 @@ Now when we know a bit about the builtin Wavelets, let's see how to create
 Note that such custom wavelets **will not** have all the properties set
 to correct values:
 
-    >>> print my_wavelet
+    >>> print(my_wavelet)
     Wavelet My Haar Wavelet
       Family name:
       Short name:
@@ -180,7 +180,7 @@ to correct values:
     >>> my_wavelet.orthogonal = True
     >>> my_wavelet.biorthogonal = True
 
-    >>> print my_wavelet
+    >>> print(my_wavelet)
     Wavelet My Haar Wavelet
       Family name:
       Short name:

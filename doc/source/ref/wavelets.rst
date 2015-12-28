@@ -134,7 +134,7 @@ Built-in wavelets - ``wavelist()``
 
     >>> import pywt
     >>> wavelet = pywt.Wavelet('db1')
-    >>> print wavelet
+    >>> print(wavelet)
     Wavelet db1
       Family name:    Daubechies
       Short name:     db
@@ -142,9 +142,9 @@ Built-in wavelets - ``wavelist()``
       Orthogonal:     True
       Biorthogonal:   True
       Symmetry:       asymmetric
-    >>> print format_array(wavelet.dec_lo), format_array(wavelet.dec_hi)
+    >>> print(format_array(wavelet.dec_lo), format_array(wavelet.dec_hi))
     [0.70710678118655, 0.70710678118655] [-0.70710678118655, 0.70710678118655]
-    >>> print format_array(wavelet.rec_lo), format_array(wavelet.rec_hi)
+    >>> print(format_array(wavelet.rec_lo), format_array(wavelet.rec_hi))
     [0.70710678118655, 0.70710678118655] [0.70710678118655, -0.70710678118655]
 
 

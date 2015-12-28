@@ -245,8 +245,7 @@ def families(int short=True):
     >>> pywt.families()
     ['haar', 'db', 'sym', 'coif', 'bior', 'rbio', 'dmey']
     >>> pywt.families(short=False)
-    ['Haar', 'Daubechies', 'Symlets', 'Coiflets', 'Biorthogonal',
-     'Reverse biorthogonal', 'Discrete Meyer (FIR Approximation)']
+    ['Haar', 'Daubechies', 'Symlets', 'Coiflets', 'Biorthogonal', 'Reverse biorthogonal', 'Discrete Meyer (FIR Approximation)']
 
     """
     if short:
@@ -720,9 +719,9 @@ def dwt(object data, object wavelet, object mode='symmetric', int axis=-1):
     >>> import pywt
     >>> (cA, cD) = pywt.dwt([1, 2, 3, 4, 5, 6], 'db1')
     >>> cA
-    [ 2.12132034  4.94974747  7.77817459]
+    array([ 2.12132034,  4.94974747,  7.77817459])
     >>> cD
-    [-0.70710678 -0.70710678 -0.70710678]
+    array([-0.70710678, -0.70710678, -0.70710678])
 
     """
     if np.iscomplexobj(data):
@@ -1120,11 +1119,11 @@ def upcoef(part, coeffs, wavelet, level=1, take=0):
     >>> data = [1,2,3,4,5,6]
     >>> (cA, cD) = pywt.dwt(data, 'db2', 'smooth')
     >>> pywt.upcoef('a', cA, 'db2') + pywt.upcoef('d', cD, 'db2')
-    [-0.25       -0.4330127   1.          2.          3.          4.          5.
-      6.          1.78589838 -1.03108891]
+    array([-0.25      , -0.4330127 ,  1.        ,  2.        ,  3.        ,
+            4.        ,  5.        ,  6.        ,  1.78589838, -1.03108891])
     >>> n = len(data)
     >>> pywt.upcoef('a', cA, 'db2', take=n) + pywt.upcoef('d', cD, 'db2', take=n)
-    [ 1.  2.  3.  4.  5.  6.]
+    array([ 1.,  2.,  3.,  4.,  5.,  6.])
 
     """
     if np.iscomplexobj(coeffs):

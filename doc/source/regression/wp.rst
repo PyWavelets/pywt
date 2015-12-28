@@ -28,21 +28,21 @@ Ok, let's create a sample :class:`WaveletPacket`:
 The input *data* and decomposition coefficients are stored in the
 :attr:`WaveletPacket.data` attribute:
 
-    >>> print wp.data
+    >>> print(wp.data)
     [1, 2, 3, 4, 5, 6, 7, 8]
 
 :class:`Nodes <Node>` are identified by :attr:`paths <~Node.path>`. For the root
 node the path is ``''`` and the decomposition level is ``0``.
 
-    >>> print repr(wp.path)
+    >>> print(repr(wp.path))
     ''
-    >>> print wp.level
+    >>> print(wp.level)
     0
 
 The *maxlevel*, if not given as param in the constructor, is automatically
 computed:
 
-    >>> print wp['ad'].maxlevel
+    >>> print(wp['ad'].maxlevel)
     3
 
 
@@ -57,45 +57,45 @@ Accessing subnodes:
 
 First check what is the maximum level of decomposition:
 
-    >>> print wp.maxlevel
+    >>> print(wp.maxlevel)
     3
 
 and try accessing subnodes of the WP tree:
 
     * 1st level:
 
-        >>> print wp['a'].data
+        >>> print(wp['a'].data)
         [  2.12132034   4.94974747   7.77817459  10.60660172]
-        >>> print wp['a'].path
+        >>> print(wp['a'].path)
         a
 
     * 2nd level:
 
-        >>> print wp['aa'].data
+        >>> print(wp['aa'].data)
         [  5.  13.]
-        >>> print wp['aa'].path
+        >>> print(wp['aa'].path)
         aa
 
 
     * 3rd level:
 
-        >>> print wp['aaa'].data
+        >>> print(wp['aaa'].data)
         [ 12.72792206]
-        >>> print wp['aaa'].path
+        >>> print(wp['aaa'].path)
         aaa
 
 
       Ups, we have reached the maximum level of decomposition and got an
       :exc:`IndexError`:
 
-        >>> print wp['aaaa'].data
+        >>> print(wp['aaaa'].data)
         Traceback (most recent call last):
         ...
         IndexError: Path length is out of range.
 
 Now try some invalid path:
 
-    >>> print wp['ac']
+    >>> print(wp['ac'])
     Traceback (most recent call last):
     ...
     ValueError: Subnode name must be in ['a', 'd'], not 'c'.
@@ -118,26 +118,26 @@ Each tree node has a set of attributes: :attr:`~Node.data`, :attr:`~Node.path`,
 >>> x = [1, 2, 3, 4, 5, 6, 7, 8]
 >>> wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='symmetric')
 
->>> print wp['ad'].data
+>>> print(wp['ad'].data)
 [-2. -2.]
 
->>> print wp['ad'].path
+>>> print(wp['ad'].path)
 ad
 
->>> print wp['ad'].node_name
+>>> print(wp['ad'].node_name)
 d
 
->>> print wp['ad'].parent.path
+>>> print(wp['ad'].parent.path)
 a
 
->>> print wp['ad'].level
+>>> print(wp['ad'].level)
 2
 
->>> print wp['ad'].maxlevel
+>>> print(wp['ad'].maxlevel)
 3
 
->>> print wp['ad'].mode
-sym
+>>> print(wp['ad'].mode)
+symmetric
 
 
 Collecting nodes
@@ -149,12 +149,12 @@ Collecting nodes
 
 We can get all nodes on the particular level either in ``natural`` order:
 
-    >>> print [node.path for node in wp.get_level(3, 'natural')]
+    >>> print([node.path for node in wp.get_level(3, 'natural')])
     ['aaa', 'aad', 'ada', 'add', 'daa', 'dad', 'dda', 'ddd']
 
 or sorted based on the band frequency (``freq``):
 
-    >>> print [node.path for node in wp.get_level(3, 'freq')]
+    >>> print([node.path for node in wp.get_level(3, 'freq')])
     ['aaa', 'aad', 'add', 'ada', 'dda', 'ddd', 'dad', 'daa']
 
 Note that :meth:`WaveletPacket.get_level` also performs automatic decomposition
@@ -183,28 +183,28 @@ For convenience, :attr:`Node.data` gets automatically extracted from the
 
 And reconstruct the data from the ``aa``, ``ad`` and ``d`` packets.
 
-    >>> print new_wp.reconstruct(update=False)
+    >>> print(new_wp.reconstruct(update=False))
     [ 1.  2.  3.  4.  5.  6.  7.  8.]
 
 If the *update* param in the reconstruct method is set to ``False``, the node's
 :attr:`~Node.data` will not be updated.
 
-    >>> print new_wp.data
+    >>> print(new_wp.data)
     None
 
 Otherwise, the :attr:`~Node.data` attribute will be set to the reconstructed
 value.
 
-    >>> print new_wp.reconstruct(update=True)
+    >>> print(new_wp.reconstruct(update=True))
     [ 1.  2.  3.  4.  5.  6.  7.  8.]
-    >>> print new_wp.data
+    >>> print(new_wp.data)
     [ 1.  2.  3.  4.  5.  6.  7.  8.]
 
 
->>> print [n.path for n in new_wp.get_leaf_nodes(False)]
+>>> print([n.path for n in new_wp.get_leaf_nodes(False)])
 ['aa', 'ad', 'd']
 
->>> print [n.path for n in new_wp.get_leaf_nodes(True)]
+>>> print([n.path for n in new_wp.get_leaf_nodes(True)])
 ['aaa', 'aad', 'ada', 'add', 'daa', 'dad', 'dda', 'ddd']
 
 
@@ -220,14 +220,14 @@ First, start with a tree decomposition at level 2. Leaf nodes in the tree are:
 
     >>> dummy = wp.get_level(2)
     >>> for n in wp.get_leaf_nodes(False):
-    ...     print n.path, format_array(n.data)
+    ...     print(n.path, format_array(n.data))
     aa [  5.  13.]
     ad [-2. -2.]
     da [-1. -1.]
     dd [ 0.  0.]
 
     >>> node = wp['ad']
-    >>> print node
+    >>> print(node)
     ad: [-2. -2.]
 
 To remove a node from the WP tree, use Python's `del obj[x]`
@@ -238,14 +238,14 @@ To remove a node from the WP tree, use Python's `del obj[x]`
 The leaf nodes that left in the tree are:
 
     >>> for n in wp.get_leaf_nodes():
-    ...     print n.path, format_array(n.data)
+    ...     print(n.path, format_array(n.data))
     aa [  5.  13.]
     da [-1. -1.]
     dd [ 0.  0.]
 
 And the reconstruction is:
 
-    >>> print wp.reconstruct()
+    >>> print(wp.reconstruct())
     [ 2.  3.  2.  3.  6.  7.  6.  7.]
 
 Now restore the deleted node value.
@@ -256,13 +256,13 @@ Printing leaf nodes and tree reconstruction confirms the original state of the
 tree:
 
     >>> for n in wp.get_leaf_nodes(False):
-    ...     print n.path, format_array(n.data)
+    ...     print(n.path, format_array(n.data))
     aa [  5.  13.]
     ad [-2. -2.]
     da [-1. -1.]
     dd [ 0.  0.]
 
-    >>> print wp.reconstruct()
+    >>> print(wp.reconstruct())
     [ 1.  2.  3.  4.  5.  6.  7.  8.]
 
 
@@ -278,7 +278,7 @@ Lazy evaluation:
 
 1) At first the wp's attribute `a` is None
 
-   >>> print wp.a
+   >>> print(wp.a)
    None
 
    **Remember that you should not rely on the attribute access.**
@@ -286,15 +286,15 @@ Lazy evaluation:
 2) At first attempt to access the node it is computed via decomposition
    of its parent node (the wp object itself).
 
-   >>> print wp['a']
+   >>> print(wp['a'])
    a: [  2.12132034   4.94974747   7.77817459  10.60660172]
 
 3) Now the `wp.a` is set to the newly created node:
 
-   >>> print wp.a
+   >>> print(wp.a)
    a: [  2.12132034   4.94974747   7.77817459  10.60660172]
 
    And so is `wp.d`:
 
-   >>> print wp.d
+   >>> print(wp.d)
    d: [-0.70710678 -0.70710678 -0.70710678 -0.70710678]
