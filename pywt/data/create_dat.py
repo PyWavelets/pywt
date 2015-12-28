@@ -18,10 +18,11 @@ from __future__ import print_function
 import sys
 
 import numpy as np
-from scipy.misc import imread
 
 
 def main():
+    from scipy.misc import imread
+
     if len(sys.argv) != 3:
         print(__doc__)
         exit()
