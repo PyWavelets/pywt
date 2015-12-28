@@ -126,7 +126,41 @@ This list of names is automatically generated, and may not be fully complete.
 Issues closed for v0.4.0
 ------------------------
 
+- `#46 <https://github.com/PyWavelets/pywt/issues/46>`__: Independent test comparison
+- `#95 <https://github.com/PyWavelets/pywt/issues/95>`__: Simplify Matlab tests
+- `#97 <https://github.com/PyWavelets/pywt/issues/97>`__: BUG: erroneous detail coefficients returned by downcoef with...
+- `#140 <https://github.com/PyWavelets/pywt/issues/140>`__: demo/dwt_signal_decomposition.py : TypeError: object of type...
+- `#141 <https://github.com/PyWavelets/pywt/issues/141>`__: Documentation needs update: ImportError: cannot import name 'multilevel'
+
 
 Pull requests for v0.4.0
 ------------------------
 
+- `#55 <https://github.com/PyWavelets/pywt/pull/55>`__: [RFC] Api changes
+- `#59 <https://github.com/PyWavelets/pywt/pull/59>`__: Refactor convolution.c.src
+- `#64 <https://github.com/PyWavelets/pywt/pull/64>`__: MAINT: make LH, HL variable names in idwt2 consistent with dwt2
+- `#67 <https://github.com/PyWavelets/pywt/pull/67>`__: ENH: add wavedecn and waverecn functions
+- `#68 <https://github.com/PyWavelets/pywt/pull/68>`__: ENH: Faster dwtn and idwtn
+- `#88 <https://github.com/PyWavelets/pywt/pull/88>`__: DOC minor edit about possible naming
+- `#93 <https://github.com/PyWavelets/pywt/pull/93>`__: Added implementation of iswt and iswt2
+- `#98 <https://github.com/PyWavelets/pywt/pull/98>`__: fix downcoef detail coefficients for level > 1
+- `#99 <https://github.com/PyWavelets/pywt/pull/99>`__: complex support in all dwt and idwt related functions
+- `#100 <https://github.com/PyWavelets/pywt/pull/100>`__: replace mlabwrap with python-matlab-bridge in Matlab tests
+- `#102 <https://github.com/PyWavelets/pywt/pull/102>`__: Replace some .src expansion with macros
+- `#104 <https://github.com/PyWavelets/pywt/pull/104>`__: Faster idwtn/dwtn
+- `#106 <https://github.com/PyWavelets/pywt/pull/106>`__: make sure transforms respect float32 dtype
+- `#109 <https://github.com/PyWavelets/pywt/pull/109>`__: DOC: fix broken link in sidebar for html docs.
+- `#112 <https://github.com/PyWavelets/pywt/pull/112>`__: Complex fix
+- `#113 <https://github.com/PyWavelets/pywt/pull/113>`__: TST: don't build .exe installers on Appveyor anymore, only wheels.
+- `#116 <https://github.com/PyWavelets/pywt/pull/116>`__: [RFC] ENH: Add axis argument to dwt
+- `#117 <https://github.com/PyWavelets/pywt/pull/117>`__: MAINT: remove deprecated for loop syntax from Cython code
+- `#121 <https://github.com/PyWavelets/pywt/pull/121>`__: Fix typo
+- `#123 <https://github.com/PyWavelets/pywt/pull/123>`__: MAINT: remove some unused imports
+- `#124 <https://github.com/PyWavelets/pywt/pull/124>`__: switch travis from python 3.5-dev to 3.5
+- `#130 <https://github.com/PyWavelets/pywt/pull/130>`__: Add axis argument to multidim
+- `#138 <https://github.com/PyWavelets/pywt/pull/138>`__: WIP: Documentation updates for v0.4.0
+- `#139 <https://github.com/PyWavelets/pywt/pull/139>`__: Autogenerate function API docs
+- `#142 <https://github.com/PyWavelets/pywt/pull/142>`__: fix broken docstring examples in _multilevel.py
+- `#143 <https://github.com/PyWavelets/pywt/pull/143>`__: handle None properly in waverec
+- `#144 <https://github.com/PyWavelets/pywt/pull/144>`__: Add importable images
+- `#145 <https://github.com/PyWavelets/pywt/pull/145>`__: DOC: Document MSVC versions
