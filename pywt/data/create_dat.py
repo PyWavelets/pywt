@@ -20,13 +20,19 @@ import sys
 import numpy as np
 from scipy.misc import imread
 
-if len(sys.argv) != 3:
-    print(__doc__)
-    exit()
 
-image_fname = sys.argv[1]
-dat_fname = sys.argv[2]
+def main():
+    if len(sys.argv) != 3:
+        print(__doc__)
+        exit()
 
-data = imread(image_fname)
+    image_fname = sys.argv[1]
+    dat_fname = sys.argv[2]
 
-np.savez_compressed(dat_fname, data=data)
+    data = imread(image_fname)
+
+    np.savez_compressed(dat_fname, data=data)
+
+
+if __name__ == "__main__":
+    main()
