@@ -444,14 +444,27 @@ def wavedecn(data, wavelet, mode='symmetric', level=None):
     --------
     >>> import numpy as np
     >>> from pywt import wavedecn, waverecn
-    >>> data = np.ones((4, 4, 4))
-    >>> coeffs = wavedecn(data, 'db1')
+    >>> coeffs = wavedecn(np.ones((4, 4, 4)), 'db1')
     >>> # Levels:
     >>> len(coeffs)-1
     2
-    >>> rec = waverecn(coeffs, 'db1')
-    >>> np.max(data-rec) < 1e-14
-    True
+    >>> waverecn(coeffs, 'db1')  # doctest: +NORMALIZE_WHITESPACE
+    array([[[ 1.,  1.,  1.,  1.],
+            [ 1.,  1.,  1.,  1.],
+            [ 1.,  1.,  1.,  1.],
+            [ 1.,  1.,  1.,  1.]],
+           [[ 1.,  1.,  1.,  1.],
+            [ 1.,  1.,  1.,  1.],
+            [ 1.,  1.,  1.,  1.],
+            [ 1.,  1.,  1.,  1.]],
+           [[ 1.,  1.,  1.,  1.],
+            [ 1.,  1.,  1.,  1.],
+            [ 1.,  1.,  1.,  1.],
+            [ 1.,  1.,  1.,  1.]],
+           [[ 1.,  1.,  1.,  1.],
+            [ 1.,  1.,  1.,  1.],
+            [ 1.,  1.,  1.,  1.],
+            [ 1.,  1.,  1.,  1.]]])
 
     """
     data = np.asarray(data)
@@ -511,14 +524,28 @@ def waverecn(coeffs, wavelet, mode='symmetric'):
     --------
     >>> import numpy as np
     >>> from pywt import wavedecn, waverecn
-    >>> data = np.ones((4, 4, 4))
-    >>> coeffs = wavedecn(data, 'db1')
+    >>> coeffs = wavedecn(np.ones((4, 4, 4)), 'db1')
     >>> # Levels:
     >>> len(coeffs)-1
     2
-    >>> rec = waverecn(coeffs, 'db1')
-    >>> np.max(data-rec) < 1e-14
-    True
+    >>> waverecn(coeffs, 'db1')  # doctest: +NORMALIZE_WHITESPACE
+    array([[[ 1.,  1.,  1.,  1.],
+            [ 1.,  1.,  1.,  1.],
+            [ 1.,  1.,  1.,  1.],
+            [ 1.,  1.,  1.,  1.]],
+           [[ 1.,  1.,  1.,  1.],
+            [ 1.,  1.,  1.,  1.],
+            [ 1.,  1.,  1.,  1.],
+            [ 1.,  1.,  1.,  1.]],
+           [[ 1.,  1.,  1.,  1.],
+            [ 1.,  1.,  1.,  1.],
+            [ 1.,  1.,  1.,  1.],
+            [ 1.,  1.,  1.,  1.]],
+           [[ 1.,  1.,  1.,  1.],
+            [ 1.,  1.,  1.,  1.],
+            [ 1.,  1.,  1.,  1.],
+            [ 1.,  1.,  1.,  1.]]])
+
     """
     if len(coeffs) < 1:
         raise ValueError(

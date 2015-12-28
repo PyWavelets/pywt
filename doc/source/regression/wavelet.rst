@@ -26,7 +26,7 @@ The :func:`wavelist` function with family name passed as an argument is used to
 obtain the list of wavelet names in each family.
 
     >>> for family in pywt.families():
-    ...     print("%s family:" % family, ', '.join(pywt.wavelist(family)))
+    ...     print("%s family: " % family + ', '.join(pywt.wavelist(family)))
     haar family: haar
     db family: db1, db2, db3, db4, db5, db6, db7, db8, db9, db10, db11, db12, db13, db14, db15, db16, db17, db18, db19, db20
     sym family: sym2, sym3, sym4, sym5, sym6, sym7, sym8, sym9, sym10, sym11, sym12, sym13, sym14, sym15, sym16, sym17, sym18, sym19, sym20

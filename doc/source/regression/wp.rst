@@ -2,6 +2,8 @@
 
 .. currentmodule:: pywt
 
+>>> from __future__ import print_function
+
 Wavelet Packets
 ===============
 

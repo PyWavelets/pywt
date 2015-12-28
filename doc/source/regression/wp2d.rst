@@ -9,6 +9,7 @@
 Import pywt
 -----------
 
+>>> from __future__ import print_function
 >>> import pywt
 >>> import numpy
 
@@ -372,7 +373,10 @@ to do a full decomposition up to the *maximum level* of decomposition:
     ...     if (i+1) % 8 == 0:
     ...         print(path)
     ...     else:
-    ...         print(path, end=' ')
+    ...         try:
+    ...             print(path, end=' ')
+    ...         except:
+    ...             print(path, end=' ')
     aaa aah aav aad aha ahh ahv ahd
     ava avh avv avd ada adh adv add
     haa hah hav had hha hhh hhv hhd
