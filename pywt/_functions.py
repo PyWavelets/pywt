@@ -94,12 +94,11 @@ def integrate_wavelet(wavelet, precision=8):
 
     Examples
     --------
-    >>> import pywt
-    >>> wavelet1 = pywt.Wavelet('db2')
-    >>> [int_psi, x] = pywt.integrate_wavelet(wavelet1, precision=5)
-    >>> wavelet2 = pywt.Wavelet('bior1.3')
-    >>> [int_psi_d, int_psi_r, x] = pywt.integrate_wavelet(wavelet2,
-                                                           precision=5)
+    >>> from pywt import Wavelet, integrate_wavelet
+    >>> wavelet1 = Wavelet('db2')
+    >>> [int_psi, x] = integrate_wavelet(wavelet1, precision=5)
+    >>> wavelet2 = Wavelet('bior1.3')
+    >>> [int_psi_d, int_psi_r, x] = integrate_wavelet(wavelet2, precision=5)
 
     """
     # FIXME: this function should really use scipy.integrate.quad

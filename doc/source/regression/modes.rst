@@ -18,7 +18,7 @@ Import :mod:`pywt` first
 
 List of available signal extension :ref:`modes <Modes>`:
 
-    >>> print pywt.Modes.modes
+    >>> print(pywt.Modes.modes)
     ['zero', 'constant', 'symmetric', 'periodic', 'smooth', 'periodization']
 
 
@@ -27,10 +27,11 @@ Test that :func:`dwt` and :func:`idwt` can be performed using every mode:
     >>> x = [1,2,1,5,-1,8,4,6]
     >>> for mode in pywt.Modes.modes:
     ...     cA, cD = pywt.dwt(x, 'db2', mode)
-    ...     print "Mode:", mode
-    ...     print "cA:", format_array(cA)
-    ...     print "cD:", format_array(cD)
-    ...     print "Reconstruction:", pywt.idwt(cA, cD, 'db2', mode)
+    ...     print("Mode: %s" % mode)
+    ...     print("cA: " + format_array(cA))
+    ...     print("cD: " + format_array(cD))
+    ...     print("Reconstruction: " + format_array(
+    ...         pywt.idwt(cA, cD, 'db2', mode)))
     Mode: zero
     cA: [-0.03468  1.73309  3.40612  6.32929  6.95095]
     cD: [-0.12941 -2.156   -5.95035 -1.21545 -1.8625 ]
@@ -70,10 +71,11 @@ You can also refer to modes via :ref:`Modes <Modes>` class attributes:
     >>> for mode_name in ['zero', 'constant', 'symmetric', 'periodic', 'smooth', 'periodization']:
     ...     mode = getattr(pywt.Modes, mode_name)
     ...     cA, cD = pywt.dwt([1,2,1,5,-1,8,4,6], 'db2', mode)
-    ...     print "Mode:", mode, "(%s)" % mode_name
-    ...     print "cA:", format_array(cA)
-    ...     print "cD:", format_array(cD)
-    ...     print "Reconstruction:", pywt.idwt(cA, cD, 'db2', mode)
+    ...     print("Mode: %d (%s)" % (mode, mode_name))
+    ...     print("cA: " + format_array(cA))
+    ...     print("cD: " + format_array(cD))
+    ...     print("Reconstruction: " + format_array(
+    ...         pywt.idwt(cA, cD, 'db2', mode)))
     Mode: 0 (zero)
     cA: [-0.03468  1.73309  3.40612  6.32929  6.95095]
     cD: [-0.12941 -2.156   -5.95035 -1.21545 -1.8625 ]
@@ -103,20 +105,20 @@ You can also refer to modes via :ref:`Modes <Modes>` class attributes:
 The default mode is :ref:`symmetric <Modes.symmetric>`:
 
     >>> cA, cD = pywt.dwt(x, 'db2')
-    >>> print cA
+    >>> print(cA)
     [ 1.76776695  1.73309178  3.40612438  6.32928585  7.77817459]
-    >>> print cD
+    >>> print(cD)
     [-0.61237244 -2.15599552 -5.95034847 -1.21545369  1.22474487]
-    >>> print pywt.idwt(cA, cD, 'db2')
+    >>> print(pywt.idwt(cA, cD, 'db2'))
     [ 1.  2.  1.  5. -1.  8.  4.  6.]
 
 
 And using a keyword argument:
 
     >>> cA, cD = pywt.dwt(x, 'db2', mode='symmetric')
-    >>> print cA
+    >>> print(cA)
     [ 1.76776695  1.73309178  3.40612438  6.32928585  7.77817459]
-    >>> print cD
+    >>> print(cD)
     [-0.61237244 -2.15599552 -5.95034847 -1.21545369  1.22474487]
-    >>> print pywt.idwt(cA, cD, 'db2')
+    >>> print(pywt.idwt(cA, cD, 'db2'))
     [ 1.  2.  1.  5. -1.  8.  4.  6.]

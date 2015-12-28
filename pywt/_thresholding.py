@@ -86,6 +86,7 @@ def threshold(data, value, mode='soft', substitute=0):
 
     Examples
     --------
+    >>> import numpy as np
     >>> import pywt
     >>> data = np.linspace(1, 4, 7)
     >>> data

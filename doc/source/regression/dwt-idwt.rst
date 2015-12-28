@@ -18,9 +18,9 @@ the ``db2`` wavelet. It's simple..
 And the approximation and details coefficients are in ``cA`` and ``cD``
 respectively:
 
-    >>> print cA
+    >>> print(cA)
     [ 5.65685425  7.39923721  0.22414387  3.33677403  7.77817459]
-    >>> print cD
+    >>> print(cD)
     [-2.44948974 -1.60368225 -4.44140056 -0.41361256  1.22474487]
 
 Inverse Discrete Wavelet Transform
@@ -29,7 +29,7 @@ Inverse Discrete Wavelet Transform
 Now let's do an opposite operation
 - :func:`Inverse Discrete Wavelet Transform <idwt>`:
 
-    >>> print pywt.idwt(cA, cD, 'db2')
+    >>> print(pywt.idwt(cA, cD, 'db2'))
     [ 3.  7.  1.  1. -2.  5.  4.  6.]
 
 Voilà! That's it!
@@ -44,9 +44,9 @@ border effect handling:
 
     >>> w = pywt.Wavelet('sym3')
     >>> cA, cD = pywt.dwt(x, wavelet=w, mode='constant')
-    >>> print cA
+    >>> print(cA)
     [ 4.38354585  3.80302657  7.31813271 -0.58565539  4.09727044  7.81994027]
-    >>> print cD
+    >>> print(cD)
     [-1.33068221 -2.78795192 -3.16825651 -0.67715519 -0.09722957 -0.07045258]
 
 Note that the output coefficients arrays length depends not only on the input
@@ -91,9 +91,9 @@ doing :func:`DWT <dwt>` and :func:`IDWT <idwt>`. Otherwise, it will produce
     >>> x
     [3, 7, 1, 1, -2, 5, 4, 6]
     >>> cA, cD = pywt.dwt(x, wavelet=w, mode='periodization')
-    >>> print pywt.idwt(cA, cD, 'sym3', 'symmetric') # invalid mode
+    >>> print(pywt.idwt(cA, cD, 'sym3', 'symmetric')) # invalid mode
     [ 1.  1. -2.  5.]
-    >>> print pywt.idwt(cA, cD, 'sym3', 'periodization')
+    >>> print(pywt.idwt(cA, cD, 'sym3', 'periodization'))
     [ 3.  7.  1.  1. -2.  5.  4.  6.]
 
 
@@ -107,21 +107,21 @@ Now some tips & tricks. Passing ``None`` as one of the coefficient arrays
 parameters is similar to passing a *zero-filled* array. The results are simply
 the same:
 
-    >>> print pywt.idwt([1,2,0,1], None, 'db2', 'symmetric')
+    >>> print(pywt.idwt([1,2,0,1], None, 'db2', 'symmetric'))
     [ 1.19006969  1.54362308  0.44828774 -0.25881905  0.48296291  0.8365163 ]
 
-    >>> print pywt.idwt([1, 2, 0, 1], [0, 0, 0, 0], 'db2', 'symmetric')
+    >>> print(pywt.idwt([1, 2, 0, 1], [0, 0, 0, 0], 'db2', 'symmetric'))
     [ 1.19006969  1.54362308  0.44828774 -0.25881905  0.48296291  0.8365163 ]
 
-    >>> print pywt.idwt(None, [1, 2, 0, 1], 'db2', 'symmetric')
+    >>> print(pywt.idwt(None, [1, 2, 0, 1], 'db2', 'symmetric'))
     [ 0.57769726 -0.93125065  1.67303261 -0.96592583 -0.12940952 -0.22414387]
 
-    >>> print pywt.idwt([0, 0, 0, 0], [1, 2, 0, 1], 'db2', 'symmetric')
+    >>> print(pywt.idwt([0, 0, 0, 0], [1, 2, 0, 1], 'db2', 'symmetric'))
     [ 0.57769726 -0.93125065  1.67303261 -0.96592583 -0.12940952 -0.22414387]
 
 Remember that only one argument at a time can be ``None``:
 
-    >>> print pywt.idwt(None, None, 'db2', 'symmetric')
+    >>> print(pywt.idwt(None, None, 'db2', 'symmetric'))
     Traceback (most recent call last):
     ...
     ValueError: At least one coefficient parameter must be specified.
@@ -133,7 +133,7 @@ Coefficients data size in :attr:`idwt`
 When doing the :func:`IDWT <idwt>` transform, usually the coefficient arrays
 must have the same size.
 
-    >>> print pywt.idwt([1, 2, 3, 4, 5], [1, 2, 3, 4], 'db2', 'symmetric')
+    >>> print(pywt.idwt([1, 2, 3, 4, 5], [1, 2, 3, 4], 'db2', 'symmetric'))
     Traceback (most recent call last):
     ...
     ValueError: Coefficients arrays must have the same size.

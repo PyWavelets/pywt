@@ -9,6 +9,7 @@
 Import pywt
 -----------
 
+>>> from __future__ import print_function
 >>> import pywt
 >>> import numpy
 
@@ -19,7 +20,7 @@ Create 2D Wavelet Packet structure
 Start with preparing test data:
 
     >>> x = numpy.array([[1, 2, 3, 4, 5, 6, 7, 8]] * 8, 'd')
-    >>> print x
+    >>> print(x)
     [[ 1.  2.  3.  4.  5.  6.  7.  8.]
      [ 1.  2.  3.  4.  5.  6.  7.  8.]
      [ 1.  2.  3.  4.  5.  6.  7.  8.]
@@ -36,7 +37,7 @@ Now create a :class:`2D Wavelet Packet <WaveletPacket2D>` object:
 The input *data* and decomposition coefficients are stored in the
 :attr:`WaveletPacket2D.data` attribute:
 
-    >>> print wp.data
+    >>> print(wp.data)
     [[ 1.  2.  3.  4.  5.  6.  7.  8.]
      [ 1.  2.  3.  4.  5.  6.  7.  8.]
      [ 1.  2.  3.  4.  5.  6.  7.  8.]
@@ -49,15 +50,15 @@ The input *data* and decomposition coefficients are stored in the
 :class:`Nodes <Node2D>` are identified by paths. For the root node the path is
 ``''`` and the decomposition level is ``0``.
 
-    >>> print repr(wp.path)
+    >>> print(repr(wp.path))
     ''
-    >>> print wp.level
+    >>> print(wp.level)
     0
 
 The :attr:`WaveletPacket2D.maxlevel`, if not given in the constructor, is
 automatically computed based on the data size:
 
-    >>> print wp.maxlevel
+    >>> print(wp.maxlevel)
     3
 
 
@@ -99,22 +100,22 @@ naming convention (as wavelet packet transform is based on the dwt2 transform)::
 Knowing what the nodes names are, we can now access them using the indexing
 operator `obj[x]` (:meth:`WaveletPacket2D.__getitem__`):
 
-    >>> print wp['a'].data
+    >>> print(wp['a'].data)
     [[  3.   7.  11.  15.]
      [  3.   7.  11.  15.]
      [  3.   7.  11.  15.]
      [  3.   7.  11.  15.]]
-    >>> print wp['h'].data
+    >>> print(wp['h'].data)
     [[ 0.  0.  0.  0.]
      [ 0.  0.  0.  0.]
      [ 0.  0.  0.  0.]
      [ 0.  0.  0.  0.]]
-    >>> print wp['v'].data
+    >>> print(wp['v'].data)
     [[-1. -1. -1. -1.]
      [-1. -1. -1. -1.]
      [-1. -1. -1. -1.]
      [-1. -1. -1. -1.]]
-    >>> print wp['d'].data
+    >>> print(wp['d'].data)
     [[ 0.  0.  0.  0.]
      [ 0.  0.  0.  0.]
      [ 0.  0.  0.  0.]
@@ -122,7 +123,7 @@ operator `obj[x]` (:meth:`WaveletPacket2D.__getitem__`):
 
 Similarly, a subnode of a subnode can be accessed by:
 
-    >>> print wp['aa'].data
+    >>> print(wp['aa'].data)
     [[ 10.  26.]
      [ 10.  26.]]
 
@@ -130,17 +131,17 @@ Indexing base :class:`WaveletPacket2D` (as well as 1D :class:`WaveletPacket`)
 using compound path is just the same as indexing WP subnode:
 
     >>> node = wp['a']
-    >>> print node['a'].data
+    >>> print(node['a'].data)
     [[ 10.  26.]
      [ 10.  26.]]
-    >>> print wp['a']['a'].data is wp['aa'].data
+    >>> print(wp['a']['a'].data is wp['aa'].data)
     True
 
 Following down the decomposition path:
 
-    >>> print wp['aaa'].data
+    >>> print(wp['aaa'].data)
     [[ 36.]]
-    >>> print wp['aaaa'].data
+    >>> print(wp['aaaa'].data)
     Traceback (most recent call last):
     ...
     IndexError: Path length is out of range.
@@ -148,13 +149,13 @@ Following down the decomposition path:
 Ups, we have reached the maximum level of decomposition for the ``'aaaa'`` path,
 which btw. was:
 
-    >>> print wp.maxlevel
+    >>> print(wp.maxlevel)
     3
 
 
 Now try some invalid path:
 
-    >>> print wp['f']
+    >>> print(wp['f'])
     Traceback (most recent call last):
     ...
     ValueError: Subnode name must be in ['a', 'h', 'v', 'd'], not 'f'.
@@ -168,33 +169,33 @@ of :class:`Node2D` objects. :class:`WaveletPacket2D` is just a special subclass
 of the :class:`Node2D` class (which in turn inherits from a :class:`BaseNode`,
 just like with :class:`Node` and :class:`WaveletPacket` for the 1D case.).
 
-    >>> print wp['av'].data
+    >>> print(wp['av'].data)
     [[-4. -4.]
      [-4. -4.]]
 
-    >>> print wp['av'].path
+    >>> print(wp['av'].path)
     av
 
-    >>> print wp['av'].node_name
+    >>> print(wp['av'].node_name)
     v
 
-    >>> print wp['av'].parent.path
+    >>> print(wp['av'].parent.path)
     a
 
-    >>> print wp['av'].parent.data
+    >>> print(wp['av'].parent.data)
     [[  3.   7.  11.  15.]
      [  3.   7.  11.  15.]
      [  3.   7.  11.  15.]
      [  3.   7.  11.  15.]]
 
-    >>> print wp['av'].level
+    >>> print(wp['av'].level)
     2
 
-    >>> print wp['av'].maxlevel
+    >>> print(wp['av'].maxlevel)
     3
 
-    >>> print wp['av'].mode
-    sym
+    >>> print(wp['av'].mode)
+    symmetric
 
 
 Collecting nodes
@@ -207,14 +208,14 @@ We can get all nodes on the particular level using the
 
         >>> len(wp.get_level(0))
         1
-        >>> print [node.path for node in wp.get_level(0)]
+        >>> print([node.path for node in wp.get_level(0)])
         ['']
 
     * 1st level of decomposition:
 
         >>> len(wp.get_level(1))
         4
-        >>> print [node.path for node in wp.get_level(1)]
+        >>> print([node.path for node in wp.get_level(1)])
         ['a', 'h', 'v', 'd']
 
     * 2nd level of decomposition:
@@ -223,8 +224,10 @@ We can get all nodes on the particular level using the
         16
         >>> paths = [node.path for node in wp.get_level(2)]
         >>> for i, path in enumerate(paths):
-        ...     print path,
-        ...     if (i+1) % 4 == 0: print
+        ...     if (i+1) % 4 == 0:
+        ...         print(path)
+        ...     else:
+        ...         print(path, end=' ')
         aa ah av ad
         ha hh hv hd
         va vh vv vd
@@ -232,12 +235,14 @@ We can get all nodes on the particular level using the
 
     * 3rd level of decomposition:
 
-        >>> print len(wp.get_level(3))
+        >>> print(len(wp.get_level(3)))
         64
         >>> paths = [node.path for node in wp.get_level(3)]
         >>> for i, path in enumerate(paths):
-        ...     print path,
-        ...     if (i+1) % 8 == 0: print
+        ...     if (i+1) % 8 == 0:
+        ...         print(path)
+        ...     else:
+        ...         print(path, end=' ')
         aaa aah aav aad aha ahh ahv ahd
         ava avh avv avd ada adh adv add
         haa hah hav had hha hhh hhv hhd
@@ -279,7 +284,7 @@ And reconstruct the data from the ``a``, ``d``, ``vh``, ``vv``, ``vd`` and ``h``
 packets (Note that ``va`` node was not set and the WP tree is "not complete"
 - the ``va`` branch will be treated as *zero-array*):
 
-    >>> print new_wp.reconstruct(update=False)
+    >>> print(new_wp.reconstruct(update=False))
     [[ 1.5  1.5  3.5  3.5  5.5  5.5  7.5  7.5]
      [ 1.5  1.5  3.5  3.5  5.5  5.5  7.5  7.5]
      [ 1.5  1.5  3.5  3.5  5.5  5.5  7.5  7.5]
@@ -292,7 +297,7 @@ packets (Note that ``va`` node was not set and the WP tree is "not complete"
 Now set the ``va`` node with the known values and do the reconstruction again:
 
     >>> new_wp['va'] = wp['va'].data # [[-2.0, -2.0], [-2.0, -2.0]]
-    >>> print new_wp.reconstruct(update=False)
+    >>> print(new_wp.reconstruct(update=False))
     [[ 1.  2.  3.  4.  5.  6.  7.  8.]
      [ 1.  2.  3.  4.  5.  6.  7.  8.]
      [ 1.  2.  3.  4.  5.  6.  7.  8.]
@@ -309,7 +314,7 @@ the ``va`` node, again, we get the "not complete" tree from one of the previous
 examples:
 
     >>> del new_wp['va']
-    >>> print new_wp.reconstruct(update=False)
+    >>> print(new_wp.reconstruct(update=False))
     [[ 1.5  1.5  3.5  3.5  5.5  5.5  7.5  7.5]
      [ 1.5  1.5  3.5  3.5  5.5  5.5  7.5  7.5]
      [ 1.5  1.5  3.5  3.5  5.5  5.5  7.5  7.5]
@@ -326,13 +331,13 @@ Just restore the node before next examples.
 If the *update* param in the :meth:`WaveletPacket2D.reconstruct` method is set
 to ``False``, the node's :attr:`Node2D.data` attribute will not be updated.
 
-    >>> print new_wp.data
+    >>> print(new_wp.data)
     None
 
 Otherwise, the :attr:`WaveletPacket2D.data` attribute will be set to the
 reconstructed value.
 
-    >>> print new_wp.reconstruct(update=True)
+    >>> print(new_wp.reconstruct(update=True))
     [[ 1.  2.  3.  4.  5.  6.  7.  8.]
      [ 1.  2.  3.  4.  5.  6.  7.  8.]
      [ 1.  2.  3.  4.  5.  6.  7.  8.]
@@ -341,7 +346,7 @@ reconstructed value.
      [ 1.  2.  3.  4.  5.  6.  7.  8.]
      [ 1.  2.  3.  4.  5.  6.  7.  8.]
      [ 1.  2.  3.  4.  5.  6.  7.  8.]]
-    >>> print new_wp.data
+    >>> print(new_wp.data)
     [[ 1.  2.  3.  4.  5.  6.  7.  8.]
      [ 1.  2.  3.  4.  5.  6.  7.  8.]
      [ 1.  2.  3.  4.  5.  6.  7.  8.]
@@ -355,7 +360,7 @@ Since we have an interesting WP structure built, it is a good occasion to
 present the :meth:`WaveletPacket2D.get_leaf_nodes` method, which collects
 non-zero leaf nodes from the WP tree:
 
-    >>> print [n.path for n in new_wp.get_leaf_nodes()]
+    >>> print([n.path for n in new_wp.get_leaf_nodes()])
     ['a', 'h', 'va', 'vh', 'vv', 'vd', 'd']
 
 Passing the *decompose=True* parameter to the method will force the WP object
@@ -365,8 +370,13 @@ to do a full decomposition up to the *maximum level* of decomposition:
     >>> len(paths)
     64
     >>> for i, path in enumerate(paths):
-    ...     print path,
-    ...     if (i+1) % 8 == 0: print
+    ...     if (i+1) % 8 == 0:
+    ...         print(path)
+    ...     else:
+    ...         try:
+    ...             print(path, end=' ')
+    ...         except:
+    ...             print(path, end=' ')
     aaa aah aav aad aha ahh ahv ahd
     ava avh avv avd ada adh adv add
     haa hah hav had hha hhh hhv hhd
@@ -388,7 +398,7 @@ Lazy evaluation:
 
 1) At first the wp's attribute `a` is ``None``
 
-   >>> print wp.a
+   >>> print(wp.a)
    None
 
    **Remember that you should not rely on the attribute access.**
@@ -396,7 +406,7 @@ Lazy evaluation:
 2) During the first attempt to access the node it is computed
    via decomposition of its parent node (the wp object itself).
 
-   >>> print wp['a']
+   >>> print(wp['a'])
    a: [[  3.   7.  11.  15.]
     [  3.   7.  11.  15.]
     [  3.   7.  11.  15.]
@@ -404,7 +414,7 @@ Lazy evaluation:
 
 3) Now the `a` is set to the newly created node:
 
-    >>> print wp.a
+    >>> print(wp.a)
     a: [[  3.   7.  11.  15.]
      [  3.   7.  11.  15.]
      [  3.   7.  11.  15.]
@@ -412,7 +422,7 @@ Lazy evaluation:
 
    And so is `wp.d`:
 
-    >>> print wp.d
+    >>> print(wp.d)
     d: [[ 0.  0.  0.  0.]
      [ 0.  0.  0.  0.]
      [ 0.  0.  0.  0.]
