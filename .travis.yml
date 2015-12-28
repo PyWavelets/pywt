@@ -56,4 +56,4 @@ before_install:
   - set -o pipefail
 
 script:
-  - python -u $OPTIMIZE runtests.py -g -m full --coverage
+  - python -u $OPTIMIZE runtests.py -g -m full --coverage --doctests
