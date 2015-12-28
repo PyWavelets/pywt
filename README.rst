@@ -92,7 +92,6 @@ License
 PyWavelets is a free Open Source software released under the MIT license.
 
 
-
 .. _built-in wavelet filters: http://wavelets.pybytes.com/
 .. _Cython: http://cython.org/
 .. _demo: https://github.com/PyWavelets/pywt/tree/master/demo
