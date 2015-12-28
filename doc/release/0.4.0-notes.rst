@@ -12,7 +12,7 @@ This release requires Python 2.6, 2.7 or 3.3-3.5 and NumPy 1.6.2 or greater.
 
 Highlights of this release include:
 
-- 1D and 2D stationary wavelet transforms
+- 1D and 2D inverse stationary wavelet transforms
 - Substantially faster 2D and nD discrete wavelet transforms
 - Complex number support
 - nD versions of the multilevel DWT and IDWT
@@ -21,10 +21,10 @@ Highlights of this release include:
 New features
 ============
 
-1D and 2D stationary wavelet transforms
----------------------------------------
-1D (``iswt``) and 2D (``iswt2``) stationary wavelet transforms were added.
-These currently only support even length inputs
+1D and 2D inverse stationary wavelet transforms
+-----------------------------------------------
+1D (``iswt``) and 2D (``iswt2``) inverse stationary wavelet transforms were
+added.  These currently only support even length inputs.
 
 
 Faster 2D and nD wavelet transforms
