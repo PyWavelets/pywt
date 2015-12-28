@@ -1,0 +1,40 @@
+==============================
+PyWavelets 0.5.0 Release Notes
+==============================
+
+.. note:: PyWavelets 0.5.0 is not released yet!
+
+.. contents::
+
+
+New features
+============
+
+
+Deprecated features
+===================
+
+
+Backwards incompatible changes
+==============================
+
+
+Bugs Fixed
+==========
+
+
+Other changes
+=============
+
+
+Authors
+=======
+
+
+Issues closed for v0.5.0
+------------------------
+
+
+Pull requests for v0.5.0
+------------------------
+
