@@ -16,6 +16,7 @@ on Windows and Linux.
    installing_build_dependencies
    building_extension
    testing
+   how_to_release
 
 Something not working?
 ----------------------
