@@ -74,3 +74,10 @@ test_script:
 artifacts:
   # Archive the generated wheel package in the ci.appveyor.com build report.
   - path: dist\*
+
+cache:
+  # Use the appveyor cache to avoid re-downloading large archives such
+  # the numpy and scipy wheels mirrored on a rackspace cloud
+  # container, speed up the appveyor jobs and reduce bandwidth
+  # usage on the rackspace account.
+  - '%APPDATA%\pip\Cache'
