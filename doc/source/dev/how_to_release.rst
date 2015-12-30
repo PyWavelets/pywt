@@ -12,12 +12,12 @@ Prior to the release, make sure the release notes are up to date.
 
 author lists can be generated via:
 
-```python  ./utils/gh_lists.py vP.P.P..```
+```python  ./util/gh_lists.py vP.P.P..```
 (where vP.P.P is the previous release number)
 
 and the lists of Issues closed and PRs merged via:
 
-```python ./utils/gh_lists.py vX.X.X```  (script requires Python 2.X to run)
+```python ./util/gh_lists.py vX.X.X```  (script requires Python 2.X to run)
 
 
 Tag the release and trigger the build of Windows wheels
@@ -61,20 +61,29 @@ Create the source distribution files via:
 Upload the release to pypi
 --------------------------
 
-The source distributions created above can be securely uploaded to
-pypi.python.org using twine:
+The binary Windows wheels downloaded from Appveyor (see above) should
+also be placed into the /dist subfolder along with the sdist archives.
+
+The wheels and source distributions created above can all be securely uploaded
+to pypi.python.org using twine:
 
 ```twine upload -s dist/*```
 
-Also manually upload the Windows wheels (see above) through the pypi web
-interface.
 
-The documentation on readthedocs will have been automatically generated,
-but the documentation linked from pypi.python.org will need to be manually
-updated.  This can be done by building the documentation locally and zipping
-'doc/build/html' it so that index.html is at the top level of the archive.
-This archive can then be uploaded in the "files" section of the PyWavelets page
-on pypi.
+Upload the documentation to pypi
+--------------------------------
+The documentation on readthedocs (http://pywavelets.readthedocs.org) will have
+been automatically generated, but the documentation linked from pypi.python.org
+(http://pythonhosted.org/PyWavelets/) will need to be manually updated.  This
+can be done by building the documentation locally and zipping 'doc/build/html'
+so that index.html is at the top level of the archive. This archive can then be
+uploaded in the "files" section of the PyWavelets page on pypi.
+
+
+Create the release on GitHub
+----------------------------
+On the project's github page, click the releases tab and then press the
+"Draft a new release" button to create a release from the appropriate tag.
 
 
 Announcing the release
@@ -88,7 +97,7 @@ Send release announcements to:
 
 
 Prepare for continued development
-=================================
+---------------------------------
 
 Increment the version number in setup.py and change ISRELEASED to False.
 
@@ -101,4 +110,4 @@ git add doc/source/release.X.X.X.rst
 
 And add release.X.X.X to the list in:
 
-```doc/source/releasenotes.rst```
+``` doc/source/releasenotes.rst ```
