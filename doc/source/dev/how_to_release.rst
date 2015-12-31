@@ -12,7 +12,7 @@ Prior to the release, make sure the release notes are up to date.
 
 author lists can be generated via:
 
-```python  ./util/gh_lists.py vP.P.P..```
+```python  ./util/authors.py vP.P.P..```
 (where vP.P.P is the previous release number)
 
 and the lists of Issues closed and PRs merged via:
