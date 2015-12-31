@@ -8,7 +8,7 @@
 # fix the versions of numpy to force the use of numpy to use the whl
 # of the rackspace folder instead of trying to install from more recent
 # source tarball published on PyPI
-numpy==1.8.1
-Cython==0.20.2
+numpy==1.9.3
+Cython==0.23.4
 nose
 wheel
