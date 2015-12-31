@@ -1,6 +1,6 @@
 from common cimport index_t
 
-cdef extern from "wavelets.h":
+cdef extern from "c/wavelets.h":
     ctypedef enum SYMMETRY:
         ASYMMETRIC
         NEAR_SYMMETRIC

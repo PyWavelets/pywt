@@ -1,3 +1,4 @@
+__pycache__
 *.py[co]
 *.pyd
 *.so
@@ -23,8 +24,10 @@ pip-log.txt
 .settings
 
 # Project working files
-_pywt.[ch]
-wavelets.[ch]
+# Expanded Cython
+pywt/_extensions/*.[ch]
+# Expanded .src file
+pywt/_extensions/c/wavelets.[ch]
 cythonize.dat
 pywt/__config__.py
 pywt/version.py

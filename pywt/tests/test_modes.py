@@ -18,8 +18,8 @@ def test_available_modes():
 def test_invalid_modes():
     x = np.arange(4)
     assert_raises(ValueError, pywt.dwt, x, 'db2', 'unknown')
-    assert_raises(TypeError, pywt.dwt, x, 'db2', -1)
-    assert_raises(TypeError, pywt.dwt, x, 'db2', 7)
+    assert_raises(ValueError, pywt.dwt, x, 'db2', -1)
+    assert_raises(ValueError, pywt.dwt, x, 'db2', 7)
     assert_raises(TypeError, pywt.dwt, x, 'db2', None)
 
     assert_raises(ValueError, pywt.Modes.from_object, 'unknown')

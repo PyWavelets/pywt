@@ -12,12 +12,14 @@ wavelet packets signal decomposition and reconstruction module.
 from __future__ import division, print_function, absolute_import
 
 
-from ._pywt import *
+from ._extensions._pywt import *
 from ._functions import *
 from ._multilevel import *
 from ._multidim import *
 from ._thresholding import *
 from ._wavelet_packets import *
+from ._dwt import *
+from ._swt import *
 
 from . import data
 
