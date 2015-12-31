@@ -78,8 +78,6 @@ unsigned char swt_max_level(size_t input_len){
     /* check how many times input_len is divisible by 2 */
     unsigned char j = 0;
     while (input_len > 0){
-        if (input_len % 2)
-            return j;
         input_len /= 2;
         j++;
     }
