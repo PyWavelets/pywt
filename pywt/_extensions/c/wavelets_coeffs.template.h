@@ -17,13 +17,6 @@
  * Discrete Meyer wavelet *approximation*: dmey
  */
 
-/* ignore warning about initializing floats from double values */
-#if defined _MSC_VER
-    #pragma warning (disable:4305)
-#elif defined __GNUC__
-    #pragma GCC diagnostic ignored "-Wconversion"
-#endif
-
 static TYPE CAT(db1_, TYPE)[][2] = {
     {0.70710678118654757, 0.70710678118654757},
     {-0.70710678118654757, 0.70710678118654757},
