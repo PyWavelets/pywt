@@ -460,4 +460,26 @@ static TYPE * const CAT(db_, TYPE)[20][4] = {
   {CAT(db20_, TYPE)[0], CAT(db20_, TYPE)[1], CAT(db20_, TYPE)[2], CAT(db20_, TYPE)[3]},
 };
 
+static TYPE * const CAT(sym_, TYPE)[19][4] = {
+  {CAT(sym2_, TYPE)[0], CAT(sym2_, TYPE)[1], CAT(sym2_, TYPE)[2], CAT(sym2_, TYPE)[3]},
+  {CAT(sym3_, TYPE)[0], CAT(sym3_, TYPE)[1], CAT(sym3_, TYPE)[2], CAT(sym3_, TYPE)[3]},
+  {CAT(sym4_, TYPE)[0], CAT(sym4_, TYPE)[1], CAT(sym4_, TYPE)[2], CAT(sym4_, TYPE)[3]},
+  {CAT(sym5_, TYPE)[0], CAT(sym5_, TYPE)[1], CAT(sym5_, TYPE)[2], CAT(sym5_, TYPE)[3]},
+  {CAT(sym6_, TYPE)[0], CAT(sym6_, TYPE)[1], CAT(sym6_, TYPE)[2], CAT(sym6_, TYPE)[3]},
+  {CAT(sym7_, TYPE)[0], CAT(sym7_, TYPE)[1], CAT(sym7_, TYPE)[2], CAT(sym7_, TYPE)[3]},
+  {CAT(sym8_, TYPE)[0], CAT(sym8_, TYPE)[1], CAT(sym8_, TYPE)[2], CAT(sym8_, TYPE)[3]},
+  {CAT(sym9_, TYPE)[0], CAT(sym9_, TYPE)[1], CAT(sym9_, TYPE)[2], CAT(sym9_, TYPE)[3]},
+  {CAT(sym10_, TYPE)[0], CAT(sym10_, TYPE)[1], CAT(sym10_, TYPE)[2], CAT(sym10_, TYPE)[3]},
+  {CAT(sym11_, TYPE)[0], CAT(sym11_, TYPE)[1], CAT(sym11_, TYPE)[2], CAT(sym11_, TYPE)[3]},
+  {CAT(sym12_, TYPE)[0], CAT(sym12_, TYPE)[1], CAT(sym12_, TYPE)[2], CAT(sym12_, TYPE)[3]},
+  {CAT(sym13_, TYPE)[0], CAT(sym13_, TYPE)[1], CAT(sym13_, TYPE)[2], CAT(sym13_, TYPE)[3]},
+  {CAT(sym14_, TYPE)[0], CAT(sym14_, TYPE)[1], CAT(sym14_, TYPE)[2], CAT(sym14_, TYPE)[3]},
+  {CAT(sym15_, TYPE)[0], CAT(sym15_, TYPE)[1], CAT(sym15_, TYPE)[2], CAT(sym15_, TYPE)[3]},
+  {CAT(sym16_, TYPE)[0], CAT(sym16_, TYPE)[1], CAT(sym16_, TYPE)[2], CAT(sym16_, TYPE)[3]},
+  {CAT(sym17_, TYPE)[0], CAT(sym17_, TYPE)[1], CAT(sym17_, TYPE)[2], CAT(sym17_, TYPE)[3]},
+  {CAT(sym18_, TYPE)[0], CAT(sym18_, TYPE)[1], CAT(sym18_, TYPE)[2], CAT(sym18_, TYPE)[3]},
+  {CAT(sym19_, TYPE)[0], CAT(sym19_, TYPE)[1], CAT(sym19_, TYPE)[2], CAT(sym19_, TYPE)[3]},
+  {CAT(sym20_, TYPE)[0], CAT(sym20_, TYPE)[1], CAT(sym20_, TYPE)[2], CAT(sym20_, TYPE)[3]},
+};
+
 #endif /* TYPE */

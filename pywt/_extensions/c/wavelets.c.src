@@ -99,6 +99,7 @@ Wavelet* wavelet(char name, unsigned int order)
         /* Symlets wavelets family */
         case 's':
         case 'S':
+            if (order < 2 || order > 20) return NULL;
             w = wtmalloc(sizeof(Wavelet));
             if(w == NULL) return NULL;
             w->_builtin = 1;
@@ -115,26 +116,14 @@ Wavelet* wavelet(char name, unsigned int order)
             w->family_name = "Symlets";
             w->short_name = "sym";
 
-            switch (order) {
-                /**begin repeat
-                 * #order = 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20#
-                 */
-                case @order@:
-                    /**begin repeat1
-                     * #type = double, float#
-                     */
-                    w->dec_lo_@type@ = sym@order@_@type@[0];
-                    w->dec_hi_@type@ = sym@order@_@type@[1];
-                    w->rec_lo_@type@ = sym@order@_@type@[2];
-                    w->rec_hi_@type@ = sym@order@_@type@[3];
-                    /**end repeat1**/
-                    break;
-                /**end repeat**/
-
-                default:
-                    wtfree(w);
-                    return NULL;
-            }
+            w->dec_lo_float = sym_float[order - 2][0];
+            w->dec_hi_float = sym_float[order - 2][1];
+            w->rec_lo_float = sym_float[order - 2][2];
+            w->rec_hi_float = sym_float[order - 2][3];
+            w->dec_lo_double = sym_double[order - 2][0];
+            w->dec_hi_double = sym_double[order - 2][1];
+            w->rec_lo_double = sym_double[order - 2][2];
+            w->rec_hi_double = sym_double[order - 2][3];
             break;
 
         /* Coiflets wavelets family */
