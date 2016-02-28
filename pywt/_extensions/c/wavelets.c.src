@@ -154,10 +154,41 @@ Wavelet* wavelet(char name, unsigned int order)
 
         /* Biorthogonal wavelets family */
         case 'b':
-        case 'B':
+        case 'B': {
+            unsigned int N = order / 10, M = order % 10;
+            size_t M_idx;
+
+            switch (N) {
+            case 1:
+                if (M % 2 != 1 || M > 5) return NULL;
+                M_idx = M / 2;
+                break;
+            case 2:
+                if (M % 2 != 0 || M < 2 || M > 8) return NULL;
+                M_idx = M / 2 - 1;
+                break;
+            case 3:
+                if (M % 2 != 1) return NULL;
+                M_idx = M / 2;
+                break;
+            case 4:
+            case 5:
+                if (M != N) return NULL;
+                M_idx = 0;
+                break;
+            case 6:
+                if (M != 8) return NULL;
+                M_idx = 0;
+                break;
+            default:
+                return NULL;
+            }
+
             w = wtmalloc(sizeof(Wavelet));
             if(w == NULL) return NULL;
             w->_builtin = 1;
+
+            w->dec_len = w->rec_len = (N == 1) ? 2 * M : 2 * M + 2;
 
             w->vanishing_moments_psi = order/10;
             w->vanishing_moments_phi = -1;
@@ -169,108 +200,16 @@ Wavelet* wavelet(char name, unsigned int order)
             w->family_name = "Biorthogonal";
             w->short_name = "bior";
 
-                switch (order) {
-                    /**begin repeat
-                     * #M = 1, 3, 5#
-                     */
-                        case 1@M@:
-                            /**begin repeat1
-                             * #type = double, float#
-                             */
-                                w->dec_lo_@type@ = bior1_@M@_@type@[0];
-                                w->dec_hi_@type@ = bior1_@M@_@type@[1];
-                                w->rec_lo_@type@ = bior1_@M@_@type@[2];
-                                w->rec_hi_@type@ = bior1_@M@_@type@[3];
-                            /**end repeat1**/
-                            w->dec_len = w->rec_len = 2 * @M@;
-                            break;
-                    /**end repeat**/
-
-                    /**begin repeat
-                     * #M = 2, 4, 6, 8#
-                     */
-                        case 2@M@:
-                            /**begin repeat1
-                             * #type = double, float#
-                             */
-                                w->dec_lo_@type@ = bior2_@M@_@type@[0];
-                                w->dec_hi_@type@ = bior2_@M@_@type@[1];
-                                w->rec_lo_@type@ = bior2_@M@_@type@[2];
-                                w->rec_hi_@type@ = bior2_@M@_@type@[3];
-                            /**end repeat1**/
-                            w->dec_len = w->rec_len = 2 * @M@ + 2;
-                            break;
-                    /**end repeat**/
-
-                    /**begin repeat
-                     * #M = 1, 3, 5, 7, 9#
-                     */
-                        case 3@M@:
-                            /**begin repeat1
-                             * #type = double, float#
-                             */
-                                w->dec_lo_@type@ = bior3_@M@_@type@[0];
-                                w->dec_hi_@type@ = bior3_@M@_@type@[1];
-                                w->rec_lo_@type@ = bior3_@M@_@type@[2];
-                                w->rec_hi_@type@ = bior3_@M@_@type@[3];
-                            /**end repeat1**/
-                            w->dec_len = w->rec_len = 2 * @M@ + 2;
-                            break;
-                    /**end repeat**/
-
-                    /**begin repeat
-                     * #M = 4#
-                     */
-                        case 4@M@:
-                            /**begin repeat1
-                             * #type = double, float#
-                             */
-                                w->dec_lo_@type@ = bior4_@M@_@type@[0];
-                                w->dec_hi_@type@ = bior4_@M@_@type@[1];
-                                w->rec_lo_@type@ = bior4_@M@_@type@[2];
-                                w->rec_hi_@type@ = bior4_@M@_@type@[3];
-                            /**end repeat1**/
-                            w->dec_len = w->rec_len = 2 * @M@ + 2;
-                            break;
-                    /**end repeat**/
-
-                    /**begin repeat
-                     * #M = 5#
-                     */
-                        case 5@M@:
-                            /**begin repeat1
-                             * #type = double, float#
-                             */
-                                w->dec_lo_@type@ = bior5_@M@_@type@[0];
-                                w->dec_hi_@type@ = bior5_@M@_@type@[1];
-                                w->rec_lo_@type@ = bior5_@M@_@type@[2];
-                                w->rec_hi_@type@ = bior5_@M@_@type@[3];
-                            /**end repeat1**/
-                            w->dec_len = w->rec_len = 2 * @M@ + 2;
-                            break;
-                    /**end repeat**/
-
-                    /**begin repeat
-                     * #M = 8#
-                     */
-                        case 6@M@:
-                            /**begin repeat1
-                             * #type = double, float#
-                             */
-                                w->dec_lo_@type@ = bior6_@M@_@type@[0];
-                                w->dec_hi_@type@ = bior6_@M@_@type@[1];
-                                w->rec_lo_@type@ = bior6_@M@_@type@[2];
-                                w->rec_hi_@type@ = bior6_@M@_@type@[3];
-                            /**end repeat1**/
-                            w->dec_len = w->rec_len = 2 * @M@ + 2;
-                            break;
-                    /**end repeat**/
-
-                    default:
-                        wtfree(w);
-                        return NULL;
-                }
+            w->dec_lo_float = bior_float[N - 1][M_idx][0];
+            w->dec_hi_float = bior_float[N - 1][M_idx][1];
+            w->rec_lo_float = bior_float[N - 1][M_idx][2];
+            w->rec_hi_float = bior_float[N - 1][M_idx][3];
+            w->dec_lo_double = bior_double[N - 1][M_idx][0];
+            w->dec_hi_double = bior_double[N - 1][M_idx][1];
+            w->rec_lo_double = bior_double[N - 1][M_idx][2];
+            w->rec_hi_double = bior_double[N - 1][M_idx][3];
             break;
+        }
 
         /* Discrete FIR filter approximation of Meyer wavelet */
         case 'm':

@@ -490,4 +490,62 @@ static TYPE * const CAT(coif_, TYPE)[5][4] = {
   {CAT(coif5_, TYPE)[0], CAT(coif5_, TYPE)[1], CAT(coif5_, TYPE)[2], CAT(coif5_, TYPE)[3]},
 };
 
+static TYPE * const CAT(bior1_, TYPE)[3][4] = {
+  {CAT(bior1_1_, TYPE)[0], CAT(bior1_1_, TYPE)[1],
+   CAT(bior1_1_, TYPE)[2], CAT(bior1_1_, TYPE)[3]},
+  {CAT(bior1_3_, TYPE)[0], CAT(bior1_3_, TYPE)[1],
+   CAT(bior1_3_, TYPE)[2], CAT(bior1_3_, TYPE)[3]},
+  {CAT(bior1_5_, TYPE)[0], CAT(bior1_5_, TYPE)[1],
+   CAT(bior1_5_, TYPE)[2], CAT(bior1_5_, TYPE)[3]},
+};
+
+static TYPE * const CAT(bior2_, TYPE)[4][4] = {
+  {CAT(bior2_2_, TYPE)[0], CAT(bior2_2_, TYPE)[1],
+   CAT(bior2_2_, TYPE)[2], CAT(bior2_2_, TYPE)[3]},
+  {CAT(bior2_4_, TYPE)[0], CAT(bior2_4_, TYPE)[1],
+   CAT(bior2_4_, TYPE)[2], CAT(bior2_4_, TYPE)[3]},
+  {CAT(bior2_6_, TYPE)[0], CAT(bior2_6_, TYPE)[1],
+   CAT(bior2_6_, TYPE)[2], CAT(bior2_6_, TYPE)[3]},
+  {CAT(bior2_8_, TYPE)[0], CAT(bior2_8_, TYPE)[1],
+   CAT(bior2_8_, TYPE)[2], CAT(bior2_8_, TYPE)[3]},
+};
+
+static TYPE * const CAT(bior3_, TYPE)[5][4] = {
+  {CAT(bior3_1_, TYPE)[0], CAT(bior3_1_, TYPE)[1],
+   CAT(bior3_1_, TYPE)[2], CAT(bior3_1_, TYPE)[3]},
+  {CAT(bior3_3_, TYPE)[0], CAT(bior3_3_, TYPE)[1],
+   CAT(bior3_3_, TYPE)[2], CAT(bior3_3_, TYPE)[3]},
+  {CAT(bior3_5_, TYPE)[0], CAT(bior3_5_, TYPE)[1],
+   CAT(bior3_5_, TYPE)[2], CAT(bior3_5_, TYPE)[3]},
+  {CAT(bior3_7_, TYPE)[0], CAT(bior3_7_, TYPE)[1],
+   CAT(bior3_7_, TYPE)[2], CAT(bior3_7_, TYPE)[3]},
+  {CAT(bior3_9_, TYPE)[0], CAT(bior3_9_, TYPE)[1],
+   CAT(bior3_9_, TYPE)[2], CAT(bior3_9_, TYPE)[3]},
+};
+
+static TYPE * const CAT(bior4_, TYPE)[1][4] = {
+  {CAT(bior4_4_, TYPE)[0], CAT(bior4_4_, TYPE)[1],
+   CAT(bior4_4_, TYPE)[2], CAT(bior4_4_, TYPE)[3]},
+};
+
+static TYPE * const CAT(bior5_, TYPE)[1][4] = {
+  {CAT(bior5_5_, TYPE)[0], CAT(bior5_5_, TYPE)[1],
+   CAT(bior5_5_, TYPE)[2], CAT(bior5_5_, TYPE)[3]},
+};
+
+static TYPE * const CAT(bior6_, TYPE)[1][4] = {
+  {CAT(bior6_8_, TYPE)[0], CAT(bior6_8_, TYPE)[1],
+   CAT(bior6_8_, TYPE)[2], CAT(bior6_8_, TYPE)[3]},
+};
+
+// Array of 6 pointers to array of 4 pointers to float
+static TYPE * const (* const CAT(bior_, TYPE)[6])[4] = {
+  CAT(bior1_, TYPE),
+  CAT(bior2_, TYPE),
+  CAT(bior3_, TYPE),
+  CAT(bior4_, TYPE),
+  CAT(bior5_, TYPE),
+  CAT(bior6_, TYPE),
+};
+
 #endif /* TYPE */
