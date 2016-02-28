@@ -402,32 +402,16 @@ Wavelet* copy_wavelet(Wavelet* base)
 void free_wavelet(Wavelet *w){
 
     if(w->_builtin == 0){
-
         /* deallocate filters */
+        wtfree(w->dec_lo_float);
+        wtfree(w->dec_hi_float);
+        wtfree(w->rec_lo_float);
+        wtfree(w->rec_hi_float);
 
-        /**begin repeat
-         * #type = double, float#
-         */
-            if(w->dec_lo_@type@ != NULL){
-                wtfree(w->dec_lo_@type@);
-                w->dec_lo_@type@ = NULL;
-            }
-
-            if(w->dec_hi_@type@ != NULL){
-                wtfree(w->dec_hi_@type@);
-                w->dec_hi_@type@ = NULL;
-            }
-
-            if(w->rec_lo_@type@ != NULL){
-                wtfree(w->rec_lo_@type@);
-                w->rec_lo_@type@ = NULL;
-            }
-
-            if(w->rec_hi_@type@ != NULL){
-                wtfree(w->rec_hi_@type@);
-                w->rec_hi_@type@ = NULL;
-            }
-        /**end repeat**/
+        wtfree(w->dec_lo_double);
+        wtfree(w->dec_hi_double);
+        wtfree(w->rec_lo_double);
+        wtfree(w->rec_hi_double);
     }
 
     /* finally free struct */
