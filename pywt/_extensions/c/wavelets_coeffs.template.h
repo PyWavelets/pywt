@@ -482,4 +482,12 @@ static TYPE * const CAT(sym_, TYPE)[19][4] = {
   {CAT(sym20_, TYPE)[0], CAT(sym20_, TYPE)[1], CAT(sym20_, TYPE)[2], CAT(sym20_, TYPE)[3]},
 };
 
+static TYPE * const CAT(coif_, TYPE)[5][4] = {
+  {CAT(coif1_, TYPE)[0], CAT(coif1_, TYPE)[1], CAT(coif1_, TYPE)[2], CAT(coif1_, TYPE)[3]},
+  {CAT(coif2_, TYPE)[0], CAT(coif2_, TYPE)[1], CAT(coif2_, TYPE)[2], CAT(coif2_, TYPE)[3]},
+  {CAT(coif3_, TYPE)[0], CAT(coif3_, TYPE)[1], CAT(coif3_, TYPE)[2], CAT(coif3_, TYPE)[3]},
+  {CAT(coif4_, TYPE)[0], CAT(coif4_, TYPE)[1], CAT(coif4_, TYPE)[2], CAT(coif4_, TYPE)[3]},
+  {CAT(coif5_, TYPE)[0], CAT(coif5_, TYPE)[1], CAT(coif5_, TYPE)[2], CAT(coif5_, TYPE)[3]},
+};
+
 #endif /* TYPE */

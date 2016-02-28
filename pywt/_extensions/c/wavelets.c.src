@@ -129,6 +129,7 @@ Wavelet* wavelet(char name, unsigned int order)
         /* Coiflets wavelets family */
         case 'c':
         case 'C':
+            if (order < 1 || order > 5) return NULL;
             w = wtmalloc(sizeof(Wavelet));
             if(w == NULL) return NULL;
             w->_builtin = 1;
@@ -145,26 +146,14 @@ Wavelet* wavelet(char name, unsigned int order)
             w->family_name = "Coiflets";
             w->short_name = "coif";
 
-            switch (order) {
-                /**begin repeat
-                 * #order = 1, 2, 3, 4, 5#
-                 */
-                case @order@:
-                    /**begin repeat1
-                     * #type = double, float#
-                     */
-                    w->dec_lo_@type@ = coif@order@_@type@[0];
-                    w->dec_hi_@type@ = coif@order@_@type@[1];
-                    w->rec_lo_@type@ = coif@order@_@type@[2];
-                    w->rec_hi_@type@ = coif@order@_@type@[3];
-                    /**end repeat1**/
-                    break;
-                /**end repeat**/
-
-                default:
-                    wtfree(w);
-                    return NULL;
-            }
+            w->dec_lo_float = coif_float[order - 1][0];
+            w->dec_hi_float = coif_float[order - 1][1];
+            w->rec_lo_float = coif_float[order - 1][2];
+            w->rec_hi_float = coif_float[order - 1][3];
+            w->dec_lo_double = coif_double[order - 1][0];
+            w->dec_hi_double = coif_double[order - 1][1];
+            w->rec_lo_double = coif_double[order - 1][2];
+            w->rec_hi_double = coif_double[order - 1][3];
             break;
 
         /* Biorthogonal wavelets family */
