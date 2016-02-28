@@ -32,24 +32,20 @@ Wavelet* wavelet(char name, unsigned int order)
         {
             size_t i;
             for(i = 0; i < w->rec_len; ++i){
-                /**begin repeat
-                 * #type = double, float#
-                 */
-                w->rec_lo_@type@[i] = wtmp->dec_lo_@type@[wtmp->dec_len-1-i];
-                w->rec_hi_@type@[i] = wtmp->dec_hi_@type@[wtmp->dec_len-1-i];
-                /**end repeat**/
+                w->rec_lo_float[i] = wtmp->dec_lo_float[wtmp->dec_len-1-i];
+                w->rec_hi_float[i] = wtmp->dec_hi_float[wtmp->dec_len-1-i];
+                w->rec_lo_double[i] = wtmp->dec_lo_double[wtmp->dec_len-1-i];
+                w->rec_hi_double[i] = wtmp->dec_hi_double[wtmp->dec_len-1-i];
             }
         }
 
         {
             size_t i;
             for(i = 0; i < w->dec_len; ++i){
-                /**begin repeat
-                 * #type = double, float#
-                 */
-                w->dec_hi_@type@[i] = wtmp->rec_hi_@type@[wtmp->rec_len-1-i];
-                w->dec_lo_@type@[i] = wtmp->rec_lo_@type@[wtmp->rec_len-1-i];
-                /**end repeat**/
+                w->dec_hi_float[i] = wtmp->rec_hi_float[wtmp->rec_len-1-i];
+                w->dec_lo_float[i] = wtmp->rec_lo_float[wtmp->rec_len-1-i];
+                w->dec_hi_double[i] = wtmp->rec_hi_double[wtmp->rec_len-1-i];
+                w->dec_lo_double[i] = wtmp->rec_lo_double[wtmp->rec_len-1-i];
             }
         }
 
