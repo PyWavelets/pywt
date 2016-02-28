@@ -318,27 +318,32 @@ Wavelet* copy_wavelet(Wavelet* base)
 
     w->_builtin = 0;
 
-    /**begin repeat
-     * #type = double, float#
-     */
+    w->dec_lo_float = wtmalloc(w->dec_len * sizeof(float));
+    w->dec_hi_float = wtmalloc(w->dec_len * sizeof(float));
+    w->rec_lo_float = wtmalloc(w->rec_len * sizeof(float));
+    w->rec_hi_float = wtmalloc(w->rec_len * sizeof(float));
+    w->dec_lo_double = wtmalloc(w->dec_len * sizeof(double));
+    w->dec_hi_double = wtmalloc(w->dec_len * sizeof(double));
+    w->rec_lo_double = wtmalloc(w->rec_len * sizeof(double));
+    w->rec_hi_double = wtmalloc(w->rec_len * sizeof(double));
 
-        w->dec_lo_@type@ = wtcalloc(w->dec_len, sizeof(@type@));
-        w->dec_hi_@type@ = wtcalloc(w->dec_len, sizeof(@type@));
-        w->rec_lo_@type@ = wtcalloc(w->rec_len, sizeof(@type@));
-        w->rec_hi_@type@ = wtcalloc(w->rec_len, sizeof(@type@));
+    if(w->dec_lo_float == NULL || w->dec_hi_float == NULL ||
+       w->rec_lo_float == NULL || w->rec_hi_float == NULL ||
+       w->dec_lo_double == NULL || w->dec_hi_double == NULL ||
+       w->rec_lo_double == NULL || w->rec_hi_double == NULL){
+      free_wavelet(w);
+      return NULL;
+    }
 
-        if(w->dec_lo_@type@ == NULL || w->dec_hi_@type@ == NULL || w->rec_lo_@type@ == NULL || w->rec_hi_@type@ == NULL){
-            free_wavelet(w);
-            return NULL;
-        }
-
-        // FIXME: Test coverage, the only use in `wavelet` overwrites the filter
-        memcpy(w->dec_lo_@type@, base->dec_lo_@type@, w->dec_len * sizeof(@type@));
-        memcpy(w->dec_hi_@type@, base->dec_hi_@type@, w->dec_len * sizeof(@type@));
-        memcpy(w->rec_lo_@type@, base->rec_lo_@type@, w->rec_len * sizeof(@type@));
-        memcpy(w->rec_hi_@type@, base->rec_hi_@type@, w->rec_len * sizeof(@type@));
-
-    /**end repeat**/
+    // FIXME: Test coverage, the only use in `wavelet` overwrites the filter
+    memcpy(w->dec_lo_float, base->dec_lo_float, w->dec_len * sizeof(float));
+    memcpy(w->dec_hi_float, base->dec_hi_float, w->dec_len * sizeof(float));
+    memcpy(w->rec_lo_float, base->rec_lo_float, w->rec_len * sizeof(float));
+    memcpy(w->rec_hi_float, base->rec_hi_float, w->rec_len * sizeof(float));
+    memcpy(w->dec_lo_double, base->dec_lo_double, w->dec_len * sizeof(double));
+    memcpy(w->dec_hi_double, base->dec_hi_double, w->dec_len * sizeof(double));
+    memcpy(w->rec_lo_double, base->rec_lo_double, w->rec_len * sizeof(double));
+    memcpy(w->rec_hi_double, base->rec_hi_double, w->rec_len * sizeof(double));
 
     return w;
 }
