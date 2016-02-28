@@ -269,19 +269,23 @@ Wavelet* blank_wavelet(size_t filters_length)
 
     w->dec_len = w->rec_len = filters_length;
 
-    /**begin repeat
-     * #type = double, float#
-     */
-        w->dec_lo_@type@ = wtcalloc(filters_length, sizeof(@type@));
-        w->dec_hi_@type@ = wtcalloc(filters_length, sizeof(@type@));
-        w->rec_lo_@type@ = wtcalloc(filters_length, sizeof(@type@));
-        w->rec_hi_@type@ = wtcalloc(filters_length, sizeof(@type@));
+    w->dec_lo_float = wtcalloc(filters_length, sizeof(float));
+    w->dec_hi_float = wtcalloc(filters_length, sizeof(float));
+    w->rec_lo_float = wtcalloc(filters_length, sizeof(float));
+    w->rec_hi_float = wtcalloc(filters_length, sizeof(float));
 
-        if(w->dec_lo_@type@ == NULL || w->dec_hi_@type@ == NULL || w->rec_lo_@type@ == NULL || w->rec_hi_@type@ == NULL){
-            free_wavelet(w);
-            return NULL;
-        }
-    /**end repeat**/
+    w->dec_lo_double = wtcalloc(filters_length, sizeof(double));
+    w->dec_hi_double = wtcalloc(filters_length, sizeof(double));
+    w->rec_lo_double = wtcalloc(filters_length, sizeof(double));
+    w->rec_hi_double = wtcalloc(filters_length, sizeof(double));
+
+    if(w->dec_lo_float == NULL || w->dec_hi_float == NULL ||
+       w->rec_lo_float == NULL || w->rec_hi_float == NULL ||
+       w->dec_lo_double == NULL || w->dec_hi_double == NULL ||
+       w->rec_lo_double == NULL || w->rec_hi_double == NULL){
+        free_wavelet(w);
+        return NULL;
+    }
 
     /* set properties to "blank" values */
     w->vanishing_moments_psi = 0;
