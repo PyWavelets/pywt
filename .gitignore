@@ -26,8 +26,6 @@ pip-log.txt
 # Project working files
 # Expanded Cython
 pywt/_extensions/*.[ch]
-# Expanded .src file
-pywt/_extensions/c/wavelets.[ch]
 cythonize.dat
 pywt/__config__.py
 pywt/version.py
