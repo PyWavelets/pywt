@@ -289,14 +289,15 @@ Wavelet* wavelet(char name, unsigned int order)
             w->family_name = "Discrete Meyer (FIR Approximation)";
             w->short_name = "dmey";
 
-            /**begin repeat
-             * #type = double, float#
-             */
-                w->dec_lo_@type@ = dmey_@type@[0];
-                w->dec_hi_@type@ = dmey_@type@[1];
-                w->rec_lo_@type@ = dmey_@type@[2];
-                w->rec_hi_@type@ = dmey_@type@[3];
-            /**end repeat**/
+            w->dec_lo_float = dmey_float[0];
+            w->dec_hi_float = dmey_float[1];
+            w->rec_lo_float = dmey_float[2];
+            w->rec_hi_float = dmey_float[3];
+            w->dec_lo_double = dmey_double[0];
+            w->dec_hi_double = dmey_double[1];
+            w->rec_lo_double = dmey_double[2];
+            w->rec_hi_double = dmey_double[3];
+
             w->dec_len = w->rec_len = 62;
             break;
 
