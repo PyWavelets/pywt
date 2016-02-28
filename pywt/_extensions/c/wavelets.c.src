@@ -64,17 +64,16 @@ Wavelet* wavelet(char name, unsigned int order)
         return w;
     }
 
-    w = wtmalloc(sizeof(Wavelet));
-    if(w == NULL)
-        return NULL;
-
-    w->_builtin = 1;
-
     switch(name){
 
         /* Daubechies wavelets family */
         case 'd':
         case 'D':
+            if (order < 1 || order > 20) return NULL;
+            w = wtmalloc(sizeof(Wavelet));
+            if(w == NULL) return NULL;
+            w->_builtin = 1;
+
             w->dec_len = w->rec_len = 2*order;
 
             w->vanishing_moments_psi = order;
@@ -87,30 +86,23 @@ Wavelet* wavelet(char name, unsigned int order)
             w->family_name = "Daubechies";
             w->short_name = "db";
 
-            switch (order) {
-                /**begin repeat
-                 * #order = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20#
-                 */
-                case @order@:
-                    /**begin repeat1
-                     * #type = double, float#
-                     */
-                    w->dec_lo_@type@ = db@order@_@type@[0];
-                    w->dec_hi_@type@ = db@order@_@type@[1];
-                    w->rec_lo_@type@ = db@order@_@type@[2];
-                    w->rec_hi_@type@ = db@order@_@type@[3];
-                    /**end repeat1**/
-                    break;
-                /**end repeat**/
-                default:
-                    wtfree(w);
-                    return NULL;
-            }
+            w->dec_lo_float = db_float[order - 1][0];
+            w->dec_hi_float = db_float[order - 1][1];
+            w->rec_lo_float = db_float[order - 1][2];
+            w->rec_hi_float = db_float[order - 1][3];
+            w->dec_lo_double = db_double[order - 1][0];
+            w->dec_hi_double = db_double[order - 1][1];
+            w->rec_lo_double = db_double[order - 1][2];
+            w->rec_hi_double = db_double[order - 1][3];
             break;
 
         /* Symlets wavelets family */
         case 's':
         case 'S':
+            w = wtmalloc(sizeof(Wavelet));
+            if(w == NULL) return NULL;
+            w->_builtin = 1;
+
             w->dec_len = w->rec_len = order << 1;
 
             w->vanishing_moments_psi = order;
@@ -148,6 +140,10 @@ Wavelet* wavelet(char name, unsigned int order)
         /* Coiflets wavelets family */
         case 'c':
         case 'C':
+            w = wtmalloc(sizeof(Wavelet));
+            if(w == NULL) return NULL;
+            w->_builtin = 1;
+
             w->dec_len = w->rec_len = order * 6;
 
             w->vanishing_moments_psi = 2*order;
@@ -185,6 +181,9 @@ Wavelet* wavelet(char name, unsigned int order)
         /* Biorthogonal wavelets family */
         case 'b':
         case 'B':
+            w = wtmalloc(sizeof(Wavelet));
+            if(w == NULL) return NULL;
+            w->_builtin = 1;
 
             w->vanishing_moments_psi = order/10;
             w->vanishing_moments_phi = -1;
@@ -302,6 +301,9 @@ Wavelet* wavelet(char name, unsigned int order)
         /* Discrete FIR filter approximation of Meyer wavelet */
         case 'm':
         case 'M':
+            w = wtmalloc(sizeof(Wavelet));
+            if(w == NULL) return NULL;
+            w->_builtin = 1;
 
             w->vanishing_moments_psi = -1;
             w->vanishing_moments_phi = -1;
@@ -325,7 +327,6 @@ Wavelet* wavelet(char name, unsigned int order)
             break;
 
         default:
-            wtfree(w);
             return NULL;
     }
     return w;
