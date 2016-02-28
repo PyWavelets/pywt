@@ -29,3 +29,9 @@ pywt/_extensions/*.[ch]
 cythonize.dat
 pywt/version.py
 build.log
+
+# asv files
+asv/env
+asv/html
+asv/pywt
+asv/results
