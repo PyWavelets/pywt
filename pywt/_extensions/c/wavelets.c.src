@@ -7,7 +7,7 @@
 
 Wavelet* wavelet(char name, unsigned int order)
 {
-    Wavelet *w, *wtmp;
+    Wavelet *w;
 
     /* Haar wavelet */
     if(name == 'h' || name == 'H'){
@@ -20,13 +20,11 @@ Wavelet* wavelet(char name, unsigned int order)
 
     /* Reverse biorthogonal wavelets family */
     } else if (name == 'r' || name == 'R') {
-
         /* rbio is like bior, only with switched filters */
-        wtmp = wavelet('b', order);
-        w = copy_wavelet(wtmp);
+        Wavelet * wtmp = wavelet('b', order);
 
-        if(w == NULL)
-            return NULL;
+        w = copy_wavelet(wtmp);
+        if(w == NULL) return NULL;
 
         w->dec_len = wtmp->rec_len;
         w->rec_len = wtmp->dec_len;
