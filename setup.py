@@ -7,6 +7,7 @@ import subprocess
 from functools import partial
 
 from setuptools import setup, Extension
+from Cython.Build import cythonize
 from numpy import get_include as get_numpy_include
 
 MAJOR = 0
@@ -100,16 +101,6 @@ if sys.platform == "darwin":
     os.environ["COPYFILE_DISABLE"] = "true"
 
 
-def generate_cython():
-    cwd = os.path.abspath(os.path.dirname(__file__))
-    print("Cythonizing sources")
-    p = subprocess.call([sys.executable,
-                          os.path.join(cwd, 'util', 'cythonize.py'),
-                          'pywt'],
-                         cwd=cwd)
-    if p != 0:
-        raise RuntimeError("Running cythonize failed!")
-
 make_ext_path = partial(os.path.join, "pywt", "_extensions")
 
 sources = ["c/common.c", "c/convolution.c", "c/wt.c", "c/wavelets.c"]
@@ -125,17 +116,17 @@ header_templates = list(map(make_ext_path, header_templates))
 
 ext_modules = [
     Extension('pywt._extensions._pywt',
-              sources=[make_ext_path("_pywt.c",)] + sources,
+              sources=[make_ext_path("_pywt.pyx",)] + sources,
               depends=source_templates + header_templates + headers,
               include_dirs=[make_ext_path("c"), get_numpy_include()],
               define_macros=[("PY_EXTENSION", None)],),
     Extension('pywt._extensions._dwt',
-              sources=[make_ext_path("_dwt.c")] + sources,
+              sources=[make_ext_path("_dwt.pyx")] + sources,
               depends=source_templates + header_templates + headers,
               include_dirs=[make_ext_path("c"), get_numpy_include()],
               define_macros=[("PY_EXTENSION", None)],),
     Extension('pywt._extensions._swt',
-              sources=[make_ext_path("_swt.c")] + sources,
+              sources=[make_ext_path("_swt.pyx")] + sources,
               depends=source_templates + header_templates + headers,
               include_dirs=[make_ext_path("c"), get_numpy_include()],
               define_macros=[("PY_EXTENSION", None)],),
@@ -144,11 +135,6 @@ ext_modules = [
 if __name__ == '__main__':
     # Rewrite the version file everytime
     write_version_py()
-
-    cwd = os.path.abspath(os.path.dirname(__file__))
-    if not os.path.exists(os.path.join(cwd, 'PKG-INFO')):
-        # Generate Cython sources, unless building from source release
-        generate_cython()
 
     setup(
         name="PyWavelets",
@@ -191,6 +177,6 @@ if __name__ == '__main__':
         version=get_version_info()[0],
 
         packages=['pywt', 'pywt._extensions'],
-        ext_modules=ext_modules,
+        ext_modules=cythonize(ext_modules),
         test_suite='nose.collector',
     )
