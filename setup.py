@@ -4,7 +4,10 @@
 import os
 import sys
 import subprocess
+from functools import partial
 
+from setuptools import setup, Extension
+from numpy import get_include as get_numpy_include
 
 MAJOR = 0
 MINOR = 5
@@ -97,9 +100,6 @@ if sys.platform == "darwin":
     os.environ["COPYFILE_DISABLE"] = "true"
 
 
-setup_args = {}
-
-
 def generate_cython():
     cwd = os.path.abspath(os.path.dirname(__file__))
     print("Cythonizing sources")
@@ -110,30 +110,47 @@ def generate_cython():
     if p != 0:
         raise RuntimeError("Running cythonize failed!")
 
+make_ext_path = partial(os.path.join, "pywt", "_extensions")
 
-def configuration(parent_package='',top_path=None):
-    from numpy.distutils.misc_util import Configuration
-    config = Configuration(None, parent_package, top_path)
-    config.set_options(ignore_setup_xxx_py=True,
-                       assume_default_configuration=True,
-                       delegate_options_to_subpackages=True,
-                       quiet=True)
+sources = ["c/common.c", "c/convolution.c", "c/wt.c", "c/wavelets.c"]
+sources = list(map(make_ext_path, sources))
+source_templates = ["c/convolution.template.c", "c/wt.template.c"]
+source_templates = list(map(make_ext_path, source_templates))
+headers = ["c/templating.h", "c/wavelets_coeffs.h",
+            "c/common.h", "c/convolution.h", "c/wt.h", "c/wavelets.h"]
+headers = list(map(make_ext_path, headers))
+header_templates = ["c/convolution.template.h", "c/wt.template.h",
+                    "c/wavelets_coeffs.template.h"]
+header_templates = list(map(make_ext_path, header_templates))
 
-    config.add_subpackage('pywt')
-    config.add_subpackage('pywt/data')
-    config.add_data_files('pywt/data/*npz')
-    config.add_data_files('pywt/data/*npy')
+ext_modules = [
+    Extension('pywt._extensions._pywt',
+              sources=[make_ext_path("_pywt.c",)] + sources,
+              depends=source_templates + header_templates + headers,
+              include_dirs=[make_ext_path("c"), get_numpy_include()],
+              define_macros=[("PY_EXTENSION", None)],),
+    Extension('pywt._extensions._dwt',
+              sources=[make_ext_path("_dwt.c")] + sources,
+              depends=source_templates + header_templates + headers,
+              include_dirs=[make_ext_path("c"), get_numpy_include()],
+              define_macros=[("PY_EXTENSION", None)],),
+    Extension('pywt._extensions._swt',
+              sources=[make_ext_path("_swt.c")] + sources,
+              depends=source_templates + header_templates + headers,
+              include_dirs=[make_ext_path("c"), get_numpy_include()],
+              define_macros=[("PY_EXTENSION", None)],),
+]
 
-    config.get_version('pywt/version.py')
-    return config
-
-
-def setup_package():
-
+if __name__ == '__main__':
     # Rewrite the version file everytime
     write_version_py()
 
-    metadata = dict(
+    cwd = os.path.abspath(os.path.dirname(__file__))
+    if not os.path.exists(os.path.join(cwd, 'PKG-INFO')):
+        # Generate Cython sources, unless building from source release
+        generate_cython()
+
+    setup(
         name="PyWavelets",
         maintainer="The PyWavelets Developers",
         maintainer_email="http://groups.google.com/group/pywavelets",
@@ -171,42 +188,9 @@ def setup_package():
             "Topic :: Software Development :: Libraries :: Python Modules"
         ],
         platforms=["Windows", "Linux", "Solaris", "Mac OS-X", "Unix"],
+        version=get_version_info()[0],
+
+        packages=['pywt', 'pywt._extensions'],
+        ext_modules=ext_modules,
         test_suite='nose.collector',
-        cmdclass={},
-        **setup_args
     )
-    if len(sys.argv) >= 2 and ('--help' in sys.argv[1:] or
-            sys.argv[1] in ('--help-commands', 'egg_info', '--version',
-                            'clean')):
-        # For these actions, NumPy is not required.
-        #
-        # They are required to succeed without Numpy for example when
-        # pip is used to install PyWavelets when Numpy is not yet present in
-        # the system.
-        try:
-            from setuptools import setup
-        except ImportError:
-            from distutils.core import setup
-
-        FULLVERSION, GIT_REVISION = get_version_info()
-        metadata['version'] = FULLVERSION
-    else:
-        if (len(sys.argv) >= 2 and sys.argv[1] == 'bdist_wheel') or (
-                    'develop' in sys.argv):
-            # bdist_wheel needs setuptools
-            import setuptools
-
-        from numpy.distutils.core import setup
-
-        cwd = os.path.abspath(os.path.dirname(__file__))
-        if not os.path.exists(os.path.join(cwd, 'PKG-INFO')):
-            # Generate Cython sources, unless building from source release
-            generate_cython()
-
-    metadata['configuration'] = configuration
-
-    setup(**metadata)
-
-
-if __name__ == '__main__':
-    setup_package()
