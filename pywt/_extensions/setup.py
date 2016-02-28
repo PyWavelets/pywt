@@ -8,7 +8,7 @@ def configuration(parent_package='', top_path=None):
 
     config = Configuration('_extensions', parent_package, top_path)
 
-    sources = ["c/common.c", "c/convolution.c", "c/wt.c", "c/wavelets.c.src"]
+    sources = ["c/common.c", "c/convolution.c", "c/wt.c", "c/wavelets.c"]
     source_templates = ["c/convolution.template.c", "c/wt.template.c"]
     headers = ["c/templating.h", "c/wavelets_coeffs.h",
                "c/common.h", "c/convolution.h", "c/wt.h", "c/wavelets.h"]
