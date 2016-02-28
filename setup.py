@@ -179,4 +179,7 @@ if __name__ == '__main__':
         packages=['pywt', 'pywt._extensions'],
         ext_modules=cythonize(ext_modules),
         test_suite='nose.collector',
+
+        # Functions from both are imported in this file, so not useful
+        install_requires=["numpy>=1.6.2", "cython>=0.22"],
     )
