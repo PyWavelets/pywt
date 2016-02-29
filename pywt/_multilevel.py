@@ -287,6 +287,8 @@ def iswt(coeffs, wavelet):
 
     # num_levels, equivalent to the decomposition level, n
     num_levels = len(coeffs)
+    if not isinstance(wavelet, Wavelet):
+        wavelet = Wavelet(wavelet)
     for j in range(num_levels, 0, -1):
         step_size = int(pow(2, j-1))
         last_index = step_size
@@ -367,6 +369,8 @@ def iswt2(coeffs, wavelet):
 
     # num_levels, equivalent to the decomposition level, n
     num_levels = len(coeffs)
+    if not isinstance(wavelet, Wavelet):
+        wavelet = Wavelet(wavelet)
     for j in range(num_levels, 0, -1):
         step_size = int(pow(2, j-1))
         last_index = step_size
