@@ -18,9 +18,9 @@ environment:
 build: off
 
 install:
-  - "%PYTHON%\\python.exe -m pip install --upgrade pip"
-  - "%PYTHON%\\python.exe -m pip install --upgrade wheel"
-  - "%PYTHON%\\python.exe -m pip install Cython numpy nose
+  - "util\\appveyor\\build.cmd %PYTHON%\\python.exe -m pip install --upgrade pip"
+  - "util\\appveyor\\build.cmd %PYTHON%\\python.exe -m pip install --upgrade wheel"
+  - "util\\appveyor\\build.cmd %PYTHON%\\python.exe -m pip install Cython numpy nose
     --cache-dir c:\\tmp\\pip-cache"
 
 test_script:
