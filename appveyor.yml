@@ -17,7 +17,7 @@ environment:
 build: off
 
 install:
-  - "%PYTHON%\\python.exe -m pip install wheel numpy Cython"
+  - "%PYTHON%\\python.exe -m pip install wheel numpy Cython nose"
 
 test_script:
   - "util/appveyor/build.cmd %PYTHON%\\python.exe setup.py test"
