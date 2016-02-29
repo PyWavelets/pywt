@@ -36,6 +36,7 @@ addons:
 cache:
   directories:
     - $HOME/.ccache
+    - $HOME/.cache/pip
 
 before_install:
   - export PATH=/usr/lib/ccache:$PATH
@@ -44,7 +45,8 @@ before_install:
   - df -h
   - ulimit -a
   # Speed up install by not compiling Cython
-  - travis_retry pip install --install-option="--no-cython-compile" Cython==0.22
+  - travis_retry pip install wheel
+  - travis_retry pip install Cython
   - travis_retry pip install $NUMPYSPEC
   - travis_retry pip install nose
   - pip install coverage
