@@ -22,16 +22,12 @@ matrix:
     - python: 3.4
       env:
         - NUMPYSPEC=numpy
-    - python: 3.3
-      env:
-        - NUMPYSPEC=numpy
     - python: 2.6
       env:
-        - OPTIMIZE=-OO
         - NUMPYSPEC="numpy==1.7.2"
     - python: 2.7
       env:
-        - NUMPYSPEC="--upgrade git+git://github.com/numpy/numpy.git@v1.9.1"
+        - NUMPYSPEC="numpy==1.9.1"
 
 addons:
   apt:
@@ -56,4 +52,5 @@ before_install:
   - set -o pipefail
 
 script:
-  - python -u $OPTIMIZE runtests.py -g -m full --coverage --doctests
+  # TODO: Re-enable doctests and coverage
+  - python setup.py test
