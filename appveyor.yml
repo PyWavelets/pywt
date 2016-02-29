@@ -11,6 +11,7 @@ environment:
     - PYTHON: "C:\\Python27-x64"
     - PYTHON: "C:\\Python34"
     - PYTHON: "C:\\Python34-x64"
+      DISTUTILS_USE_SDK: "1"
     - PYTHON: "C:\\Python35"
     - PYTHON: "C:\\Python35-x64"
 
@@ -22,10 +23,10 @@ install:
     --cache-dir c:\\tmp\\pip-cache"
 
 test_script:
-  - "util/appveyor/build.cmd %PYTHON%\\python.exe setup.py test"
+  - "util\\appveyor\\build.cmd %PYTHON%\\python.exe setup.py test"
 
 after_test:
-  - "util/appveyor/build.cmd %PYTHON%\\python.exe setup.py bdist_wheel"
+  - "util\\appveyor\\build.cmd %PYTHON%\\python.exe setup.py bdist_wheel"
 
 artifacts:
   # Archive the generated wheel package in the ci.appveyor.com build report.
