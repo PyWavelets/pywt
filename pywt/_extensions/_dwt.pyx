@@ -20,9 +20,8 @@ cpdef dwt_coeff_len(size_t data_len, size_t filter_len, MODE mode):
 
 
 cpdef dwt_single(data_t[::1] data, Wavelet wavelet, MODE mode):
-    cdef data_t[::1] cA, cD
     cdef size_t output_len = dwt_coeff_len(data.size, wavelet.dec_len, mode)
-
+    cdef np.ndarray cA, cD
     if output_len < 1:
         raise RuntimeError("Invalid output length.")
 
@@ -33,20 +32,21 @@ cpdef dwt_single(data_t[::1] data, Wavelet wavelet, MODE mode):
         cD = np.zeros(output_len, np.float64)
 
         if (c_wt.double_dec_a(&data[0], data.size, wavelet.w,
-                              &cA[0], cA.size, mode) < 0
+                              <double *>cA.data, cA.size, mode) < 0
             or
             c_wt.double_dec_d(&data[0], data.size, wavelet.w,
-                              &cD[0], cD.size, mode) < 0):
+                              <double *>cD.data, cD.size,
+                              mode) < 0):
             raise RuntimeError("C dwt failed.")
     elif data_t is np.float32_t:
         cA = np.zeros(output_len, np.float32)
         cD = np.zeros(output_len, np.float32)
 
         if (c_wt.float_dec_a(&data[0], data.size, wavelet.w,
-                             &cA[0], cA.size, mode) < 0
+                             <float *>cA.data, cA.size, mode) < 0
             or
             c_wt.float_dec_d(&data[0], data.size, wavelet.w,
-                             &cD[0], cD.size, mode) < 0):
+                             <float *>cD.data, cD.size, mode) < 0):
             raise RuntimeError("C dwt failed.")
 
     return (cA, cD)
@@ -98,15 +98,18 @@ cpdef dwt_axis(np.ndarray data, Wavelet wavelet, MODE mode, unsigned int axis=0)
     return (cA, cD)
 
 
-cpdef idwt_single(data_t[::1] cA, data_t[::1] cD, Wavelet wavelet, MODE mode):
-    cdef data_t[::1] rec
+cpdef idwt_single(np.ndarray cA, np.ndarray cD, Wavelet wavelet, MODE mode):
     cdef size_t input_len, rec_len
+    cdef np.ndarray rec
 
     # check for size difference between arrays
     if cA.size != cD.size:
         raise ValueError("Coefficients arrays must have the same size.")
     else:
         input_len = cA.size
+
+    if cA.dtype != cD.dtype:
+        raise ValueError("Coefficients arrays must have the same dtype.")
 
     # find reconstruction buffer length
     rec_len = common.idwt_buffer_length(input_len, wavelet.rec_len, mode)
@@ -115,20 +118,20 @@ cpdef idwt_single(data_t[::1] cA, data_t[::1] cD, Wavelet wavelet, MODE mode):
                "Wavelet and mode must be the same as used for decomposition.")
         raise ValueError(msg)
 
-    # call idwt func.  one of cA/cD can be None, then only
+        # call idwt func.  one of cA/cD can be None, then only
     # reconstruction of non-null part will be performed
-    if data_t is np.float64_t:
+    if cA.dtype == np.float64:
         rec = np.zeros(rec_len, dtype=np.float64)
-        if c_wt.double_idwt(&cA[0], cA.size,
-                            &cD[0], cD.size,
-                            &rec[0], rec.size,
+        if c_wt.double_idwt(<double *>cA.data, cA.size,
+                            <double *>cD.data, cD.size,
+                            <double *>rec.data, rec.size,
                             wavelet.w, mode) < 0:
             raise RuntimeError("C idwt failed.")
-    elif data_t == np.float32_t:
+    elif cA.dtype == np.float32:
         rec = np.zeros(rec_len, dtype=np.float32)
-        if c_wt.float_idwt(&cA[0], cA.size,
-                           &cD[0], cD.size,
-                           &rec[0], rec.size,
+        if c_wt.float_idwt(<float *>cA.data, cA.size,
+                           <float *>cD.data, cD.size,
+                           <float *>rec.data, rec.size,
                            wavelet.w, mode) < 0:
             raise RuntimeError("C idwt failed.")
 
