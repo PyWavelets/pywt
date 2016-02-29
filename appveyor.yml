@@ -18,13 +18,8 @@ build: off
 
 install:
   - "%PYTHON%\\python.exe -m pip install --upgrade pip"
-  - "%PYTHON%\\python.exe -m pip install wheel"
-  - "%PYTHON%\\python.exe -m pip wheel numpy Cython nose
-    --wheel-dir c:\\tmp\\wheels
-    --find-links c:\\tmp\\wheels
-    --download-cache=c:\\tmp\\downloads"
-  - "%PYTHON%\\python.exe -m pip install numpy Cython nose
-    --find-links c:\\tmp\\wheels --no-index"
+  - "%PYTHON%\\python.exe -m pip install wheel numpy Cython nose
+    --cache-dir c:\\tmp\\pip-cache"
 
 test_script:
   - "util/appveyor/build.cmd %PYTHON%\\python.exe setup.py test"
@@ -37,5 +32,4 @@ artifacts:
   - path: dist\*
 
 cache:
-  - "c:\\tmp\\wheels -> appveyor.yml"
-  - "c:\\tmp\\downloads -> appveyor.yml"
+  - "c:\\tmp\\pip-cache -> appveyor.yml"
