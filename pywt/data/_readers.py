@@ -24,8 +24,8 @@ def ascent():
     --------
     >>> import pywt.data
     >>> ascent = pywt.data.ascent()
-    >>> ascent.shape
-    (512, 512)
+    >>> ascent.shape == (512, 512)
+    True
     >>> ascent.max()
     255
 
@@ -59,8 +59,8 @@ def aero():
     --------
     >>> import pywt.data
     >>> aero = pywt.data.ascent()
-    >>> aero.shape
-    (512, 512)
+    >>> aero.shape == (512, 512)
+    True
     >>> aero.max()
     255
 
@@ -94,8 +94,8 @@ def camera():
     --------
     >>> import pywt.data
     >>> camera = pywt.data.ascent()
-    >>> camera.shape
-    (512, 512)
+    >>> camera.shape == (512, 512)
+    True
 
     >>> import matplotlib.pyplot as plt
     >>> plt.gray()
@@ -126,8 +126,8 @@ def ecg():
     --------
     >>> import pywt.data
     >>> ecg = pywt.data.ecg()
-    >>> ecg.shape
-    (1024,)
+    >>> ecg.shape == (1024,)
+    True
 
     >>> import matplotlib.pyplot as plt
     >>> plt.plot(ecg) # doctest: +ELLIPSIS
