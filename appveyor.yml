@@ -20,11 +20,12 @@ build: off
 install:
   - "util\\appveyor\\build.cmd %PYTHON%\\python.exe -m pip install --upgrade pip"
   - "util\\appveyor\\build.cmd %PYTHON%\\python.exe -m pip install --upgrade wheel"
-  - "util\\appveyor\\build.cmd %PYTHON%\\python.exe -m pip install Cython numpy nose
+  - "util\\appveyor\\build.cmd %PYTHON%\\python.exe -m pip install
+    Cython numpy nose matplotlib
     --cache-dir c:\\tmp\\pip-cache"
 
 test_script:
-  - "util\\appveyor\\build.cmd %PYTHON%\\python.exe setup.py test"
+  - "util\\appveyor\\build.cmd %PYTHON%\\python.exe setup.py nosetests"
 
 after_test:
   - "util\\appveyor\\build.cmd %PYTHON%\\python.exe setup.py bdist_wheel"

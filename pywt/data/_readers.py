@@ -31,8 +31,9 @@ def ascent():
 
     >>> import matplotlib.pyplot as plt
     >>> plt.gray()
-    >>> plt.imshow(ascent)
-    >>> plt.show()
+    >>> plt.imshow(ascent) # doctest: +ELLIPSIS
+    <matplotlib.image.AxesImage object at ...>
+    >>> plt.show() # doctest: +SKIP
 
     """
     fname = os.path.join(os.path.dirname(__file__), 'ascent.npz')
@@ -65,8 +66,9 @@ def aero():
 
     >>> import matplotlib.pyplot as plt
     >>> plt.gray()
-    >>> plt.imshow(aero)
-    >>> plt.show()
+    >>> plt.imshow(aero) # doctest: +ELLIPSIS
+    <matplotlib.image.AxesImage object at ...>
+    >>> plt.show() # doctest: +SKIP
 
     """
     fname = os.path.join(os.path.dirname(__file__), 'aero.npz')
@@ -97,8 +99,9 @@ def camera():
 
     >>> import matplotlib.pyplot as plt
     >>> plt.gray()
-    >>> plt.imshow(camera)
-    >>> plt.show()
+    >>> plt.imshow(camera) # doctest: +ELLIPSIS
+    <matplotlib.image.AxesImage object at ...>
+    >>> plt.show() # doctest: +SKIP
 
     """
     fname = os.path.join(os.path.dirname(__file__), 'camera.npz')
@@ -127,8 +130,9 @@ def ecg():
     (1024,)
 
     >>> import matplotlib.pyplot as plt
-    >>> plt.plot(ecg)
-    >>> plt.show()
+    >>> plt.plot(ecg) # doctest: +ELLIPSIS
+    [<matplotlib.lines.Line2D object at ...>]
+    >>> plt.show() # doctest: +SKIP
     """
     fname = os.path.join(os.path.dirname(__file__), 'ecg.npy')
     ecg = np.load(fname)

@@ -2,6 +2,12 @@
 #   http://lint.travis-ci.org/
 language: python
 sudo: false
+
+env:
+  global:
+    # Use non-interactive backend
+    - MPLBACKEND: Agg
+
 matrix:
   include:
     - python: 2.7
@@ -39,9 +45,9 @@ before_install:
   - python -V
   - pip install --upgrade pip
   - pip install --upgrade wheel
-  - pip install Cython $NUMPYSPEC nose coverage
+  - pip install Cython $NUMPYSPEC nose coverage matplotlib
   - set -o pipefail
 
 script:
   # TODO: Re-enable doctests and coverage
-  - python setup.py test
+  - python setup.py nosetests
