@@ -17,7 +17,14 @@ environment:
 build: off
 
 install:
-  - "%PYTHON%\\python.exe -m pip install wheel numpy Cython nose"
+  - "%PYTHON%\\python.exe -m pip install --upgrade pip"
+  - "%PYTHON%\\python.exe -m pip install wheel"
+  - "%PYTHON%\\python.exe -m pip wheel numpy Cython nose
+    --wheel-dir c:\\tmp\\wheels
+    --find-links c:\\tmp\\wheels
+    --download-cache=c:\\tmp\\downloads"
+  - "%PYTHON%\\python.exe -m pip install numpy Cython nose
+    --find-links c:\\tmp\\wheels --no-index"
 
 test_script:
   - "util/appveyor/build.cmd %PYTHON%\\python.exe setup.py test"
@@ -30,8 +37,5 @@ artifacts:
   - path: dist\*
 
 cache:
-  # Use the appveyor cache to avoid re-downloading large archives such
-  # the numpy and scipy wheels mirrored on a rackspace cloud
-  # container, speed up the appveyor jobs and reduce bandwidth
-  # usage on the rackspace account.
-  - '%APPDATA%\pip\Cache'
+  - "c:\\tmp\\wheels -> appveyor.yml"
+  - "c:\\tmp\\downloads -> appveyor.yml"
