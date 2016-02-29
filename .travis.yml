@@ -50,4 +50,4 @@ before_install:
 
 script:
   # TODO: Re-enable doctests and coverage
-  - python setup.py nosetests
+  - python setup.py nosetests --where pywt

@@ -1,4 +1,4 @@
 [run]
 branch = True
-include = */pywt/*
-omit = */pywt/version.py
+include = pywt/*
+omit = pywt/version.py util
