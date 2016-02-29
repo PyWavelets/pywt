@@ -29,28 +29,17 @@ matrix:
       env:
         - NUMPYSPEC="numpy==1.9.1"
 
-addons:
-  apt:
-    packages:
-    - ccache
-cache:
-  directories:
-    - $HOME/.ccache
-    - $HOME/.cache/pip
+cache: pip
 
 before_install:
-  - export PATH=/usr/lib/ccache:$PATH
   - uname -a
   - free -m
   - df -h
   - ulimit -a
-  # Speed up install by not compiling Cython
-  - travis_retry pip install wheel
-  - travis_retry pip install Cython
-  - travis_retry pip install $NUMPYSPEC
-  - travis_retry pip install nose
-  - pip install coverage
   - python -V
+  - pip install --upgrade pip
+  - pip install --upgrade wheel
+  - pip install Cython $NUMPYSPEC nose coverage
   - set -o pipefail
 
 script:
