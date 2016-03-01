@@ -1,4 +1,6 @@
 [run]
 branch = True
 include = */pywt/*
-omit = */version.py
+omit =
+    */version.py
+    */pywt/tests/*

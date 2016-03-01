@@ -47,10 +47,13 @@ before_install:
   - pip install --upgrade wheel
   # Set numpy version first, other packages link against it
   - pip install $NUMPYSPEC
-  - pip install Cython matplotlib nose coverage
+  - pip install Cython matplotlib nose coverage codecov
   - set -o pipefail
 
 script:
   # Define a fixed build dir so next step works
   - python setup.py build --build-lib build/lib/
   - nosetests build/lib/ --tests pywt/tests
+
+after_success:
+  - codecov
