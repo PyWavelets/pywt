@@ -45,7 +45,9 @@ before_install:
   - python -V
   - pip install --upgrade pip
   - pip install --upgrade wheel
-  - pip install Cython $NUMPYSPEC nose coverage matplotlib
+  # Set numpy version first, other packages link against it
+  - pip install $NUMPYSPEC
+  - pip install Cython matplotlib nose coverage
   - set -o pipefail
 
 script:

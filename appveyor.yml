@@ -21,8 +21,9 @@ install:
   - "util\\appveyor\\build.cmd %PYTHON%\\python.exe -m pip install --upgrade pip"
   - "util\\appveyor\\build.cmd %PYTHON%\\python.exe -m pip install --upgrade wheel"
   - "util\\appveyor\\build.cmd %PYTHON%\\python.exe -m pip install
-    Cython numpy nose coverage matplotlib
-    --cache-dir c:\\tmp\\pip-cache"
+     numpy --cache-dir c:\\tmp\\pip-cache"
+  - "util\\appveyor\\build.cmd %PYTHON%\\python.exe -m pip install
+     Cython nose coverage matplotlib --cache-dir c:\\tmp\\pip-cache"
 
 test_script:
   - "util\\appveyor\\build.cmd %PYTHON%\\python.exe setup.py nosetests --where pywt"
