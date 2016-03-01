@@ -1,8 +1,6 @@
-# Write the benchmarking functions here.
-# See "Writing benchmarks" in the asv docs for more information.
-
 import numpy as np
 import pywt
+
 
 class DwtTimeSuiteBase(object):
     """
