@@ -22,22 +22,8 @@ __all__ = ["integrate_wavelet", "central_frequency", "scale2frequency", "qmf",
            "intwave", "centrfrq", "scal2frq", "orthfilt"]
 
 
-WAVELET_CLASSES = (Wavelet)
-
 _DEPRECATION_MSG = ("`{old}` has been renamed to `{new}` and will "
                     "be removed in a future version of pywt.")
-
-
-def wavelet_for_name(name):
-    if not isinstance(name, str):
-        raise TypeError(
-            "Wavelet name must be of string type, not %s" % type(name))
-    try:
-        wavelet = Wavelet(name)
-    except ValueError:
-        raise ValueError("Invalid wavelet name - %s." % name)
-
-    return wavelet
 
 
 def _integrate(arr, step):
@@ -103,14 +89,12 @@ def integrate_wavelet(wavelet, precision=8):
     """
     # FIXME: this function should really use scipy.integrate.quad
 
-    if type(wavelet) is str:
-        wavelet = wavelet_for_name(wavelet)
-    elif type(wavelet) in (tuple, list):
+    if type(wavelet) in (tuple, list):
         msg = ("Integration of a general signal is deprecated "
                "and will be removed in a future version of pywt.")
         warnings.warn(msg, DeprecationWarning)
-    elif not isinstance(wavelet, WAVELET_CLASSES):
-        print("wavelet must be either string or Wavelet instance!")
+    elif not isinstance(wavelet, Wavelet):
+        wavelet = Wavelet(wavelet)
 
     if type(wavelet) in (tuple, list):
         psi, x = np.asarray(wavelet[0]), np.asarray(wavelet[1])
@@ -154,10 +138,8 @@ def central_frequency(wavelet, precision=8):
 
     """
 
-    if type(wavelet) is str:
-        wavelet = wavelet_for_name(wavelet)
-    elif not isinstance(wavelet, WAVELET_CLASSES):
-        print("wavelet must be either string or Wavelet instance!")
+    if not isinstance(wavelet, Wavelet):
+        wavelet = Wavelet(wavelet)
 
     functions_approximations = wavelet.wavefun(precision)
 
