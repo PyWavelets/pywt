@@ -5,6 +5,7 @@
 #include "wavelets.h"
 #include "wavelets_coeffs.h"
 
+
 Wavelet* wavelet(char name, unsigned int order)
 {
     Wavelet *w, *wtmp;
@@ -78,7 +79,7 @@ Wavelet* wavelet(char name, unsigned int order)
         case 'd':
         case 'D':
             w->dec_len = w->rec_len = 2*order;
-
+            w->_builtin = 0;
             w->vanishing_moments_psi = order;
             w->vanishing_moments_phi = 0;
             w->support_width = 2*order - 1;
@@ -91,16 +92,42 @@ Wavelet* wavelet(char name, unsigned int order)
 
             switch (order) {
                 /**begin repeat
-                 * #order = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20#
+                 * #order = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38#
                  */
                 case @order@:
                     /**begin repeat1
                      * #type = double, float#
-                     */
-                    w->dec_lo_@type@ = db@order@_@type@[0];
-                    w->dec_hi_@type@ = db@order@_@type@[1];
-                    w->rec_lo_@type@ = db@order@_@type@[2];
-                    w->rec_hi_@type@ = db@order@_@type@[3];
+                     */                    
+                    w->dec_lo_@type@ = wtcalloc(w->dec_len, sizeof(@type@));
+                    w->dec_hi_@type@ = wtcalloc(w->dec_len, sizeof(@type@));
+                    w->rec_lo_@type@ = wtcalloc(w->rec_len, sizeof(@type@));
+                    w->rec_hi_@type@ = wtcalloc(w->rec_len, sizeof(@type@));
+                    if(w->dec_lo_@type@ == NULL || w->dec_hi_@type@ == NULL || w->rec_lo_@type@ == NULL || w->rec_hi_@type@ == NULL){
+                        free_wavelet(w);
+                        return NULL;
+                    }
+                    {
+                        @type@ *temp = wtcalloc(w->rec_len, sizeof(@type@));
+                        size_t i;
+                        for(i = 0; i < w->rec_len; ++i){
+                            w->rec_lo_@type@[i] = db@order@_@type@[i];
+                            w->dec_lo_@type@[i] = db@order@_@type@[w->dec_len-1-i];
+                            w->rec_hi_@type@[i] = db@order@_@type@[w->dec_len-1-i];
+                            if (i % 2 != 0)
+                            {
+                                w->rec_hi_@type@[i] = -1 * w->rec_hi_@type@[i];
+                            }
+                            temp[i] = db@order@_@type@[w->dec_len-1-i];
+                            if (i % 2 != 0)
+                            {
+                                temp[i] = -1 * temp[i];
+                            }
+                        }
+                        for(i = 0; i < w->rec_len; ++i){
+                            w->dec_hi_@type@[i] = temp[w->dec_len-1-i];
+                        }
+                        wtfree(temp);
+                    }
                     /**end repeat1**/
                     break;
                 /**end repeat**/
@@ -151,7 +178,7 @@ Wavelet* wavelet(char name, unsigned int order)
         case 'c':
         case 'C':
             w->dec_len = w->rec_len = order * 6;
-
+            w->_builtin = 0;
             w->vanishing_moments_psi = 2*order;
             w->vanishing_moments_phi = 2*order -1;
             w->support_width = 6*order - 1;
@@ -164,16 +191,42 @@ Wavelet* wavelet(char name, unsigned int order)
 
             switch (order) {
                 /**begin repeat
-                 * #order = 1, 2, 3, 4, 5#
+                 * #order = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17#
                  */
                 case @order@:
                     /**begin repeat1
                      * #type = double, float#
                      */
-                    w->dec_lo_@type@ = coif@order@_@type@[0];
-                    w->dec_hi_@type@ = coif@order@_@type@[1];
-                    w->rec_lo_@type@ = coif@order@_@type@[2];
-                    w->rec_hi_@type@ = coif@order@_@type@[3];
+                    w->dec_lo_@type@ = wtcalloc(w->dec_len, sizeof(@type@));
+                    w->dec_hi_@type@ = wtcalloc(w->dec_len, sizeof(@type@));
+                    w->rec_lo_@type@ = wtcalloc(w->rec_len, sizeof(@type@));
+                    w->rec_hi_@type@ = wtcalloc(w->rec_len, sizeof(@type@));
+                    if(w->dec_lo_@type@ == NULL || w->dec_hi_@type@ == NULL || w->rec_lo_@type@ == NULL || w->rec_hi_@type@ == NULL){
+                        free_wavelet(w);
+                        return NULL;
+                    }
+                    {
+                        @type@ *temp = wtcalloc(w->rec_len, sizeof(@type@));
+                        size_t i;
+                        for(i = 0; i < w->rec_len; ++i){
+                            w->rec_lo_@type@[i] = coif@order@_@type@[i] * sqrt2_@type@;
+                            w->dec_lo_@type@[i] = coif@order@_@type@[w->dec_len-1-i] * sqrt2_@type@;
+                            w->rec_hi_@type@[i] = coif@order@_@type@[w->dec_len-1-i] * sqrt2_@type@;
+                            if (i % 2 != 0)
+                            {
+                                w->rec_hi_@type@[i] = -1 * w->rec_hi_@type@[i];
+                            }
+                            temp[i] = coif@order@_@type@[w->dec_len-1-i] * sqrt2_@type@;
+                            if (i % 2 != 0)
+                            {
+                                temp[i] = -1 * temp[i];
+                            }
+                        }
+                        for(i = 0; i < w->rec_len; ++i){
+                            w->dec_hi_@type@[i] = temp[w->dec_len-1-i];
+                        }
+                        wtfree(temp);
+                    }
                     /**end repeat1**/
                     break;
                 /**end repeat**/

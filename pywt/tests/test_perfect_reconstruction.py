@@ -40,8 +40,7 @@ def check_reconstruction(pmode, mmode, wavelet, dtype):
     if dtype == np.float32:
         epsilon = 3e-7
     else:
-        # FIXME: limit was 5e-11, but gave failures.  Investigate
-        epsilon = 1e-8
+        epsilon = 5e-11
 
     for N in data_size:
         data = np.asarray(np.random.random(N), dtype)
