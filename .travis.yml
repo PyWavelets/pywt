@@ -51,5 +51,6 @@ before_install:
   - set -o pipefail
 
 script:
-  # TODO: Re-enable doctests and coverage
-  - python setup.py nosetests --where pywt
+  # Define a fixed build dir so next step works
+  - python setup.py build --build-lib build/lib/
+  - nosetests build/lib/ --tests pywt/tests
