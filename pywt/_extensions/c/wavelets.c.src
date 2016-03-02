@@ -556,6 +556,7 @@ Wavelet* wavelet(char name, unsigned int order)
 
             w->vanishing_moments_psi = -1;
             w->vanishing_moments_phi = -1;
+            w->_builtin = 0;
             w->support_width = -1;
             w->orthogonal = 1;
             w->biorthogonal = 1;
@@ -563,16 +564,41 @@ Wavelet* wavelet(char name, unsigned int order)
             w->compact_support = 1;
             w->family_name = "Discrete Meyer (FIR Approximation)";
             w->short_name = "dmey";
-
+            w->dec_len = w->rec_len = 62;
             /**begin repeat
              * #type = double, float#
              */
-                w->dec_lo_@type@ = dmey_@type@[0];
-                w->dec_hi_@type@ = dmey_@type@[1];
-                w->rec_lo_@type@ = dmey_@type@[2];
-                w->rec_hi_@type@ = dmey_@type@[3];
+                w->dec_lo_@type@ = wtcalloc(w->dec_len, sizeof(@type@));
+                w->dec_hi_@type@ = wtcalloc(w->dec_len, sizeof(@type@));
+                w->rec_lo_@type@ = wtcalloc(w->rec_len, sizeof(@type@));
+                w->rec_hi_@type@ = wtcalloc(w->rec_len, sizeof(@type@));
+                if(w->dec_lo_@type@ == NULL || w->dec_hi_@type@ == NULL || w->rec_lo_@type@ == NULL || w->rec_hi_@type@ == NULL){
+                    free_wavelet(w);
+                    return NULL;
+                }
+                {
+                    @type@ *temp = wtcalloc(w->rec_len, sizeof(@type@));
+                    size_t i;
+                    for(i = 0; i < w->rec_len; ++i){
+                        w->rec_lo_@type@[i] = dmey_@type@[i];
+                        w->dec_lo_@type@[i] = dmey_@type@[w->dec_len-1-i];
+                        w->rec_hi_@type@[i] = dmey_@type@[w->dec_len-1-i];
+                        if (i % 2 != 0)
+                        {
+                            w->rec_hi_@type@[i] = -1 * w->rec_hi_@type@[i];
+                        }
+                        temp[i] = dmey_@type@[w->dec_len-1-i];
+                        if (i % 2 != 0)
+                        {
+                            temp[i] = -1 * temp[i];
+                        }
+                    }
+                    for(i = 0; i < w->rec_len; ++i){
+                        w->dec_hi_@type@[i] = temp[w->dec_len-1-i];
+                    }
+                    wtfree(temp);
+                }
             /**end repeat**/
-            w->dec_len = w->rec_len = 62;
             break;
 
         default:
