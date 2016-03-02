@@ -177,6 +177,6 @@ if __name__ == '__main__':
         ext_modules=cythonize(ext_modules),
         test_suite='nose.collector',
 
-        # Functions from both are imported in this file, so not useful
-        install_requires=["numpy>=1.6.2", "cython>=0.22"],
+        # A function is imported in setup.py, so not really useful
+        install_requires=["numpy"],
     )
