@@ -7,6 +7,7 @@ env:
   global:
     # Use non-interactive backend
     - MPLBACKEND: Agg
+    - CYTHON_TRACE: 1
 
 matrix:
   include:
