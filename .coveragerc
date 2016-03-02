@@ -5,6 +5,7 @@ include = */pywt/*
 omit =
     */version.py
     */pywt/tests/*
+    */pywt/data/create_dat.py
     *.pxd
     stringsource
 plugins = Cython.Coverage
