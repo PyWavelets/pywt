@@ -7,8 +7,13 @@ import subprocess
 from functools import partial
 
 from setuptools import setup, Extension
-from Cython.Build import cythonize
 from numpy import get_include as get_numpy_include
+try:
+    from Cython.Build import cythonize
+except ImportError:
+    USE_CYTHON = False
+else:
+    USE_CYTHON = True
 
 MAJOR = 0
 MINOR = 5
@@ -111,22 +116,16 @@ header_templates = ["c/convolution.template.h", "c/wt.template.h",
                     "c/wavelets_coeffs.template.h"]
 header_templates = list(map(make_ext_path, header_templates))
 
+cython_modules = ['_pywt', '_dwt', '_swt']
+cython_sources = [('{0}.pyx' if USE_CYTHON else '{0}.c').format(module)
+                  for module in cython_modules]
 ext_modules = [
-    Extension('pywt._extensions._pywt',
-              sources=[make_ext_path("_pywt.pyx",)] + sources,
+    Extension('pywt._extensions.{0}'.format(module),
+              sources=[make_ext_path(source)] + sources,
               depends=source_templates + header_templates + headers,
               include_dirs=[make_ext_path("c"), get_numpy_include()],
-              define_macros=[("PY_EXTENSION", None)],),
-    Extension('pywt._extensions._dwt',
-              sources=[make_ext_path("_dwt.pyx")] + sources,
-              depends=source_templates + header_templates + headers,
-              include_dirs=[make_ext_path("c"), get_numpy_include()],
-              define_macros=[("PY_EXTENSION", None)],),
-    Extension('pywt._extensions._swt',
-              sources=[make_ext_path("_swt.pyx")] + sources,
-              depends=source_templates + header_templates + headers,
-              include_dirs=[make_ext_path("c"), get_numpy_include()],
-              define_macros=[("PY_EXTENSION", None)],),
+              define_macros=[("PY_EXTENSION", None)],)
+    for module, source, in zip(cython_modules, cython_sources)
 ]
 
 if __name__ == '__main__':
@@ -174,7 +173,7 @@ if __name__ == '__main__':
         version=get_version_info()[0],
 
         packages=['pywt', 'pywt._extensions'],
-        ext_modules=cythonize(ext_modules),
+        ext_modules=cythonize(ext_modules) if USE_CYTHON else ext_modules,
         test_suite='nose.collector',
 
         # A function is imported in setup.py, so not really useful
