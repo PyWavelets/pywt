@@ -172,7 +172,8 @@ if __name__ == '__main__':
         platforms=["Windows", "Linux", "Solaris", "Mac OS-X", "Unix"],
         version=get_version_info()[0],
 
-        packages=['pywt', 'pywt._extensions'],
+        packages=['pywt', 'pywt._extensions', 'pywt.data'],
+        package_data={'pywt.data': ['*.npy', '*.npz']},
         ext_modules=cythonize(ext_modules) if USE_CYTHON else ext_modules,
         test_suite='nose.collector',
 
