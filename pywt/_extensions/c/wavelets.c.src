@@ -268,6 +268,7 @@ Wavelet* wavelet(char name, unsigned int order)
         case 'B':
 
             w->vanishing_moments_psi = order/10;
+            w->_builtin = 0;
             w->vanishing_moments_phi = -1;
             w->support_width = -1;
             w->orthogonal = 0;
@@ -282,15 +283,44 @@ Wavelet* wavelet(char name, unsigned int order)
                      * #M = 1, 3, 5#
                      */
                         case 1@M@:
+                            w->dec_len = w->rec_len = 2 * @M@;
                             /**begin repeat1
                              * #type = double, float#
                              */
-                                w->dec_lo_@type@ = bior1_@M@_@type@[0];
-                                w->dec_hi_@type@ = bior1_@M@_@type@[1];
-                                w->rec_lo_@type@ = bior1_@M@_@type@[2];
-                                w->rec_hi_@type@ = bior1_@M@_@type@[3];
+                             
+                            w->dec_lo_@type@ = wtcalloc(w->dec_len, sizeof(@type@));
+                            w->dec_hi_@type@ = wtcalloc(w->dec_len, sizeof(@type@));
+                            w->rec_lo_@type@ = wtcalloc(w->rec_len, sizeof(@type@));
+                            w->rec_hi_@type@ = wtcalloc(w->rec_len, sizeof(@type@));
+                            if(w->dec_lo_@type@ == NULL || w->dec_hi_@type@ == NULL || w->rec_lo_@type@ == NULL || w->rec_hi_@type@ == NULL){
+                                free_wavelet(w);
+                                return NULL;
+                            }
+                            {
+                                size_t n = 5 - @M@;
+                                @type@ *temp = wtcalloc(w->rec_len, sizeof(@type@));
+                                size_t i;
+                                for(i = 0; i < w->rec_len; ++i){
+                                    w->rec_lo_@type@[i] = bior1_@type@[i+n];
+                                    w->dec_lo_@type@[i] = bior1_@M@_@type@[w->dec_len-1-i];
+                                    w->rec_hi_@type@[i] = bior1_@M@_@type@[w->dec_len-1-i];
+                                    if (i % 2 != 0)
+                                    {
+                                        w->rec_hi_@type@[i] = -1 * w->rec_hi_@type@[i];
+                                    }
+                                    temp[i] = bior1_@type@[w->dec_len-1-i + n];
+                                    if (i % 2 != 0)
+                                    {
+                                        temp[i] = -1 * temp[i];
+                                    }
+                                }
+                                for(i = 0; i < w->rec_len; ++i){
+                                    w->dec_hi_@type@[i] = temp[w->dec_len-1-i];
+                                }
+                                wtfree(temp);
+                            }
                             /**end repeat1**/
-                            w->dec_len = w->rec_len = 2 * @M@;
+                            
                             break;
                     /**end repeat**/
 
@@ -298,15 +328,43 @@ Wavelet* wavelet(char name, unsigned int order)
                      * #M = 2, 4, 6, 8#
                      */
                         case 2@M@:
+                            w->dec_len = w->rec_len = 2 * @M@ + 2;
                             /**begin repeat1
                              * #type = double, float#
                              */
-                                w->dec_lo_@type@ = bior2_@M@_@type@[0];
-                                w->dec_hi_@type@ = bior2_@M@_@type@[1];
-                                w->rec_lo_@type@ = bior2_@M@_@type@[2];
-                                w->rec_hi_@type@ = bior2_@M@_@type@[3];
+                            w->dec_lo_@type@ = wtcalloc(w->dec_len, sizeof(@type@));
+                            w->dec_hi_@type@ = wtcalloc(w->dec_len, sizeof(@type@));
+                            w->rec_lo_@type@ = wtcalloc(w->rec_len, sizeof(@type@));
+                            w->rec_hi_@type@ = wtcalloc(w->rec_len, sizeof(@type@));
+                            if(w->dec_lo_@type@ == NULL || w->dec_hi_@type@ == NULL || w->rec_lo_@type@ == NULL || w->rec_hi_@type@ == NULL){
+                                free_wavelet(w);
+                                return NULL;
+                            }
+                            {
+                                size_t n = 8 - @M@;
+                                @type@ *temp = wtcalloc(w->rec_len, sizeof(@type@));
+                                size_t i;
+                                for(i = 0; i < w->rec_len; ++i){
+                                    w->rec_lo_@type@[i] = bior2_@type@[i+n];
+                                    w->dec_lo_@type@[i] = bior2_@M@_@type@[w->dec_len-1-i];
+                                    w->rec_hi_@type@[i] = bior2_@M@_@type@[w->dec_len-1-i];
+                                    if (i % 2 != 0)
+                                    {
+                                        w->rec_hi_@type@[i] = -1 * w->rec_hi_@type@[i];
+                                    }
+                                    temp[i] = bior2_@type@[w->dec_len-1-i + n];
+                                    if (i % 2 != 0)
+                                    {
+                                        temp[i] = -1 * temp[i];
+                                    }
+                                }
+                                for(i = 0; i < w->rec_len; ++i){
+                                    w->dec_hi_@type@[i] = temp[w->dec_len-1-i];
+                                }
+                                wtfree(temp);
+                            }
                             /**end repeat1**/
-                            w->dec_len = w->rec_len = 2 * @M@ + 2;
+                            
                             break;
                     /**end repeat**/
 
@@ -314,15 +372,43 @@ Wavelet* wavelet(char name, unsigned int order)
                      * #M = 1, 3, 5, 7, 9#
                      */
                         case 3@M@:
+                            w->dec_len = w->rec_len = 2 * @M@ + 2;
                             /**begin repeat1
                              * #type = double, float#
                              */
-                                w->dec_lo_@type@ = bior3_@M@_@type@[0];
-                                w->dec_hi_@type@ = bior3_@M@_@type@[1];
-                                w->rec_lo_@type@ = bior3_@M@_@type@[2];
-                                w->rec_hi_@type@ = bior3_@M@_@type@[3];
+                            w->dec_lo_@type@ = wtcalloc(w->dec_len, sizeof(@type@));
+                            w->dec_hi_@type@ = wtcalloc(w->dec_len, sizeof(@type@));
+                            w->rec_lo_@type@ = wtcalloc(w->rec_len, sizeof(@type@));
+                            w->rec_hi_@type@ = wtcalloc(w->rec_len, sizeof(@type@));
+                            if(w->dec_lo_@type@ == NULL || w->dec_hi_@type@ == NULL || w->rec_lo_@type@ == NULL || w->rec_hi_@type@ == NULL){
+                                free_wavelet(w);
+                                return NULL;
+                            }
+                            {
+                                size_t n = 9 - @M@;
+                                @type@ *temp = wtcalloc(w->rec_len, sizeof(@type@));
+                                size_t i;
+                                for(i = 0; i < w->rec_len; ++i){
+                                    w->rec_lo_@type@[i] = bior3_@type@[i+n];
+                                    w->dec_lo_@type@[i] = bior3_@M@_@type@[w->dec_len-1-i];
+                                    w->rec_hi_@type@[i] = bior3_@M@_@type@[w->dec_len-1-i];
+                                    if (i % 2 != 0)
+                                    {
+                                        w->rec_hi_@type@[i] = -1 * w->rec_hi_@type@[i];
+                                    }
+                                    temp[i] = bior3_@type@[w->dec_len-1-i + n];
+                                    if (i % 2 != 0)
+                                    {
+                                        temp[i] = -1 * temp[i];
+                                    }
+                                }
+                                for(i = 0; i < w->rec_len; ++i){
+                                    w->dec_hi_@type@[i] = temp[w->dec_len-1-i];
+                                }
+                                wtfree(temp);
+                            }
                             /**end repeat1**/
-                            w->dec_len = w->rec_len = 2 * @M@ + 2;
+                            
                             break;
                     /**end repeat**/
 
@@ -330,15 +416,43 @@ Wavelet* wavelet(char name, unsigned int order)
                      * #M = 4#
                      */
                         case 4@M@:
+                            w->dec_len = w->rec_len = 2 * @M@ + 2;
                             /**begin repeat1
                              * #type = double, float#
                              */
-                                w->dec_lo_@type@ = bior4_@M@_@type@[0];
-                                w->dec_hi_@type@ = bior4_@M@_@type@[1];
-                                w->rec_lo_@type@ = bior4_@M@_@type@[2];
-                                w->rec_hi_@type@ = bior4_@M@_@type@[3];
+                            w->dec_lo_@type@ = wtcalloc(w->dec_len, sizeof(@type@));
+                            w->dec_hi_@type@ = wtcalloc(w->dec_len, sizeof(@type@));
+                            w->rec_lo_@type@ = wtcalloc(w->rec_len, sizeof(@type@));
+                            w->rec_hi_@type@ = wtcalloc(w->rec_len, sizeof(@type@));
+                            if(w->dec_lo_@type@ == NULL || w->dec_hi_@type@ == NULL || w->rec_lo_@type@ == NULL || w->rec_hi_@type@ == NULL){
+                                free_wavelet(w);
+                                return NULL;
+                            }
+                            {
+                                size_t n = 4 - @M@;
+                                @type@ *temp = wtcalloc(w->rec_len, sizeof(@type@));
+                                size_t i;
+                                for(i = 0; i < w->rec_len; ++i){
+                                    w->rec_lo_@type@[i] = bior4_@type@[i+n];
+                                    w->dec_lo_@type@[i] = bior4_@M@_@type@[w->dec_len-1-i];
+                                    w->rec_hi_@type@[i] = bior4_@M@_@type@[w->dec_len-1-i];
+                                    if (i % 2 != 0)
+                                    {
+                                        w->rec_hi_@type@[i] = -1 * w->rec_hi_@type@[i];
+                                    }
+                                    temp[i] = bior4_@type@[w->dec_len-1-i + n];
+                                    if (i % 2 != 0)
+                                    {
+                                        temp[i] = -1 * temp[i];
+                                    }
+                                }
+                                for(i = 0; i < w->rec_len; ++i){
+                                    w->dec_hi_@type@[i] = temp[w->dec_len-1-i];
+                                }
+                                wtfree(temp);
+                            }
                             /**end repeat1**/
-                            w->dec_len = w->rec_len = 2 * @M@ + 2;
+                            
                             break;
                     /**end repeat**/
 
@@ -346,15 +460,43 @@ Wavelet* wavelet(char name, unsigned int order)
                      * #M = 5#
                      */
                         case 5@M@:
+                            w->dec_len = w->rec_len = 2 * @M@ + 2;
                             /**begin repeat1
                              * #type = double, float#
                              */
-                                w->dec_lo_@type@ = bior5_@M@_@type@[0];
-                                w->dec_hi_@type@ = bior5_@M@_@type@[1];
-                                w->rec_lo_@type@ = bior5_@M@_@type@[2];
-                                w->rec_hi_@type@ = bior5_@M@_@type@[3];
+                            w->dec_lo_@type@ = wtcalloc(w->dec_len, sizeof(@type@));
+                            w->dec_hi_@type@ = wtcalloc(w->dec_len, sizeof(@type@));
+                            w->rec_lo_@type@ = wtcalloc(w->rec_len, sizeof(@type@));
+                            w->rec_hi_@type@ = wtcalloc(w->rec_len, sizeof(@type@));
+                            if(w->dec_lo_@type@ == NULL || w->dec_hi_@type@ == NULL || w->rec_lo_@type@ == NULL || w->rec_hi_@type@ == NULL){
+                                free_wavelet(w);
+                                return NULL;
+                            }
+                            {
+                                size_t n = 5 - @M@;
+                                @type@ *temp = wtcalloc(w->rec_len, sizeof(@type@));
+                                size_t i;
+                                for(i = 0; i < w->rec_len; ++i){
+                                    w->rec_lo_@type@[i] = bior5_@type@[i+n];
+                                    w->dec_lo_@type@[i] = bior5_@M@_@type@[w->dec_len-1-i];
+                                    w->rec_hi_@type@[i] = bior5_@M@_@type@[w->dec_len-1-i];
+                                    if (i % 2 != 0)
+                                    {
+                                        w->rec_hi_@type@[i] = -1 * w->rec_hi_@type@[i];
+                                    }
+                                    temp[i] = bior5_@type@[w->dec_len-1-i + n];
+                                    if (i % 2 != 0)
+                                    {
+                                        temp[i] = -1 * temp[i];
+                                    }
+                                }
+                                for(i = 0; i < w->rec_len; ++i){
+                                    w->dec_hi_@type@[i] = temp[w->dec_len-1-i];
+                                }
+                                wtfree(temp);
+                            }
                             /**end repeat1**/
-                            w->dec_len = w->rec_len = 2 * @M@ + 2;
+                            
                             break;
                     /**end repeat**/
 
@@ -362,15 +504,43 @@ Wavelet* wavelet(char name, unsigned int order)
                      * #M = 8#
                      */
                         case 6@M@:
+                            w->dec_len = w->rec_len = 2 * @M@ + 2;
                             /**begin repeat1
                              * #type = double, float#
                              */
-                                w->dec_lo_@type@ = bior6_@M@_@type@[0];
-                                w->dec_hi_@type@ = bior6_@M@_@type@[1];
-                                w->rec_lo_@type@ = bior6_@M@_@type@[2];
-                                w->rec_hi_@type@ = bior6_@M@_@type@[3];
+                            w->dec_lo_@type@ = wtcalloc(w->dec_len, sizeof(@type@));
+                            w->dec_hi_@type@ = wtcalloc(w->dec_len, sizeof(@type@));
+                            w->rec_lo_@type@ = wtcalloc(w->rec_len, sizeof(@type@));
+                            w->rec_hi_@type@ = wtcalloc(w->rec_len, sizeof(@type@));
+                            if(w->dec_lo_@type@ == NULL || w->dec_hi_@type@ == NULL || w->rec_lo_@type@ == NULL || w->rec_hi_@type@ == NULL){
+                                free_wavelet(w);
+                                return NULL;
+                            }
+                            {
+                                size_t n = 8 - @M@;
+                                @type@ *temp = wtcalloc(w->rec_len, sizeof(@type@));
+                                size_t i;
+                                for(i = 0; i < w->rec_len; ++i){
+                                    w->rec_lo_@type@[i] = bior6_@type@[i+n];
+                                    w->dec_lo_@type@[i] = bior6_@M@_@type@[w->dec_len-1-i];
+                                    w->rec_hi_@type@[i] = bior6_@M@_@type@[w->dec_len-1-i];
+                                    if (i % 2 != 0)
+                                    {
+                                        w->rec_hi_@type@[i] = -1 * w->rec_hi_@type@[i];
+                                    }
+                                    temp[i] = bior6_@type@[w->dec_len-1-i + n];
+                                    if (i % 2 != 0)
+                                    {
+                                        temp[i] = -1 * temp[i];
+                                    }
+                                }
+                                for(i = 0; i < w->rec_len; ++i){
+                                    w->dec_hi_@type@[i] = temp[w->dec_len-1-i];
+                                }
+                                wtfree(temp);
+                            }
                             /**end repeat1**/
-                            w->dec_len = w->rec_len = 2 * @M@ + 2;
+                            
                             break;
                     /**end repeat**/
 
