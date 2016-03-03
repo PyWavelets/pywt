@@ -139,6 +139,8 @@ c_lib = ('c_wt', {'sources': sources,
 ext_modules = [
     Extension('pywt._extensions.{0}'.format(module),
               sources=[make_ext_path(source)],
+              # Doesn't automatically rebuild if library changes
+              depends=c_lib[1]['sources'] + c_lib[1]['depends'],
               include_dirs=[make_ext_path("c"), get_numpy_include()],
               define_macros=c_macros + cython_macros,
               libraries=[c_lib[0]],)
