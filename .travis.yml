@@ -8,6 +8,7 @@ env:
     # Use non-interactive backend
     - MPLBACKEND: Agg
     - CYTHON_TRACE: 1
+    - CFLAGS: "--coverage"
 
 matrix:
   include:
@@ -53,8 +54,11 @@ before_install:
 
 script:
   # Define a fixed build dir so next step works
-  - python setup.py build --build-lib build/lib/
+  - python setup.py build --build-lib build/lib/ --build-temp build/tmp/
   - nosetests build/lib/ --tests pywt/tests
 
 after_success:
   - codecov
+  # Travis CI has old gcov, needs object dir explicitly specified
+  - gcov --object-directory build/tmp/pywt/_extensions/c/ build/tmp/pywt/_extensions/c/*.o
+  - bash <(curl -s https://codecov.io/bash)
