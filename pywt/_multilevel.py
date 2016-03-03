@@ -624,8 +624,8 @@ def coeffs_to_array(coeffs):
     Then all 2D coefficients will be stacked into a single larger 2D array
     as follows:
 
-                                    <-------- d_shapes[1][0] ------->
-    <--a0_shape[0]-><-d_shapes[0][0]>
+                                    <-------- d_shapes[1][1] ------->
+    <--a0_shape[1]-><-d_shapes[0][1]>
     +---------------+---------------+-------------------------------+
     |               |               |                               |
     |     c[0]      |  c[1]['da']   |                               |
@@ -648,6 +648,11 @@ def coeffs_to_array(coeffs):
     --------
     array_to_coeffs : the inverse of coeffs_to_array
 
+    Examples
+    --------
+    cam = pywt.data.camera()
+    coeffs = pywt.wavedecn(cam, wavelet='db2', level=3)
+    arr, a0_shape, d_shapes = pywt.coeffs_to_array(coeffs)
     """
     if not isinstance(coeffs, list) or len(coeffs) == 0:
         raise ValueError("input must be a list of coefficients from wavedecn")
@@ -725,8 +730,8 @@ def array_to_coeffs(arr, a0_shape, d_shapes):
     A single large array containing all coefficients will have subsets stored,
     into a `waverecn` list, c, as indicated below:
 
-                                    <-------- d_shapes[1][0] ------->
-    <--a0_shape[0]-><-d_shapes[0][0]>
+                                    <-------- d_shapes[1][1] ------->
+    <--a0_shape[1]-><-d_shapes[0][1]>
     +---------------+---------------+-------------------------------+
     |               |               |                               |
     |     c[0]      |  c[1]['da']   |                               |
@@ -744,6 +749,15 @@ def array_to_coeffs(arr, a0_shape, d_shapes):
     |                               |                               |
     |                               |                               |
     --------------------------------+-------------------------------+
+
+    Examples
+    --------
+    cam = pywt.data.camera()
+    coeffs = pywt.wavedecn(cam, wavelet='db2', level=3)
+    arr, a0_shape, d_shapes = pywt.coeffs_to_array(coeffs)
+    coeffs_from_arr = pywt.array_to_coeffs(arr, a0_shape, d_shapes)
+    cam_recon = pywt.waverecn(coeffs_from_arr, wavelet='db2')
+    assert_array_almost_equal(cam, cam_recon)
 
     """
     arr = np.asarray(arr)
