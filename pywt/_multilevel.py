@@ -10,6 +10,7 @@ and Inverse Discrete Wavelet Transform.
 
 from __future__ import division, print_function, absolute_import
 
+from itertools import product
 import numpy as np
 
 from ._extensions._pywt import Wavelet
@@ -18,7 +19,7 @@ from ._dwt import dwt, idwt
 from ._multidim import dwt2, idwt2, dwtn, idwtn, _fix_coeffs
 
 __all__ = ['wavedec', 'waverec', 'wavedec2', 'waverec2', 'wavedecn',
-           'waverecn', 'iswt', 'iswt2']
+           'waverecn', 'iswt', 'iswt2', 'coeffs_to_array', 'array_to_coeffs']
 
 
 def _check_level(size, dec_len, level):
@@ -594,3 +595,191 @@ def waverecn(coeffs, wavelet, mode='symmetric'):
         a = idwtn(d, wavelet, mode)
 
     return a
+
+
+def coeffs_to_array(coeffs):
+    """
+    Arrange a wavelet coefficient list from `wavedecn` into a single array.
+
+    Parameters
+    ----------
+
+    coeffs: array-like
+        dictionary of wavelet coefficients as returned by pywt.wavedecn
+
+    Returns
+    -------
+    coeff_arr: array-like
+        Wavelet transform coefficient array.
+    a0_shape: list of tuples
+        The shape of the approximation coefficient array.
+    d_shapes : list of tuples
+        The shape of the detail coefficient arrays at each level of the wavelet
+        transform.
+
+    Notes
+    -----
+    Assume a 2D coefficient dictionary, c, from a two-level transform.
+
+    Then all 2D coefficients will be stacked into a single larger 2D array
+    as follows:
+
+                                    <-------- d_shapes[1][0] ------->
+    <--a0_shape[0]-><-d_shapes[0][0]>
+    +---------------+---------------+-------------------------------+
+    |               |               |                               |
+    |     c[0]      |  c[1]['da']   |                               |
+    |               |               |                               |
+    ----------------+---------------+           c[2]['da']          |
+    |               |               |                               |
+    | c[1]['ad']    |  c[1]['dd']   |                               |
+    |               |               |                               |
+    ----------------+---------------+ ------------------------------+
+    |                               |                               |
+    |                               |                               |
+    |                               |                               |
+    |          c[2]['ad']           |           c[2]['dd']          |
+    |                               |                               |
+    |                               |                               |
+    |                               |                               |
+    --------------------------------+-------------------------------+
+
+    See Also
+    --------
+    array_to_coeffs : the inverse of coeffs_to_array
+
+    """
+    if not isinstance(coeffs, list) or len(coeffs) == 0:
+        raise ValueError("input must be a list of coefficients from wavedecn")
+    if not isinstance(coeffs[0], np.ndarray):
+        raise ValueError("first list element must be a numpy array")
+
+    # initialize with the approximation coefficients.
+    coeff_arr = coeffs[0]
+    a0_shape = coeff_arr.shape
+    ndim = coeff_arr.ndim
+
+    if len(coeffs) == 1:
+        # only a single approximation coefficient array was found
+        return coeff_arr
+
+    # loop over the detail cofficients, appending to the
+    d_shapes = []
+    ds = coeffs[1:]
+    for idx, coeff_dict in enumerate(ds):
+        if not isinstance(coeff_dict, dict):
+            raise ValueError("expected a dictionary of detail coefficients")
+        a_shape = coeff_arr.shape
+        d_shape = coeff_dict['d' * coeff_arr.ndim].shape
+        d_shapes.append(d_shape)
+        # a_shape and d_shape may differ along odd-sized axes
+
+        # TODO: allocate the full coeff_arr outside this loop for efficiency?
+        temp = np.empty(np.asarray(a_shape) + np.asarray(d_shape),
+                        dtype=coeff_arr.dtype)
+        slice_array = [slice(a_shape[i]) for i in range(ndim)]
+        temp[slice_array] = coeff_arr
+        for key in coeff_dict.keys():
+            d = coeff_dict[key]
+            slice_array = [slice(None), ] * ndim
+            for i, let in enumerate(key):
+                if let == 'a':
+                    slice_array[i] = slice(d.shape[i])
+                elif let == 'd':
+                    slice_array[i] = slice(a_shape[i], a_shape[i] + d.shape[i])
+                else:
+                    raise ValueError("unexpected letter: {}".format(let))
+            temp[slice_array] = d
+        coeff_arr = temp
+    return coeff_arr, a0_shape, d_shapes
+
+
+def array_to_coeffs(arr, a0_shape, d_shapes):
+    """
+    Convert a combined array of coefficients back to a list compatible with
+    `waverecn`.
+
+    Parameters
+    ----------
+
+    arr: array-like
+        An array containing all wavelet coefficients.  This should have been
+        generated via `coeffs_to_array`.
+    a0_shape: list of tuples
+        The shape of the approximation coefficient array.
+    d_shapes : list of tuples
+        The shape of the detail coefficient arrays at each level of the wavelet
+        transform.
+
+    Returns
+    -------
+    coeff_arr: array-like
+        Wavelet transform coefficient array.
+
+    See Also
+    --------
+    coeffs_to_array : the inverse of array_to_coeffs
+
+    Notes
+    -----
+    A single large array containing all coefficients will have subsets stored,
+    into a `waverecn` list, c, as indicated below:
+
+                                    <-------- d_shapes[1][0] ------->
+    <--a0_shape[0]-><-d_shapes[0][0]>
+    +---------------+---------------+-------------------------------+
+    |               |               |                               |
+    |     c[0]      |  c[1]['da']   |                               |
+    |               |               |                               |
+    ----------------+---------------+           c[2]['da']          |
+    |               |               |                               |
+    | c[1]['ad']    |  c[1]['dd']   |                               |
+    |               |               |                               |
+    ----------------+---------------+ ------------------------------+
+    |                               |                               |
+    |                               |                               |
+    |                               |                               |
+    |          c[2]['ad']           |           c[2]['dd']          |
+    |                               |                               |
+    |                               |                               |
+    |                               |                               |
+    --------------------------------+-------------------------------+
+
+    """
+    arr = np.asarray(arr)
+    levels = len(d_shapes)
+
+    # coarsest level (approximation coeffs)
+    sz = a0_shape
+    ndim = len(sz)
+    slice_array = [slice(sz[i]) for i in range(ndim)]
+    coeffs = []
+    coeffs.append(arr[slice_array])
+
+    # generate all detail coefficient keys
+    d_keys = [''.join(coeff) for coeff in product('ad', repeat=ndim)]
+    d_keys.remove('a' * ndim)
+
+    # difference coefficients
+    sz_next = None
+    for l in range(levels):
+        if l > 0:
+            sz = sz_next
+        sz_d = d_shapes[l]
+        # if l < levels - 1:
+        #     sz_next = a_shapes[l + 1]
+        # else:
+        sz_next = np.asarray(sz) + np.asarray(sz_d)
+        cdict = {}
+        for key in d_keys:
+            for i, let in enumerate(key):
+                if let == 'a':
+                    slice_array[i] = slice(sz_d[i])
+                elif let == 'd':
+                    slice_array[i] = slice(sz[i], sz_next[i])
+                else:
+                    raise ValueError("unexpected letter: {}".format(let))
+            # print("key={}, slices={}".format(key, slice_array))
+            cdict[key] = arr[slice_array]
+        coeffs.append(cdict)
+    return coeffs
