@@ -675,7 +675,7 @@ def coeffs_to_array(coeffs):
         # a_shape and d_shape may differ along odd-sized axes
 
         # TODO: allocate the full coeff_arr outside this loop for efficiency?
-        temp = np.empty(np.asarray(a_shape) + np.asarray(d_shape),
+        temp = np.zeros(np.asarray(a_shape) + np.asarray(d_shape),
                         dtype=coeff_arr.dtype)
         slice_array = [slice(a_shape[i]) for i in range(ndim)]
         temp[slice_array] = coeff_arr
