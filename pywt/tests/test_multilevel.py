@@ -397,6 +397,10 @@ def test_coeffs_to_array():
     # invalid second element:  tuple as in wavedec2, but not a 3-tuple
     assert_raises(ValueError, pywt.coeffs_to_array, [a_coeffs[0],
                                                      (a_coeffs[0], )])
+    # coefficients as None is not supported
+    assert_raises(ValueError, pywt.coeffs_to_array, [None, ])
+    assert_raises(ValueError, pywt.coeffs_to_array, [a_coeffs,
+                                                     (None, None, None)])
 
 
 def test_wavedecn_coeff_reshape_even():

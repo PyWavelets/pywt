@@ -694,6 +694,9 @@ def coeffs_to_array(coeffs):
         else:
             raise ValueError("invalid coefficient list")
     # initialize with the approximation coefficients.
+    if coeffs[0] is None:
+        raise ValueError("coeffs_to_array does not support missing "
+                         "coefficients.")
     coeff_arr = coeffs[0]
     coeff_slices = []
     coeff_slices.append([slice(s) for s in coeff_arr.shape])
@@ -721,6 +724,9 @@ def coeffs_to_array(coeffs):
         temp[slice_array] = coeff_arr
         for key in coeff_dict.keys():
             d = coeff_dict[key]
+            if d is None:
+                raise ValueError("coeffs_to_array does not support missing "
+                                 "coefficients.")
             slice_array = [slice(None), ] * ndim
             for i, let in enumerate(key):
                 if let == 'a':
