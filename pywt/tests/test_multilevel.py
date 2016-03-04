@@ -396,7 +396,6 @@ def test_coeffs_to_array():
     assert_raises(ValueError, pywt.coeffs_to_array, [a_coeffs[0], ] * 2)
 
 
-@dec.slow
 def test_wavedecn_coeff_reshape_even():
     # verify round trip is correct:
     #   wavedecn - >coeffs_to_array-> array_to_coeffs -> waverecn
@@ -409,13 +408,12 @@ def test_wavedecn_coeff_reshape_even():
             if maxlevel == 0:
                 continue
             coeffs = pywt.wavedecn(x1, w, mode=mode)
-            coeff_arr, a_shape, d_shapes = pywt.coeffs_to_array(coeffs)
-            coeffs2 = pywt.array_to_coeffs(coeff_arr, a_shape, d_shapes)
+            coeff_arr, coeff_slices = pywt.coeffs_to_array(coeffs)
+            coeffs2 = pywt.array_to_coeffs(coeff_arr, coeff_slices)
             x1r = pywt.waverecn(coeffs2, w, mode=mode)
             assert_allclose(x1, x1r, rtol=1e-4, atol=1e-4)
 
 
-@dec.slow
 def test_waverecn_coeff_reshape_odd():
     # verify round trip is correct:
     #   wavedecn - >coeffs_to_array-> array_to_coeffs -> waverecn
@@ -428,8 +426,8 @@ def test_waverecn_coeff_reshape_odd():
             if maxlevel == 0:
                 continue
             coeffs = pywt.wavedecn(x1, w, mode=mode)
-            coeff_arr, a_shape, d_shapes = pywt.coeffs_to_array(coeffs)
-            coeffs2 = pywt.array_to_coeffs(coeff_arr, a_shape, d_shapes)
+            coeff_arr, coeff_slices = pywt.coeffs_to_array(coeffs)
+            coeffs2 = pywt.array_to_coeffs(coeff_arr, coeff_slices)
             x1r = pywt.waverecn(coeffs2, w, mode=mode)
             # truncate reconstructed values to original shape
             x1r = x1r[[slice(s) for s in x1.shape]]

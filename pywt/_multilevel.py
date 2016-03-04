@@ -609,13 +609,12 @@ def coeffs_to_array(coeffs):
 
     Returns
     -------
-    coeff_arr: array-like
+    coeff_arr : array-like
         Wavelet transform coefficient array.
-    a0_shape: list of tuples
-        The shape of the approximation coefficient array.
-    d_shapes : list of tuples
-        The shape of the detail coefficient arrays at each level of the wavelet
-        transform.
+    coeff_slices : list
+        List of slices corresponding to each coefficient.  As a 2D example,
+        `coeff_arr[coeff_slices[1]['dd']]` would extract the first level detail
+        coefficients from `coeff_arr`.
 
     Notes
     -----
@@ -624,8 +623,6 @@ def coeffs_to_array(coeffs):
     Then all 2D coefficients will be stacked into a single larger 2D array
     as follows:
 
-                                    <-------- d_shapes[1][1] ------->
-    <--a0_shape[1]-><-d_shapes[0][1]>
     +---------------+---------------+-------------------------------+
     |               |               |                               |
     |     c[0]      |  c[1]['da']   |                               |
@@ -652,7 +649,7 @@ def coeffs_to_array(coeffs):
     --------
     cam = pywt.data.camera()
     coeffs = pywt.wavedecn(cam, wavelet='db2', level=3)
-    arr, a0_shape, d_shapes = pywt.coeffs_to_array(coeffs)
+    arr, coeff_slices = pywt.coeffs_to_array(coeffs)
     """
     if not isinstance(coeffs, list) or len(coeffs) == 0:
         raise ValueError("input must be a list of coefficients from wavedecn")
@@ -661,7 +658,9 @@ def coeffs_to_array(coeffs):
 
     # initialize with the approximation coefficients.
     coeff_arr = coeffs[0]
-    a0_shape = coeff_arr.shape
+    coeff_slices = []
+    coeff_slices.append([slice(s) for s in coeff_arr.shape])
+
     ndim = coeff_arr.ndim
 
     if len(coeffs) == 1:
@@ -669,14 +668,13 @@ def coeffs_to_array(coeffs):
         return coeff_arr
 
     # loop over the detail cofficients, appending to the
-    d_shapes = []
     ds = coeffs[1:]
-    for idx, coeff_dict in enumerate(ds):
+    for coeff_dict in ds:
+        coeff_slices.append({})  # new dictionary for detail coefficients
         if not isinstance(coeff_dict, dict):
             raise ValueError("expected a dictionary of detail coefficients")
         a_shape = coeff_arr.shape
         d_shape = coeff_dict['d' * coeff_arr.ndim].shape
-        d_shapes.append(d_shape)
         # a_shape and d_shape may differ along odd-sized axes
 
         # TODO: allocate the full coeff_arr outside this loop for efficiency?
@@ -695,11 +693,12 @@ def coeffs_to_array(coeffs):
                 else:
                     raise ValueError("unexpected letter: {}".format(let))
             temp[slice_array] = d
+            coeff_slices[-1][key] = slice_array
         coeff_arr = temp
-    return coeff_arr, a0_shape, d_shapes
+    return coeff_arr, coeff_slices
 
 
-def array_to_coeffs(arr, a0_shape, d_shapes):
+def array_to_coeffs(arr, coeff_slices):
     """
     Convert a combined array of coefficients back to a list compatible with
     `waverecn`.
@@ -710,15 +709,13 @@ def array_to_coeffs(arr, a0_shape, d_shapes):
     arr: array-like
         An array containing all wavelet coefficients.  This should have been
         generated via `coeffs_to_array`.
-    a0_shape: list of tuples
-        The shape of the approximation coefficient array.
-    d_shapes : list of tuples
-        The shape of the detail coefficient arrays at each level of the wavelet
-        transform.
+    coeff_slices: list of tuples
+        List of slices corresponding to each coefficient as obtained from
+        `array_to_coeffs`.
 
     Returns
     -------
-    coeff_arr: array-like
+    coeffs: array-like
         Wavelet transform coefficient array.
 
     See Also
@@ -730,8 +727,6 @@ def array_to_coeffs(arr, a0_shape, d_shapes):
     A single large array containing all coefficients will have subsets stored,
     into a `waverecn` list, c, as indicated below:
 
-                                    <-------- d_shapes[1][1] ------->
-    <--a0_shape[1]-><-d_shapes[0][1]>
     +---------------+---------------+-------------------------------+
     |               |               |                               |
     |     c[0]      |  c[1]['da']   |                               |
@@ -754,46 +749,24 @@ def array_to_coeffs(arr, a0_shape, d_shapes):
     --------
     cam = pywt.data.camera()
     coeffs = pywt.wavedecn(cam, wavelet='db2', level=3)
-    arr, a0_shape, d_shapes = pywt.coeffs_to_array(coeffs)
-    coeffs_from_arr = pywt.array_to_coeffs(arr, a0_shape, d_shapes)
+    arr, coeff_slices = pywt.coeffs_to_array(coeffs)
+    coeffs_from_arr = pywt.array_to_coeffs(arr, coeff_slices)
     cam_recon = pywt.waverecn(coeffs_from_arr, wavelet='db2')
     assert_array_almost_equal(cam, cam_recon)
 
     """
     arr = np.asarray(arr)
-    levels = len(d_shapes)
-
-    # coarsest level (approximation coeffs)
-    sz = a0_shape
-    ndim = len(sz)
-    slice_array = [slice(sz[i]) for i in range(ndim)]
     coeffs = []
-    coeffs.append(arr[slice_array])
+    if len(coeff_slices) == 0:
+        raise ValueError("empty list of coefficient slices")
+    else:
+        coeffs.append(arr[coeff_slices[0]])
 
-    # generate all detail coefficient keys
-    d_keys = [''.join(coeff) for coeff in product('ad', repeat=ndim)]
-    d_keys.remove('a' * ndim)
-
-    # difference coefficients
-    sz_next = None
+    # difference coefficients at each level
+    levels = len(coeff_slices) - 1
     for l in range(levels):
-        if l > 0:
-            sz = sz_next
-        sz_d = d_shapes[l]
-        # if l < levels - 1:
-        #     sz_next = a_shapes[l + 1]
-        # else:
-        sz_next = np.asarray(sz) + np.asarray(sz_d)
-        cdict = {}
-        for key in d_keys:
-            for i, let in enumerate(key):
-                if let == 'a':
-                    slice_array[i] = slice(sz_d[i])
-                elif let == 'd':
-                    slice_array[i] = slice(sz[i], sz_next[i])
-                else:
-                    raise ValueError("unexpected letter: {}".format(let))
-            # print("key={}, slices={}".format(key, slice_array))
-            cdict[key] = arr[slice_array]
-        coeffs.append(cdict)
+        d = {}
+        for k, v in coeff_slices[l+1].items():
+            d[k] = arr[v]
+        coeffs.append(d)
     return coeffs
