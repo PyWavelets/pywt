@@ -49,8 +49,14 @@ try:
             mlab.set_variable('data', data)
             for pmode, mmode in modes:
                 # Matlab result
-                mlab_code = ("[ma, md] = dwt(data, wavelet, "
-                             "'mode', '%s');" % mmode)
+                if np.any((wavelet == np.array(['coif6', 'coif7', 'coif8', 'coif9', 'coif10', 'coif11', 'coif12', 'coif13', 'coif14', 'coif15', 'coif16', 'coif17'])),axis=0):
+                    mlab.set_variable('Lo_D', w.dec_lo)
+                    mlab.set_variable('Hi_D', w.dec_hi)
+                    mlab_code = ("[ma, md] = dwt(data, Lo_D, Hi_D, "
+                                 "'mode', '%s');" % mmode)
+                else:
+                    mlab_code = ("[ma, md] = dwt(data, wavelet, "
+                                 "'mode', '%s');" % mmode)
                 res = mlab.run_code(mlab_code)
                 if not res['success']:
                     raise RuntimeError(
@@ -66,4 +72,4 @@ try:
 finally:
     mlab.stop()
 
-np.savez('dwt_matlabR2012a_result.npz', **all_matlab_results)
+np.savez('dwt_matlabR2015b_result.npz', **all_matlab_results)
