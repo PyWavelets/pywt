@@ -10,6 +10,7 @@ and Inverse Discrete Wavelet Transform.
 
 from __future__ import division, print_function, absolute_import
 
+from copy import copy
 from itertools import product
 import numpy as np
 
@@ -597,6 +598,33 @@ def waverecn(coeffs, wavelet, mode='symmetric'):
     return a
 
 
+def _coeffs_wavedec_to_wavedecn(coeffs):
+    """Convert wavedec coefficients to the wavedecn format."""
+    if len(coeffs) == 0:
+        return coeffs
+    coeffs = copy(coeffs)
+    for n in range(1, len(coeffs)):
+        if coeffs[n] is None:
+            continue
+        if coeffs[n].ndim != 1:
+            raise ValueError("expected a 1D coefficient array")
+        coeffs[n] = dict(d=coeffs[n])
+    return coeffs
+
+
+def _coeffs_wavedec2_to_wavedecn(coeffs):
+    """Convert wavedec2 coefficients to the wavedecn format."""
+    if len(coeffs) == 0:
+        return coeffs
+    coeffs = copy(coeffs)
+    for n in range(1, len(coeffs)):
+        if not isinstance(coeffs[n], tuple) or len(coeffs[n]) != 3:
+            raise ValueError("expected a 3-tuple of detail coefficients")
+        (ad, da, dd) = coeffs[n]
+        coeffs[n] = dict(ad=ad, da=da, dd=dd)
+    return coeffs
+
+
 def coeffs_to_array(coeffs):
     """
     Arrange a wavelet coefficient list from `wavedecn` into a single array.
@@ -655,7 +683,16 @@ def coeffs_to_array(coeffs):
         raise ValueError("input must be a list of coefficients from wavedecn")
     if not isinstance(coeffs[0], np.ndarray):
         raise ValueError("first list element must be a numpy array")
-
+    if len(coeffs) > 1:
+        # convert wavedec or wavedec2 format coefficients to waverecn format
+        if isinstance(coeffs[1], dict):
+            pass
+        elif isinstance(coeffs[1], np.ndarray):
+            coeffs = _coeffs_wavedec_to_wavedecn(coeffs)
+        elif isinstance(coeffs[1], tuple):
+            coeffs = _coeffs_wavedec2_to_wavedecn(coeffs)
+        else:
+            raise ValueError("invalid coefficient list")
     # initialize with the approximation coefficients.
     coeff_arr = coeffs[0]
     coeff_slices = []
@@ -698,7 +735,7 @@ def coeffs_to_array(coeffs):
     return coeff_arr, coeff_slices
 
 
-def array_to_coeffs(arr, coeff_slices):
+def array_to_coeffs(arr, coeff_slices, output_format='wavedecn'):
     """
     Convert a combined array of coefficients back to a list compatible with
     `waverecn`.
@@ -709,9 +746,12 @@ def array_to_coeffs(arr, coeff_slices):
     arr: array-like
         An array containing all wavelet coefficients.  This should have been
         generated via `coeffs_to_array`.
-    coeff_slices: list of tuples
+    coeff_slices : list of tuples
         List of slices corresponding to each coefficient as obtained from
         `array_to_coeffs`.
+    output_format : {'wavedec', 'wavedec2', 'wavedecn'}
+        Make the form of the coefficients compatible with this type of
+        multilevel transform.
 
     Returns
     -------
@@ -763,10 +803,19 @@ def array_to_coeffs(arr, coeff_slices):
         coeffs.append(arr[coeff_slices[0]])
 
     # difference coefficients at each level
-    levels = len(coeff_slices) - 1
-    for l in range(levels):
-        d = {}
-        for k, v in coeff_slices[l+1].items():
-            d[k] = arr[v]
+    for n in range(1, len(coeff_slices)):
+        if output_format == 'wavedec':
+            d = arr[coeff_slices[n]['d']]
+        elif output_format == 'wavedec2':
+            d = (arr[coeff_slices[n]['da']],
+                 arr[coeff_slices[n]['ad']],
+                 arr[coeff_slices[n]['dd']])
+        elif output_format == 'wavedecn':
+            d = {}
+            for k, v in coeff_slices[n].items():
+                d[k] = arr[v]
+        else:
+            raise ValueError(
+                "Unrecognized output format: {}".format(output_format))
         coeffs.append(d)
     return coeffs

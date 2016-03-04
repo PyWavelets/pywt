@@ -392,8 +392,11 @@ def test_coeffs_to_array():
     assert_allclose(arr, a_coeffs[0])
 
     assert_raises(ValueError, pywt.coeffs_to_array, [])
-    # invalid second element (not a dictionary of detail coeffs)
+    # invalid second element:  array as in wavedec, but not 1D
     assert_raises(ValueError, pywt.coeffs_to_array, [a_coeffs[0], ] * 2)
+    # invalid second element:  tuple as in wavedec2, but not a 3-tuple
+    assert_raises(ValueError, pywt.coeffs_to_array, [a_coeffs[0],
+                                                     (a_coeffs[0], )])
 
 
 def test_wavedecn_coeff_reshape_even():
@@ -412,6 +415,30 @@ def test_wavedecn_coeff_reshape_even():
             coeffs2 = pywt.array_to_coeffs(coeff_arr, coeff_slices)
             x1r = pywt.waverecn(coeffs2, w, mode=mode)
             assert_allclose(x1, x1r, rtol=1e-4, atol=1e-4)
+
+
+def test_wavedec_wavedec2_coeff_reshape():
+    x1d = np.ones(16)
+    x2d = np.ones((16, 16))
+    mode = 'symmetric'
+    w = pywt.Wavelet('db1')
+    test_cases = [('wavedec', pywt.wavedec, pywt.waverec, x1d),
+                  ('wavedec2', pywt.wavedec2, pywt.waverec2, x2d)]
+    for (output_format, dec_fun, rec_fun, data) in test_cases:
+        coeffs = dec_fun(data, w, mode=mode)
+        coeff_arr, coeff_slices = pywt.coeffs_to_array(coeffs)
+
+        # make sure coeffs weren't modified in-place during conversion
+        if output_format == 'wavedec':
+            assert_(isinstance(coeffs[1], np.ndarray))
+        elif output_format == 'wavedec2':
+            assert_(isinstance(coeffs[1], tuple))
+
+        # test reconstruction
+        coeffs2 = pywt.array_to_coeffs(coeff_arr, coeff_slices,
+                                       output_format=output_format)
+        data_r = rec_fun(coeffs2, w, mode=mode)
+        assert_allclose(data, data_r, rtol=1e-4, atol=1e-4)
 
 
 def test_waverecn_coeff_reshape_odd():
