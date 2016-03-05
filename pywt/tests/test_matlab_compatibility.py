@@ -63,6 +63,7 @@ def test_accuracy_pymatbridge():
     rstate = np.random.RandomState(1234)
     # max RMSE (was 1.0e-10, is reduced to 5.0e-5 due to different coefficents)
     epsilon = 5.0e-5
+    epsilon_pywt_coeffs = 1.0e-10
     mlab.start()
     try:
         for wavelet in wavelets:
