@@ -61,6 +61,8 @@ def _get_data_sizes(w):
 @dec.slow
 def test_accuracy_pymatbridge():
     rstate = np.random.RandomState(1234)
+    # max RMSE (was 1.0e-10, is reduced to 5.0e-5 due to different coefficents)
+    epsilon = 5.0e-5
     mlab.start()
     try:
         for wavelet in wavelets:
@@ -71,7 +73,9 @@ def test_accuracy_pymatbridge():
                 mlab.set_variable('data', data)
                 for pmode, mmode in modes:
                     ma, md = _compute_matlab_result(data, wavelet, mmode)
-                    yield _check_accuracy, data, w, pmode, ma, md, wavelet
+                    yield _check_accuracy, data, w, pmode, ma, md, wavelet, epsilon
+                    ma, md = _load_matlab_result_pywt_coeffs(data, wavelet, mmode)
+                    yield _check_accuracy, data, w, pmode, ma, md, wavelet, epsilon_pywt_coeffs
 
     finally:
         mlab.stop()
@@ -82,13 +86,18 @@ def test_accuracy_pymatbridge():
 def test_accuracy_precomputed():
     # Keep this specific random seed to match the precomputed Matlab result.
     rstate = np.random.RandomState(1234)
+    # max RMSE (was 1.0e-10, is reduced to 5.0e-5 due to different coefficents)
+    epsilon = 5.0e-5
+    epsilon_pywt_coeffs = 1.0e-10
     for wavelet in wavelets:
         w = pywt.Wavelet(wavelet)
         for N in _get_data_sizes(w):
             data = rstate.randn(N)
             for pmode, mmode in modes:
                 ma, md = _load_matlab_result(data, wavelet, mmode)
-                yield _check_accuracy, data, w, pmode, ma, md, wavelet
+                yield _check_accuracy, data, w, pmode, ma, md, wavelet, epsilon
+                ma, md = _load_matlab_result_pywt_coeffs(data, wavelet, mmode)
+                yield _check_accuracy, data, w, pmode, ma, md, wavelet, epsilon_pywt_coeffs
 
 
 def _compute_matlab_result(data, wavelet, mmode):
@@ -130,11 +139,23 @@ def _load_matlab_result(data, wavelet, mmode):
     return ma, md
 
 
-def _check_accuracy(data, w, pmode, ma, md, wavelet):
+def _load_matlab_result_pywt_coeffs(data, wavelet, mmode):
+    """ Load the precomputed result.
+    """
+    N = len(data)
+    ma_key = '_'.join([mmode, wavelet, str(N), 'ma_pywtCoeffs'])
+    md_key = '_'.join([mmode, wavelet, str(N), 'md_pywtCoeffs'])
+    if (ma_key not in matlab_result_dict) or \
+            (md_key not in matlab_result_dict):
+        raise KeyError(
+            "Precompted Matlab result not found for wavelet: "
+            "{0}, mode: {1}, size: {2}".format(wavelet, mmode, N))
+    ma = matlab_result_dict[ma_key]
+    md = matlab_result_dict[md_key]
+    return ma, md
 
-    # max RMSE (was 1.0e-10, is reduced to 5.0e-5 due to different coefficents)
-    epsilon = 5.0e-5
 
+def _check_accuracy(data, w, pmode, ma, md, wavelet, epsilon):
     # PyWavelets result
     pa, pd = pywt.dwt(data, w, pmode)
 
