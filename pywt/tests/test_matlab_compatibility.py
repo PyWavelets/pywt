@@ -132,8 +132,8 @@ def _load_matlab_result(data, wavelet, mmode):
 
 def _check_accuracy(data, w, pmode, ma, md, wavelet):
 
-    # max RMSE
-    epsilon = 1.0e-10
+    # max RMSE (was 1.0e-10, is reduced to 1.0e-5 due to different coefficents)
+    epsilon = 1.0e-5
 
     # PyWavelets result
     pa, pd = pywt.dwt(data, w, pmode)
