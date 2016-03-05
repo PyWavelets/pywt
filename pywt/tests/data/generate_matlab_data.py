@@ -69,18 +69,7 @@ try:
                 md_key = '_'.join([mmode, wavelet, str(N), 'md'])
                 all_matlab_results[ma_key] = ma
                 all_matlab_results[md_key] = md
-    for wavelet in wavelets:
-        w = pywt.Wavelet(wavelet)
-        mlab.set_variable('wavelet', wavelet)
-        if size_set == 'full':
-            data_sizes = list(range(w.dec_len, 40)) + \
-                [100, 200, 500, 1000, 50000]
-        else:
-            data_sizes = (w.dec_len, w.dec_len + 1)
-        for N in data_sizes:
-            data = rstate.randn(N)
-            mlab.set_variable('data', data)
-            for pmode, mmode in modes:
+
                 # Matlab result
                 mlab.set_variable('Lo_D', w.dec_lo)
                 mlab.set_variable('Hi_D', w.dec_hi)
