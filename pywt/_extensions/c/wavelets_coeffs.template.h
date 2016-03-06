@@ -2673,7 +2673,7 @@ static TYPE CAT(coif17_, TYPE)[102] = {
 -1.055408614665356789775787814731337905514088897800715301399902e-22
 };
 
-static TYPE CAT(bior1_, TYPE)[10] = {
+static TYPE CAT(bior1_0_, TYPE)[10] = {
  0.0, 0.0, 0.0, 0.0,
 0.70710678118654752440084436210,
 0.70710678118654752440084436210,
@@ -2708,7 +2708,7 @@ static TYPE CAT(bior1_5_, TYPE)[10] = {
 };
 
 
-static TYPE CAT(bior2_, TYPE)[18] = {
+static TYPE CAT(bior2_0_, TYPE)[18] = {
  0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
 0.3535533905932737622004221810524,
 0.7071067811865475244008443621048,
@@ -2776,7 +2776,7 @@ static TYPE CAT(bior2_8_, TYPE)[18] = {
 0.0
 };
 
-static TYPE CAT(bior3_, TYPE)[20] = {
+static TYPE CAT(bior3_0_, TYPE)[20] = {
  0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
 0.1767766952966368811002110905262,
 0.5303300858899106433006332715786,
@@ -2862,7 +2862,7 @@ static TYPE CAT(bior3_9_, TYPE)[20] = {
 };
 
 
-static TYPE CAT(bior4_, TYPE)[10] = {
+static TYPE CAT(bior4_0_, TYPE)[10] = {
 0.0, -0.064538882628697058,
 -0.040689417609164058, 0.41809227322161724,
 0.7884856164055829, 0.41809227322161724,
@@ -2878,7 +2878,7 @@ static TYPE CAT(bior4_4_, TYPE)[10] = {
 0.03782845550726404, 0.0
 };
 
-static TYPE CAT(bior5_, TYPE)[12] = {
+static TYPE CAT(bior5_0_, TYPE)[12] = {
 0.013456709459118716, -0.0026949668801115071,
 -0.13670658466432914, -0.093504697400938863,
 0.47680326579848425, 0.89950610974864842,
@@ -2896,7 +2896,7 @@ static TYPE CAT(bior5_5_, TYPE)[12] = {
 0.0, 0.0
 };
 
-static TYPE CAT(bior6_, TYPE)[18] = {
+static TYPE CAT(bior6_0_, TYPE)[18] = {
 0.0, 0.0,
 0.0, 0.014426282505624435,
 0.014467504896790148, -0.078722001062628819,
@@ -3011,14 +3011,14 @@ static TYPE * const CAT(coif_, TYPE)[17][1] = {
 };
 
 static TYPE * const CAT(bior1_, TYPE)[4][1] = {
-  {CAT(bior1_, TYPE)},
+  {CAT(bior1_0_, TYPE)},
   {CAT(bior1_1_, TYPE)},
   {CAT(bior1_3_, TYPE)},
   {CAT(bior1_5_, TYPE)},
 };
 
 static TYPE * const CAT(bior2_, TYPE)[5][1] = {
-  {CAT(bior2_, TYPE)},
+  {CAT(bior2_0_, TYPE)},
   {CAT(bior2_2_, TYPE)},
   {CAT(bior2_4_, TYPE)},
   {CAT(bior2_6_, TYPE)},
@@ -3026,7 +3026,7 @@ static TYPE * const CAT(bior2_, TYPE)[5][1] = {
 };
 
 static TYPE * const CAT(bior3_, TYPE)[6][1] = {
-  {CAT(bior3_, TYPE)},
+  {CAT(bior3_0_, TYPE)},
   {CAT(bior3_1_, TYPE)},
   {CAT(bior3_3_, TYPE)},
   {CAT(bior3_5_, TYPE)},
@@ -3035,17 +3035,17 @@ static TYPE * const CAT(bior3_, TYPE)[6][1] = {
 };
 
 static TYPE * const CAT(bior4_, TYPE)[2][1] = {
-  {CAT(bior4_, TYPE)},
+  {CAT(bior4_0_, TYPE)},
   {CAT(bior4_4_, TYPE)},
 };
 
 static TYPE * const CAT(bior5_, TYPE)[2][1] = {
-  {CAT(bior5_, TYPE)},
+  {CAT(bior5_0_, TYPE)},
   {CAT(bior5_5_, TYPE)},
 };
 
 static TYPE * const CAT(bior6_, TYPE)[2][1] = {
-  {CAT(bior6_, TYPE)},
+  {CAT(bior6_0_, TYPE)},
   {CAT(bior6_8_, TYPE)},
 };
 
