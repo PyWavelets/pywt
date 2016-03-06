@@ -5,6 +5,8 @@
 #include "wavelets.h"
 #include "wavelets_coeffs.h"
 
+#define SWAP(x, y) ({typeof(x) tmp = x; x = y; y = tmp;})
+
 Wavelet* wavelet(char name, unsigned int order)
 {
     Wavelet *w;
@@ -21,41 +23,32 @@ Wavelet* wavelet(char name, unsigned int order)
     /* Reverse biorthogonal wavelets family */
     } else if (name == 'r' || name == 'R') {
         /* rbio is like bior, only with switched filters */
-        Wavelet * wtmp = wavelet('b', order);
+        w = wavelet('b', order);
+        if (w == NULL) return NULL;
 
-        w = copy_wavelet(wtmp);
-        if(w == NULL) return NULL;
-
-        w->dec_len = wtmp->rec_len;
-        w->rec_len = wtmp->dec_len;
-
-        {
-            size_t i;
-            for(i = 0; i < w->rec_len; ++i){
-                w->rec_lo_float[i] = wtmp->dec_lo_float[wtmp->dec_len-1-i];
-                w->rec_hi_float[i] = wtmp->dec_hi_float[wtmp->dec_len-1-i];
-                w->rec_lo_double[i] = wtmp->dec_lo_double[wtmp->dec_len-1-i];
-                w->rec_hi_double[i] = wtmp->dec_hi_double[wtmp->dec_len-1-i];
-            }
-        }
+        SWAP(w->dec_len, w->rec_len);
+        SWAP(w->rec_lo_float, w->dec_lo_float);
+        SWAP(w->rec_hi_float, w->dec_hi_float);
+        SWAP(w->rec_lo_double, w->dec_lo_double);
+        SWAP(w->rec_hi_double, w->dec_hi_double);
 
         {
-            size_t i;
-            for(i = 0; i < w->dec_len; ++i){
-                w->dec_hi_float[i] = wtmp->rec_hi_float[wtmp->rec_len-1-i];
-                w->dec_lo_float[i] = wtmp->rec_lo_float[wtmp->rec_len-1-i];
-                w->dec_hi_double[i] = wtmp->rec_hi_double[wtmp->rec_len-1-i];
-                w->dec_lo_double[i] = wtmp->rec_lo_double[wtmp->rec_len-1-i];
+            size_t i, j;
+            for(i = 0, j = w->rec_len - 1; i < j; i++, j--){
+                SWAP(w->rec_lo_float[i], w->rec_lo_float[j]);
+                SWAP(w->rec_hi_float[i], w->rec_hi_float[j]);
+                SWAP(w->dec_lo_float[i], w->dec_lo_float[j]);
+                SWAP(w->dec_hi_float[i], w->dec_hi_float[j]);
+
+                SWAP(w->rec_lo_double[i], w->rec_lo_double[j]);
+                SWAP(w->rec_hi_double[i], w->rec_hi_double[j]);
+                SWAP(w->dec_lo_double[i], w->dec_lo_double[j]);
+                SWAP(w->dec_hi_double[i], w->dec_hi_double[j]);
             }
         }
-
-        w->vanishing_moments_psi = order / 10; /* 1st digit */
-        w->vanishing_moments_phi = -1;
 
         w->family_name = "Reverse biorthogonal";
         w->short_name = "rbio";
-
-        free_wavelet(wtmp);
 
         return w;
     }
@@ -427,3 +420,5 @@ void free_wavelet(Wavelet *w){
     /* finally free struct */
     wtfree(w);
 }
+
+#undef SWAP
