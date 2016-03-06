@@ -65,7 +65,7 @@ Wavelet* wavelet(char name, unsigned int order)
         /* Daubechies wavelets family */
         case 'd':
         case 'D':
-            if (order < 1 || order > 20) return NULL;
+            if (order < 1 || order > 38) return NULL;
             w = wtmalloc(sizeof(Wavelet));
             if(w == NULL) return NULL;
             w->_builtin = 0;
@@ -82,8 +82,8 @@ Wavelet* wavelet(char name, unsigned int order)
             w->short_name = "db";
 
             w->dec_lo_float = wtcalloc(w->dec_len, sizeof(float));
-            w->dec_hi_float = wtcalloc(w->dec_len, sizeof(float);
-            w->rec_lo_float = wtcalloc(w->rec_len, sizeof(float);
+            w->dec_hi_float = wtcalloc(w->dec_len, sizeof(float));
+            w->rec_lo_float = wtcalloc(w->rec_len, sizeof(float));
             w->rec_hi_float = wtcalloc(w->rec_len, sizeof(float));
             if(w->dec_lo_float == NULL || w->dec_hi_float == NULL || w->rec_lo_float == NULL || w->rec_hi_float == NULL){
                 free_wavelet(w);
@@ -113,8 +113,8 @@ Wavelet* wavelet(char name, unsigned int order)
             }
             
             w->dec_lo_double = wtcalloc(w->dec_len, sizeof(double));
-            w->dec_hi_double = wtcalloc(w->dec_len, sizeof(double);
-            w->rec_lo_double = wtcalloc(w->rec_len, sizeof(double);
+            w->dec_hi_double = wtcalloc(w->dec_len, sizeof(double));
+            w->rec_lo_double = wtcalloc(w->rec_len, sizeof(double));
             w->rec_hi_double = wtcalloc(w->rec_len, sizeof(double));
             if(w->dec_lo_double == NULL || w->dec_hi_double == NULL || w->rec_lo_double == NULL || w->rec_hi_double == NULL){
                 free_wavelet(w);
@@ -229,7 +229,7 @@ Wavelet* wavelet(char name, unsigned int order)
         /* Coiflets wavelets family */
         case 'c':
         case 'C':
-            if (order < 1 || order > 5) return NULL;
+            if (order < 1 || order > 17) return NULL;
             w = wtmalloc(sizeof(Wavelet));
             if(w == NULL) return NULL;
             w->_builtin = 0;

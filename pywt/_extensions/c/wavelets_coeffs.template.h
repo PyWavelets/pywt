@@ -2949,7 +2949,6 @@ static TYPE * const CAT(db_, TYPE)[38][1] = {
   {CAT(db20_, TYPE)},
   {CAT(db21_, TYPE)},
   {CAT(db22_, TYPE)},
-  {CAT(db22_, TYPE)},
   {CAT(db23_, TYPE)},
   {CAT(db24_, TYPE)},
   {CAT(db25_, TYPE)},
