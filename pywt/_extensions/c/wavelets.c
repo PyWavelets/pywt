@@ -332,12 +332,6 @@ Wavelet* blank_wavelet(size_t filters_length)
     w = wtmalloc(sizeof(Wavelet));
     if(w == NULL) return NULL;
 
-    /*
-     * Important!
-     * Otherwise filters arrays allocated here won't be deallocated by free_wavelet
-     */
-    w->_builtin = 0;
-
     w->dec_len = w->rec_len = filters_length;
 
     w->dec_lo_float = wtcalloc(filters_length, sizeof(float));
@@ -387,8 +381,6 @@ Wavelet* copy_wavelet(Wavelet* base)
 
     memcpy(w, base, sizeof(Wavelet));
 
-    w->_builtin = 0;
-
     w->dec_lo_float = wtmalloc(w->dec_len * sizeof(float));
     w->dec_hi_float = wtmalloc(w->dec_len * sizeof(float));
     w->rec_lo_float = wtmalloc(w->rec_len * sizeof(float));
@@ -421,18 +413,16 @@ Wavelet* copy_wavelet(Wavelet* base)
 
 void free_wavelet(Wavelet *w){
 
-    if(w->_builtin == 0){
-        /* deallocate filters */
-        wtfree(w->dec_lo_float);
-        wtfree(w->dec_hi_float);
-        wtfree(w->rec_lo_float);
-        wtfree(w->rec_hi_float);
+    /* deallocate filters */
+    wtfree(w->dec_lo_float);
+    wtfree(w->dec_hi_float);
+    wtfree(w->rec_lo_float);
+    wtfree(w->rec_hi_float);
 
-        wtfree(w->dec_lo_double);
-        wtfree(w->dec_hi_double);
-        wtfree(w->rec_lo_double);
-        wtfree(w->rec_hi_double);
-    }
+    wtfree(w->dec_lo_double);
+    wtfree(w->dec_hi_double);
+    wtfree(w->rec_lo_double);
+    wtfree(w->rec_hi_double);
 
     /* finally free struct */
     wtfree(w);

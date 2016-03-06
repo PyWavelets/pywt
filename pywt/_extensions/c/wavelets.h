@@ -39,12 +39,6 @@ typedef struct {
     unsigned int biorthogonal:1;
     unsigned int compact_support:1;
 
-    /*
-     * Set if filters arrays shouldn't be deallocated by
-     * free_wavelet(Wavelet) func
-     */
-    int _builtin:1;
-
     char* family_name;
     char* short_name;
 
@@ -55,14 +49,11 @@ typedef struct {
  * Allocate Wavelet struct and set its attributes
  * name - (currently) a character codename of a wavelet family
  * order - order of the wavelet (ie. coif3 has order 3)
- *
- * _builtin field is set to 1
  */
 Wavelet* wavelet(char name, unsigned int order);
 
 /* 
  * Allocate blank Wavelet with zero-filled filters of given length
- * _builtin field is set to 0
  */
 Wavelet* blank_wavelet(size_t filters_length);
 
