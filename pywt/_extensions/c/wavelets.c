@@ -6,6 +6,7 @@
 #include "wavelets_coeffs.h"
 
 #define SWAP(x, y) ({typeof(x) tmp = x; x = y; y = tmp;})
+#define NELEMS(x) (sizeof(x) / sizeof(*x))
 
 Wavelet* wavelet(char name, unsigned int order)
 {
@@ -54,11 +55,13 @@ Wavelet* wavelet(char name, unsigned int order)
     }
 
     switch(name){
-
         /* Daubechies wavelets family */
         case 'd':
-        case 'D':
-            if (order < 1 || order > 38) return NULL;
+        case 'D': {
+            size_t coeffs_idx = order - 1;
+            if (coeffs_idx >= NELEMS(db_float) ||
+                coeffs_idx >= NELEMS(db_double))
+                return NULL;
             w = blank_wavelet(2 * order);
             if(w == NULL) return NULL;
 
@@ -75,33 +78,38 @@ Wavelet* wavelet(char name, unsigned int order)
             {
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
-                    w->rec_lo_float[i] = db_float[order - 1][i];
-                    w->dec_lo_float[i] = db_float[order - 1][w->dec_len-1-i];
+                    w->rec_lo_float[i] = db_float[coeffs_idx][i];
+                    w->dec_lo_float[i] = db_float[coeffs_idx][w->dec_len-1-i];
                     w->rec_hi_float[i] = ((i % 2) ? -1 : 1)
-                      * db_float[order - 1][w->dec_len-1-i];
+                      * db_float[coeffs_idx][w->dec_len-1-i];
                     w->dec_hi_float[i] = (((w->dec_len-1-i) % 2) ? -1 : 1)
-                      * db_float[order - 1][i];
+                      * db_float[coeffs_idx][i];
                 }
             }
 
             {
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
-                    w->rec_lo_double[i] = db_double[order - 1][i];
-                    w->dec_lo_double[i] = db_double[order - 1][w->dec_len-1-i];
+                    w->rec_lo_double[i] = db_double[coeffs_idx][i];
+                    w->dec_lo_double[i] = db_double[coeffs_idx][w->dec_len-1-i];
                     w->rec_hi_double[i] = ((i % 2) ? -1 : 1)
-                      * db_double[order - 1][w->dec_len-1-i];
+                      * db_double[coeffs_idx][w->dec_len-1-i];
                     w->dec_hi_double[i] = (((w->dec_len-1-i) % 2) ? -1 : 1)
-                      * db_double[order - 1][i];
+                      * db_double[coeffs_idx][i];
                 }
             }
 
             break;
+        }
 
         /* Symlets wavelets family */
         case 's':
-        case 'S':
-            if (order < 2 || order > 20) return NULL;
+        case 'S': {
+            size_t coeffs_idx = order - 2;
+            if (coeffs_idx >= NELEMS(sym_float) ||
+                coeffs_idx >= NELEMS(sym_double))
+                return NULL;
+
             w = blank_wavelet(2 * order);
             if(w == NULL) return NULL;
 
@@ -118,32 +126,36 @@ Wavelet* wavelet(char name, unsigned int order)
             {
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
-                    w->rec_lo_float[i] = sym_float[order - 2][i];
-                    w->dec_lo_float[i] = sym_float[order - 2][w->dec_len-1-i];
+                    w->rec_lo_float[i] = sym_float[coeffs_idx][i];
+                    w->dec_lo_float[i] = sym_float[coeffs_idx][w->dec_len-1-i];
                     w->rec_hi_float[i] = ((i % 2) ? -1 : 1)
-                      * sym_float[order - 2][w->dec_len-1-i];
+                      * sym_float[coeffs_idx][w->dec_len-1-i];
                     w->dec_hi_float[i] = (((w->dec_len-1-i) % 2) ? -1 : 1)
-                      * sym_float[order - 2][i];
+                      * sym_float[coeffs_idx][i];
                 }
             }
 
             {
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
-                    w->rec_lo_double[i] = sym_double[order - 2][i];
-                    w->dec_lo_double[i] = sym_double[order - 2][w->dec_len-1-i];
+                    w->rec_lo_double[i] = sym_double[coeffs_idx][i];
+                    w->dec_lo_double[i] = sym_double[coeffs_idx][w->dec_len-1-i];
                     w->rec_hi_double[i] = ((i % 2) ? -1 : 1)
-                      * sym_double[order - 2][w->dec_len-1-i];
+                      * sym_double[coeffs_idx][w->dec_len-1-i];
                     w->dec_hi_double[i] = (((w->dec_len-1-i) % 2) ? -1 : 1)
-                      * sym_double[order - 2][i];
+                      * sym_double[coeffs_idx][i];
                 }
             }
             break;
+        }
 
         /* Coiflets wavelets family */
         case 'c':
-        case 'C':
-            if (order < 1 || order > 17) return NULL;
+        case 'C': {
+            size_t coeffs_idx = order - 1;
+            if (coeffs_idx >= NELEMS(coif_float) ||
+                coeffs_idx >= NELEMS(coif_double))
+                return NULL;
             w = blank_wavelet(6 * order);
             if(w == NULL) return NULL;
 
@@ -160,29 +172,30 @@ Wavelet* wavelet(char name, unsigned int order)
             {
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
-                    w->rec_lo_float[i] = coif_float[order - 1][i] * sqrt2_float;
-                    w->dec_lo_float[i] = coif_float[order - 1][w->dec_len-1-i]
+                    w->rec_lo_float[i] = coif_float[coeffs_idx][i] * sqrt2_float;
+                    w->dec_lo_float[i] = coif_float[coeffs_idx][w->dec_len-1-i]
                       * sqrt2_float;
                     w->rec_hi_float[i] = ((i % 2) ? -1 : 1)
-                      * coif_float[order - 1][w->dec_len-1-i] * sqrt2_float;
+                      * coif_float[coeffs_idx][w->dec_len-1-i] * sqrt2_float;
                     w->dec_hi_float[i] = (((w->dec_len-1-i) % 2) ? -1 : 1)
-                      * coif_float[order - 1][i] * sqrt2_float;
+                      * coif_float[coeffs_idx][i] * sqrt2_float;
                 }
             }
 
             {
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
-                    w->rec_lo_double[i] = coif_double[order - 1][i] * sqrt2_double;
-                    w->dec_lo_double[i] = coif_double[order - 1][w->dec_len-1-i]
+                    w->rec_lo_double[i] = coif_double[coeffs_idx][i] * sqrt2_double;
+                    w->dec_lo_double[i] = coif_double[coeffs_idx][w->dec_len-1-i]
                       * sqrt2_double;
                     w->rec_hi_double[i] = ((i % 2) ? -1 : 1)
-                      * coif_double[order - 1][w->dec_len-1-i] * sqrt2_double;
+                      * coif_double[coeffs_idx][w->dec_len-1-i] * sqrt2_double;
                     w->dec_hi_double[i] = (((w->dec_len-1-i) % 2) ? -1 : 1)
-                      * coif_double[order - 1][i] * sqrt2_double;
+                      * coif_double[coeffs_idx][i] * sqrt2_double;
                 }
             }
             break;
+        }
 
         /* Biorthogonal wavelets family */
         case 'b':
@@ -422,3 +435,4 @@ void free_wavelet(Wavelet *w){
 }
 
 #undef SWAP
+#undef NELEMS
