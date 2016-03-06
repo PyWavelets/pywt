@@ -31,13 +31,6 @@
  * Computed by Kazuo Hatano, Aichi Institute of Technology.
  * http://repository.kulib.kyoto-u.ac.jp/dspace/handle/2433/60181
  */
- 
-/* ignore warning about initializing floats from double values */
-#if defined _MSC_VER
-    #pragma warning (disable:4305)
-#elif defined __GNUC__
-    #pragma GCC diagnostic ignored "-Wconversion"
-#endif
 
 static TYPE CAT(db1_, TYPE)[2] = {
    7.071067811865475244008443621048490392848359376884740365883398e-01,
@@ -2931,6 +2924,139 @@ static TYPE CAT(bior6_8_, TYPE)[18] = {
 
 static TYPE CAT(dmey_, TYPE)[62] = {
     -1.0099999569414229e-012, 8.519459636796214e-009, -1.111944952595278e-008, -1.0798819539621958e-008, 6.0669757413511352e-008, -1.0866516536735883e-007, 8.2006806503864813e-008, 1.1783004497663934e-007, -5.5063405652522782e-007, 1.1307947017916706e-006, -1.4895492164971559e-006, 7.367572885903746e-007, 3.2054419133447798e-006, -1.6312699734552807e-005, 6.5543059305751491e-005, -0.00060115023435160925, -0.002704672124643725, 0.0022025341009110021, 0.006045814097323304, -0.0063877183184971563, -0.011061496392513451, 0.015270015130934803, 0.017423434103729693, -0.032130793990211758, -0.024348745906078023, 0.063739024322801596, 0.030655091960824263, -0.13284520043622938, -0.035087555656258346, 0.44459300275757724, 0.74458559231880628, 0.44459300275757724, -0.035087555656258346, -0.13284520043622938, 0.030655091960824263, 0.063739024322801596, -0.024348745906078023, -0.032130793990211758, 0.017423434103729693, 0.015270015130934803, -0.011061496392513451, -0.0063877183184971563, 0.006045814097323304, 0.0022025341009110021, -0.002704672124643725, -0.00060115023435160925, 6.5543059305751491e-005, -1.6312699734552807e-005, 3.2054419133447798e-006, 7.367572885903746e-007, -1.4895492164971559e-006, 1.1307947017916706e-006, -5.5063405652522782e-007, 1.1783004497663934e-007, 8.2006806503864813e-008, -1.0866516536735883e-007, 6.0669757413511352e-008, -1.0798819539621958e-008, -1.111944952595278e-008, 8.519459636796214e-009, -1.0099999569414229e-012, 0.0
+};
+
+static TYPE * const CAT(db_, TYPE)[38][1] = {
+  {CAT(db1_, TYPE)},
+  {CAT(db2_, TYPE)},
+  {CAT(db3_, TYPE)},
+  {CAT(db4_, TYPE)},
+  {CAT(db5_, TYPE)},
+  {CAT(db6_, TYPE)},
+  {CAT(db7_, TYPE)},
+  {CAT(db8_, TYPE)},
+  {CAT(db9_, TYPE)},
+  {CAT(db10_, TYPE)},
+  {CAT(db11_, TYPE)},
+  {CAT(db12_, TYPE)},
+  {CAT(db13_, TYPE)},
+  {CAT(db14_, TYPE)},
+  {CAT(db15_, TYPE)},
+  {CAT(db16_, TYPE)},
+  {CAT(db17_, TYPE)},
+  {CAT(db18_, TYPE)},
+  {CAT(db19_, TYPE)},
+  {CAT(db20_, TYPE)},
+  {CAT(db21_, TYPE)},
+  {CAT(db22_, TYPE)},
+  {CAT(db22_, TYPE)},
+  {CAT(db23_, TYPE)},
+  {CAT(db24_, TYPE)},
+  {CAT(db25_, TYPE)},
+  {CAT(db26_, TYPE)},
+  {CAT(db27_, TYPE)},
+  {CAT(db28_, TYPE)},
+  {CAT(db29_, TYPE)},
+  {CAT(db30_, TYPE)},
+  {CAT(db31_, TYPE)},
+  {CAT(db32_, TYPE)},
+  {CAT(db33_, TYPE)},
+  {CAT(db34_, TYPE)},
+  {CAT(db35_, TYPE)},
+  {CAT(db36_, TYPE)},
+  {CAT(db37_, TYPE)},
+  {CAT(db38_, TYPE)},
+};
+
+static TYPE * const CAT(sym_, TYPE)[19][1] = {
+  {CAT(sym2_, TYPE)},
+  {CAT(sym3_, TYPE)},
+  {CAT(sym4_, TYPE)},
+  {CAT(sym5_, TYPE)},
+  {CAT(sym6_, TYPE)},
+  {CAT(sym7_, TYPE)},
+  {CAT(sym8_, TYPE)},
+  {CAT(sym9_, TYPE)},
+  {CAT(sym10_, TYPE)},
+  {CAT(sym11_, TYPE)},
+  {CAT(sym12_, TYPE)},
+  {CAT(sym13_, TYPE)},
+  {CAT(sym14_, TYPE)},
+  {CAT(sym15_, TYPE)},
+  {CAT(sym16_, TYPE)},
+  {CAT(sym17_, TYPE)},
+  {CAT(sym18_, TYPE)},
+  {CAT(sym19_, TYPE)},
+  {CAT(sym20_, TYPE)},
+};
+
+static TYPE * const CAT(coif_, TYPE)[17][1] = {
+  {CAT(coif1_, TYPE)},
+  {CAT(coif2_, TYPE)},
+  {CAT(coif3_, TYPE)},
+  {CAT(coif4_, TYPE)},
+  {CAT(coif5_, TYPE)},
+  {CAT(coif6_, TYPE)},
+  {CAT(coif7_, TYPE)},
+  {CAT(coif8_, TYPE)},
+  {CAT(coif9_, TYPE)},
+  {CAT(coif10_, TYPE)},
+  {CAT(coif11_, TYPE)},
+  {CAT(coif12_, TYPE)},
+  {CAT(coif13_, TYPE)},
+  {CAT(coif14_, TYPE)},
+  {CAT(coif15_, TYPE)},
+  {CAT(coif16_, TYPE)},
+  {CAT(coif17_, TYPE)},
+};
+
+static TYPE * const CAT(bior1_, TYPE)[4][1] = {
+  {CAT(bior1_, TYPE)},
+  {CAT(bior1_1_, TYPE)},
+  {CAT(bior1_3_, TYPE)},
+  {CAT(bior1_5_, TYPE)},
+};
+
+static TYPE * const CAT(bior2_, TYPE)[5][1] = {
+  {CAT(bior2_, TYPE)},
+  {CAT(bior2_2_, TYPE)},
+  {CAT(bior2_4_, TYPE)},
+  {CAT(bior2_6_, TYPE)},
+  {CAT(bior2_8_, TYPE)},
+};
+
+static TYPE * const CAT(bior3_, TYPE)[6][1] = {
+  {CAT(bior3_, TYPE)},
+  {CAT(bior3_1_, TYPE)},
+  {CAT(bior3_3_, TYPE)},
+  {CAT(bior3_5_, TYPE)},
+  {CAT(bior3_7_, TYPE)},
+  {CAT(bior3_9_, TYPE)},
+};
+
+static TYPE * const CAT(bior4_, TYPE)[2][1] = {
+  {CAT(bior4_, TYPE)},
+  {CAT(bior4_4_, TYPE)},
+};
+
+static TYPE * const CAT(bior5_, TYPE)[2][1] = {
+  {CAT(bior5_, TYPE)},
+  {CAT(bior5_5_, TYPE)},
+};
+
+static TYPE * const CAT(bior6_, TYPE)[2][1] = {
+  {CAT(bior6_, TYPE)},
+  {CAT(bior6_8_, TYPE)},
+};
+
+// Array of 6 pointers to array of 4 pointers to float
+static TYPE * const (* const CAT(bior_, TYPE)[6])[1] = {
+  CAT(bior1_, TYPE),
+  CAT(bior2_, TYPE),
+  CAT(bior3_, TYPE),
+  CAT(bior4_, TYPE),
+  CAT(bior5_, TYPE),
+  CAT(bior6_, TYPE),
 };
 
 #endif /* TYPE */
