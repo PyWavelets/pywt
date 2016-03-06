@@ -66,11 +66,9 @@ Wavelet* wavelet(char name, unsigned int order)
         case 'd':
         case 'D':
             if (order < 1 || order > 38) return NULL;
-            w = wtmalloc(sizeof(Wavelet));
+            w = blank_wavelet(2 * order);
             if(w == NULL) return NULL;
-            w->_builtin = 0;
 
-            w->dec_len = w->rec_len = 2*order;
             w->vanishing_moments_psi = order;
             w->vanishing_moments_phi = 0;
             w->support_width = 2*order - 1;
@@ -81,14 +79,6 @@ Wavelet* wavelet(char name, unsigned int order)
             w->family_name = "Daubechies";
             w->short_name = "db";
 
-            w->dec_lo_float = wtcalloc(w->dec_len, sizeof(float));
-            w->dec_hi_float = wtcalloc(w->dec_len, sizeof(float));
-            w->rec_lo_float = wtcalloc(w->rec_len, sizeof(float));
-            w->rec_hi_float = wtcalloc(w->rec_len, sizeof(float));
-            if(w->dec_lo_float == NULL || w->dec_hi_float == NULL || w->rec_lo_float == NULL || w->rec_hi_float == NULL){
-                free_wavelet(w);
-                return NULL;
-            }
             {
                 float *temp = wtcalloc(w->rec_len, sizeof(float));
                 size_t i;
@@ -111,15 +101,7 @@ Wavelet* wavelet(char name, unsigned int order)
                 }
                 wtfree(temp);
             }
-            
-            w->dec_lo_double = wtcalloc(w->dec_len, sizeof(double));
-            w->dec_hi_double = wtcalloc(w->dec_len, sizeof(double));
-            w->rec_lo_double = wtcalloc(w->rec_len, sizeof(double));
-            w->rec_hi_double = wtcalloc(w->rec_len, sizeof(double));
-            if(w->dec_lo_double == NULL || w->dec_hi_double == NULL || w->rec_lo_double == NULL || w->rec_hi_double == NULL){
-                free_wavelet(w);
-                return NULL;
-            }
+
             {
                 double *temp = wtcalloc(w->rec_len, sizeof(double));
                 size_t i;
@@ -149,11 +131,9 @@ Wavelet* wavelet(char name, unsigned int order)
         case 's':
         case 'S':
             if (order < 2 || order > 20) return NULL;
-            w = wtmalloc(sizeof(Wavelet));
+            w = blank_wavelet(2 * order);
             if(w == NULL) return NULL;
-            w->_builtin = 0;
 
-            w->dec_len = w->rec_len = order << 1;
             w->vanishing_moments_psi = order;
             w->vanishing_moments_phi = 0;
             w->support_width = 2*order - 1;
@@ -164,14 +144,6 @@ Wavelet* wavelet(char name, unsigned int order)
             w->family_name = "Symlets";
             w->short_name = "sym";
 
-            w->dec_lo_float = wtcalloc(w->dec_len, sizeof(float));
-            w->dec_hi_float = wtcalloc(w->dec_len, sizeof(float));
-            w->rec_lo_float = wtcalloc(w->rec_len, sizeof(float));
-            w->rec_hi_float = wtcalloc(w->rec_len, sizeof(float));
-            if(w->dec_lo_float == NULL || w->dec_hi_float == NULL || w->rec_lo_float == NULL || w->rec_hi_float == NULL){
-                free_wavelet(w);
-                return NULL;
-            }
             {
                 float *temp = wtcalloc(w->rec_len, sizeof(float));
                 size_t i;
@@ -194,14 +166,7 @@ Wavelet* wavelet(char name, unsigned int order)
                 }
                 wtfree(temp);
             }
-            w->dec_lo_double = wtcalloc(w->dec_len, sizeof(double));
-            w->dec_hi_double = wtcalloc(w->dec_len, sizeof(double));
-            w->rec_lo_double = wtcalloc(w->rec_len, sizeof(double));
-            w->rec_hi_double = wtcalloc(w->rec_len, sizeof(double));
-            if(w->dec_lo_double == NULL || w->dec_hi_double == NULL || w->rec_lo_double == NULL || w->rec_hi_double == NULL){
-                free_wavelet(w);
-                return NULL;
-            }
+
             {
                 double *temp = wtcalloc(w->rec_len, sizeof(double));
                 size_t i;
@@ -230,11 +195,9 @@ Wavelet* wavelet(char name, unsigned int order)
         case 'c':
         case 'C':
             if (order < 1 || order > 17) return NULL;
-            w = wtmalloc(sizeof(Wavelet));
+            w = blank_wavelet(6 * order);
             if(w == NULL) return NULL;
-            w->_builtin = 0;
 
-            w->dec_len = w->rec_len = order * 6;
             w->vanishing_moments_psi = 2*order;
             w->vanishing_moments_phi = 2*order -1;
             w->support_width = 6*order - 1;
@@ -245,14 +208,6 @@ Wavelet* wavelet(char name, unsigned int order)
             w->family_name = "Coiflets";
             w->short_name = "coif";
 
-            w->dec_lo_float = wtcalloc(w->dec_len, sizeof(float));
-            w->dec_hi_float = wtcalloc(w->dec_len, sizeof(float));
-            w->rec_lo_float = wtcalloc(w->rec_len, sizeof(float));
-            w->rec_hi_float = wtcalloc(w->rec_len, sizeof(float));
-            if(w->dec_lo_float == NULL || w->dec_hi_float == NULL || w->rec_lo_float == NULL || w->rec_hi_float == NULL){
-                free_wavelet(w);
-                return NULL;
-            }
             {
                 float *temp = wtcalloc(w->rec_len, sizeof(float));
                 size_t i;
@@ -275,15 +230,7 @@ Wavelet* wavelet(char name, unsigned int order)
                 }
                 wtfree(temp);
             }
-            
-            w->dec_lo_double = wtcalloc(w->dec_len, sizeof(double));
-            w->dec_hi_double = wtcalloc(w->dec_len, sizeof(double));
-            w->rec_lo_double = wtcalloc(w->rec_len, sizeof(double));
-            w->rec_hi_double = wtcalloc(w->rec_len, sizeof(double));
-            if(w->dec_lo_double == NULL || w->dec_hi_double == NULL || w->rec_lo_double == NULL || w->rec_hi_double == NULL){
-                free_wavelet(w);
-                return NULL;
-            }
+
             {
                 double *temp = wtcalloc(w->rec_len, sizeof(double));
                 size_t i;
@@ -345,11 +292,9 @@ Wavelet* wavelet(char name, unsigned int order)
                 return NULL;
             }
 
-            w = wtmalloc(sizeof(Wavelet));
+            w = blank_wavelet((N == 1) ? 2 * M : 2 * M + 2);
             if(w == NULL) return NULL;
-            w->_builtin = 0;
 
-            w->dec_len = w->rec_len = (N == 1) ? 2 * M : 2 * M + 2;
             w->vanishing_moments_psi = order/10;
             w->vanishing_moments_phi = -1;
             w->support_width = -1;
@@ -360,15 +305,6 @@ Wavelet* wavelet(char name, unsigned int order)
             w->family_name = "Biorthogonal";
             w->short_name = "bior";
 
-             
-            w->dec_lo_float = wtcalloc(w->dec_len, sizeof(float));
-            w->dec_hi_float = wtcalloc(w->dec_len, sizeof(float));
-            w->rec_lo_float = wtcalloc(w->rec_len, sizeof(float));
-            w->rec_hi_float = wtcalloc(w->rec_len, sizeof(float));
-            if(w->dec_lo_float == NULL || w->dec_hi_float == NULL || w->rec_lo_float == NULL || w->rec_hi_float == NULL){
-                free_wavelet(w);
-                return NULL;
-            }
             {
                 size_t n = M_max - M;
                 float *temp = wtcalloc(w->rec_len, sizeof(float));
@@ -392,15 +328,7 @@ Wavelet* wavelet(char name, unsigned int order)
                 }
                 wtfree(temp);
             }
-            
-            w->dec_lo_double = wtcalloc(w->dec_len, sizeof(double));
-            w->dec_hi_double = wtcalloc(w->dec_len, sizeof(double));
-            w->rec_lo_double = wtcalloc(w->rec_len, sizeof(double));
-            w->rec_hi_double = wtcalloc(w->rec_len, sizeof(double));
-            if(w->dec_lo_double == NULL || w->dec_hi_double == NULL || w->rec_lo_double == NULL || w->rec_hi_double == NULL){
-                free_wavelet(w);
-                return NULL;
-            }
+
             {
                 size_t n = M_max - M;
                 double *temp = wtcalloc(w->rec_len, sizeof(double));
@@ -424,16 +352,15 @@ Wavelet* wavelet(char name, unsigned int order)
                 }
                 wtfree(temp);
             }
-            
+
             break;
         }
 
         /* Discrete FIR filter approximation of Meyer wavelet */
         case 'm':
         case 'M':
-            w = wtmalloc(sizeof(Wavelet));
+            w = blank_wavelet(62);
             if(w == NULL) return NULL;
-            w->_builtin = 0;
 
             w->vanishing_moments_psi = -1;
             w->vanishing_moments_phi = -1;
@@ -445,16 +372,6 @@ Wavelet* wavelet(char name, unsigned int order)
             w->family_name = "Discrete Meyer (FIR Approximation)";
             w->short_name = "dmey";
 
-
-            w->dec_len = w->rec_len = 62;
-            w->dec_lo_float = wtcalloc(w->dec_len, sizeof(float));
-            w->dec_hi_float = wtcalloc(w->dec_len, sizeof(float));
-            w->rec_lo_float = wtcalloc(w->rec_len, sizeof(float));
-            w->rec_hi_float = wtcalloc(w->rec_len, sizeof(float));
-            if(w->dec_lo_float == NULL || w->dec_hi_float == NULL || w->rec_lo_float == NULL || w->rec_hi_float == NULL){
-                free_wavelet(w);
-                return NULL;
-            }
             {
                 float *temp = wtcalloc(w->rec_len, sizeof(float));
                 size_t i;
@@ -477,15 +394,7 @@ Wavelet* wavelet(char name, unsigned int order)
                 }
                 wtfree(temp);
             }
-            
-            w->dec_lo_double = wtcalloc(w->dec_len, sizeof(double));
-            w->dec_hi_double = wtcalloc(w->dec_len, sizeof(double));
-            w->rec_lo_double = wtcalloc(w->rec_len, sizeof(double));
-            w->rec_hi_double = wtcalloc(w->rec_len, sizeof(double));
-            if(w->dec_lo_double == NULL || w->dec_hi_double == NULL || w->rec_lo_double == NULL || w->rec_hi_double == NULL){
-                free_wavelet(w);
-                return NULL;
-            }
+
             {
                 double *temp = wtcalloc(w->rec_len, sizeof(double));
                 size_t i;
