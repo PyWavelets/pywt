@@ -85,11 +85,9 @@ Wavelet* wavelet(char name, unsigned int order)
                 for(i = 0; i < w->rec_len; ++i){
                     w->rec_lo_float[i] = db_float[order - 1][i];
                     w->dec_lo_float[i] = db_float[order - 1][w->dec_len-1-i];
-                    w->rec_hi_float[i] = db_float[order - 1][w->dec_len-1-i];
-                    if (i % 2 != 0)
-                    {
-                        w->rec_hi_float[i] = -1 * w->rec_hi_float[i];
-                    }
+                    w->rec_hi_float[i] = ((i % 2) ? -1 : 1)
+                      * db_float[order - 1][w->dec_len-1-i];
+
                     temp[i] = db_float[order - 1][w->dec_len-1-i];
                     if (i % 2 != 0)
                     {
@@ -108,11 +106,8 @@ Wavelet* wavelet(char name, unsigned int order)
                 for(i = 0; i < w->rec_len; ++i){
                     w->rec_lo_double[i] = db_double[order - 1][i];
                     w->dec_lo_double[i] = db_double[order - 1][w->dec_len-1-i];
-                    w->rec_hi_double[i] = db_double[order - 1][w->dec_len-1-i];
-                    if (i % 2 != 0)
-                    {
-                        w->rec_hi_double[i] = -1 * w->rec_hi_double[i];
-                    }
+                    w->rec_hi_double[i] = ((i % 2) ? -1 : 1)
+                      * db_double[order - 1][w->dec_len-1-i];
                     temp[i] = db_double[order - 1][w->dec_len-1-i];
                     if (i % 2 != 0)
                     {
@@ -150,11 +145,8 @@ Wavelet* wavelet(char name, unsigned int order)
                 for(i = 0; i < w->rec_len; ++i){
                     w->rec_lo_float[i] = sym_float[order - 2][i];
                     w->dec_lo_float[i] = sym_float[order - 2][w->dec_len-1-i];
-                    w->rec_hi_float[i] = sym_float[order - 2][w->dec_len-1-i];
-                    if (i % 2 != 0)
-                    {
-                        w->rec_hi_float[i] = -1 * w->rec_hi_float[i];
-                    }
+                    w->rec_hi_float[i] = ((i % 2) ? -1 : 1)
+                      * sym_float[order - 2][w->dec_len-1-i];
                     temp[i] = sym_float[order - 2][w->dec_len-1-i];
                     if (i % 2 != 0)
                     {
@@ -173,11 +165,8 @@ Wavelet* wavelet(char name, unsigned int order)
                 for(i = 0; i < w->rec_len; ++i){
                     w->rec_lo_double[i] = sym_double[order - 2][i];
                     w->dec_lo_double[i] = sym_double[order - 2][w->dec_len-1-i];
-                    w->rec_hi_double[i] = sym_double[order - 2][w->dec_len-1-i];
-                    if (i % 2 != 0)
-                    {
-                        w->rec_hi_double[i] = -1 * w->rec_hi_double[i];
-                    }
+                    w->rec_hi_double[i] = ((i % 2) ? -1 : 1)
+                      * sym_double[order - 2][w->dec_len-1-i];
                     temp[i] = sym_double[order - 2][w->dec_len-1-i];
                     if (i % 2 != 0)
                     {
@@ -213,12 +202,10 @@ Wavelet* wavelet(char name, unsigned int order)
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
                     w->rec_lo_float[i] = coif_float[order - 1][i] * sqrt2_float;
-                    w->dec_lo_float[i] = coif_float[order - 1][w->dec_len-1-i] * sqrt2_float;
-                    w->rec_hi_float[i] = coif_float[order - 1][w->dec_len-1-i] * sqrt2_float;
-                    if (i % 2 != 0)
-                    {
-                        w->rec_hi_float[i] = -1 * w->rec_hi_float[i];
-                    }
+                    w->dec_lo_float[i] = coif_float[order - 1][w->dec_len-1-i]
+                      * sqrt2_float;
+                    w->rec_hi_float[i] = ((i % 2) ? -1 : 1)
+                      * coif_float[order - 1][w->dec_len-1-i] * sqrt2_float;
                     temp[i] = coif_float[order - 1][w->dec_len-1-i] * sqrt2_float;
                     if (i % 2 != 0)
                     {
@@ -236,12 +223,10 @@ Wavelet* wavelet(char name, unsigned int order)
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
                     w->rec_lo_double[i] = coif_double[order - 1][i] * sqrt2_double;
-                    w->dec_lo_double[i] = coif_double[order - 1][w->dec_len-1-i] * sqrt2_double;
-                    w->rec_hi_double[i] = coif_double[order - 1][w->dec_len-1-i] * sqrt2_double;
-                    if (i % 2 != 0)
-                    {
-                        w->rec_hi_double[i] = -1 * w->rec_hi_double[i];
-                    }
+                    w->dec_lo_double[i] = coif_double[order - 1][w->dec_len-1-i]
+                      * sqrt2_double;
+                    w->rec_hi_double[i] = ((i % 2) ? -1 : 1)
+                      * coif_double[order - 1][w->dec_len-1-i] * sqrt2_double;
                     temp[i] = coif_double[order - 1][w->dec_len-1-i] * sqrt2_double;
                     if (i % 2 != 0)
                     {
@@ -312,11 +297,8 @@ Wavelet* wavelet(char name, unsigned int order)
                 for(i = 0; i < w->rec_len; ++i){
                     w->rec_lo_float[i] = bior_float[N - 1][0][i+n];
                     w->dec_lo_float[i] = bior_float[N - 1][M_idx+1][w->dec_len-1-i];
-                    w->rec_hi_float[i] = bior_float[N - 1][M_idx+1][w->dec_len-1-i];
-                    if (i % 2 != 0)
-                    {
-                        w->rec_hi_float[i] = -1 * w->rec_hi_float[i];
-                    }
+                    w->rec_hi_float[i] = ((i % 2) ? -1 : 1)
+                      * bior_float[N - 1][M_idx+1][w->dec_len-1-i];
                     temp[i] = bior_float[N - 1][0][w->dec_len-1-i + n];
                     if (i % 2 != 0)
                     {
@@ -336,11 +318,8 @@ Wavelet* wavelet(char name, unsigned int order)
                 for(i = 0; i < w->rec_len; ++i){
                     w->rec_lo_double[i] = bior_double[N - 1][0][i+n];
                     w->dec_lo_double[i] = bior_double[N - 1][M_idx+1][w->dec_len-1-i];
-                    w->rec_hi_double[i] = bior_double[N - 1][M_idx+1][w->dec_len-1-i];
-                    if (i % 2 != 0)
-                    {
-                        w->rec_hi_double[i] = -1 * w->rec_hi_double[i];
-                    }
+                    w->rec_hi_double[i] = ((i % 2) ? -1 : 1)
+                      * bior_double[N - 1][M_idx+1][w->dec_len-1-i];
                     temp[i] = bior_double[N - 1][0][w->dec_len-1-i + n];
                     if (i % 2 != 0)
                     {
@@ -378,11 +357,8 @@ Wavelet* wavelet(char name, unsigned int order)
                 for(i = 0; i < w->rec_len; ++i){
                     w->rec_lo_float[i] = dmey_float[i];
                     w->dec_lo_float[i] = dmey_float[w->dec_len-1-i];
-                    w->rec_hi_float[i] = dmey_float[w->dec_len-1-i];
-                    if (i % 2 != 0)
-                    {
-                        w->rec_hi_float[i] = -1 * w->rec_hi_float[i];
-                    }
+                    w->rec_hi_float[i] = ((i % 2) ? -1 : 1)
+                      * dmey_float[w->dec_len-1-i];
                     temp[i] = dmey_float[w->dec_len-1-i];
                     if (i % 2 != 0)
                     {
@@ -401,11 +377,8 @@ Wavelet* wavelet(char name, unsigned int order)
                 for(i = 0; i < w->rec_len; ++i){
                     w->rec_lo_double[i] = dmey_double[i];
                     w->dec_lo_double[i] = dmey_double[w->dec_len-1-i];
-                    w->rec_hi_double[i] = dmey_double[w->dec_len-1-i];
-                    if (i % 2 != 0)
-                    {
-                        w->rec_hi_double[i] = -1 * w->rec_hi_double[i];
-                    }
+                    w->rec_hi_double[i] = ((i % 2) ? -1 : 1)
+                      * dmey_double[w->dec_len-1-i];
                     temp[i] = dmey_double[w->dec_len-1-i];
                     if (i % 2 != 0)
                     {
