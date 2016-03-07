@@ -157,15 +157,11 @@ function RunCommand ($command, $command_args) {
 function InstallPip ($python_home) {
     $pip_path = $python_home + "\Scripts\pip.exe"
     $python_path = $python_home + "\python.exe"
-    if (-not(Test-Path $pip_path)) {
-        Write-Host "Installing pip..."
-        $webclient = New-Object System.Net.WebClient
-        $webclient.DownloadFile($GET_PIP_URL, $GET_PIP_PATH)
-        Write-Host "Executing:" $python_path $GET_PIP_PATH
-        & $python_path $GET_PIP_PATH
-    } else {
-        Write-Host "pip already installed."
-    }
+    Write-Host "Installing pip..."
+    $webclient = New-Object System.Net.WebClient
+    $webclient.DownloadFile($GET_PIP_URL, $GET_PIP_PATH)
+    Write-Host "Executing:" $python_path $GET_PIP_PATH
+    & $python_path $GET_PIP_PATH
 }
 
 
