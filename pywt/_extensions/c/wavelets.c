@@ -5,6 +5,9 @@
 #include "wavelets.h"
 #include "wavelets_coeffs.h"
 
+#define SWAP(x, y) ({typeof(x) tmp = x; x = y; y = tmp;})
+#define NELEMS(x) (sizeof(x) / sizeof(*x))
+
 Wavelet* wavelet(char name, unsigned int order)
 {
     Wavelet *w;
@@ -21,56 +24,47 @@ Wavelet* wavelet(char name, unsigned int order)
     /* Reverse biorthogonal wavelets family */
     } else if (name == 'r' || name == 'R') {
         /* rbio is like bior, only with switched filters */
-        Wavelet * wtmp = wavelet('b', order);
+        w = wavelet('b', order);
+        if (w == NULL) return NULL;
 
-        w = copy_wavelet(wtmp);
-        if(w == NULL) return NULL;
-
-        w->dec_len = wtmp->rec_len;
-        w->rec_len = wtmp->dec_len;
-
-        {
-            size_t i;
-            for(i = 0; i < w->rec_len; ++i){
-                w->rec_lo_float[i] = wtmp->dec_lo_float[wtmp->dec_len-1-i];
-                w->rec_hi_float[i] = wtmp->dec_hi_float[wtmp->dec_len-1-i];
-                w->rec_lo_double[i] = wtmp->dec_lo_double[wtmp->dec_len-1-i];
-                w->rec_hi_double[i] = wtmp->dec_hi_double[wtmp->dec_len-1-i];
-            }
-        }
+        SWAP(w->dec_len, w->rec_len);
+        SWAP(w->rec_lo_float, w->dec_lo_float);
+        SWAP(w->rec_hi_float, w->dec_hi_float);
+        SWAP(w->rec_lo_double, w->dec_lo_double);
+        SWAP(w->rec_hi_double, w->dec_hi_double);
 
         {
-            size_t i;
-            for(i = 0; i < w->dec_len; ++i){
-                w->dec_hi_float[i] = wtmp->rec_hi_float[wtmp->rec_len-1-i];
-                w->dec_lo_float[i] = wtmp->rec_lo_float[wtmp->rec_len-1-i];
-                w->dec_hi_double[i] = wtmp->rec_hi_double[wtmp->rec_len-1-i];
-                w->dec_lo_double[i] = wtmp->rec_lo_double[wtmp->rec_len-1-i];
+            size_t i, j;
+            for(i = 0, j = w->rec_len - 1; i < j; i++, j--){
+                SWAP(w->rec_lo_float[i], w->rec_lo_float[j]);
+                SWAP(w->rec_hi_float[i], w->rec_hi_float[j]);
+                SWAP(w->dec_lo_float[i], w->dec_lo_float[j]);
+                SWAP(w->dec_hi_float[i], w->dec_hi_float[j]);
+
+                SWAP(w->rec_lo_double[i], w->rec_lo_double[j]);
+                SWAP(w->rec_hi_double[i], w->rec_hi_double[j]);
+                SWAP(w->dec_lo_double[i], w->dec_lo_double[j]);
+                SWAP(w->dec_hi_double[i], w->dec_hi_double[j]);
             }
         }
-
-        w->vanishing_moments_psi = order / 10; /* 1st digit */
-        w->vanishing_moments_phi = -1;
 
         w->family_name = "Reverse biorthogonal";
         w->short_name = "rbio";
-
-        free_wavelet(wtmp);
 
         return w;
     }
 
     switch(name){
-
         /* Daubechies wavelets family */
         case 'd':
-        case 'D':
-            if (order < 1 || order > 38) return NULL;
-            w = wtmalloc(sizeof(Wavelet));
+        case 'D': {
+            size_t coeffs_idx = order - 1;
+            if (coeffs_idx >= NELEMS(db_float) ||
+                coeffs_idx >= NELEMS(db_double))
+                return NULL;
+            w = blank_wavelet(2 * order);
             if(w == NULL) return NULL;
-            w->_builtin = 0;
 
-            w->dec_len = w->rec_len = 2*order;
             w->vanishing_moments_psi = order;
             w->vanishing_moments_phi = 0;
             w->support_width = 2*order - 1;
@@ -81,79 +75,44 @@ Wavelet* wavelet(char name, unsigned int order)
             w->family_name = "Daubechies";
             w->short_name = "db";
 
-            w->dec_lo_float = wtcalloc(w->dec_len, sizeof(float));
-            w->dec_hi_float = wtcalloc(w->dec_len, sizeof(float));
-            w->rec_lo_float = wtcalloc(w->rec_len, sizeof(float));
-            w->rec_hi_float = wtcalloc(w->rec_len, sizeof(float));
-            if(w->dec_lo_float == NULL || w->dec_hi_float == NULL || w->rec_lo_float == NULL || w->rec_hi_float == NULL){
-                free_wavelet(w);
-                return NULL;
-            }
             {
-                float *temp = wtcalloc(w->rec_len, sizeof(float));
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
-                    w->rec_lo_float[i] = db_float[order - 1][i];
-                    w->dec_lo_float[i] = db_float[order - 1][w->dec_len-1-i];
-                    w->rec_hi_float[i] = db_float[order - 1][w->dec_len-1-i];
-                    if (i % 2 != 0)
-                    {
-                        w->rec_hi_float[i] = -1 * w->rec_hi_float[i];
-                    }
-                    temp[i] = db_float[order - 1][w->dec_len-1-i];
-                    if (i % 2 != 0)
-                    {
-                        temp[i] = -1 * temp[i];
-                    }
+                    w->rec_lo_float[i] = db_float[coeffs_idx][i];
+                    w->dec_lo_float[i] = db_float[coeffs_idx][w->dec_len-1-i];
+                    w->rec_hi_float[i] = ((i % 2) ? -1 : 1)
+                      * db_float[coeffs_idx][w->dec_len-1-i];
+                    w->dec_hi_float[i] = (((w->dec_len-1-i) % 2) ? -1 : 1)
+                      * db_float[coeffs_idx][i];
                 }
-                for(i = 0; i < w->rec_len; ++i){
-                    w->dec_hi_float[i] = temp[w->dec_len-1-i];
-                }
-                wtfree(temp);
             }
-            
-            w->dec_lo_double = wtcalloc(w->dec_len, sizeof(double));
-            w->dec_hi_double = wtcalloc(w->dec_len, sizeof(double));
-            w->rec_lo_double = wtcalloc(w->rec_len, sizeof(double));
-            w->rec_hi_double = wtcalloc(w->rec_len, sizeof(double));
-            if(w->dec_lo_double == NULL || w->dec_hi_double == NULL || w->rec_lo_double == NULL || w->rec_hi_double == NULL){
-                free_wavelet(w);
-                return NULL;
-            }
+
             {
-                double *temp = wtcalloc(w->rec_len, sizeof(double));
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
-                    w->rec_lo_double[i] = db_double[order - 1][i];
-                    w->dec_lo_double[i] = db_double[order - 1][w->dec_len-1-i];
-                    w->rec_hi_double[i] = db_double[order - 1][w->dec_len-1-i];
-                    if (i % 2 != 0)
-                    {
-                        w->rec_hi_double[i] = -1 * w->rec_hi_double[i];
-                    }
-                    temp[i] = db_double[order - 1][w->dec_len-1-i];
-                    if (i % 2 != 0)
-                    {
-                        temp[i] = -1 * temp[i];
-                    }
+                    w->rec_lo_double[i] = db_double[coeffs_idx][i];
+                    w->dec_lo_double[i] = db_double[coeffs_idx][w->dec_len-1-i];
+                    w->rec_hi_double[i] = ((i % 2) ? -1 : 1)
+                      * db_double[coeffs_idx][w->dec_len-1-i];
+                    w->dec_hi_double[i] = (((w->dec_len-1-i) % 2) ? -1 : 1)
+                      * db_double[coeffs_idx][i];
                 }
-                for(i = 0; i < w->rec_len; ++i){
-                    w->dec_hi_double[i] = temp[w->dec_len-1-i];
-                }
-                wtfree(temp);
             }
 
             break;
+        }
 
         /* Symlets wavelets family */
         case 's':
-        case 'S':
-            if (order < 2 || order > 20) return NULL;
-            w = wtmalloc(sizeof(Wavelet));
-            if(w == NULL) return NULL;
-            w->_builtin = 0;
+        case 'S': {
+            size_t coeffs_idx = order - 2;
+            if (coeffs_idx >= NELEMS(sym_float) ||
+                coeffs_idx >= NELEMS(sym_double))
+                return NULL;
 
-            w->dec_len = w->rec_len = order << 1;
+            w = blank_wavelet(2 * order);
+            if(w == NULL) return NULL;
+
             w->vanishing_moments_psi = order;
             w->vanishing_moments_phi = 0;
             w->support_width = 2*order - 1;
@@ -164,77 +123,42 @@ Wavelet* wavelet(char name, unsigned int order)
             w->family_name = "Symlets";
             w->short_name = "sym";
 
-            w->dec_lo_float = wtcalloc(w->dec_len, sizeof(float));
-            w->dec_hi_float = wtcalloc(w->dec_len, sizeof(float));
-            w->rec_lo_float = wtcalloc(w->rec_len, sizeof(float));
-            w->rec_hi_float = wtcalloc(w->rec_len, sizeof(float));
-            if(w->dec_lo_float == NULL || w->dec_hi_float == NULL || w->rec_lo_float == NULL || w->rec_hi_float == NULL){
-                free_wavelet(w);
-                return NULL;
-            }
             {
-                float *temp = wtcalloc(w->rec_len, sizeof(float));
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
-                    w->rec_lo_float[i] = sym_float[order - 2][i];
-                    w->dec_lo_float[i] = sym_float[order - 2][w->dec_len-1-i];
-                    w->rec_hi_float[i] = sym_float[order - 2][w->dec_len-1-i];
-                    if (i % 2 != 0)
-                    {
-                        w->rec_hi_float[i] = -1 * w->rec_hi_float[i];
-                    }
-                    temp[i] = sym_float[order - 2][w->dec_len-1-i];
-                    if (i % 2 != 0)
-                    {
-                        temp[i] = -1 * temp[i];
-                    }
+                    w->rec_lo_float[i] = sym_float[coeffs_idx][i];
+                    w->dec_lo_float[i] = sym_float[coeffs_idx][w->dec_len-1-i];
+                    w->rec_hi_float[i] = ((i % 2) ? -1 : 1)
+                      * sym_float[coeffs_idx][w->dec_len-1-i];
+                    w->dec_hi_float[i] = (((w->dec_len-1-i) % 2) ? -1 : 1)
+                      * sym_float[coeffs_idx][i];
                 }
-                for(i = 0; i < w->rec_len; ++i){
-                    w->dec_hi_float[i] = temp[w->dec_len-1-i];
-                }
-                wtfree(temp);
             }
-            w->dec_lo_double = wtcalloc(w->dec_len, sizeof(double));
-            w->dec_hi_double = wtcalloc(w->dec_len, sizeof(double));
-            w->rec_lo_double = wtcalloc(w->rec_len, sizeof(double));
-            w->rec_hi_double = wtcalloc(w->rec_len, sizeof(double));
-            if(w->dec_lo_double == NULL || w->dec_hi_double == NULL || w->rec_lo_double == NULL || w->rec_hi_double == NULL){
-                free_wavelet(w);
-                return NULL;
-            }
+
             {
-                double *temp = wtcalloc(w->rec_len, sizeof(double));
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
-                    w->rec_lo_double[i] = sym_double[order - 2][i];
-                    w->dec_lo_double[i] = sym_double[order - 2][w->dec_len-1-i];
-                    w->rec_hi_double[i] = sym_double[order - 2][w->dec_len-1-i];
-                    if (i % 2 != 0)
-                    {
-                        w->rec_hi_double[i] = -1 * w->rec_hi_double[i];
-                    }
-                    temp[i] = sym_double[order - 2][w->dec_len-1-i];
-                    if (i % 2 != 0)
-                    {
-                        temp[i] = -1 * temp[i];
-                    }
+                    w->rec_lo_double[i] = sym_double[coeffs_idx][i];
+                    w->dec_lo_double[i] = sym_double[coeffs_idx][w->dec_len-1-i];
+                    w->rec_hi_double[i] = ((i % 2) ? -1 : 1)
+                      * sym_double[coeffs_idx][w->dec_len-1-i];
+                    w->dec_hi_double[i] = (((w->dec_len-1-i) % 2) ? -1 : 1)
+                      * sym_double[coeffs_idx][i];
                 }
-                for(i = 0; i < w->rec_len; ++i){
-                    w->dec_hi_double[i] = temp[w->dec_len-1-i];
-                }
-                wtfree(temp);
             }
             break;
+        }
 
         /* Coiflets wavelets family */
         case 'c':
-        case 'C':
-            if (order < 1 || order > 17) return NULL;
-            w = wtmalloc(sizeof(Wavelet));
+        case 'C': {
+            size_t coeffs_idx = order - 1;
+            if (coeffs_idx >= NELEMS(coif_float) ||
+                coeffs_idx >= NELEMS(coif_double))
+                return NULL;
+            w = blank_wavelet(6 * order);
             if(w == NULL) return NULL;
-            w->_builtin = 0;
 
-            w->dec_len = w->rec_len = order * 6;
             w->vanishing_moments_psi = 2*order;
             w->vanishing_moments_phi = 2*order -1;
             w->support_width = 6*order - 1;
@@ -245,68 +169,33 @@ Wavelet* wavelet(char name, unsigned int order)
             w->family_name = "Coiflets";
             w->short_name = "coif";
 
-            w->dec_lo_float = wtcalloc(w->dec_len, sizeof(float));
-            w->dec_hi_float = wtcalloc(w->dec_len, sizeof(float));
-            w->rec_lo_float = wtcalloc(w->rec_len, sizeof(float));
-            w->rec_hi_float = wtcalloc(w->rec_len, sizeof(float));
-            if(w->dec_lo_float == NULL || w->dec_hi_float == NULL || w->rec_lo_float == NULL || w->rec_hi_float == NULL){
-                free_wavelet(w);
-                return NULL;
-            }
             {
-                float *temp = wtcalloc(w->rec_len, sizeof(float));
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
-                    w->rec_lo_float[i] = coif_float[order - 1][i] * sqrt2_float;
-                    w->dec_lo_float[i] = coif_float[order - 1][w->dec_len-1-i] * sqrt2_float;
-                    w->rec_hi_float[i] = coif_float[order - 1][w->dec_len-1-i] * sqrt2_float;
-                    if (i % 2 != 0)
-                    {
-                        w->rec_hi_float[i] = -1 * w->rec_hi_float[i];
-                    }
-                    temp[i] = coif_float[order - 1][w->dec_len-1-i] * sqrt2_float;
-                    if (i % 2 != 0)
-                    {
-                        temp[i] = -1 * temp[i];
-                    }
+                    w->rec_lo_float[i] = coif_float[coeffs_idx][i] * sqrt2_float;
+                    w->dec_lo_float[i] = coif_float[coeffs_idx][w->dec_len-1-i]
+                      * sqrt2_float;
+                    w->rec_hi_float[i] = ((i % 2) ? -1 : 1)
+                      * coif_float[coeffs_idx][w->dec_len-1-i] * sqrt2_float;
+                    w->dec_hi_float[i] = (((w->dec_len-1-i) % 2) ? -1 : 1)
+                      * coif_float[coeffs_idx][i] * sqrt2_float;
                 }
-                for(i = 0; i < w->rec_len; ++i){
-                    w->dec_hi_float[i] = temp[w->dec_len-1-i];
-                }
-                wtfree(temp);
             }
-            
-            w->dec_lo_double = wtcalloc(w->dec_len, sizeof(double));
-            w->dec_hi_double = wtcalloc(w->dec_len, sizeof(double));
-            w->rec_lo_double = wtcalloc(w->rec_len, sizeof(double));
-            w->rec_hi_double = wtcalloc(w->rec_len, sizeof(double));
-            if(w->dec_lo_double == NULL || w->dec_hi_double == NULL || w->rec_lo_double == NULL || w->rec_hi_double == NULL){
-                free_wavelet(w);
-                return NULL;
-            }
+
             {
-                double *temp = wtcalloc(w->rec_len, sizeof(double));
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
-                    w->rec_lo_double[i] = coif_double[order - 1][i] * sqrt2_double;
-                    w->dec_lo_double[i] = coif_double[order - 1][w->dec_len-1-i] * sqrt2_double;
-                    w->rec_hi_double[i] = coif_double[order - 1][w->dec_len-1-i] * sqrt2_double;
-                    if (i % 2 != 0)
-                    {
-                        w->rec_hi_double[i] = -1 * w->rec_hi_double[i];
-                    }
-                    temp[i] = coif_double[order - 1][w->dec_len-1-i] * sqrt2_double;
-                    if (i % 2 != 0)
-                    {
-                        temp[i] = -1 * temp[i];
-                    }
+                    w->rec_lo_double[i] = coif_double[coeffs_idx][i] * sqrt2_double;
+                    w->dec_lo_double[i] = coif_double[coeffs_idx][w->dec_len-1-i]
+                      * sqrt2_double;
+                    w->rec_hi_double[i] = ((i % 2) ? -1 : 1)
+                      * coif_double[coeffs_idx][w->dec_len-1-i] * sqrt2_double;
+                    w->dec_hi_double[i] = (((w->dec_len-1-i) % 2) ? -1 : 1)
+                      * coif_double[coeffs_idx][i] * sqrt2_double;
                 }
-                for(i = 0; i < w->rec_len; ++i){
-                    w->dec_hi_double[i] = temp[w->dec_len-1-i];
-                }
-                wtfree(temp);
             }
             break;
+        }
 
         /* Biorthogonal wavelets family */
         case 'b':
@@ -345,11 +234,9 @@ Wavelet* wavelet(char name, unsigned int order)
                 return NULL;
             }
 
-            w = wtmalloc(sizeof(Wavelet));
+            w = blank_wavelet((N == 1) ? 2 * M : 2 * M + 2);
             if(w == NULL) return NULL;
-            w->_builtin = 0;
 
-            w->dec_len = w->rec_len = (N == 1) ? 2 * M : 2 * M + 2;
             w->vanishing_moments_psi = order/10;
             w->vanishing_moments_phi = -1;
             w->support_width = -1;
@@ -360,80 +247,40 @@ Wavelet* wavelet(char name, unsigned int order)
             w->family_name = "Biorthogonal";
             w->short_name = "bior";
 
-             
-            w->dec_lo_float = wtcalloc(w->dec_len, sizeof(float));
-            w->dec_hi_float = wtcalloc(w->dec_len, sizeof(float));
-            w->rec_lo_float = wtcalloc(w->rec_len, sizeof(float));
-            w->rec_hi_float = wtcalloc(w->rec_len, sizeof(float));
-            if(w->dec_lo_float == NULL || w->dec_hi_float == NULL || w->rec_lo_float == NULL || w->rec_hi_float == NULL){
-                free_wavelet(w);
-                return NULL;
-            }
             {
                 size_t n = M_max - M;
-                float *temp = wtcalloc(w->rec_len, sizeof(float));
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
                     w->rec_lo_float[i] = bior_float[N - 1][0][i+n];
                     w->dec_lo_float[i] = bior_float[N - 1][M_idx+1][w->dec_len-1-i];
-                    w->rec_hi_float[i] = bior_float[N - 1][M_idx+1][w->dec_len-1-i];
-                    if (i % 2 != 0)
-                    {
-                        w->rec_hi_float[i] = -1 * w->rec_hi_float[i];
-                    }
-                    temp[i] = bior_float[N - 1][0][w->dec_len-1-i + n];
-                    if (i % 2 != 0)
-                    {
-                        temp[i] = -1 * temp[i];
-                    }
+                    w->rec_hi_float[i] = ((i % 2) ? -1 : 1)
+                      * bior_float[N - 1][M_idx+1][w->dec_len-1-i];
+                    w->dec_hi_float[i] = (((w->dec_len-1-i) % 2) ? -1 : 1)
+                      * bior_float[N - 1][0][i+n];
                 }
-                for(i = 0; i < w->rec_len; ++i){
-                    w->dec_hi_float[i] = temp[w->dec_len-1-i];
-                }
-                wtfree(temp);
             }
-            
-            w->dec_lo_double = wtcalloc(w->dec_len, sizeof(double));
-            w->dec_hi_double = wtcalloc(w->dec_len, sizeof(double));
-            w->rec_lo_double = wtcalloc(w->rec_len, sizeof(double));
-            w->rec_hi_double = wtcalloc(w->rec_len, sizeof(double));
-            if(w->dec_lo_double == NULL || w->dec_hi_double == NULL || w->rec_lo_double == NULL || w->rec_hi_double == NULL){
-                free_wavelet(w);
-                return NULL;
-            }
+
             {
                 size_t n = M_max - M;
-                double *temp = wtcalloc(w->rec_len, sizeof(double));
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
                     w->rec_lo_double[i] = bior_double[N - 1][0][i+n];
                     w->dec_lo_double[i] = bior_double[N - 1][M_idx+1][w->dec_len-1-i];
-                    w->rec_hi_double[i] = bior_double[N - 1][M_idx+1][w->dec_len-1-i];
-                    if (i % 2 != 0)
-                    {
-                        w->rec_hi_double[i] = -1 * w->rec_hi_double[i];
-                    }
-                    temp[i] = bior_double[N - 1][0][w->dec_len-1-i + n];
-                    if (i % 2 != 0)
-                    {
-                        temp[i] = -1 * temp[i];
-                    }
+                    w->rec_hi_double[i] = ((i % 2) ? -1 : 1)
+                      * bior_double[N - 1][M_idx+1][w->dec_len-1-i];
+                    w->dec_hi_double[i] = (((w->dec_len-1-i) % 2) ? -1 : 1)
+                      * bior_double[N - 1][0][i+n];
                 }
-                for(i = 0; i < w->rec_len; ++i){
-                    w->dec_hi_double[i] = temp[w->dec_len-1-i];
-                }
-                wtfree(temp);
             }
-            
+
             break;
         }
 
         /* Discrete FIR filter approximation of Meyer wavelet */
         case 'm':
         case 'M':
-            w = wtmalloc(sizeof(Wavelet));
+            w = blank_wavelet(62);
             if(w == NULL) return NULL;
-            w->_builtin = 0;
 
             w->vanishing_moments_psi = -1;
             w->vanishing_moments_phi = -1;
@@ -445,68 +292,28 @@ Wavelet* wavelet(char name, unsigned int order)
             w->family_name = "Discrete Meyer (FIR Approximation)";
             w->short_name = "dmey";
 
-
-            w->dec_len = w->rec_len = 62;
-            w->dec_lo_float = wtcalloc(w->dec_len, sizeof(float));
-            w->dec_hi_float = wtcalloc(w->dec_len, sizeof(float));
-            w->rec_lo_float = wtcalloc(w->rec_len, sizeof(float));
-            w->rec_hi_float = wtcalloc(w->rec_len, sizeof(float));
-            if(w->dec_lo_float == NULL || w->dec_hi_float == NULL || w->rec_lo_float == NULL || w->rec_hi_float == NULL){
-                free_wavelet(w);
-                return NULL;
-            }
             {
-                float *temp = wtcalloc(w->rec_len, sizeof(float));
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
                     w->rec_lo_float[i] = dmey_float[i];
                     w->dec_lo_float[i] = dmey_float[w->dec_len-1-i];
-                    w->rec_hi_float[i] = dmey_float[w->dec_len-1-i];
-                    if (i % 2 != 0)
-                    {
-                        w->rec_hi_float[i] = -1 * w->rec_hi_float[i];
-                    }
-                    temp[i] = dmey_float[w->dec_len-1-i];
-                    if (i % 2 != 0)
-                    {
-                        temp[i] = -1 * temp[i];
-                    }
+                    w->rec_hi_float[i] = ((i % 2) ? -1 : 1)
+                      * dmey_float[w->dec_len-1-i];
+                    w->dec_hi_float[i] = (((w->dec_len-1-i) % 2) ? -1 : 1)
+                      * dmey_float[i];
                 }
-                for(i = 0; i < w->rec_len; ++i){
-                    w->dec_hi_float[i] = temp[w->dec_len-1-i];
-                }
-                wtfree(temp);
             }
-            
-            w->dec_lo_double = wtcalloc(w->dec_len, sizeof(double));
-            w->dec_hi_double = wtcalloc(w->dec_len, sizeof(double));
-            w->rec_lo_double = wtcalloc(w->rec_len, sizeof(double));
-            w->rec_hi_double = wtcalloc(w->rec_len, sizeof(double));
-            if(w->dec_lo_double == NULL || w->dec_hi_double == NULL || w->rec_lo_double == NULL || w->rec_hi_double == NULL){
-                free_wavelet(w);
-                return NULL;
-            }
+
             {
-                double *temp = wtcalloc(w->rec_len, sizeof(double));
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
                     w->rec_lo_double[i] = dmey_double[i];
                     w->dec_lo_double[i] = dmey_double[w->dec_len-1-i];
-                    w->rec_hi_double[i] = dmey_double[w->dec_len-1-i];
-                    if (i % 2 != 0)
-                    {
-                        w->rec_hi_double[i] = -1 * w->rec_hi_double[i];
-                    }
-                    temp[i] = dmey_double[w->dec_len-1-i];
-                    if (i % 2 != 0)
-                    {
-                        temp[i] = -1 * temp[i];
-                    }
+                    w->rec_hi_double[i] = ((i % 2) ? -1 : 1)
+                      * dmey_double[w->dec_len-1-i];
+                    w->dec_hi_double[i] = (((w->dec_len-1-i) % 2) ? -1 : 1)
+                      * dmey_double[i];
                 }
-                for(i = 0; i < w->rec_len; ++i){
-                    w->dec_hi_double[i] = temp[w->dec_len-1-i];
-                }
-                wtfree(temp);
             }
             break;
 
@@ -530,12 +337,6 @@ Wavelet* blank_wavelet(size_t filters_length)
 
     w = wtmalloc(sizeof(Wavelet));
     if(w == NULL) return NULL;
-
-    /*
-     * Important!
-     * Otherwise filters arrays allocated here won't be deallocated by free_wavelet
-     */
-    w->_builtin = 0;
 
     w->dec_len = w->rec_len = filters_length;
 
@@ -586,8 +387,6 @@ Wavelet* copy_wavelet(Wavelet* base)
 
     memcpy(w, base, sizeof(Wavelet));
 
-    w->_builtin = 0;
-
     w->dec_lo_float = wtmalloc(w->dec_len * sizeof(float));
     w->dec_hi_float = wtmalloc(w->dec_len * sizeof(float));
     w->rec_lo_float = wtmalloc(w->rec_len * sizeof(float));
@@ -620,19 +419,20 @@ Wavelet* copy_wavelet(Wavelet* base)
 
 void free_wavelet(Wavelet *w){
 
-    if(w->_builtin == 0){
-        /* deallocate filters */
-        wtfree(w->dec_lo_float);
-        wtfree(w->dec_hi_float);
-        wtfree(w->rec_lo_float);
-        wtfree(w->rec_hi_float);
+    /* deallocate filters */
+    wtfree(w->dec_lo_float);
+    wtfree(w->dec_hi_float);
+    wtfree(w->rec_lo_float);
+    wtfree(w->rec_hi_float);
 
-        wtfree(w->dec_lo_double);
-        wtfree(w->dec_hi_double);
-        wtfree(w->rec_lo_double);
-        wtfree(w->rec_hi_double);
-    }
+    wtfree(w->dec_lo_double);
+    wtfree(w->dec_hi_double);
+    wtfree(w->rec_lo_double);
+    wtfree(w->rec_hi_double);
 
     /* finally free struct */
     wtfree(w);
 }
+
+#undef SWAP
+#undef NELEMS

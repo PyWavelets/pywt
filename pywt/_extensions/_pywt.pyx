@@ -337,7 +337,6 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
 
     def __dealloc__(self):
         if self.w is not NULL:
-            # if w._builtin is 0 then it frees the memory for the filter arrays
             wavelet.free_wavelet(self.w)
             self.w = NULL
 
@@ -421,13 +420,6 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
         def __get__(self):
             if self.w.vanishing_moments_phi >= 0:
                 return self.w.vanishing_moments_phi
-
-    property _builtin:
-        """Returns True if the wavelet is built-in one (not created with
-        custom filter bank).
-        """
-        def __get__(self):
-            return bool(self.w._builtin)
 
     property filter_bank:
         """Returns tuple of wavelet filters coefficients
