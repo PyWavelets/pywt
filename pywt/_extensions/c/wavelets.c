@@ -5,7 +5,7 @@
 #include "wavelets.h"
 #include "wavelets_coeffs.h"
 
-#define SWAP(x, y) ({typeof(x) tmp = x; x = y; y = tmp;})
+#define SWAP(t, x, y) {t tmp = x; x = y; y = tmp;}
 #define NELEMS(x) (sizeof(x) / sizeof(*x))
 
 Wavelet* wavelet(char name, unsigned int order)
@@ -27,24 +27,24 @@ Wavelet* wavelet(char name, unsigned int order)
         w = wavelet('b', order);
         if (w == NULL) return NULL;
 
-        SWAP(w->dec_len, w->rec_len);
-        SWAP(w->rec_lo_float, w->dec_lo_float);
-        SWAP(w->rec_hi_float, w->dec_hi_float);
-        SWAP(w->rec_lo_double, w->dec_lo_double);
-        SWAP(w->rec_hi_double, w->dec_hi_double);
+        SWAP(size_t, w->dec_len, w->rec_len);
+        SWAP(float*, w->rec_lo_float, w->dec_lo_float);
+        SWAP(float*, w->rec_hi_float, w->dec_hi_float);
+        SWAP(double*, w->rec_lo_double, w->dec_lo_double);
+        SWAP(double*, w->rec_hi_double, w->dec_hi_double);
 
         {
             size_t i, j;
             for(i = 0, j = w->rec_len - 1; i < j; i++, j--){
-                SWAP(w->rec_lo_float[i], w->rec_lo_float[j]);
-                SWAP(w->rec_hi_float[i], w->rec_hi_float[j]);
-                SWAP(w->dec_lo_float[i], w->dec_lo_float[j]);
-                SWAP(w->dec_hi_float[i], w->dec_hi_float[j]);
+                SWAP(float, w->rec_lo_float[i], w->rec_lo_float[j]);
+                SWAP(float, w->rec_hi_float[i], w->rec_hi_float[j]);
+                SWAP(float, w->dec_lo_float[i], w->dec_lo_float[j]);
+                SWAP(float, w->dec_hi_float[i], w->dec_hi_float[j]);
 
-                SWAP(w->rec_lo_double[i], w->rec_lo_double[j]);
-                SWAP(w->rec_hi_double[i], w->rec_hi_double[j]);
-                SWAP(w->dec_lo_double[i], w->dec_lo_double[j]);
-                SWAP(w->dec_hi_double[i], w->dec_hi_double[j]);
+                SWAP(double, w->rec_lo_double[i], w->rec_lo_double[j]);
+                SWAP(double, w->rec_hi_double[i], w->rec_hi_double[j]);
+                SWAP(double, w->dec_lo_double[i], w->dec_lo_double[j]);
+                SWAP(double, w->dec_hi_double[i], w->dec_hi_double[j]);
             }
         }
 
