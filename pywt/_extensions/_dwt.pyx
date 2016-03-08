@@ -32,10 +32,10 @@ cpdef dwt_single(data_t[::1] data, Wavelet wavelet, MODE mode):
         cD = np.zeros(output_len, np.float64)
 
         if (c_wt.double_dec_a(&data[0], data.size, wavelet.w,
-                              <double *>cA.data, cA.size, mode) < 0
+                              <double *>cA.data, output_len, mode) < 0
             or
             c_wt.double_dec_d(&data[0], data.size, wavelet.w,
-                              <double *>cD.data, cD.size,
+                              <double *>cD.data, output_len,
                               mode) < 0):
             raise RuntimeError("C dwt failed.")
     elif data_t is np.float32_t:
@@ -43,10 +43,10 @@ cpdef dwt_single(data_t[::1] data, Wavelet wavelet, MODE mode):
         cD = np.zeros(output_len, np.float32)
 
         if (c_wt.float_dec_a(&data[0], data.size, wavelet.w,
-                             <float *>cA.data, cA.size, mode) < 0
+                             <float *>cA.data, output_len, mode) < 0
             or
             c_wt.float_dec_d(&data[0], data.size, wavelet.w,
-                             <float *>cD.data, cD.size, mode) < 0):
+                             <float *>cD.data, output_len, mode) < 0):
             raise RuntimeError("C dwt failed.")
 
     return (cA, cD)
@@ -122,16 +122,16 @@ cpdef idwt_single(np.ndarray cA, np.ndarray cD, Wavelet wavelet, MODE mode):
     # reconstruction of non-null part will be performed
     if cA.dtype == np.float64:
         rec = np.zeros(rec_len, dtype=np.float64)
-        if c_wt.double_idwt(<double *>cA.data, cA.size,
-                            <double *>cD.data, cD.size,
-                            <double *>rec.data, rec.size,
+        if c_wt.double_idwt(<double *>cA.data, input_len,
+                            <double *>cD.data, input_len,
+                            <double *>rec.data, rec_len,
                             wavelet.w, mode) < 0:
             raise RuntimeError("C idwt failed.")
     elif cA.dtype == np.float32:
         rec = np.zeros(rec_len, dtype=np.float32)
-        if c_wt.float_idwt(<float *>cA.data, cA.size,
-                           <float *>cD.data, cD.size,
-                           <float *>rec.data, rec.size,
+        if c_wt.float_idwt(<float *>cA.data, input_len,
+                           <float *>cD.data, input_len,
+                           <float *>rec.data, rec_len,
                            wavelet.w, mode) < 0:
             raise RuntimeError("C idwt failed.")
 
