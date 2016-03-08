@@ -620,7 +620,7 @@ def _coeffs_wavedec2_to_wavedecn(coeffs):
     for n in range(1, len(coeffs)):
         if not isinstance(coeffs[n], tuple) or len(coeffs[n]) != 3:
             raise ValueError("expected a 3-tuple of detail coefficients")
-        (ad, da, dd) = coeffs[n]
+        (da, ad, dd) = coeffs[n]
         coeffs[n] = dict(ad=ad, da=da, dd=dd)
     return coeffs
 

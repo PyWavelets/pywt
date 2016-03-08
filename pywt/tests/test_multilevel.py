@@ -422,8 +422,9 @@ def test_wavedecn_coeff_reshape_even():
 
 
 def test_wavedec_wavedec2_coeff_reshape():
-    x1d = np.ones(16)
-    x2d = np.ones((16, 16))
+    rng = np.random.RandomState(1234)
+    x1d = rng.randn(16)
+    x2d = rng.randn(16, 16)
     mode = 'symmetric'
     w = pywt.Wavelet('db1')
     test_cases = [('wavedec', pywt.wavedec, pywt.waverec, x1d),
