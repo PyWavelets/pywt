@@ -406,19 +406,27 @@ def test_coeffs_to_array():
 def test_wavedecn_coeff_reshape_even():
     # verify round trip is correct:
     #   wavedecn - >coeffs_to_array-> array_to_coeffs -> waverecn
+    # This is done for wavedec{1, 2, n}
     rng = np.random.RandomState(1234)
-    x1 = rng.randn(48, 32, 16)
-    for mode in pywt.Modes.modes:
-        for wave in wavelist:
-            w = pywt.Wavelet(wave)
-            maxlevel = pywt.dwt_max_level(np.min(x1.shape), w.dec_len)
-            if maxlevel == 0:
-                continue
-            coeffs = pywt.wavedecn(x1, w, mode=mode)
-            coeff_arr, coeff_slices = pywt.coeffs_to_array(coeffs)
-            coeffs2 = pywt.array_to_coeffs(coeff_arr, coeff_slices)
-            x1r = pywt.waverecn(coeffs2, w, mode=mode)
-            assert_allclose(x1, x1r, rtol=1e-4, atol=1e-4)
+    params = {'wavedec': {'d': 1, 'dec': pywt.wavedecn, 'rec': pywt.waverecn},
+              'wavedec2': {'d': 2, 'dec':pywt.wavedec2, 'rec': pywt.waverec2},
+              'wavedecn': {'d': 3, 'dec': pywt.wavedecn, 'rec': pywt.waverecn}}
+    N = 28
+    for f in params:
+        x1 = rng.randn(*([N] * params[f]['d']))
+        for mode in pywt.Modes.modes:
+            for wave in wavelist:
+                w = pywt.Wavelet(wave)
+                maxlevel = pywt.dwt_max_level(np.min(x1.shape), w.dec_len)
+                if maxlevel == 0:
+                    continue
+
+                coeffs = params[f]['dec'](x1, w, mode=mode)
+                coeff_arr, coeff_slices = pywt.coeffs_to_array(coeffs)
+                coeffs2 = pywt.array_to_coeffs(coeff_arr, coeff_slices)
+                x1r = params[f]['rec'](coeffs2, w, mode=mode)
+
+                assert_allclose(x1, x1r, rtol=1e-4, atol=1e-4)
 
 
 def test_wavedec_wavedec2_coeff_reshape():
