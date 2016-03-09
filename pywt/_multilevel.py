@@ -11,7 +11,6 @@ and Inverse Discrete Wavelet Transform.
 from __future__ import division, print_function, absolute_import
 
 from copy import copy
-from itertools import product
 import numpy as np
 
 from ._extensions._pywt import Wavelet
