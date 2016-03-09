@@ -430,6 +430,32 @@ def test_wavedecn_coeff_reshape_even():
                 assert_allclose(x1, x1r, rtol=1e-4, atol=1e-4)
 
 
+def test_coeffs_to_array_padding():
+    rng = np.random.RandomState(1234)
+    x1 = rng.randn(32, 32)
+    mode = 'symmetric'
+    coeffs = pywt.wavedecn(x1, 'db2', mode=mode)
+
+    # padding=None raises a ValueError when tight packing is not possible
+    assert_raises(ValueError, pywt.coeffs_to_array, coeffs, padding=None)
+
+    # set padded values to nan
+    coeff_arr, coeff_slices = pywt.coeffs_to_array(coeffs, padding=np.nan)
+    npad = np.sum(np.isnan(coeff_arr))
+    assert_(npad > 0)
+
+    # pad with zeros
+    coeff_arr, coeff_slices = pywt.coeffs_to_array(coeffs, padding=0)
+    assert_(np.sum(np.isnan(coeff_arr)) == 0)
+    assert_(np.sum(coeff_arr == 0) == npad)
+
+    # Haar case with N as a power of 2 can be tightly packed
+    coeffs_haar = pywt.wavedecn(x1, 'haar', mode=mode)
+    coeff_arr, coeff_slices = pywt.coeffs_to_array(coeffs_haar, padding=None)
+    # shape of coeff_arr will match in this case, but not in general
+    assert_equal(coeff_arr.shape, x1.shape)
+
+
 def test_waverecn_coeff_reshape_odd():
     # verify round trip is correct:
     #   wavedecn - >coeffs_to_array-> array_to_coeffs -> waverecn
