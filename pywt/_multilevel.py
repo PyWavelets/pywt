@@ -18,6 +18,13 @@ from ._extensions._dwt import dwt_max_level
 from ._dwt import dwt, idwt
 from ._multidim import dwt2, idwt2, dwtn, idwtn, _fix_coeffs
 
+try:
+    # full was added in numpy 1.8
+    from numpy import full
+except ImportError:
+    def full(value, shape, dtype):
+        return value * np.ones(shape, dtype)
+
 __all__ = ['wavedec', 'waverec', 'wavedec2', 'waverec2', 'wavedecn',
            'waverecn', 'iswt', 'iswt2', 'coeffs_to_array', 'array_to_coeffs']
 
@@ -731,7 +738,8 @@ def coeffs_to_array(coeffs, padding=0):
             raise ValueError("array coefficients cannot be tightly packed")
         coeff_arr = np.empty(arr_shape, dtype=a_coeffs.dtype)
     else:
-        coeff_arr = np.full(arr_shape, padding, dtype=a_coeffs.dtype)
+        coeff_arr = full(arr_shape, padding, dtype=a_coeffs.dtype)
+
     a_slices = [slice(s) for s in a_shape]
     coeff_arr[a_slices] = a_coeffs
 
@@ -761,7 +769,7 @@ def coeffs_to_array(coeffs, padding=0):
                     raise ValueError("unexpected letter: {}".format(let))
             coeff_arr[slice_array] = d
             coeff_slices[-1][key] = slice_array
-        a_shape = [a_shape[d] + d_shape[d] for d in range(ndim)]
+        a_shape = [a_shape[n] + d_shape[n] for n in range(ndim)]
     return coeff_arr, coeff_slices
 
 
