@@ -624,7 +624,22 @@ def _coeffs_wavedec2_to_wavedecn(coeffs):
     return coeffs
 
 
-def coeffs_to_array(coeffs):
+def _determine_coeff_array_shape(coeffs):
+    arr_shape = np.asarray(coeffs[0].shape)
+    ncoeffs = coeffs[0].size
+    ndim = len(arr_shape)
+    for d in coeffs[1:]:
+        arr_shape += np.asarray(d['d'*ndim].shape)
+        for k, v in d.items():
+            ncoeffs += v.size
+    arr_shape = tuple(arr_shape.tolist())
+    # if the total number of coefficients doesn't equal the size of the array
+    # then tight packing is not possible.
+    is_tight_packing = (np.prod(arr_shape) == ncoeffs)
+    return arr_shape, is_tight_packing
+
+
+def coeffs_to_array(coeffs, padding=0):
     """
     Arrange a wavelet coefficient list from `wavedecn` into a single array.
 
@@ -633,6 +648,8 @@ def coeffs_to_array(coeffs):
 
     coeffs: array-like
         dictionary of wavelet coefficients as returned by pywt.wavedecn
+    padding : float or None, optional
+        If None, raise an error if the coefficients cannot be tightly packed.
 
     Returns
     -------
@@ -642,6 +659,7 @@ def coeffs_to_array(coeffs):
         List of slices corresponding to each coefficient.  As a 2D example,
         `coeff_arr[coeff_slices[1]['dd']]` would extract the first level detail
         coefficients from `coeff_arr`.
+
 
     Notes
     -----
@@ -696,31 +714,38 @@ def coeffs_to_array(coeffs):
     if coeffs[0] is None:
         raise ValueError("coeffs_to_array does not support missing "
                          "coefficients.")
-    coeff_arr = coeffs[0]
-    coeff_slices = []
-    coeff_slices.append([slice(s) for s in coeff_arr.shape])
-
-    ndim = coeff_arr.ndim
-
+    # coeff_arr = coeffs[0]
+    a_coeffs = coeffs[0]
+    a_shape = a_coeffs.shape
+    ndim = a_coeffs.ndim
     if len(coeffs) == 1:
         # only a single approximation coefficient array was found
-        return coeff_arr
+        return a_coeffs
 
-    # loop over the detail cofficients, appending to the
+    # determine size of output and if tight packing is possible
+    arr_shape, is_tight_packing = _determine_coeff_array_shape(coeffs)
+
+    # preallocate output array
+    if padding is None:
+        if not is_tight_packing:
+            raise ValueError("array coefficients cannot be tightly packed")
+        coeff_arr = np.empty(arr_shape, dtype=a_coeffs.dtype)
+    else:
+        coeff_arr = np.full(arr_shape, padding, dtype=a_coeffs.dtype)
+    a_slices = [slice(s) for s in a_shape]
+    coeff_arr[a_slices] = a_coeffs
+
+    # initialize list of coefficient slices
+    coeff_slices = []
+    coeff_slices.append(a_slices)
+
+    # loop over the detail cofficients, adding them to coeff_arr
     ds = coeffs[1:]
     for coeff_dict in ds:
         coeff_slices.append({})  # new dictionary for detail coefficients
         if not isinstance(coeff_dict, dict):
             raise ValueError("expected a dictionary of detail coefficients")
-        a_shape = coeff_arr.shape
-        d_shape = coeff_dict['d' * coeff_arr.ndim].shape
-        # a_shape and d_shape may differ along odd-sized axes
-
-        # TODO: allocate the full coeff_arr outside this loop for efficiency?
-        temp = np.zeros(np.asarray(a_shape) + np.asarray(d_shape),
-                        dtype=coeff_arr.dtype)
-        slice_array = [slice(a_shape[i]) for i in range(ndim)]
-        temp[slice_array] = coeff_arr
+        d_shape = coeff_dict['d' * ndim].shape
         for key in coeff_dict.keys():
             d = coeff_dict[key]
             if d is None:
@@ -734,9 +759,9 @@ def coeffs_to_array(coeffs):
                     slice_array[i] = slice(a_shape[i], a_shape[i] + d.shape[i])
                 else:
                     raise ValueError("unexpected letter: {}".format(let))
-            temp[slice_array] = d
+            coeff_arr[slice_array] = d
             coeff_slices[-1][key] = slice_array
-        coeff_arr = temp
+        a_shape = [a_shape[d] + d_shape[d] for d in range(ndim)]
     return coeff_arr, coeff_slices
 
 
