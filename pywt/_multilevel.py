@@ -22,7 +22,7 @@ try:
     # full was added in numpy 1.8
     from numpy import full
 except ImportError:
-    def full(value, shape, dtype):
+    def full(shape, value, dtype):
         return value * np.ones(shape, dtype)
 
 __all__ = ['wavedec', 'waverec', 'wavedec2', 'waverec2', 'wavedecn',
