@@ -27,31 +27,6 @@ TYPE CAT(TYPE, _powof)(const TYPE x, const TYPE y)
 }
 
 
-int CAT(TYPE, _cwt_conv_real) (const TYPE * const restrict input, const size_t N, 
-                    const TYPE * const restrict filter, const size_t F,
-                    TYPE * const restrict output, const size_t O  )
-{
-        size_t len;
-        size_t i = 0;
-        size_t j = 0;
-        TYPE *fTemp, *buf;
-
-        len = N+F-1;
-        buf = malloc(len*sizeof(TYPE));
-        fTemp = malloc(F*sizeof(TYPE));
-
-        for (i = 0; i < F; i++)
-          fTemp[i] = filter[F - i - 1];        
-        
-        CAT(TYPE, _cwt_conv)(input,N,fTemp,F,buf,len);
-        
-        free(fTemp);
-
-        for (i = 0; i < O; i++)
-                output[i] = buf[(len -  O) / 2 + i];
-        free(buf);
-        return 0;
-}
 
 int CAT(TYPE, _gaus)(const TYPE * const restrict input,
                               TYPE * const restrict output, const size_t N,

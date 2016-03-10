@@ -498,36 +498,5 @@ int CAT(TYPE, _upsampled_filter_convolution)(const TYPE* input, const size_t N,
     return -1;
 }
 
-/* Convolution for cwt */
-
-int CAT(TYPE, _cwt_conv)(const TYPE * const restrict input, const size_t N,
-                                            const TYPE * const restrict filter, const size_t F,
-                                            TYPE * const restrict output, const size_t O  )        
-{
-  size_t i = 0;
-  size_t j = 0;
-  TYPE *pBuf;
-
-  pBuf = malloc ((N + 2 * (F - 1)) * sizeof (TYPE));
-
-  /* initialize the buffer */
-  for (i = 0; i < F - 1; i++){
-      pBuf[i] = 0;		/* head */
-      pBuf[i + N + F - 1] = 0;	/* tail */
-    }
-  for (i = 0; i < N; i++)
-    pBuf[i + F - 1] = input[i];
-
-  /* convolution */
-  for (i = 0; i < O; i++){
-      output[i] = 0;
-      for (j = F - 1; j >= 0; j--){
-             output[i] += filter[j] *  pBuf[i + F - j - 1];
-       }
-   }
-  free (pBuf);
-  return 0;
-}
-
 #undef restrict
 #endif /* TYPE */
