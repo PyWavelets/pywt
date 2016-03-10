@@ -5,6 +5,22 @@ cdef extern from "c/wavelets.h":
         ASYMMETRIC
         NEAR_SYMMETRIC
         SYMMETRIC
+        
+    ctypedef enum WAVELET_NAME:
+        HAAR
+        RBIO
+        DB
+        SYM
+        COIF
+        BIOR
+        DMEY
+        GAUS
+        MEXH
+        MORL
+        CGAU
+        SHAN
+        FBSP
+        CMOR
 
     ctypedef struct Wavelet:
         double* dec_hi_double      # highpass decomposition
@@ -27,6 +43,13 @@ cdef extern from "c/wavelets.h":
         unsigned int orthogonal
         unsigned int biorthogonal
         unsigned int compact_support
+        
+        unsigned int dwt_possible
+        unsigned int cwt_possible
+        unsigned int complex_cwt
+        
+        float lower_bound
+        float upper_bound
 
         SYMMETRY symmetry
 
@@ -37,7 +60,7 @@ cdef extern from "c/wavelets.h":
 
 
 cdef extern from "wavelets.h":
-    cdef Wavelet* wavelet(char name, int type)
+    cdef Wavelet* wavelet(WAVELET_NAME name, int type)
     cdef Wavelet* blank_wavelet(size_t filter_length)
     cdef void free_wavelet(Wavelet* wavelet)
 

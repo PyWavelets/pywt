@@ -68,5 +68,21 @@ int CAT(TYPE, _upsampling_convolution_valid_sf)(const TYPE * const restrict inpu
  *                                  TYPE* output, int step, int mode);
  */
 
+
+/*
+ * Performs normal (full) convolution for cwt.
+ *
+ * input    - input data
+ * N        - input data length
+ * filter   - filter data
+ * F        - filter data length
+ * output   - output data
+ * O        - output lenght 
+ */
+int CAT(TYPE, _cwt_conv)(const TYPE * const restrict input, const size_t N,
+                                            const TYPE * const restrict filter, const size_t F,
+                                            TYPE * const restrict output, const size_t O  );     
+
+
 #undef restrict
 #endif /* TYPE */

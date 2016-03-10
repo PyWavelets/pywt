@@ -13,6 +13,24 @@ typedef enum {
     SYMMETRIC = 2
 } SYMMETRY;
 
+/* Wavelet name */
+typedef enum {
+    HAAR = 0,
+    RBIO = 1,
+    DB = 2,
+    SYM = 3,
+    COIF = 4,
+    BIOR = 5,
+    DMEY = 6,
+    GAUS = 7,
+    MEXH = 8,
+    MORL = 9,
+    CGAU = 10,
+    SHAN = 11,
+    FBSP = 12,
+    CMOR = 13
+} WAVELET_NAME;
+
 
 /* Wavelet structure holding pointers to filter arrays and property attributes */
 typedef struct {
@@ -38,6 +56,13 @@ typedef struct {
     unsigned int orthogonal:1;
     unsigned int biorthogonal:1;
     unsigned int compact_support:1;
+    
+    unsigned int dwt_possible:1;
+    unsigned int cwt_possible:1;
+    unsigned int complex_cwt:1;
+    
+    float lower_bound;
+    float upper_bound;
 
     char* family_name;
     char* short_name;
@@ -50,7 +75,7 @@ typedef struct {
  * name - (currently) a character codename of a wavelet family
  * order - order of the wavelet (ie. coif3 has order 3)
  */
-Wavelet* wavelet(char name, unsigned int order);
+Wavelet* wavelet(WAVELET_NAME name, unsigned int order);
 
 /* 
  * Allocate blank Wavelet with zero-filled filters of given length

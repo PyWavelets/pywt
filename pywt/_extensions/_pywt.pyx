@@ -9,8 +9,10 @@ __all__ = ['MODES', 'Modes', 'Wavelet', 'wavelist', 'families']
 import warnings
 
 cimport c_wt
+cimport c_cwt
 cimport common
 from ._dwt cimport upcoef
+from ._cwt cimport cwt_psi_single
 
 from libc.math cimport pow, sqrt
 
@@ -397,6 +399,43 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
         def __set__(self, int value):
             self.w.biorthogonal = (value != 0)
 
+    property dwt_possible:
+        "DWT possible"
+        def __get__(self):
+            return bool(self.w.dwt_possible)
+        def __set__(self, int value):
+            self.w.dwt_possible = (value != 0)
+
+    property cwt_possible:
+        "CWT possible"
+        def __get__(self):
+            return bool(self.w.cwt_possible)
+        def __set__(self, int value):
+            self.w.cwt_possible = (value != 0)
+
+    property complex_cwt:
+        "CWT is complex"
+        def __get__(self):
+            return bool(self.w.complex_cwt)
+        def __set__(self, int value):
+            self.w.complex_cwt = (value != 0)
+
+    property lower_bound:
+        "Lower Bound"
+        def __get__(self):
+            if self.w.lower_bound != self.w.upper_bound:
+                return self.w.lower_bound
+        def __set__(self, float value):
+            self.w.lower_bound = value
+
+    property upper_bound:
+        "Upper Bound"
+        def __get__(self):
+            if self.w.upper_bound != self.w.lower_bound:
+                return self.w.upper_bound
+        def __set__(self, float value):
+            self.w.upper_bound = value
+
     property symmetry:
         "Wavelet symmetry"
         def __get__(self):
@@ -447,7 +486,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
                       DeprecationWarning)
         return self.inverse_filter_bank
 
-    def wavefun(self, int level=8):
+    def wavefun(self, int level=8, length = None):
         """
         wavefun(self, level=8)
 
@@ -491,11 +530,21 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
         cdef double mul "mul"
         cdef Wavelet other "other"
         cdef phi_d, psi_d, phi_r, psi_r
+        cdef np.float64_t[::1] x, psi
 
         n = pow(sqrt(2.), <double>level)
         p = (pow(2., <double>level))
-
-        if self.w.orthogonal:
+        
+        if not self.w.orthogonal and not self.w.biorthogonal:
+            if length is None:
+                output_length = 256
+            else:
+                output_length = <index_t>length
+            x = np.linspace(self.w.lower_bound, self.w.upper_bound, output_length)
+            # x = np.array(x, dtype=np.float64)
+            psi = cwt_psi_single(x, self, output_length)
+            return [np.asarray(psi, dtype=np.float64), np.asarray(x, dtype=np.float64)]
+        elif self.w.orthogonal:
             filter_length = self.w.dec_len
             output_length = <index_t> ((filter_length-1) * p + 1)
             keep_length = get_keep_length(output_length, level, filter_length)
@@ -555,13 +604,16 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
     def __str__(self):
         s = []
         for x in [
-            u"Wavelet %s" % self.name,
+            u"Wavelet %s"           % self.name,
             u"  Family name:    %s" % self.family_name,
             u"  Short name:     %s" % self.short_family_name,
             u"  Filters length: %d" % self.dec_len,
             u"  Orthogonal:     %s" % self.orthogonal,
             u"  Biorthogonal:   %s" % self.biorthogonal,
-            u"  Symmetry:       %s" % self.symmetry
+            u"  Symmetry:       %s" % self.symmetry,
+            u"  DWT:            %s" % self.dwt_possible,
+            u"  CWT:            %s" % self.cwt_possible,
+            u"  Complex CWT:    %s" % self.complex_cwt
             ]:
             s.append(x.rstrip())
         return u'\n'.join(s)

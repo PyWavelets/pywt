@@ -8,23 +8,23 @@
 #define SWAP(t, x, y) {t tmp = x; x = y; y = tmp;}
 #define NELEMS(x) (sizeof(x) / sizeof(*x))
 
-Wavelet* wavelet(char name, unsigned int order)
+Wavelet* wavelet(WAVELET_NAME name, unsigned int order)
 {
     Wavelet *w;
 
     /* Haar wavelet */
-    if(name == 'h' || name == 'H'){
+    if(name == HAAR){
 
         /* the same as db1 */
-        w = wavelet('d', 1);
+        w = wavelet(DB, 1);
         w->family_name = "Haar";
         w->short_name = "haar";
         return w;
 
     /* Reverse biorthogonal wavelets family */
-    } else if (name == 'r' || name == 'R') {
+    } else if (name == RBIO) {
         /* rbio is like bior, only with switched filters */
-        w = wavelet('b', order);
+        w = wavelet(BIOR, order);
         if (w == NULL) return NULL;
 
         SWAP(size_t, w->dec_len, w->rec_len);
@@ -56,8 +56,7 @@ Wavelet* wavelet(char name, unsigned int order)
 
     switch(name){
         /* Daubechies wavelets family */
-        case 'd':
-        case 'D': {
+        case DB: {
             size_t coeffs_idx = order - 1;
             if (coeffs_idx >= NELEMS(db_float) ||
                 coeffs_idx >= NELEMS(db_double))
@@ -74,7 +73,11 @@ Wavelet* wavelet(char name, unsigned int order)
             w->compact_support = 1;
             w->family_name = "Daubechies";
             w->short_name = "db";
-
+            w->dwt_possible = 1;
+            w->cwt_possible = 1;
+            w->complex_cwt = 0;
+            w->lower_bound = -1;
+            w->upper_bound = -1;
             {
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
@@ -103,8 +106,7 @@ Wavelet* wavelet(char name, unsigned int order)
         }
 
         /* Symlets wavelets family */
-        case 's':
-        case 'S': {
+        case SYM: {
             size_t coeffs_idx = order - 2;
             if (coeffs_idx >= NELEMS(sym_float) ||
                 coeffs_idx >= NELEMS(sym_double))
@@ -122,7 +124,11 @@ Wavelet* wavelet(char name, unsigned int order)
             w->compact_support = 1;
             w->family_name = "Symlets";
             w->short_name = "sym";
-
+            w->dwt_possible = 1;
+            w->cwt_possible = 1;
+            w->complex_cwt = 0;
+            w->lower_bound = -1;
+            w->upper_bound = -1;
             {
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
@@ -150,8 +156,7 @@ Wavelet* wavelet(char name, unsigned int order)
         }
 
         /* Coiflets wavelets family */
-        case 'c':
-        case 'C': {
+        case COIF: {
             size_t coeffs_idx = order - 1;
             if (coeffs_idx >= NELEMS(coif_float) ||
                 coeffs_idx >= NELEMS(coif_double))
@@ -168,7 +173,11 @@ Wavelet* wavelet(char name, unsigned int order)
             w->compact_support = 1;
             w->family_name = "Coiflets";
             w->short_name = "coif";
-
+            w->dwt_possible = 1;
+            w->cwt_possible = 1;
+            w->complex_cwt = 0;
+            w->lower_bound = -1;
+            w->upper_bound = -1;
             {
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
@@ -198,8 +207,7 @@ Wavelet* wavelet(char name, unsigned int order)
         }
 
         /* Biorthogonal wavelets family */
-        case 'b':
-        case 'B': {
+        case BIOR: {
             unsigned int N = order / 10, M = order % 10;
             size_t M_idx;
             size_t M_max;
@@ -246,7 +254,11 @@ Wavelet* wavelet(char name, unsigned int order)
             w->compact_support = 1;
             w->family_name = "Biorthogonal";
             w->short_name = "bior";
-
+            w->dwt_possible = 1;
+            w->cwt_possible = 1;
+            w->complex_cwt = 0;
+            w->lower_bound = -1;
+            w->upper_bound = -1;
             {
                 size_t n = M_max - M;
                 size_t i;
@@ -277,8 +289,7 @@ Wavelet* wavelet(char name, unsigned int order)
         }
 
         /* Discrete FIR filter approximation of Meyer wavelet */
-        case 'm':
-        case 'M':
+        case DMEY:
             w = blank_wavelet(62);
             if(w == NULL) return NULL;
 
@@ -291,7 +302,11 @@ Wavelet* wavelet(char name, unsigned int order)
             w->compact_support = 1;
             w->family_name = "Discrete Meyer (FIR Approximation)";
             w->short_name = "dmey";
-
+            w->dwt_possible = 1;
+            w->cwt_possible = 1;
+            w->complex_cwt = 0;
+            w->lower_bound = -1;
+            w->upper_bound = -1;
             {
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
@@ -316,7 +331,147 @@ Wavelet* wavelet(char name, unsigned int order)
                 }
             }
             break;
+            /* Gaussian Wavelets */
+        case GAUS:
+            if (order > 8)
+                return NULL;
+            w = blank_wavelet(0);
+            if(w == NULL) return NULL;
 
+            w->vanishing_moments_psi = -1;
+            w->vanishing_moments_phi = -1;
+            w->support_width = -1;
+            w->orthogonal = 0;
+            w->biorthogonal = 0;
+            w->symmetry = SYMMETRIC;
+            w->compact_support = 0;
+            w->family_name = "Gaussian";
+            w->short_name = "gaus";
+            w->dwt_possible = 0;
+            w->cwt_possible = 1;
+            w->complex_cwt = 0;
+            w->lower_bound = -5;
+            w->upper_bound = 5;
+            break;
+        case MEXH:
+            w = blank_wavelet(0);
+            if(w == NULL) return NULL;
+
+            w->vanishing_moments_psi = -1;
+            w->vanishing_moments_phi = -1;
+            w->support_width = -1;
+            w->orthogonal = 0;
+            w->biorthogonal = 0;
+            w->symmetry = SYMMETRIC;
+            w->compact_support = 0;
+            w->family_name = "Mexican hat wavelet";
+            w->short_name = "mexh";
+            w->dwt_possible = 0;
+            w->cwt_possible = 1;
+            w->complex_cwt = 0;
+            w->lower_bound = -5;
+            w->upper_bound = 5;
+            break;
+        case MORL:
+            w = blank_wavelet(0);
+            if(w == NULL) return NULL;
+
+            w->vanishing_moments_psi = -1;
+            w->vanishing_moments_phi = -1;
+            w->support_width = -1;
+            w->orthogonal = 0;
+            w->biorthogonal = 0;
+            w->symmetry = SYMMETRIC;
+            w->compact_support = 0;
+            w->family_name = "Morlet wavelet";
+            w->short_name = "morl";
+            w->dwt_possible = 0;
+            w->cwt_possible = 1;
+            w->complex_cwt = 0;
+            w->lower_bound = -5;
+            w->upper_bound = 5;
+            break;
+        case CGAU:
+            if (order > 8)
+                return NULL;
+            w = blank_wavelet(0);
+            if(w == NULL) return NULL;
+
+            w->vanishing_moments_psi = -1;
+            w->vanishing_moments_phi = -1;
+            w->support_width = -1;
+            w->orthogonal = 0;
+            w->biorthogonal = 0;
+            w->symmetry = SYMMETRIC;
+            w->compact_support = 0;
+            w->family_name = "Complex Gaussian wavelets";
+            w->short_name = "cgau";
+            w->dwt_possible = 0;
+            w->cwt_possible = 1;
+            w->complex_cwt = 1;
+            w->lower_bound = -5;
+            w->upper_bound = 5;
+            break;
+        case SHAN:
+
+            w = blank_wavelet(0);
+            if(w == NULL) return NULL;
+
+            w->vanishing_moments_psi = -1;
+            w->vanishing_moments_phi = -1;
+            w->support_width = -1;
+            w->orthogonal = 0;
+            w->biorthogonal = 0;
+            w->symmetry = SYMMETRIC;
+            w->compact_support = 0;
+            w->family_name = "Shannon wavelets";
+            w->short_name = "shan";
+            w->dwt_possible = 0;
+            w->cwt_possible = 1;
+            w->complex_cwt = 1;
+            w->lower_bound = -5;
+            w->upper_bound = 5;
+            break;
+        case FBSP:
+
+            w = blank_wavelet(0);
+            if(w == NULL) return NULL;
+
+            w->vanishing_moments_psi = -1;
+            w->vanishing_moments_phi = -1;
+            w->support_width = -1;
+            w->orthogonal = 0;
+            w->biorthogonal = 0;
+            w->symmetry = SYMMETRIC;
+            w->compact_support = 0;
+            w->family_name = "Frequency B-Spline wavelets";
+            w->short_name = "fbsp";
+            w->dwt_possible = 0;
+            w->cwt_possible = 1;
+            w->complex_cwt = 1;
+            w->lower_bound = -5;
+            w->upper_bound = 5;
+            break;
+        case CMOR:
+
+            w = blank_wavelet(0);
+            if(w == NULL) return NULL;
+
+            w->vanishing_moments_psi = -1;
+            w->vanishing_moments_phi = -1;
+            w->support_width = -1;
+            w->orthogonal = 0;
+            w->biorthogonal = 0;
+            w->symmetry = SYMMETRIC;
+            w->compact_support = 0;
+            w->family_name = "Complex Morlet wavelets";
+            w->short_name = "cmor";
+            w->dwt_possible = 0;
+            w->cwt_possible = 1;
+            w->complex_cwt = 1;
+            w->lower_bound = -5;
+            w->upper_bound = 5;
+            break;
         default:
             return NULL;
     }
@@ -328,36 +483,35 @@ Wavelet* blank_wavelet(size_t filters_length)
 {
     Wavelet* w;
 
-    if(filters_length < 1)
-        return NULL;
 
     /* pad to even length */
-    if(filters_length % 2)
+    if(filters_length > 0 && filters_length % 2)
         ++filters_length;
 
     w = wtmalloc(sizeof(Wavelet));
     if(w == NULL) return NULL;
 
     w->dec_len = w->rec_len = filters_length;
-
-    w->dec_lo_float = wtcalloc(filters_length, sizeof(float));
-    w->dec_hi_float = wtcalloc(filters_length, sizeof(float));
-    w->rec_lo_float = wtcalloc(filters_length, sizeof(float));
-    w->rec_hi_float = wtcalloc(filters_length, sizeof(float));
-
-    w->dec_lo_double = wtcalloc(filters_length, sizeof(double));
-    w->dec_hi_double = wtcalloc(filters_length, sizeof(double));
-    w->rec_lo_double = wtcalloc(filters_length, sizeof(double));
-    w->rec_hi_double = wtcalloc(filters_length, sizeof(double));
-
-    if(w->dec_lo_float == NULL || w->dec_hi_float == NULL ||
-       w->rec_lo_float == NULL || w->rec_hi_float == NULL ||
-       w->dec_lo_double == NULL || w->dec_hi_double == NULL ||
-       w->rec_lo_double == NULL || w->rec_hi_double == NULL){
-        free_wavelet(w);
-        return NULL;
+    if (filters_length > 0)
+    {
+        w->dec_lo_float = wtcalloc(filters_length, sizeof(float));
+        w->dec_hi_float = wtcalloc(filters_length, sizeof(float));
+        w->rec_lo_float = wtcalloc(filters_length, sizeof(float));
+        w->rec_hi_float = wtcalloc(filters_length, sizeof(float));
+    
+        w->dec_lo_double = wtcalloc(filters_length, sizeof(double));
+        w->dec_hi_double = wtcalloc(filters_length, sizeof(double));
+        w->rec_lo_double = wtcalloc(filters_length, sizeof(double));
+        w->rec_hi_double = wtcalloc(filters_length, sizeof(double));
+    
+        if(w->dec_lo_float == NULL || w->dec_hi_float == NULL ||
+           w->rec_lo_float == NULL || w->rec_hi_float == NULL ||
+           w->dec_lo_double == NULL || w->dec_hi_double == NULL ||
+           w->rec_lo_double == NULL || w->rec_hi_double == NULL){
+            free_wavelet(w);
+            return NULL;
+        }
     }
-
     /* set properties to "blank" values */
     w->vanishing_moments_psi = 0;
     w->vanishing_moments_phi = 0;
@@ -368,7 +522,11 @@ Wavelet* blank_wavelet(size_t filters_length)
     w->compact_support = 0;
     w->family_name = "";
     w->short_name = "";
-
+    w->dwt_possible = 0;
+    w->cwt_possible = 0;
+    w->complex_cwt = 0;
+    w->lower_bound = -1;
+    w->upper_bound = -1;
     return w;
 }
 
@@ -379,60 +537,84 @@ Wavelet* copy_wavelet(Wavelet* base)
 
     if(base == NULL) return NULL;
 
-    if(base->dec_len < 1 || base->rec_len < 1)
+    if(base->dec_len < 0 || base->rec_len < 0)
         return NULL;
 
     w = wtmalloc(sizeof(Wavelet));
     if(w == NULL) return NULL;
 
     memcpy(w, base, sizeof(Wavelet));
-
-    w->dec_lo_float = wtmalloc(w->dec_len * sizeof(float));
-    w->dec_hi_float = wtmalloc(w->dec_len * sizeof(float));
-    w->rec_lo_float = wtmalloc(w->rec_len * sizeof(float));
-    w->rec_hi_float = wtmalloc(w->rec_len * sizeof(float));
-    w->dec_lo_double = wtmalloc(w->dec_len * sizeof(double));
-    w->dec_hi_double = wtmalloc(w->dec_len * sizeof(double));
-    w->rec_lo_double = wtmalloc(w->rec_len * sizeof(double));
-    w->rec_hi_double = wtmalloc(w->rec_len * sizeof(double));
-
-    if(w->dec_lo_float == NULL || w->dec_hi_float == NULL ||
-       w->rec_lo_float == NULL || w->rec_hi_float == NULL ||
-       w->dec_lo_double == NULL || w->dec_hi_double == NULL ||
-       w->rec_lo_double == NULL || w->rec_hi_double == NULL){
-      free_wavelet(w);
-      return NULL;
+    if (base->dec_len > 0)
+    {
+        w->dec_lo_float = wtmalloc(w->dec_len * sizeof(float));
+        w->dec_hi_float = wtmalloc(w->dec_len * sizeof(float));
+        w->dec_lo_double = wtmalloc(w->dec_len * sizeof(double));
+        w->dec_hi_double = wtmalloc(w->dec_len * sizeof(double));
+        if(w->dec_lo_float == NULL || w->dec_hi_float == NULL ||
+            w->dec_lo_double == NULL || w->dec_hi_double == NULL){
+           free_wavelet(w);
+           return NULL;
+        }
+    }
+    if (base->rec_len > 0)
+    {
+        w->rec_lo_float = wtmalloc(w->rec_len * sizeof(float));
+        w->rec_hi_float = wtmalloc(w->rec_len * sizeof(float));
+        w->rec_lo_double = wtmalloc(w->rec_len * sizeof(double));
+        w->rec_hi_double = wtmalloc(w->rec_len * sizeof(double));
+        if( w->rec_lo_float == NULL || w->rec_hi_float == NULL ||
+            w->rec_lo_double == NULL || w->rec_hi_double == NULL){
+           free_wavelet(w);
+           return NULL;
+        }
     }
 
-    // FIXME: Test coverage, the only use in `wavelet` overwrites the filter
-    memcpy(w->dec_lo_float, base->dec_lo_float, w->dec_len * sizeof(float));
-    memcpy(w->dec_hi_float, base->dec_hi_float, w->dec_len * sizeof(float));
-    memcpy(w->rec_lo_float, base->rec_lo_float, w->rec_len * sizeof(float));
-    memcpy(w->rec_hi_float, base->rec_hi_float, w->rec_len * sizeof(float));
-    memcpy(w->dec_lo_double, base->dec_lo_double, w->dec_len * sizeof(double));
-    memcpy(w->dec_hi_double, base->dec_hi_double, w->dec_len * sizeof(double));
-    memcpy(w->rec_lo_double, base->rec_lo_double, w->rec_len * sizeof(double));
-    memcpy(w->rec_hi_double, base->rec_hi_double, w->rec_len * sizeof(double));
 
+    // FIXME: Test coverage, the only use in `wavelet` overwrites the filter
+    if (base->dec_len > 0)
+    {
+        memcpy(w->dec_lo_float, base->dec_lo_float, w->dec_len * sizeof(float));
+        memcpy(w->dec_hi_float, base->dec_hi_float, w->dec_len * sizeof(float));
+        memcpy(w->dec_lo_double, base->dec_lo_double, w->dec_len * sizeof(double));
+        memcpy(w->dec_hi_double, base->dec_hi_double, w->dec_len * sizeof(double));
+    }
+    if (base->rec_len > 0)
+    {
+        memcpy(w->rec_lo_float, base->rec_lo_float, w->rec_len * sizeof(float));
+        memcpy(w->rec_hi_float, base->rec_hi_float, w->rec_len * sizeof(float));
+        memcpy(w->rec_lo_double, base->rec_lo_double, w->rec_len * sizeof(double));
+        memcpy(w->rec_hi_double, base->rec_hi_double, w->rec_len * sizeof(double));
+    }
     return w;
 }
 
 void free_wavelet(Wavelet *w){
 
     /* deallocate filters */
-    wtfree(w->dec_lo_float);
-    wtfree(w->dec_hi_float);
-    wtfree(w->rec_lo_float);
-    wtfree(w->rec_hi_float);
-
-    wtfree(w->dec_lo_double);
-    wtfree(w->dec_hi_double);
-    wtfree(w->rec_lo_double);
-    wtfree(w->rec_hi_double);
-
+    if (w->dec_len > 0)
+    {
+        wtfree(w->dec_lo_float);
+        wtfree(w->dec_hi_float);
+        wtfree(w->dec_lo_double);
+        wtfree(w->dec_hi_double);
+    }
+    if (w->rec_len > 0)
+    {
+        wtfree(w->rec_lo_float);
+        wtfree(w->rec_hi_float);
+        wtfree(w->rec_lo_double);
+        wtfree(w->rec_hi_double);
+    }
     /* finally free struct */
     wtfree(w);
 }
+
+
+
+
+
+
+
 
 #undef SWAP
 #undef NELEMS

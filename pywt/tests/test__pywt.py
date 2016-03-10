@@ -51,13 +51,14 @@ def test_compare_downcoef_coeffs():
     for nlevels in [1, 2, 3]:
         for wavelet in pywt.wavelist():
             wavelet = pywt.Wavelet(wavelet)
-            max_level = pywt.dwt_max_level(r.size, wavelet.dec_len)
-            if nlevels <= max_level:
-                a = pywt.downcoef('a', r, wavelet, level=nlevels)
-                d = pywt.downcoef('d', r, wavelet, level=nlevels)
-                coeffs = pywt.wavedec(r, wavelet, level=nlevels)
-                assert_allclose(a, coeffs[0])
-                assert_allclose(d, coeffs[1])
+            if (wavelet.dwt_possible):
+                max_level = pywt.dwt_max_level(r.size, wavelet.dec_len)
+                if nlevels <= max_level:
+                    a = pywt.downcoef('a', r, wavelet, level=nlevels)
+                    d = pywt.downcoef('d', r, wavelet, level=nlevels)
+                    coeffs = pywt.wavedec(r, wavelet, level=nlevels)
+                    assert_allclose(a, coeffs[0])
+                    assert_allclose(d, coeffs[1])
 
 
 def test_upcoef_multilevel():

@@ -23,11 +23,19 @@ dtypes_and_tolerances = [(np.float32, tol_single), (np.float64, tol_double),
                          (np.int8, tol_double), (np.complex64, tol_single),
                          (np.complex128, tol_double)]
 
+
 # determine which wavelets to test
 wavelist = pywt.wavelist()
 if 'dmey' in wavelist:
     # accuracy is very low for dmey, so omit it
     wavelist.remove('dmey')
+# removing wavelets with dwt_possible == False
+del_list = []
+for wavelet in wavelist:
+    if not pywt.Wavelet(wavelet).dwt_possible:
+        del_list.append(wavelet)
+for del_ind in del_list:
+    wavelist.remove(del_ind)
 
 
 ####
@@ -152,14 +160,15 @@ def test_swt_iswt_integration():
         wavelets.remove('dmey')
     for current_wavelet_str in wavelets:
         current_wavelet = pywt.Wavelet(current_wavelet_str)
-        input_length_power = int(np.ceil(np.log2(max(
-            current_wavelet.dec_len,
-            current_wavelet.rec_len))))
-        input_length = 2**(input_length_power + max_level - 1)
-        X = np.arange(input_length)
-        coeffs = pywt.swt(X, current_wavelet, max_level)
-        Y = pywt.iswt(coeffs, current_wavelet)
-        assert_allclose(Y, X, rtol=1e-5, atol=1e-7)
+        if current_wavelet.dwt_possible:
+            input_length_power = int(np.ceil(np.log2(max(
+                current_wavelet.dec_len,
+                current_wavelet.rec_len))))
+            input_length = 2**(input_length_power + max_level - 1)
+            X = np.arange(input_length)
+            coeffs = pywt.swt(X, current_wavelet, max_level)
+            Y = pywt.iswt(coeffs, current_wavelet)
+            assert_allclose(Y, X, rtol=1e-5, atol=1e-7)
 
 
 def test_swt_dtypes():
@@ -197,14 +206,15 @@ def test_swt2_iswt2_integration():
         wavelets.remove('dmey')
     for current_wavelet_str in wavelets:
         current_wavelet = pywt.Wavelet(current_wavelet_str)
-        input_length_power = int(np.ceil(np.log2(max(
-            current_wavelet.dec_len,
-            current_wavelet.rec_len))))
-        input_length = 2**(input_length_power + max_level - 1)
-        X = np.arange(input_length**2).reshape(input_length, input_length)
-        coeffs = pywt.swt2(X, current_wavelet, max_level)
-        Y = pywt.iswt2(coeffs, current_wavelet)
-        assert_allclose(Y, X, rtol=1e-5, atol=1e-5)
+        if current_wavelet.dwt_possible:
+            input_length_power = int(np.ceil(np.log2(max(
+                current_wavelet.dec_len,
+                current_wavelet.rec_len))))
+            input_length = 2**(input_length_power + max_level - 1)
+            X = np.arange(input_length**2).reshape(input_length, input_length)
+            coeffs = pywt.swt2(X, current_wavelet, max_level)
+            Y = pywt.iswt2(coeffs, current_wavelet)
+            assert_allclose(Y, X, rtol=1e-5, atol=1e-5)
 
 ####
 # 2d multilevel dwt function tests
