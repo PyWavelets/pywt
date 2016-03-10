@@ -6,7 +6,6 @@ from ._extensions._cwt import (cwt_psi_single, cwt_conv, cwt_conv_real)
 __all__ = ["cwt"]
 
 
-    
 def cwt(data, scales, wavelet):
     """
     cwt(data, scales, wavelet)
@@ -29,10 +28,10 @@ def cwt(data, scales, wavelet):
     if data.ndim == 1:
         out = np.zeros((data.size,scales.size))
         for i in np.arange(scales.size):
-            plen=np.floor((wavelet.upper_bound-wavelet.lower_bound)*scales[i])+1
+            plen = np.floor((wavelet.upper_bound-wavelet.lower_bound)*scales[i])+1
             if (plen < 3):
                 plen = 3
-            psi, x = wavelet.wavefun(length = plen.astype(np.int))
+            psi, x = wavelet.wavefun(length=plen.astype(np.int))
             coef = cwt_conv_real(data,psi,data.size)
             coef = np.asarray(coef, dt)
             out[:,i] = coef

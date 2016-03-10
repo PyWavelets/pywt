@@ -11,8 +11,8 @@ def configuration(parent_package='', top_path=None):
     sources = ["c/common.c", "c/convolution.c", "c/wt.c", "c/cwt.c", "c/wavelets.c"]
     source_templates = ["c/convolution.template.c", "c/wt.template.c", "c/cwt.template.c"]
     headers = ["c/templating.h", "c/wavelets_coeffs.h",
-               "c/common.h", "c/convolution.h", "c/wt.h", "c/cwt.h",  "c/wavelets.h"]
-    header_templates = ["c/convolution.template.h", "c/wt.template.h","c/cwt.template.h",
+               "c/common.h", "c/convolution.h", "c/wt.h", "c/cwt.h", "c/wavelets.h"]
+    header_templates = ["c/convolution.template.h", "c/wt.template.h", "c/cwt.template.h",
                         "c/wavelets_coeffs.template.h"]
 
     config.add_extension(
@@ -34,7 +34,7 @@ def configuration(parent_package='', top_path=None):
         depends=source_templates + header_templates + headers,
         include_dirs=["c", get_numpy_include()],
         define_macros=[("PY_EXTENSION", None)],
-    )    
+    )
 
     config.add_extension(
         '_swt', sources=["_swt.c"] + sources,
