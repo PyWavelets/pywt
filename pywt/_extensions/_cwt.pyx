@@ -48,6 +48,7 @@ cpdef cwt_psi_single(data_t[::1] data, Wavelet wavelet, size_t output_len):
 cpdef cwt_conv(data_t[::1] data, data_t[::1] in_filter, size_t output_len):
     cdef size_t N, F, O
     cdef data_t[::1] output, pBuf
+    cdef size_t i, j
     N = data.size
     F = in_filter.size
     O = output_len
@@ -81,6 +82,7 @@ cpdef cwt_conv(data_t[::1] data, data_t[::1] in_filter, size_t output_len):
 cpdef cwt_conv_real(data_t[::1] data, data_t[::1]  psi, size_t output_len):
     cdef size_t N, F, O, buf_len
     cdef data_t[::1] output, buf, fTemp
+    cdef size_t i, j
     N = data.size
     F = psi.size
     O = output_len

@@ -59,7 +59,7 @@ cdef extern from "c/wavelets.h":
         char* short_name
 
 
-cdef extern from "wavelets.h":
+
     cdef Wavelet* wavelet(WAVELET_NAME name, int type)
     cdef Wavelet* blank_wavelet(size_t filter_length)
     cdef void free_wavelet(Wavelet* wavelet)
