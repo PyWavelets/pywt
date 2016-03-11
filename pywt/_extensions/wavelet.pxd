@@ -58,6 +58,10 @@ cdef extern from "c/wavelets.h":
         char* family_name
         char* short_name
 
+        float fc
+        float fb
+        unsigned int m
+    
 
 
     cdef Wavelet* wavelet(WAVELET_NAME name, int type)

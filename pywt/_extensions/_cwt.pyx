@@ -9,7 +9,7 @@ import numpy as np
 
 
 cpdef cwt_psi_single(data_t[::1] data, Wavelet wavelet, size_t output_len):
-    cdef data_t[::1] psi
+    cdef data_t[::1] psi, psi_r, psi_i
 
     if output_len < 1:
         raise RuntimeError("Invalid output length.")
@@ -18,31 +18,77 @@ cpdef cwt_psi_single(data_t[::1] data, Wavelet wavelet, size_t output_len):
         # TODO: Don't think these have to be 0-initialized
         # TODO: Check other methods of allocating (e.g. Cython/CPython arrays)
     if data_t is np.float64_t:
-        psi = np.zeros(output_len, np.float64)
+        
         #data = np.zeros(output_len, np.float64)
         #data = np.linspace(wavelet.w.lower_bound, wavelet.w.upper_bound, output_len,dtype=np.float64)
         if wavelet.short_family_name == "gaus":
+            psi = np.zeros(output_len, np.float64)
             c_cwt.double_gaus(&data[0], &psi[0], data.size, wavelet.number)
+            return psi
         elif wavelet.short_family_name == "mexh":
+            psi = np.zeros(output_len, np.float64)
             c_cwt.double_mexh(&data[0], &psi[0], data.size)
+            return psi
         elif wavelet.short_family_name == "morl":
+            psi = np.zeros(output_len, np.float64)
             c_cwt.double_morl(&data[0], &psi[0], data.size)
+            return psi
+        elif wavelet.short_family_name == "cgau":
+            psi_r = np.zeros(output_len, np.float64)
+            psi_i = np.zeros(output_len, np.float64)
+            c_cwt.double_cgau(&data[0], &psi_r[0], &psi_i[0], data.size, wavelet.number)
+            return (psi_r, psi_i)
+        elif wavelet.short_family_name == "shan":
+            psi_r = np.zeros(output_len, np.float64)
+            psi_i = np.zeros(output_len, np.float64)
+            c_cwt.double_shan(&data[0], &psi_r[0], &psi_i[0], data.size, wavelet.fb, wavelet.fc)
+            return (psi_r, psi_i)
+        elif wavelet.short_family_name == "fbsp":
+            psi_r = np.zeros(output_len, np.float64)
+            psi_i = np.zeros(output_len, np.float64)
+            c_cwt.double_fbsp(&data[0], &psi_r[0], &psi_i[0], data.size, wavelet.m, wavelet.fb, wavelet.fc)
+            return (psi_r, psi_i)
+        elif wavelet.short_family_name == "cmor":
+            psi_r = np.zeros(output_len, np.float64)
+            psi_i = np.zeros(output_len, np.float64)
+            c_cwt.double_cmor(&data[0], &psi_r[0], &psi_i[0], data.size, wavelet.fb, wavelet.fc)
+            return (psi_r, psi_i)
+            
     elif data_t is np.float32_t:
-        psi = np.zeros(output_len, np.float32)
     #    data = np.linspace(self.w.lower_bound, self.w.upper_bound, output_len)
     #    data = np.array(data, dtype=np.float32)
         if wavelet.short_family_name == "gaus":
+            psi = np.zeros(output_len, np.float32)
             c_cwt.float_gaus(&data[0], &psi[0], data.size, wavelet.number)
+            return psi
         elif wavelet.short_family_name == "mexh":
+            psi = np.zeros(output_len, np.float32)
             c_cwt.float_mexh(&data[0], &psi[0], data.size)
+            return psi
         elif wavelet.short_family_name == "morl":
+            psi = np.zeros(output_len, np.float32)
             c_cwt.float_morl(&data[0], &psi[0], data.size)
-
-    return psi
-
-
-  
-    
+            return psi
+        elif wavelet.short_family_name == "cgau":
+            psi_r = np.zeros(output_len, np.float32)
+            psi_i = np.zeros(output_len, np.float32)
+            c_cwt.float_cgau(&data[0], &psi_r[0], &psi_i[0], data.size, wavelet.number)
+            return (psi_r, psi_i)
+        elif wavelet.short_family_name == "shan":
+            psi_r = np.zeros(output_len, np.float32)
+            psi_i = np.zeros(output_len, np.float32)
+            c_cwt.float_shan(&data[0], &psi_r[0], &psi_i[0], data.size, wavelet.fb, wavelet.fc)
+            return (psi_r, psi_i)
+        elif wavelet.short_family_name == "fbsp":
+            psi_r = np.zeros(output_len, np.float32)
+            psi_i = np.zeros(output_len, np.float32)
+            c_cwt.float_fbsp(&data[0], &psi_r[0], &psi_i[0], data.size, wavelet.m, wavelet.fb, wavelet.fc)
+            return (psi_r, psi_i)
+        elif wavelet.short_family_name == "cmor":
+            psi_r = np.zeros(output_len, np.float32)
+            psi_i = np.zeros(output_len, np.float32)
+            c_cwt.float_cmor(&data[0], &psi_r[0], &psi_i[0], data.size, wavelet.fb, wavelet.fc)
+            return (psi_r, psi_i)
 
 
 cpdef cwt_conv(data_t[::1] data, data_t[::1] in_filter, size_t output_len):

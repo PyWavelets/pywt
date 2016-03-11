@@ -58,7 +58,7 @@ int CAT(TYPE, _shan)(const TYPE * const restrict input, TYPE * const restrict ou
                               const TYPE  FB, const TYPE  FC);
 
 int CAT(TYPE, _fbsp)(const TYPE * const restrict input, TYPE * const restrict output_r, TYPE * const restrict output_i, const size_t N,
-                              const int M, const TYPE  FB, const TYPE  FC);
+                              const unsigned int M, const TYPE  FB, const TYPE  FC);
 
 int CAT(TYPE, _cmor)(const TYPE * const restrict input, TYPE * const restrict output_r, TYPE * const restrict output_i, const size_t N,
                               const TYPE  FB, const TYPE  FC);

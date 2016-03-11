@@ -63,6 +63,12 @@ typedef struct {
     
     float lower_bound;
     float upper_bound;
+    
+    /* Parameters for shan, fbsp, cmor*/
+    float fc;
+    float fb;
+    unsigned int m;
+    
 
     char* family_name;
     char* short_name;

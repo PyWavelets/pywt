@@ -436,6 +436,30 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
         def __set__(self, float value):
             self.w.upper_bound = value
 
+    property fc:
+        "Center frequency (shan, fbsp, cmor)"
+        def __get__(self):
+            if self.w.fc > 0:
+                return self.w.fc
+        def __set__(self, float value):
+            self.w.fc = value
+
+    property fb:
+        "Bandwidth frequency (shan, fbsp, cmor)"
+        def __get__(self):
+            if self.w.fb > 0:
+                return self.w.fb
+        def __set__(self, float value):
+            self.w.fb = value
+
+    property m:
+        "order parameter for fbsp"
+        def __get__(self):
+            if self.w.m != 0:
+                return self.w.m
+        def __set__(self, unsigned int value):
+            self.w.m = value
+
     property symmetry:
         "Wavelet symmetry"
         def __get__(self):
@@ -530,6 +554,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
         cdef double mul "mul"
         cdef Wavelet other "other"
         cdef phi_d, psi_d, phi_r, psi_r
+        cdef psi_i
         cdef np.float64_t[::1] x, psi
 
         n = pow(sqrt(2.), <double>level)
@@ -542,8 +567,15 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
                 output_length = <index_t>length
             x = np.linspace(self.w.lower_bound, self.w.upper_bound, output_length)
             # x = np.array(x, dtype=np.float64)
-            psi = cwt_psi_single(x, self, output_length)
-            return [np.asarray(psi, dtype=np.float64), np.asarray(x, dtype=np.float64)]
+            if self.w.complex_cwt:
+                psi_r, psi_i = cwt_psi_single(x, self, output_length)
+                return [np.asarray(psi_r, dtype=np.float64), 
+                        np.asarray(psi_i, dtype=np.float64), 
+                        np.asarray(x, dtype=np.float64)]
+            else:
+                psi = cwt_psi_single(x, self, output_length)
+                return [np.asarray(psi, dtype=np.float64), 
+                        np.asarray(x, dtype=np.float64)]
         elif self.w.orthogonal:
             filter_length = self.w.dec_len
             output_length = <index_t> ((filter_length-1) * p + 1)

@@ -78,6 +78,9 @@ Wavelet* wavelet(WAVELET_NAME name, unsigned int order)
             w->complex_cwt = 0;
             w->lower_bound = -1;
             w->upper_bound = -1;
+            w->fc = 0;
+            w->fb = 0;
+            w->m = 0;
             {
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
@@ -129,6 +132,9 @@ Wavelet* wavelet(WAVELET_NAME name, unsigned int order)
             w->complex_cwt = 0;
             w->lower_bound = -1;
             w->upper_bound = -1;
+            w->fc = 0;
+            w->fb = 0;
+            w->m = 0;
             {
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
@@ -178,6 +184,9 @@ Wavelet* wavelet(WAVELET_NAME name, unsigned int order)
             w->complex_cwt = 0;
             w->lower_bound = -1;
             w->upper_bound = -1;
+            w->fc = 0;
+            w->fb = 0;
+            w->m = 0;
             {
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
@@ -259,6 +268,9 @@ Wavelet* wavelet(WAVELET_NAME name, unsigned int order)
             w->complex_cwt = 0;
             w->lower_bound = -1;
             w->upper_bound = -1;
+            w->fc = 0;
+            w->fb = 0;
+            w->m = 0;
             {
                 size_t n = M_max - M;
                 size_t i;
@@ -307,6 +319,9 @@ Wavelet* wavelet(WAVELET_NAME name, unsigned int order)
             w->complex_cwt = 0;
             w->lower_bound = -1;
             w->upper_bound = -1;
+            w->fc = 0;
+            w->fb = 0;
+            w->m = 0;
             {
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
@@ -352,6 +367,9 @@ Wavelet* wavelet(WAVELET_NAME name, unsigned int order)
             w->complex_cwt = 0;
             w->lower_bound = -5;
             w->upper_bound = 5;
+            w->fc = 0;
+            w->fb = 0;
+            w->m = 0;
             break;
         case MEXH:
             w = blank_wavelet(0);
@@ -371,6 +389,9 @@ Wavelet* wavelet(WAVELET_NAME name, unsigned int order)
             w->complex_cwt = 0;
             w->lower_bound = -5;
             w->upper_bound = 5;
+            w->fc = 0;
+            w->fb = 0;
+            w->m = 0;
             break;
         case MORL:
             w = blank_wavelet(0);
@@ -390,6 +411,9 @@ Wavelet* wavelet(WAVELET_NAME name, unsigned int order)
             w->complex_cwt = 0;
             w->lower_bound = -5;
             w->upper_bound = 5;
+            w->fc = 0;
+            w->fb = 0;
+            w->m = 0;
             break;
         case CGAU:
             if (order > 8)
@@ -411,6 +435,9 @@ Wavelet* wavelet(WAVELET_NAME name, unsigned int order)
             w->complex_cwt = 1;
             w->lower_bound = -5;
             w->upper_bound = 5;
+            w->fc = 0;
+            w->fb = 0;
+            w->m = 0;
             break;
         case SHAN:
 
@@ -431,6 +458,9 @@ Wavelet* wavelet(WAVELET_NAME name, unsigned int order)
             w->complex_cwt = 1;
             w->lower_bound = -5;
             w->upper_bound = 5;
+            w->fc = 1;
+            w->fb = 0.5;
+            w->m = 0;
             break;
         case FBSP:
 
@@ -451,6 +481,9 @@ Wavelet* wavelet(WAVELET_NAME name, unsigned int order)
             w->complex_cwt = 1;
             w->lower_bound = -5;
             w->upper_bound = 5;
+            w->fc = 0.5;
+            w->fb = 1;
+            w->m = 2;
             break;
         case CMOR:
 
@@ -471,6 +504,9 @@ Wavelet* wavelet(WAVELET_NAME name, unsigned int order)
             w->complex_cwt = 1;
             w->lower_bound = -5;
             w->upper_bound = 5;
+            w->fc = 0.5;
+            w->fb = 1;
+            w->m = 0;
             break;
         default:
             return NULL;
