@@ -436,29 +436,29 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
         def __set__(self, float value):
             self.w.upper_bound = value
 
-    property fc:
+    property center_frequency:
         "Center frequency (shan, fbsp, cmor)"
         def __get__(self):
-            if self.w.fc > 0:
-                return self.w.fc
+            if self.w.center_frequency > 0:
+                return self.w.center_frequency
         def __set__(self, float value):
-            self.w.fc = value
+            self.w.center_frequency = value
 
-    property fb:
+    property bandwidth_frequency:
         "Bandwidth frequency (shan, fbsp, cmor)"
         def __get__(self):
-            if self.w.fb > 0:
-                return self.w.fb
+            if self.w.bandwidth_frequency > 0:
+                return self.w.bandwidth_frequency
         def __set__(self, float value):
-            self.w.fb = value
+            self.w.bandwidth_frequency = value
 
-    property m:
+    property fbsp_order:
         "order parameter for fbsp"
         def __get__(self):
-            if self.w.m != 0:
-                return self.w.m
+            if self.w.fbsp_order != 0:
+                return self.w.fbsp_order
         def __set__(self, unsigned int value):
-            self.w.m = value
+            self.w.fbsp_order = value
 
     property symmetry:
         "Wavelet symmetry"

@@ -78,9 +78,9 @@ Wavelet* wavelet(WAVELET_NAME name, unsigned int order)
             w->complex_cwt = 0;
             w->lower_bound = -1;
             w->upper_bound = -1;
-            w->fc = 0;
-            w->fb = 0;
-            w->m = 0;
+            w->center_frequency = 0;
+            w->bandwidth_frequency = 0;
+            w->fbsp_order = 0;
             {
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
@@ -132,9 +132,9 @@ Wavelet* wavelet(WAVELET_NAME name, unsigned int order)
             w->complex_cwt = 0;
             w->lower_bound = -1;
             w->upper_bound = -1;
-            w->fc = 0;
-            w->fb = 0;
-            w->m = 0;
+            w->center_frequency = 0;
+            w->bandwidth_frequency = 0;
+            w->fbsp_order = 0;
             {
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
@@ -184,9 +184,9 @@ Wavelet* wavelet(WAVELET_NAME name, unsigned int order)
             w->complex_cwt = 0;
             w->lower_bound = -1;
             w->upper_bound = -1;
-            w->fc = 0;
-            w->fb = 0;
-            w->m = 0;
+            w->center_frequency = 0;
+            w->bandwidth_frequency = 0;
+            w->fbsp_order = 0;
             {
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
@@ -268,9 +268,9 @@ Wavelet* wavelet(WAVELET_NAME name, unsigned int order)
             w->complex_cwt = 0;
             w->lower_bound = -1;
             w->upper_bound = -1;
-            w->fc = 0;
-            w->fb = 0;
-            w->m = 0;
+            w->center_frequency = 0;
+            w->bandwidth_frequency = 0;
+            w->fbsp_order = 0;
             {
                 size_t n = M_max - M;
                 size_t i;
@@ -319,9 +319,9 @@ Wavelet* wavelet(WAVELET_NAME name, unsigned int order)
             w->complex_cwt = 0;
             w->lower_bound = -1;
             w->upper_bound = -1;
-            w->fc = 0;
-            w->fb = 0;
-            w->m = 0;
+            w->center_frequency = 0;
+            w->bandwidth_frequency = 0;
+            w->fbsp_order = 0;
             {
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
@@ -367,9 +367,9 @@ Wavelet* wavelet(WAVELET_NAME name, unsigned int order)
             w->complex_cwt = 0;
             w->lower_bound = -5;
             w->upper_bound = 5;
-            w->fc = 0;
-            w->fb = 0;
-            w->m = 0;
+            w->center_frequency = 0;
+            w->bandwidth_frequency = 0;
+            w->fbsp_order = 0;
             break;
         case MEXH:
             w = blank_wavelet(0);
@@ -389,9 +389,9 @@ Wavelet* wavelet(WAVELET_NAME name, unsigned int order)
             w->complex_cwt = 0;
             w->lower_bound = -5;
             w->upper_bound = 5;
-            w->fc = 0;
-            w->fb = 0;
-            w->m = 0;
+            w->center_frequency = 0;
+            w->bandwidth_frequency = 0;
+            w->fbsp_order = 0;
             break;
         case MORL:
             w = blank_wavelet(0);
@@ -411,9 +411,9 @@ Wavelet* wavelet(WAVELET_NAME name, unsigned int order)
             w->complex_cwt = 0;
             w->lower_bound = -5;
             w->upper_bound = 5;
-            w->fc = 0;
-            w->fb = 0;
-            w->m = 0;
+            w->center_frequency = 0;
+            w->bandwidth_frequency = 0;
+            w->fbsp_order = 0;
             break;
         case CGAU:
             if (order > 8)
@@ -435,9 +435,9 @@ Wavelet* wavelet(WAVELET_NAME name, unsigned int order)
             w->complex_cwt = 1;
             w->lower_bound = -5;
             w->upper_bound = 5;
-            w->fc = 0;
-            w->fb = 0;
-            w->m = 0;
+            w->center_frequency = 0;
+            w->bandwidth_frequency = 0;
+            w->fbsp_order = 0;
             break;
         case SHAN:
 
@@ -458,9 +458,9 @@ Wavelet* wavelet(WAVELET_NAME name, unsigned int order)
             w->complex_cwt = 1;
             w->lower_bound = -5;
             w->upper_bound = 5;
-            w->fc = 1;
-            w->fb = 0.5;
-            w->m = 0;
+            w->center_frequency = 1;
+            w->bandwidth_frequency = 0.5;
+            w->fbsp_order = 0;
             break;
         case FBSP:
 
@@ -481,9 +481,9 @@ Wavelet* wavelet(WAVELET_NAME name, unsigned int order)
             w->complex_cwt = 1;
             w->lower_bound = -5;
             w->upper_bound = 5;
-            w->fc = 0.5;
-            w->fb = 1;
-            w->m = 2;
+            w->center_frequency = 0.5;
+            w->bandwidth_frequency = 1;
+            w->fbsp_order = 2;
             break;
         case CMOR:
 
@@ -504,9 +504,9 @@ Wavelet* wavelet(WAVELET_NAME name, unsigned int order)
             w->complex_cwt = 1;
             w->lower_bound = -5;
             w->upper_bound = 5;
-            w->fc = 0.5;
-            w->fb = 1;
-            w->m = 0;
+            w->center_frequency = 0.5;
+            w->bandwidth_frequency = 1;
+            w->fbsp_order = 0;
             break;
         default:
             return NULL;
@@ -547,6 +547,18 @@ Wavelet* blank_wavelet(size_t filters_length)
             free_wavelet(w);
             return NULL;
         }
+    }
+    else
+    {
+        w->dec_lo_float = NULL;
+        w->dec_hi_float = NULL;
+        w->rec_lo_float = NULL;
+        w->rec_hi_float = NULL;
+    
+        w->dec_lo_double = NULL;
+        w->dec_hi_double = NULL;
+        w->rec_lo_double = NULL;
+        w->rec_hi_double = NULL;
     }
     /* set properties to "blank" values */
     w->vanishing_moments_psi = 0;
@@ -592,6 +604,14 @@ Wavelet* copy_wavelet(Wavelet* base)
            return NULL;
         }
     }
+    else
+    {
+        w->dec_lo_float = NULL;
+        w->dec_hi_float = NULL;
+    
+        w->dec_lo_double = NULL;
+        w->dec_hi_double = NULL;
+    }
     if (base->rec_len > 0)
     {
         w->rec_lo_float = wtmalloc(w->rec_len * sizeof(float));
@@ -603,6 +623,14 @@ Wavelet* copy_wavelet(Wavelet* base)
            free_wavelet(w);
            return NULL;
         }
+    }
+    else
+    {
+        w->rec_lo_float = NULL;
+        w->rec_hi_float = NULL;
+    
+        w->rec_lo_double = NULL;
+        w->rec_hi_double = NULL;
     }
 
 

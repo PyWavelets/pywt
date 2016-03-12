@@ -16,7 +16,7 @@ def cwt(data, scales, wavelet):
     >>> import matplotlib.pyplot as plt
     >>> x = np.arange(512)
     >>> y = np.sin(2*np.pi*x/32)
-    >>> coef=pywt.cwt(y,np.arange(1,129),'gauss1')
+    >>> coef=pywt.cwt(y,np.arange(1,129),'gaus1')
     >>> plt.matshow(coef.T)
     """
 

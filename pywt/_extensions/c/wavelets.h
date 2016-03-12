@@ -65,9 +65,9 @@ typedef struct {
     float upper_bound;
     
     /* Parameters for shan, fbsp, cmor*/
-    float fc;
-    float fb;
-    unsigned int m;
+    float center_frequency;
+    float bandwidth_frequency;
+    unsigned int fbsp_order;
     
 
     char* family_name;
