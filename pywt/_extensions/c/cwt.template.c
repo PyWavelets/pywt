@@ -178,8 +178,8 @@ void CAT(TYPE, _cgau2)(const TYPE  input, TYPE * const restrict output_r, TYPE *
 void CAT(TYPE, _cgau3)(const TYPE  input, TYPE * const restrict output_r, TYPE * const restrict output_i)
 {
 
-        *output_r = (-8*(input*input*input)*cos(input)-12*(input*input)*sin(input)+18*input*cos(input)+7*sin(input))*exp(-(input))/sqrt(76*sqrt(M_PI/2));
-        *output_i = (8*(input*input*input)*sin(input)-12*(input*input)*cos(input)-18*input*sin(input)+7*cos(input))*exp(-(input))/sqrt(76*sqrt(M_PI/2));
+        *output_r = (-8*(input*input*input)*cos(input)-12*(input*input)*sin(input)+18*input*cos(input)+7*sin(input))*exp(-(input*input))/sqrt(76*sqrt(M_PI/2));
+        *output_i = (8*(input*input*input)*sin(input)-12*(input*input)*cos(input)-18*input*sin(input)+7*cos(input))*exp(-(input*input))/sqrt(76*sqrt(M_PI/2));
 }
 
 void CAT(TYPE, _cgau4)(const TYPE  input, TYPE * const restrict output_r, TYPE * const restrict output_i)
