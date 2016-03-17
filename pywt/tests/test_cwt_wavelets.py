@@ -64,7 +64,7 @@ def sinc2(x):
 
 def ref_shan(LB,UB,N,Fb,Fc):
     x = np.linspace(LB,UB,N)
-    psi = (Fb**0.5)*(sinc2(Fb*x)*np.exp(2j*np.pi*Fc*x))
+    psi = np.sqrt(Fb)*(sinc2(Fb*x)*np.exp(2j*np.pi*Fc*x))
     return (psi, x)
 
 
@@ -113,8 +113,7 @@ def test_cgau():
     for num in np.arange(1,9):
         [psi,x] = ref_cgau(LB,UB,N,num)
         w = pywt.Wavelet("cgau"+str(num))
-        PSI_r, PSI_i, X = w.wavefun(length=N)
-        PSI = PSI_r + 1j*PSI_i
+        PSI, X = w.wavefun(length=N)
 
         assert_allclose(np.real(PSI), np.real(psi))
         assert_allclose(np.imag(PSI), np.imag(psi))
@@ -134,8 +133,7 @@ def test_shan():
     w.bandwidth_frequency = Fb
     w.upper_bound = UB
     w.lower_bound = LB
-    PSI_r, PSI_i, X = w.wavefun(length=N)
-    PSI = PSI_r + 1j*PSI_i
+    PSI, X = w.wavefun(length=N)
 
     assert_allclose(np.real(PSI), np.real(psi))
     assert_allclose(np.imag(PSI), np.imag(psi))
@@ -153,8 +151,7 @@ def test_shan():
     w.bandwidth_frequency = Fb
     w.upper_bound = UB
     w.lower_bound = LB
-    PSI_r, PSI_i, X = w.wavefun(length=N)
-    PSI = PSI_r + 1j*PSI_i
+    PSI, X = w.wavefun(length=N)
 
     assert_allclose(np.real(PSI), np.real(psi))
     assert_allclose(np.imag(PSI), np.imag(psi))
@@ -174,8 +171,7 @@ def test_cmor():
     w.bandwidth_frequency = Fb
     w.upper_bound = UB
     w.lower_bound = LB
-    PSI_r, PSI_i, X = w.wavefun(length=N)
-    PSI = PSI_r + 1j*PSI_i
+    PSI, X = w.wavefun(length=N)
 
     assert_allclose(np.real(PSI), np.real(psi))
     assert_allclose(np.imag(PSI), np.imag(psi))
@@ -193,8 +189,7 @@ def test_cmor():
     w.bandwidth_frequency = Fb
     w.upper_bound = UB
     w.lower_bound = LB
-    PSI_r, PSI_i, X = w.wavefun(length=N)
-    PSI = PSI_r + 1j*PSI_i
+    PSI, X = w.wavefun(length=N)
 
     assert_allclose(np.real(PSI), np.real(psi))
     assert_allclose(np.imag(PSI), np.imag(psi))
@@ -216,8 +211,7 @@ def test_fbsp():
     w.fbsp_order = M
     w.upper_bound = UB
     w.lower_bound = LB
-    PSI_r, PSI_i, X = w.wavefun(length=N)
-    PSI = PSI_r + 1j*PSI_i
+    PSI, X = w.wavefun(length=N)
 
     assert_allclose(np.real(PSI), np.real(psi))
     assert_allclose(np.imag(PSI), np.imag(psi))
@@ -237,8 +231,7 @@ def test_fbsp():
     w.fbsp_order = M
     w.upper_bound = UB
     w.lower_bound = LB
-    PSI_r, PSI_i, X = w.wavefun(length=N)
-    PSI = PSI_r + 1j*PSI_i
+    PSI, X = w.wavefun(length=N)
 
     assert_allclose(np.real(PSI), np.real(psi), atol=1e-15)
     assert_allclose(np.imag(PSI), np.imag(psi), atol=1e-15)
@@ -258,8 +251,7 @@ def test_fbsp():
     w.fbsp_order = M
     w.upper_bound = UB
     w.lower_bound = LB
-    PSI_r, PSI_i, X = w.wavefun(length=N)
-    PSI = PSI_r + 1j*PSI_i
+    PSI, X = w.wavefun(length=N)
     # TODO: investigate why atol = 1e-5 is necessary
     assert_allclose(np.real(PSI), np.real(psi), atol=1e-5)
     assert_allclose(np.imag(PSI), np.imag(psi), atol=1e-5)
