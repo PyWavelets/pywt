@@ -55,6 +55,43 @@ def ref_cgau(LB,UB,N,num):
     return (psi, X)
 
 
+def sinc2(x):
+    y = np.ones_like(x)
+    k = np.where(x)[0]
+    y[k] = np.sin(np.pi*x[k])/(np.pi*x[k])
+    return y
+
+
+def ref_shan(LB,UB,N,Fb,Fc):
+    x = np.linspace(LB,UB,N)
+    psi = (Fb**0.5)*(sinc2(Fb*x)*np.exp(2j*np.pi*Fc*x))
+    return (psi, x)
+
+
+def ref_fbsp(LB,UB,N,m,Fb,Fc):
+    x = np.linspace(LB,UB,N)
+    psi = np.sqrt(Fb)*((sinc2(Fb*x/m)**m)*np.exp(2j*np.pi*Fc*x))
+    return (psi, x)
+
+
+def ref_cmor(LB,UB,N,Fb,Fc):
+    x = np.linspace(LB,UB,N)
+    psi = ((np.pi*Fb)**(-0.5))*np.exp(2j*np.pi*Fc*x)*np.exp(-(x**2)/Fb)
+    return (psi, x)
+
+
+def ref_morl(LB,UB,N):
+    x = np.linspace(LB,UB,N)
+    psi = np.exp(-(x**2)/2) * np.cos(5*x)
+    return (psi, x)
+
+
+def ref_mexh(LB,UB,N):
+    x = np.linspace(LB,UB,N)
+    psi = (2/(np.sqrt(3)*np.pi**0.25)) * np.exp(-(x**2)/2) * (1-(x**2))
+    return (psi, x)
+
+
 def test_gaus():
     LB = -5
     UB = 5
@@ -82,6 +119,197 @@ def test_cgau():
         assert_allclose(np.real(PSI), np.real(psi))
         assert_allclose(np.imag(PSI), np.imag(psi))
         assert_allclose(X, x)
+
+
+def test_shan():
+    LB = -20
+    UB = 20
+    N = 1000
+    Fb = 1
+    Fc = 1.5
+
+    [psi,x] = ref_shan(LB,UB,N,Fb,Fc)
+    w = pywt.Wavelet("shan")
+    w.center_frequency = Fc
+    w.bandwidth_frequency = Fb
+    w.upper_bound = UB
+    w.lower_bound = LB
+    PSI_r, PSI_i, X = w.wavefun(length=N)
+    PSI = PSI_r + 1j*PSI_i
+
+    assert_allclose(np.real(PSI), np.real(psi))
+    assert_allclose(np.imag(PSI), np.imag(psi))
+    assert_allclose(X, x)
+
+    LB = -20
+    UB = 20
+    N = 1000
+    Fb = 1.5
+    Fc = 1
+
+    [psi,x] = ref_shan(LB,UB,N,Fb,Fc)
+    w = pywt.Wavelet("shan")
+    w.center_frequency = Fc
+    w.bandwidth_frequency = Fb
+    w.upper_bound = UB
+    w.lower_bound = LB
+    PSI_r, PSI_i, X = w.wavefun(length=N)
+    PSI = PSI_r + 1j*PSI_i
+
+    assert_allclose(np.real(PSI), np.real(psi))
+    assert_allclose(np.imag(PSI), np.imag(psi))
+    assert_allclose(X, x)
+
+
+def test_cmor():
+    LB = -20
+    UB = 20
+    N = 1000
+    Fb = 1
+    Fc = 1.5
+
+    [psi,x] = ref_cmor(LB,UB,N,Fb,Fc)
+    w = pywt.Wavelet("cmor")
+    w.center_frequency = Fc
+    w.bandwidth_frequency = Fb
+    w.upper_bound = UB
+    w.lower_bound = LB
+    PSI_r, PSI_i, X = w.wavefun(length=N)
+    PSI = PSI_r + 1j*PSI_i
+
+    assert_allclose(np.real(PSI), np.real(psi))
+    assert_allclose(np.imag(PSI), np.imag(psi))
+    assert_allclose(X, x)
+
+    LB = -20
+    UB = 20
+    N = 1000
+    Fb = 1.5
+    Fc = 1
+
+    [psi,x] = ref_cmor(LB,UB,N,Fb,Fc)
+    w = pywt.Wavelet("cmor")
+    w.center_frequency = Fc
+    w.bandwidth_frequency = Fb
+    w.upper_bound = UB
+    w.lower_bound = LB
+    PSI_r, PSI_i, X = w.wavefun(length=N)
+    PSI = PSI_r + 1j*PSI_i
+
+    assert_allclose(np.real(PSI), np.real(psi))
+    assert_allclose(np.imag(PSI), np.imag(psi))
+    assert_allclose(X, x)
+
+
+def test_fbsp():
+    LB = -20
+    UB = 20
+    N = 1000
+    M = 2
+    Fb = 1
+    Fc = 1.5
+
+    [psi,x] = ref_fbsp(LB,UB,N,M,Fb,Fc)
+    w = pywt.Wavelet("fbsp")
+    w.center_frequency = Fc
+    w.bandwidth_frequency = Fb
+    w.fbsp_order = M
+    w.upper_bound = UB
+    w.lower_bound = LB
+    PSI_r, PSI_i, X = w.wavefun(length=N)
+    PSI = PSI_r + 1j*PSI_i
+
+    assert_allclose(np.real(PSI), np.real(psi))
+    assert_allclose(np.imag(PSI), np.imag(psi))
+    assert_allclose(X, x)
+
+    LB = -20
+    UB = 20
+    N = 1000
+    M = 2
+    Fb = 1.5
+    Fc = 1
+
+    [psi,x] = ref_fbsp(LB,UB,N,M,Fb,Fc)
+    w = pywt.Wavelet("fbsp")
+    w.center_frequency = Fc
+    w.bandwidth_frequency = Fb
+    w.fbsp_order = M
+    w.upper_bound = UB
+    w.lower_bound = LB
+    PSI_r, PSI_i, X = w.wavefun(length=N)
+    PSI = PSI_r + 1j*PSI_i
+
+    assert_allclose(np.real(PSI), np.real(psi), atol=1e-15)
+    assert_allclose(np.imag(PSI), np.imag(psi), atol=1e-15)
+    assert_allclose(X, x)
+
+    LB = -20
+    UB = 20
+    N = 1000
+    M = 3
+    Fb = 1.5
+    Fc = 1.2
+
+    [psi,x] = ref_fbsp(LB,UB,N,M,Fb,Fc)
+    w = pywt.Wavelet("fbsp")
+    w.center_frequency = Fc
+    w.bandwidth_frequency = Fb
+    w.fbsp_order = M
+    w.upper_bound = UB
+    w.lower_bound = LB
+    PSI_r, PSI_i, X = w.wavefun(length=N)
+    PSI = PSI_r + 1j*PSI_i
+    # TODO: investigate why atol = 1e-5 is necessary
+    assert_allclose(np.real(PSI), np.real(psi), atol=1e-5)
+    assert_allclose(np.imag(PSI), np.imag(psi), atol=1e-5)
+    assert_allclose(X, x)
+
+
+def test_morl():
+    LB = -5
+    UB = 5
+    N = 1000
+
+    [psi,x] = ref_morl(LB,UB,N)
+    w = pywt.Wavelet("morl")
+    w.upper_bound = UB
+    w.lower_bound = LB
+    PSI, X = w.wavefun(length=N)
+
+    assert_allclose(np.real(PSI), np.real(psi))
+    assert_allclose(np.imag(PSI), np.imag(psi))
+    assert_allclose(X, x)
+
+
+def test_mexh():
+    LB = -5
+    UB = 5
+    N = 1000
+
+    [psi,x] = ref_mexh(LB,UB,N)
+    w = pywt.Wavelet("mexh")
+    w.upper_bound = UB
+    w.lower_bound = LB
+    PSI, X = w.wavefun(length=N)
+
+    assert_allclose(np.real(PSI), np.real(psi))
+    assert_allclose(np.imag(PSI), np.imag(psi))
+    assert_allclose(X, x)
+
+    LB = -5
+    UB = 5
+    N = 1001
+
+    [psi,x] = ref_mexh(LB,UB,N)
+    w = pywt.Wavelet("mexh")
+    w.upper_bound = UB
+    w.lower_bound = LB
+    PSI, X = w.wavefun(length=N)
+
+    assert_allclose(np.real(PSI), np.real(psi))
+    assert_allclose(np.imag(PSI), np.imag(psi))
+    assert_allclose(X, x)
 
 
 if __name__ == '__main__':

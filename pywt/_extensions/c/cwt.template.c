@@ -235,12 +235,15 @@ const unsigned int M, const TYPE  FB, const TYPE  FC)
     size_t i = 0;
     for (i = 0; i < N; i++)
     {
-        output_r[i] =cos(2*M_PI*FC*input[i])*sqrt(FB);
-        output_i[i] = sin(2*M_PI*FC*input[i])*sqrt(FB);
         if (input[i] != 0)
         {
-            output_r[i] *= CAT(TYPE, _powof)(sin(input[i]*FB*M_PI/(double)M)/(input[i]*FB*M_PI/(double)M),M);
-            output_i[i] *= CAT(TYPE, _powof)(sin(input[i]*FB*M_PI/(double)M)/(input[i]*FB*M_PI/(double)M),M);
+            output_r[i] = cos(2*M_PI*FC*input[i])*sqrt(FB)*CAT(TYPE, _powof)(sin(M_PI*input[i]*FB/(TYPE)M)/(M_PI*input[i]*FB/(TYPE)M),(TYPE)M);
+            output_i[i] = sin(2*M_PI*FC*input[i])*sqrt(FB)*CAT(TYPE, _powof)(sin(M_PI*input[i]*FB/(TYPE)M)/(M_PI*input[i]*FB/(TYPE)M),(TYPE)M);
+        }
+        else
+        {
+            output_r[i] = cos(2*M_PI*FC*input[i])*sqrt(FB);
+            output_i[i] = sin(2*M_PI*FC*input[i])*sqrt(FB);
         }
     }
 }
