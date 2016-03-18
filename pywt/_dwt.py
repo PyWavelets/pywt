@@ -230,7 +230,6 @@ def idwt(cA, cD, wavelet, mode='symmetric', axis=-1):
 
     if ndim == 1:
         rec = idwt_single(cA, cD, wavelet, mode)
-        rec = np.asarray(rec, dt)
     else:
         rec = idwt_axis(cA, cD, wavelet, mode, axis=axis)
 
