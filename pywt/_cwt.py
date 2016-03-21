@@ -38,14 +38,11 @@ def cwt(data, scales, wavelet):
                 psi_r, psi_i, x = wavelet.wavefun(length=plen.astype(np.int))
                 coef_r = cwt_conv_real(data,psi_r,data.size)
                 coef_i = cwt_conv_real(data,psi_i,data.size)
-                coef_r = np.asarray(coef_r, dt)
-                coef_i = np.asarray(coef_i, dt)
                 out
                 out[:,i] = coef_r.astype(np.complex)+1j*coef_i.astype(np.complex)
             else:
                 psi, x = wavelet.wavefun(length=plen.astype(np.int))
                 coef = cwt_conv_real(data,psi,data.size)
-                coef = np.asarray(coef, dt)
                 out[:,i] = coef
         return out
     else:

@@ -9,8 +9,7 @@ import numpy as np
 
 
 cpdef cwt_psi_single(data_t[::1] data, Wavelet wavelet, size_t output_len):
-    cdef data_t[::1] psi, psi_r, psi_i
-
+    cdef np.ndarray psi, psi_r, psi_i
     if output_len < 1:
         raise RuntimeError("Invalid output length.")
 
@@ -20,75 +19,75 @@ cpdef cwt_psi_single(data_t[::1] data, Wavelet wavelet, size_t output_len):
     if data_t is np.float64_t:
         if wavelet.short_family_name == "gaus":
             psi = np.zeros(output_len, np.float64)
-            c_cwt.double_gaus(&data[0], &psi[0], data.size, wavelet.number)
+            c_cwt.double_gaus(&data[0], <double *>psi.data, data.size, wavelet.number)
             return psi
         elif wavelet.short_family_name == "mexh":
             psi = np.zeros(output_len, np.float64)
-            c_cwt.double_mexh(&data[0], &psi[0], data.size)
+            c_cwt.double_mexh(&data[0], <double *>psi.data, data.size)
             return psi
         elif wavelet.short_family_name == "morl":
             psi = np.zeros(output_len, np.float64)
-            c_cwt.double_morl(&data[0], &psi[0], data.size)
+            c_cwt.double_morl(&data[0], <double *>psi.data, data.size)
             return psi
         elif wavelet.short_family_name == "cgau":
             psi_r = np.zeros(output_len, np.float64)
             psi_i = np.zeros(output_len, np.float64)
-            c_cwt.double_cgau(&data[0], &psi_r[0], &psi_i[0], data.size, wavelet.number)
+            c_cwt.double_cgau(&data[0], <double *>psi_r.data, <double *>psi_i.data, data.size, wavelet.number)
             return (psi_r, psi_i)
         elif wavelet.short_family_name == "shan":
             psi_r = np.zeros(output_len, np.float64)
             psi_i = np.zeros(output_len, np.float64)
-            c_cwt.double_shan(&data[0], &psi_r[0], &psi_i[0], data.size, wavelet.bandwidth_frequency, wavelet.center_frequency)
+            c_cwt.double_shan(&data[0], <double *>psi_r.data, <double *>psi_i.data, data.size, wavelet.bandwidth_frequency, wavelet.center_frequency)
             return (psi_r, psi_i)
         elif wavelet.short_family_name == "fbsp":
             psi_r = np.zeros(output_len, np.float64)
             psi_i = np.zeros(output_len, np.float64)
-            c_cwt.double_fbsp(&data[0], &psi_r[0], &psi_i[0], data.size, wavelet.fbsp_order, wavelet.bandwidth_frequency, wavelet.center_frequency)
+            c_cwt.double_fbsp(&data[0], <double *>psi_r.data, <double *>psi_i.data, data.size, wavelet.fbsp_order, wavelet.bandwidth_frequency, wavelet.center_frequency)
             return (psi_r, psi_i)
         elif wavelet.short_family_name == "cmor":
             psi_r = np.zeros(output_len, np.float64)
             psi_i = np.zeros(output_len, np.float64)
-            c_cwt.double_cmor(&data[0], &psi_r[0], &psi_i[0], data.size, wavelet.bandwidth_frequency, wavelet.center_frequency)
+            c_cwt.double_cmor(&data[0], <double *>psi_r.data, <double *>psi_i.data, data.size, wavelet.bandwidth_frequency, wavelet.center_frequency)
             return (psi_r, psi_i)
             
     elif data_t is np.float32_t:
         if wavelet.short_family_name == "gaus":
             psi = np.zeros(output_len, np.float32)
-            c_cwt.float_gaus(&data[0], &psi[0], data.size, wavelet.number)
+            c_cwt.float_gaus(&data[0], <float *>psi.data, data.size, wavelet.number)
             return psi
         elif wavelet.short_family_name == "mexh":
             psi = np.zeros(output_len, np.float32)
-            c_cwt.float_mexh(&data[0], &psi[0], data.size)
+            c_cwt.float_mexh(&data[0], <float *>psi.data, data.size)
             return psi
         elif wavelet.short_family_name == "morl":
             psi = np.zeros(output_len, np.float32)
-            c_cwt.float_morl(&data[0], &psi[0], data.size)
+            c_cwt.float_morl(&data[0], <float *>psi.data, data.size)
             return psi
         elif wavelet.short_family_name == "cgau":
             psi_r = np.zeros(output_len, np.float32)
             psi_i = np.zeros(output_len, np.float32)
-            c_cwt.float_cgau(&data[0], &psi_r[0], &psi_i[0], data.size, wavelet.number)
+            c_cwt.float_cgau(&data[0], <float *>psi_r.data, <float *>psi_i.data, data.size, wavelet.number)
             return (psi_r, psi_i)
         elif wavelet.short_family_name == "shan":
             psi_r = np.zeros(output_len, np.float32)
             psi_i = np.zeros(output_len, np.float32)
-            c_cwt.float_shan(&data[0], &psi_r[0], &psi_i[0], data.size, wavelet.bandwidth_frequency, wavelet.center_frequency)
+            c_cwt.float_shan(&data[0], <float *>psi_r.data, <float *>psi_i.data, data.size, wavelet.bandwidth_frequency, wavelet.center_frequency)
             return (psi_r, psi_i)
         elif wavelet.short_family_name == "fbsp":
             psi_r = np.zeros(output_len, np.float32)
             psi_i = np.zeros(output_len, np.float32)
-            c_cwt.float_fbsp(&data[0], &psi_r[0], &psi_i[0], data.size, wavelet.fbsp_order, wavelet.bandwidth_frequency, wavelet.center_frequency)
+            c_cwt.float_fbsp(&data[0], <float *>psi_r.data, <float *>psi_i.data, data.size, wavelet.fbsp_order, wavelet.bandwidth_frequency, wavelet.center_frequency)
             return (psi_r, psi_i)
         elif wavelet.short_family_name == "cmor":
             psi_r = np.zeros(output_len, np.float32)
             psi_i = np.zeros(output_len, np.float32)
-            c_cwt.float_cmor(&data[0], &psi_r[0], &psi_i[0], data.size, wavelet.bandwidth_frequency, wavelet.center_frequency)
+            c_cwt.float_cmor(&data[0], <float *>psi_r.data, <float *>psi_i.data, data.size, wavelet.bandwidth_frequency, wavelet.center_frequency)
             return (psi_r, psi_i)
 
 
-cpdef cwt_conv(data_t[::1] data, data_t[::1] in_filter, size_t output_len):
+cpdef cwt_conv(data_t[::1] data, np.ndarray in_filter, size_t output_len):
     cdef size_t N, F, O
-    cdef data_t[::1] output, pBuf
+    cdef np.ndarray output, pBuf
     cdef size_t i, j
     N = data.size
     F = in_filter.size
@@ -120,9 +119,9 @@ cpdef cwt_conv(data_t[::1] data, data_t[::1] in_filter, size_t output_len):
                 output[i] += in_filter[j] * pBuf[i+F-j-1]
         return output
 
-cpdef cwt_conv_real(data_t[::1] data, data_t[::1]  psi, size_t output_len):
+cpdef cwt_conv_real(data_t[::1] data, np.ndarray  psi, size_t output_len):
     cdef size_t N, F, O, buf_len
-    cdef data_t[::1] output, buf, fTemp
+    cdef np.ndarray output, buf, fTemp
     cdef size_t i, j
     N = data.size
     F = psi.size
