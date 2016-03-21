@@ -135,9 +135,9 @@ def test_shan():
     w.lower_bound = LB
     PSI, X = w.wavefun(length=N)
 
-    assert_allclose(np.real(PSI), np.real(psi))
-    assert_allclose(np.imag(PSI), np.imag(psi))
-    assert_allclose(X, x)
+    assert_allclose(np.real(PSI), np.real(psi), atol=1e-15)
+    assert_allclose(np.imag(PSI), np.imag(psi), atol=1e-15)
+    assert_allclose(X, x, atol=1e-15)
 
     LB = -20
     UB = 20
@@ -153,9 +153,9 @@ def test_shan():
     w.lower_bound = LB
     PSI, X = w.wavefun(length=N)
 
-    assert_allclose(np.real(PSI), np.real(psi))
-    assert_allclose(np.imag(PSI), np.imag(psi))
-    assert_allclose(X, x)
+    assert_allclose(np.real(PSI), np.real(psi), atol=1e-15)
+    assert_allclose(np.imag(PSI), np.imag(psi), atol=1e-15)
+    assert_allclose(X, x, atol=1e-15)
 
 
 def test_cmor():
@@ -173,9 +173,9 @@ def test_cmor():
     w.lower_bound = LB
     PSI, X = w.wavefun(length=N)
 
-    assert_allclose(np.real(PSI), np.real(psi))
-    assert_allclose(np.imag(PSI), np.imag(psi))
-    assert_allclose(X, x)
+    assert_allclose(np.real(PSI), np.real(psi), atol=1e-15)
+    assert_allclose(np.imag(PSI), np.imag(psi), atol=1e-15)
+    assert_allclose(X, x, atol=1e-15)
 
     LB = -20
     UB = 20
@@ -191,9 +191,9 @@ def test_cmor():
     w.lower_bound = LB
     PSI, X = w.wavefun(length=N)
 
-    assert_allclose(np.real(PSI), np.real(psi))
-    assert_allclose(np.imag(PSI), np.imag(psi))
-    assert_allclose(X, x)
+    assert_allclose(np.real(PSI), np.real(psi), atol=1e-15)
+    assert_allclose(np.imag(PSI), np.imag(psi), atol=1e-15)
+    assert_allclose(X, x, atol=1e-15)
 
 
 def test_fbsp():
@@ -213,9 +213,9 @@ def test_fbsp():
     w.lower_bound = LB
     PSI, X = w.wavefun(length=N)
 
-    assert_allclose(np.real(PSI), np.real(psi))
-    assert_allclose(np.imag(PSI), np.imag(psi))
-    assert_allclose(X, x)
+    assert_allclose(np.real(PSI), np.real(psi), atol=1e-15)
+    assert_allclose(np.imag(PSI), np.imag(psi), atol=1e-15)
+    assert_allclose(X, x, atol=1e-15)
 
     LB = -20
     UB = 20
@@ -235,7 +235,7 @@ def test_fbsp():
 
     assert_allclose(np.real(PSI), np.real(psi), atol=1e-15)
     assert_allclose(np.imag(PSI), np.imag(psi), atol=1e-15)
-    assert_allclose(X, x)
+    assert_allclose(X, x, atol=1e-15)
 
     LB = -20
     UB = 20
@@ -255,7 +255,7 @@ def test_fbsp():
     # TODO: investigate why atol = 1e-5 is necessary
     assert_allclose(np.real(PSI), np.real(psi), atol=1e-5)
     assert_allclose(np.imag(PSI), np.imag(psi), atol=1e-5)
-    assert_allclose(X, x)
+    assert_allclose(X, x, atol=1e-15)
 
 
 def test_morl():
