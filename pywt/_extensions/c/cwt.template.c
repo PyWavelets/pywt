@@ -36,75 +36,34 @@ void CAT(TYPE, _gaus)(const TYPE * const restrict input,
     {
            switch (number) {
                case 1:
-                    CAT(TYPE, _gaus1)(input[i], &output[i]);
+                    output[i] = -2*input[i]*exp(-(input[i]*input[i]))/sqrt(sqrt(M_PI/2)); 
                     break;
                 case 2:
-                    CAT(TYPE, _gaus2)(input[i], &output[i]);
+                    output[i] = 2*(2*(input[i]*input[i])-1)*exp(-(input[i]*input[i]))/sqrt(3*sqrt(M_PI/2));
                     break;
                 case 3:
-                    CAT(TYPE, _gaus3)(input[i], &output[i]);
+                    output[i] = -4*(2*(input[i]*input[i]*input[i])-3*input[i])*exp(-(input[i]*input[i]))/sqrt(15*sqrt(M_PI/2)); 
                     break;
                 case 4:
-                    CAT(TYPE, _gaus4)(input[i], &output[i]);
+                    output[i] = 4*(-12*(input[i]*input[i])+4*(input[i]*input[i]*input[i]*input[i])+3)*exp(-(input[i]*input[i]))/sqrt(105*sqrt(M_PI/2));  
                     break;
                 case 5:
-                    CAT(TYPE, _gaus5)(input[i], &output[i]);
+                    output[i] =  8*(-4*(input[i]*input[i]*input[i]*input[i]*input[i])+20*(input[i]*input[i]*input[i])-15*input[i])*exp(-(input[i]*input[i]))/sqrt(105*9*sqrt(M_PI/2));
                     break;
                 case 6:
-                    CAT(TYPE, _gaus6)(input[i], &output[i]);
+                    output[i] = 8*(8*(input[i]*input[i]*input[i]*input[i]*input[i]*input[i])-60*(input[i]*input[i]*input[i]*input[i])+90*(input[i]*input[i])-15)*exp(-(input[i]*input[i]))/sqrt(105*9*11*sqrt(M_PI/2));
                     break;
                 case 7:
-                    CAT(TYPE, _gaus7)(input[i], &output[i]);
+                    output[i] =  16*(-8*(input[i]*input[i]*input[i]*input[i]*input[i]*input[i]*input[i])+84*(input[i]*input[i]*input[i]*input[i]*input[i])-210*(input[i]*input[i]*input[i])+105*(input[i]))*exp(-(input[i]*input[i]))/sqrt(105*9*11*13*sqrt(M_PI/2));  
                     break;
                 case 8:
-                    CAT(TYPE, _gaus8)(input[i], &output[i]);
+                    output[i] =  16*(16*(input[i]*input[i]*input[i]*input[i]*input[i]*input[i]*input[i]*input[i])-224*(input[i]*input[i]*input[i]*input[i]*input[i]*input[i])+840*(input[i]*input[i]*input[i]*input[i])-840*(input[i]*input[i])+105)*exp(-(input[i]*input[i]))/sqrt(105*9*11*13*15*sqrt(M_PI/2));  
                     break;
           }
     }
 }
 
-void CAT(TYPE, _gaus1)(const TYPE  input, TYPE * const restrict output)
-{
-        *output = -2*input*exp(-(input*input))/sqrt(sqrt(M_PI/2)); 
-}
 
-void CAT(TYPE, _gaus2)(const TYPE input, TYPE * const restrict output)
-{
-        *output = 2*(2*(input*input)-1)*exp(-(input*input))/sqrt(3*sqrt(M_PI/2));
-}
-
-void CAT(TYPE, _gaus3)(const TYPE input, TYPE * const restrict output)
-{
-        *output = -4*(2*(input*input*input)-3*input)*exp(-(input*input))/sqrt(15*sqrt(M_PI/2)); 
-}
-
-void CAT(TYPE, _gaus4)(const TYPE  input, TYPE * const restrict output)
-{
-        *output = 4*(-12*(input*input)+4*(input*input*input*input)+3)*exp(-(input*input))/sqrt(105*sqrt(M_PI/2));  
-}
-
-void CAT(TYPE, _gaus5)(const TYPE input, TYPE * const restrict output)
-{
-        *output = 8*(-4*(input*input*input*input*input)+20*(input*input*input)-15*input)*exp(-(input*input))/sqrt(105*9*sqrt(M_PI/2));
-}
-
-void CAT(TYPE, _gaus6)(const TYPE input, TYPE * const restrict output)
-{
-        *output = 8*(8*(input*input*input*input*input*input)-60*(input*input*input*input)+90*(input*input)-15)*exp(-(input*input))/sqrt(105*9*11*sqrt(M_PI/2));
-}
-
-
-void CAT(TYPE, _gaus7)(const TYPE input, TYPE * const restrict output)
-{
-        *output = 16*(-8*(input*input*input*input*input*input*input)+84*(input*input*input*input*input)-210*(input*input*input)+105*(input))*exp(-(input*input))/sqrt(105*9*11*13*sqrt(M_PI/2));  
-}
-
-
-void CAT(TYPE, _gaus8)(const TYPE  input, TYPE * const restrict output)
-{
-
-        *output = 16*(16*(input*input*input*input*input*input*input*input)-224*(input*input*input*input*input*input)+840*(input*input*input*input)-840*(input*input)+105)*exp(-(input*input))/sqrt(105*9*11*13*15*sqrt(M_PI/2));  
-}
 
 void CAT(TYPE, _mexh)(const TYPE * const restrict input, TYPE * const restrict output, const size_t N)
 {
@@ -133,83 +92,45 @@ void CAT(TYPE, _cgau)(const TYPE * const restrict input,
     {
         switch (number) {
             case 1:
-                 CAT(TYPE, _cgau1)(input[i], &output_r[i], &output_i[i]);
+                 output_r[i] = (-2*input[i]*cos(input[i])-sin(input[i]))*exp(-(input[i]*input[i]))/sqrt(2*sqrt(M_PI/2));
+                 output_i[i] = (2*input[i]*sin(input[i])-cos(input[i]))*exp(-(input[i]*input[i]))/sqrt(2*sqrt(M_PI/2));
                  break;
              case 2:
-                 CAT(TYPE, _cgau2)(input[i], &output_r[i], &output_i[i]);
+                 output_r[i] = (4*(input[i]*input[i])*cos(input[i])+4*input[i]*sin(input[i])-3*cos(input[i]))*exp(-(input[i]*input[i]))/sqrt(10*sqrt(M_PI/2));
+                output_i[i] = (-4*(input[i]*input[i])*sin(input[i])+4*input[i]*cos(input[i])+3*sin(input[i]))*exp(-(input[i]*input[i]))/sqrt(10*sqrt(M_PI/2));
                  break;
              case 3:
-                 CAT(TYPE, _cgau3)(input[i], &output_r[i], &output_i[i]);
+                 output_r[i] = (-8*(input[i]*input[i]*input[i])*cos(input[i])-12*(input[i]*input[i])*sin(input[i])+18*input[i]*cos(input[i])+7*sin(input[i]))*exp(-(input[i]*input[i]))/sqrt(76*sqrt(M_PI/2));
+                 output_i[i] = (8*(input[i]*input[i]*input[i])*sin(input[i])-12*(input[i]*input[i])*cos(input[i])-18*input[i]*sin(input[i])+7*cos(input[i]))*exp(-(input[i]*input[i]))/sqrt(76*sqrt(M_PI/2));
+
                  break;
              case 4:
-                 CAT(TYPE, _cgau4)(input[i], &output_r[i], &output_i[i]);
+                 output_r[i] =  (16*(input[i]*input[i]*input[i]*input[i])*cos(input[i])+32*(input[i]*input[i]*input[i])*sin(input[i])-72*(input[i]*input[i])*cos(input[i])-56*input[i]*sin(input[i])+25*cos(input[i]))*exp(-(input[i]*input[i]))/sqrt(764*sqrt(M_PI/2));;
+                 output_i[i] = (-16*(input[i]*input[i]*input[i]*input[i])*sin(input[i])+32*(input[i]*input[i]*input[i])*cos(input[i])+72*(input[i]*input[i])*sin(input[i])-56*input[i]*cos(input[i])-25*sin(input[i]))*exp(-(input[i]*input[i]))/sqrt(764*sqrt(M_PI/2));
+
                  break;
              case 5:
-                 CAT(TYPE, _cgau5)(input[i], &output_r[i], &output_i[i]);
+                 output_r[i] = (-32*(input[i]*input[i]*input[i]*input[i]*input[i])*cos(input[i])-80*(input[i]*input[i]*input[i]*input[i])*sin(input[i])+240*(input[i]*input[i]*input[i])*cos(input[i])+280*(input[i]*input[i])*sin(input[i])-250*input[i]*cos(input[i])-81*sin(input[i]))*exp(-(input[i]*input[i]))/sqrt(9496*sqrt(M_PI/2));
+                 output_i[i] = (32*(input[i]*input[i]*input[i]*input[i]*input[i])*sin(input[i])-80*(input[i]*input[i]*input[i]*input[i])*cos(input[i])-240*(input[i]*input[i]*input[i])*sin(input[i])+280*(input[i]*input[i])*cos(input[i])+250*input[i]*sin(input[i])-81*cos(input[i]))*exp(-(input[i]*input[i]))/sqrt(9496*sqrt(M_PI/2));
+
                  break;
              case 6:
-                 CAT(TYPE, _cgau6)(input[i], &output_r[i], &output_i[i]);
+                output_r[i] = (64*(input[i]*input[i]*input[i]*input[i]*input[i]*input[i])*cos(input[i])+192*(input[i]*input[i]*input[i]*input[i]*input[i])*sin(input[i])-720*(input[i]*input[i]*input[i]*input[i])*cos(input[i])-1120*(input[i]*input[i]*input[i])*sin(input[i])+1500*(input[i]*input[i])*cos(input[i])+972*input[i]*sin(input[i])-331*cos(input[i]))*exp(-(input[i]*input[i]))/sqrt(140152*sqrt(M_PI/2));
+                output_i[i] = (-64*(input[i]*input[i]*input[i]*input[i]*input[i]*input[i])*sin(input[i])+192*(input[i]*input[i]*input[i]*input[i]*input[i])*cos(input[i])+720*(input[i]*input[i]*input[i]*input[i])*sin(input[i])-1120*(input[i]*input[i]*input[i])*cos(input[i])-1500*(input[i]*input[i])*sin(input[i])+972*input[i]*cos(input[i])+331*sin(input[i]))*exp(-(input[i]*input[i]))/sqrt(140152*sqrt(M_PI/2));
+
                  break;
              case 7:
-                 CAT(TYPE, _cgau7)(input[i], &output_r[i], &output_i[i]);
+                 output_r[i] = (-128*(input[i]*input[i]*input[i]*input[i]*input[i]*input[i]*input[i])*cos(input[i])-448*(input[i]*input[i]*input[i]*input[i]*input[i]*input[i])*sin(input[i])+2016*(input[i]*input[i]*input[i]*input[i]*input[i])*cos(input[i])+3920*(input[i]*input[i]*input[i]*input[i])*sin(input[i])-7000*(input[i]*input[i]*input[i])*cos(input[i])-6804*(input[i]*input[i])*sin(input[i])+4634*input[i]*cos(input[i])+1303*sin(input[i]))*exp(-(input[i]*input[i]))/sqrt(2390480*sqrt(M_PI/2));
+                 output_i[i] = (128*(input[i]*input[i]*input[i]*input[i]*input[i]*input[i]*input[i])*sin(input[i])-448*(input[i]*input[i]*input[i]*input[i]*input[i]*input[i])*cos(input[i])-2016*(input[i]*input[i]*input[i]*input[i]*input[i])*sin(input[i])+3920*(input[i]*input[i]*input[i]*input[i])*cos(input[i])+7000*(input[i]*input[i]*input[i])*sin(input[i])-6804*(input[i]*input[i])*cos(input[i])-4634*input[i]*sin(input[i])+1303*cos(input[i]))*exp(-(input[i]*input[i]))/sqrt(2390480*sqrt(M_PI/2));
+
                  break;
              case 8:
-                 CAT(TYPE, _cgau8)(input[i], &output_r[i], &output_i[i]);
+                 output_r[i] = (256*(input[i]*input[i]*input[i]*input[i]*input[i]*input[i]*input[i]*input[i])*cos(input[i])+1024*(input[i]*input[i]*input[i]*input[i]*input[i]*input[i]*input[i])*sin(input[i])-5376*(input[i]*input[i]*input[i]*input[i]*input[i]*input[i])*cos(input[i])-12544*(input[i]*input[i]*input[i]*input[i]*input[i])*sin(input[i])+28000*(input[i]*input[i]*input[i]*input[i])*cos(input[i])+36288*(input[i]*input[i]*input[i])*sin(input[i])-37072*(input[i]*input[i])*cos(input[i])-20848*input[i]*sin(input[i])+5937*cos(input[i]))*exp(-(input[i]*input[i]))/sqrt(46206736*sqrt(M_PI/2));
+                 output_i[i] = (-256*(input[i]*input[i]*input[i]*input[i]*input[i]*input[i]*input[i]*input[i])*sin(input[i])+1024*(input[i]*input[i]*input[i]*input[i]*input[i]*input[i]*input[i])*cos(input[i])+5376*(input[i]*input[i]*input[i]*input[i]*input[i]*input[i])*sin(input[i])-12544*(input[i]*input[i]*input[i]*input[i]*input[i])*cos(input[i])-28000*(input[i]*input[i]*input[i]*input[i])*sin(input[i])+36288*(input[i]*input[i]*input[i])*cos(input[i])+37072*(input[i]*input[i])*sin(input[i])-20848*input[i]*cos(input[i])-5937*sin(input[i]))*exp(-(input[i]*input[i]))/sqrt(46206736*sqrt(M_PI/2));
+
                  break;
        }
     }
-}
-
-
-void CAT(TYPE, _cgau1)(const TYPE input, TYPE * const restrict output_r, TYPE * const restrict output_i)
-{
-
-    *output_r = (-2*input*cos(input)-sin(input))*exp(-(input*input))/sqrt(2*sqrt(M_PI/2));
-    *output_i = (2*input*sin(input)-cos(input))*exp(-(input*input))/sqrt(2*sqrt(M_PI/2));
-}
-
-void CAT(TYPE, _cgau2)(const TYPE  input, TYPE * const restrict output_r, TYPE * const restrict output_i)
-{
-
-        *output_r = (4*(input*input)*cos(input)+4*input*sin(input)-3*cos(input))*exp(-(input*input))/sqrt(10*sqrt(M_PI/2));
-        *output_i = (-4*(input*input)*sin(input)+4*input*cos(input)+3*sin(input))*exp(-(input*input))/sqrt(10*sqrt(M_PI/2));
-}
-
-void CAT(TYPE, _cgau3)(const TYPE  input, TYPE * const restrict output_r, TYPE * const restrict output_i)
-{
-
-        *output_r = (-8*(input*input*input)*cos(input)-12*(input*input)*sin(input)+18*input*cos(input)+7*sin(input))*exp(-(input*input))/sqrt(76*sqrt(M_PI/2));
-        *output_i = (8*(input*input*input)*sin(input)-12*(input*input)*cos(input)-18*input*sin(input)+7*cos(input))*exp(-(input*input))/sqrt(76*sqrt(M_PI/2));
-}
-
-void CAT(TYPE, _cgau4)(const TYPE  input, TYPE * const restrict output_r, TYPE * const restrict output_i)
-{
-        *output_r =  (16*(input*input*input*input)*cos(input)+32*(input*input*input)*sin(input)-72*(input*input)*cos(input)-56*input*sin(input)+25*cos(input))*exp(-(input*input))/sqrt(764*sqrt(M_PI/2));;
-        *output_i = (-16*(input*input*input*input)*sin(input)+32*(input*input*input)*cos(input)+72*(input*input)*sin(input)-56*input*cos(input)-25*sin(input))*exp(-(input*input))/sqrt(764*sqrt(M_PI/2));
-}
-
-void CAT(TYPE, _cgau5)(const TYPE  input, TYPE * const restrict output_r, TYPE * const restrict output_i)
-{
-        *output_r = (-32*(input*input*input*input*input)*cos(input)-80*(input*input*input*input)*sin(input)+240*(input*input*input)*cos(input)+280*(input*input)*sin(input)-250*input*cos(input)-81*sin(input))*exp(-(input*input))/sqrt(9496*sqrt(M_PI/2));
-        *output_i = (32*(input*input*input*input*input)*sin(input)-80*(input*input*input*input)*cos(input)-240*(input*input*input)*sin(input)+280*(input*input)*cos(input)+250*input*sin(input)-81*cos(input))*exp(-(input*input))/sqrt(9496*sqrt(M_PI/2));
-}
-
-void CAT(TYPE, _cgau6)(const TYPE  input, TYPE * const restrict output_r, TYPE * const restrict output_i)
-{
-        *output_r = (64*(input*input*input*input*input*input)*cos(input)+192*(input*input*input*input*input)*sin(input)-720*(input*input*input*input)*cos(input)-1120*(input*input*input)*sin(input)+1500*(input*input)*cos(input)+972*input*sin(input)-331*cos(input))*exp(-(input*input))/sqrt(140152*sqrt(M_PI/2));
-        *output_i = (-64*(input*input*input*input*input*input)*sin(input)+192*(input*input*input*input*input)*cos(input)+720*(input*input*input*input)*sin(input)-1120*(input*input*input)*cos(input)-1500*(input*input)*sin(input)+972*input*cos(input)+331*sin(input))*exp(-(input*input))/sqrt(140152*sqrt(M_PI/2));
-}
-
-void CAT(TYPE, _cgau7)(const TYPE input, TYPE * const restrict output_r, TYPE * const restrict output_i)
-{
-        *output_r = (-128*(input*input*input*input*input*input*input)*cos(input)-448*(input*input*input*input*input*input)*sin(input)+2016*(input*input*input*input*input)*cos(input)+3920*(input*input*input*input)*sin(input)-7000*(input*input*input)*cos(input)-6804*(input*input)*sin(input)+4634*input*cos(input)+1303*sin(input))*exp(-(input*input))/sqrt(2390480*sqrt(M_PI/2));
-        *output_i = (128*(input*input*input*input*input*input*input)*sin(input)-448*(input*input*input*input*input*input)*cos(input)-2016*(input*input*input*input*input)*sin(input)+3920*(input*input*input*input)*cos(input)+7000*(input*input*input)*sin(input)-6804*(input*input)*cos(input)-4634*input*sin(input)+1303*cos(input))*exp(-(input*input))/sqrt(2390480*sqrt(M_PI/2));
-}
-
-void CAT(TYPE, _cgau8)(const TYPE input, TYPE * const restrict output_r, TYPE * const restrict output_i)
-{
-        *output_r = (256*(input*input*input*input*input*input*input*input)*cos(input)+1024*(input*input*input*input*input*input*input)*sin(input)-5376*(input*input*input*input*input*input)*cos(input)-12544*(input*input*input*input*input)*sin(input)+28000*(input*input*input*input)*cos(input)+36288*(input*input*input)*sin(input)-37072*(input*input)*cos(input)-20848*input*sin(input)+5937*cos(input))*exp(-(input*input))/sqrt(46206736*sqrt(M_PI/2));
-        *output_i = (-256*(input*input*input*input*input*input*input*input)*sin(input)+1024*(input*input*input*input*input*input*input)*cos(input)+5376*(input*input*input*input*input*input)*sin(input)-12544*(input*input*input*input*input)*cos(input)-28000*(input*input*input*input)*sin(input)+36288*(input*input*input)*cos(input)+37072*(input*input)*sin(input)-20848*input*cos(input)-5937*sin(input))*exp(-(input*input))/sqrt(46206736*sqrt(M_PI/2));
 }
 
 

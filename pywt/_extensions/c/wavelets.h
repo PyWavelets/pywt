@@ -15,20 +15,20 @@ typedef enum {
 
 /* Wavelet name */
 typedef enum {
-    HAAR = 0,
-    RBIO = 1,
-    DB = 2,
-    SYM = 3,
-    COIF = 4,
-    BIOR = 5,
-    DMEY = 6,
-    GAUS = 7,
-    MEXH = 8,
-    MORL = 9,
-    CGAU = 10,
-    SHAN = 11,
-    FBSP = 12,
-    CMOR = 13
+    HAAR,
+    RBIO,
+    DB,
+    SYM,
+    COIF,
+    BIOR,
+    DMEY,
+    GAUS,
+    MEXH,
+    MORL,
+    CGAU,
+    SHAN,
+    FBSP,
+    CMOR
 } WAVELET_NAME;
 
 
