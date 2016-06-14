@@ -659,7 +659,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
                 output_length = <index_t>length
             x = np.linspace(self.cw.base.lower_bound, self.cw.base.upper_bound, output_length)
             # x = np.array(x, dtype=np.float64)
-            if self.cw.base.complex_cwt:
+            if self.cw.complex_cwt:
                 psi_r, psi_i = cwt_psi_single(x, self, output_length)
                 return [np.asarray(psi_r, dtype=np.float64) + 1j * np.asarray(psi_i, dtype=np.float64), 
                         np.asarray(x, dtype=np.float64)]
