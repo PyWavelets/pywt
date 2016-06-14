@@ -272,9 +272,12 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
             # builtin wavelet
             self.name = name.lower()
             family_code, family_number = wname_to_code(self.name)
-            self.w = <wavelet.Wavelet*> wavelet.wavelet(family_code, family_number)
+            if (wavelet.is_discrete_wavelet(family_code)):
+                self.dw = <wavelet.DiscreteWavelet*> wavelet.discrete_wavelet(family_code, family_number)
+            else:
+                self.cw = <wavelet.ContinuousWavelet*> wavelet.continous_wavelet(family_code, family_number)
 
-            if self.w is NULL:
+            if self.dw is NULL and self.cw is NULL:
                 raise ValueError("Invalid wavelet name.")
             self.number = family_number
         else:
@@ -319,196 +322,285 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
                 raise ValueError("All filters in filter bank must have "
                                  "length greater than 0.")
 
-            self.w = <wavelet.Wavelet*> wavelet.blank_wavelet(filter_length)
-            if self.w is NULL:
+            self.dw = <wavelet.DiscreteWavelet*> wavelet.blank_discrete_wavelet(filter_length)
+            if self.dw is NULL:
                 raise MemoryError("Could not allocate memory for given "
                                   "filter bank.")
 
             # copy values to struct
-            copy_object_to_float32_array(dec_lo, self.w.dec_lo_float)
-            copy_object_to_float32_array(dec_hi, self.w.dec_hi_float)
-            copy_object_to_float32_array(rec_lo, self.w.rec_lo_float)
-            copy_object_to_float32_array(rec_hi, self.w.rec_hi_float)
+            copy_object_to_float32_array(dec_lo, self.dw.dec_lo_float)
+            copy_object_to_float32_array(dec_hi, self.dw.dec_hi_float)
+            copy_object_to_float32_array(rec_lo, self.dw.rec_lo_float)
+            copy_object_to_float32_array(rec_hi, self.dw.rec_hi_float)
 
-            copy_object_to_float64_array(dec_lo, self.w.dec_lo_double)
-            copy_object_to_float64_array(dec_hi, self.w.dec_hi_double)
-            copy_object_to_float64_array(rec_lo, self.w.rec_lo_double)
-            copy_object_to_float64_array(rec_hi, self.w.rec_hi_double)
+            copy_object_to_float64_array(dec_lo, self.dw.dec_lo_double)
+            copy_object_to_float64_array(dec_hi, self.dw.dec_hi_double)
+            copy_object_to_float64_array(rec_lo, self.dw.rec_lo_double)
+            copy_object_to_float64_array(rec_hi, self.dw.rec_hi_double)
 
             self.name = name
 
     def __dealloc__(self):
-        if self.w is not NULL:
-            wavelet.free_wavelet(self.w)
-            self.w = NULL
+        if self.dw is not NULL:
+            wavelet.free_discrete_wavelet(self.dw)
+            self.dw = NULL
+        if self.cw is not NULL:
+            wavelet.free_continous_wavelet(self.cw)
+            self.cw = NULL
 
     def __len__(self):
-        return self.w.dec_len
+        if self.dw is not NULL:
+            return self.dw.dec_len
 
     property dec_lo:
         "Lowpass decomposition filter"
         def __get__(self):
-            return float64_array_to_list(self.w.dec_lo_double, self.w.dec_len)
+            if self.dw is not NULL:
+                return float64_array_to_list(self.dw.dec_lo_double, self.dw.dec_len)
 
     property dec_hi:
         "Highpass decomposition filter"
         def __get__(self):
-            return float64_array_to_list(self.w.dec_hi_double, self.w.dec_len)
+            if self.dw is not NULL:
+                return float64_array_to_list(self.dw.dec_hi_double, self.dw.dec_len)
 
     property rec_lo:
         "Lowpass reconstruction filter"
         def __get__(self):
-            return float64_array_to_list(self.w.rec_lo_double, self.w.rec_len)
+            if self.dw is not NULL:
+                return float64_array_to_list(self.dw.rec_lo_double, self.dw.rec_len)
 
     property rec_hi:
         "Highpass reconstruction filter"
         def __get__(self):
-            return float64_array_to_list(self.w.rec_hi_double, self.w.rec_len)
+            if self.dw is not NULL:
+                return float64_array_to_list(self.dw.rec_hi_double, self.dw.rec_len)
 
     property rec_len:
         "Reconstruction filters length"
         def __get__(self):
-            return self.w.rec_len
+            if self.dw is not NULL:
+                return self.dw.rec_len
 
     property dec_len:
         "Decomposition filters length"
         def __get__(self):
-            return self.w.dec_len
+            if self.dw is not NULL:
+                return self.dw.dec_len
+    
+    property family_number:
+        "Wavelet family number"
+        def __get__(self):
+            return self.number
 
     property family_name:
         "Wavelet family name"
         def __get__(self):
-            return self.w.family_name.decode('latin-1')
+            if self.dw is not NULL:
+                return self.dw.base.family_name.decode('latin-1')
+            else:
+                return self.cw.base.family_name.decode('latin-1')
 
     property short_family_name:
         "Short wavelet family name"
         def __get__(self):
-            return self.w.short_name.decode('latin-1')
+            if self.dw is not NULL:
+                return self.dw.base.short_name.decode('latin-1')
+            else:
+                return self.cw.base.short_name.decode('latin-1')
 
     property orthogonal:
         "Is orthogonal"
         def __get__(self):
-            return bool(self.w.orthogonal)
+            if self.dw is not NULL:
+                return bool(self.dw.base.orthogonal)
+            else:
+                return bool(self.cw.base.orthogonal)
         def __set__(self, int value):
-            self.w.orthogonal = (value != 0)
+            if self.dw is not NULL:
+                self.dw.base.orthogonal = (value != 0)
+            else:
+                self.cw.base.orthogonal = (value != 0)
 
     property biorthogonal:
         "Is biorthogonal"
         def __get__(self):
-            return bool(self.w.biorthogonal)
+            if self.dw is not NULL:
+                return bool(self.dw.base.biorthogonal)
+            else:
+                return bool(self.cw.base.biorthogonal)
         def __set__(self, int value):
-            self.w.biorthogonal = (value != 0)
+            if self.dw is not NULL:
+                self.dw.base.biorthogonal = (value != 0)
+            else:
+                self.cw.base.biorthogonal = (value != 0)
 
     property dwt_possible:
         "DWT possible"
         def __get__(self):
-            return bool(self.w.dwt_possible)
+            if self.dw is not NULL:
+                return bool(self.dw.base.dwt_possible)
+            else:
+                return bool(self.cw.base.dwt_possible)
         def __set__(self, int value):
-            self.w.dwt_possible = (value != 0)
+            if self.dw is not NULL:
+                self.dw.base.dwt_possible = (value != 0)
+            else:
+                self.cw.base.dwt_possible = (value != 0)
 
     property cwt_possible:
         "CWT possible"
         def __get__(self):
-            return bool(self.w.cwt_possible)
+            if self.dw is not NULL:
+                return bool(self.dw.base.cwt_possible)
+            else:
+                return bool(self.cw.base.cwt_possible)
         def __set__(self, int value):
-            self.w.cwt_possible = (value != 0)
+            if self.dw is not NULL:
+                self.dw.base.cwt_possible = (value != 0)
+            else:
+                self.cw.base.cwt_possible = (value != 0)
 
     property complex_cwt:
         "CWT is complex"
         def __get__(self):
-            return bool(self.w.complex_cwt)
+            if self.cw is not NULL:
+                return bool(self.cw.complex_cwt)
         def __set__(self, int value):
-            self.w.complex_cwt = (value != 0)
+            if self.cw is not NULL:
+                self.cw.complex_cwt = (value != 0)
 
     property lower_bound:
         "Lower Bound"
         def __get__(self):
-            if self.w.lower_bound != self.w.upper_bound:
-                return self.w.lower_bound
+            if self.dw is not NULL:
+                if self.dw.base.lower_bound != self.dw.base.upper_bound:
+                    return self.dw.base.lower_bound
+            else:
+                if self.cw.base.lower_bound != self.cw.base.upper_bound:
+                    return self.cw.base.lower_bound
         def __set__(self, float value):
-            self.w.lower_bound = value
+            if self.dw is not NULL:
+                self.dw.base.lower_bound = value
+            else:
+                self.cw.base.lower_bound = value
 
     property upper_bound:
         "Upper Bound"
         def __get__(self):
-            if self.w.upper_bound != self.w.lower_bound:
-                return self.w.upper_bound
+            if self.dw is not NULL:
+                if self.dw.base.upper_bound != self.dw.base.lower_bound:
+                    return self.dw.base.upper_bound
+            else:
+                if self.cw.base.upper_bound != self.cw.base.lower_bound:
+                    return self.cw.base.upper_bound
         def __set__(self, float value):
-            self.w.upper_bound = value
+            if self.dw is not NULL:
+                self.dw.base.upper_bound = value
+            else:
+                self.cw.base.upper_bound = value
 
     property center_frequency:
         "Center frequency (shan, fbsp, cmor)"
         def __get__(self):
-            if self.w.center_frequency > 0:
-                return self.w.center_frequency
+            if self.cw is not NULL:
+                if self.cw.center_frequency > 0:
+                    return self.cw.center_frequency
         def __set__(self, float value):
-            self.w.center_frequency = value
+            if self.cw is not NULL:
+                self.cw.center_frequency = value
 
     property bandwidth_frequency:
         "Bandwidth frequency (shan, fbsp, cmor)"
         def __get__(self):
-            if self.w.bandwidth_frequency > 0:
-                return self.w.bandwidth_frequency
+            if self.cw is not NULL:
+                if self.cw.bandwidth_frequency > 0:
+                    return self.cw.bandwidth_frequency
         def __set__(self, float value):
-            self.w.bandwidth_frequency = value
+            if self.cw is not NULL:
+                self.cw.bandwidth_frequency = value
 
     property fbsp_order:
         "order parameter for fbsp"
         def __get__(self):
-            if self.w.fbsp_order != 0:
-                return self.w.fbsp_order
+            if self.cw is not NULL:
+                if self.cw.fbsp_order != 0:
+                    return self.cw.fbsp_order
         def __set__(self, unsigned int value):
-            self.w.fbsp_order = value
+            if self.cw is not NULL:
+                self.cw.fbsp_order = value
 
     property symmetry:
         "Wavelet symmetry"
         def __get__(self):
-            if self.w.symmetry == wavelet.ASYMMETRIC:
-                return "asymmetric"
-            elif self.w.symmetry == wavelet.NEAR_SYMMETRIC:
-                return "near symmetric"
-            elif self.w.symmetry == wavelet.SYMMETRIC:
-                return "symmetric"
+            if self.dw is not NULL:
+                if self.dw.base.symmetry == wavelet.ASYMMETRIC:
+                    return "asymmetric"
+                elif self.dw.base.symmetry == wavelet.NEAR_SYMMETRIC:
+                    return "near symmetric"
+                elif self.dw.base.symmetry == wavelet.SYMMETRIC:
+                    return "symmetric"
+                else:
+                    return "unknown"
             else:
-                return "unknown"
+                if self.cw.base.symmetry == wavelet.ASYMMETRIC:
+                    return "asymmetric"
+                elif self.cw.base.symmetry == wavelet.NEAR_SYMMETRIC:
+                    return "near symmetric"
+                elif self.cw.base.symmetry == wavelet.SYMMETRIC:
+                    return "symmetric"
+                else:
+                    return "unknown"
 
     property vanishing_moments_psi:
         "Number of vanishing moments for wavelet function"
         def __get__(self):
-            if self.w.vanishing_moments_psi >= 0:
-                return self.w.vanishing_moments_psi
+            if self.dw is not NULL:
+                if self.dw.base.vanishing_moments_psi >= 0:
+                    return self.dw.base.vanishing_moments_psi
+            else:
+                if self.cw.base.vanishing_moments_psi >= 0:
+                    return self.cw.base.vanishing_moments_psi  
 
     property vanishing_moments_phi:
         "Number of vanishing moments for scaling function"
         def __get__(self):
-            if self.w.vanishing_moments_phi >= 0:
-                return self.w.vanishing_moments_phi
+            if self.dw is not NULL:
+                if self.dw.base.vanishing_moments_phi >= 0:
+                    return self.dw.base.vanishing_moments_phi
+            else:
+                if self.cw.base.vanishing_moments_phi >= 0:
+                    return self.cw.base.vanishing_moments_phi
 
     property filter_bank:
         """Returns tuple of wavelet filters coefficients
         (dec_lo, dec_hi, rec_lo, rec_hi)
         """
         def __get__(self):
-            return (self.dec_lo, self.dec_hi, self.rec_lo, self.rec_hi)
+            if self.dw is not NULL:
+                return (self.dec_lo, self.dec_hi, self.rec_lo, self.rec_hi)
 
     def get_filters_coeffs(self):
-        warnings.warn("The `get_filters_coeffs` method is deprecated. "
-                      "Use `filter_bank` attribute instead.", DeprecationWarning)
-        return self.filter_bank
+        if self.dw is not NULL:
+            warnings.warn("The `get_filters_coeffs` method is deprecated. "
+                          "Use `filter_bank` attribute instead.", DeprecationWarning)
+            return self.filter_bank
 
     property inverse_filter_bank:
         """Tuple of inverse wavelet filters coefficients
         (rec_lo[::-1], rec_hi[::-1], dec_lo[::-1], dec_hi[::-1])
         """
         def __get__(self):
-            return (self.rec_lo[::-1], self.rec_hi[::-1], self.dec_lo[::-1],
-                    self.dec_hi[::-1])
+            if self.dw is not NULL:
+                return (self.rec_lo[::-1], self.rec_hi[::-1], self.dec_lo[::-1],
+                        self.dec_hi[::-1])
 
     def get_reverse_filters_coeffs(self):
-        warnings.warn("The `get_reverse_filters_coeffs` method is deprecated. "
-                      "Use `inverse_filter_bank` attribute instead.",
-                      DeprecationWarning)
-        return self.inverse_filter_bank
+        if self.dw is not NULL:
+            warnings.warn("The `get_reverse_filters_coeffs` method is deprecated. "
+                          "Use `inverse_filter_bank` attribute instead.",
+                          DeprecationWarning)
+            return self.inverse_filter_bank
 
     def wavefun(self, int level=8, length = None):
         """
@@ -560,14 +652,14 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
         n = pow(sqrt(2.), <double>level)
         p = (pow(2., <double>level))
         
-        if not self.w.orthogonal and not self.w.biorthogonal:
+        if self.cw is not NULL:
             if length is None:
                 output_length = 256
             else:
                 output_length = <index_t>length
-            x = np.linspace(self.w.lower_bound, self.w.upper_bound, output_length)
+            x = np.linspace(self.cw.base.lower_bound, self.cw.base.upper_bound, output_length)
             # x = np.array(x, dtype=np.float64)
-            if self.w.complex_cwt:
+            if self.cw.base.complex_cwt:
                 psi_r, psi_i = cwt_psi_single(x, self, output_length)
                 return [np.asarray(psi_r, dtype=np.float64) + 1j * np.asarray(psi_i, dtype=np.float64), 
                         np.asarray(x, dtype=np.float64)]
@@ -575,62 +667,63 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
                 psi = cwt_psi_single(x, self, output_length)
                 return [np.asarray(psi, dtype=np.float64), 
                         np.asarray(x, dtype=np.float64)]
-        elif self.w.orthogonal:
-            filter_length = self.w.dec_len
-            output_length = <index_t> ((filter_length-1) * p + 1)
-            keep_length = get_keep_length(output_length, level, filter_length)
-            output_length = fix_output_length(output_length, keep_length)
-
-            right_extent_length = get_right_extent_length(output_length,
-                                                          keep_length)
-
-            # phi, psi, x
-            return [np.concatenate(([0.],
-                                    keep(upcoef(True, n_arr, self, level, 0), keep_length),
-                                    np.zeros(right_extent_length))),
-                    np.concatenate(([0.],
-                                    keep(upcoef(False, n_arr, self, level, 0), keep_length),
-                                    np.zeros(right_extent_length))),
-                    np.linspace(0.0, (output_length-1)/p, output_length)]
         else:
-            if self.w.biorthogonal and (self.w.vanishing_moments_psi % 4) != 1:
-                # FIXME: I don't think this branch is well tested
-                n_mul = -n
+            if self.dw.base.orthogonal:
+                filter_length = self.dw.dec_len
+                output_length = <index_t> ((filter_length-1) * p + 1)
+                keep_length = get_keep_length(output_length, level, filter_length)
+                output_length = fix_output_length(output_length, keep_length)
+    
+                right_extent_length = get_right_extent_length(output_length,
+                                                              keep_length)
+    
+                # phi, psi, x
+                return [np.concatenate(([0.],
+                                        keep(upcoef(True, n_arr, self, level, 0), keep_length),
+                                        np.zeros(right_extent_length))),
+                        np.concatenate(([0.],
+                                        keep(upcoef(False, n_arr, self, level, 0), keep_length),
+                                        np.zeros(right_extent_length))),
+                        np.linspace(0.0, (output_length-1)/p, output_length)]
             else:
-                n_mul = n
-
-            other = Wavelet(filter_bank=self.inverse_filter_bank)
-
-            filter_length  = other.w.dec_len
-            output_length = <index_t> ((filter_length-1) * p)
-            keep_length = get_keep_length(output_length, level, filter_length)
-            output_length = fix_output_length(output_length, keep_length)
-            right_extent_length = get_right_extent_length(output_length, keep_length)
-
-            phi_d  = np.concatenate(([0.],
-                                     keep(upcoef(True, n_arr, other, level, 0), keep_length),
-                                     np.zeros(right_extent_length)))
-            psi_d  = np.concatenate(([0.],
-                                     keep(upcoef(False, n_mul_arr, other, level, 0),
-                                          keep_length),
-                                     np.zeros(right_extent_length)))
-
-            filter_length = self.w.dec_len
-            output_length = <index_t> ((filter_length-1) * p)
-            keep_length = get_keep_length(output_length, level, filter_length)
-            output_length = fix_output_length(output_length, keep_length)
-            right_extent_length = get_right_extent_length(output_length, keep_length)
-
-            phi_r  = np.concatenate(([0.],
-                                     keep(upcoef(True, n_arr, self, level, 0), keep_length),
-                                     np.zeros(right_extent_length)))
-            psi_r  = np.concatenate(([0.],
-                                     keep(upcoef(False, n_mul_arr, self, level, 0),
-                                          keep_length),
-                                     np.zeros(right_extent_length)))
-
-            return [phi_d, psi_d, phi_r, psi_r,
-                    np.linspace(0.0, (output_length - 1) / p, output_length)]
+                if self.dw.base.biorthogonal and (self.dw.base.vanishing_moments_psi % 4) != 1:
+                    # FIXME: I don't think this branch is well tested
+                    n_mul = -n
+                else:
+                    n_mul = n
+    
+                other = Wavelet(filter_bank=self.inverse_filter_bank)
+    
+                filter_length  = other.dw.dec_len
+                output_length = <index_t> ((filter_length-1) * p)
+                keep_length = get_keep_length(output_length, level, filter_length)
+                output_length = fix_output_length(output_length, keep_length)
+                right_extent_length = get_right_extent_length(output_length, keep_length)
+    
+                phi_d  = np.concatenate(([0.],
+                                         keep(upcoef(True, n_arr, other, level, 0), keep_length),
+                                         np.zeros(right_extent_length)))
+                psi_d  = np.concatenate(([0.],
+                                         keep(upcoef(False, n_mul_arr, other, level, 0),
+                                              keep_length),
+                                         np.zeros(right_extent_length)))
+    
+                filter_length = self.dw.dec_len
+                output_length = <index_t> ((filter_length-1) * p)
+                keep_length = get_keep_length(output_length, level, filter_length)
+                output_length = fix_output_length(output_length, keep_length)
+                right_extent_length = get_right_extent_length(output_length, keep_length)
+    
+                phi_r  = np.concatenate(([0.],
+                                         keep(upcoef(True, n_arr, self, level, 0), keep_length),
+                                         np.zeros(right_extent_length)))
+                psi_r  = np.concatenate(([0.],
+                                         keep(upcoef(False, n_mul_arr, self, level, 0),
+                                              keep_length),
+                                         np.zeros(right_extent_length)))
+    
+                return [phi_d, psi_d, phi_r, psi_r,
+                        np.linspace(0.0, (output_length - 1) / p, output_length)]
 
     def __str__(self):
         s = []

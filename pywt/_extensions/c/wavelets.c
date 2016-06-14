@@ -8,23 +8,58 @@
 #define SWAP(t, x, y) {t tmp = x; x = y; y = tmp;}
 #define NELEMS(x) (sizeof(x) / sizeof(*x))
 
-Wavelet* wavelet(WAVELET_NAME name, unsigned int order)
+int is_discrete_wavelet(WAVELET_NAME name)
 {
-    Wavelet *w;
+    switch(name){
+        case HAAR:
+            return 1;
+        case RBIO:
+            return 1;
+        case DB:
+            return 1;
+        case SYM:
+            return 1;
+        case COIF:
+            return 1;
+        case BIOR:
+            return 1;
+        case DMEY:
+            return 1;
+        case GAUS:
+            return 0;
+        case MEXH:
+            return 0;
+        case MORL:
+            return 0;
+        case CGAU:
+            return 0;
+        case SHAN:
+            return 0;
+        case FBSP:
+            return 0;
+        case CMOR:
+            return 0;
+    }
+    
+}
 
+
+DiscreteWavelet* discrete_wavelet(WAVELET_NAME name, unsigned int order)
+{
+    DiscreteWavelet *w;
     /* Haar wavelet */
     if(name == HAAR){
 
         /* the same as db1 */
-        w = wavelet(DB, 1);
-        w->family_name = "Haar";
-        w->short_name = "haar";
+        w = discrete_wavelet(DB, 1);
+        w->base.family_name = "Haar";
+        w->base.short_name = "haar";
         return w;
 
     /* Reverse biorthogonal wavelets family */
     } else if (name == RBIO) {
         /* rbio is like bior, only with switched filters */
-        w = wavelet(BIOR, order);
+        w = discrete_wavelet(BIOR, order);
         if (w == NULL) return NULL;
 
         SWAP(size_t, w->dec_len, w->rec_len);
@@ -48,8 +83,8 @@ Wavelet* wavelet(WAVELET_NAME name, unsigned int order)
             }
         }
 
-        w->family_name = "Reverse biorthogonal";
-        w->short_name = "rbio";
+        w->base.family_name = "Reverse biorthogonal";
+        w->base.short_name = "rbio";
 
         return w;
     }
@@ -61,26 +96,21 @@ Wavelet* wavelet(WAVELET_NAME name, unsigned int order)
             if (coeffs_idx >= NELEMS(db_float) ||
                 coeffs_idx >= NELEMS(db_double))
                 return NULL;
-            w = blank_wavelet(2 * order);
+            w = blank_discrete_wavelet(2 * order);
             if(w == NULL) return NULL;
 
-            w->vanishing_moments_psi = order;
-            w->vanishing_moments_phi = 0;
-            w->support_width = 2*order - 1;
-            w->orthogonal = 1;
-            w->biorthogonal = 1;
-            w->symmetry = ASYMMETRIC;
-            w->compact_support = 1;
-            w->family_name = "Daubechies";
-            w->short_name = "db";
-            w->dwt_possible = 1;
-            w->cwt_possible = 1;
-            w->complex_cwt = 0;
-            w->lower_bound = -1;
-            w->upper_bound = -1;
-            w->center_frequency = 0;
-            w->bandwidth_frequency = 0;
-            w->fbsp_order = 0;
+            w->base.vanishing_moments_psi = order;
+            w->base.vanishing_moments_phi = 0;
+            w->base.support_width = 2*order - 1;
+            w->base.orthogonal = 1;
+            w->base.biorthogonal = 1;
+            w->base.symmetry = ASYMMETRIC;
+            w->base.compact_support = 1;
+            w->base.family_name = "Daubechies";
+            w->base.short_name = "db";
+            w->base.dwt_possible = 1;
+            w->base.cwt_possible = 1;
+
             {
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
@@ -115,26 +145,20 @@ Wavelet* wavelet(WAVELET_NAME name, unsigned int order)
                 coeffs_idx >= NELEMS(sym_double))
                 return NULL;
 
-            w = blank_wavelet(2 * order);
+            w = blank_discrete_wavelet(2 * order);
             if(w == NULL) return NULL;
 
-            w->vanishing_moments_psi = order;
-            w->vanishing_moments_phi = 0;
-            w->support_width = 2*order - 1;
-            w->orthogonal = 1;
-            w->biorthogonal = 1;
-            w->symmetry = NEAR_SYMMETRIC;
-            w->compact_support = 1;
-            w->family_name = "Symlets";
-            w->short_name = "sym";
-            w->dwt_possible = 1;
-            w->cwt_possible = 1;
-            w->complex_cwt = 0;
-            w->lower_bound = -1;
-            w->upper_bound = -1;
-            w->center_frequency = 0;
-            w->bandwidth_frequency = 0;
-            w->fbsp_order = 0;
+            w->base.vanishing_moments_psi = order;
+            w->base.vanishing_moments_phi = 0;
+            w->base.support_width = 2*order - 1;
+            w->base.orthogonal = 1;
+            w->base.biorthogonal = 1;
+            w->base.symmetry = NEAR_SYMMETRIC;
+            w->base.compact_support = 1;
+            w->base.family_name = "Symlets";
+            w->base.short_name = "sym";
+            w->base.dwt_possible = 1;
+            w->base.cwt_possible = 1;
             {
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
@@ -167,26 +191,20 @@ Wavelet* wavelet(WAVELET_NAME name, unsigned int order)
             if (coeffs_idx >= NELEMS(coif_float) ||
                 coeffs_idx >= NELEMS(coif_double))
                 return NULL;
-            w = blank_wavelet(6 * order);
+            w = blank_discrete_wavelet(6 * order);
             if(w == NULL) return NULL;
 
-            w->vanishing_moments_psi = 2*order;
-            w->vanishing_moments_phi = 2*order -1;
-            w->support_width = 6*order - 1;
-            w->orthogonal = 1;
-            w->biorthogonal = 1;
-            w->symmetry = NEAR_SYMMETRIC;
-            w->compact_support = 1;
-            w->family_name = "Coiflets";
-            w->short_name = "coif";
-            w->dwt_possible = 1;
-            w->cwt_possible = 1;
-            w->complex_cwt = 0;
-            w->lower_bound = -1;
-            w->upper_bound = -1;
-            w->center_frequency = 0;
-            w->bandwidth_frequency = 0;
-            w->fbsp_order = 0;
+            w->base.vanishing_moments_psi = 2*order;
+            w->base.vanishing_moments_phi = 2*order -1;
+            w->base.support_width = 6*order - 1;
+            w->base.orthogonal = 1;
+            w->base.biorthogonal = 1;
+            w->base.symmetry = NEAR_SYMMETRIC;
+            w->base.compact_support = 1;
+            w->base.family_name = "Coiflets";
+            w->base.short_name = "coif";
+            w->base.dwt_possible = 1;
+            w->base.cwt_possible = 1;
             {
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
@@ -251,26 +269,20 @@ Wavelet* wavelet(WAVELET_NAME name, unsigned int order)
                 return NULL;
             }
 
-            w = blank_wavelet((N == 1) ? 2 * M : 2 * M + 2);
+            w = blank_discrete_wavelet((N == 1) ? 2 * M : 2 * M + 2);
             if(w == NULL) return NULL;
 
-            w->vanishing_moments_psi = order/10;
-            w->vanishing_moments_phi = -1;
-            w->support_width = -1;
-            w->orthogonal = 0;
-            w->biorthogonal = 1;
-            w->symmetry = SYMMETRIC;
-            w->compact_support = 1;
-            w->family_name = "Biorthogonal";
-            w->short_name = "bior";
-            w->dwt_possible = 1;
-            w->cwt_possible = 1;
-            w->complex_cwt = 0;
-            w->lower_bound = -1;
-            w->upper_bound = -1;
-            w->center_frequency = 0;
-            w->bandwidth_frequency = 0;
-            w->fbsp_order = 0;
+            w->base.vanishing_moments_psi = order/10;
+            w->base.vanishing_moments_phi = -1;
+            w->base.support_width = -1;
+            w->base.orthogonal = 0;
+            w->base.biorthogonal = 1;
+            w->base.symmetry = SYMMETRIC;
+            w->base.compact_support = 1;
+            w->base.family_name = "Biorthogonal";
+            w->base.short_name = "bior";
+            w->base.dwt_possible = 1;
+            w->base.cwt_possible = 1;
             {
                 size_t n = M_max - M;
                 size_t i;
@@ -302,26 +314,20 @@ Wavelet* wavelet(WAVELET_NAME name, unsigned int order)
 
         /* Discrete FIR filter approximation of Meyer wavelet */
         case DMEY:
-            w = blank_wavelet(62);
+            w = blank_discrete_wavelet(62);
             if(w == NULL) return NULL;
 
-            w->vanishing_moments_psi = -1;
-            w->vanishing_moments_phi = -1;
-            w->support_width = -1;
-            w->orthogonal = 1;
-            w->biorthogonal = 1;
-            w->symmetry = SYMMETRIC;
-            w->compact_support = 1;
-            w->family_name = "Discrete Meyer (FIR Approximation)";
-            w->short_name = "dmey";
-            w->dwt_possible = 1;
-            w->cwt_possible = 1;
-            w->complex_cwt = 0;
-            w->lower_bound = -1;
-            w->upper_bound = -1;
-            w->center_frequency = 0;
-            w->bandwidth_frequency = 0;
-            w->fbsp_order = 0;
+            w->base.vanishing_moments_psi = -1;
+            w->base.vanishing_moments_phi = -1;
+            w->base.support_width = -1;
+            w->base.orthogonal = 1;
+            w->base.biorthogonal = 1;
+            w->base.symmetry = SYMMETRIC;
+            w->base.compact_support = 1;
+            w->base.family_name = "Discrete Meyer (FIR Approximation)";
+            w->base.short_name = "dmey";
+            w->base.dwt_possible = 1;
+            w->base.cwt_possible = 1;
             {
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
@@ -346,71 +352,81 @@ Wavelet* wavelet(WAVELET_NAME name, unsigned int order)
                 }
             }
             break;
+        default:
+            return NULL;
+    }
+    return w;
+}
+
+ContinuousWavelet* continous_wavelet(WAVELET_NAME name, unsigned int order)
+{
+    ContinuousWavelet *w;
+    switch(name){
             /* Gaussian Wavelets */
         case GAUS:
             if (order > 8)
                 return NULL;
-            w = blank_wavelet(0);
+            w = blank_continous_wavelet();
             if(w == NULL) return NULL;
 
-            w->vanishing_moments_psi = -1;
-            w->vanishing_moments_phi = -1;
-            w->support_width = -1;
-            w->orthogonal = 0;
-            w->biorthogonal = 0;
-            w->symmetry = SYMMETRIC;
-            w->compact_support = 0;
-            w->family_name = "Gaussian";
-            w->short_name = "gaus";
-            w->dwt_possible = 0;
-            w->cwt_possible = 1;
+            w->base.vanishing_moments_psi = -1;
+            w->base.vanishing_moments_phi = -1;
+            w->base.support_width = -1;
+            w->base.orthogonal = 0;
+            w->base.biorthogonal = 0;
+            w->base.symmetry = SYMMETRIC;
+            w->base.compact_support = 0;
+            w->base.family_name = "Gaussian";
+            w->base.short_name = "gaus";
+            w->base.dwt_possible = 0;
+            w->base.cwt_possible = 1;
             w->complex_cwt = 0;
-            w->lower_bound = -5;
-            w->upper_bound = 5;
+            w->base.lower_bound = -5;
+            w->base.upper_bound = 5;
             w->center_frequency = 0;
             w->bandwidth_frequency = 0;
             w->fbsp_order = 0;
             break;
         case MEXH:
-            w = blank_wavelet(0);
+            w = blank_continous_wavelet();
             if(w == NULL) return NULL;
 
-            w->vanishing_moments_psi = -1;
-            w->vanishing_moments_phi = -1;
-            w->support_width = -1;
-            w->orthogonal = 0;
-            w->biorthogonal = 0;
-            w->symmetry = SYMMETRIC;
-            w->compact_support = 0;
-            w->family_name = "Mexican hat wavelet";
-            w->short_name = "mexh";
-            w->dwt_possible = 0;
-            w->cwt_possible = 1;
+            w->base.vanishing_moments_psi = -1;
+            w->base.vanishing_moments_phi = -1;
+            w->base.support_width = -1;
+            w->base.orthogonal = 0;
+            w->base.biorthogonal = 0;
+            w->base.symmetry = SYMMETRIC;
+            w->base.compact_support = 0;
+            w->base.family_name = "Mexican hat wavelet";
+            w->base.short_name = "mexh";
+            w->base.dwt_possible = 0;
+            w->base.cwt_possible = 1;
             w->complex_cwt = 0;
-            w->lower_bound = -5;
-            w->upper_bound = 5;
+            w->base.lower_bound = -5;
+            w->base.upper_bound = 5;
             w->center_frequency = 0;
             w->bandwidth_frequency = 0;
             w->fbsp_order = 0;
             break;
         case MORL:
-            w = blank_wavelet(0);
+            w = blank_continous_wavelet();
             if(w == NULL) return NULL;
 
-            w->vanishing_moments_psi = -1;
-            w->vanishing_moments_phi = -1;
-            w->support_width = -1;
-            w->orthogonal = 0;
-            w->biorthogonal = 0;
-            w->symmetry = SYMMETRIC;
-            w->compact_support = 0;
-            w->family_name = "Morlet wavelet";
-            w->short_name = "morl";
-            w->dwt_possible = 0;
-            w->cwt_possible = 1;
+            w->base.vanishing_moments_psi = -1;
+            w->base.vanishing_moments_phi = -1;
+            w->base.support_width = -1;
+            w->base.orthogonal = 0;
+            w->base.biorthogonal = 0;
+            w->base.symmetry = SYMMETRIC;
+            w->base.compact_support = 0;
+            w->base.family_name = "Morlet wavelet";
+            w->base.short_name = "morl";
+            w->base.dwt_possible = 0;
+            w->base.cwt_possible = 1;
             w->complex_cwt = 0;
-            w->lower_bound = -5;
-            w->upper_bound = 5;
+            w->base.lower_bound = -5;
+            w->base.upper_bound = 5;
             w->center_frequency = 0;
             w->bandwidth_frequency = 0;
             w->fbsp_order = 0;
@@ -418,92 +434,92 @@ Wavelet* wavelet(WAVELET_NAME name, unsigned int order)
         case CGAU:
             if (order > 8)
                 return NULL;
-            w = blank_wavelet(0);
+            w = blank_continous_wavelet();
             if(w == NULL) return NULL;
 
-            w->vanishing_moments_psi = -1;
-            w->vanishing_moments_phi = -1;
-            w->support_width = -1;
-            w->orthogonal = 0;
-            w->biorthogonal = 0;
-            w->symmetry = SYMMETRIC;
-            w->compact_support = 0;
-            w->family_name = "Complex Gaussian wavelets";
-            w->short_name = "cgau";
-            w->dwt_possible = 0;
-            w->cwt_possible = 1;
+            w->base.vanishing_moments_psi = -1;
+            w->base.vanishing_moments_phi = -1;
+            w->base.support_width = -1;
+            w->base.orthogonal = 0;
+            w->base.biorthogonal = 0;
+            w->base.symmetry = SYMMETRIC;
+            w->base.compact_support = 0;
+            w->base.family_name = "Complex Gaussian wavelets";
+            w->base.short_name = "cgau";
+            w->base.dwt_possible = 0;
+            w->base.cwt_possible = 1;
             w->complex_cwt = 1;
-            w->lower_bound = -5;
-            w->upper_bound = 5;
+            w->base.lower_bound = -5;
+            w->base.upper_bound = 5;
             w->center_frequency = 0;
             w->bandwidth_frequency = 0;
             w->fbsp_order = 0;
             break;
         case SHAN:
 
-            w = blank_wavelet(0);
+            w = blank_continous_wavelet();
             if(w == NULL) return NULL;
 
-            w->vanishing_moments_psi = -1;
-            w->vanishing_moments_phi = -1;
-            w->support_width = -1;
-            w->orthogonal = 0;
-            w->biorthogonal = 0;
-            w->symmetry = SYMMETRIC;
-            w->compact_support = 0;
-            w->family_name = "Shannon wavelets";
-            w->short_name = "shan";
-            w->dwt_possible = 0;
-            w->cwt_possible = 1;
+            w->base.vanishing_moments_psi = -1;
+            w->base.vanishing_moments_phi = -1;
+            w->base.support_width = -1;
+            w->base.orthogonal = 0;
+            w->base.biorthogonal = 0;
+            w->base.symmetry = SYMMETRIC;
+            w->base.compact_support = 0;
+            w->base.family_name = "Shannon wavelets";
+            w->base.short_name = "shan";
+            w->base.dwt_possible = 0;
+            w->base.cwt_possible = 1;
             w->complex_cwt = 1;
-            w->lower_bound = -5;
-            w->upper_bound = 5;
+            w->base.lower_bound = -5;
+            w->base.upper_bound = 5;
             w->center_frequency = 1;
             w->bandwidth_frequency = 0.5;
             w->fbsp_order = 0;
             break;
         case FBSP:
 
-            w = blank_wavelet(0);
+            w = blank_continous_wavelet();
             if(w == NULL) return NULL;
 
-            w->vanishing_moments_psi = -1;
-            w->vanishing_moments_phi = -1;
-            w->support_width = -1;
-            w->orthogonal = 0;
-            w->biorthogonal = 0;
-            w->symmetry = SYMMETRIC;
-            w->compact_support = 0;
-            w->family_name = "Frequency B-Spline wavelets";
-            w->short_name = "fbsp";
-            w->dwt_possible = 0;
-            w->cwt_possible = 1;
+            w->base.vanishing_moments_psi = -1;
+            w->base.vanishing_moments_phi = -1;
+            w->base.support_width = -1;
+            w->base.orthogonal = 0;
+            w->base.biorthogonal = 0;
+            w->base.symmetry = SYMMETRIC;
+            w->base.compact_support = 0;
+            w->base.family_name = "Frequency B-Spline wavelets";
+            w->base.short_name = "fbsp";
+            w->base.dwt_possible = 0;
+            w->base.cwt_possible = 1;
             w->complex_cwt = 1;
-            w->lower_bound = -5;
-            w->upper_bound = 5;
+            w->base.lower_bound = -5;
+            w->base.upper_bound = 5;
             w->center_frequency = 0.5;
             w->bandwidth_frequency = 1;
             w->fbsp_order = 2;
             break;
         case CMOR:
 
-            w = blank_wavelet(0);
+            w = blank_continous_wavelet();
             if(w == NULL) return NULL;
 
-            w->vanishing_moments_psi = -1;
-            w->vanishing_moments_phi = -1;
-            w->support_width = -1;
-            w->orthogonal = 0;
-            w->biorthogonal = 0;
-            w->symmetry = SYMMETRIC;
-            w->compact_support = 0;
-            w->family_name = "Complex Morlet wavelets";
-            w->short_name = "cmor";
-            w->dwt_possible = 0;
-            w->cwt_possible = 1;
+            w->base.vanishing_moments_psi = -1;
+            w->base.vanishing_moments_phi = -1;
+            w->base.support_width = -1;
+            w->base.orthogonal = 0;
+            w->base.biorthogonal = 0;
+            w->base.symmetry = SYMMETRIC;
+            w->base.compact_support = 0;
+            w->base.family_name = "Complex Morlet wavelets";
+            w->base.short_name = "cmor";
+            w->base.dwt_possible = 0;
+            w->base.cwt_possible = 1;
             w->complex_cwt = 1;
-            w->lower_bound = -5;
-            w->upper_bound = 5;
+            w->base.lower_bound = -5;
+            w->base.upper_bound = 5;
             w->center_frequency = 0.5;
             w->bandwidth_frequency = 1;
             w->fbsp_order = 0;
@@ -515,16 +531,16 @@ Wavelet* wavelet(WAVELET_NAME name, unsigned int order)
 }
 
 
-Wavelet* blank_wavelet(size_t filters_length)
+DiscreteWavelet* blank_discrete_wavelet(size_t filters_length)
 {
-    Wavelet* w;
+    DiscreteWavelet* w;
 
 
     /* pad to even length */
     if(filters_length > 0 && filters_length % 2)
         ++filters_length;
 
-    w = wtmalloc(sizeof(Wavelet));
+    w = wtmalloc(sizeof(DiscreteWavelet));
     if(w == NULL) return NULL;
 
     w->dec_len = w->rec_len = filters_length;
@@ -544,7 +560,7 @@ Wavelet* blank_wavelet(size_t filters_length)
            w->rec_lo_float == NULL || w->rec_hi_float == NULL ||
            w->dec_lo_double == NULL || w->dec_hi_double == NULL ||
            w->rec_lo_double == NULL || w->rec_hi_double == NULL){
-            free_wavelet(w);
+            free_discrete_wavelet(w);
             return NULL;
         }
     }
@@ -561,37 +577,39 @@ Wavelet* blank_wavelet(size_t filters_length)
         w->rec_hi_double = NULL;
     }
     /* set properties to "blank" values */
-    w->vanishing_moments_psi = 0;
-    w->vanishing_moments_phi = 0;
-    w->support_width = -1;
-    w->orthogonal = 0;
-    w->biorthogonal = 0;
-    w->symmetry = UNKNOWN;
-    w->compact_support = 0;
-    w->family_name = "";
-    w->short_name = "";
-    w->dwt_possible = 0;
-    w->cwt_possible = 0;
-    w->complex_cwt = 0;
-    w->lower_bound = -1;
-    w->upper_bound = -1;
     return w;
 }
 
-
-Wavelet* copy_wavelet(Wavelet* base)
+ContinuousWavelet* blank_continous_wavelet()
 {
-    Wavelet* w;
+    ContinuousWavelet* w;
+
+
+
+    w = wtmalloc(sizeof(ContinuousWavelet));
+    if(w == NULL) return NULL;
+
+
+    /* set properties to "blank" values */
+    w->center_frequency = -1;
+    w->bandwidth_frequency = -1;
+    w->fbsp_order = 0;
+    return w;
+}
+
+DiscreteWavelet* copy_discrete_wavelet(DiscreteWavelet* base)
+{
+    DiscreteWavelet* w;
 
     if(base == NULL) return NULL;
 
     if(base->dec_len < 0 || base->rec_len < 0)
         return NULL;
 
-    w = wtmalloc(sizeof(Wavelet));
+    w = wtmalloc(sizeof(DiscreteWavelet));
     if(w == NULL) return NULL;
 
-    memcpy(w, base, sizeof(Wavelet));
+    memcpy(w, base, sizeof(DiscreteWavelet));
     if (base->dec_len > 0)
     {
         w->dec_lo_float = wtmalloc(w->dec_len * sizeof(float));
@@ -600,7 +618,7 @@ Wavelet* copy_wavelet(Wavelet* base)
         w->dec_hi_double = wtmalloc(w->dec_len * sizeof(double));
         if(w->dec_lo_float == NULL || w->dec_hi_float == NULL ||
             w->dec_lo_double == NULL || w->dec_hi_double == NULL){
-           free_wavelet(w);
+           free_discrete_wavelet(w);
            return NULL;
         }
     }
@@ -620,7 +638,7 @@ Wavelet* copy_wavelet(Wavelet* base)
         w->rec_hi_double = wtmalloc(w->rec_len * sizeof(double));
         if( w->rec_lo_float == NULL || w->rec_hi_float == NULL ||
             w->rec_lo_double == NULL || w->rec_hi_double == NULL){
-           free_wavelet(w);
+           free_discrete_wavelet(w);
            return NULL;
         }
     }
@@ -652,7 +670,7 @@ Wavelet* copy_wavelet(Wavelet* base)
     return w;
 }
 
-void free_wavelet(Wavelet *w){
+void free_discrete_wavelet(DiscreteWavelet *w){
 
     /* deallocate filters */
     if (w->dec_len > 0)
@@ -673,6 +691,11 @@ void free_wavelet(Wavelet *w){
     wtfree(w);
 }
 
+void free_continous_wavelet(ContinuousWavelet *w){
+
+    /* finally free struct */
+    wtfree(w);
+}
 
 
 

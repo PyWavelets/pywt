@@ -19,7 +19,7 @@
 
 int CAT(TYPE, _downcoef_axis)(const TYPE * const restrict input, const ArrayInfo input_info,
                               TYPE * const restrict output, const ArrayInfo output_info,
-                              const Wavelet * const restrict wavelet, const size_t axis,
+                              const DiscreteWavelet * const restrict wavelet, const size_t axis,
                               const Coefficient coef, const MODE mode){
     size_t i;
     size_t num_loops = 1;
@@ -126,7 +126,7 @@ int CAT(TYPE, _downcoef_axis)(const TYPE * const restrict input, const ArrayInfo
 int CAT(TYPE, _idwt_axis)(const TYPE * const restrict coefs_a, const ArrayInfo * const a_info,
                           const TYPE * const restrict coefs_d, const ArrayInfo * const d_info,
                           TYPE * const restrict output, const ArrayInfo output_info,
-                          const Wavelet * const restrict wavelet,
+                          const DiscreteWavelet * const restrict wavelet,
                           const size_t axis, const MODE mode){
     size_t i;
     size_t num_loops = 1;
@@ -271,7 +271,7 @@ int CAT(TYPE, _idwt_axis)(const TYPE * const restrict coefs_a, const ArrayInfo *
 
 
 int CAT(TYPE, _dec_a)(const TYPE * const restrict input, const size_t input_len,
-                      const Wavelet * const restrict wavelet,
+                      const DiscreteWavelet * const restrict wavelet,
                       TYPE * const restrict output, const size_t output_len,
                       const MODE mode){
 
@@ -290,7 +290,7 @@ int CAT(TYPE, _dec_a)(const TYPE * const restrict input, const size_t input_len,
 /* Decomposition of input with highpass filter */
 
 int CAT(TYPE, _dec_d)(const TYPE * const restrict input, const size_t input_len,
-                      const Wavelet * const restrict wavelet,
+                      const DiscreteWavelet * const restrict wavelet,
                       TYPE * const restrict output, const size_t output_len,
                       const MODE mode){
 
@@ -308,7 +308,7 @@ int CAT(TYPE, _dec_d)(const TYPE * const restrict input, const size_t input_len,
 /* Direct reconstruction with lowpass reconstruction filter */
 
 int CAT(TYPE, _rec_a)(const TYPE * const restrict coeffs_a, const size_t coeffs_len,
-                      const Wavelet * const restrict wavelet,
+                      const DiscreteWavelet * const restrict wavelet,
                       TYPE * const restrict output, const size_t output_len){
 
     /* check output length */
@@ -325,7 +325,7 @@ int CAT(TYPE, _rec_a)(const TYPE * const restrict coeffs_a, const size_t coeffs_
 /* Direct reconstruction with highpass reconstruction filter */
 
 int CAT(TYPE, _rec_d)(const TYPE * const restrict coeffs_d, const size_t coeffs_len,
-                      const Wavelet * const restrict wavelet,
+                      const DiscreteWavelet * const restrict wavelet,
                       TYPE * const restrict output, const size_t output_len){
 
     /* check for output length */
@@ -348,7 +348,7 @@ int CAT(TYPE, _rec_d)(const TYPE * const restrict coeffs_d, const size_t coeffs_
 int CAT(TYPE, _idwt)(const TYPE * const restrict coeffs_a, const size_t coeffs_a_len,
                      const TYPE * const restrict coeffs_d, const size_t coeffs_d_len,
                      TYPE * const restrict output, const size_t output_len,
-                     const Wavelet * const restrict wavelet, const MODE mode){
+                     const DiscreteWavelet * const restrict wavelet, const MODE mode){
     size_t input_len;
     if(coeffs_a != NULL && coeffs_d != NULL){
         if(coeffs_a_len != coeffs_d_len)
@@ -446,7 +446,7 @@ int CAT(TYPE, _swt_)(TYPE input[], index_t input_len,
  * Approximation at specified level
  * input - approximation coeffs from upper level or signal if level == 1
  */
-int CAT(TYPE, _swt_a)(TYPE input[], index_t input_len, Wavelet* wavelet,
+int CAT(TYPE, _swt_a)(TYPE input[], index_t input_len, DiscreteWavelet* wavelet,
                       TYPE output[], index_t output_len, int level){
     return CAT(TYPE, _swt_)(input, input_len, wavelet->CAT(dec_lo_, TYPE),
                             wavelet->dec_len, output, output_len, level);
@@ -455,7 +455,7 @@ int CAT(TYPE, _swt_a)(TYPE input[], index_t input_len, Wavelet* wavelet,
 /* Details at specified level
  * input - approximation coeffs from upper level or signal if level == 1
  */
-int CAT(TYPE, _swt_d)(TYPE input[], index_t input_len, Wavelet* wavelet,
+int CAT(TYPE, _swt_d)(TYPE input[], index_t input_len, DiscreteWavelet* wavelet,
                       TYPE output[], index_t output_len, int level){
     return CAT(TYPE, _swt_)(input, input_len, wavelet->CAT(dec_hi_, TYPE),
                             wavelet->dec_len, output, output_len, level);

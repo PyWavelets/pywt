@@ -2,7 +2,7 @@
 # See COPYING for license details.
 
 from common cimport MODE, index_t, ArrayInfo, Coefficient
-from wavelet cimport Wavelet
+from wavelet cimport ContinuousWavelet
 
 
 cdef extern from "c/cwt.h":

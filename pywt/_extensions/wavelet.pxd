@@ -21,21 +21,8 @@ cdef extern from "c/wavelets.h":
         SHAN
         FBSP
         CMOR
-
-    ctypedef struct Wavelet:
-        double* dec_hi_double      # highpass decomposition
-        double* dec_lo_double      # lowpass   decomposition
-        double* rec_hi_double      # highpass reconstruction
-        double* rec_lo_double      # lowpass   reconstruction
-
-        float* dec_hi_float
-        float* dec_lo_float
-        float* rec_hi_float
-        float* rec_lo_float
-
-        size_t dec_len         # length of decomposition filter
-        size_t rec_len         # length of reconstruction filter
-
+        
+    ctypedef struct BaseWavelet:
         int vanishing_moments_psi
         int vanishing_moments_phi
         index_t support_width
@@ -46,25 +33,49 @@ cdef extern from "c/wavelets.h":
         
         unsigned int dwt_possible
         unsigned int cwt_possible
-        unsigned int complex_cwt
         
         float lower_bound
         float upper_bound
 
         SYMMETRY symmetry
 
+        
         int _builtin
-
         char* family_name
         char* short_name
 
+    ctypedef struct DiscreteWavelet:
+        double* dec_hi_double      # highpass decomposition
+        double* dec_lo_double      # lowpass   decomposition
+        double* rec_hi_double      # highpass reconstruction
+        double* rec_lo_double      # lowpass   reconstruction
+
+        float* dec_hi_float
+        float* dec_lo_float
+        float* rec_hi_float
+        float* rec_lo_float
+        size_t dec_len         # length of decomposition filter
+        size_t rec_len         # length of reconstruction filter
+        BaseWavelet base
+
+        
+    ctypedef struct ContinuousWavelet:
+
+        BaseWavelet base
         float center_frequency
         float bandwidth_frequency
         unsigned int fbsp_order
+        int complex_cwt
     
 
-
-    cdef Wavelet* wavelet(WAVELET_NAME name, int type)
-    cdef Wavelet* blank_wavelet(size_t filter_length)
-    cdef void free_wavelet(Wavelet* wavelet)
+    cdef int is_discrete_wavelet(WAVELET_NAME name)
+    cdef DiscreteWavelet* discrete_wavelet(WAVELET_NAME name, int type)
+    cdef DiscreteWavelet* blank_discrete_wavelet(size_t filter_length)
+    cdef void free_discrete_wavelet(DiscreteWavelet* wavelet)
+    
+    cdef ContinuousWavelet* continous_wavelet(WAVELET_NAME name, int type)
+    cdef ContinuousWavelet* blank_continous_wavelet()
+    cdef void free_continous_wavelet(ContinuousWavelet* wavelet)
+    
+    
 

@@ -32,7 +32,7 @@ cpdef cwt_psi_single(data_t[::1] data, Wavelet wavelet, size_t output_len):
         elif wavelet.short_family_name == "cgau":
             psi_r = np.zeros(output_len, np.float64)
             psi_i = np.zeros(output_len, np.float64)
-            c_cwt.double_cgau(&data[0], <double *>psi_r.data, <double *>psi_i.data, data.size, wavelet.number)
+            c_cwt.double_cgau(&data[0], <double *>psi_r.data, <double *>psi_i.data, data.size, wavelet.family_number)
             return (psi_r, psi_i)
         elif wavelet.short_family_name == "shan":
             psi_r = np.zeros(output_len, np.float64)
@@ -53,7 +53,7 @@ cpdef cwt_psi_single(data_t[::1] data, Wavelet wavelet, size_t output_len):
     elif data_t is np.float32_t:
         if wavelet.short_family_name == "gaus":
             psi = np.zeros(output_len, np.float32)
-            c_cwt.float_gaus(&data[0], <float *>psi.data, data.size, wavelet.number)
+            c_cwt.float_gaus(&data[0], <float *>psi.data, data.size, wavelet.family_number)
             return psi
         elif wavelet.short_family_name == "mexh":
             psi = np.zeros(output_len, np.float32)

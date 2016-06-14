@@ -57,24 +57,24 @@ def swt(data_t[::1] data, Wavelet wavelet, size_t level, size_t start_level):
         # alloc memory, decompose D
         if data_t is np.float64_t:
             cD = np.zeros(output_len, dtype=np.float64)
-            if c_wt.double_swt_d(&data[0], data.size, wavelet.w,
+            if c_wt.double_swt_d(&data[0], data.size, wavelet.dw,
                                  &cD[0], cD.size, i) < 0:
                 raise RuntimeError("C swt failed.")
         elif data_t is np.float32_t:
             cD = np.zeros(output_len, dtype=np.float32)
-            if c_wt.float_swt_d(&data[0], data.size, wavelet.w,
+            if c_wt.float_swt_d(&data[0], data.size, wavelet.dw,
                                 &cD[0], cD.size, i) < 0:
                 raise RuntimeError("C swt failed.")
 
         # alloc memory, decompose A
         if data_t is np.float64_t:
             cA = np.zeros(output_len, dtype=np.float64)
-            if c_wt.double_swt_a(&data[0], data.size, wavelet.w,
+            if c_wt.double_swt_a(&data[0], data.size, wavelet.dw,
                                  &cA[0], cA.size, i) < 0:
                 raise RuntimeError("C swt failed.")
         elif data_t is np.float32_t:
             cA = np.zeros(output_len, dtype=np.float32)
-            if c_wt.float_swt_a(&data[0], data.size, wavelet.w,
+            if c_wt.float_swt_a(&data[0], data.size, wavelet.dw,
                                 &cA[0], cA.size, i) < 0:
                 raise RuntimeError("C swt failed.")
 

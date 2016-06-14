@@ -8,7 +8,8 @@ ctypedef fused data_t:
     np.float64_t
 
 cdef public class Wavelet [type WaveletType, object WaveletObject]:
-    cdef wavelet.Wavelet* w
+    cdef wavelet.DiscreteWavelet* dw
+    cdef wavelet.ContinuousWavelet* cw
 
     cdef readonly name
     cdef readonly number
