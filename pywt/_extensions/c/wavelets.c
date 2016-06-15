@@ -108,9 +108,8 @@ DiscreteWavelet* discrete_wavelet(WAVELET_NAME name, unsigned int order)
             w->base.compact_support = 1;
             w->base.family_name = "Daubechies";
             w->base.short_name = "db";
-            w->base.dwt_possible = 1;
-            w->base.cwt_possible = 1;
-
+            w->base.lower_bound = -5;
+            w->base.upper_bound = 5;
             {
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
@@ -157,8 +156,8 @@ DiscreteWavelet* discrete_wavelet(WAVELET_NAME name, unsigned int order)
             w->base.compact_support = 1;
             w->base.family_name = "Symlets";
             w->base.short_name = "sym";
-            w->base.dwt_possible = 1;
-            w->base.cwt_possible = 1;
+            w->base.lower_bound = -5;
+            w->base.upper_bound = 5;
             {
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
@@ -203,8 +202,8 @@ DiscreteWavelet* discrete_wavelet(WAVELET_NAME name, unsigned int order)
             w->base.compact_support = 1;
             w->base.family_name = "Coiflets";
             w->base.short_name = "coif";
-            w->base.dwt_possible = 1;
-            w->base.cwt_possible = 1;
+            w->base.lower_bound = -5;
+            w->base.upper_bound = 5;
             {
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
@@ -281,8 +280,6 @@ DiscreteWavelet* discrete_wavelet(WAVELET_NAME name, unsigned int order)
             w->base.compact_support = 1;
             w->base.family_name = "Biorthogonal";
             w->base.short_name = "bior";
-            w->base.dwt_possible = 1;
-            w->base.cwt_possible = 1;
             {
                 size_t n = M_max - M;
                 size_t i;
@@ -326,8 +323,8 @@ DiscreteWavelet* discrete_wavelet(WAVELET_NAME name, unsigned int order)
             w->base.compact_support = 1;
             w->base.family_name = "Discrete Meyer (FIR Approximation)";
             w->base.short_name = "dmey";
-            w->base.dwt_possible = 1;
-            w->base.cwt_possible = 1;
+            w->base.lower_bound = -5;
+            w->base.upper_bound = 5;
             {
                 size_t i;
                 for(i = 0; i < w->rec_len; ++i){
@@ -378,8 +375,6 @@ ContinuousWavelet* continous_wavelet(WAVELET_NAME name, unsigned int order)
             w->base.compact_support = 0;
             w->base.family_name = "Gaussian";
             w->base.short_name = "gaus";
-            w->base.dwt_possible = 0;
-            w->base.cwt_possible = 1;
             w->complex_cwt = 0;
             w->base.lower_bound = -5;
             w->base.upper_bound = 5;
@@ -400,8 +395,6 @@ ContinuousWavelet* continous_wavelet(WAVELET_NAME name, unsigned int order)
             w->base.compact_support = 0;
             w->base.family_name = "Mexican hat wavelet";
             w->base.short_name = "mexh";
-            w->base.dwt_possible = 0;
-            w->base.cwt_possible = 1;
             w->complex_cwt = 0;
             w->base.lower_bound = -5;
             w->base.upper_bound = 5;
@@ -422,8 +415,6 @@ ContinuousWavelet* continous_wavelet(WAVELET_NAME name, unsigned int order)
             w->base.compact_support = 0;
             w->base.family_name = "Morlet wavelet";
             w->base.short_name = "morl";
-            w->base.dwt_possible = 0;
-            w->base.cwt_possible = 1;
             w->complex_cwt = 0;
             w->base.lower_bound = -5;
             w->base.upper_bound = 5;
@@ -446,8 +437,6 @@ ContinuousWavelet* continous_wavelet(WAVELET_NAME name, unsigned int order)
             w->base.compact_support = 0;
             w->base.family_name = "Complex Gaussian wavelets";
             w->base.short_name = "cgau";
-            w->base.dwt_possible = 0;
-            w->base.cwt_possible = 1;
             w->complex_cwt = 1;
             w->base.lower_bound = -5;
             w->base.upper_bound = 5;
@@ -469,8 +458,6 @@ ContinuousWavelet* continous_wavelet(WAVELET_NAME name, unsigned int order)
             w->base.compact_support = 0;
             w->base.family_name = "Shannon wavelets";
             w->base.short_name = "shan";
-            w->base.dwt_possible = 0;
-            w->base.cwt_possible = 1;
             w->complex_cwt = 1;
             w->base.lower_bound = -5;
             w->base.upper_bound = 5;
@@ -492,8 +479,6 @@ ContinuousWavelet* continous_wavelet(WAVELET_NAME name, unsigned int order)
             w->base.compact_support = 0;
             w->base.family_name = "Frequency B-Spline wavelets";
             w->base.short_name = "fbsp";
-            w->base.dwt_possible = 0;
-            w->base.cwt_possible = 1;
             w->complex_cwt = 1;
             w->base.lower_bound = -5;
             w->base.upper_bound = 5;
@@ -515,8 +500,6 @@ ContinuousWavelet* continous_wavelet(WAVELET_NAME name, unsigned int order)
             w->base.compact_support = 0;
             w->base.family_name = "Complex Morlet wavelets";
             w->base.short_name = "cmor";
-            w->base.dwt_possible = 0;
-            w->base.cwt_possible = 1;
             w->complex_cwt = 1;
             w->base.lower_bound = -5;
             w->base.upper_bound = 5;

@@ -439,33 +439,25 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
         "DWT possible"
         def __get__(self):
             if self.dw is not NULL:
-                return bool(self.dw.base.dwt_possible)
+                return True
             else:
-                return bool(self.cw.base.dwt_possible)
-        def __set__(self, int value):
-            if self.dw is not NULL:
-                self.dw.base.dwt_possible = (value != 0)
-            else:
-                self.cw.base.dwt_possible = (value != 0)
+                return False
 
     property cwt_possible:
         "CWT possible"
         def __get__(self):
             if self.dw is not NULL:
-                return bool(self.dw.base.cwt_possible)
+                return False
             else:
-                return bool(self.cw.base.cwt_possible)
-        def __set__(self, int value):
-            if self.dw is not NULL:
-                self.dw.base.cwt_possible = (value != 0)
-            else:
-                self.cw.base.cwt_possible = (value != 0)
+                return True
 
     property complex_cwt:
         "CWT is complex"
         def __get__(self):
             if self.cw is not NULL:
                 return bool(self.cw.complex_cwt)
+            else:
+                return False
         def __set__(self, int value):
             if self.cw is not NULL:
                 self.cw.complex_cwt = (value != 0)

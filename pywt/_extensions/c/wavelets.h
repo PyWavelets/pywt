@@ -45,8 +45,6 @@ typedef struct  {
     unsigned int biorthogonal:1;
     unsigned int compact_support:1;
     
-    unsigned int dwt_possible:1;
-    unsigned int cwt_possible:1;
     
     float lower_bound;
     float upper_bound;    

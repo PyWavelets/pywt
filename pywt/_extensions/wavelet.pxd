@@ -31,8 +31,6 @@ cdef extern from "c/wavelets.h":
         unsigned int biorthogonal
         unsigned int compact_support
         
-        unsigned int dwt_possible
-        unsigned int cwt_possible
         
         float lower_bound
         float upper_bound
