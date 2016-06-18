@@ -260,7 +260,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
     def __cinit__(self, name=u"", object filter_bank=None):
         cdef object family_code, family_number
         cdef object filters
-        cdef index_t filter_length
+        cdef Index_t filter_length
         cdef object dec_lo, dec_hi, rec_lo, rec_hi
 
         if not name and filter_bank is None:
@@ -480,10 +480,10 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
         >>> phi_d, psi_d, phi_r, psi_r, x = wavelet.wavefun(level=5)
 
         """
-        cdef index_t filter_length "filter_length"
-        cdef index_t right_extent_length "right_extent_length"
-        cdef index_t output_length "output_length"
-        cdef index_t keep_length "keep_length"
+        cdef Index_t filter_length "filter_length"
+        cdef Index_t right_extent_length "right_extent_length"
+        cdef Index_t output_length "output_length"
+        cdef Index_t keep_length "keep_length"
         cdef np.float64_t n, n_mul
         cdef np.float64_t[::1] n_arr = <np.float64_t[:1]> &n,
         cdef np.float64_t[::1] n_mul_arr = <np.float64_t[:1]> &n_mul
@@ -497,7 +497,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
 
         if self.w.orthogonal:
             filter_length = self.w.dec_len
-            output_length = <index_t> ((filter_length-1) * p + 1)
+            output_length = <Index_t> ((filter_length-1) * p + 1)
             keep_length = get_keep_length(output_length, level, filter_length)
             output_length = fix_output_length(output_length, keep_length)
 
@@ -522,7 +522,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
             other = Wavelet(filter_bank=self.inverse_filter_bank)
 
             filter_length  = other.w.dec_len
-            output_length = <index_t> ((filter_length-1) * p)
+            output_length = <Index_t> ((filter_length-1) * p)
             keep_length = get_keep_length(output_length, level, filter_length)
             output_length = fix_output_length(output_length, keep_length)
             right_extent_length = get_right_extent_length(output_length, keep_length)
@@ -536,7 +536,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
                                      np.zeros(right_extent_length)))
 
             filter_length = self.w.dec_len
-            output_length = <index_t> ((filter_length-1) * p)
+            output_length = <Index_t> ((filter_length-1) * p)
             keep_length = get_keep_length(output_length, level, filter_length)
             output_length = fix_output_length(output_length, keep_length)
             right_extent_length = get_right_extent_length(output_length, keep_length)
@@ -574,10 +574,10 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
                            filter_bank=self.filter_bank)
 
 
-cdef index_t get_keep_length(index_t output_length,
-                             int level, index_t filter_length):
-    cdef index_t lplus "lplus"
-    cdef index_t keep_length "keep_length"
+cdef Index_t get_keep_length(Index_t output_length,
+                             int level, Index_t filter_length):
+    cdef Index_t lplus "lplus"
+    cdef Index_t keep_length "keep_length"
     cdef int i "i"
     lplus = filter_length - 2
     keep_length = 1
@@ -585,12 +585,12 @@ cdef index_t get_keep_length(index_t output_length,
         keep_length = 2*keep_length+lplus
     return keep_length
 
-cdef index_t fix_output_length(index_t output_length, index_t keep_length):
+cdef Index_t fix_output_length(Index_t output_length, Index_t keep_length):
     if output_length-keep_length-2 < 0:
         output_length = keep_length+2
     return output_length
 
-cdef index_t get_right_extent_length(index_t output_length, index_t keep_length):
+cdef Index_t get_right_extent_length(Index_t output_length, Index_t keep_length):
     return output_length - keep_length - 1
 
 
@@ -629,8 +629,8 @@ def keep(arr, keep_length):
 
 # Some utility functions
 
-cdef object float64_array_to_list(double* data, index_t n):
-    cdef index_t i
+cdef object float64_array_to_list(double* data, Index_t n):
+    cdef Index_t i
     cdef object app
     cdef object ret
     ret = []
@@ -641,7 +641,7 @@ cdef object float64_array_to_list(double* data, index_t n):
 
 
 cdef void copy_object_to_float64_array(source, double* dest) except *:
-    cdef index_t i
+    cdef Index_t i
     cdef double x
     i = 0
     for x in source:
@@ -650,7 +650,7 @@ cdef void copy_object_to_float64_array(source, double* dest) except *:
 
 
 cdef void copy_object_to_float32_array(source, float* dest) except *:
-    cdef index_t i
+    cdef Index_t i
     cdef float x
     i = 0
     for x in source:

@@ -1,7 +1,7 @@
 cimport wavelet
 cimport numpy as np
 
-ctypedef Py_ssize_t index_t
+ctypedef Py_ssize_t Index_t
 
 ctypedef fused data_t:
     np.float32_t
