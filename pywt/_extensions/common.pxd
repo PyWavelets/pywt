@@ -1,5 +1,5 @@
 cdef extern from "c/common.h":
-    ctypedef int Index_t
+    ctypedef int pywt_index_t
 
     cdef void* wtmalloc(long size)
     cdef void* wtcalloc(long len, long size)
@@ -7,7 +7,7 @@ cdef extern from "c/common.h":
 
     ctypedef struct ArrayInfo:
         size_t * shape
-        Index_t * strides
+        pywt_index_t * strides
         size_t ndim
 
     ctypedef enum Coefficient:

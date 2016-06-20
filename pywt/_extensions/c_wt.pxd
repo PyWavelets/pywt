@@ -1,7 +1,7 @@
 # Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/>
 # See COPYING for license details.
 
-from common cimport MODE, Index_t, ArrayInfo, Coefficient
+from common cimport MODE, pywt_index_t, ArrayInfo, Coefficient
 from wavelet cimport Wavelet
 
 
@@ -37,10 +37,10 @@ cdef extern from "c/wt.h":
                          double * const output, const size_t output_len,
                          const Wavelet * const wavelet, const MODE mode)
 
-    cdef int double_swt_a(double input[], Index_t input_len, Wavelet* wavelet,
-                          double output[], Index_t output_len, int level)
-    cdef int double_swt_d(double input[], Index_t input_len, Wavelet* wavelet,
-                          double output[], Index_t output_len, int level)
+    cdef int double_swt_a(double input[], pywt_index_t input_len, Wavelet* wavelet,
+                          double output[], pywt_index_t output_len, int level)
+    cdef int double_swt_d(double input[], pywt_index_t input_len, Wavelet* wavelet,
+                          double output[], pywt_index_t output_len, int level)
 
 
     cdef int float_downcoef_axis(const float * const input, const ArrayInfo input_info,
@@ -73,7 +73,7 @@ cdef extern from "c/wt.h":
                         float * const output, const size_t output_len,
                         const Wavelet * const wavelet, const MODE mode)
 
-    cdef int float_swt_a(float input[], Index_t input_len, Wavelet* wavelet,
-                         float output[], Index_t output_len, int level)
-    cdef int float_swt_d(float input[], Index_t input_len, Wavelet* wavelet,
-                         float output[], Index_t output_len, int level)
+    cdef int float_swt_a(float input[], pywt_index_t input_len, Wavelet* wavelet,
+                         float output[], pywt_index_t output_len, int level)
+    cdef int float_swt_d(float input[], pywt_index_t input_len, Wavelet* wavelet,
+                         float output[], pywt_index_t output_len, int level)

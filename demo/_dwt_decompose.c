@@ -19,7 +19,7 @@ int main(){
     int i;
     float input[] = {1,2,3,4,5,6,7,8,9};
     float *cA, *cD;
-    Index_t input_len, output_len;
+    pywt_index_t input_len, output_len;
 
     input_len = sizeof input / sizeof input[0];
     output_len = dwt_buffer_length(input_len, w->dec_len, mode);
