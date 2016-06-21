@@ -23,6 +23,7 @@
         #include "Python.h"
     #endif
 
+    /* on Solaris/SmartOS system, index_t is used in sys/types.h, so use pytw_index_t */
     typedef Py_ssize_t pywt_index_t;
 
     /* using Python's memory manager */
