@@ -270,7 +270,7 @@ def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
             raise ValueError("Axis greater than data dimensions")
 
         new_coeffs = {}
-        new_keys = [''.join(coeff) for coeff in product('ad', repeat=key_length)]
+        new_keys = [''.join(coef) for coef in product('ad', repeat=key_length)]
 
         for key in new_keys:
             L = coeffs.get(key + 'a', None)
