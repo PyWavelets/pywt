@@ -400,12 +400,12 @@ int CAT(TYPE, _idwt)(const TYPE * const restrict coeffs_a, const size_t coeffs_a
 }
 
 /* basic SWT step (TODO: optimize) */
-int CAT(TYPE, _swt_)(TYPE input[], index_t input_len,
-                     const TYPE filter[], index_t filter_len,
-                     TYPE output[], index_t output_len, int level){
+int CAT(TYPE, _swt_)(TYPE input[], pywt_index_t input_len,
+                     const TYPE filter[], pywt_index_t filter_len,
+                     TYPE output[], pywt_index_t output_len, int level){
 
     TYPE * e_filter;
-    index_t i, e_filter_len;
+    pywt_index_t i, e_filter_len;
     int ret;
 
     if(level < 1)
@@ -446,8 +446,8 @@ int CAT(TYPE, _swt_)(TYPE input[], index_t input_len,
  * Approximation at specified level
  * input - approximation coeffs from upper level or signal if level == 1
  */
-int CAT(TYPE, _swt_a)(TYPE input[], index_t input_len, Wavelet* wavelet,
-                      TYPE output[], index_t output_len, int level){
+int CAT(TYPE, _swt_a)(TYPE input[], pywt_index_t input_len, Wavelet* wavelet,
+                      TYPE output[], pywt_index_t output_len, int level){
     return CAT(TYPE, _swt_)(input, input_len, wavelet->CAT(dec_lo_, TYPE),
                             wavelet->dec_len, output, output_len, level);
 }
@@ -455,8 +455,8 @@ int CAT(TYPE, _swt_a)(TYPE input[], index_t input_len, Wavelet* wavelet,
 /* Details at specified level
  * input - approximation coeffs from upper level or signal if level == 1
  */
-int CAT(TYPE, _swt_d)(TYPE input[], index_t input_len, Wavelet* wavelet,
-                      TYPE output[], index_t output_len, int level){
+int CAT(TYPE, _swt_d)(TYPE input[], pywt_index_t input_len, Wavelet* wavelet,
+                      TYPE output[], pywt_index_t output_len, int level){
     return CAT(TYPE, _swt_)(input, input_len, wavelet->CAT(dec_hi_, TYPE),
                             wavelet->dec_len, output, output_len, level);
 }

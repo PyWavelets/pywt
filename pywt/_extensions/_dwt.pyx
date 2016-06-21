@@ -1,5 +1,5 @@
 cimport common, c_wt
-from common cimport index_t, MODE
+from common cimport pywt_index_t, MODE
 from ._pywt cimport _check_dtype
 
 cimport numpy as np
@@ -67,11 +67,11 @@ cpdef dwt_axis(np.ndarray data, Wavelet wavelet, MODE mode, unsigned int axis=0)
     cD = np.empty(output_shape, data.dtype)
 
     data_info.ndim = data.ndim
-    data_info.strides = <index_t *> data.strides
+    data_info.strides = <pywt_index_t *> data.strides
     data_info.shape = <size_t *> data.shape
 
     output_info.ndim = cA.ndim
-    output_info.strides = <index_t *> cA.strides
+    output_info.strides = <pywt_index_t *> cA.strides
     output_info.shape = <size_t *> cA.shape
 
     if data.dtype == np.float64:
@@ -151,7 +151,7 @@ cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d,
         else:
             coefs_a = coefs_a.astype(_check_dtype(coefs_a), copy=False)
         a_info.ndim = coefs_a.ndim
-        a_info.strides = <index_t *> coefs_a.strides
+        a_info.strides = <pywt_index_t *> coefs_a.strides
         a_info.shape = <size_t *> coefs_a.shape
     if coefs_d is not None:
         if coefs_a is not None and coefs_a.dtype.itemsize > coefs_d.dtype.itemsize:
@@ -159,7 +159,7 @@ cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d,
         else:
             coefs_d = coefs_d.astype(_check_dtype(coefs_d), copy=False)
         d_info.ndim = coefs_d.ndim
-        d_info.strides = <index_t *> coefs_d.strides
+        d_info.strides = <pywt_index_t *> coefs_d.strides
         d_info.shape = <size_t *> coefs_d.shape
 
     if coefs_a is not None:
@@ -178,7 +178,7 @@ cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d,
     output = np.empty(output_shape, output_dtype)
 
     output_info.ndim = output.ndim
-    output_info.strides = <index_t *> output.strides
+    output_info.strides = <pywt_index_t *> output.strides
     output_info.shape = <size_t *> output.shape
 
     if output.dtype == np.float64:

@@ -31,7 +31,7 @@ typedef struct {
     /* Wavelet properties */
     int vanishing_moments_psi;
     int vanishing_moments_phi;
-    index_t support_width;
+    pywt_index_t support_width;
 
     SYMMETRY symmetry;
 
