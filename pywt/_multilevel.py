@@ -426,14 +426,6 @@ def waverecn(coeffs, wavelet, mode='symmetric', axes=None):
 
     a, ds = coeffs[0], coeffs[1:]
 
-    if axes is None:
-        axes = range(a.ndim)
-    else:
-        axes = tuple(axes)
-    if len(axes) != len(set(axes)):
-        raise ValueError("The axes passed to waverecn must be unique.")
-    ndim_transform = len(axes)
-
     # Raise error for invalid key combinations
     ds = list(map(_fix_coeffs, ds))
 
@@ -452,9 +444,19 @@ def waverecn(coeffs, wavelet, mode='symmetric', axes=None):
 
     # test that all coefficients have a matching number of dimensions
     unique_coeff_ndims = np.unique(coeff_ndims)
-    if len(unique_coeff_ndims) != 1:
+    if len(unique_coeff_ndims) == 1:
+        ndim = unique_coeff_ndims[0]
+    else:
         raise ValueError(
             "All coefficients must have a matching number of dimensions")
+
+    if axes is None:
+        axes = range(ndim)
+    else:
+        axes = tuple(axes)
+    if len(axes) != len(set(axes)):
+        raise ValueError("The axes passed to waverecn must be unique.")
+    ndim_transform = len(axes)
 
     for idx, d in enumerate(ds):
         if a is None and not d:
