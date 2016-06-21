@@ -245,11 +245,12 @@ def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
         return (idwtn(real_coeffs, wavelet, mode, axes) +
                 1j * idwtn(imag_coeffs, wavelet, mode, axes))
 
-    ndim = max(len(key) for key in coeffs.keys())
+    # key length matches the number of axes transformed
+    ndim_transform = max(len(key) for key in coeffs.keys())
 
     try:
         coeff_shapes = (v.shape for k, v in coeffs.items()
-                        if v is not None and len(k) == ndim)
+                        if v is not None and len(k) == ndim_transform)
         coeff_shape = next(coeff_shapes)
     except StopIteration:
         raise ValueError("`coeffs` must contain at least one non-null wavelet "
@@ -258,10 +259,16 @@ def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
         raise ValueError("`coeffs` must all be of equal size (or None)")
 
     if axes is None:
-        axes = range(ndim)
+        axes = range(ndim_transform)
+        ndim = ndim_transform
+    else:
+        ndim = len(coeff_shape)
     axes = (a + ndim if a < 0 else a for a in axes)
 
     for key_length, axis in reversed(list(enumerate(axes))):
+        if axis < 0 or axis >= ndim:
+            raise ValueError("Axis greater than data dimensions")
+
         new_coeffs = {}
         new_keys = [''.join(coeff) for coeff in product('ad', repeat=key_length)]
 
