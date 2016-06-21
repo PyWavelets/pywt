@@ -86,7 +86,11 @@ def wavedec(data, wavelet, mode='symmetric', level=None, axis=-1):
     if not isinstance(wavelet, Wavelet):
         wavelet = Wavelet(wavelet)
 
-    level = _check_level(data.shape[axis], wavelet.dec_len, level)
+    try:
+        axes_shape = data.shape[axis]
+    except IndexError:
+        raise ValueError("Axis greater than data dimensions")
+    level = _check_level(axes_shape, wavelet.dec_len, level)
 
     coeffs_list = []
 
@@ -193,10 +197,12 @@ def wavedec2(data, wavelet, mode='symmetric', level=None, axes=(-2, -1)):
     axes = tuple(axes)
     if len(axes) != 2:
         raise ValueError("Expected 2 axes")
+    if len(axes) != len(set(axes)):
+        raise ValueError("The axes passed to wavedec2 must be unique.")
     try:
         axes_shapes = [data.shape[ax] for ax in axes]
     except IndexError:
-        raise IndexError("Axis greater than data dimensions")
+        raise ValueError("Axis greater than data dimensions")
     level = _check_level(min(axes_shapes), wavelet.dec_len, level)
 
     coeffs_list = []
@@ -247,6 +253,9 @@ def waverec2(coeffs, wavelet, mode='symmetric', axes=(-2, -1)):
 
     if not isinstance(coeffs, (list, tuple)):
         raise ValueError("Expected sequence of coefficient arrays.")
+
+    if len(axes) != len(set(axes)):
+        raise ValueError("The axes passed to waverec2 must be unique.")
 
     if len(coeffs) < 1:
         raise ValueError(
@@ -334,6 +343,8 @@ def wavedecn(data, wavelet, mode='symmetric', level=None, axes=None):
     if not isinstance(wavelet, Wavelet):
         wavelet = Wavelet(wavelet)
 
+    if np.isscalar(axes):
+        axes = (axes, )
     if axes is None:
         axes = range(data.ndim)
     else:
@@ -344,7 +355,7 @@ def wavedecn(data, wavelet, mode='symmetric', level=None, axes=None):
     try:
         axes_shapes = [data.shape[ax] for ax in axes]
     except IndexError:
-        raise IndexError("Axis greater than data dimensions")
+        raise ValueError("Axis greater than data dimensions")
     level = _check_level(min(axes_shapes), wavelet.dec_len, level)
 
     coeffs_list = []
@@ -450,6 +461,8 @@ def waverecn(coeffs, wavelet, mode='symmetric', axes=None):
         raise ValueError(
             "All coefficients must have a matching number of dimensions")
 
+    if np.isscalar(axes):
+        axes = (axes, )
     if axes is None:
         axes = range(ndim)
     else:
