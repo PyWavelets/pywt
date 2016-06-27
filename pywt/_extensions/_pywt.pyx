@@ -262,7 +262,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
     def __cinit__(self, name=u"", object filter_bank=None):
         cdef object family_code, family_number
         cdef object filters
-        cdef index_t filter_length
+        cdef pywt_index_t filter_length
         cdef object dec_lo, dec_hi, rec_lo, rec_hi
 
         if not name and filter_bank is None:
@@ -627,10 +627,10 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
         >>> phi_d, psi_d, phi_r, psi_r, x = wavelet.wavefun(level=5)
 
         """
-        cdef index_t filter_length "filter_length"
-        cdef index_t right_extent_length "right_extent_length"
-        cdef index_t output_length "output_length"
-        cdef index_t keep_length "keep_length"
+        cdef pywt_index_t filter_length "filter_length"
+        cdef pywt_index_t right_extent_length "right_extent_length"
+        cdef pywt_index_t output_length "output_length"
+        cdef pywt_index_t keep_length "keep_length"
         cdef np.float64_t n, n_mul
         cdef np.float64_t[::1] n_arr = <np.float64_t[:1]> &n,
         cdef np.float64_t[::1] n_mul_arr = <np.float64_t[:1]> &n_mul
@@ -659,63 +659,63 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
                 psi = cwt_psi_single(x, self, output_length)
                 return [np.asarray(psi, dtype=np.float64), 
                         np.asarray(x, dtype=np.float64)]
+
+        if self.dw.orthogonal:
+            filter_length = self.dw.dec_len
+            output_length = <pywt_index_t> ((filter_length-1) * p + 1)
+            keep_length = get_keep_length(output_length, level, filter_length)
+            output_length = fix_output_length(output_length, keep_length)
+
+            right_extent_length = get_right_extent_length(output_length,
+                                                          keep_length)
+
+            # phi, psi, x
+            return [np.concatenate(([0.],
+                                    keep(upcoef(True, n_arr, self, level, 0), keep_length),
+                                    np.zeros(right_extent_length))),
+                    np.concatenate(([0.],
+                                    keep(upcoef(False, n_arr, self, level, 0), keep_length),
+                                    np.zeros(right_extent_length))),
+                    np.linspace(0.0, (output_length-1)/p, output_length)]
         else:
-            if self.dw.base.orthogonal:
-                filter_length = self.dw.dec_len
-                output_length = <index_t> ((filter_length-1) * p + 1)
-                keep_length = get_keep_length(output_length, level, filter_length)
-                output_length = fix_output_length(output_length, keep_length)
-    
-                right_extent_length = get_right_extent_length(output_length,
-                                                              keep_length)
-    
-                # phi, psi, x
-                return [np.concatenate(([0.],
-                                        keep(upcoef(True, n_arr, self, level, 0), keep_length),
-                                        np.zeros(right_extent_length))),
-                        np.concatenate(([0.],
-                                        keep(upcoef(False, n_arr, self, level, 0), keep_length),
-                                        np.zeros(right_extent_length))),
-                        np.linspace(0.0, (output_length-1)/p, output_length)]
+            if self.dw.base.biorthogonal and (self.dw.base.vanishing_moments_psi % 4) != 1:
+                # FIXME: I don't think this branch is well tested
+                n_mul = -n
             else:
-                if self.dw.base.biorthogonal and (self.dw.base.vanishing_moments_psi % 4) != 1:
-                    # FIXME: I don't think this branch is well tested
-                    n_mul = -n
-                else:
-                    n_mul = n
-    
-                other = Wavelet(filter_bank=self.inverse_filter_bank)
-    
-                filter_length  = other.dw.dec_len
-                output_length = <index_t> ((filter_length-1) * p)
-                keep_length = get_keep_length(output_length, level, filter_length)
-                output_length = fix_output_length(output_length, keep_length)
-                right_extent_length = get_right_extent_length(output_length, keep_length)
-    
-                phi_d  = np.concatenate(([0.],
-                                         keep(upcoef(True, n_arr, other, level, 0), keep_length),
-                                         np.zeros(right_extent_length)))
-                psi_d  = np.concatenate(([0.],
-                                         keep(upcoef(False, n_mul_arr, other, level, 0),
-                                              keep_length),
-                                         np.zeros(right_extent_length)))
-    
-                filter_length = self.dw.dec_len
-                output_length = <index_t> ((filter_length-1) * p)
-                keep_length = get_keep_length(output_length, level, filter_length)
-                output_length = fix_output_length(output_length, keep_length)
-                right_extent_length = get_right_extent_length(output_length, keep_length)
-    
-                phi_r  = np.concatenate(([0.],
-                                         keep(upcoef(True, n_arr, self, level, 0), keep_length),
-                                         np.zeros(right_extent_length)))
-                psi_r  = np.concatenate(([0.],
-                                         keep(upcoef(False, n_mul_arr, self, level, 0),
-                                              keep_length),
-                                         np.zeros(right_extent_length)))
-    
-                return [phi_d, psi_d, phi_r, psi_r,
-                        np.linspace(0.0, (output_length - 1) / p, output_length)]
+                n_mul = n
+
+            other = Wavelet(filter_bank=self.inverse_filter_bank)
+
+            filter_length  = other.w.dec_len
+            output_length = <pywt_index_t> ((filter_length-1) * p)
+            keep_length = get_keep_length(output_length, level, filter_length)
+            output_length = fix_output_length(output_length, keep_length)
+            right_extent_length = get_right_extent_length(output_length, keep_length)
+
+            phi_d  = np.concatenate(([0.],
+                                     keep(upcoef(True, n_arr, other, level, 0), keep_length),
+                                     np.zeros(right_extent_length)))
+            psi_d  = np.concatenate(([0.],
+                                     keep(upcoef(False, n_mul_arr, other, level, 0),
+                                          keep_length),
+                                     np.zeros(right_extent_length)))
+
+            filter_length = self.dw.dec_len
+            output_length = <pywt_index_t> ((filter_length-1) * p)
+            keep_length = get_keep_length(output_length, level, filter_length)
+            output_length = fix_output_length(output_length, keep_length)
+            right_extent_length = get_right_extent_length(output_length, keep_length)
+
+            phi_r  = np.concatenate(([0.],
+                                     keep(upcoef(True, n_arr, self, level, 0), keep_length),
+                                     np.zeros(right_extent_length)))
+            psi_r  = np.concatenate(([0.],
+                                     keep(upcoef(False, n_mul_arr, self, level, 0),
+                                          keep_length),
+                                     np.zeros(right_extent_length)))
+
+            return [phi_d, psi_d, phi_r, psi_r,
+                    np.linspace(0.0, (output_length - 1) / p, output_length)]
 
     def __str__(self):
         s = []
@@ -742,10 +742,10 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
                            filter_bank=self.filter_bank)
 
 
-cdef index_t get_keep_length(index_t output_length,
-                             int level, index_t filter_length):
-    cdef index_t lplus "lplus"
-    cdef index_t keep_length "keep_length"
+cdef pywt_index_t get_keep_length(pywt_index_t output_length,
+                             int level, pywt_index_t filter_length):
+    cdef pywt_index_t lplus "lplus"
+    cdef pywt_index_t keep_length "keep_length"
     cdef int i "i"
     lplus = filter_length - 2
     keep_length = 1
@@ -753,12 +753,12 @@ cdef index_t get_keep_length(index_t output_length,
         keep_length = 2*keep_length+lplus
     return keep_length
 
-cdef index_t fix_output_length(index_t output_length, index_t keep_length):
+cdef pywt_index_t fix_output_length(pywt_index_t output_length, pywt_index_t keep_length):
     if output_length-keep_length-2 < 0:
         output_length = keep_length+2
     return output_length
 
-cdef index_t get_right_extent_length(index_t output_length, index_t keep_length):
+cdef pywt_index_t get_right_extent_length(pywt_index_t output_length, pywt_index_t keep_length):
     return output_length - keep_length - 1
 
 
@@ -797,8 +797,8 @@ def keep(arr, keep_length):
 
 # Some utility functions
 
-cdef object float64_array_to_list(double* data, index_t n):
-    cdef index_t i
+cdef object float64_array_to_list(double* data, pywt_index_t n):
+    cdef pywt_index_t i
     cdef object app
     cdef object ret
     ret = []
@@ -809,7 +809,7 @@ cdef object float64_array_to_list(double* data, index_t n):
 
 
 cdef void copy_object_to_float64_array(source, double* dest) except *:
-    cdef index_t i
+    cdef pywt_index_t i
     cdef double x
     i = 0
     for x in source:
@@ -818,7 +818,7 @@ cdef void copy_object_to_float64_array(source, double* dest) except *:
 
 
 cdef void copy_object_to_float32_array(source, float* dest) except *:
-    cdef index_t i
+    cdef pywt_index_t i
     cdef float x
     i = 0
     for x in source:

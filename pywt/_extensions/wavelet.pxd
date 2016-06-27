@@ -1,4 +1,4 @@
-from common cimport index_t
+from common cimport pywt_index_t
 
 cdef extern from "c/wavelets.h":
     ctypedef enum SYMMETRY:
@@ -25,7 +25,7 @@ cdef extern from "c/wavelets.h":
     ctypedef struct BaseWavelet:
         int vanishing_moments_psi
         int vanishing_moments_phi
-        index_t support_width
+        pywt_index_t support_width
 
         unsigned int orthogonal
         unsigned int biorthogonal

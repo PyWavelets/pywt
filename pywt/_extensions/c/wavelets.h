@@ -37,7 +37,7 @@ typedef struct  {
     /* Wavelet properties */
     int vanishing_moments_psi;
     int vanishing_moments_phi;
-    index_t support_width;
+    pywt_index_t support_width;
 
     SYMMETRY symmetry;
 
@@ -67,7 +67,6 @@ typedef struct {
     float* rec_lo_float;
     size_t dec_len;   /* length of decomposition filter */
     size_t rec_len;   /* length of reconstruction filter */
-
 
 } DiscreteWavelet;
 

@@ -23,14 +23,15 @@
         #include "Python.h"
     #endif
 
-    typedef Py_ssize_t index_t;
+    /* on Solaris/SmartOS system, index_t is used in sys/types.h, so use pytw_index_t */
+    typedef Py_ssize_t pywt_index_t;
 
     /* using Python's memory manager */
     #define wtmalloc(size)      PyMem_Malloc(size)
     #define wtfree(ptr)         PyMem_Free(ptr)
     void *wtcalloc(size_t, size_t);
 #else
-    typedef int index_t;
+    typedef int pywt_index_t;
     /* standard c memory management */
     #define wtmalloc(size)      malloc(size)
     #define wtfree(ptr)         free(ptr)
@@ -43,7 +44,7 @@
 
 typedef struct {
     size_t * shape;
-    index_t * strides;
+    pywt_index_t * strides;
     size_t ndim;
 } ArrayInfo;
 
