@@ -1,7 +1,7 @@
 # Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/>
 # See COPYING for license details.
 
-from common cimport MODE, pywt_index_t, ArrayInfo, Coefficient
+from common cimport MODE, ArrayInfo, Coefficient
 from wavelet cimport ContinuousWavelet
 
 

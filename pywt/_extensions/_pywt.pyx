@@ -648,7 +648,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
             if length is None:
                 output_length = 256
             else:
-                output_length = <index_t>length
+                output_length = <pywt_index_t>length
             x = np.linspace(self.cw.base.lower_bound, self.cw.base.upper_bound, output_length)
             # x = np.array(x, dtype=np.float64)
             if self.cw.complex_cwt:
@@ -660,7 +660,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
                 return [np.asarray(psi, dtype=np.float64), 
                         np.asarray(x, dtype=np.float64)]
 
-        if self.dw.orthogonal:
+        if self.dw.base.orthogonal:
             filter_length = self.dw.dec_len
             output_length = <pywt_index_t> ((filter_length-1) * p + 1)
             keep_length = get_keep_length(output_length, level, filter_length)
