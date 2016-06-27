@@ -686,7 +686,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
 
             other = Wavelet(filter_bank=self.inverse_filter_bank)
 
-            filter_length  = other.w.dec_len
+            filter_length  = other.dw.dec_len
             output_length = <pywt_index_t> ((filter_length-1) * p)
             keep_length = get_keep_length(output_length, level, filter_length)
             output_length = fix_output_length(output_length, keep_length)
