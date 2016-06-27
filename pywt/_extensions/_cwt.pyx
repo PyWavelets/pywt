@@ -1,5 +1,5 @@
 cimport common, c_cwt
-from common cimport index_t, MODE
+from common cimport pywt_index_t, MODE
 from ._pywt cimport _check_dtype
 
 cimport numpy as np
