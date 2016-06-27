@@ -447,7 +447,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
         "CWT possible"
         def __get__(self):
             if self.dw is not NULL:
-                return False
+                return True
             else:
                 return True
 

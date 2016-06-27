@@ -9,6 +9,27 @@ __all__ = ["cwt"]
 def cwt(data, scales, wavelet):
     """
     cwt(data, scales, wavelet)
+
+    One dimensional Continuous Wavelet Transform.
+
+    Parameters
+    ----------
+    data : array_like
+        Input signal
+    scales : array_like
+        scales to use
+    wavelet : Wavelet object or name
+        Wavelet to use
+
+    Returns
+    -------
+    coefs : array_like
+        Continous wavelet transform of the input signal for the given scales and wavelet
+
+    Notes
+    -----
+    Size of coefficients arrays depends on the length of the input array and the length of given scales.
+
     Examples
     --------
     >>> import pywt
@@ -18,6 +39,18 @@ def cwt(data, scales, wavelet):
     >>> y = np.sin(2*np.pi*x/32)
     >>> coef=pywt.cwt(y,np.arange(1,129),'gaus1')
     >>> plt.matshow(coef.T)
+    ----------
+    >>> import pywt
+    >>> import numpy as np
+    >>> from scipy import signal
+    >>> import matplotlib.pyplot as plt
+    >>> t = np.linspace(-1, 1, 200, endpoint=False)
+    >>> sig  = np.cos(2 * np.pi * 7 * t) + signal.gausspulse(t - 0.4, fc=2)
+    >>> widths = np.arange(1, 31)
+    >>> cwtmatr = pywt.cwt(sig, widths, 'mexh').T
+    >>> plt.imshow(cwtmatr, extent=[-1, 1, 1, 31], cmap='PRGn', aspect='auto',
+    ...            vmax=abs(cwtmatr).max(), vmin=-abs(cwtmatr).max())
+    >>> plt.show()
     """
 
     # accept array_like input; make a copy to ensure a contiguous array
