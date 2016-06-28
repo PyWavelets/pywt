@@ -168,7 +168,7 @@ def wavelist(family=None):
 
     Parameters
     ----------
-    family : {'haar', 'db', 'sym', 'coif', 'bior', 'rbio', 'dmey'}
+    family : {'haar', 'db', 'sym', 'coif', 'bior', 'rbio', 'dmey', 'gaus', 'mexh', 'morl', 'cgau', 'shan', 'fbsp', 'cmor'}
         Short family name.  If the family name is None (default) then names
         of all the built-in wavelets are returned. Otherwise the function
         returns names of wavelets that belong to the given family.
@@ -220,6 +220,13 @@ def families(int short=True):
     * Biorthogonal (``bior``)
     * Reverse biorthogonal (``rbio``)
     * `"Discrete"` FIR approximation of Meyer wavelet (``dmey``)
+    * Gaussian wavelets (``gaus``)
+    * Mexican hat wavelet (``mexh``)
+    * Morlet wavelet (``morl``)
+    * Complex Gaussian wavelets (``cgau``)
+    * Shannon wavelets (``shan``)
+    * Frequency B-Spline wavelets (``fbsp``)
+    * Complex Morlet wavelets (``cmor``)
 
     Parameters
     ----------
@@ -235,9 +242,9 @@ def families(int short=True):
     --------
     >>> import pywt
     >>> pywt.families()
-    ['haar', 'db', 'sym', 'coif', 'bior', 'rbio', 'dmey']
+    ['haar', 'db', 'sym', 'coif', 'bior', 'rbio', 'dmey', 'gaus', 'mexh', 'morl', 'cgau', 'shan', 'fbsp', 'cmor']
     >>> pywt.families(short=False)
-    ['Haar', 'Daubechies', 'Symlets', 'Coiflets', 'Biorthogonal', 'Reverse biorthogonal', 'Discrete Meyer (FIR Approximation)']
+    ['Haar', 'Daubechies', 'Symlets', 'Coiflets', 'Biorthogonal', 'Reverse biorthogonal', 'Discrete Meyer (FIR Approximation)', 'Gaussian', 'Mexican hat wavelet', 'Morlet wavelet', 'Complex Gaussian wavelets', 'Shannon wavelets', 'Frequency B-Spline wavelets', 'Complex Morlet wavelets']
 
     """
     if short:

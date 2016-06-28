@@ -3,7 +3,7 @@ import numpy as np
 from ._extensions._pywt import Wavelet, Modes, _check_dtype
 from ._extensions._cwt import (cwt_psi_single, cwt_conv, cwt_conv_real)
 
-__all__ = ["cwt"]
+__all__ = ["cwt", "morlet", "gauswavf", "mexihat","cmorwavf", "fbspwavf", "cgauwavf"]
 
 
 def cwt(data, scales, wavelet):
@@ -68,9 +68,9 @@ def cwt(data, scales, wavelet):
             if (plen < 3):
                 plen = 3
             if wavelet.complex_cwt:
-                psi_r, psi_i, x = wavelet.wavefun(length=plen.astype(np.int))
-                coef_r = cwt_conv_real(data,psi_r,data.size)
-                coef_i = cwt_conv_real(data,psi_i,data.size)
+                psi, x = wavelet.wavefun(length=plen.astype(np.int))
+                coef_r = cwt_conv_real(data,np.real(psi),data.size)
+                coef_i = cwt_conv_real(data,np.imag(psi),data.size)
                 out
                 out[:,i] = coef_r.astype(np.complex)+1j*coef_i.astype(np.complex)
             else:
@@ -80,3 +80,316 @@ def cwt(data, scales, wavelet):
         return out
     else:
         raise ValueError("Only dim == 1 supportet")
+
+
+def morlet(lb,ub,n):
+    """
+    morlet(lower_bound,upper_bound,n)
+
+    Morlet wavelet
+
+    Parameters
+    ----------
+    lower_bound : float
+        lower bound of support
+    upper_bound : float
+        upper bound of support
+    n : int
+        number of samples
+
+    Returns
+    -------
+    psi : array_like
+        Wavelet function computed for grid xval
+    xval : array_like
+        grid
+
+    Notes
+    -----
+    Morlet wavelet for effective support of [lower_bound, upper_bound].
+
+    Examples
+    --------
+    >>> import pywt
+    >>> import matplotlib.pyplot as plt
+    >>> lb = -4
+    >>> ub = 4
+    >>> n = 1000
+    >>> [psi,xval] = pywt.morlet(lb,ub,n)
+    >>> plt.plot(xval,psi)
+    >>> plt.title("Morlet Wavelet")
+    """
+    wavelet = Wavelet("morl")
+    wavelet.upper_bound = ub
+    wavelet.lower_bound = lb
+    psi, x = wavelet.wavefun(length=n)
+    return psi, x
+
+
+def gauswavf(lb,ub,n,p=1):
+    """
+    gauswavf(lower_bound,upper_bound,n)
+    gauswavf(lower_bound,upper_bound,n,p)
+    gauswavf(lower_bound,upper_bound,n,wavename)
+
+    Gaussian wavelet
+
+    Parameters
+    ----------
+    lower_bound : float
+        lower bound of support
+    upper_bound : float
+        upper bound of support
+    n : int
+        number of samples
+    p : int
+        order
+
+    Returns
+    -------
+    psi : array_like
+        Wavelet function computed for grid xval
+    xval : array_like
+        grid
+
+    Notes
+    -----
+    Gaussian wavelet for effective support of [lower_bound, upper_bound].
+
+    Examples
+    --------
+    >>> import pywt
+    >>> import matplotlib.pyplot as plt
+    >>> lb = -5
+    >>> ub = 5
+    >>> n = 1000
+    >>> [psi,xval] = pywt.gauswavf(lb,ub,n,8)
+    >>> plt.plot(xval,psi)
+    >>> plt.title("Gaussian Wavelet of order 8")
+    """
+    if isinstance(p,int):
+        wavelet = Wavelet("gaus"+str(p))
+    else:
+        wavelet = Wavelet(p)
+    wavelet.upper_bound = ub
+    wavelet.lower_bound = lb
+    psi, x = wavelet.wavefun(length=n)
+    return psi, x
+
+
+def mexihat(lb,ub,n):
+    """
+    mexihat(lower_bound,upper_bound,n)
+
+    Mexican Hat wavelet
+
+    Parameters
+    ----------
+    lower_bound : float
+        lower bound of support
+    upper_bound : float
+        upper bound of support
+    n : int
+        number of samples
+
+    Returns
+    -------
+    psi : array_like
+        Wavelet function computed for grid xval
+    xval : array_like
+        grid
+
+    Notes
+    -----
+    Mexican Hat wavelet for effective support of [lower_bound, upper_bound].
+
+    Examples
+    --------
+    >>> import pywt
+    >>> import matplotlib.pyplot as plt
+    >>> lb = -5
+    >>> ub = 5
+    >>> n = 1000
+    >>> [psi,xval] = pywt.mexihat(lb,ub,n)
+    >>> plt.plot(xval,psi)
+    >>> plt.title("Mexican Hat Wavelet")
+    """
+    wavelet = Wavelet("mexh")
+    wavelet.upper_bound = ub
+    wavelet.lower_bound = lb
+    psi, x = wavelet.wavefun(length=n)
+    return psi, x
+
+
+def cmorwavf(lb,ub,n,fb,fc):
+    """
+    cmorwavf(lower_bound,upper_bound,n,fb,fc)
+
+    Complex Morlet wavelet
+
+    Parameters
+    ----------
+    lower_bound : float
+        lower bound of support
+    upper_bound : float
+        upper bound of support
+    n : int
+        number of samples
+    fb : float
+        bandwidth
+    fc : float
+        center frequency
+
+    Returns
+    -------
+    psi : array_like
+        Complex Wavelet function computed for grid xval
+    xval : array_like
+        grid
+
+    Notes
+    -----
+    Complex Morlet wavelet for effective support of [lower_bound, upper_bound].
+
+    Examples
+    --------
+    >>> import pywt
+    >>> import matplotlib.pyplot as plt
+    >>> import numpy as np
+    >>> lb = -8
+    >>> ub = 8
+    >>> n = 1000
+    >>> fb = 1.5
+    >>> fc = 1
+    >>> [psi,xval] = pywt.cmorwavf(lb,ub,n,fb,fc)
+    >>> plt.subplot(211)
+    >>> plt.plot(xval,np.real(psi))
+    >>> plt.title("Real part")
+    >>> plt.subplot(212)
+    >>> plt.plot(xval,np.imag(psi))
+    >>> plt.title("Imaginary part)
+    """
+    wavelet = Wavelet("cmor")
+    wavelet.upper_bound = ub
+    wavelet.lower_bound = lb
+    wavelet.bandwidth_frequency = fb
+    wavelet.center_frequency = fc
+    psi, x = wavelet.wavefun(length=n)
+    return psi, x
+
+
+def fbspwavf(lb,ub,n,m,fb,fc):
+    """
+    fbspwavf(lower_bound,upper_bound,n,m,fb,fc)
+
+    Complex frequency B-spline  wavelet
+
+    Parameters
+    ----------
+    lower_bound : float
+        lower bound of support
+    upper_bound : float
+        upper bound of support
+    n : int
+        number of samples
+    m : int
+        order
+    fb : float
+        bandwidth
+    fc : float
+        center frequency
+
+    Returns
+    -------
+    psi : array_like
+        Complex Wavelet function computed for grid xval
+    xval : array_like
+        grid
+
+    Notes
+    -----
+    Complex frequency B-spline  wavelet for effective support of [lower_bound, upper_bound].
+
+    Examples
+    --------
+    >>> import pywt
+    >>> import matplotlib.pyplot as plt
+    >>> import numpy as np
+    >>> lb = -20
+    >>> ub = 20
+    >>> n = 1000
+    >>> m = 2
+    >>> fb = 0.5
+    >>> fc = 1
+    >>> [psi,xval] = pywt.fbspwavf(lb,ub,n,m,fb,fc)
+    >>> plt.subplot(211)
+    >>> plt.plot(xval,np.real(psi))
+    >>> plt.title("Real part")
+    >>> plt.subplot(212)
+    >>> plt.plot(xval,np.imag(psi))
+    >>> plt.title("Imaginary part)
+    """
+    wavelet = Wavelet("fbsp")
+    wavelet.upper_bound = ub
+    wavelet.lower_bound = lb
+    wavelet.fbsp_order = m
+    wavelet.bandwidth_frequency = fb
+    wavelet.center_frequency = fc
+    psi, x = wavelet.wavefun(length=n)
+    return psi, x
+
+
+def cgauwavf(lb,ub,n,p=1):
+    """
+    cgauwavf(lower_bound,upper_bound,n)
+    cgauwavf(lower_bound,upper_bound,n,p)
+    cgauwavf(lower_bound,upper_bound,n,wavename)
+
+    Complex Gaussian wavelet
+
+    Parameters
+    ----------
+    lower_bound : float
+        lower bound of support
+    upper_bound : float
+        upper bound of support
+    n : int
+        number of samples
+    p : int
+        order
+
+    Returns
+    -------
+    psi : array_like
+        Complex Wavelet function computed for grid xval
+    xval : array_like
+        grid
+
+    Notes
+    -----
+    Complex Gaussian wavelet for effective support of [lower_bound, upper_bound].
+
+    Examples
+    --------
+    >>> import pywt
+    >>> import matplotlib.pyplot as plt
+    >>> lb = -5
+    >>> ub = 5
+    >>> n = 1000
+    >>> order = 4
+    >>> [psi,xval] = pywt.cgauwavf(lb,ub,n,order)
+    >>> plt.subplot(211)
+    >>> plt.plot(xval,np.real(psi))
+    >>> plt.title("Real part")
+    >>> plt.subplot(212)
+    >>> plt.plot(xval,np.imag(psi))
+    >>> plt.title("Imaginary part)
+    """
+    if isinstance(p,int):
+        wavelet = Wavelet("cgau"+str(p))
+    else:
+        wavelet = Wavelet(p)
+    wavelet.upper_bound = ub
+    wavelet.lower_bound = lb
+    psi, x = wavelet.wavefun(length=n)
+    return psi, x
