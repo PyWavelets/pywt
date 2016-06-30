@@ -169,7 +169,7 @@ def gauswavf(lb,ub,n,p=1):
     >>> plt.plot(xval,psi)
     >>> plt.title("Gaussian Wavelet of order 8")
     """
-    if isinstance(p,(int, float, complex)):
+    if isinstance(p,(int, float, complex, np.int64)):
         wavelet = Wavelet("gaus"+str(p))
     else:
         wavelet = Wavelet(p)
@@ -444,7 +444,7 @@ def cgauwavf(lb,ub,n,p=1):
     >>> plt.plot(xval,np.imag(psi))
     >>> plt.title("Imaginary part)
     """
-    if isinstance(p,(int, float, complex)):
+    if isinstance(p,(int, float, complex, np.int64)):
         wavelet = Wavelet("cgau"+str(p))
     else:
         wavelet = Wavelet(p)

@@ -154,7 +154,7 @@ def _check_accuracy(data, w, scales, coefs, wavelet, epsilon):
     assert_(np.real(rms) < epsilon, msg=msg)
     msg = ('[RMS_imag > EPSILON] for Scale: %s, Wavelet: %s, '
            'Length: %d, rms=%.3g' % (scales, wavelet, len(data), np.imag(rms)))
-    assert_(np.imag(rms) < epsilon, msg=msg)    
+    assert_(np.imag(rms) < epsilon, msg=msg)
 
 
 if __name__ == '__main__':
