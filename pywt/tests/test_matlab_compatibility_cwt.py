@@ -147,14 +147,11 @@ def _check_accuracy(data, w, scales, coefs, wavelet, epsilon):
     coefs_pywt = pywt.cwt(data, scales, w)
 
     # calculate error measures
-    rms = np.sqrt(np.mean((coefs_pywt - coefs) ** 2))
+    rms = np.real(np.sqrt(np.mean((coefs_pywt - coefs) ** 2)))
 
-    msg = ('[RMS_real > EPSILON] for Scale: %s, Wavelet: %s, '
-           'Length: %d, rms=%.3g' % (scales, wavelet, len(data), np.real(rms)))
-    assert_(np.real(rms) < epsilon, msg=msg)
-    msg = ('[RMS_imag > EPSILON] for Scale: %s, Wavelet: %s, '
-           'Length: %d, rms=%.3g' % (scales, wavelet, len(data), np.imag(rms)))
-    assert_(np.imag(rms) < epsilon, msg=msg)
+    msg = ('[RMS > EPSILON] for Scale: %s, Wavelet: %s, '
+           'Length: %d, rms=%.3g' % (scales, wavelet, len(data), rms))
+    assert_(rms < epsilon, msg=msg)
 
 
 if __name__ == '__main__':

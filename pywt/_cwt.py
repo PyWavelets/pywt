@@ -69,14 +69,17 @@ def cwt(data, scales, wavelet):
             plen = np.floor((wavelet.upper_bound-wavelet.lower_bound)*scales[i])+1
             if (plen < 3):
                 plen = 3
+            delta = (data.size-1)/(scales[i]-1)
             if wavelet.complex_cwt:
                 psi, x = wavelet.wavefun(length=plen.astype(np.int))
+                psi = psi / np.sqrt(scales[i])
                 coef_r = cwt_conv_real(data,np.real(psi),data.size)
                 coef_i = cwt_conv_real(data,np.imag(psi),data.size)
-                out
+                
                 out[:,i] = coef_r.astype(np.complex)+1j*coef_i.astype(np.complex)
             else:
                 psi, x = wavelet.wavefun(length=plen.astype(np.int))
+                psi = psi / np.sqrt(scales[i])
                 coef = cwt_conv_real(data,psi,data.size)
                 out[:,i] = coef
         return out

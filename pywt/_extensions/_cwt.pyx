@@ -119,6 +119,31 @@ cpdef cwt_conv(data_t[::1] data, np.ndarray in_filter, size_t output_len):
                 output[i] += in_filter[j] * pBuf[i+F-j-1]
         return output
 
+cpdef  cwt_wkeep_1D_center64(np.ndarray data, size_t output_len):
+    cdef size_t N, O
+    cdef np.ndarray output
+    cdef size_t i
+    N = data.size
+    O = output_len
+    output = np.zeros(O, dtype=np.float64)
+    for i in np.arange(O):
+        output[i] = data[(N - O)/2 +i]
+    return output
+
+
+cpdef  cwt_wkeep_1D_center32(np.ndarray data, size_t output_len):
+    cdef size_t N, O
+    cdef np.ndarray output
+    cdef size_t i
+    N = data.size
+    O = output_len
+
+    output = np.zeros(O, dtype=np.float32)
+    for i in np.arange(O):
+        output[i] = data[(N - O)/2 +i]
+    return output
+
+
 cpdef cwt_conv_real(data_t[::1] data, np.ndarray  psi, size_t output_len):
     cdef size_t N, F, O, buf_len
     cdef np.ndarray output, buf, fTemp
@@ -127,24 +152,21 @@ cpdef cwt_conv_real(data_t[::1] data, np.ndarray  psi, size_t output_len):
     F = psi.size
     O = output_len
     if data_t is np.float64_t:
-        output = np.zeros(O, dtype=np.float64)
         buf_len = N+F-1
         buf = np.zeros(buf_len, dtype=np.float64)
         fTemp = np.zeros_like(psi, dtype=np.float64)
         for i in np.arange(F):
             fTemp[i] = psi[F-i-1]
         buf = cwt_conv(data,fTemp,buf_len)
-        for i in np.arange(O):
-            output[i] = buf[(buf_len - O)/2 +i]
+        output = cwt_wkeep_1D_center64(buf,O)
         return output
     else:
-        output = np.zeros(O, dtype=np.float32)
         buf_len = N+F-1
         buf = np.zeros(buf_len, dtype=np.float32)
         fTemp = np.zeros_like(psi, dtype=np.float32)
         for i in np.arange(F):
             fTemp[i] = psi[F-i-1]
         buf = cwt_conv(data,fTemp,buf_len)
-        for i in np.arange(O):
-            output[i] = buf[(buf_len - O)/2 +i]
+        output = cwt_wkeep_1D_center32(buf,O)
         return output
+        

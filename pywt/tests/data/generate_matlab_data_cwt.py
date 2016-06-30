@@ -47,10 +47,10 @@ try:
         if size_set == 'full':
             data_sizes = list(range(100, 101)) + \
                 [100, 200, 500, 1000, 50000]
-            Scales = (1,2,3,4)
+            Scales = (1,np.arange(1,3),np.arange(1,4),np.arange(1,5))
         else:
             data_sizes = (1000, 1000 + 1)
-            Scales = (1,2)
+            Scales = (1,np.arange(1,3))
         for N in data_sizes:
             data = rstate.randn(N)
             mlab.set_variable('data', data)
