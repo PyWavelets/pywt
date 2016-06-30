@@ -51,6 +51,10 @@ try:
         else:
             data_sizes = (1000, 1000 + 1)
             Scales = (1,np.arange(1,3))
+        mlab_code = ("psi = wavefun(wavelet,10)")
+        psi = np.asarray(mlab.get_variable('psi'))
+        psi_key = '_'.join([wavelet, 'psi'])
+        all_matlab_results[psi_key] = psi
         for N in data_sizes:
             data = rstate.randn(N)
             mlab.set_variable('data', data)

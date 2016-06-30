@@ -60,9 +60,9 @@ def _get_data_sizes(w):
 def _get_scales(w):
     """ Return the scales to test for wavelet w. """
     if size_set == 'full':
-        Scales = (1,2,3,4)
+        Scales = (1,np.arange(1,3),np.arange(1,4),np.arange(1,5))
     else:
-        Scales = (1,2)
+        Scales = (1,np.arange(1,3))
     return Scales
 
 
@@ -104,6 +104,8 @@ def test_accuracy_precomputed_cwt():
     epsilon_pywt_coeffs = 1.0e-10
     for wavelet in wavelets:
         w = pywt.Wavelet(wavelet)
+        psi = _load_matlab_result_psi(wavelet)
+        yield _check_accuracy_psi, w, psi, wavelet, epsilon
 
         for N in _get_data_sizes(w):
             data = rstate.randn(N)
@@ -143,6 +145,17 @@ def _load_matlab_result(data, wavelet, scales):
     coefs = matlab_result_dict[coefs_key]
     return coefs
 
+def _load_matlab_result_psi(wavelet):
+    """ Load the precomputed result.
+    """
+    psi_key = '_'.join([wavelet, 'psi'])
+    if (psi_key not in matlab_result_dict):
+        raise KeyError(
+            "Precompted Matlab psi result not found for wavelet: "
+            "{0}}".format(wavelet))
+    psi = matlab_result_dict[psi_key]
+    return psi
+
 
 def _check_accuracy(data, w, scales, coefs, wavelet, epsilon):
     # PyWavelets result
@@ -155,6 +168,16 @@ def _check_accuracy(data, w, scales, coefs, wavelet, epsilon):
            'Length: %d, rms=%.3g' % (scales, wavelet, len(data), rms))
     assert_(rms < epsilon, msg=msg)
 
+def _check_accuracy_psi(w, psi, wavelet, epsilon):
+    # PyWavelets result
+    psi_pywt,x = w.wavefun(length=1024)
+
+    # calculate error measures
+    rms = np.real(np.sqrt(np.mean((psi_pywt - psi) ** 2)))
+
+    msg = ('[RMS > EPSILON] for  Wavelet: %s, '
+           'rms=%.3g' % (wavelet, rms))
+    assert_(rms < epsilon, msg=msg)
 
 if __name__ == '__main__':
     run_module_suite()

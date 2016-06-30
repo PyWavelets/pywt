@@ -42,7 +42,7 @@ void CAT(TYPE, _gaus)(const TYPE * const restrict input,
                     output[i] = 2*(2*(input[i]*input[i])-1)*exp(-(input[i]*input[i]))/sqrt(3*sqrt(M_PI/2));
                     break;
                 case 3:
-                    output[i] = -4*(2*(input[i]*input[i]*input[i])-3*input[i])*exp(-(input[i]*input[i]))/sqrt(15*sqrt(M_PI/2)); 
+                    output[i] = 4*(-2*(input[i]*input[i]*input[i])+3*input[i])*exp(-(input[i]*input[i]))/sqrt(15*sqrt(M_PI/2)); 
                     break;
                 case 4:
                     output[i] = 4*(-12*(input[i]*input[i])+4*(input[i]*input[i]*input[i]*input[i])+3)*exp(-(input[i]*input[i]))/sqrt(105*sqrt(M_PI/2));  
