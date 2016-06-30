@@ -86,7 +86,7 @@ def test_accuracy_pymatbridge_cwt():
             for N in _get_data_sizes(w):
                 data = rstate.randn(N)
                 mlab.set_variable('data', data)
-                for scales in Scales:
+                for scales in _get_scales(w):
                     coefs = _compute_matlab_result(data, wavelet, scales)
                     yield _check_accuracy, data, w, scales, coefs, wavelet, epsilon
 
@@ -111,7 +111,7 @@ def test_accuracy_precomputed_cwt():
 
         for N in _get_data_sizes(w):
             data = rstate.randn(N)
-            for scales in Scales:
+            for scales in _get_scales(w):
                 coefs = _load_matlab_result(data, wavelet, scales)
                 yield _check_accuracy, data, w, scales, coefs, wavelet, epsilon
 
