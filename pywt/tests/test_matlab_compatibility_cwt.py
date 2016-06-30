@@ -104,10 +104,6 @@ def test_accuracy_precomputed_cwt():
     epsilon_pywt_coeffs = 1.0e-10
     for wavelet in wavelets:
         w = pywt.Wavelet(wavelet)
-        if np.any((wavelet == np.array(['shan', 'cmor'])),axis=0):
-            wavelet = wavelet+str(w.bandwidth_frequency)+'-'+str(w.center_frequency)
-        elif wavelet == 'fbsp':
-            wavelet = wavelet+str(w.fbsp_order)+'-'+str(w.bandwidth_frequency)+'-'+str(w.center_frequency)
 
         for N in _get_data_sizes(w):
             data = rstate.randn(N)
@@ -153,9 +149,12 @@ def _check_accuracy(data, w, scales, coefs, wavelet, epsilon):
     # calculate error measures
     rms = np.sqrt(np.mean((coefs_pywt - coefs) ** 2))
 
-    msg = ('[RMS_A > EPSILON] for Scale: %s, Wavelet: %s, '
-           'Length: %d, rms=%.3g' % (scales, wavelet, len(data), rms))
-    assert_(rms < epsilon, msg=msg)
+    msg = ('[RMS_real > EPSILON] for Scale: %s, Wavelet: %s, '
+           'Length: %d, rms=%.3g' % (scales, wavelet, len(data), np.real(rms)))
+    assert_(np.real(rms) < epsilon, msg=msg)
+    msg = ('[RMS_imag > EPSILON] for Scale: %s, Wavelet: %s, '
+           'Length: %d, rms=%.3g' % (scales, wavelet, len(data), np.imag(rms)))
+    assert_(np.imag(rms) < epsilon, msg=msg)    
 
 
 if __name__ == '__main__':
