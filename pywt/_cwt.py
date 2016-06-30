@@ -38,7 +38,7 @@ def cwt(data, scales, wavelet):
     >>> x = np.arange(512)
     >>> y = np.sin(2*np.pi*x/32)
     >>> coef=pywt.cwt(y,np.arange(1,129),'gaus1')
-    >>> plt.matshow(coef.T)
+    >>> plt.matshow(coef)
     ----------
     >>> import pywt
     >>> import numpy as np
@@ -47,7 +47,7 @@ def cwt(data, scales, wavelet):
     >>> t = np.linspace(-1, 1, 200, endpoint=False)
     >>> sig  = np.cos(2 * np.pi * 7 * t) + signal.gausspulse(t - 0.4, fc=2)
     >>> widths = np.arange(1, 31)
-    >>> cwtmatr = pywt.cwt(sig, widths, 'mexh').T
+    >>> cwtmatr = pywt.cwt(sig, widths, 'mexh')
     >>> plt.imshow(cwtmatr, extent=[-1, 1, 1, 31], cmap='PRGn', aspect='auto',
     ...            vmax=abs(cwtmatr).max(), vmin=-abs(cwtmatr).max())
     >>> plt.show()
@@ -80,7 +80,7 @@ def cwt(data, scales, wavelet):
                 psi = psi / np.sqrt(scales[i])
                 coef = cwt_conv_real(data,psi,data.size)
                 out[:,i] = coef
-        return out
+        return out.T
     else:
         raise ValueError("Only dim == 1 supportet")
 

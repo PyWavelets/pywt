@@ -109,7 +109,7 @@ def test_accuracy_precomputed_cwt():
             data = rstate.randn(N)
             scales_count = 0
             for scales in _get_scales(w):
-                scales_count+=1
+                scales_count += 1
                 coefs = _load_matlab_result(data, wavelet, scales_count)
                 yield _check_accuracy, data, w, scales, coefs, wavelet, epsilon
 
