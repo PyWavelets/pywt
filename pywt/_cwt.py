@@ -3,7 +3,7 @@ import numpy as np
 from ._extensions._pywt import Wavelet, Modes, _check_dtype
 from ._extensions._cwt import (cwt_psi_single, cwt_conv, cwt_conv_real)
 
-__all__ = ["cwt", "morlet", "gauswavf", "mexihat","cmorwavf", "fbspwavf", "cgauwavf"]
+__all__ = ["cwt", "morlet", "gauswavf", "mexihat","cmorwavf", "shanwavf", "fbspwavf", "cgauwavf"]
 
 
 def cwt(data, scales, wavelet):
@@ -270,6 +270,63 @@ def cmorwavf(lb,ub,n,fb,fc):
     >>> plt.title("Imaginary part)
     """
     wavelet = Wavelet("cmor")
+    wavelet.upper_bound = ub
+    wavelet.lower_bound = lb
+    wavelet.bandwidth_frequency = fb
+    wavelet.center_frequency = fc
+    psi, x = wavelet.wavefun(length=n)
+    return psi, x
+
+
+def shanwavf(lb,ub,n,fb,fc):
+    """
+    shanwavf(lower_bound,upper_bound,n,fb,fc)
+
+    Complex Shannon wavelet
+
+    Parameters
+    ----------
+    lower_bound : float
+        lower bound of support
+    upper_bound : float
+        upper bound of support
+    n : int
+        number of samples
+    fb : float
+        bandwidth
+    fc : float
+        center frequency
+
+    Returns
+    -------
+    psi : array_like
+        Complex Wavelet function computed for grid xval
+    xval : array_like
+        grid
+
+    Notes
+    -----
+    Complex Shannon wavelet for effective support of [lower_bound, upper_bound].
+
+    Examples
+    --------
+    >>> import pywt
+    >>> import matplotlib.pyplot as plt
+    >>> import numpy as np
+    >>> lb = -20
+    >>> ub = 20
+    >>> n = 1000
+    >>> fb = 1
+    >>> fc = 1.5
+    >>> [psi,xval] = pywt.shanwavf(lb,ub,n,fb,fc)
+    >>> plt.subplot(211)
+    >>> plt.plot(xval,np.real(psi))
+    >>> plt.title("Real part")
+    >>> plt.subplot(212)
+    >>> plt.plot(xval,np.imag(psi))
+    >>> plt.title("Imaginary part)
+    """
+    wavelet = Wavelet("shan")
     wavelet.upper_bound = ub
     wavelet.lower_bound = lb
     wavelet.bandwidth_frequency = fb
