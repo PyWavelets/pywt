@@ -56,7 +56,9 @@ try:
             mlab.set_variable('data', data)
 
             # Matlab result
+            scale_count = 0
             for scales in Scales:
+                scale_count += 1
                 mlab.set_variable('scales', scales)
                 mlab_code = ("coefs = cwt(data, scales, wavelet)")
                 res = mlab.run_code(mlab_code)
@@ -66,7 +68,7 @@ try:
                         "Check that the wavelet toolbox is installed.")
                 # need np.asarray because sometimes the output is type float
                 coefs = np.asarray(mlab.get_variable('coefs'))
-                coefs_key = '_'.join([str(scales), wavelet, str(N), 'coefs'])
+                coefs_key = '_'.join([str(scale_count), wavelet, str(N), 'coefs'])
                 all_matlab_results[coefs_key] = coefs
 
 finally:
