@@ -66,7 +66,7 @@ def cwt(data, scales, wavelet):
         else:
             out = np.zeros((data.size,np.size(scales)))
         for i in np.arange(np.size(scales)):
-            plen = 1024
+            plen = 1025
             if (plen < 3):
                 plen = 3
             if wavelet.complex_cwt:
@@ -74,26 +74,25 @@ def cwt(data, scales, wavelet):
                 step = x[1]-x[0]
                 outWav = np.cumsum(psi)*step
                 x = x-x[0]
-                j = np.floor(np.arange(scales[i]*x[-1])/(scales[i]*step))                  
+                j = np.floor(np.arange(scales[i]*x[-1])/(scales[i]*step))
                 coef = -np.sqrt(scales[i])*np.diff(np.convolve(data,outWav[j.astype(np.int)][::-1]))
                 d = (coef.size-data.size)/2.
-                out[:,i] = coef[np.floor(d)-1:-np.ceil(d)+1]                
-                #psi = psi / np.sqrt(scales[i])
-                #coef_r = cwt_conv_real(data,np.real(psi),data.size)
-                #coef_i = cwt_conv_real(data,np.imag(psi),data.size)
-                #out[:,i] = coef_r.astype(np.complex)+1j*coef_i.astype(np.complex)
+                out[:,i] = coef[int(np.floor(d)):int(-np.ceil(d))]
+                # psi = psi / np.sqrt(scales[i])
+                # coef_r = cwt_conv_real(data,np.real(psi),data.size)
+                # coef_i = cwt_conv_real(data,np.imag(psi),data.size)
+                # out[:,i] = coef_r.astype(np.complex)+1j*coef_i.astype(np.complex)
             else:
                 psi, x = wavelet.wavefun(length=plen)
                 step = x[1]-x[0]
                 outWav = np.cumsum(psi)*step
                 x = x-x[0]
-                j = np.floor(np.arange(scales[i]*x[-1])/(scales[i]*step))     
-                #psi = psi / np.sqrt(scales[i])
-                #coef = cwt_conv_real(data,psi,data.size)
-                
+                j = np.floor(np.arange(scales[i]*x[-1])/(scales[i]*step))
+                # psi = psi / np.sqrt(scales[i])
+                # coef = cwt_conv_real(data,psi,data.size)
                 coef = -np.sqrt(scales[i])*np.diff(np.convolve(data,outWav[j.astype(np.int)][::-1]))
                 d = (coef.size-data.size)/2.
-                out[:,i] = coef[np.floor(d-1.):-(np.ceil(d+1.))]
+                out[:,i] = coef[int(np.floor(d)):int(-np.ceil(d))]
         return out.T
     else:
         raise ValueError("Only dim == 1 supportet")

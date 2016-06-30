@@ -145,6 +145,7 @@ def _load_matlab_result(data, wavelet, scales):
     coefs = matlab_result_dict[coefs_key]
     return coefs
 
+
 def _load_matlab_result_psi(wavelet):
     """ Load the precomputed result.
     """
@@ -168,12 +169,13 @@ def _check_accuracy(data, w, scales, coefs, wavelet, epsilon):
            'Length: %d, rms=%.3g' % (scales, wavelet, len(data), rms))
     assert_(rms < epsilon, msg=msg)
 
+
 def _check_accuracy_psi(w, psi, wavelet, epsilon):
     # PyWavelets result
-    psi_pywt,x = w.wavefun(length=1024)
+    psi_pywt,x = w.wavefun(length=1025)
 
     # calculate error measures
-    rms = np.real(np.sqrt(np.mean((psi_pywt - psi) ** 2)))
+    rms = np.real(np.sqrt(np.mean((psi_pywt.flatten() - psi.flatten()) ** 2)))
 
     msg = ('[RMS > EPSILON] for  Wavelet: %s, '
            'rms=%.3g' % (wavelet, rms))
