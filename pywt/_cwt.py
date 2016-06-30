@@ -58,12 +58,14 @@ def cwt(data, scales, wavelet):
     data = np.array(data, dtype=dt)
     if not isinstance(wavelet, Wavelet):
         wavelet = Wavelet(wavelet)
+    if np.isscalar(scales):
+        scales = np.array([scales])
     if data.ndim == 1:
         if wavelet.complex_cwt:
-            out = np.zeros((data.size,scales.size),dtype=complex)
+            out = np.zeros((data.size,np.size(scales)),dtype=complex)
         else:
-            out = np.zeros((data.size,scales.size))
-        for i in np.arange(scales.size):
+            out = np.zeros((data.size,np.size(scales)))
+        for i in np.arange(np.size(scales)):
             plen = np.floor((wavelet.upper_bound-wavelet.lower_bound)*scales[i])+1
             if (plen < 3):
                 plen = 3
@@ -167,7 +169,7 @@ def gauswavf(lb,ub,n,p=1):
     >>> plt.plot(xval,psi)
     >>> plt.title("Gaussian Wavelet of order 8")
     """
-    if isinstance(p,int):
+    if isinstance(p,(int, long, float, complex)):
         wavelet = Wavelet("gaus"+str(p))
     else:
         wavelet = Wavelet(p)
@@ -442,7 +444,7 @@ def cgauwavf(lb,ub,n,p=1):
     >>> plt.plot(xval,np.imag(psi))
     >>> plt.title("Imaginary part)
     """
-    if isinstance(p,int):
+    if isinstance(p,(int, long, float, complex)):
         wavelet = Wavelet("cgau"+str(p))
     else:
         wavelet = Wavelet(p)
