@@ -75,6 +75,8 @@ def cwt(data, scales, wavelet, sampling_period=1.):
             int_psi, x = integrate_wavelet(wavelet,precision=precision)
             step = x[1]-x[0]
             j = np.floor(np.arange(scales[i]*(x[-1]-x[0])+1)/(scales[i]*step))
+            if np.max(j) >= np.size(int_psi):
+                j = np.delete(j,np.where((j >= np.size(int_psi)))[0])
             coef = -np.sqrt(scales[i])*np.diff(np.convolve(data,int_psi[j.astype(np.int)][::-1]))
             d = (coef.size-data.size)/2.
             out[i,:] = coef[int(np.floor(d)):int(-np.ceil(d))]
