@@ -30,35 +30,34 @@ except IndexError as e:
 
 
 data = wavelet.wavefun(level)
-if len(data)==2:
-    x=data[1]
-    psi=data[0]
+if len(data) == 2:
+    x = data[1]
+    psi = data[0]
     fig = plt.figure()
     if wavelet.complex_cwt:
         plt.subplot(211)
         plt.title(wavelet.name+' real part')
         mi, ma = np.real(psi).min(), np.real(psi).max()
-        margin = (ma - mi) * 0.05    
+        margin = (ma - mi) * 0.05
         plt.plot(x,np.real(psi))
         plt.ylim(mi - margin, ma + margin)
         plt.xlim(x[0], x[-1])
         plt.subplot(212)
         plt.title(wavelet.name+' imag part')
         mi, ma = np.imag(psi).min(), np.imag(psi).max()
-        margin = (ma - mi) * 0.05    
+        margin = (ma - mi) * 0.05
         plt.plot(x,np.imag(psi))
         plt.ylim(mi - margin, ma + margin)
         plt.xlim(x[0], x[-1])
     else:
         mi, ma = psi.min(), psi.max()
-        margin = (ma - mi) * 0.05    
+        margin = (ma - mi) * 0.05
         plt.plot(x,psi)
         plt.title(wavelet.name)
         plt.ylim(mi - margin, ma + margin)
         plt.xlim(x[0], x[-1])
 else:
     funcs, x = data[:-1], data[-1]
-    
     labels = ["scaling function (phi)", "wavelet function (psi)",
               "r. scaling function (phi)", "r. wavelet function (psi)"]
     colors = ("r", "g", "r", "g")
@@ -67,7 +66,7 @@ else:
         mi, ma = d.min(), d.max()
         margin = (ma - mi) * 0.05
         ax = fig.add_subplot((len(data) - 1) // 2, 2, 1 + i)
-    
+
         ax.plot(x, d, color)
         ax.set_title(label)
         ax.set_ylim(mi - margin, ma + margin)
