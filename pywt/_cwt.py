@@ -2,12 +2,12 @@ import numpy as np
 
 from ._extensions._pywt import Wavelet, Modes, _check_dtype
 from ._extensions._cwt import (cwt_psi_single)
-from ._functions import integrate_wavelet
+from ._functions import integrate_wavelet, scale2frequency
 
 __all__ = ["cwt", "morlet", "gauswavf", "mexihat","cmorwavf", "shanwavf", "fbspwavf", "cgauwavf"]
 
 
-def cwt(data, scales, wavelet):
+def cwt(data, scales, wavelet, sampling_period=1.):
     """
     cwt(data, scales, wavelet)
 
@@ -21,11 +21,15 @@ def cwt(data, scales, wavelet):
         scales to use
     wavelet : Wavelet object or name
         Wavelet to use
+    sampling_period : float
+        Sampling period for frequencies output (optional)
 
     Returns
     -------
     coefs : array_like
         Continous wavelet transform of the input signal for the given scales and wavelet
+    frequencies : array_like
+        if the unit of sampling period are seconds and given, than frequencies are in hertz. Otherwise Sampling period of 1 is assumed.
 
     Notes
     -----
@@ -63,18 +67,23 @@ def cwt(data, scales, wavelet):
         scales = np.array([scales])
     if data.ndim == 1:
         if wavelet.complex_cwt:
-            out = np.zeros((data.size,np.size(scales)),dtype=complex)
+            out = np.zeros((np.size(scales),data.size),dtype=complex)
         else:
-            out = np.zeros((data.size,np.size(scales)))
+            out = np.zeros((np.size(scales),data.size))
         for i in np.arange(np.size(scales)):
-            precision = 10         
+            precision = 10
             int_psi, x = integrate_wavelet(wavelet,precision=precision)
             step = x[1]-x[0]
             j = np.floor(np.arange(scales[i]*(x[-1]-x[0])+1)/(scales[i]*step))
             coef = -np.sqrt(scales[i])*np.diff(np.convolve(data,int_psi[j.astype(np.int)][::-1]))
             d = (coef.size-data.size)/2.
-            out[:,i] = coef[int(np.floor(d)):int(-np.ceil(d))]
-        return out.T
+            out[i,:] = coef[int(np.floor(d)):int(-np.ceil(d))]
+        frequencies = scale2frequency(wavelet,scales,precision)
+        if np.isscalar(frequencies):
+            frequencies = np.array([frequencies])
+        for i in np.arange(len(frequencies)):
+            frequencies[i] /= sampling_period
+        return out, frequencies
     else:
         raise ValueError("Only dim == 1 supportet")
 

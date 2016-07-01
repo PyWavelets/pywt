@@ -164,7 +164,7 @@ def _load_matlab_result_psi(wavelet):
 
 def _check_accuracy(data, w, scales, coefs, wavelet, epsilon):
     # PyWavelets result
-    coefs_pywt = pywt.cwt(data, scales, w)
+    coefs_pywt,freq = pywt.cwt(data, scales, w)
 
     # calculate error measures
     rms = np.real(np.sqrt(np.mean((coefs_pywt - coefs) ** 2)))
