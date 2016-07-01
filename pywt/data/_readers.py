@@ -133,3 +133,40 @@ def ecg():
     fname = os.path.join(os.path.dirname(__file__), 'ecg.npy')
     ecg = np.load(fname)
     return ecg
+
+
+def nino():
+    """
+    NINO3 sea surface temperature 1871-1996 (in C; from the UKMO GISST2.3):
+    Seasonally-averaged, minus the annual cycle
+
+    Parameters
+    ----------
+    None
+
+    Returns
+    -------
+    time : ndarray
+       convenient timeseries to use for testing and demonstration
+    sst : ndarray
+       convenient timeseries to use for testing and demonstration
+
+    Examples
+    --------
+    >>> import pywt.data
+    >>> time, sst = pywt.data.nino()
+
+    >>> import matplotlib.pyplot as plt
+    >>> plt.plot(time,sst)
+    >>> plt.show()
+    """
+    fname = os.path.join(os.path.dirname(__file__), 'sst_nino3.dat')
+    sst = np.loadtxt(fname)
+    # taken from
+    # http://paos.colorado.edu/research/wavelets/wave_python/
+    variance = np.std(sst, ddof=1) ** 2
+    sst = (sst - np.mean(sst)) / np.std(sst, ddof=1)
+    n = len(sst)
+    dt = 0.25
+    time = np.arange(len(sst)) * dt + 1871.0  # construct time array
+    return time, sst
