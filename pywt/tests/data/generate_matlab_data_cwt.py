@@ -52,6 +52,11 @@ try:
             data_sizes = (1000, 1000 + 1)
             Scales = (1,np.arange(1,3))
         mlab_code = ("psi = wavefun(wavelet,10)")
+        res = mlab.run_code(mlab_code)
+        if not res['success']:
+            raise RuntimeError(
+                "Matlab failed to execute the provided code. "
+                "Check that the wavelet toolbox is installed.")        
         psi = np.asarray(mlab.get_variable('psi'))
         psi_key = '_'.join([wavelet, 'psi'])
         all_matlab_results[psi_key] = psi

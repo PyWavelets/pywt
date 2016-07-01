@@ -19,7 +19,7 @@ cpdef cwt_psi_single(data_t[::1] data, Wavelet wavelet, size_t output_len):
     if data_t is np.float64_t:
         if wavelet.short_family_name == "gaus":
             psi = np.zeros(output_len, np.float64)
-            c_cwt.double_gaus(&data[0], <double *>psi.data, data.size, wavelet.number)
+            c_cwt.double_gaus(&data[0], <double *>psi.data, data.size, wavelet.family_number)
             return psi
         elif wavelet.short_family_name == "mexh":
             psi = np.zeros(output_len, np.float64)
@@ -66,7 +66,7 @@ cpdef cwt_psi_single(data_t[::1] data, Wavelet wavelet, size_t output_len):
         elif wavelet.short_family_name == "cgau":
             psi_r = np.zeros(output_len, np.float32)
             psi_i = np.zeros(output_len, np.float32)
-            c_cwt.float_cgau(&data[0], <float *>psi_r.data, <float *>psi_i.data, data.size, wavelet.number)
+            c_cwt.float_cgau(&data[0], <float *>psi_r.data, <float *>psi_i.data, data.size, wavelet.family_number)
             return (psi_r, psi_i)
         elif wavelet.short_family_name == "shan":
             psi_r = np.zeros(output_len, np.float32)
@@ -84,89 +84,3 @@ cpdef cwt_psi_single(data_t[::1] data, Wavelet wavelet, size_t output_len):
             c_cwt.float_cmor(&data[0], <float *>psi_r.data, <float *>psi_i.data, data.size, wavelet.bandwidth_frequency, wavelet.center_frequency)
             return (psi_r, psi_i)
 
-
-cpdef cwt_conv(data_t[::1] data, np.ndarray in_filter, size_t output_len):
-    cdef size_t N, F, O
-    cdef np.ndarray output, pBuf
-    cdef size_t i, j
-    N = data.size
-    F = in_filter.size
-    O = output_len
-    if data_t is np.float64_t:
-        output = np.zeros(O, dtype=np.float64)
-        pBuf = np.zeros(N + 2 *(F-1), dtype=np.float64)
-        for i in np.arange(F-1):
-            pBuf[i] = 0
-            pBuf[i + N +F -1] = 0
-        for i in np.arange(N):
-            pBuf[i+F-1] = data[i]
-        for i in np.arange(O):
-            output[i] = 0
-            for j in np.arange(F-1,-1,-1):
-                output[i] += in_filter[j] * pBuf[i+F-j-1]
-        return output
-    else:
-        output = np.zeros(O, dtype=np.float32)
-        pBuf = np.zeros(N + 2 *(F-1), dtype=np.float32)
-        for i in np.arange(F-1):
-            pBuf[i] = 0
-            pBuf[i + N +F -1] = 0
-        for i in np.arange(N):
-            pBuf[i+F-1] = data[i]
-        for i in np.arange(O):
-            output[i] = 0
-            for j in np.arange(F-1,-1,-1):
-                output[i] += in_filter[j] * pBuf[i+F-j-1]
-        return output
-
-cpdef  cwt_wkeep_1D_center64(np.ndarray data, size_t output_len):
-    cdef size_t N, O
-    cdef np.ndarray output
-    cdef size_t i
-    N = data.size
-    O = output_len
-    output = np.zeros(O, dtype=np.float64)
-    for i in np.arange(O):
-        output[i] = data[(N - O)/2 +i]
-    return output
-
-
-cpdef  cwt_wkeep_1D_center32(np.ndarray data, size_t output_len):
-    cdef size_t N, O
-    cdef np.ndarray output
-    cdef size_t i
-    N = data.size
-    O = output_len
-
-    output = np.zeros(O, dtype=np.float32)
-    for i in np.arange(O):
-        output[i] = data[(N - O)/2 +i]
-    return output
-
-
-cpdef cwt_conv_real(data_t[::1] data, np.ndarray  psi, size_t output_len):
-    cdef size_t N, F, O, buf_len
-    cdef np.ndarray output, buf, fTemp
-    cdef size_t i, j
-    N = data.size
-    F = psi.size
-    O = output_len
-    if data_t is np.float64_t:
-        buf_len = N+F-1
-        buf = np.zeros(buf_len, dtype=np.float64)
-        fTemp = np.zeros_like(psi, dtype=np.float64)
-        for i in np.arange(F):
-            fTemp[i] = psi[F-i-1]
-        buf = cwt_conv(data,fTemp,buf_len)
-        output = cwt_wkeep_1D_center64(buf,O)
-        return output
-    else:
-        buf_len = N+F-1
-        buf = np.zeros(buf_len, dtype=np.float32)
-        fTemp = np.zeros_like(psi, dtype=np.float32)
-        for i in np.arange(F):
-            fTemp[i] = psi[F-i-1]
-        buf = cwt_conv(data,fTemp,buf_len)
-        output = cwt_wkeep_1D_center32(buf,O)
-        return output
-        

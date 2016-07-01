@@ -39,10 +39,10 @@ void CAT(TYPE, _gaus)(const TYPE * const restrict input,
                     output[i] = -2*input[i]*exp(-(input[i]*input[i]))/sqrt(sqrt(M_PI/2)); 
                     break;
                 case 2:
-                    output[i] = 2*(2*(input[i]*input[i])-1)*exp(-(input[i]*input[i]))/sqrt(3*sqrt(M_PI/2));
+                    output[i] = -2*(2*(input[i]*input[i])-1)*exp(-(input[i]*input[i]))/sqrt(3*sqrt(M_PI/2));
                     break;
                 case 3:
-                    output[i] = 4*(-2*(input[i]*input[i]*input[i])+3*input[i])*exp(-(input[i]*input[i]))/sqrt(15*sqrt(M_PI/2)); 
+                    output[i] = -4*(-2*(input[i]*input[i]*input[i])+3*input[i])*exp(-(input[i]*input[i]))/sqrt(15*sqrt(M_PI/2)); 
                     break;
                 case 4:
                     output[i] = 4*(-12*(input[i]*input[i])+4*(input[i]*input[i]*input[i]*input[i])+3)*exp(-(input[i]*input[i]))/sqrt(105*sqrt(M_PI/2));  
@@ -51,10 +51,10 @@ void CAT(TYPE, _gaus)(const TYPE * const restrict input,
                     output[i] =  8*(-4*(input[i]*input[i]*input[i]*input[i]*input[i])+20*(input[i]*input[i]*input[i])-15*input[i])*exp(-(input[i]*input[i]))/sqrt(105*9*sqrt(M_PI/2));
                     break;
                 case 6:
-                    output[i] = 8*(8*(input[i]*input[i]*input[i]*input[i]*input[i]*input[i])-60*(input[i]*input[i]*input[i]*input[i])+90*(input[i]*input[i])-15)*exp(-(input[i]*input[i]))/sqrt(105*9*11*sqrt(M_PI/2));
+                    output[i] = -8*(8*(input[i]*input[i]*input[i]*input[i]*input[i]*input[i])-60*(input[i]*input[i]*input[i]*input[i])+90*(input[i]*input[i])-15)*exp(-(input[i]*input[i]))/sqrt(105*9*11*sqrt(M_PI/2));
                     break;
                 case 7:
-                    output[i] =  16*(-8*(input[i]*input[i]*input[i]*input[i]*input[i]*input[i]*input[i])+84*(input[i]*input[i]*input[i]*input[i]*input[i])-210*(input[i]*input[i]*input[i])+105*(input[i]))*exp(-(input[i]*input[i]))/sqrt(105*9*11*13*sqrt(M_PI/2));  
+                    output[i] =  -16*(-8*(input[i]*input[i]*input[i]*input[i]*input[i]*input[i]*input[i])+84*(input[i]*input[i]*input[i]*input[i]*input[i])-210*(input[i]*input[i]*input[i])+105*(input[i]))*exp(-(input[i]*input[i]))/sqrt(105*9*11*13*sqrt(M_PI/2));  
                     break;
                 case 8:
                     output[i] =  16*(16*(input[i]*input[i]*input[i]*input[i]*input[i]*input[i]*input[i]*input[i])-224*(input[i]*input[i]*input[i]*input[i]*input[i]*input[i])+840*(input[i]*input[i]*input[i]*input[i])-840*(input[i]*input[i])+105)*exp(-(input[i]*input[i]))/sqrt(105*9*11*13*15*sqrt(M_PI/2));  

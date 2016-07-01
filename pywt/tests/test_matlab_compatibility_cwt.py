@@ -71,8 +71,8 @@ def _get_scales(w):
 def test_accuracy_pymatbridge_cwt():
     rstate = np.random.RandomState(1234)
     # max RMSE (was 1.0e-10, is reduced to 5.0e-5 due to different coefficents)
-    epsilon = 5.0e-5
-    epsilon_pywt_coeffs = 1.0e-10
+    epsilon = 1e-15
+    epsilon_psi = 1e-15
     mlab.start()
     try:
         for wavelet in wavelets:
@@ -100,11 +100,12 @@ def test_accuracy_precomputed_cwt():
     # Keep this specific random seed to match the precomputed Matlab result.
     rstate = np.random.RandomState(1234)
     # has to be improved
-    epsilon = 1.5
+    epsilon = 1e-15
+    epsilon_psi = 1e-15
     for wavelet in wavelets:
         w = pywt.Wavelet(wavelet)
         psi = _load_matlab_result_psi(wavelet)
-        yield _check_accuracy_psi, w, psi, wavelet, epsilon
+        yield _check_accuracy_psi, w, psi, wavelet, epsilon_psi
 
         for N in _get_data_sizes(w):
             data = rstate.randn(N)
@@ -171,7 +172,7 @@ def _check_accuracy(data, w, scales, coefs, wavelet, epsilon):
 
 def _check_accuracy_psi(w, psi, wavelet, epsilon):
     # PyWavelets result
-    psi_pywt,x = w.wavefun(length=1025)
+    psi_pywt,x = w.wavefun(length=1024)
 
     # calculate error measures
     rms = np.real(np.sqrt(np.mean((psi_pywt.flatten() - psi.flatten()) ** 2)))
