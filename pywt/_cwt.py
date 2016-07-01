@@ -2,6 +2,7 @@ import numpy as np
 
 from ._extensions._pywt import Wavelet, Modes, _check_dtype
 from ._extensions._cwt import (cwt_psi_single)
+from ._functions import integrate_wavelet
 
 __all__ = ["cwt", "morlet", "gauswavf", "mexihat","cmorwavf", "shanwavf", "fbspwavf", "cgauwavf"]
 
@@ -66,14 +67,11 @@ def cwt(data, scales, wavelet):
         else:
             out = np.zeros((data.size,np.size(scales)))
         for i in np.arange(np.size(scales)):
-            plen = 1024
-            if (plen < 3):
-                plen = 3
-            psi, x = wavelet.wavefun(length=plen)
+            precision = 10         
+            int_psi, x = integrate_wavelet(wavelet,precision=precision)
             step = x[1]-x[0]
-            outWav = np.cumsum(psi)*step
             j = np.floor(np.arange(scales[i]*(x[-1]-x[0])+1)/(scales[i]*step))
-            coef = -np.sqrt(scales[i])*np.diff(np.convolve(data,outWav[j.astype(np.int)][::-1]))
+            coef = -np.sqrt(scales[i])*np.diff(np.convolve(data,int_psi[j.astype(np.int)][::-1]))
             d = (coef.size-data.size)/2.
             out[:,i] = coef[int(np.floor(d)):int(-np.ceil(d))]
         return out.T

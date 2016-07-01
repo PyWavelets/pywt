@@ -83,6 +83,10 @@ def test_accuracy_pymatbridge_cwt():
                 mlab.set_variable('wavelet', wavelet+str(w.fbsp_order)+'-'+str(w.bandwidth_frequency)+'-'+str(w.center_frequency))
             else:
                 mlab.set_variable('wavelet', wavelet)
+            mlab_code = ("psi = wavefun(wavelet,10)")
+            res = mlab.run_code(mlab_code)
+            psi = np.asarray(mlab.get_variable('psi'))
+            yield _check_accuracy_psi, w, psi, wavelet, epsilon_psi
             for N in _get_data_sizes(w):
                 data = rstate.randn(N)
                 mlab.set_variable('data', data)

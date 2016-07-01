@@ -653,7 +653,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
         
         if self.cw is not NULL:
             if length is None:
-                output_length = 256
+                output_length = <pywt_index_t>p
             else:
                 output_length = <pywt_index_t>length
             x = np.linspace(self.cw.base.lower_bound, self.cw.base.upper_bound, output_length)
