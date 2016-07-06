@@ -1,4 +1,11 @@
 [run]
 branch = True
 include = */pywt/*
-omit = */version.py
+# Not sure what stringsource is
+omit =
+    */version.py
+    */pywt/tests/*
+    */pywt/data/create_dat.py
+    *.pxd
+    stringsource
+plugins = Cython.Coverage

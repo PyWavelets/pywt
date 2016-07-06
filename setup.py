@@ -8,6 +8,8 @@ from functools import partial
 
 from setuptools import setup, Extension
 from numpy import get_include as get_numpy_include
+from distutils.sysconfig import get_python_inc
+
 try:
     from Cython.Build import cythonize
 except ImportError:
@@ -119,18 +121,38 @@ header_templates = list(map(make_ext_path, header_templates))
 cython_modules = ['_pywt', '_dwt', '_swt']
 cython_sources = [('{0}.pyx' if USE_CYTHON else '{0}.c').format(module)
                   for module in cython_modules]
+
+c_macros = [("PY_EXTENSION", None)]
+cython_macros = []
+cythonize_opts = {}
+if os.environ.get("CYTHON_TRACE"):
+    cythonize_opts['linetrace'] = True
+    cython_macros.append(("CYTHON_TRACE_NOGIL", 1))
+
+# By default C object files are rebuilt for every extension
+# C files must be built once only for coverage to work
+c_lib = ('c_wt', {'sources': sources,
+                  'depends': source_templates + header_templates + headers,
+                  'include_dirs': [make_ext_path("c"), get_python_inc()],
+                  'macros': c_macros,})
+
 ext_modules = [
     Extension('pywt._extensions.{0}'.format(module),
-              sources=[make_ext_path(source)] + sources,
-              depends=source_templates + header_templates + headers,
+              sources=[make_ext_path(source)],
+              # Doesn't automatically rebuild if library changes
+              depends=c_lib[1]['sources'] + c_lib[1]['depends'],
               include_dirs=[make_ext_path("c"), get_numpy_include()],
-              define_macros=[("PY_EXTENSION", None)],)
+              define_macros=c_macros + cython_macros,
+              libraries=[c_lib[0]],)
     for module, source, in zip(cython_modules, cython_sources)
 ]
 
 if __name__ == '__main__':
     # Rewrite the version file everytime
     write_version_py()
+
+    if USE_CYTHON:
+        ext_modules = cythonize(ext_modules, compiler_directives=cythonize_opts)
 
     setup(
         name="PyWavelets",
@@ -174,7 +196,8 @@ if __name__ == '__main__':
 
         packages=['pywt', 'pywt._extensions', 'pywt.data'],
         package_data={'pywt.data': ['*.npy', '*.npz']},
-        ext_modules=cythonize(ext_modules) if USE_CYTHON else ext_modules,
+        ext_modules=ext_modules,
+        libraries=[c_lib],
         test_suite='nose.collector',
 
         # A function is imported in setup.py, so not really useful

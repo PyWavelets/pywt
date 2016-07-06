@@ -7,6 +7,7 @@ env:
   global:
     # Use non-interactive backend
     - MPLBACKEND: Agg
+    - CYTHON_TRACE: 1
 
 matrix:
   include:
@@ -47,10 +48,16 @@ before_install:
   - pip install --upgrade wheel
   # Set numpy version first, other packages link against it
   - pip install $NUMPYSPEC
-  - pip install Cython matplotlib nose coverage
+  - pip install Cython matplotlib nose coverage codecov
   - set -o pipefail
 
 script:
   # Define a fixed build dir so next step works
-  - python setup.py build --build-lib build/lib/
+  - CFLAGS="--coverage" python setup.py build --build-lib build/lib/ --build-temp build/tmp/
   - nosetests build/lib/ --tests pywt/tests
+
+after_success:
+  - codecov
+  # Travis CI has old gcov, needs object dir explicitly specified
+  - gcov --object-directory build/tmp/pywt/_extensions/c/ build/tmp/pywt/_extensions/c/*.o
+  - bash <(curl -s https://codecov.io/bash)

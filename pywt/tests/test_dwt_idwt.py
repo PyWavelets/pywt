@@ -56,6 +56,24 @@ def test_dwt_idwt_basic_complex():
     assert_allclose(x_roundtrip, x, rtol=1e-10)
 
 
+def test_dwt_idwt_partial_complex():
+    x = np.asarray([3, 7, 1, 1, -2, 5, 4, 6])
+    x = x + 0.5j*x
+
+    cA, cD = pywt.dwt(x, 'haar')
+    cA_rec_expect = np.array([5.0+2.5j, 5.0+2.5j, 1.0+0.5j, 1.0+0.5j,
+                              1.5+0.75j, 1.5+0.75j, 5.0+2.5j, 5.0+2.5j])
+    cA_rec = pywt.idwt(cA, None, 'haar')
+    assert_allclose(cA_rec, cA_rec_expect)
+
+    cD_rec_expect = np.array([-2.0-1.0j, 2.0+1.0j, 0.0+0.0j, 0.0+0.0j,
+                              -3.5-1.75j, 3.5+1.75j, -1.0-0.5j, 1.0+0.5j])
+    cD_rec = pywt.idwt(None, cD, 'haar')
+    assert_allclose(cD_rec, cD_rec_expect)
+
+    assert_allclose(cA_rec + cD_rec, x)
+
+
 def test_dwt_wavelet_kwd():
     x = np.array([3, 7, 1, 1, -2, 5, 4, 6])
     w = pywt.Wavelet('sym3')
@@ -71,9 +89,10 @@ def test_dwt_wavelet_kwd():
 def test_dwt_coeff_len():
     x = np.array([3, 7, 1, 1, -2, 5, 4, 6])
     w = pywt.Wavelet('sym3')
-    ln = pywt.dwt_coeff_len(data_len=len(x), filter_len=w.dec_len, mode='symmetric')
-    assert_(ln == 6)
     ln_modes = [pywt.dwt_coeff_len(len(x), w.dec_len, mode) for mode in
+                pywt.Modes.modes]
+    assert_allclose(ln_modes, [6, 6, 6, 6, 6, 4])
+    ln_modes = [pywt.dwt_coeff_len(len(x), w, mode) for mode in
                 pywt.Modes.modes]
     assert_allclose(ln_modes, [6, 6, 6, 6, 6, 4])
 
