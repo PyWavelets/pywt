@@ -2,6 +2,12 @@
 #   http://lint.travis-ci.org/
 language: python
 sudo: false
+
+env:
+  global:
+    # Use non-interactive backend
+    - MPLBACKEND: Agg
+
 matrix:
   include:
     - python: 2.7
@@ -22,38 +28,29 @@ matrix:
     - python: 3.4
       env:
         - NUMPYSPEC=numpy
-    - python: 3.3
-      env:
-        - NUMPYSPEC=numpy
     - python: 2.6
       env:
-        - OPTIMIZE=-OO
         - NUMPYSPEC="numpy==1.7.2"
     - python: 2.7
       env:
-        - NUMPYSPEC="--upgrade git+git://github.com/numpy/numpy.git@v1.9.1"
+        - NUMPYSPEC="numpy==1.9.1"
 
-addons:
-  apt:
-    packages:
-    - ccache
-cache:
-  directories:
-    - $HOME/.ccache
+cache: pip
 
 before_install:
-  - export PATH=/usr/lib/ccache:$PATH
   - uname -a
   - free -m
   - df -h
   - ulimit -a
-  # Speed up install by not compiling Cython
-  - travis_retry pip install --install-option="--no-cython-compile" Cython==0.22
-  - travis_retry pip install $NUMPYSPEC
-  - travis_retry pip install nose
-  - pip install coverage
   - python -V
+  - pip install --upgrade pip
+  - pip install --upgrade wheel
+  # Set numpy version first, other packages link against it
+  - pip install $NUMPYSPEC
+  - pip install Cython matplotlib nose coverage
   - set -o pipefail
 
 script:
-  - python -u $OPTIMIZE runtests.py -g -m full --coverage --doctests
+  # Define a fixed build dir so next step works
+  - python setup.py build --build-lib build/lib/
+  - nosetests build/lib/ --tests pywt/tests

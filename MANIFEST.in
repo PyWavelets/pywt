@@ -1,4 +1,4 @@
-include setup.py runtests.py
+include setup.py
 include README.rst
 include *.txt
 include MANIFEST.in

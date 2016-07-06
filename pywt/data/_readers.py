@@ -24,15 +24,16 @@ def ascent():
     --------
     >>> import pywt.data
     >>> ascent = pywt.data.ascent()
-    >>> ascent.shape
-    (512, 512)
+    >>> ascent.shape == (512, 512)
+    True
     >>> ascent.max()
     255
 
     >>> import matplotlib.pyplot as plt
     >>> plt.gray()
-    >>> plt.imshow(ascent)
-    >>> plt.show()
+    >>> plt.imshow(ascent) # doctest: +ELLIPSIS
+    <matplotlib.image.AxesImage object at ...>
+    >>> plt.show() # doctest: +SKIP
 
     """
     fname = os.path.join(os.path.dirname(__file__), 'ascent.npz')
@@ -58,15 +59,16 @@ def aero():
     --------
     >>> import pywt.data
     >>> aero = pywt.data.ascent()
-    >>> aero.shape
-    (512, 512)
+    >>> aero.shape == (512, 512)
+    True
     >>> aero.max()
     255
 
     >>> import matplotlib.pyplot as plt
     >>> plt.gray()
-    >>> plt.imshow(aero)
-    >>> plt.show()
+    >>> plt.imshow(aero) # doctest: +ELLIPSIS
+    <matplotlib.image.AxesImage object at ...>
+    >>> plt.show() # doctest: +SKIP
 
     """
     fname = os.path.join(os.path.dirname(__file__), 'aero.npz')
@@ -92,13 +94,14 @@ def camera():
     --------
     >>> import pywt.data
     >>> camera = pywt.data.ascent()
-    >>> camera.shape
-    (512, 512)
+    >>> camera.shape == (512, 512)
+    True
 
     >>> import matplotlib.pyplot as plt
     >>> plt.gray()
-    >>> plt.imshow(camera)
-    >>> plt.show()
+    >>> plt.imshow(camera) # doctest: +ELLIPSIS
+    <matplotlib.image.AxesImage object at ...>
+    >>> plt.show() # doctest: +SKIP
 
     """
     fname = os.path.join(os.path.dirname(__file__), 'camera.npz')
@@ -123,12 +126,13 @@ def ecg():
     --------
     >>> import pywt.data
     >>> ecg = pywt.data.ecg()
-    >>> ecg.shape
-    (1024,)
+    >>> ecg.shape == (1024,)
+    True
 
     >>> import matplotlib.pyplot as plt
-    >>> plt.plot(ecg)
-    >>> plt.show()
+    >>> plt.plot(ecg) # doctest: +ELLIPSIS
+    [<matplotlib.lines.Line2D object at ...>]
+    >>> plt.show() # doctest: +SKIP
     """
     fname = os.path.join(os.path.dirname(__file__), 'ecg.npy')
     ecg = np.load(fname)
