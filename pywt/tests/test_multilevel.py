@@ -385,5 +385,96 @@ def test_waverecn_all_wavelets_modes():
                             r, rtol=tol_single, atol=tol_single)
 
 
+def test_coeffs_to_array():
+    # single element list returns just the first element
+    a_coeffs = [np.arange(8).reshape(2, 4), ]
+    arr = pywt.coeffs_to_array(a_coeffs)
+    assert_allclose(arr, a_coeffs[0])
+
+    assert_raises(ValueError, pywt.coeffs_to_array, [])
+    # invalid second element:  array as in wavedec, but not 1D
+    assert_raises(ValueError, pywt.coeffs_to_array, [a_coeffs[0], ] * 2)
+    # invalid second element:  tuple as in wavedec2, but not a 3-tuple
+    assert_raises(ValueError, pywt.coeffs_to_array, [a_coeffs[0],
+                                                     (a_coeffs[0], )])
+    # coefficients as None is not supported
+    assert_raises(ValueError, pywt.coeffs_to_array, [None, ])
+    assert_raises(ValueError, pywt.coeffs_to_array, [a_coeffs,
+                                                     (None, None, None)])
+
+
+def test_wavedecn_coeff_reshape_even():
+    # verify round trip is correct:
+    #   wavedecn - >coeffs_to_array-> array_to_coeffs -> waverecn
+    # This is done for wavedec{1, 2, n}
+    rng = np.random.RandomState(1234)
+    params = {'wavedec': {'d': 1, 'dec': pywt.wavedec, 'rec': pywt.waverec},
+              'wavedec2': {'d': 2, 'dec': pywt.wavedec2, 'rec': pywt.waverec2},
+              'wavedecn': {'d': 3, 'dec': pywt.wavedecn, 'rec': pywt.waverecn}}
+    N = 28
+    for f in params:
+        x1 = rng.randn(*([N] * params[f]['d']))
+        for mode in pywt.Modes.modes:
+            for wave in wavelist:
+                w = pywt.Wavelet(wave)
+                maxlevel = pywt.dwt_max_level(np.min(x1.shape), w.dec_len)
+                if maxlevel == 0:
+                    continue
+
+                coeffs = params[f]['dec'](x1, w, mode=mode)
+                coeff_arr, coeff_slices = pywt.coeffs_to_array(coeffs)
+                coeffs2 = pywt.array_to_coeffs(coeff_arr, coeff_slices,
+                                               output_format=f)
+                x1r = params[f]['rec'](coeffs2, w, mode=mode)
+
+                assert_allclose(x1, x1r, rtol=1e-4, atol=1e-4)
+
+
+def test_coeffs_to_array_padding():
+    rng = np.random.RandomState(1234)
+    x1 = rng.randn(32, 32)
+    mode = 'symmetric'
+    coeffs = pywt.wavedecn(x1, 'db2', mode=mode)
+
+    # padding=None raises a ValueError when tight packing is not possible
+    assert_raises(ValueError, pywt.coeffs_to_array, coeffs, padding=None)
+
+    # set padded values to nan
+    coeff_arr, coeff_slices = pywt.coeffs_to_array(coeffs, padding=np.nan)
+    npad = np.sum(np.isnan(coeff_arr))
+    assert_(npad > 0)
+
+    # pad with zeros
+    coeff_arr, coeff_slices = pywt.coeffs_to_array(coeffs, padding=0)
+    assert_(np.sum(np.isnan(coeff_arr)) == 0)
+    assert_(np.sum(coeff_arr == 0) == npad)
+
+    # Haar case with N as a power of 2 can be tightly packed
+    coeffs_haar = pywt.wavedecn(x1, 'haar', mode=mode)
+    coeff_arr, coeff_slices = pywt.coeffs_to_array(coeffs_haar, padding=None)
+    # shape of coeff_arr will match in this case, but not in general
+    assert_equal(coeff_arr.shape, x1.shape)
+
+
+def test_waverecn_coeff_reshape_odd():
+    # verify round trip is correct:
+    #   wavedecn - >coeffs_to_array-> array_to_coeffs -> waverecn
+    rng = np.random.RandomState(1234)
+    x1 = rng.randn(35, 33)
+    for mode in pywt.Modes.modes:
+        for wave in ['haar', ]:
+            w = pywt.Wavelet(wave)
+            maxlevel = pywt.dwt_max_level(np.min(x1.shape), w.dec_len)
+            if maxlevel == 0:
+                continue
+            coeffs = pywt.wavedecn(x1, w, mode=mode)
+            coeff_arr, coeff_slices = pywt.coeffs_to_array(coeffs)
+            coeffs2 = pywt.array_to_coeffs(coeff_arr, coeff_slices)
+            x1r = pywt.waverecn(coeffs2, w, mode=mode)
+            # truncate reconstructed values to original shape
+            x1r = x1r[[slice(s) for s in x1.shape]]
+            assert_allclose(x1, x1r, rtol=1e-4, atol=1e-4)
+
+
 if __name__ == '__main__':
     run_module_suite()

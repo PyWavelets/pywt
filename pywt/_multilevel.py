@@ -10,6 +10,7 @@ and Inverse Discrete Wavelet Transform.
 
 from __future__ import division, print_function, absolute_import
 
+from copy import copy
 import numpy as np
 
 from ._extensions._pywt import Wavelet
@@ -17,8 +18,15 @@ from ._extensions._dwt import dwt_max_level
 from ._dwt import dwt, idwt
 from ._multidim import dwt2, idwt2, dwtn, idwtn, _fix_coeffs
 
+try:
+    # full was added in numpy 1.8
+    from numpy import full
+except ImportError:
+    def full(shape, value, dtype):
+        return value * np.ones(shape, dtype)
+
 __all__ = ['wavedec', 'waverec', 'wavedec2', 'waverec2', 'wavedecn',
-           'waverecn', 'iswt', 'iswt2']
+           'waverecn', 'iswt', 'iswt2', 'coeffs_to_array', 'array_to_coeffs']
 
 
 def _check_level(size, dec_len, level):
@@ -594,3 +602,258 @@ def waverecn(coeffs, wavelet, mode='symmetric'):
         a = idwtn(d, wavelet, mode)
 
     return a
+
+
+def _coeffs_wavedec_to_wavedecn(coeffs):
+    """Convert wavedec coefficients to the wavedecn format."""
+    if len(coeffs) == 0:
+        return coeffs
+    coeffs = copy(coeffs)
+    for n in range(1, len(coeffs)):
+        if coeffs[n] is None:
+            continue
+        if coeffs[n].ndim != 1:
+            raise ValueError("expected a 1D coefficient array")
+        coeffs[n] = dict(d=coeffs[n])
+    return coeffs
+
+
+def _coeffs_wavedec2_to_wavedecn(coeffs):
+    """Convert wavedec2 coefficients to the wavedecn format."""
+    if len(coeffs) == 0:
+        return coeffs
+    coeffs = copy(coeffs)
+    for n in range(1, len(coeffs)):
+        if not isinstance(coeffs[n], tuple) or len(coeffs[n]) != 3:
+            raise ValueError("expected a 3-tuple of detail coefficients")
+        (da, ad, dd) = coeffs[n]
+        coeffs[n] = dict(ad=ad, da=da, dd=dd)
+    return coeffs
+
+
+def _determine_coeff_array_shape(coeffs):
+    arr_shape = np.asarray(coeffs[0].shape)
+    ncoeffs = coeffs[0].size
+    ndim = len(arr_shape)
+    for d in coeffs[1:]:
+        arr_shape += np.asarray(d['d'*ndim].shape)
+        for k, v in d.items():
+            ncoeffs += v.size
+    arr_shape = tuple(arr_shape.tolist())
+    # if the total number of coefficients doesn't equal the size of the array
+    # then tight packing is not possible.
+    is_tight_packing = (np.prod(arr_shape) == ncoeffs)
+    return arr_shape, is_tight_packing
+
+
+def coeffs_to_array(coeffs, padding=0):
+    """
+    Arrange a wavelet coefficient list from `wavedecn` into a single array.
+
+    Parameters
+    ----------
+
+    coeffs: array-like
+        dictionary of wavelet coefficients as returned by pywt.wavedecn
+    padding : float or None, optional
+        If None, raise an error if the coefficients cannot be tightly packed.
+
+    Returns
+    -------
+    coeff_arr : array-like
+        Wavelet transform coefficient array.
+    coeff_slices : list
+        List of slices corresponding to each coefficient.  As a 2D example,
+        `coeff_arr[coeff_slices[1]['dd']]` would extract the first level detail
+        coefficients from `coeff_arr`.
+
+
+    Notes
+    -----
+    Assume a 2D coefficient dictionary, c, from a two-level transform.
+
+    Then all 2D coefficients will be stacked into a single larger 2D array
+    as follows:
+
+    +---------------+---------------+-------------------------------+
+    |               |               |                               |
+    |     c[0]      |  c[1]['da']   |                               |
+    |               |               |                               |
+    ----------------+---------------+           c[2]['da']          |
+    |               |               |                               |
+    | c[1]['ad']    |  c[1]['dd']   |                               |
+    |               |               |                               |
+    ----------------+---------------+ ------------------------------+
+    |                               |                               |
+    |                               |                               |
+    |                               |                               |
+    |          c[2]['ad']           |           c[2]['dd']          |
+    |                               |                               |
+    |                               |                               |
+    |                               |                               |
+    --------------------------------+-------------------------------+
+
+    See Also
+    --------
+    array_to_coeffs : the inverse of coeffs_to_array
+
+    Examples
+    --------
+    cam = pywt.data.camera()
+    coeffs = pywt.wavedecn(cam, wavelet='db2', level=3)
+    arr, coeff_slices = pywt.coeffs_to_array(coeffs)
+    """
+    if not isinstance(coeffs, list) or len(coeffs) == 0:
+        raise ValueError("input must be a list of coefficients from wavedecn")
+    if not isinstance(coeffs[0], np.ndarray):
+        raise ValueError("first list element must be a numpy array")
+    if len(coeffs) > 1:
+        # convert wavedec or wavedec2 format coefficients to waverecn format
+        if isinstance(coeffs[1], dict):
+            pass
+        elif isinstance(coeffs[1], np.ndarray):
+            coeffs = _coeffs_wavedec_to_wavedecn(coeffs)
+        elif isinstance(coeffs[1], tuple):
+            coeffs = _coeffs_wavedec2_to_wavedecn(coeffs)
+        else:
+            raise ValueError("invalid coefficient list")
+    # initialize with the approximation coefficients.
+    if coeffs[0] is None:
+        raise ValueError("coeffs_to_array does not support missing "
+                         "coefficients.")
+    # coeff_arr = coeffs[0]
+    a_coeffs = coeffs[0]
+    a_shape = a_coeffs.shape
+    ndim = a_coeffs.ndim
+    if len(coeffs) == 1:
+        # only a single approximation coefficient array was found
+        return a_coeffs
+
+    # determine size of output and if tight packing is possible
+    arr_shape, is_tight_packing = _determine_coeff_array_shape(coeffs)
+
+    # preallocate output array
+    if padding is None:
+        if not is_tight_packing:
+            raise ValueError("array coefficients cannot be tightly packed")
+        coeff_arr = np.empty(arr_shape, dtype=a_coeffs.dtype)
+    else:
+        coeff_arr = full(arr_shape, padding, dtype=a_coeffs.dtype)
+
+    a_slices = [slice(s) for s in a_shape]
+    coeff_arr[a_slices] = a_coeffs
+
+    # initialize list of coefficient slices
+    coeff_slices = []
+    coeff_slices.append(a_slices)
+
+    # loop over the detail cofficients, adding them to coeff_arr
+    ds = coeffs[1:]
+    for coeff_dict in ds:
+        coeff_slices.append({})  # new dictionary for detail coefficients
+        if not isinstance(coeff_dict, dict):
+            raise ValueError("expected a dictionary of detail coefficients")
+        d_shape = coeff_dict['d' * ndim].shape
+        for key in coeff_dict.keys():
+            d = coeff_dict[key]
+            if d is None:
+                raise ValueError("coeffs_to_array does not support missing "
+                                 "coefficients.")
+            slice_array = [slice(None), ] * ndim
+            for i, let in enumerate(key):
+                if let == 'a':
+                    slice_array[i] = slice(d.shape[i])
+                elif let == 'd':
+                    slice_array[i] = slice(a_shape[i], a_shape[i] + d.shape[i])
+                else:
+                    raise ValueError("unexpected letter: {}".format(let))
+            coeff_arr[slice_array] = d
+            coeff_slices[-1][key] = slice_array
+        a_shape = [a_shape[n] + d_shape[n] for n in range(ndim)]
+    return coeff_arr, coeff_slices
+
+
+def array_to_coeffs(arr, coeff_slices, output_format='wavedecn'):
+    """
+    Convert a combined array of coefficients back to a list compatible with
+    `waverecn`.
+
+    Parameters
+    ----------
+
+    arr: array-like
+        An array containing all wavelet coefficients.  This should have been
+        generated via `coeffs_to_array`.
+    coeff_slices : list of tuples
+        List of slices corresponding to each coefficient as obtained from
+        `array_to_coeffs`.
+    output_format : {'wavedec', 'wavedec2', 'wavedecn'}
+        Make the form of the coefficients compatible with this type of
+        multilevel transform.
+
+    Returns
+    -------
+    coeffs: array-like
+        Wavelet transform coefficient array.
+
+    See Also
+    --------
+    coeffs_to_array : the inverse of array_to_coeffs
+
+    Notes
+    -----
+    A single large array containing all coefficients will have subsets stored,
+    into a `waverecn` list, c, as indicated below:
+
+    +---------------+---------------+-------------------------------+
+    |               |               |                               |
+    |     c[0]      |  c[1]['da']   |                               |
+    |               |               |                               |
+    ----------------+---------------+           c[2]['da']          |
+    |               |               |                               |
+    | c[1]['ad']    |  c[1]['dd']   |                               |
+    |               |               |                               |
+    ----------------+---------------+ ------------------------------+
+    |                               |                               |
+    |                               |                               |
+    |                               |                               |
+    |          c[2]['ad']           |           c[2]['dd']          |
+    |                               |                               |
+    |                               |                               |
+    |                               |                               |
+    --------------------------------+-------------------------------+
+
+    Examples
+    --------
+    cam = pywt.data.camera()
+    coeffs = pywt.wavedecn(cam, wavelet='db2', level=3)
+    arr, coeff_slices = pywt.coeffs_to_array(coeffs)
+    coeffs_from_arr = pywt.array_to_coeffs(arr, coeff_slices)
+    cam_recon = pywt.waverecn(coeffs_from_arr, wavelet='db2')
+    assert_array_almost_equal(cam, cam_recon)
+
+    """
+    arr = np.asarray(arr)
+    coeffs = []
+    if len(coeff_slices) == 0:
+        raise ValueError("empty list of coefficient slices")
+    else:
+        coeffs.append(arr[coeff_slices[0]])
+
+    # difference coefficients at each level
+    for n in range(1, len(coeff_slices)):
+        if output_format == 'wavedec':
+            d = arr[coeff_slices[n]['d']]
+        elif output_format == 'wavedec2':
+            d = (arr[coeff_slices[n]['da']],
+                 arr[coeff_slices[n]['ad']],
+                 arr[coeff_slices[n]['dd']])
+        elif output_format == 'wavedecn':
+            d = {}
+            for k, v in coeff_slices[n].items():
+                d[k] = arr[v]
+        else:
+            raise ValueError(
+                "Unrecognized output format: {}".format(output_format))
+        coeffs.append(d)
+    return coeffs
