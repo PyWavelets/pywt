@@ -27,6 +27,5 @@ pip-log.txt
 # Expanded Cython
 pywt/_extensions/*.[ch]
 cythonize.dat
-pywt/__config__.py
 pywt/version.py
 build.log

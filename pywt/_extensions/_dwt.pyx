@@ -56,11 +56,13 @@ cpdef dwt_axis(np.ndarray data, Wavelet wavelet, MODE mode, unsigned int axis=0)
     # memory-views do not support n-dimensional arrays, use np.ndarray instead
     cdef common.ArrayInfo data_info, output_info
     cdef np.ndarray cD, cA
-    cdef size_t[::1] output_shape
+    # Explicit input_shape necessary to prevent memory leak
+    cdef size_t[::1] input_shape, output_shape
 
     data = data.astype(_check_dtype(data), copy=False)
 
-    output_shape = (<size_t [:data.ndim]> <size_t *> data.shape).copy()
+    input_shape = <size_t [:data.ndim]> <size_t *> data.shape
+    output_shape = input_shape.copy()
     output_shape[axis] = common.dwt_buffer_length(data.shape[axis], wavelet.dec_len, mode)
 
     cA = np.empty(output_shape, data.dtype)
@@ -143,7 +145,8 @@ cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d,
     cdef common.ArrayInfo a_info, d_info, output_info
     cdef np.ndarray output
     cdef np.dtype output_dtype
-    cdef size_t[::1] output_shape
+    # Explicit input_shape necessary to prevent memory leak
+    cdef size_t[::1] input_shape, output_shape
 
     if coefs_a is not None:
         if coefs_d is not None and coefs_d.dtype.itemsize > coefs_a.dtype.itemsize:
@@ -163,18 +166,17 @@ cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d,
         d_info.shape = <size_t *> coefs_d.shape
 
     if coefs_a is not None:
-        output_shape = (<size_t [:coefs_a.ndim]> <size_t *> coefs_a.shape).copy()
-        output_shape[axis] = common.idwt_buffer_length(coefs_a.shape[axis],
-                                                       wavelet.rec_len, mode)
+        input_shape = <size_t [:coefs_a.ndim]> <size_t *> coefs_a.shape
         output_dtype = coefs_a.dtype
     elif coefs_d is not None:
-        output_shape = (<size_t [:coefs_d.ndim]> <size_t *> coefs_d.shape).copy()
-        output_shape[axis] = common.idwt_buffer_length(coefs_d.shape[axis],
-                                                       wavelet.rec_len, mode)
+        input_shape = <size_t [:coefs_d.ndim]> <size_t *> coefs_d.shape
         output_dtype = coefs_d.dtype
     else:
-        return None;
+        return None
 
+    output_shape = input_shape.copy()
+    output_shape[axis] = common.idwt_buffer_length(input_shape[axis],
+                                                   wavelet.rec_len, mode)
     output = np.empty(output_shape, output_dtype)
 
     output_info.ndim = output.ndim

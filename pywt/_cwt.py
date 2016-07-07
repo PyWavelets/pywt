@@ -42,8 +42,10 @@ def cwt(data, scales, wavelet, sampling_period=1.):
     >>> import matplotlib.pyplot as plt
     >>> x = np.arange(512)
     >>> y = np.sin(2*np.pi*x/32)
-    >>> coef=pywt.cwt(y,np.arange(1,129),'gaus1')
-    >>> plt.matshow(coef)
+    >>> coef, freqs=pywt.cwt(y,np.arange(1,129),'gaus1')
+    >>> plt.matshow(coef) # doctest: +ELLIPSIS
+    <matplotlib.image.AxesImage object at ...>
+    >>> plt.show() # doctest: +SKIP
     ----------
     >>> import pywt
     >>> import numpy as np
@@ -52,10 +54,11 @@ def cwt(data, scales, wavelet, sampling_period=1.):
     >>> t = np.linspace(-1, 1, 200, endpoint=False)
     >>> sig  = np.cos(2 * np.pi * 7 * t) + signal.gausspulse(t - 0.4, fc=2)
     >>> widths = np.arange(1, 31)
-    >>> cwtmatr = pywt.cwt(sig, widths, 'mexh')
+    >>> cwtmatr, freqs = pywt.cwt(sig, widths, 'mexh')
     >>> plt.imshow(cwtmatr, extent=[-1, 1, 1, 31], cmap='PRGn', aspect='auto',
-    ...            vmax=abs(cwtmatr).max(), vmin=-abs(cwtmatr).max())
-    >>> plt.show()
+    ...            vmax=abs(cwtmatr).max(), vmin=-abs(cwtmatr).max())  # doctest: +ELLIPSIS
+    <matplotlib.image.AxesImage object at ...>
+    >>> plt.show() # doctest: +SKIP
     """
 
     # accept array_like input; make a copy to ensure a contiguous array
@@ -124,8 +127,11 @@ def morlet(lb,ub,n):
     >>> ub = 4
     >>> n = 1000
     >>> [psi,xval] = pywt.morlet(lb,ub,n)
-    >>> plt.plot(xval,psi)
-    >>> plt.title("Morlet Wavelet")
+    >>> plt.plot(xval,psi) # doctest: +ELLIPSIS
+    [<matplotlib.lines.Line2D object at ...>]
+    >>> plt.title("Morlet Wavelet") # doctest: +ELLIPSIS
+    <matplotlib.text.Text object at ...>
+    >>> plt.show() # doctest: +SKIP
     """
     wavelet = Wavelet("morl")
     wavelet.upper_bound = ub
@@ -172,8 +178,11 @@ def gauswavf(lb,ub,n,p=1):
     >>> ub = 5
     >>> n = 1000
     >>> [psi,xval] = pywt.gauswavf(lb,ub,n,8)
-    >>> plt.plot(xval,psi)
-    >>> plt.title("Gaussian Wavelet of order 8")
+    >>> plt.plot(xval,psi) # doctest: +ELLIPSIS
+    [<matplotlib.lines.Line2D object at ...>]
+    >>> plt.title("Gaussian Wavelet of order 8") # doctest: +ELLIPSIS
+    <matplotlib.text.Text object at ...>
+    >>> plt.show() # doctest: +SKIP
     """
     if isinstance(p,(int, float, complex, np.int64, np.int32)):
         wavelet = Wavelet("gaus"+str(p))
@@ -219,8 +228,11 @@ def mexihat(lb,ub,n):
     >>> ub = 5
     >>> n = 1000
     >>> [psi,xval] = pywt.mexihat(lb,ub,n)
-    >>> plt.plot(xval,psi)
-    >>> plt.title("Mexican Hat Wavelet")
+    >>> plt.plot(xval,psi) # doctest: +ELLIPSIS
+    [<matplotlib.lines.Line2D object at ...>]
+    >>> plt.title("Mexican Hat Wavelet") # doctest: +ELLIPSIS
+    <matplotlib.text.Text object at ...>
+    >>> plt.show() # doctest: +SKIP
     """
     wavelet = Wavelet("mexh")
     wavelet.upper_bound = ub
@@ -270,12 +282,19 @@ def cmorwavf(lb,ub,n,fb,fc):
     >>> fb = 1.5
     >>> fc = 1
     >>> [psi,xval] = pywt.cmorwavf(lb,ub,n,fb,fc)
-    >>> plt.subplot(211)
-    >>> plt.plot(xval,np.real(psi))
-    >>> plt.title("Real part")
-    >>> plt.subplot(212)
-    >>> plt.plot(xval,np.imag(psi))
-    >>> plt.title("Imaginary part)
+    >>> plt.subplot(211) # doctest: +ELLIPSIS
+    <matplotlib.axes._subplots.AxesSubplot object at ...>
+    >>> plt.plot(xval,np.real(psi)) # doctest: +ELLIPSIS
+    [<matplotlib.lines.Line2D object at ...>]
+    >>> plt.title("Real part") # doctest: +ELLIPSIS
+    <matplotlib.text.Text object at ...>
+    >>> plt.subplot(212) # doctest: +ELLIPSIS
+    <matplotlib.axes._subplots.AxesSubplot object at ...>
+    >>> plt.plot(xval,np.imag(psi)) # doctest: +ELLIPSIS
+    [<matplotlib.lines.Line2D object at ...>]
+    >>> plt.title("Imaginary part") # doctest: +ELLIPSIS
+    <matplotlib.text.Text object at ...>
+    >>> plt.show() # doctest: +SKIP
     """
     wavelet = Wavelet("cmor")
     wavelet.upper_bound = ub
@@ -327,12 +346,19 @@ def shanwavf(lb,ub,n,fb,fc):
     >>> fb = 1
     >>> fc = 1.5
     >>> [psi,xval] = pywt.shanwavf(lb,ub,n,fb,fc)
-    >>> plt.subplot(211)
-    >>> plt.plot(xval,np.real(psi))
-    >>> plt.title("Real part")
-    >>> plt.subplot(212)
-    >>> plt.plot(xval,np.imag(psi))
-    >>> plt.title("Imaginary part)
+    >>> plt.subplot(211) # doctest: +ELLIPSIS
+    <matplotlib.axes._subplots.AxesSubplot object at ...>
+    >>> plt.plot(xval,np.real(psi)) # doctest: +ELLIPSIS
+    [<matplotlib.lines.Line2D object at ...>]
+    >>> plt.title("Real part") # doctest: +ELLIPSIS
+    <matplotlib.text.Text object at ...>
+    >>> plt.subplot(212) # doctest: +ELLIPSIS
+    <matplotlib.axes._subplots.AxesSubplot object at ...>
+    >>> plt.plot(xval,np.imag(psi)) # doctest: +ELLIPSIS
+    [<matplotlib.lines.Line2D object at ...>]
+    >>> plt.title("Imaginary part") # doctest: +ELLIPSIS
+    <matplotlib.text.Text object at ...>
+    >>> plt.show() # doctest: +SKIP
     """
     wavelet = Wavelet("shan")
     wavelet.upper_bound = ub
@@ -387,12 +413,19 @@ def fbspwavf(lb,ub,n,m,fb,fc):
     >>> fb = 0.5
     >>> fc = 1
     >>> [psi,xval] = pywt.fbspwavf(lb,ub,n,m,fb,fc)
-    >>> plt.subplot(211)
-    >>> plt.plot(xval,np.real(psi))
-    >>> plt.title("Real part")
-    >>> plt.subplot(212)
-    >>> plt.plot(xval,np.imag(psi))
-    >>> plt.title("Imaginary part)
+    >>> plt.subplot(211) # doctest: +ELLIPSIS
+    <matplotlib.axes._subplots.AxesSubplot object at ...>
+    >>> plt.plot(xval,np.real(psi)) # doctest: +ELLIPSIS
+    [<matplotlib.lines.Line2D object at ...>]
+    >>> plt.title("Real part") # doctest: +ELLIPSIS
+    <matplotlib.text.Text object at ...>
+    >>> plt.subplot(212) # doctest: +ELLIPSIS
+    <matplotlib.axes._subplots.AxesSubplot object at ...>
+    >>> plt.plot(xval,np.imag(psi)) # doctest: +ELLIPSIS
+    [<matplotlib.lines.Line2D object at ...>]
+    >>> plt.title("Imaginary part") # doctest: +ELLIPSIS
+    <matplotlib.text.Text object at ...>
+    >>> plt.show() # doctest: +SKIP
     """
     wavelet = Wavelet("fbsp")
     wavelet.upper_bound = ub
@@ -443,12 +476,19 @@ def cgauwavf(lb,ub,n,p=1):
     >>> n = 1000
     >>> order = 4
     >>> [psi,xval] = pywt.cgauwavf(lb,ub,n,order)
-    >>> plt.subplot(211)
-    >>> plt.plot(xval,np.real(psi))
-    >>> plt.title("Real part")
-    >>> plt.subplot(212)
-    >>> plt.plot(xval,np.imag(psi))
-    >>> plt.title("Imaginary part)
+    >>> plt.subplot(211) # doctest: +ELLIPSIS
+    <matplotlib.axes._subplots.AxesSubplot object at ...>
+    >>> plt.plot(xval,np.real(psi)) # doctest: +ELLIPSIS
+    [<matplotlib.lines.Line2D object at ...>]
+    >>> plt.title("Real part") # doctest: +ELLIPSIS
+    <matplotlib.text.Text object at ...>
+    >>> plt.subplot(212) # doctest: +ELLIPSIS
+    <matplotlib.axes._subplots.AxesSubplot object at ...>
+    >>> plt.plot(xval,np.imag(psi)) # doctest: +ELLIPSIS
+    [<matplotlib.lines.Line2D object at ...>]
+    >>> plt.title("Imaginary part") # doctest: +ELLIPSIS
+    <matplotlib.text.Text object at ...>
+    >>> plt.show() # doctest: +SKIP
     """
     if isinstance(p,(int, float, complex, np.int64, np.int32)):
         wavelet = Wavelet("cgau"+str(p))
