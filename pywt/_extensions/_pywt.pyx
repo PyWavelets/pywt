@@ -9,7 +9,6 @@ __all__ = ['MODES', 'Modes', 'Wavelet', 'wavelist', 'families']
 import warnings
 
 cimport c_wt
-cimport c_cwt
 cimport common
 from ._dwt cimport upcoef
 from ._cwt cimport cwt_psi_single
