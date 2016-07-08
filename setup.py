@@ -195,7 +195,7 @@ if __name__ == '__main__':
         version=get_version_info()[0],
 
         packages=['pywt', 'pywt._extensions', 'pywt.data'],
-        package_data={'pywt.data': ['*.npy', '*.npz','*.dat']},
+        package_data={'pywt.data': ['*.npy', '*.npz']},
         ext_modules=ext_modules,
         libraries=[c_lib],
         test_suite='nose.collector',

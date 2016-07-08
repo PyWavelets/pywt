@@ -167,8 +167,8 @@ def nino():
     [<matplotlib.lines.Line2D object at ...>]
     >>> plt.show() # doctest: +SKIP
     """
-    fname = os.path.join(os.path.dirname(__file__), 'sst_nino3.dat')
-    sst = np.loadtxt(fname)
+    fname = os.path.join(os.path.dirname(__file__), 'sst_nino3.npz')
+    sst = np.load(fname)['sst']
     # taken from
     # http://paos.colorado.edu/research/wavelets/wave_python/
     variance = np.std(sst, ddof=1) ** 2
