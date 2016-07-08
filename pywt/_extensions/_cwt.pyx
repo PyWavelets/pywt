@@ -1,4 +1,4 @@
-cimport common, c_cwt
+cimport common, c_wt
 from common cimport pywt_index_t, MODE
 from ._pywt cimport _check_dtype
 
