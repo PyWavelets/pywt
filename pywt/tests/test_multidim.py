@@ -174,6 +174,11 @@ def test_idwtn_missing():
                             pywt.idwtn(missing_coefs, 'haar'), atol=1e-15)
 
 
+def test_idwtn_all_coeffs_None():
+    coefs = dict(aa=None, da=None, ad=None, dd=None)
+    assert_raises(ValueError, pywt.idwtn, coefs, 'haar')
+
+
 def test_error_on_invalid_keys():
     data = np.array([
         [0, 4, 1, 5, 1, 4],
@@ -266,6 +271,9 @@ def test_idwt2_axes():
     coefs = pywt.dwt2(data, 'haar', axes=(1, 1))
     assert_allclose(pywt.idwt2(coefs, 'haar', axes=(1, 1)), data, atol=1e-14)
 
+    # too many axes
+    assert_raises(ValueError, pywt.idwt2, coefs, 'haar', axes=(0, 1, 1))
+
 
 def test_idwt2_axes_subsets():
     data = np.array(np.random.standard_normal((4, 4, 4)))
@@ -315,6 +323,18 @@ def test_idwt2_size_mismatch_error():
     LH = HL = HH = np.zeros((5, 5))
 
     assert_raises(ValueError, pywt.idwt2, (LL, (LH, HL, HH)), wavelet='haar')
+
+
+def test_dwt2_dimension_error():
+    data = np.ones(16)
+    wavelet = pywt.Wavelet('haar')
+
+    # wrong number of input dimensions
+    assert_raises(ValueError, pywt.dwt2, data, wavelet)
+
+    # too many axes
+    data2 = np.ones((8, 8))
+    assert_raises(ValueError, pywt.dwt2, data2, wavelet, axes=(0, 1, 1))
 
 
 if __name__ == '__main__':

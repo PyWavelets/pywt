@@ -180,6 +180,11 @@ def test_swt_dtypes():
                 "swt2: " + errmsg)
 
 
+def test_swt2_ndim_error():
+    x = np.ones(8)
+    assert_raises(ValueError, pywt.swt2, x, 'haar', level=1)
+
+
 def test_swt2_iswt2_integration():
     # This function performs a round-trip swt2/iswt2 transform test on
     # all available types of wavelets in PyWavelets - except the
