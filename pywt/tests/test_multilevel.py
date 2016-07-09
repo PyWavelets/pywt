@@ -45,6 +45,14 @@ def test_wavedec():
     assert_(pywt.dwt_max_level(len(x), db1) == 3)
 
 
+def test_waverec_invalid_inputs():
+    # input must be list or tuple
+    assert_raises(ValueError, pywt.waverec, np.ones(8), 'haar')
+
+    # input list cannot be empty
+    assert_raises(ValueError, pywt.waverec, [], 'haar')
+
+
 def test_waverec_accuracies():
     rstate = np.random.RandomState(1234)
     x0 = rstate.randn(8)
@@ -263,6 +271,31 @@ def test_wavedec2_complex():
     assert_allclose(pywt.waverec2(coeffs, 'db1'), data, rtol=1e-12)
 
 
+def test_wavedec2_invalid_inputs():
+    # input array has too few dimensions
+    data = np.ones(4)
+    assert_raises(ValueError, pywt.wavedec2, data, 'haar')
+
+
+def test_waverec2_invalid_inputs():
+    # input must be list or tuple
+    assert_raises(ValueError, pywt.waverec2, np.ones((8, 8)), 'haar')
+
+    # input list cannot be empty
+    assert_raises(ValueError, pywt.waverec2, [], 'haar')
+
+
+def test_waverec2_coeff_shape_mismatch():
+    x = np.ones((8, 8))
+    coeffs = pywt.wavedec2(x, 'db1')
+
+    # introduce a shape mismatch in the coefficients
+    coeffs = list(coeffs)
+    coeffs[1] = list(coeffs[1])
+    coeffs[1][1] = np.zeros((16, 1))
+    assert_raises(ValueError, pywt.waverec2, coeffs, 'db1')
+
+
 def test_waverec2_odd_length():
     x = np.ones((10, 6))
     coeffs = pywt.wavedec2(x, 'db1')
@@ -324,6 +357,9 @@ def test_waverecn_invalid_coeffs():
     coeffs = [[[[1.0]]], {'ad': [[[0.0]]], 'da': [[[0.0]]], 'dd': [[[0.0]]]}]
     assert_raises(ValueError, pywt.waverecn, coeffs, 'db1')
 
+    # input list cannot be empty
+    assert_raises(ValueError, pywt.waverecn, [], 'haar')
+
 
 def test_waverecn_lists():
     # support coefficient arrays specified as lists instead of arrays
@@ -335,6 +371,12 @@ def test_waverecn_invalid_coeffs2():
     # shape mismatch should raise an error
     coeffs = [np.ones((4, 4, 4)), {'ada': np.ones((4, 4))}]
     assert_raises(ValueError, pywt.waverecn, coeffs, 'db1')
+
+
+def test_wavedecn_invalid_inputs():
+    # input array has too few dimensions
+    data = np.array(0)
+    assert_raises(ValueError, pywt.wavedecn, data, 'haar')
 
 
 def test_waverecn_accuracies():
@@ -406,6 +448,14 @@ def test_coeffs_to_array():
     assert_raises(ValueError, pywt.coeffs_to_array, [None, ])
     assert_raises(ValueError, pywt.coeffs_to_array, [a_coeffs,
                                                      (None, None, None)])
+
+    # invalid type for second coefficient list element
+    assert_raises(ValueError, pywt.coeffs_to_array, [a_coeffs, None])
+
+    # use an invalid key name in the coef dictionary
+    coeffs = [np.array([0]), dict(d=np.array([0]), c=np.array([0]))]
+    assert_raises(ValueError, pywt.coeffs_to_array, coeffs)
+
 
 
 def test_wavedecn_coeff_reshape_even():
@@ -479,6 +529,17 @@ def test_waverecn_coeff_reshape_odd():
             # truncate reconstructed values to original shape
             x1r = x1r[[slice(s) for s in x1.shape]]
             assert_allclose(x1, x1r, rtol=1e-4, atol=1e-4)
+
+
+def test_array_to_coeffs_invalid_inputs():
+    coeffs = pywt.wavedecn(np.ones(2), 'haar')
+    arr, arr_slices = pywt.coeffs_to_array(coeffs)
+
+    # empty list of array slices
+    assert_raises(ValueError, pywt.array_to_coeffs, arr, [])
+
+    # invalid format name
+    assert_raises(ValueError, pywt.array_to_coeffs, arr, arr_slices, 'foo')
 
 
 if __name__ == '__main__':
