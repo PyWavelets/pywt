@@ -705,6 +705,9 @@ def coeffs_to_array(coeffs, padding=0):
     """
     if not isinstance(coeffs, list) or len(coeffs) == 0:
         raise ValueError("input must be a list of coefficients from wavedecn")
+    if coeffs[0] is None:
+        raise ValueError("coeffs_to_array does not support missing "
+                         "coefficients.")
     if not isinstance(coeffs[0], np.ndarray):
         raise ValueError("first list element must be a numpy array")
     if len(coeffs) > 1:
@@ -718,10 +721,6 @@ def coeffs_to_array(coeffs, padding=0):
         else:
             raise ValueError("invalid coefficient list")
     # initialize with the approximation coefficients.
-    if coeffs[0] is None:
-        raise ValueError("coeffs_to_array does not support missing "
-                         "coefficients.")
-    # coeff_arr = coeffs[0]
     a_coeffs = coeffs[0]
     a_shape = a_coeffs.shape
     ndim = a_coeffs.ndim
