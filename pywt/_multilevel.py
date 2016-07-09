@@ -750,8 +750,6 @@ def coeffs_to_array(coeffs, padding=0):
     ds = coeffs[1:]
     for coeff_dict in ds:
         coeff_slices.append({})  # new dictionary for detail coefficients
-        if not isinstance(coeff_dict, dict):
-            raise ValueError("expected a dictionary of detail coefficients")
         d_shape = coeff_dict['d' * ndim].shape
         for key in coeff_dict.keys():
             d = coeff_dict[key]
