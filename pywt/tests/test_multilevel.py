@@ -2,7 +2,6 @@
 
 from __future__ import division, print_function, absolute_import
 
-import os
 import numpy as np
 from numpy.testing import (run_module_suite, assert_almost_equal,
                            assert_allclose, assert_, assert_equal,
@@ -455,7 +454,6 @@ def test_coeffs_to_array():
     # use an invalid key name in the coef dictionary
     coeffs = [np.array([0]), dict(d=np.array([0]), c=np.array([0]))]
     assert_raises(ValueError, pywt.coeffs_to_array, coeffs)
-
 
 
 def test_wavedecn_coeff_reshape_even():
