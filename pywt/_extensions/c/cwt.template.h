@@ -17,7 +17,6 @@
 #endif
 
 
-
 void CAT(TYPE, _gaus)(const TYPE * const restrict input,
                               TYPE * const restrict output, const size_t N,
                               const size_t number);

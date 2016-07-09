@@ -43,8 +43,7 @@ def cwt(data, scales, wavelet, sampling_period=1.):
     >>> x = np.arange(512)
     >>> y = np.sin(2*np.pi*x/32)
     >>> coef, freqs=pywt.cwt(y,np.arange(1,129),'gaus1')
-    >>> plt.matshow(coef) # doctest: +ELLIPSIS
-    <matplotlib.image.AxesImage object at ...>
+    >>> plt.matshow(coef) # doctest: +SKIP
     >>> plt.show() # doctest: +SKIP
     ----------
     >>> import pywt
@@ -55,8 +54,7 @@ def cwt(data, scales, wavelet, sampling_period=1.):
     >>> widths = np.arange(1, 31)
     >>> cwtmatr, freqs = pywt.cwt(sig, widths, 'mexh')
     >>> plt.imshow(cwtmatr, extent=[-1, 1, 1, 31], cmap='PRGn', aspect='auto',
-    ...            vmax=abs(cwtmatr).max(), vmin=-abs(cwtmatr).max())  # doctest: +ELLIPSIS
-    <matplotlib.image.AxesImage object at ...>
+    ...            vmax=abs(cwtmatr).max(), vmin=-abs(cwtmatr).max())  # doctest: +SKIP
     >>> plt.show() # doctest: +SKIP
     """
 
