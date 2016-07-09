@@ -624,7 +624,7 @@ def _coeffs_wavedec2_to_wavedecn(coeffs):
         return coeffs
     coeffs = copy(coeffs)
     for n in range(1, len(coeffs)):
-        if not isinstance(coeffs[n], tuple) or len(coeffs[n]) != 3:
+        if not isinstance(coeffs[n], (tuple, list)) or len(coeffs[n]) != 3:
             raise ValueError("expected a 3-tuple of detail coefficients")
         (da, ad, dd) = coeffs[n]
         coeffs[n] = dict(ad=ad, da=da, dd=dd)
@@ -716,7 +716,7 @@ def coeffs_to_array(coeffs, padding=0):
             pass
         elif isinstance(coeffs[1], np.ndarray):
             coeffs = _coeffs_wavedec_to_wavedecn(coeffs)
-        elif isinstance(coeffs[1], tuple):
+        elif isinstance(coeffs[1], (tuple, list)):
             coeffs = _coeffs_wavedec2_to_wavedecn(coeffs)
         else:
             raise ValueError("invalid coefficient list")
