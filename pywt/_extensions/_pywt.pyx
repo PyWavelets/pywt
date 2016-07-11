@@ -554,21 +554,15 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
         "Number of vanishing moments for wavelet function"
         def __get__(self):
             if self.dw is not NULL:
-                if self.dw.base.vanishing_moments_psi >= 0:
-                    return self.dw.base.vanishing_moments_psi
-            else:
-                if self.cw.base.vanishing_moments_psi >= 0:
-                    return self.cw.base.vanishing_moments_psi  
+                if self.dw.vanishing_moments_psi >= 0:
+                    return self.dw.vanishing_moments_psi
 
     property vanishing_moments_phi:
         "Number of vanishing moments for scaling function"
         def __get__(self):
             if self.dw is not NULL:
-                if self.dw.base.vanishing_moments_phi >= 0:
-                    return self.dw.base.vanishing_moments_phi
-            else:
-                if self.cw.base.vanishing_moments_phi >= 0:
-                    return self.cw.base.vanishing_moments_phi
+                if self.dw.vanishing_moments_phi >= 0:
+                    return self.dw.vanishing_moments_phi
 
     property filter_bank:
         """Returns tuple of wavelet filters coefficients
@@ -684,7 +678,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
                                     np.zeros(right_extent_length))),
                     np.linspace(0.0, (output_length-1)/p, output_length)]
         else:
-            if self.dw.base.biorthogonal and (self.dw.base.vanishing_moments_psi % 4) != 1:
+            if self.dw.base.biorthogonal and (self.dw.vanishing_moments_psi % 4) != 1:
                 # FIXME: I don't think this branch is well tested
                 n_mul = -n
             else:

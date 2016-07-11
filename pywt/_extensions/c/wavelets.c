@@ -99,8 +99,8 @@ DiscreteWavelet* discrete_wavelet(WAVELET_NAME name, unsigned int order)
             w = blank_discrete_wavelet(2 * order);
             if(w == NULL) return NULL;
 
-            w->base.vanishing_moments_psi = order;
-            w->base.vanishing_moments_phi = 0;
+            w->vanishing_moments_psi = order;
+            w->vanishing_moments_phi = 0;
             w->base.support_width = 2*order - 1;
             w->base.orthogonal = 1;
             w->base.biorthogonal = 1;
@@ -147,8 +147,8 @@ DiscreteWavelet* discrete_wavelet(WAVELET_NAME name, unsigned int order)
             w = blank_discrete_wavelet(2 * order);
             if(w == NULL) return NULL;
 
-            w->base.vanishing_moments_psi = order;
-            w->base.vanishing_moments_phi = 0;
+            w->vanishing_moments_psi = order;
+            w->vanishing_moments_phi = 0;
             w->base.support_width = 2*order - 1;
             w->base.orthogonal = 1;
             w->base.biorthogonal = 1;
@@ -193,8 +193,8 @@ DiscreteWavelet* discrete_wavelet(WAVELET_NAME name, unsigned int order)
             w = blank_discrete_wavelet(6 * order);
             if(w == NULL) return NULL;
 
-            w->base.vanishing_moments_psi = 2*order;
-            w->base.vanishing_moments_phi = 2*order -1;
+            w->vanishing_moments_psi = 2*order;
+            w->vanishing_moments_phi = 2*order -1;
             w->base.support_width = 6*order - 1;
             w->base.orthogonal = 1;
             w->base.biorthogonal = 1;
@@ -271,8 +271,8 @@ DiscreteWavelet* discrete_wavelet(WAVELET_NAME name, unsigned int order)
             w = blank_discrete_wavelet((N == 1) ? 2 * M : 2 * M + 2);
             if(w == NULL) return NULL;
 
-            w->base.vanishing_moments_psi = order/10;
-            w->base.vanishing_moments_phi = -1;
+            w->vanishing_moments_psi = order/10;
+            w->vanishing_moments_phi = order % 10;
             w->base.support_width = -1;
             w->base.orthogonal = 0;
             w->base.biorthogonal = 1;
@@ -314,8 +314,8 @@ DiscreteWavelet* discrete_wavelet(WAVELET_NAME name, unsigned int order)
             w = blank_discrete_wavelet(62);
             if(w == NULL) return NULL;
 
-            w->base.vanishing_moments_psi = -1;
-            w->base.vanishing_moments_phi = -1;
+            w->vanishing_moments_psi = -1;
+            w->vanishing_moments_phi = -1;
             w->base.support_width = -1;
             w->base.orthogonal = 1;
             w->base.biorthogonal = 1;
@@ -366,8 +366,6 @@ ContinuousWavelet* continous_wavelet(WAVELET_NAME name, unsigned int order)
             w = blank_continous_wavelet();
             if(w == NULL) return NULL;
 
-            w->base.vanishing_moments_psi = -1;
-            w->base.vanishing_moments_phi = -1;
             w->base.support_width = -1;
             w->base.orthogonal = 0;
             w->base.biorthogonal = 0;
@@ -386,8 +384,6 @@ ContinuousWavelet* continous_wavelet(WAVELET_NAME name, unsigned int order)
             w = blank_continous_wavelet();
             if(w == NULL) return NULL;
 
-            w->base.vanishing_moments_psi = -1;
-            w->base.vanishing_moments_phi = -1;
             w->base.support_width = -1;
             w->base.orthogonal = 0;
             w->base.biorthogonal = 0;
@@ -406,8 +402,6 @@ ContinuousWavelet* continous_wavelet(WAVELET_NAME name, unsigned int order)
             w = blank_continous_wavelet();
             if(w == NULL) return NULL;
 
-            w->base.vanishing_moments_psi = -1;
-            w->base.vanishing_moments_phi = -1;
             w->base.support_width = -1;
             w->base.orthogonal = 0;
             w->base.biorthogonal = 0;
@@ -428,8 +422,6 @@ ContinuousWavelet* continous_wavelet(WAVELET_NAME name, unsigned int order)
             w = blank_continous_wavelet();
             if(w == NULL) return NULL;
 
-            w->base.vanishing_moments_psi = -1;
-            w->base.vanishing_moments_phi = -1;
             w->base.support_width = -1;
             w->base.orthogonal = 0;
             w->base.biorthogonal = 0;
@@ -449,8 +441,6 @@ ContinuousWavelet* continous_wavelet(WAVELET_NAME name, unsigned int order)
             w = blank_continous_wavelet();
             if(w == NULL) return NULL;
 
-            w->base.vanishing_moments_psi = -1;
-            w->base.vanishing_moments_phi = -1;
             w->base.support_width = -1;
             w->base.orthogonal = 0;
             w->base.biorthogonal = 0;
@@ -470,8 +460,6 @@ ContinuousWavelet* continous_wavelet(WAVELET_NAME name, unsigned int order)
             w = blank_continous_wavelet();
             if(w == NULL) return NULL;
 
-            w->base.vanishing_moments_psi = -1;
-            w->base.vanishing_moments_phi = -1;
             w->base.support_width = -1;
             w->base.orthogonal = 0;
             w->base.biorthogonal = 0;
@@ -491,8 +479,6 @@ ContinuousWavelet* continous_wavelet(WAVELET_NAME name, unsigned int order)
             w = blank_continous_wavelet();
             if(w == NULL) return NULL;
 
-            w->base.vanishing_moments_psi = -1;
-            w->base.vanishing_moments_phi = -1;
             w->base.support_width = -1;
             w->base.orthogonal = 0;
             w->base.biorthogonal = 0;

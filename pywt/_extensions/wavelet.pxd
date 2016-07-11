@@ -23,8 +23,6 @@ cdef extern from "c/wavelets.h":
         CMOR
         
     ctypedef struct BaseWavelet:
-        int vanishing_moments_psi
-        int vanishing_moments_phi
         pywt_index_t support_width
 
         unsigned int orthogonal
@@ -54,6 +52,9 @@ cdef extern from "c/wavelets.h":
         float* rec_lo_float
         size_t dec_len         # length of decomposition filter
         size_t rec_len         # length of reconstruction filter
+        
+        int vanishing_moments_psi
+        int vanishing_moments_phi
         BaseWavelet base
 
         
