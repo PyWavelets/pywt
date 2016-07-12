@@ -267,7 +267,7 @@ def Wavelet(name=u"", object filter_bank=None):
 
 cdef public class DiscreteWavelet [type DiscreteWaveletType, object DiscreteWaveletObject]:
     """
-    Wavelet(name, filter_bank=None) object describe properties of
+    DiscreteWavelet(name, filter_bank=None) object describe properties of
     a wavelet identified by name.
 
     In order to use a built-in wavelet the parameter name must be
@@ -275,7 +275,7 @@ cdef public class DiscreteWavelet [type DiscreteWaveletType, object DiscreteWave
     To create a custom wavelet object, filter_bank parameter must
     be specified. It can be either a list of four filters or an object
     that a `filter_bank` attribute which returns a list of four
-    filters - just like the Wavelet instance itself.
+    filters - just like the DiscreteWavelet instance itself.
 
     """
     #cdef readonly properties
@@ -503,7 +503,7 @@ cdef public class DiscreteWavelet [type DiscreteWaveletType, object DiscreteWave
                       DeprecationWarning)
         return self.inverse_filter_bank
 
-    def wavefun(self, int level=8, length = None):
+    def wavefun(self, int level=8):
         """
         wavefun(self, level=8)
 
@@ -613,7 +613,7 @@ cdef public class DiscreteWavelet [type DiscreteWaveletType, object DiscreteWave
     def __str__(self):
         s = []
         for x in [
-            u"Wavelet %s"           % self.name,
+            u"DescreteWavelet %s"           % self.name,
             u"  Family name:    %s" % self.family_name,
             u"  Short name:     %s" % self.short_family_name,
             u"  Filters length: %d" % self.dec_len,
@@ -636,15 +636,11 @@ cdef public class DiscreteWavelet [type DiscreteWaveletType, object DiscreteWave
 
 cdef public class ContinuousWavelet [type ContinuousWaveletType, object ContinuousWaveletObject]:
     """
-    Wavelet(name, filter_bank=None) object describe properties of
-    a wavelet identified by name.
+    ContinuousWavelet(name) object describe properties of
+    a continuous wavelet identified by name.
 
     In order to use a built-in wavelet the parameter name must be
     a valid name from the wavelist() list.
-    To create a custom wavelet object, filter_bank parameter must
-    be specified. It can be either a list of four filters or an object
-    that a `filter_bank` attribute which returns a list of four
-    filters - just like the Wavelet instance itself.
 
     """
     #cdef readonly properties
@@ -767,7 +763,7 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
 
     def wavefun(self, int level=8, length = None):
         """
-        wavefun(self, level=8)
+        wavefun(self, level=8, length = None)
 
         Calculates approximations of scaling function (`phi`) and wavelet
         function (`psi`) on xgrid (`x`) at a given level of refinement.
@@ -779,23 +775,18 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
 
         Returns
         -------
-        [phi, psi, x] : array_like
-            For orthogonal wavelets returns scaling function, wavelet function
-            and xgrid - [phi, psi, x].
-
-        [phi_d, psi_d, phi_r, psi_r, x] : array_like
-            For biorthogonal wavelets returns scaling and wavelet function both
-            for decomposition and reconstruction and xgrid
+        [psi, x] : array_like
+            returns wavelet function and xgrid - [psi, x].
 
         Examples
         --------
         >>> import pywt
         >>> # Orthogonal
-        >>> wavelet = pywt.Wavelet('db2')
-        >>> phi, psi, x = wavelet.wavefun(level=5)
-        >>> # Biorthogonal
-        >>> wavelet = pywt.Wavelet('bior3.5')
-        >>> phi_d, psi_d, phi_r, psi_r, x = wavelet.wavefun(level=5)
+        >>> wavelet = pywt.Wavelet('gaus2')
+        >>> phi, x = wavelet.wavefun(length=1024)
+        >>> # Complex
+        >>> wavelet = pywt.Wavelet('cgau3')
+        >>> psi, x = wavelet.wavefun(length=1024)
 
         """
         cdef pywt_index_t output_length "output_length"
@@ -825,11 +816,9 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
     def __str__(self):
         s = []
         for x in [
-            u"Wavelet %s"           % self.name,
+            u"ContinuousWavelet %s" % self.name,
             u"  Family name:    %s" % self.family_name,
             u"  Short name:     %s" % self.short_family_name,
-            u"  Orthogonal:     %s" % self.orthogonal,
-            u"  Biorthogonal:   %s" % self.biorthogonal,
             u"  Symmetry:       %s" % self.symmetry,
             u"  DWT:            %s" % self.dwt_possible,
             u"  CWT:            %s" % self.cwt_possible,

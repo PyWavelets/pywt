@@ -1,6 +1,6 @@
 import numpy as np
 
-from ._extensions._pywt import ContinuousWavelet, Modes, _check_dtype
+from ._extensions._pywt import Wavelet, ContinuousWavelet, DiscreteWavelet, Modes, _check_dtype
 from ._extensions._cwt import (cwt_psi_single)
 from ._functions import integrate_wavelet, scale2frequency
 
@@ -61,8 +61,8 @@ def cwt(data, scales, wavelet, sampling_period=1.):
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(data)
     data = np.array(data, dtype=dt)
-    if not isinstance(wavelet, ContinuousWavelet):
-        wavelet = ContinuousWavelet(wavelet)
+    if not isinstance(wavelet, (ContinuousWavelet, DiscreteWavelet)):
+        wavelet = Wavelet(wavelet)
     if np.isscalar(scales):
         scales = np.array([scales])
     if data.ndim == 1:
