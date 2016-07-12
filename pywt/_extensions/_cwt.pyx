@@ -8,7 +8,7 @@ import numpy as np
 
 
 
-cpdef cwt_psi_single(data_t[::1] data, Wavelet wavelet, size_t output_len):
+cpdef cwt_psi_single(data_t[::1] data, ContinuousWavelet wavelet, size_t output_len):
     cdef np.ndarray psi, psi_r, psi_i
     if output_len < 1:
         raise RuntimeError("Invalid output length.")

@@ -10,7 +10,8 @@ typedef enum {
     UNKNOWN = -1,
     ASYMMETRIC = 0,
     NEAR_SYMMETRIC = 1,
-    SYMMETRIC = 2
+    SYMMETRIC = 2,
+    ANTI_SYMMETRIC = 3
 } SYMMETRY;
 
 /* Wavelet name */

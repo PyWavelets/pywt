@@ -2,7 +2,7 @@
 # See COPYING for license details.
 
 __doc__ = """Pyrex wrapper for low-level C wavelet transform implementation."""
-__all__ = ['MODES', 'Modes', 'Wavelet', 'wavelist', 'families']
+__all__ = ['MODES', 'Modes', 'Wavelet', 'DiscreteWavelet', 'ContinuousWavelet', 'wavelist', 'families']
 
 ###############################################################################
 # imports
@@ -251,7 +251,21 @@ def families(int short=True):
     return __wfamily_list_long[:]
 
 
-cdef public class Wavelet [type WaveletType, object WaveletObject]:
+def Wavelet(name=u"", object filter_bank=None):
+    if not name and filter_bank is None:
+        raise TypeError("Wavelet name or filter bank must be specified.")
+    if filter_bank is None:
+        name = name.lower()
+        family_code, family_number = wname_to_code(name)
+        if (wavelet.is_discrete_wavelet(family_code)):
+            return DiscreteWavelet(name, filter_bank)
+        else:
+            return ContinuousWavelet(name)
+    else:
+        return DiscreteWavelet(name, filter_bank)
+
+
+cdef public class DiscreteWavelet [type DiscreteWaveletType, object DiscreteWaveletObject]:
     """
     Wavelet(name, filter_bank=None) object describe properties of
     a wavelet identified by name.
@@ -279,11 +293,8 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
             self.name = name.lower()
             family_code, family_number = wname_to_code(self.name)
             if (wavelet.is_discrete_wavelet(family_code)):
-                self.dw = <wavelet.DiscreteWavelet*> wavelet.discrete_wavelet(family_code, family_number)
-            else:
-                self.cw = <wavelet.ContinuousWavelet*> wavelet.continous_wavelet(family_code, family_number)
-
-            if self.dw is NULL and self.cw is NULL:
+                self.w = <wavelet.DiscreteWavelet*> wavelet.discrete_wavelet(family_code, family_number)
+            if self.w is NULL:
                 raise ValueError("Invalid wavelet name.")
             self.number = family_number
         else:
@@ -328,71 +339,61 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
                 raise ValueError("All filters in filter bank must have "
                                  "length greater than 0.")
 
-            self.dw = <wavelet.DiscreteWavelet*> wavelet.blank_discrete_wavelet(filter_length)
-            if self.dw is NULL:
+            self.w = <wavelet.DiscreteWavelet*> wavelet.blank_discrete_wavelet(filter_length)
+            if self.w is NULL:
                 raise MemoryError("Could not allocate memory for given "
                                   "filter bank.")
 
             # copy values to struct
-            copy_object_to_float32_array(dec_lo, self.dw.dec_lo_float)
-            copy_object_to_float32_array(dec_hi, self.dw.dec_hi_float)
-            copy_object_to_float32_array(rec_lo, self.dw.rec_lo_float)
-            copy_object_to_float32_array(rec_hi, self.dw.rec_hi_float)
+            copy_object_to_float32_array(dec_lo, self.w.dec_lo_float)
+            copy_object_to_float32_array(dec_hi, self.w.dec_hi_float)
+            copy_object_to_float32_array(rec_lo, self.w.rec_lo_float)
+            copy_object_to_float32_array(rec_hi, self.w.rec_hi_float)
 
-            copy_object_to_float64_array(dec_lo, self.dw.dec_lo_double)
-            copy_object_to_float64_array(dec_hi, self.dw.dec_hi_double)
-            copy_object_to_float64_array(rec_lo, self.dw.rec_lo_double)
-            copy_object_to_float64_array(rec_hi, self.dw.rec_hi_double)
+            copy_object_to_float64_array(dec_lo, self.w.dec_lo_double)
+            copy_object_to_float64_array(dec_hi, self.w.dec_hi_double)
+            copy_object_to_float64_array(rec_lo, self.w.rec_lo_double)
+            copy_object_to_float64_array(rec_hi, self.w.rec_hi_double)
 
             self.name = name
 
     def __dealloc__(self):
-        if self.dw is not NULL:
-            wavelet.free_discrete_wavelet(self.dw)
-            self.dw = NULL
-        if self.cw is not NULL:
-            wavelet.free_continous_wavelet(self.cw)
-            self.cw = NULL
+        if self.w is not NULL:
+            wavelet.free_discrete_wavelet(self.w)
+            self.w = NULL
 
     def __len__(self):
-        if self.dw is not NULL:
-            return self.dw.dec_len
+        return self.w.dec_len
 
     property dec_lo:
         "Lowpass decomposition filter"
         def __get__(self):
-            if self.dw is not NULL:
-                return float64_array_to_list(self.dw.dec_lo_double, self.dw.dec_len)
+            return float64_array_to_list(self.w.dec_lo_double, self.w.dec_len)
 
     property dec_hi:
         "Highpass decomposition filter"
         def __get__(self):
-            if self.dw is not NULL:
-                return float64_array_to_list(self.dw.dec_hi_double, self.dw.dec_len)
+            return float64_array_to_list(self.w.dec_hi_double, self.w.dec_len)
 
     property rec_lo:
         "Lowpass reconstruction filter"
         def __get__(self):
-            if self.dw is not NULL:
-                return float64_array_to_list(self.dw.rec_lo_double, self.dw.rec_len)
+            return float64_array_to_list(self.w.rec_lo_double, self.w.rec_len)
 
     property rec_hi:
         "Highpass reconstruction filter"
         def __get__(self):
-            if self.dw is not NULL:
-                return float64_array_to_list(self.dw.rec_hi_double, self.dw.rec_len)
+            return float64_array_to_list(self.w.rec_hi_double, self.w.rec_len)
 
     property rec_len:
         "Reconstruction filters length"
         def __get__(self):
-            if self.dw is not NULL:
-                return self.dw.rec_len
+            return self.w.rec_len
 
     property dec_len:
         "Decomposition filters length"
         def __get__(self):
-            if self.dw is not NULL:
-                return self.dw.dec_len
+            return self.w.dec_len
     
     property family_number:
         "Wavelet family number"
@@ -402,197 +403,105 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
     property family_name:
         "Wavelet family name"
         def __get__(self):
-            if self.dw is not NULL:
-                return self.dw.base.family_name.decode('latin-1')
-            else:
-                return self.cw.base.family_name.decode('latin-1')
+            return self.w.base.family_name.decode('latin-1')
 
     property short_family_name:
         "Short wavelet family name"
         def __get__(self):
-            if self.dw is not NULL:
-                return self.dw.base.short_name.decode('latin-1')
-            else:
-                return self.cw.base.short_name.decode('latin-1')
+            return self.w.base.short_name.decode('latin-1')
 
     property orthogonal:
         "Is orthogonal"
         def __get__(self):
-            if self.dw is not NULL:
-                return bool(self.dw.base.orthogonal)
-            else:
-                return bool(self.cw.base.orthogonal)
+            return bool(self.w.base.orthogonal)
         def __set__(self, int value):
-            if self.dw is not NULL:
-                self.dw.base.orthogonal = (value != 0)
-            else:
-                self.cw.base.orthogonal = (value != 0)
+            self.w.base.orthogonal = (value != 0)
 
     property biorthogonal:
         "Is biorthogonal"
         def __get__(self):
-            if self.dw is not NULL:
-                return bool(self.dw.base.biorthogonal)
-            else:
-                return bool(self.cw.base.biorthogonal)
+            return bool(self.w.base.biorthogonal)
         def __set__(self, int value):
-            if self.dw is not NULL:
-                self.dw.base.biorthogonal = (value != 0)
-            else:
-                self.cw.base.biorthogonal = (value != 0)
+            self.w.base.biorthogonal = (value != 0)
 
     property dwt_possible:
         "DWT possible"
         def __get__(self):
-            if self.dw is not NULL:
-                return True
-            else:
-                return False
+            return True
 
     property cwt_possible:
         "CWT possible"
         def __get__(self):
-            if self.dw is not NULL:
-                return True
-            else:
-                return True
-
-    property complex_cwt:
-        "CWT is complex"
-        def __get__(self):
-            if self.cw is not NULL:
-                return bool(self.cw.complex_cwt)
-            else:
-                return False
-        def __set__(self, int value):
-            if self.cw is not NULL:
-                self.cw.complex_cwt = (value != 0)
+            return True
 
     property lower_bound:
         "Lower Bound"
         def __get__(self):
-            if self.dw is not NULL:
-                if self.dw.base.lower_bound != self.dw.base.upper_bound:
-                    return self.dw.base.lower_bound
-            else:
-                if self.cw.base.lower_bound != self.cw.base.upper_bound:
-                    return self.cw.base.lower_bound
+            if self.w.base.lower_bound != self.w.base.upper_bound:
+                return self.w.base.lower_bound
         def __set__(self, float value):
-            if self.dw is not NULL:
-                self.dw.base.lower_bound = value
-            else:
-                self.cw.base.lower_bound = value
+            if self.w is not NULL:
+                self.w.base.lower_bound = value
 
     property upper_bound:
         "Upper Bound"
         def __get__(self):
-            if self.dw is not NULL:
-                if self.dw.base.upper_bound != self.dw.base.lower_bound:
-                    return self.dw.base.upper_bound
-            else:
-                if self.cw.base.upper_bound != self.cw.base.lower_bound:
-                    return self.cw.base.upper_bound
+            if self.w.base.upper_bound != self.w.base.lower_bound:
+                return self.w.base.upper_bound
         def __set__(self, float value):
-            if self.dw is not NULL:
-                self.dw.base.upper_bound = value
-            else:
-                self.cw.base.upper_bound = value
-
-    property center_frequency:
-        "Center frequency (shan, fbsp, cmor)"
-        def __get__(self):
-            if self.cw is not NULL:
-                if self.cw.center_frequency > 0:
-                    return self.cw.center_frequency
-        def __set__(self, float value):
-            if self.cw is not NULL:
-                self.cw.center_frequency = value
-
-    property bandwidth_frequency:
-        "Bandwidth frequency (shan, fbsp, cmor)"
-        def __get__(self):
-            if self.cw is not NULL:
-                if self.cw.bandwidth_frequency > 0:
-                    return self.cw.bandwidth_frequency
-        def __set__(self, float value):
-            if self.cw is not NULL:
-                self.cw.bandwidth_frequency = value
-
-    property fbsp_order:
-        "order parameter for fbsp"
-        def __get__(self):
-            if self.cw is not NULL:
-                if self.cw.fbsp_order != 0:
-                    return self.cw.fbsp_order
-        def __set__(self, unsigned int value):
-            if self.cw is not NULL:
-                self.cw.fbsp_order = value
+            self.w.base.upper_bound = value
 
     property symmetry:
         "Wavelet symmetry"
         def __get__(self):
-            if self.dw is not NULL:
-                if self.dw.base.symmetry == wavelet.ASYMMETRIC:
-                    return "asymmetric"
-                elif self.dw.base.symmetry == wavelet.NEAR_SYMMETRIC:
-                    return "near symmetric"
-                elif self.dw.base.symmetry == wavelet.SYMMETRIC:
-                    return "symmetric"
-                else:
-                    return "unknown"
+            if self.w.base.symmetry == wavelet.ASYMMETRIC:
+                return "asymmetric"
+            elif self.w.base.symmetry == wavelet.NEAR_SYMMETRIC:
+                return "near symmetric"
+            elif self.w.base.symmetry == wavelet.SYMMETRIC:
+                return "symmetric"
+            elif self.w.base.symmetry == wavelet.ANTI_SYMMETRIC:
+                return "anti-symmetric"
             else:
-                if self.cw.base.symmetry == wavelet.ASYMMETRIC:
-                    return "asymmetric"
-                elif self.cw.base.symmetry == wavelet.NEAR_SYMMETRIC:
-                    return "near symmetric"
-                elif self.cw.base.symmetry == wavelet.SYMMETRIC:
-                    return "symmetric"
-                else:
-                    return "unknown"
+                return "unknown"
 
     property vanishing_moments_psi:
         "Number of vanishing moments for wavelet function"
         def __get__(self):
-            if self.dw is not NULL:
-                if self.dw.vanishing_moments_psi >= 0:
-                    return self.dw.vanishing_moments_psi
+            if self.w.vanishing_moments_psi >= 0:
+                return self.w.vanishing_moments_psi
 
     property vanishing_moments_phi:
         "Number of vanishing moments for scaling function"
         def __get__(self):
-            if self.dw is not NULL:
-                if self.dw.vanishing_moments_phi >= 0:
-                    return self.dw.vanishing_moments_phi
+            if self.w.vanishing_moments_phi >= 0:
+                return self.w.vanishing_moments_phi
 
     property filter_bank:
         """Returns tuple of wavelet filters coefficients
         (dec_lo, dec_hi, rec_lo, rec_hi)
         """
         def __get__(self):
-            if self.dw is not NULL:
-                return (self.dec_lo, self.dec_hi, self.rec_lo, self.rec_hi)
+            return (self.dec_lo, self.dec_hi, self.rec_lo, self.rec_hi)
 
     def get_filters_coeffs(self):
-        if self.dw is not NULL:
-            warnings.warn("The `get_filters_coeffs` method is deprecated. "
-                          "Use `filter_bank` attribute instead.", DeprecationWarning)
-            return self.filter_bank
+        warnings.warn("The `get_filters_coeffs` method is deprecated. "
+                      "Use `filter_bank` attribute instead.", DeprecationWarning)
+        return self.filter_bank
 
     property inverse_filter_bank:
         """Tuple of inverse wavelet filters coefficients
         (rec_lo[::-1], rec_hi[::-1], dec_lo[::-1], dec_hi[::-1])
         """
         def __get__(self):
-            if self.dw is not NULL:
-                return (self.rec_lo[::-1], self.rec_hi[::-1], self.dec_lo[::-1],
-                        self.dec_hi[::-1])
+            return (self.rec_lo[::-1], self.rec_hi[::-1], self.dec_lo[::-1],
+                    self.dec_hi[::-1])
 
     def get_reverse_filters_coeffs(self):
-        if self.dw is not NULL:
-            warnings.warn("The `get_reverse_filters_coeffs` method is deprecated. "
-                          "Use `inverse_filter_bank` attribute instead.",
-                          DeprecationWarning)
-            return self.inverse_filter_bank
+        warnings.warn("The `get_reverse_filters_coeffs` method is deprecated. "
+                      "Use `inverse_filter_bank` attribute instead.",
+                      DeprecationWarning)
+        return self.inverse_filter_bank
 
     def wavefun(self, int level=8, length = None):
         """
@@ -636,32 +545,16 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
         cdef np.float64_t[::1] n_mul_arr = <np.float64_t[:1]> &n_mul
         cdef double p "p"
         cdef double mul "mul"
-        cdef Wavelet other "other"
+        cdef DiscreteWavelet other "other"
         cdef phi_d, psi_d, phi_r, psi_r
         cdef psi_i
         cdef np.float64_t[::1] x, psi
 
         n = pow(sqrt(2.), <double>level)
         p = (pow(2., <double>level))
-        
-        if self.cw is not NULL:
-            if length is None:
-                output_length = <pywt_index_t>p
-            else:
-                output_length = <pywt_index_t>length
-            x = np.linspace(self.cw.base.lower_bound, self.cw.base.upper_bound, output_length)
-            # x = np.array(x, dtype=np.float64)
-            if self.cw.complex_cwt:
-                psi_r, psi_i = cwt_psi_single(x, self, output_length)
-                return [np.asarray(psi_r, dtype=np.float64) + 1j * np.asarray(psi_i, dtype=np.float64), 
-                        np.asarray(x, dtype=np.float64)]
-            else:
-                psi = cwt_psi_single(x, self, output_length)
-                return [np.asarray(psi, dtype=np.float64), 
-                        np.asarray(x, dtype=np.float64)]
 
-        if self.dw.base.orthogonal:
-            filter_length = self.dw.dec_len
+        if self.w.base.orthogonal:
+            filter_length = self.w.dec_len
             output_length = <pywt_index_t> ((filter_length-1) * p + 1)
             keep_length = get_keep_length(output_length, level, filter_length)
             output_length = fix_output_length(output_length, keep_length)
@@ -678,15 +571,15 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
                                     np.zeros(right_extent_length))),
                     np.linspace(0.0, (output_length-1)/p, output_length)]
         else:
-            if self.dw.base.biorthogonal and (self.dw.vanishing_moments_psi % 4) != 1:
+            if self.w.base.biorthogonal and (self.w.vanishing_moments_psi % 4) != 1:
                 # FIXME: I don't think this branch is well tested
                 n_mul = -n
             else:
                 n_mul = n
 
-            other = Wavelet(filter_bank=self.inverse_filter_bank)
+            other = DiscreteWavelet(filter_bank=self.inverse_filter_bank)
 
-            filter_length  = other.dw.dec_len
+            filter_length  = other.w.dec_len
             output_length = <pywt_index_t> ((filter_length-1) * p)
             keep_length = get_keep_length(output_length, level, filter_length)
             output_length = fix_output_length(output_length, keep_length)
@@ -700,7 +593,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
                                           keep_length),
                                      np.zeros(right_extent_length)))
 
-            filter_length = self.dw.dec_len
+            filter_length = self.w.dec_len
             output_length = <pywt_index_t> ((filter_length-1) * p)
             keep_length = get_keep_length(output_length, level, filter_length)
             output_length = fix_output_length(output_length, keep_length)
@@ -728,8 +621,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
             u"  Biorthogonal:   %s" % self.biorthogonal,
             u"  Symmetry:       %s" % self.symmetry,
             u"  DWT:            %s" % self.dwt_possible,
-            u"  CWT:            %s" % self.cwt_possible,
-            u"  Complex CWT:    %s" % self.complex_cwt
+            u"  CWT:            %s" % self.cwt_possible
             ]:
             s.append(x.rstrip())
         return u'\n'.join(s)
@@ -740,6 +632,217 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
                            classname=type(self).__name__,
                            name=self.name,
                            filter_bank=self.filter_bank)
+
+
+cdef public class ContinuousWavelet [type ContinuousWaveletType, object ContinuousWaveletObject]:
+    """
+    Wavelet(name, filter_bank=None) object describe properties of
+    a wavelet identified by name.
+
+    In order to use a built-in wavelet the parameter name must be
+    a valid name from the wavelist() list.
+    To create a custom wavelet object, filter_bank parameter must
+    be specified. It can be either a list of four filters or an object
+    that a `filter_bank` attribute which returns a list of four
+    filters - just like the Wavelet instance itself.
+
+    """
+    #cdef readonly properties
+    def __cinit__(self, name=u""):
+        cdef object family_code, family_number
+
+        # builtin wavelet
+        self.name = name.lower()
+        family_code, family_number = wname_to_code(self.name)
+        self.w = <wavelet.ContinuousWavelet*> wavelet.continous_wavelet(family_code, family_number)
+
+        if self.w is NULL:
+            raise ValueError("Invalid wavelet name.")
+        self.number = family_number
+
+    def __dealloc__(self):
+        if self.w is not NULL:
+            wavelet.free_continous_wavelet(self.w)
+            self.w = NULL
+
+    property family_number:
+        "Wavelet family number"
+        def __get__(self):
+            return self.number
+
+    property family_name:
+        "Wavelet family name"
+        def __get__(self):
+            return self.w.base.family_name.decode('latin-1')
+
+    property short_family_name:
+        "Short wavelet family name"
+        def __get__(self):
+            return self.w.base.short_name.decode('latin-1')
+
+    property orthogonal:
+        "Is orthogonal"
+        def __get__(self):
+            return bool(self.w.base.orthogonal)
+        def __set__(self, int value):
+            self.w.base.orthogonal = (value != 0)
+
+    property biorthogonal:
+        "Is biorthogonal"
+        def __get__(self):
+            return bool(self.w.base.biorthogonal)
+        def __set__(self, int value):
+            self.w.base.biorthogonal = (value != 0)
+
+    property dwt_possible:
+        "DWT possible"
+        def __get__(self):
+            return False
+
+    property cwt_possible:
+        "CWT possible"
+        def __get__(self):
+            return True
+
+    property complex_cwt:
+        "CWT is complex"
+        def __get__(self):
+            return bool(self.w.complex_cwt)
+        def __set__(self, int value):
+            self.w.complex_cwt = (value != 0)
+
+    property lower_bound:
+        "Lower Bound"
+        def __get__(self):
+            if self.w.base.lower_bound != self.w.base.upper_bound:
+                return self.w.base.lower_bound
+        def __set__(self, float value):
+            self.w.base.lower_bound = value
+
+    property upper_bound:
+        "Upper Bound"
+        def __get__(self):
+            if self.w.base.upper_bound != self.w.base.lower_bound:
+                return self.w.base.upper_bound
+        def __set__(self, float value):
+            self.w.base.upper_bound = value
+
+    property center_frequency:
+        "Center frequency (shan, fbsp, cmor)"
+        def __get__(self):
+            if self.w.center_frequency > 0:
+                return self.w.center_frequency
+        def __set__(self, float value):
+            self.w.center_frequency = value
+
+    property bandwidth_frequency:
+        "Bandwidth frequency (shan, fbsp, cmor)"
+        def __get__(self):
+            if self.w.bandwidth_frequency > 0:
+                return self.w.bandwidth_frequency
+        def __set__(self, float value):
+            self.w.bandwidth_frequency = value
+
+    property fbsp_order:
+        "order parameter for fbsp"
+        def __get__(self):
+            if self.w.fbsp_order != 0:
+                return self.w.fbsp_order
+        def __set__(self, unsigned int value):
+            self.w.fbsp_order = value
+
+    property symmetry:
+        "Wavelet symmetry"
+        def __get__(self):
+            if self.w.base.symmetry == wavelet.ASYMMETRIC:
+                return "asymmetric"
+            elif self.w.base.symmetry == wavelet.NEAR_SYMMETRIC:
+                return "near symmetric"
+            elif self.w.base.symmetry == wavelet.SYMMETRIC:
+                return "symmetric"
+            elif self.w.base.symmetry == wavelet.ANTI_SYMMETRIC:
+                return "anti-symmetric"
+            else:
+                return "unknown"
+
+    def wavefun(self, int level=8, length = None):
+        """
+        wavefun(self, level=8)
+
+        Calculates approximations of scaling function (`phi`) and wavelet
+        function (`psi`) on xgrid (`x`) at a given level of refinement.
+
+        Parameters
+        ----------
+        level : int, optional
+            Level of refinement (default: 8).
+
+        Returns
+        -------
+        [phi, psi, x] : array_like
+            For orthogonal wavelets returns scaling function, wavelet function
+            and xgrid - [phi, psi, x].
+
+        [phi_d, psi_d, phi_r, psi_r, x] : array_like
+            For biorthogonal wavelets returns scaling and wavelet function both
+            for decomposition and reconstruction and xgrid
+
+        Examples
+        --------
+        >>> import pywt
+        >>> # Orthogonal
+        >>> wavelet = pywt.Wavelet('db2')
+        >>> phi, psi, x = wavelet.wavefun(level=5)
+        >>> # Biorthogonal
+        >>> wavelet = pywt.Wavelet('bior3.5')
+        >>> phi_d, psi_d, phi_r, psi_r, x = wavelet.wavefun(level=5)
+
+        """
+        cdef pywt_index_t output_length "output_length"
+        cdef np.float64_t n
+        cdef psi_i, psi_r
+        cdef np.float64_t[::1] x, psi
+
+        n = pow(sqrt(2.), <double>level)
+        p = (pow(2., <double>level))
+        
+        if self.w is not NULL:
+            if length is None:
+                output_length = <pywt_index_t>p
+            else:
+                output_length = <pywt_index_t>length
+            x = np.linspace(self.w.base.lower_bound, self.w.base.upper_bound, output_length)
+            # x = np.array(x, dtype=np.float64)
+            if self.w.complex_cwt:
+                psi_r, psi_i = cwt_psi_single(x, self, output_length)
+                return [np.asarray(psi_r, dtype=np.float64) + 1j * np.asarray(psi_i, dtype=np.float64), 
+                        np.asarray(x, dtype=np.float64)]
+            else:
+                psi = cwt_psi_single(x, self, output_length)
+                return [np.asarray(psi, dtype=np.float64), 
+                        np.asarray(x, dtype=np.float64)]
+
+    def __str__(self):
+        s = []
+        for x in [
+            u"Wavelet %s"           % self.name,
+            u"  Family name:    %s" % self.family_name,
+            u"  Short name:     %s" % self.short_family_name,
+            u"  Orthogonal:     %s" % self.orthogonal,
+            u"  Biorthogonal:   %s" % self.biorthogonal,
+            u"  Symmetry:       %s" % self.symmetry,
+            u"  DWT:            %s" % self.dwt_possible,
+            u"  CWT:            %s" % self.cwt_possible,
+            u"  Complex CWT:    %s" % self.complex_cwt
+            ]:
+            s.append(x.rstrip())
+        return u'\n'.join(s)
+
+    def __repr__(self):
+        repr = "{module}.{classname}(name='{name}')"
+        return repr.format(module=type(self).__module__,
+                           classname=type(self).__name__,
+                           name=self.name)
 
 
 cdef pywt_index_t get_keep_length(pywt_index_t output_length,
@@ -767,7 +870,7 @@ def wavelet_from_object(wavelet):
 
 
 cdef c_wavelet_from_object(wavelet):
-    if isinstance(wavelet, Wavelet):
+    if isinstance(wavelet, (DiscreteWavelet, ContinuousWavelet)):
         return wavelet
     else:
         return Wavelet(wavelet)

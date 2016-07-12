@@ -1,6 +1,6 @@
 import numpy as np
 
-from ._extensions._pywt import Wavelet, Modes, _check_dtype
+from ._extensions._pywt import ContinuousWavelet, Modes, _check_dtype
 from ._extensions._cwt import (cwt_psi_single)
 from ._functions import integrate_wavelet, scale2frequency
 
@@ -61,8 +61,8 @@ def cwt(data, scales, wavelet, sampling_period=1.):
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(data)
     data = np.array(data, dtype=dt)
-    if not isinstance(wavelet, Wavelet):
-        wavelet = Wavelet(wavelet)
+    if not isinstance(wavelet, ContinuousWavelet):
+        wavelet = ContinuousWavelet(wavelet)
     if np.isscalar(scales):
         scales = np.array([scales])
     if data.ndim == 1:
@@ -130,7 +130,7 @@ def morlet(lb,ub,n):
     <matplotlib.text.Text object at ...>
     >>> plt.show() # doctest: +SKIP
     """
-    wavelet = Wavelet("morl")
+    wavelet = ContinuousWavelet("morl")
     wavelet.upper_bound = ub
     wavelet.lower_bound = lb
     psi, x = wavelet.wavefun(length=n)
@@ -182,9 +182,9 @@ def gauswavf(lb,ub,n,p=1):
     >>> plt.show() # doctest: +SKIP
     """
     if isinstance(p,(int, float, complex, np.int64, np.int32)):
-        wavelet = Wavelet("gaus"+str(p))
+        wavelet = ContinuousWavelet("gaus"+str(p))
     else:
-        wavelet = Wavelet(p)
+        wavelet = ContinuousWavelet(p)
     wavelet.upper_bound = ub
     wavelet.lower_bound = lb
     psi, x = wavelet.wavefun(length=n)
@@ -231,7 +231,7 @@ def mexihat(lb,ub,n):
     <matplotlib.text.Text object at ...>
     >>> plt.show() # doctest: +SKIP
     """
-    wavelet = Wavelet("mexh")
+    wavelet = ContinuousWavelet("mexh")
     wavelet.upper_bound = ub
     wavelet.lower_bound = lb
     psi, x = wavelet.wavefun(length=n)
@@ -293,7 +293,7 @@ def cmorwavf(lb,ub,n,fb,fc):
     <matplotlib.text.Text object at ...>
     >>> plt.show() # doctest: +SKIP
     """
-    wavelet = Wavelet("cmor")
+    wavelet = ContinuousWavelet("cmor")
     wavelet.upper_bound = ub
     wavelet.lower_bound = lb
     wavelet.bandwidth_frequency = fb
@@ -357,7 +357,7 @@ def shanwavf(lb,ub,n,fb,fc):
     <matplotlib.text.Text object at ...>
     >>> plt.show() # doctest: +SKIP
     """
-    wavelet = Wavelet("shan")
+    wavelet = ContinuousWavelet("shan")
     wavelet.upper_bound = ub
     wavelet.lower_bound = lb
     wavelet.bandwidth_frequency = fb
@@ -424,7 +424,7 @@ def fbspwavf(lb,ub,n,m,fb,fc):
     <matplotlib.text.Text object at ...>
     >>> plt.show() # doctest: +SKIP
     """
-    wavelet = Wavelet("fbsp")
+    wavelet = ContinuousWavelet("fbsp")
     wavelet.upper_bound = ub
     wavelet.lower_bound = lb
     wavelet.fbsp_order = m
@@ -488,9 +488,9 @@ def cgauwavf(lb,ub,n,p=1):
     >>> plt.show() # doctest: +SKIP
     """
     if isinstance(p,(int, float, complex, np.int64, np.int32)):
-        wavelet = Wavelet("cgau"+str(p))
+        wavelet = ContinuousWavelet("cgau"+str(p))
     else:
-        wavelet = Wavelet(p)
+        wavelet = ContinuousWavelet(p)
     wavelet.upper_bound = ub
     wavelet.lower_bound = lb
     psi, x = wavelet.wavefun(length=n)

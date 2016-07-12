@@ -369,7 +369,10 @@ ContinuousWavelet* continous_wavelet(WAVELET_NAME name, unsigned int order)
             w->base.support_width = -1;
             w->base.orthogonal = 0;
             w->base.biorthogonal = 0;
-            w->base.symmetry = SYMMETRIC;
+            if (order % 2 == 0)
+                w->base.symmetry = SYMMETRIC;
+            else
+                w->base.symmetry = ANTI_SYMMETRIC;
             w->base.compact_support = 0;
             w->base.family_name = "Gaussian";
             w->base.short_name = "gaus";
@@ -425,7 +428,10 @@ ContinuousWavelet* continous_wavelet(WAVELET_NAME name, unsigned int order)
             w->base.support_width = -1;
             w->base.orthogonal = 0;
             w->base.biorthogonal = 0;
-            w->base.symmetry = SYMMETRIC;
+            if (order % 2 == 0)
+                w->base.symmetry = SYMMETRIC;
+            else
+                w->base.symmetry = ANTI_SYMMETRIC;
             w->base.compact_support = 0;
             w->base.family_name = "Complex Gaussian wavelets";
             w->base.short_name = "cgau";
@@ -444,7 +450,7 @@ ContinuousWavelet* continous_wavelet(WAVELET_NAME name, unsigned int order)
             w->base.support_width = -1;
             w->base.orthogonal = 0;
             w->base.biorthogonal = 0;
-            w->base.symmetry = SYMMETRIC;
+            w->base.symmetry = ASYMMETRIC;
             w->base.compact_support = 0;
             w->base.family_name = "Shannon wavelets";
             w->base.short_name = "shan";
@@ -463,7 +469,7 @@ ContinuousWavelet* continous_wavelet(WAVELET_NAME name, unsigned int order)
             w->base.support_width = -1;
             w->base.orthogonal = 0;
             w->base.biorthogonal = 0;
-            w->base.symmetry = SYMMETRIC;
+            w->base.symmetry = ASYMMETRIC;
             w->base.compact_support = 0;
             w->base.family_name = "Frequency B-Spline wavelets";
             w->base.short_name = "fbsp";
@@ -482,7 +488,7 @@ ContinuousWavelet* continous_wavelet(WAVELET_NAME name, unsigned int order)
             w->base.support_width = -1;
             w->base.orthogonal = 0;
             w->base.biorthogonal = 0;
-            w->base.symmetry = SYMMETRIC;
+            w->base.symmetry = ASYMMETRIC;
             w->base.compact_support = 0;
             w->base.family_name = "Complex Morlet wavelets";
             w->base.short_name = "cmor";

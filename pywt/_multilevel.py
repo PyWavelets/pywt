@@ -13,7 +13,7 @@ from __future__ import division, print_function, absolute_import
 from copy import copy
 import numpy as np
 
-from ._extensions._pywt import Wavelet
+from ._extensions._pywt import DiscreteWavelet
 from ._extensions._dwt import dwt_max_level
 from ._dwt import dwt, idwt
 from ._multidim import dwt2, idwt2, dwtn, idwtn, _fix_coeffs
@@ -86,8 +86,8 @@ def wavedec(data, wavelet, mode='symmetric', level=None):
     """
     data = np.asarray(data)
 
-    if not isinstance(wavelet, Wavelet):
-        wavelet = Wavelet(wavelet)
+    if not isinstance(wavelet, DiscreteWavelet):
+        wavelet = DiscreteWavelet(wavelet)
 
     level = _check_level(min(data.shape), wavelet.dec_len, level)
 
@@ -185,8 +185,8 @@ def wavedec2(data, wavelet, mode='symmetric', level=None):
     if data.ndim != 2:
         raise ValueError("Expected 2D input data.")
 
-    if not isinstance(wavelet, Wavelet):
-        wavelet = Wavelet(wavelet)
+    if not isinstance(wavelet, DiscreteWavelet):
+        wavelet = DiscreteWavelet(wavelet)
 
     level = _check_level(min(data.shape), wavelet.dec_len, level)
 
@@ -295,8 +295,8 @@ def iswt(coeffs, wavelet):
 
     # num_levels, equivalent to the decomposition level, n
     num_levels = len(coeffs)
-    if not isinstance(wavelet, Wavelet):
-        wavelet = Wavelet(wavelet)
+    if not isinstance(wavelet, DiscreteWavelet):
+        wavelet = DiscreteWavelet(wavelet)
     for j in range(num_levels, 0, -1):
         step_size = int(pow(2, j-1))
         last_index = step_size
@@ -377,8 +377,8 @@ def iswt2(coeffs, wavelet):
 
     # num_levels, equivalent to the decomposition level, n
     num_levels = len(coeffs)
-    if not isinstance(wavelet, Wavelet):
-        wavelet = Wavelet(wavelet)
+    if not isinstance(wavelet, DiscreteWavelet):
+        wavelet = DiscreteWavelet(wavelet)
     for j in range(num_levels, 0, -1):
         step_size = int(pow(2, j-1))
         last_index = step_size
@@ -485,8 +485,8 @@ def wavedecn(data, wavelet, mode='symmetric', level=None):
     if len(data.shape) < 1:
         raise ValueError("Expected at least 1D input data.")
 
-    if not isinstance(wavelet, Wavelet):
-        wavelet = Wavelet(wavelet)
+    if not isinstance(wavelet, DiscreteWavelet):
+        wavelet = DiscreteWavelet(wavelet)
 
     level = _check_level(min(data.shape), wavelet.dec_len, level)
     coeffs_list = []

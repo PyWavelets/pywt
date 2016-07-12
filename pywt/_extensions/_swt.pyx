@@ -4,7 +4,7 @@ cimport c_wt
 import numpy as np
 cimport numpy as np
 
-from ._pywt cimport c_wavelet_from_object, data_t, Wavelet
+from ._pywt cimport c_wavelet_from_object, data_t, DiscreteWavelet
 
 
 def swt_max_level(size_t input_len):
@@ -28,9 +28,9 @@ def swt_max_level(size_t input_len):
     return common.swt_max_level(input_len)
 
 
-def swt(data_t[::1] data, Wavelet wavelet, size_t level, size_t start_level):
+def swt(data_t[::1] data, DiscreteWavelet wavelet, size_t level, size_t start_level):
     cdef data_t[::1] cA, cD
-    cdef Wavelet w
+    cdef DiscreteWavelet w
     cdef int i
     cdef size_t end_level = start_level + level
 
@@ -57,24 +57,24 @@ def swt(data_t[::1] data, Wavelet wavelet, size_t level, size_t start_level):
         # alloc memory, decompose D
         if data_t is np.float64_t:
             cD = np.zeros(output_len, dtype=np.float64)
-            if c_wt.double_swt_d(&data[0], data.size, wavelet.dw,
+            if c_wt.double_swt_d(&data[0], data.size, wavelet.w,
                                  &cD[0], cD.size, i) < 0:
                 raise RuntimeError("C swt failed.")
         elif data_t is np.float32_t:
             cD = np.zeros(output_len, dtype=np.float32)
-            if c_wt.float_swt_d(&data[0], data.size, wavelet.dw,
+            if c_wt.float_swt_d(&data[0], data.size, wavelet.w,
                                 &cD[0], cD.size, i) < 0:
                 raise RuntimeError("C swt failed.")
 
         # alloc memory, decompose A
         if data_t is np.float64_t:
             cA = np.zeros(output_len, dtype=np.float64)
-            if c_wt.double_swt_a(&data[0], data.size, wavelet.dw,
+            if c_wt.double_swt_a(&data[0], data.size, wavelet.w,
                                  &cA[0], cA.size, i) < 0:
                 raise RuntimeError("C swt failed.")
         elif data_t is np.float32_t:
             cA = np.zeros(output_len, dtype=np.float32)
-            if c_wt.float_swt_a(&data[0], data.size, wavelet.dw,
+            if c_wt.float_swt_a(&data[0], data.size, wavelet.w,
                                 &cA[0], cA.size, i) < 0:
                 raise RuntimeError("C swt failed.")
 

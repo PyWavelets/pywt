@@ -5,6 +5,8 @@ cdef extern from "c/wavelets.h":
         ASYMMETRIC
         NEAR_SYMMETRIC
         SYMMETRIC
+        ANTI_SYMMETRIC
+        
         
     ctypedef enum WAVELET_NAME:
         HAAR

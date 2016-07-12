@@ -1,6 +1,6 @@
 import numpy as np
 
-from ._extensions._pywt import Wavelet, Modes, _check_dtype
+from ._extensions._pywt import DiscreteWavelet, Modes, _check_dtype
 from ._extensions._dwt import (dwt_single, dwt_axis, idwt_single, idwt_axis,
                                upcoef as _upcoef, downcoef as _downcoef,
                                dwt_max_level as _dwt_max_level,
@@ -36,7 +36,7 @@ def dwt_max_level(data_len, filter_len):
     >>> pywt.dwt_max_level(1000, w)
     6
     """
-    if isinstance(filter_len, Wavelet):
+    if isinstance(filter_len, DiscreteWavelet):
         filter_len = filter_len.dec_len
 
     return _dwt_max_level(data_len, filter_len)
@@ -73,7 +73,7 @@ def dwt_coeff_len(data_len, filter_len, mode):
         len(cA) == len(cD) == ceil(len(data) / 2)
 
     """
-    if isinstance(filter_len, Wavelet):
+    if isinstance(filter_len, DiscreteWavelet):
         filter_len = filter_len.dec_len
 
     return _dwt_coeff_len(data_len, filter_len, Modes.from_object(mode))
@@ -134,8 +134,8 @@ def dwt(data, wavelet, mode='symmetric', axis=-1):
     dt = _check_dtype(data)
     data = np.array(data, dtype=dt)
     mode = Modes.from_object(mode)
-    if not isinstance(wavelet, Wavelet):
-        wavelet = Wavelet(wavelet)
+    if not isinstance(wavelet, DiscreteWavelet):
+        wavelet = DiscreteWavelet(wavelet)
 
     if axis < 0:
         axis = axis + data.ndim
@@ -220,8 +220,8 @@ def idwt(cA, cD, wavelet, mode='symmetric', axis=-1):
     ndim = cA.ndim
 
     mode = Modes.from_object(mode)
-    if not isinstance(wavelet, Wavelet):
-        wavelet = Wavelet(wavelet)
+    if not isinstance(wavelet, DiscreteWavelet):
+        wavelet = DiscreteWavelet(wavelet)
 
     if axis < 0:
         axis = axis + ndim
@@ -281,8 +281,8 @@ def downcoef(part, data, wavelet, mode='symmetric', level=1):
     if part not in 'ad':
         raise ValueError("Argument 1 must be 'a' or 'd', not '%s'." % part)
     mode = Modes.from_object(mode)
-    if not isinstance(wavelet, Wavelet):
-        wavelet = Wavelet(wavelet)
+    if not isinstance(wavelet, DiscreteWavelet):
+        wavelet = DiscreteWavelet(wavelet)
     return np.asarray(_downcoef(part == 'a', data, wavelet, mode, level))
 
 
@@ -336,8 +336,8 @@ def upcoef(part, coeffs, wavelet, level=1, take=0):
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(coeffs)
     coeffs = np.array(coeffs, dtype=dt)
-    if not isinstance(wavelet, Wavelet):
-        wavelet = Wavelet(wavelet)
+    if not isinstance(wavelet, DiscreteWavelet):
+        wavelet = DiscreteWavelet(wavelet)
     if part not in 'ad':
         raise ValueError("Argument 1 must be 'a' or 'd', not '%s'." % part)
     return np.asarray(_upcoef(part == 'a', coeffs, wavelet, level, take))
