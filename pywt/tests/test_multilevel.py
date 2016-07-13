@@ -377,6 +377,11 @@ def test_wavedecn_invalid_inputs():
     data = np.array(0)
     assert_raises(ValueError, pywt.wavedecn, data, 'haar')
 
+    # invalid number of levels
+    data = np.ones(16)
+    assert_raises(ValueError, pywt.wavedecn, data, 'haar', level=-1)
+    assert_raises(ValueError, pywt.wavedecn, data, 'haar', level=100)
+
 
 def test_waverecn_accuracies():
     # testing 3D only here
