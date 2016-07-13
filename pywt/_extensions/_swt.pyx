@@ -4,7 +4,7 @@ cimport c_wt
 import numpy as np
 cimport numpy as np
 
-from ._pywt cimport c_wavelet_from_object, data_t, DiscreteWavelet
+from ._pywt cimport c_wavelet_from_object, data_t, Wavelet
 
 
 def swt_max_level(size_t input_len):
@@ -28,9 +28,9 @@ def swt_max_level(size_t input_len):
     return common.swt_max_level(input_len)
 
 
-def swt(data_t[::1] data, DiscreteWavelet wavelet, size_t level, size_t start_level):
+def swt(data_t[::1] data, Wavelet wavelet, size_t level, size_t start_level):
     cdef data_t[::1] cA, cD
-    cdef DiscreteWavelet w
+    cdef Wavelet w
     cdef int i
     cdef size_t end_level = start_level + level
 

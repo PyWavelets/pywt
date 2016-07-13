@@ -32,7 +32,7 @@ if 'dmey' in wavelist:
 # removing wavelets with dwt_possible == False
 del_list = []
 for wavelet in wavelist:
-    if not pywt.Wavelet(wavelet).dwt_possible:
+    if not isinstance(pywt.DiscreteContinuousWavelet(wavelet), pywt.Wavelet):
         del_list.append(wavelet)
 for del_ind in del_list:
     wavelist.remove(del_ind)
@@ -159,8 +159,8 @@ def test_swt_iswt_integration():
         # The 'dmey' wavelet seems to be a bit special - disregard it for now
         wavelets.remove('dmey')
     for current_wavelet_str in wavelets:
-        current_wavelet = pywt.Wavelet(current_wavelet_str)
-        if current_wavelet.dwt_possible:
+        current_wavelet = pywt.DiscreteContinuousWavelet(current_wavelet_str)
+        if isinstance(current_wavelet, pywt.Wavelet):
             input_length_power = int(np.ceil(np.log2(max(
                 current_wavelet.dec_len,
                 current_wavelet.rec_len))))
@@ -205,8 +205,8 @@ def test_swt2_iswt2_integration():
         # The 'dmey' wavelet seems to be a bit special - disregard it for now
         wavelets.remove('dmey')
     for current_wavelet_str in wavelets:
-        current_wavelet = pywt.Wavelet(current_wavelet_str)
-        if current_wavelet.dwt_possible:
+        current_wavelet = pywt.DiscreteContinuousWavelet(current_wavelet_str)
+        if isinstance(current_wavelet, pywt.Wavelet):
             input_length_power = int(np.ceil(np.log2(max(
                 current_wavelet.dec_len,
                 current_wavelet.rec_len))))

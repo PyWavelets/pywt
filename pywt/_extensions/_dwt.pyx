@@ -19,7 +19,7 @@ cpdef dwt_coeff_len(size_t data_len, size_t filter_len, MODE mode):
     return common.dwt_buffer_length(data_len, filter_len, mode)
 
 
-cpdef dwt_single(data_t[::1] data, DiscreteWavelet wavelet, MODE mode):
+cpdef dwt_single(data_t[::1] data, Wavelet wavelet, MODE mode):
     cdef size_t output_len = dwt_coeff_len(data.size, wavelet.dec_len, mode)
     cdef np.ndarray cA, cD
     if output_len < 1:
@@ -52,7 +52,7 @@ cpdef dwt_single(data_t[::1] data, DiscreteWavelet wavelet, MODE mode):
     return (cA, cD)
 
 
-cpdef dwt_axis(np.ndarray data, DiscreteWavelet wavelet, MODE mode, unsigned int axis=0):
+cpdef dwt_axis(np.ndarray data, Wavelet wavelet, MODE mode, unsigned int axis=0):
     # memory-views do not support n-dimensional arrays, use np.ndarray instead
     cdef common.ArrayInfo data_info, output_info
     cdef np.ndarray cD, cA
@@ -100,7 +100,7 @@ cpdef dwt_axis(np.ndarray data, DiscreteWavelet wavelet, MODE mode, unsigned int
     return (cA, cD)
 
 
-cpdef idwt_single(np.ndarray cA, np.ndarray cD, DiscreteWavelet wavelet, MODE mode):
+cpdef idwt_single(np.ndarray cA, np.ndarray cD, Wavelet wavelet, MODE mode):
     cdef size_t input_len, rec_len
     cdef np.ndarray rec
 
@@ -141,7 +141,7 @@ cpdef idwt_single(np.ndarray cA, np.ndarray cD, DiscreteWavelet wavelet, MODE mo
 
 
 cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d,
-                DiscreteWavelet wavelet, MODE mode, unsigned int axis=0):
+                Wavelet wavelet, MODE mode, unsigned int axis=0):
     cdef common.ArrayInfo a_info, d_info, output_info
     cdef np.ndarray output
     cdef np.dtype output_dtype
@@ -206,7 +206,7 @@ cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d,
     return output
 
 
-cpdef upcoef(bint do_rec_a, data_t[::1] coeffs, DiscreteWavelet wavelet, int level, int take):
+cpdef upcoef(bint do_rec_a, data_t[::1] coeffs, Wavelet wavelet, int level, int take):
     cdef data_t[::1] rec
     cdef int i
     cdef size_t rec_len, left_bound, right_bound
@@ -260,7 +260,7 @@ cpdef upcoef(bint do_rec_a, data_t[::1] coeffs, DiscreteWavelet wavelet, int lev
     return rec
 
 
-cpdef downcoef(bint do_dec_a, data_t[::1] data, DiscreteWavelet wavelet, MODE mode, int level):
+cpdef downcoef(bint do_dec_a, data_t[::1] data, Wavelet wavelet, MODE mode, int level):
     cdef data_t[::1] coeffs
     cdef int i
     cdef size_t output_len

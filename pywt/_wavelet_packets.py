@@ -11,7 +11,7 @@ __all__ = ["BaseNode", "Node", "WaveletPacket", "Node2D", "WaveletPacket2D"]
 
 import numpy as np
 
-from ._extensions._pywt import DiscreteWavelet
+from ._extensions._pywt import Wavelet
 from ._dwt import dwt, idwt, dwt_max_level
 from ._multidim import dwt2, idwt2
 
@@ -536,8 +536,8 @@ class WaveletPacket(Node):
     def __init__(self, data, wavelet, mode='symmetric', maxlevel=None):
         super(WaveletPacket, self).__init__(None, data, "")
 
-        if not isinstance(wavelet, DiscreteWavelet):
-            wavelet = DiscreteWavelet(wavelet)
+        if not isinstance(wavelet, Wavelet):
+            wavelet = Wavelet(wavelet)
         self.wavelet = wavelet
         self.mode = mode
 
@@ -638,8 +638,8 @@ class WaveletPacket2D(Node2D):
     def __init__(self, data, wavelet, mode='smooth', maxlevel=None):
         super(WaveletPacket2D, self).__init__(None, data, "")
 
-        if not isinstance(wavelet, DiscreteWavelet):
-            wavelet = DiscreteWavelet(wavelet)
+        if not isinstance(wavelet, Wavelet):
+            wavelet = Wavelet(wavelet)
         self.wavelet = wavelet
         self.mode = mode
 

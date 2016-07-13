@@ -76,7 +76,7 @@ def test_accuracy_pymatbridge_cwt():
     mlab.start()
     try:
         for wavelet in wavelets:
-            w = pywt.Wavelet(wavelet)
+            w = pywt.ContinuousWavelet(wavelet)
             if np.any((wavelet == np.array(['shan', 'cmor'])),axis=0):
                 mlab.set_variable('wavelet', wavelet+str(w.bandwidth_frequency)+'-'+str(w.center_frequency))
             elif wavelet == 'fbsp':
@@ -107,7 +107,7 @@ def test_accuracy_precomputed_cwt():
     epsilon = 1e-15
     epsilon_psi = 1e-15
     for wavelet in wavelets:
-        w = pywt.Wavelet(wavelet)
+        w = pywt.ContinuousWavelet(wavelet)
         psi = _load_matlab_result_psi(wavelet)
         yield _check_accuracy_psi, w, psi, wavelet, epsilon_psi
 

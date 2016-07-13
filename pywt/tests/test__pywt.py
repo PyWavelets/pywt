@@ -37,8 +37,8 @@ def test_compare_downcoef_coeffs():
     # compare downcoef against wavedec outputs
     for nlevels in [1, 2, 3]:
         for wavelet in pywt.wavelist():
-            wavelet = pywt.Wavelet(wavelet)
-            if (wavelet.dwt_possible):
+            wavelet = pywt.DiscreteContinuousWavelet(wavelet)
+            if isinstance(wavelet, pywt.Wavelet):
                 max_level = pywt.dwt_max_level(r.size, wavelet.dec_len)
                 if nlevels <= max_level:
                     a = pywt.downcoef('a', r, wavelet, level=nlevels)

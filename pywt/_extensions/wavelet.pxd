@@ -31,10 +31,6 @@ cdef extern from "c/wavelets.h":
         unsigned int biorthogonal
         unsigned int compact_support
         
-        
-        float lower_bound
-        float upper_bound
-
         SYMMETRY symmetry
 
         
@@ -63,6 +59,8 @@ cdef extern from "c/wavelets.h":
     ctypedef struct ContinuousWavelet:
 
         BaseWavelet base
+        float lower_bound
+        float upper_bound
         float center_frequency
         float bandwidth_frequency
         unsigned int fbsp_order

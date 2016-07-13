@@ -15,7 +15,7 @@ from itertools import product
 
 import numpy as np
 
-from ._extensions._pywt import Wavelet, DiscreteWavelet, Modes
+from ._extensions._pywt import Wavelet, Modes
 from ._extensions._dwt import dwt_axis, idwt_axis
 from ._swt import swt
 
@@ -164,8 +164,8 @@ def dwtn(data, wavelet, mode='symmetric', axes=None):
     axes = (a + data.ndim if a < 0 else a for a in axes)
 
     mode = Modes.from_object(mode)
-    if not isinstance(wavelet, DiscreteWavelet):
-        wavelet = DiscreteWavelet(wavelet)
+    if not isinstance(wavelet, Wavelet):
+        wavelet = Wavelet(wavelet)
 
     coeffs = [('', data)]
     for axis in axes:
@@ -229,8 +229,8 @@ def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
         Original signal reconstructed from input data.
 
     """
-    if not isinstance(wavelet, DiscreteWavelet):
-        wavelet = DiscreteWavelet(wavelet)
+    if not isinstance(wavelet, Wavelet):
+        wavelet = Wavelet(wavelet)
     mode = Modes.from_object(mode)
 
     # Raise error for invalid key combinations
@@ -313,8 +313,8 @@ def swt2(data, wavelet, level, start_level=0):
     if data.ndim != 2:
         raise ValueError("Expected 2D data array")
 
-    if not isinstance(wavelet, DiscreteWavelet):
-        wavelet = DiscreteWavelet(wavelet)
+    if not isinstance(wavelet, Wavelet):
+        wavelet = Wavelet(wavelet)
 
     ret = []
     for i in range(start_level, start_level + level):

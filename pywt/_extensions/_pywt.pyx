@@ -2,7 +2,7 @@
 # See COPYING for license details.
 
 __doc__ = """Pyrex wrapper for low-level C wavelet transform implementation."""
-__all__ = ['MODES', 'Modes', 'Wavelet', 'DiscreteWavelet', 'ContinuousWavelet', 'wavelist', 'families']
+__all__ = ['MODES', 'Modes', 'DiscreteContinuousWavelet', 'DescreteWavelet', 'Wavelet', 'ContinuousWavelet', 'wavelist', 'families']
 
 ###############################################################################
 # imports
@@ -251,23 +251,23 @@ def families(int short=True):
     return __wfamily_list_long[:]
 
 
-def Wavelet(name=u"", object filter_bank=None):
+def DiscreteContinuousWavelet(name=u"", object filter_bank=None):
     if not name and filter_bank is None:
         raise TypeError("Wavelet name or filter bank must be specified.")
     if filter_bank is None:
         name = name.lower()
         family_code, family_number = wname_to_code(name)
         if (wavelet.is_discrete_wavelet(family_code)):
-            return DiscreteWavelet(name, filter_bank)
+            return Wavelet(name, filter_bank)
         else:
             return ContinuousWavelet(name)
     else:
-        return DiscreteWavelet(name, filter_bank)
+        return Wavelet(name, filter_bank)
 
 
-cdef public class DiscreteWavelet [type DiscreteWaveletType, object DiscreteWaveletObject]:
+cdef public class Wavelet [type WaveletType, object WaveletObject]:
     """
-    DiscreteWavelet(name, filter_bank=None) object describe properties of
+    Wavelet(name, filter_bank=None) object describe properties of
     a wavelet identified by name.
 
     In order to use a built-in wavelet the parameter name must be
@@ -275,7 +275,7 @@ cdef public class DiscreteWavelet [type DiscreteWaveletType, object DiscreteWave
     To create a custom wavelet object, filter_bank parameter must
     be specified. It can be either a list of four filters or an object
     that a `filter_bank` attribute which returns a list of four
-    filters - just like the DiscreteWavelet instance itself.
+    filters - just like the Wavelet instance itself.
 
     """
     #cdef readonly properties
@@ -424,33 +424,6 @@ cdef public class DiscreteWavelet [type DiscreteWaveletType, object DiscreteWave
         def __set__(self, int value):
             self.w.base.biorthogonal = (value != 0)
 
-    property dwt_possible:
-        "DWT possible"
-        def __get__(self):
-            return True
-
-    property cwt_possible:
-        "CWT possible"
-        def __get__(self):
-            return True
-
-    property lower_bound:
-        "Lower Bound"
-        def __get__(self):
-            if self.w.base.lower_bound != self.w.base.upper_bound:
-                return self.w.base.lower_bound
-        def __set__(self, float value):
-            if self.w is not NULL:
-                self.w.base.lower_bound = value
-
-    property upper_bound:
-        "Upper Bound"
-        def __get__(self):
-            if self.w.base.upper_bound != self.w.base.lower_bound:
-                return self.w.base.upper_bound
-        def __set__(self, float value):
-            self.w.base.upper_bound = value
-
     property symmetry:
         "Wavelet symmetry"
         def __get__(self):
@@ -545,7 +518,7 @@ cdef public class DiscreteWavelet [type DiscreteWaveletType, object DiscreteWave
         cdef np.float64_t[::1] n_mul_arr = <np.float64_t[:1]> &n_mul
         cdef double p "p"
         cdef double mul "mul"
-        cdef DiscreteWavelet other "other"
+        cdef Wavelet other "other"
         cdef phi_d, psi_d, phi_r, psi_r
         cdef psi_i
         cdef np.float64_t[::1] x, psi
@@ -577,7 +550,7 @@ cdef public class DiscreteWavelet [type DiscreteWaveletType, object DiscreteWave
             else:
                 n_mul = n
 
-            other = DiscreteWavelet(filter_bank=self.inverse_filter_bank)
+            other = Wavelet(filter_bank=self.inverse_filter_bank)
 
             filter_length  = other.w.dec_len
             output_length = <pywt_index_t> ((filter_length-1) * p)
@@ -613,15 +586,15 @@ cdef public class DiscreteWavelet [type DiscreteWaveletType, object DiscreteWave
     def __str__(self):
         s = []
         for x in [
-            u"DescreteWavelet %s"           % self.name,
+            u"Wavelet %s"           % self.name,
             u"  Family name:    %s" % self.family_name,
             u"  Short name:     %s" % self.short_family_name,
             u"  Filters length: %d" % self.dec_len,
             u"  Orthogonal:     %s" % self.orthogonal,
             u"  Biorthogonal:   %s" % self.biorthogonal,
             u"  Symmetry:       %s" % self.symmetry,
-            u"  DWT:            %s" % self.dwt_possible,
-            u"  CWT:            %s" % self.cwt_possible
+            u"  DWT:            True",
+            u"  CWT:            True"
             ]:
             s.append(x.rstrip())
         return u'\n'.join(s)
@@ -690,16 +663,6 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
         def __set__(self, int value):
             self.w.base.biorthogonal = (value != 0)
 
-    property dwt_possible:
-        "DWT possible"
-        def __get__(self):
-            return False
-
-    property cwt_possible:
-        "CWT possible"
-        def __get__(self):
-            return True
-
     property complex_cwt:
         "CWT is complex"
         def __get__(self):
@@ -710,18 +673,18 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
     property lower_bound:
         "Lower Bound"
         def __get__(self):
-            if self.w.base.lower_bound != self.w.base.upper_bound:
-                return self.w.base.lower_bound
+            if self.w.lower_bound != self.w.upper_bound:
+                return self.w.lower_bound
         def __set__(self, float value):
-            self.w.base.lower_bound = value
+            self.w.lower_bound = value
 
     property upper_bound:
         "Upper Bound"
         def __get__(self):
-            if self.w.base.upper_bound != self.w.base.lower_bound:
-                return self.w.base.upper_bound
+            if self.w.upper_bound != self.w.lower_bound:
+                return self.w.upper_bound
         def __set__(self, float value):
-            self.w.base.upper_bound = value
+            self.w.upper_bound = value
 
     property center_frequency:
         "Center frequency (shan, fbsp, cmor)"
@@ -802,7 +765,7 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
                 output_length = <pywt_index_t>p
             else:
                 output_length = <pywt_index_t>length
-            x = np.linspace(self.w.base.lower_bound, self.w.base.upper_bound, output_length)
+            x = np.linspace(self.w.lower_bound, self.w.upper_bound, output_length)
             # x = np.array(x, dtype=np.float64)
             if self.w.complex_cwt:
                 psi_r, psi_i = cwt_psi_single(x, self, output_length)
@@ -820,8 +783,8 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
             u"  Family name:    %s" % self.family_name,
             u"  Short name:     %s" % self.short_family_name,
             u"  Symmetry:       %s" % self.symmetry,
-            u"  DWT:            %s" % self.dwt_possible,
-            u"  CWT:            %s" % self.cwt_possible,
+            u"  DWT:            False",
+            u"  CWT:            True",
             u"  Complex CWT:    %s" % self.complex_cwt
             ]:
             s.append(x.rstrip())
@@ -859,7 +822,7 @@ def wavelet_from_object(wavelet):
 
 
 cdef c_wavelet_from_object(wavelet):
-    if isinstance(wavelet, (DiscreteWavelet, ContinuousWavelet)):
+    if isinstance(wavelet, (Wavelet, ContinuousWavelet)):
         return wavelet
     else:
         return Wavelet(wavelet)

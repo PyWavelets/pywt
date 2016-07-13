@@ -98,7 +98,7 @@ def test_gaus():
     N = 1000
     for num in np.arange(1,9):
         [psi,x] = ref_gaus(LB,UB,N,num)
-        w = pywt.Wavelet("gaus"+str(num))
+        w = pywt.ContinuousWavelet("gaus"+str(num))
         PSI, X = w.wavefun(length=N)
 
         assert_allclose(np.real(PSI), np.real(psi))
@@ -118,7 +118,7 @@ def test_cgau():
     N = 1000
     for num in np.arange(1,9):
         [psi,x] = ref_cgau(LB,UB,N,num)
-        w = pywt.Wavelet("cgau"+str(num))
+        w = pywt.ContinuousWavelet("cgau"+str(num))
         PSI, X = w.wavefun(length=N)
 
         assert_allclose(np.real(PSI), np.real(psi))
@@ -140,7 +140,7 @@ def test_shan():
     Fc = 1.5
 
     [psi,x] = ref_shan(LB,UB,N,Fb,Fc)
-    w = pywt.Wavelet("shan")
+    w = pywt.ContinuousWavelet("shan")
     w.center_frequency = Fc
     w.bandwidth_frequency = Fb
     w.upper_bound = UB
@@ -164,7 +164,7 @@ def test_shan():
     Fc = 1
 
     [psi,x] = ref_shan(LB,UB,N,Fb,Fc)
-    w = pywt.Wavelet("shan")
+    w = pywt.ContinuousWavelet("shan")
     w.center_frequency = Fc
     w.bandwidth_frequency = Fb
     w.upper_bound = UB
@@ -190,7 +190,7 @@ def test_cmor():
     Fc = 1.5
 
     [psi,x] = ref_cmor(LB,UB,N,Fb,Fc)
-    w = pywt.Wavelet("cmor")
+    w = pywt.ContinuousWavelet("cmor")
     w.center_frequency = Fc
     w.bandwidth_frequency = Fb
     w.upper_bound = UB
@@ -214,7 +214,7 @@ def test_cmor():
     Fc = 1
 
     [psi,x] = ref_cmor(LB,UB,N,Fb,Fc)
-    w = pywt.Wavelet("cmor")
+    w = pywt.ContinuousWavelet("cmor")
     w.center_frequency = Fc
     w.bandwidth_frequency = Fb
     w.upper_bound = UB
@@ -241,7 +241,7 @@ def test_fbsp():
     Fc = 1.5
 
     [psi,x] = ref_fbsp(LB,UB,N,M,Fb,Fc)
-    w = pywt.Wavelet("fbsp")
+    w = pywt.ContinuousWavelet("fbsp")
     w.center_frequency = Fc
     w.bandwidth_frequency = Fb
     w.fbsp_order = M
@@ -267,7 +267,7 @@ def test_fbsp():
     Fc = 1
 
     [psi,x] = ref_fbsp(LB,UB,N,M,Fb,Fc)
-    w = pywt.Wavelet("fbsp")
+    w = pywt.ContinuousWavelet("fbsp")
     w.center_frequency = Fc
     w.bandwidth_frequency = Fb
     w.fbsp_order = M
@@ -293,7 +293,7 @@ def test_fbsp():
     Fc = 1.2
 
     [psi,x] = ref_fbsp(LB,UB,N,M,Fb,Fc)
-    w = pywt.Wavelet("fbsp")
+    w = pywt.ContinuousWavelet("fbsp")
     w.center_frequency = Fc
     w.bandwidth_frequency = Fb
     w.fbsp_order = M
@@ -318,7 +318,7 @@ def test_morl():
     N = 1000
 
     [psi,x] = ref_morl(LB,UB,N)
-    w = pywt.Wavelet("morl")
+    w = pywt.ContinuousWavelet("morl")
     w.upper_bound = UB
     w.lower_bound = LB
     PSI, X = w.wavefun(length=N)
@@ -340,7 +340,7 @@ def test_mexh():
     N = 1000
 
     [psi,x] = ref_mexh(LB,UB,N)
-    w = pywt.Wavelet("mexh")
+    w = pywt.ContinuousWavelet("mexh")
     w.upper_bound = UB
     w.lower_bound = LB
     PSI, X = w.wavefun(length=N)
@@ -360,7 +360,7 @@ def test_mexh():
     N = 1001
 
     [psi,x] = ref_mexh(LB,UB,N)
-    w = pywt.Wavelet("mexh")
+    w = pywt.ContinuousWavelet("mexh")
     w.upper_bound = UB
     w.lower_bound = LB
     PSI, X = w.wavefun(length=N)

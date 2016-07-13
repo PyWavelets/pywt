@@ -51,7 +51,7 @@ def test_dwdtn_idwtn_allwavelets():
     if 'dmey' in wavelist:
         wavelist.remove('dmey')
     for wavelet in wavelist:
-        if pywt.Wavelet(wavelet).dwt_possible:
+        if isinstance(pywt.DiscreteContinuousWavelet(wavelet), pywt.Wavelet):
             for mode in pywt.Modes.modes:
                 coeffs = pywt.dwtn(r, wavelet, mode=mode)
                 assert_allclose(pywt.idwtn(coeffs, wavelet, mode=mode),

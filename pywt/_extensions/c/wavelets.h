@@ -45,9 +45,6 @@ typedef struct  {
     unsigned int biorthogonal:1;
     unsigned int compact_support:1;
     
-    
-    float lower_bound;
-    float upper_bound;    
     int _builtin;
     char* family_name;
     char* short_name;
@@ -76,6 +73,8 @@ typedef struct {
 typedef struct {
 
     BaseWavelet base;
+    float lower_bound;
+    float upper_bound;
     /* Parameters for shan, fbsp, cmor*/
     int complex_cwt;
     float center_frequency;
