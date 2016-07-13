@@ -25,6 +25,12 @@ def test_dwt_idwt_basic():
     x_roundtrip = pywt.idwt(cA, cD, 'db2')
     assert_allclose(x_roundtrip, x, rtol=1e-10)
 
+    # mismatched dtypes OK
+    x_roundtrip2 = pywt.idwt(cA.astype(np.float64), cD.astype(np.float32),
+                             'db2')
+    assert_allclose(x_roundtrip2, x, rtol=1e-7, atol=1e-7)
+    assert_(x_roundtrip.dtype == np.float64)
+
 
 def test_dwt_idwt_dtypes():
     wavelet = pywt.Wavelet('haar')
