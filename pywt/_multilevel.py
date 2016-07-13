@@ -624,7 +624,7 @@ def _coeffs_wavedec2_to_wavedecn(coeffs):
         return coeffs
     coeffs = copy(coeffs)
     for n in range(1, len(coeffs)):
-        if not isinstance(coeffs[n], tuple) or len(coeffs[n]) != 3:
+        if not isinstance(coeffs[n], (tuple, list)) or len(coeffs[n]) != 3:
             raise ValueError("expected a 3-tuple of detail coefficients")
         (da, ad, dd) = coeffs[n]
         coeffs[n] = dict(ad=ad, da=da, dd=dd)
@@ -705,6 +705,9 @@ def coeffs_to_array(coeffs, padding=0):
     """
     if not isinstance(coeffs, list) or len(coeffs) == 0:
         raise ValueError("input must be a list of coefficients from wavedecn")
+    if coeffs[0] is None:
+        raise ValueError("coeffs_to_array does not support missing "
+                         "coefficients.")
     if not isinstance(coeffs[0], np.ndarray):
         raise ValueError("first list element must be a numpy array")
     if len(coeffs) > 1:
@@ -713,15 +716,11 @@ def coeffs_to_array(coeffs, padding=0):
             pass
         elif isinstance(coeffs[1], np.ndarray):
             coeffs = _coeffs_wavedec_to_wavedecn(coeffs)
-        elif isinstance(coeffs[1], tuple):
+        elif isinstance(coeffs[1], (tuple, list)):
             coeffs = _coeffs_wavedec2_to_wavedecn(coeffs)
         else:
             raise ValueError("invalid coefficient list")
     # initialize with the approximation coefficients.
-    if coeffs[0] is None:
-        raise ValueError("coeffs_to_array does not support missing "
-                         "coefficients.")
-    # coeff_arr = coeffs[0]
     a_coeffs = coeffs[0]
     a_shape = a_coeffs.shape
     ndim = a_coeffs.ndim
@@ -751,14 +750,12 @@ def coeffs_to_array(coeffs, padding=0):
     ds = coeffs[1:]
     for coeff_dict in ds:
         coeff_slices.append({})  # new dictionary for detail coefficients
-        if not isinstance(coeff_dict, dict):
-            raise ValueError("expected a dictionary of detail coefficients")
+        if np.any([d is None for d in coeff_dict.values()]):
+            raise ValueError("coeffs_to_array does not support missing "
+                             "coefficients.")
         d_shape = coeff_dict['d' * ndim].shape
         for key in coeff_dict.keys():
             d = coeff_dict[key]
-            if d is None:
-                raise ValueError("coeffs_to_array does not support missing "
-                                 "coefficients.")
             slice_array = [slice(None), ] * ndim
             for i, let in enumerate(key):
                 if let == 'a':
