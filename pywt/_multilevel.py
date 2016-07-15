@@ -727,7 +727,7 @@ def coeffs_to_array(coeffs, padding=0):
     ndim = a_coeffs.ndim
     if len(coeffs) == 1:
         # only a single approximation coefficient array was found
-        return a_coeffs
+        return a_coeffs, [[slice(None)] * ndim]
 
     # determine size of output and if tight packing is possible
     arr_shape, is_tight_packing = _determine_coeff_array_shape(coeffs)
