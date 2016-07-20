@@ -26,7 +26,7 @@ def dwt2(data, wavelet, mode='symmetric', axes=(-2, -1)):
 
     Parameters
     ----------
-    data : ndarray
+    data : array_like
         2D array with input data
     wavelet : Wavelet object or name string
         Wavelet to use
@@ -58,8 +58,12 @@ def dwt2(data, wavelet, mode='symmetric', axes=(-2, -1)):
 
     """
     axes = tuple(axes)
+    data = np.asarray(data)
     if len(axes) != 2:
         raise ValueError("Expected 2 axes")
+    if data.ndim < len(np.unique(axes)):
+        raise ValueError("Input array has fewer dimensions than the specified "
+                         "axes")
 
     coefs = dwtn(data, wavelet, mode, axes)
     return coefs['aa'], (coefs['da'], coefs['ad'], coefs['dd'])
@@ -115,7 +119,7 @@ def dwtn(data, wavelet, mode='symmetric', axes=None):
 
     Parameters
     ----------
-    data : ndarray
+    data : array_like
         n-dimensional array with input data.
     wavelet : Wavelet object or name string
         Wavelet to use.
@@ -278,7 +282,7 @@ def swt2(data, wavelet, level, start_level=0):
 
     Parameters
     ----------
-    data : ndarray
+    data : array_like
         2D array with input data
     wavelet : Wavelet object or name string
         Wavelet to use
