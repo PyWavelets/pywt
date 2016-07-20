@@ -734,22 +734,63 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
         Parameters
         ----------
         level : int, optional
-            Level of refinement (default: 8).
+            Level of refinement (default: 8). Defines the length by 2**level if length is not set.
+        length : int, optional
+            number of samples. If set to None, the length is set to 2**level instead.
 
         Returns
         -------
-        [psi, x] : array_like
-            returns wavelet function and xgrid - [psi, x].
+        psi : array_like
+            Wavelet function computed for grid xval
+        xval : array_like
+            grid going from lower_bound to upper_bound
 
+        Notes
+        -----
+        The effective support are set with lower_bound and upper_bound
+        The wavelet function is complex for cmor, shan, fbsp and cgau.
+        The  complex frequency B-spline  wavelet (fbsp) has bandwidth_frequency, center_frequency and fbsp_order as addional parameter
+        The complex Shannon wavelet (shan) has bandwidth_frequency and center_frequency as addional parameter
+        The complex Morlet wavelet (cmor) has bandwidth_frequency and center_frequency as addional parameter
         Examples
         --------
         >>> import pywt
-        >>> # Orthogonal
-        >>> wavelet = pywt.Wavelet('gaus2')
-        >>> phi, x = wavelet.wavefun(length=1024)
-        >>> # Complex
-        >>> wavelet = pywt.Wavelet('cgau3')
-        >>> psi, x = wavelet.wavefun(length=1024)
+        >>> import matplotlib.pyplot as plt
+        >>> lb = -5
+        >>> ub = 5
+        >>> n = 1000
+        >>> wavelet = pywt.ContinuousWavelet("gaus8")
+        >>> wavelet.upper_bound = ub
+        >>> wavelet.lower_bound = lb
+        >>> [psi,xval] = wavelet.wavefun(length=n)
+        >>> plt.plot(xval,psi) # doctest: +ELLIPSIS
+        [<matplotlib.lines.Line2D object at ...>]
+        >>> plt.title("Gaussian Wavelet of order 8") # doctest: +ELLIPSIS
+        <matplotlib.text.Text object at ...>
+        >>> plt.show() # doctest: +SKIP
+        ---------
+        >>> import pywt
+        >>> import matplotlib.pyplot as plt
+        >>> lb = -5
+        >>> ub = 5
+        >>> n = 1000
+        >>> wavelet = pywt.ContinuousWavelet("cgau4")
+        >>> wavelet.upper_bound = ub
+        >>> wavelet.lower_bound = lb
+        >>> [psi,xval] = wavelet.wavefun(length=n)
+        >>> plt.subplot(211) # doctest: +ELLIPSIS
+        <matplotlib.axes._subplots.AxesSubplot object at ...>
+        >>> plt.plot(xval,np.real(psi)) # doctest: +ELLIPSIS
+        [<matplotlib.lines.Line2D object at ...>]
+        >>> plt.title("Real part") # doctest: +ELLIPSIS
+        <matplotlib.text.Text object at ...>
+        >>> plt.subplot(212) # doctest: +ELLIPSIS
+        <matplotlib.axes._subplots.AxesSubplot object at ...>
+        >>> plt.plot(xval,np.imag(psi)) # doctest: +ELLIPSIS
+        [<matplotlib.lines.Line2D object at ...>]
+        >>> plt.title("Imaginary part") # doctest: +ELLIPSIS
+        <matplotlib.text.Text object at ...>
+        >>> plt.show() # doctest: +SKIP
 
         """
         cdef pywt_index_t output_length "output_length"

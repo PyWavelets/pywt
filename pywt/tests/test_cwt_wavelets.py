@@ -105,12 +105,6 @@ def test_gaus():
         assert_allclose(np.imag(PSI), np.imag(psi))
         assert_allclose(X, x)
 
-        PSI, X = pywt.gauswavf(LB,UB,N,p=num)
-
-        assert_allclose(np.real(PSI), np.real(psi))
-        assert_allclose(np.imag(PSI), np.imag(psi))
-        assert_allclose(X, x)
-
 
 def test_cgau():
     LB = -5
@@ -120,12 +114,6 @@ def test_cgau():
         [psi,x] = ref_cgau(LB,UB,N,num)
         w = pywt.ContinuousWavelet("cgau"+str(num))
         PSI, X = w.wavefun(length=N)
-
-        assert_allclose(np.real(PSI), np.real(psi))
-        assert_allclose(np.imag(PSI), np.imag(psi))
-        assert_allclose(X, x)
-
-        PSI, X = pywt.cgauwavf(LB, UB, N, p=num)
 
         assert_allclose(np.real(PSI), np.real(psi))
         assert_allclose(np.imag(PSI), np.imag(psi))
@@ -151,12 +139,6 @@ def test_shan():
     assert_allclose(np.imag(PSI), np.imag(psi), atol=1e-15)
     assert_allclose(X, x, atol=1e-15)
 
-    PSI, X = pywt.shanwavf(LB,UB,N,Fb,Fc)
-
-    assert_allclose(np.real(PSI), np.real(psi), atol=1e-15)
-    assert_allclose(np.imag(PSI), np.imag(psi), atol=1e-15)
-    assert_allclose(X, x, atol=1e-15)
-
     LB = -20
     UB = 20
     N = 1000
@@ -170,12 +152,6 @@ def test_shan():
     w.upper_bound = UB
     w.lower_bound = LB
     PSI, X = w.wavefun(length=N)
-
-    assert_allclose(np.real(PSI), np.real(psi), atol=1e-15)
-    assert_allclose(np.imag(PSI), np.imag(psi), atol=1e-15)
-    assert_allclose(X, x, atol=1e-15)
-
-    PSI, X = pywt.shanwavf(LB,UB,N,Fb,Fc)
 
     assert_allclose(np.real(PSI), np.real(psi), atol=1e-15)
     assert_allclose(np.imag(PSI), np.imag(psi), atol=1e-15)
@@ -201,12 +177,6 @@ def test_cmor():
     assert_allclose(np.imag(PSI), np.imag(psi), atol=1e-15)
     assert_allclose(X, x, atol=1e-15)
 
-    PSI, X = pywt.cmorwavf(LB,UB,N,Fb,Fc)
-
-    assert_allclose(np.real(PSI), np.real(psi), atol=1e-15)
-    assert_allclose(np.imag(PSI), np.imag(psi), atol=1e-15)
-    assert_allclose(X, x, atol=1e-15)
-
     LB = -20
     UB = 20
     N = 1000
@@ -220,12 +190,6 @@ def test_cmor():
     w.upper_bound = UB
     w.lower_bound = LB
     PSI, X = w.wavefun(length=N)
-
-    assert_allclose(np.real(PSI), np.real(psi), atol=1e-15)
-    assert_allclose(np.imag(PSI), np.imag(psi), atol=1e-15)
-    assert_allclose(X, x, atol=1e-15)
-
-    PSI, X = pywt.cmorwavf(LB,UB,N,Fb,Fc)
 
     assert_allclose(np.real(PSI), np.real(psi), atol=1e-15)
     assert_allclose(np.imag(PSI), np.imag(psi), atol=1e-15)
@@ -253,12 +217,6 @@ def test_fbsp():
     assert_allclose(np.imag(PSI), np.imag(psi), atol=1e-15)
     assert_allclose(X, x, atol=1e-15)
 
-    PSI, X = pywt.fbspwavf(LB,UB,N,M,Fb,Fc)
-
-    assert_allclose(np.real(PSI), np.real(psi), atol=1e-15)
-    assert_allclose(np.imag(PSI), np.imag(psi), atol=1e-15)
-    assert_allclose(X, x, atol=1e-15)
-
     LB = -20
     UB = 20
     N = 1000
@@ -274,12 +232,6 @@ def test_fbsp():
     w.upper_bound = UB
     w.lower_bound = LB
     PSI, X = w.wavefun(length=N)
-
-    assert_allclose(np.real(PSI), np.real(psi), atol=1e-15)
-    assert_allclose(np.imag(PSI), np.imag(psi), atol=1e-15)
-    assert_allclose(X, x, atol=1e-15)
-
-    PSI, X = pywt.fbspwavf(LB,UB,N,M,Fb,Fc)
 
     assert_allclose(np.real(PSI), np.real(psi), atol=1e-15)
     assert_allclose(np.imag(PSI), np.imag(psi), atol=1e-15)
@@ -305,12 +257,6 @@ def test_fbsp():
     assert_allclose(np.imag(PSI), np.imag(psi), atol=1e-5)
     assert_allclose(X, x, atol=1e-15)
 
-    PSI, X = pywt.fbspwavf(LB,UB,N,M,Fb,Fc)
-    # TODO: investigate why atol = 1e-5 is necessary
-    assert_allclose(np.real(PSI), np.real(psi), atol=1e-5)
-    assert_allclose(np.imag(PSI), np.imag(psi), atol=1e-5)
-    assert_allclose(X, x, atol=1e-15)
-
 
 def test_morl():
     LB = -5
@@ -322,12 +268,6 @@ def test_morl():
     w.upper_bound = UB
     w.lower_bound = LB
     PSI, X = w.wavefun(length=N)
-
-    assert_allclose(np.real(PSI), np.real(psi))
-    assert_allclose(np.imag(PSI), np.imag(psi))
-    assert_allclose(X, x)
-
-    PSI, X = pywt.morlet(LB,UB,N)
 
     assert_allclose(np.real(PSI), np.real(psi))
     assert_allclose(np.imag(PSI), np.imag(psi))
@@ -349,12 +289,6 @@ def test_mexh():
     assert_allclose(np.imag(PSI), np.imag(psi))
     assert_allclose(X, x)
 
-    PSI, X = pywt.mexihat(LB,UB,N)
-
-    assert_allclose(np.real(PSI), np.real(psi))
-    assert_allclose(np.imag(PSI), np.imag(psi))
-    assert_allclose(X, x)
-
     LB = -5
     UB = 5
     N = 1001
@@ -364,12 +298,6 @@ def test_mexh():
     w.upper_bound = UB
     w.lower_bound = LB
     PSI, X = w.wavefun(length=N)
-
-    assert_allclose(np.real(PSI), np.real(psi))
-    assert_allclose(np.imag(PSI), np.imag(psi))
-    assert_allclose(X, x)
-
-    PSI, X = pywt.mexihat(LB,UB,N)
 
     assert_allclose(np.real(PSI), np.real(psi))
     assert_allclose(np.imag(PSI), np.imag(psi))
