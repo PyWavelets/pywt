@@ -105,10 +105,11 @@ def test_accuracy_precomputed_cwt():
     rstate = np.random.RandomState(1234)
     # has to be improved
     epsilon = 1e-15
-    epsilon32 = 1e-7
+    epsilon32 = 1e-6
     epsilon_psi = 1e-15
     for wavelet in wavelets:
         w = pywt.ContinuousWavelet(wavelet)
+        w32 = pywt.ContinuousWavelet(wavelet,dtype=np.float32)
         psi = _load_matlab_result_psi(wavelet)
         yield _check_accuracy_psi, w, psi, wavelet, epsilon_psi
 
@@ -120,7 +121,7 @@ def test_accuracy_precomputed_cwt():
                 scales_count += 1
                 coefs = _load_matlab_result(data, wavelet, scales_count)
                 yield _check_accuracy, data, w, scales, coefs, wavelet, epsilon
-                yield _check_accuracy, data32, w, scales, coefs, wavelet, epsilon32
+                yield _check_accuracy, data32, w32, scales, coefs, wavelet, epsilon32
 
 
 def _compute_matlab_result(data, wavelet, scales):

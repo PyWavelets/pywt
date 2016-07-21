@@ -617,11 +617,15 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
 
     """
     #cdef readonly properties
-    def __cinit__(self, name=u""):
+    def __cinit__(self, name=u"", dtype = None):
         cdef object family_code, family_number
 
         # builtin wavelet
         self.name = name.lower()
+        if (dtype is None):
+            self.dt = np.float64
+        else:
+            self.dt = dtype
         family_code, family_number = wname_to_code(self.name)
         self.w = <wavelet.ContinuousWavelet*> wavelet.continous_wavelet(family_code, family_number)
 
@@ -794,11 +798,10 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
 
         """
         cdef pywt_index_t output_length "output_length"
-        cdef np.float64_t n
-        cdef psi_i, psi_r
-        cdef np.float64_t[::1] x, psi
+        cdef psi_i, psi_r, psi
+        cdef np.float64_t[::1] x64, psi64
+        cdef np.float32_t[::1] x32, psi32
 
-        n = pow(sqrt(2.), <double>level)
         p = (pow(2., <double>level))
         
         if self.w is not NULL:
@@ -806,16 +809,31 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
                 output_length = <pywt_index_t>p
             else:
                 output_length = <pywt_index_t>length
-            x = np.linspace(self.w.lower_bound, self.w.upper_bound, output_length)
-            # x = np.array(x, dtype=np.float64)
-            if self.w.complex_cwt:
-                psi_r, psi_i = cwt_psi_single(x, self, output_length)
-                return [np.asarray(psi_r, dtype=np.float64) + 1j * np.asarray(psi_i, dtype=np.float64), 
-                        np.asarray(x, dtype=np.float64)]
+            if (self.dt == np.float64):
+                x64 = np.linspace(self.w.lower_bound, self.w.upper_bound, output_length)
             else:
-                psi = cwt_psi_single(x, self, output_length)
-                return [np.asarray(psi, dtype=np.float64), 
-                        np.asarray(x, dtype=np.float64)]
+                x = np.linspace(self.w.lower_bound, self.w.upper_bound, output_length)
+                x32 = np.asarray(x, dtype=np.float32)
+            #x = np.asarray(x, dtype=self.dt)
+            if self.w.complex_cwt:
+                if (self.dt == np.float64):
+                    psi_r, psi_i = cwt_psi_single(x64, self, output_length)
+                    return [np.asarray(psi_r, dtype=self.dt) + 1j * np.asarray(psi_i, dtype=self.dt), 
+                        np.asarray(x64, dtype=self.dt)]
+                else:
+                    psi_r, psi_i = cwt_psi_single(x32, self, output_length)
+                    return [np.asarray(psi_r, dtype=self.dt) + 1j * np.asarray(psi_i, dtype=self.dt), 
+                            np.asarray(x32, dtype=self.dt)]
+            else:
+                if (self.dt == np.float64):
+                    psi = cwt_psi_single(x64, self, output_length)
+                    return [np.asarray(psi, dtype=self.dt), 
+                            np.asarray(x64, dtype=self.dt)]
+
+                else:
+                    psi = cwt_psi_single(x32, self, output_length)
+                    return [np.asarray(psi, dtype=self.dt), 
+                            np.asarray(x32, dtype=self.dt)]
 
     def __str__(self):
         s = []

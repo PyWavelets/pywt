@@ -18,6 +18,7 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
 
     cdef readonly name
     cdef readonly number
+    cdef readonly dt
 
 cpdef np.dtype _check_dtype(data)
 
