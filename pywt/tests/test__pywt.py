@@ -3,7 +3,7 @@
 from __future__ import division, print_function, absolute_import
 
 import numpy as np
-from numpy.testing import run_module_suite, assert_allclose, assert_
+from numpy.testing import run_module_suite, assert_allclose, assert_, assert_raises
 
 import pywt
 
@@ -76,6 +76,19 @@ def test_dwt_max_level():
     assert_(pywt.dwt_max_level(16, 9) == 1)
     assert_(pywt.dwt_max_level(16, 10) == 0)
     assert_(pywt.dwt_max_level(16, 18) == 0)
+
+
+def test_ContinuousWavelet_errs():
+    assert_raises(ValueError, pywt.ContinuousWavelet, 'qwertz')
+
+
+def test_ContinuousWavelet_repr():
+    from pywt._extensions import _pywt
+    wavelet = _pywt.ContinuousWavelet('gaus2')
+
+    repr_wavelet = eval(wavelet.__repr__())
+
+    assert_(wavelet.__repr__() == repr_wavelet.__repr__())
 
 
 if __name__ == '__main__':

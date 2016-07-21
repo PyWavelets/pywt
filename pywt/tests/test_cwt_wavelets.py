@@ -2,7 +2,7 @@
 from __future__ import division, print_function, absolute_import
 
 from numpy.testing import (run_module_suite, assert_almost_equal,
-                           assert_allclose)
+                           assert_allclose, assert_raises)
 import numpy as np
 import pywt
 
