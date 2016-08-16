@@ -1149,3 +1149,160 @@ def unravel_coeffs(arr, coeff_slices, coeff_shapes, output_format='wavedecn'):
                 "Unrecognized output format: {}".format(output_format))
         coeffs.append(d)
     return coeffs
+
+
+def fswt(data, wavelet, mode='symmetric', levels=None, axes=None):
+    """Fully Separable Wavelet Transform.
+
+    Parameters
+    ----------
+    data: array_like
+        Input data
+    wavelet : Wavelet object or name string
+        Wavelet to use
+    mode : str, optional
+        Signal extension mode, see Modes (default: 'symmetric')
+    levels : int or sequence of ints, optional
+        Decomposition level (must be >= 0). If level is None (default) then it
+        will be calculated using the ``dwt_max_level`` function for each axis.
+        If an integer is provided, the same number of levels are used for all
+        axes.
+    axes : sequence of ints, optional
+        Axes over which to compute the FSWT. Axes may not be repeated.  The
+        default is to transform along all axes.
+
+    Returns
+    -------
+    coeffs_arr : array
+        n-dimensional array of wavelet coefficients
+    coeff_slices : list of list of slices
+        Lists of slice objects.  The first index corresponds to the transform
+        axes.  The list of slices for each axes has a length equal to the
+        number of levels.  Example:  The approximation coefficients for a 2D
+        transform correspond to:
+        ``a = coeffs_arr[coeff_slices[0][0], coeff_slices[1][0]]``
+        whereas detail coefficients for `n` levels of decomposition along the
+        first axis and `m` levels along the second would be given by:
+        ``dnm = coeffs_arr[coeff_slices[0][n], coeff_slices[1][m]]``
+
+    Notes
+    -----
+    This transformation has been variously referred to as the (fully) separable
+    wavelet transform (e.g. refs _[1], _[4]) or the tensor-product wavelet
+    (refs _[2], _[3]).
+
+    See Also
+    --------
+    ifswt : inverse of fswt
+
+    References
+    ----------
+    ..[1] P. H. Westerink. Subband Coding of Images. Ph.D. dissertation, Dept.
+    Elect. Eng., Inf. Theory Group, Delft Univ. Technol., Delft, The Nether-
+    lands, 1989.  (see Section 2.3)
+    http://resolver.tudelft.nl/uuid:a4d195c3-1f89-4d66-913d-db9af0969509
+
+    ..[2] R. D. Nowak and R. G. Baraniuk.  Wavelet-based transformations for
+    nonlinear signal processing. IEEE Trans. Signal Process., vol. 47, no.
+    7, pp. 1852–1865, Jul. 1999.
+
+    ..[3] C. P. Rosiene and T. Q. Nguyen. "Tensor-product wavelet vs. Mallat
+    decomposition: A comparative analysis,” in Proc. IEEE Int. Symp. Circuits
+    and Systems, Orlando, FL, Jun. 1999, pp. 431–434.
+
+    ..[4] V. Velisavljevic, B. Beferull-Lozano, M. Vetterli and P.L. Dragotti.
+    Directionlets: Anisotropic Multidirectional Representation With Separable
+    Filtering. IEEE TRANSACTIONS ON IMAGE PROCESSING, VOL. 15, NO. 7, JULY 2006
+    """
+    data = np.asarray(data)
+    if axes is None:
+        axes = tuple(np.arange(data.ndim))
+    if levels is None or np.isscalar(levels):
+        levels = [levels, ] * len(axes)
+    coeff_slices = [slice(None), ] * len(axes)
+    coeffs_arr = data
+    for ax_count, ax in enumerate(axes):
+        coeffs = wavedec(coeffs_arr, wavelet, mode=mode,
+                         level=levels[ax_count], axis=ax)
+
+        # Slice objects for accessing coefficient subsets.
+        # These can be used to access specific detail coefficient arrays
+        # (e.g. as needed for inverse transformation via ifswt).
+        c_shapes = [c.shape[ax] for c in coeffs]
+        c_offsets = np.cumsum([0, ] + c_shapes)
+        coeff_slices[ax_count] = [
+            slice(c_offsets[d], c_offsets[d+1]) for d in range(len(c_shapes))]
+
+        # stack the coefficients from all levels into a single array
+        coeffs_arr = np.concatenate(coeffs, axis=ax)
+
+    return coeffs_arr, coeff_slices
+
+
+def ifswt(coeffs_arr, coeff_slices, wavelet, mode='symmetric', axes=None):
+    """Fully Separable Inverse Wavelet Transform.
+
+    Parameters
+    ----------
+    Returns
+    -------
+    coeffs_arr : array-like
+        n-dimensional array of wavelet coefficients
+    coeff_slices : list of lists
+        TODO
+    wavelet : Wavelet object or name string
+        Wavelet to use
+    mode : str, optional
+        Signal extension mode, see Modes (default: 'symmetric')
+    axes : sequence of ints, optional
+        Axes over which to compute the FSWT. Axes may not be repeated.  The
+        default is to transform along all axes.
+
+    Returns
+    -------
+    nD array of reconstructed data.
+
+    See Also
+    --------
+    fswt : inverse of ifswt
+
+    Notes
+    -----
+    This transformation has been variously referred to as the (fully) separable
+    wavelet transform (e.g. refs _[1], _[4]) or the tensor-product wavelet
+    (refs _[2], _[3]).
+
+    References
+    ----------
+    ..[1] P. H. Westerink. Subband Coding of Images. Ph.D. dissertation, Dept.
+    Elect. Eng., Inf. Theory Group, Delft Univ. Technol., Delft, The Nether-
+    lands, 1989.  (see Section 2.3)
+    http://resolver.tudelft.nl/uuid:a4d195c3-1f89-4d66-913d-db9af0969509
+
+    ..[2] R. D. Nowak and R. G. Baraniuk.  Wavelet-based transformations for
+    nonlinear signal processing. IEEE Trans. Signal Process., vol. 47, no.
+    7, pp. 1852–1865, Jul. 1999.
+
+    ..[3] C. P. Rosiene and T. Q. Nguyen. "Tensor-product wavelet vs. Mallat
+    decomposition: A comparative analysis,” in Proc. IEEE Int. Symp. Circuits
+    and Systems, Orlando, FL, Jun. 1999, pp. 431–434.
+
+    ..[4] V. Velisavljevic, B. Beferull-Lozano, M. Vetterli and P.L. Dragotti.
+    Directionlets: Anisotropic Multidirectional Representation With Separable
+    Filtering. IEEE TRANSACTIONS ON IMAGE PROCESSING, VOL. 15, NO. 7, JULY 2006
+    """
+    coeffs_arr = np.asarray(coeffs_arr)
+    if axes is None:
+        axes = tuple(np.arange(coeffs_arr.ndim))
+    if len(axes) != len(coeff_slices):
+        raise ValueError("dimension mismatch")
+    arr = coeffs_arr
+    csl = [slice(None), ] * len(axes)
+    for ax_count, ax in enumerate(axes):
+        coeffs = []
+        for sl in coeff_slices[ax]:
+            csl[ax_count] = sl
+            coeffs.append(arr[csl])
+        csl[ax_count] = slice(None)
+        arr = waverec(coeffs, wavelet, mode=mode, axis=ax)
+    return arr
