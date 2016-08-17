@@ -1188,8 +1188,13 @@ def fswt(data, wavelet, mode='symmetric', levels=None, axes=None):
     Notes
     -----
     This transformation has been variously referred to as the (fully) separable
-    wavelet transform (e.g. refs _[1], _[4]) or the tensor-product wavelet
-    (refs _[2], _[3]).
+    wavelet transform (e.g. refs _[1], _[3]), the tensor-product wavelet
+    (_[2]) or the hyperbolic wavelet transform (_[4]).  It is well suited to
+    data with anisotropic smoothness.
+
+    In _[2] it was demonstrated that FSWT performs at least as well as the DWT
+    for image compression.  Computation time is a factor 2 larger than that for
+    the DWT.
 
     See Also
     --------
@@ -1202,17 +1207,16 @@ def fswt(data, wavelet, mode='symmetric', levels=None, axes=None):
     lands, 1989.  (see Section 2.3)
     http://resolver.tudelft.nl/uuid:a4d195c3-1f89-4d66-913d-db9af0969509
 
-    ..[2] R. D. Nowak and R. G. Baraniuk.  Wavelet-based transformations for
-    nonlinear signal processing. IEEE Trans. Signal Process., vol. 47, no.
-    7, pp. 1852–1865, Jul. 1999.
-
-    ..[3] C. P. Rosiene and T. Q. Nguyen. "Tensor-product wavelet vs. Mallat
+    ..[2] C. P. Rosiene and T. Q. Nguyen. "Tensor-product wavelet vs. Mallat
     decomposition: A comparative analysis,” in Proc. IEEE Int. Symp. Circuits
     and Systems, Orlando, FL, Jun. 1999, pp. 431–434.
 
-    ..[4] V. Velisavljevic, B. Beferull-Lozano, M. Vetterli and P.L. Dragotti.
+    ..[3] V. Velisavljevic, B. Beferull-Lozano, M. Vetterli and P.L. Dragotti.
     Directionlets: Anisotropic Multidirectional Representation With Separable
     Filtering. IEEE TRANSACTIONS ON IMAGE PROCESSING, VOL. 15, NO. 7, JULY 2006
+
+    ..[4] R. A. DeVore, S. V. Konyagin, and V. N. Temlyakov. "Hyperbolic
+    wavelet approximation," Constr. Approx. 14 (1998), 1–26.
     """
     data = np.asarray(data)
     if axes is None:
@@ -1264,13 +1268,23 @@ def ifswt(coeffs_arr, coeff_slices, wavelet, mode='symmetric', axes=None):
 
     See Also
     --------
-    fswt : inverse of ifswt
+    ifswt : inverse of fswt
 
     Notes
     -----
     This transformation has been variously referred to as the (fully) separable
-    wavelet transform (e.g. refs _[1], _[4]) or the tensor-product wavelet
-    (refs _[2], _[3]).
+    wavelet transform (e.g. refs _[1], _[3]), the tensor-product wavelet
+    (_[2]) or the hyperbolic wavelet transform (_[4]).  It is well suited to
+    data with anisotropic smoothness.
+
+    In _[2] it was demonstrated that FSWT performs at least as well as the DWT
+    for image compression.  Computation time is a factor 2 larger than that for
+    the DWT.
+
+
+    See Also
+    --------
+    ifswt : inverse of fswt
 
     References
     ----------
@@ -1279,17 +1293,16 @@ def ifswt(coeffs_arr, coeff_slices, wavelet, mode='symmetric', axes=None):
     lands, 1989.  (see Section 2.3)
     http://resolver.tudelft.nl/uuid:a4d195c3-1f89-4d66-913d-db9af0969509
 
-    ..[2] R. D. Nowak and R. G. Baraniuk.  Wavelet-based transformations for
-    nonlinear signal processing. IEEE Trans. Signal Process., vol. 47, no.
-    7, pp. 1852–1865, Jul. 1999.
-
-    ..[3] C. P. Rosiene and T. Q. Nguyen. "Tensor-product wavelet vs. Mallat
+    ..[2] C. P. Rosiene and T. Q. Nguyen. "Tensor-product wavelet vs. Mallat
     decomposition: A comparative analysis,” in Proc. IEEE Int. Symp. Circuits
     and Systems, Orlando, FL, Jun. 1999, pp. 431–434.
 
-    ..[4] V. Velisavljevic, B. Beferull-Lozano, M. Vetterli and P.L. Dragotti.
+    ..[3] V. Velisavljevic, B. Beferull-Lozano, M. Vetterli and P.L. Dragotti.
     Directionlets: Anisotropic Multidirectional Representation With Separable
     Filtering. IEEE TRANSACTIONS ON IMAGE PROCESSING, VOL. 15, NO. 7, JULY 2006
+
+    ..[4] R. A. DeVore, S. V. Konyagin, and V. N. Temlyakov. "Hyperbolic
+    wavelet approximation," Constr. Approx. 14 (1998), 1–26.
     """
     coeffs_arr = np.asarray(coeffs_arr)
     if axes is None:
