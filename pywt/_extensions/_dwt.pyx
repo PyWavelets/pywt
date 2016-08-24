@@ -1,3 +1,4 @@
+#cython: boundscheck=False, wraparound=False
 cimport common, c_wt, cython
 from common cimport pywt_index_t, MODE
 from ._pywt cimport _check_dtype
@@ -18,7 +19,6 @@ cpdef dwt_coeff_len(size_t data_len, size_t filter_len, MODE mode):
 
     return common.dwt_buffer_length(data_len, filter_len, mode)
 
-@cython.boundscheck(False)
 cpdef dwt_single(data_t[::1] data, Wavelet wavelet, MODE mode):
     cdef size_t output_len = dwt_coeff_len(data.size, wavelet.dec_len, mode)
     cdef np.ndarray cA, cD
@@ -229,7 +229,6 @@ cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d,
 
     return output
 
-@cython.boundscheck(False)
 cpdef upcoef(bint do_rec_a, data_t[::1] coeffs, Wavelet wavelet, int level, int take):
     cdef data_t[::1] rec
     cdef int i, ret
@@ -294,7 +293,6 @@ cpdef upcoef(bint do_rec_a, data_t[::1] coeffs, Wavelet wavelet, int level, int 
     return rec
 
 
-@cython.boundscheck(False)
 cpdef downcoef(bint do_dec_a, data_t[::1] data, Wavelet wavelet, MODE mode, int level):
     cdef data_t[::1] coeffs
     cdef int i, ret
