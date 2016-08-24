@@ -1,3 +1,4 @@
+#cython: boundscheck=False, wraparound=False
 cimport common
 cimport c_wt
 
@@ -31,8 +32,9 @@ def swt_max_level(size_t input_len):
 def swt(data_t[::1] data, Wavelet wavelet, size_t level, size_t start_level):
     cdef data_t[::1] cA, cD
     cdef Wavelet w
-    cdef int i
+    cdef int i, retval
     cdef size_t end_level = start_level + level
+    cdef size_t data_size, output_len
 
     if data.size % 2:
         raise ValueError("Length of data must be even.")
@@ -54,28 +56,37 @@ def swt(data_t[::1] data, Wavelet wavelet, size_t level, size_t start_level):
 
     ret = []
     for i in range(start_level+1, end_level+1):
+        data_size = data.size
         # alloc memory, decompose D
         if data_t is np.float64_t:
             cD = np.zeros(output_len, dtype=np.float64)
-            if c_wt.double_swt_d(&data[0], data.size, wavelet.w,
-                                 &cD[0], cD.size, i) < 0:
+            with nogil:
+                retval = c_wt.double_swt_d(&data[0], data_size, wavelet.w,
+                                 &cD[0], output_len, i)
+            if retval < 0:
                 raise RuntimeError("C swt failed.")
         elif data_t is np.float32_t:
             cD = np.zeros(output_len, dtype=np.float32)
-            if c_wt.float_swt_d(&data[0], data.size, wavelet.w,
-                                &cD[0], cD.size, i) < 0:
+            with nogil:
+                retval = c_wt.float_swt_d(&data[0], data_size, wavelet.w,
+                                &cD[0], output_len, i)
+            if retval < 0:
                 raise RuntimeError("C swt failed.")
 
         # alloc memory, decompose A
         if data_t is np.float64_t:
             cA = np.zeros(output_len, dtype=np.float64)
-            if c_wt.double_swt_a(&data[0], data.size, wavelet.w,
-                                 &cA[0], cA.size, i) < 0:
+            with nogil:
+                retval = c_wt.double_swt_a(&data[0], data_size, wavelet.w,
+                                 &cA[0], output_len, i)
+            if retval < 0:
                 raise RuntimeError("C swt failed.")
         elif data_t is np.float32_t:
             cA = np.zeros(output_len, dtype=np.float32)
-            if c_wt.float_swt_a(&data[0], data.size, wavelet.w,
-                                &cA[0], cA.size, i) < 0:
+            with nogil:
+                retval = c_wt.float_swt_a(&data[0], data_size, wavelet.w,
+                                &cA[0], output_len, i)
+            if retval < 0:
                 raise RuntimeError("C swt failed.")
 
         data = cA
