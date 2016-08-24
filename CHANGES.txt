@@ -1,5 +1,9 @@
 Changelog
 
+unreleased:
+    changes:
+        - most operations now drop the Python GIL to allow efficient threading
+
 0.4.0
     changes:
       - idwt no longer takes a 'correct_size' parameter.
