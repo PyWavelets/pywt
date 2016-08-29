@@ -31,10 +31,10 @@ matrix:
         - NUMPYSPEC=numpy
     - python: 2.6
       env:
-        - NUMPYSPEC="numpy==1.7.2"
+        - NUMPYSPEC="numpy==1.9.3"
     - python: 2.7
       env:
-        - NUMPYSPEC="numpy==1.9.1"
+        - NUMPYSPEC=numpy
 
 cache: pip
 
