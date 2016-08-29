@@ -1,7 +1,7 @@
 import numpy as np
 
-from ._extensions._pywt import DiscreteContinuousWavelet, ContinuousWavelet, Wavelet, Modes, _check_dtype
-from ._extensions._cwt import (cwt_psi_single)
+from ._extensions._pywt import (DiscreteContinuousWavelet, ContinuousWavelet,
+                                Wavelet, _check_dtype)
 from ._functions import integrate_wavelet, scale2frequency
 
 __all__ = ["cwt"]
@@ -27,13 +27,16 @@ def cwt(data, scales, wavelet, sampling_period=1.):
     Returns
     -------
     coefs : array_like
-        Continous wavelet transform of the input signal for the given scales and wavelet
+        Continous wavelet transform of the input signal for the given scales
+        and wavelet
     frequencies : array_like
-        if the unit of sampling period are seconds and given, than frequencies are in hertz. Otherwise Sampling period of 1 is assumed.
+        if the unit of sampling period are seconds and given, than frequencies
+        are in hertz. Otherwise Sampling period of 1 is assumed.
 
     Notes
     -----
-    Size of coefficients arrays depends on the length of the input array and the length of given scales.
+    Size of coefficients arrays depends on the length of the input array and
+    the length of given scales.
 
     Examples
     --------
@@ -67,20 +70,22 @@ def cwt(data, scales, wavelet, sampling_period=1.):
         scales = np.array([scales])
     if data.ndim == 1:
         if wavelet.complex_cwt:
-            out = np.zeros((np.size(scales),data.size),dtype=complex)
+            out = np.zeros((np.size(scales), data.size), dtype=complex)
         else:
-            out = np.zeros((np.size(scales),data.size))
+            out = np.zeros((np.size(scales), data.size))
         for i in np.arange(np.size(scales)):
             precision = 10
-            int_psi, x = integrate_wavelet(wavelet,precision=precision)
-            step = x[1]-x[0]
-            j = np.floor(np.arange(scales[i]*(x[-1]-x[0])+1)/(scales[i]*step))
+            int_psi, x = integrate_wavelet(wavelet, precision=precision)
+            step = x[1] - x[0]
+            j = np.floor(
+                np.arange(scales[i] * (x[-1] - x[0]) + 1) / (scales[i] * step))
             if np.max(j) >= np.size(int_psi):
-                j = np.delete(j,np.where((j >= np.size(int_psi)))[0])
-            coef = -np.sqrt(scales[i])*np.diff(np.convolve(data,int_psi[j.astype(np.int)][::-1]))
-            d = (coef.size-data.size)/2.
-            out[i,:] = coef[int(np.floor(d)):int(-np.ceil(d))]
-        frequencies = scale2frequency(wavelet,scales,precision)
+                j = np.delete(j, np.where((j >= np.size(int_psi)))[0])
+            coef = - np.sqrt(scales[i]) * np.diff(
+                np.convolve(data, int_psi[j.astype(np.int)][::-1]))
+            d = (coef.size - data.size) / 2.
+            out[i, :] = coef[int(np.floor(d)):int(-np.ceil(d))]
+        frequencies = scale2frequency(wavelet, scales, precision)
         if np.isscalar(frequencies):
             frequencies = np.array([frequencies])
         for i in np.arange(len(frequencies)):
