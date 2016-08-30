@@ -53,7 +53,7 @@ import pywt
 def image2array(image):
     """PIL Image to NumPy array"""
     assert image.mode in ('L', 'RGB', 'CMYK')
-    arr = numpy.fromstring(image.tostring(), numpy.uint8)
+    arr = numpy.fromstring(image.tobytes(), numpy.uint8)
     arr.shape = (image.size[1], image.size[0], len(image.getbands()))
     return arr.swapaxes(0, 2).swapaxes(1, 2).astype(numpy.float32)
 
@@ -64,7 +64,7 @@ def array2image(arr, mode):
     arr[arr < 0] = 0
     arr[arr > 255] = 255
     arr = numpy.fix(arr).astype(numpy.uint8)
-    return Image.fromstring(mode, arr.shape[1::-1], arr.tostring())
+    return Image.frombytes(mode, arr.shape[1::-1], arr.tobytes())
 
 
 def load_image(path, mode=None, size=None):
