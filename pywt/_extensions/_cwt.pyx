@@ -75,6 +75,7 @@ cpdef cwt_psi_single(data_t[::1] data, ContinuousWavelet wavelet, size_t output_
     elif data_t is np.float32_t:
         if wavelet.short_family_name == "gaus":
             psi = np.zeros(output_len, np.float32)
+            family_number = wavelet.family_number
             with nogil:
                 c_wt.float_gaus(&data[0], <float *>psi.data, data_size, family_number)
             return psi
