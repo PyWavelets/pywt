@@ -30,16 +30,11 @@ Use ``pip`` to install numpy_::
 
     pip install numpy
 
-It takes some time to compile numpy, so it might be more convenient to install
-it from a binary release.
+Numpy can also be obtained via scientific python distributions such as:
 
-.. note::
-
-  Installing numpy in a virtual environment on Windows is not straightforward.
-
-  It is recommended to download a suitable binary ``.exe`` release from
-  http://www.scipy.org/Download/ and install it using ``easy_install``
-  (i.e. ``easy_install numpy-1.6.2-win32-superpack-python2.7.exe``).
+- Anaconda_
+- `Enthought Canopy`_
+- `Python(x,y) <http://python-xy.github.io/>`_
 
 .. note::
 
@@ -65,3 +60,5 @@ via::
 .. _Cython: http://cython.org/
 .. _Sphinx: http://sphinx.pocoo.org
 .. _numpydoc: https://github.com/numpy/numpydoc
+.. _Anaconda: https://www.continuum.io/downloads
+.. _Enthought Canopy: https://www.enthought.com/products/canopy/
