@@ -447,10 +447,11 @@ def test_waverecn_all_wavelets_modes():
 
 
 def test_coeffs_to_array():
-    # single element list returns just the first element
+    # single element list returns the first element
     a_coeffs = [np.arange(8).reshape(2, 4), ]
-    arr = pywt.coeffs_to_array(a_coeffs)
+    arr, arr_slices = pywt.coeffs_to_array(a_coeffs)
     assert_allclose(arr, a_coeffs[0])
+    assert_allclose(arr, arr[arr_slices[0]])
 
     assert_raises(ValueError, pywt.coeffs_to_array, [])
     # invalid second element:  array as in wavedec, but not 1D

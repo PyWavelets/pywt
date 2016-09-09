@@ -19,68 +19,82 @@ cpdef cwt_psi_single(data_t[::1] data, ContinuousWavelet wavelet, size_t output_
     if data_t is np.float64_t:
         if wavelet.short_family_name == "gaus":
             psi = np.zeros(output_len, np.float64)
-            c_wt.double_gaus(&data[0], <double *>psi.data, data.size, wavelet.family_number)
+            with nogil:
+                c_wt.double_gaus(&data[0], <double *>psi.data, data.size, wavelet.family_number)
             return psi
         elif wavelet.short_family_name == "mexh":
             psi = np.zeros(output_len, np.float64)
-            c_wt.double_mexh(&data[0], <double *>psi.data, data.size)
+            with nogil:
+                c_wt.double_mexh(&data[0], <double *>psi.data, data.size)
             return psi
         elif wavelet.short_family_name == "morl":
             psi = np.zeros(output_len, np.float64)
-            c_wt.double_morl(&data[0], <double *>psi.data, data.size)
+            with nogil:
+                c_wt.double_morl(&data[0], <double *>psi.data, data.size)
             return psi
         elif wavelet.short_family_name == "cgau":
             psi_r = np.zeros(output_len, np.float64)
             psi_i = np.zeros(output_len, np.float64)
-            c_wt.double_cgau(&data[0], <double *>psi_r.data, <double *>psi_i.data, data.size, wavelet.family_number)
+            with nogil:
+                c_wt.double_cgau(&data[0], <double *>psi_r.data, <double *>psi_i.data, data.size, wavelet.family_number)
             return (psi_r, psi_i)
         elif wavelet.short_family_name == "shan":
             psi_r = np.zeros(output_len, np.float64)
             psi_i = np.zeros(output_len, np.float64)
-            c_wt.double_shan(&data[0], <double *>psi_r.data, <double *>psi_i.data, data.size, wavelet.bandwidth_frequency, wavelet.center_frequency)
+            with nogil:
+                c_wt.double_shan(&data[0], <double *>psi_r.data, <double *>psi_i.data, data.size, wavelet.bandwidth_frequency, wavelet.center_frequency)
             return (psi_r, psi_i)
         elif wavelet.short_family_name == "fbsp":
             psi_r = np.zeros(output_len, np.float64)
             psi_i = np.zeros(output_len, np.float64)
-            c_wt.double_fbsp(&data[0], <double *>psi_r.data, <double *>psi_i.data, data.size, wavelet.fbsp_order, wavelet.bandwidth_frequency, wavelet.center_frequency)
+            with nogil:
+                c_wt.double_fbsp(&data[0], <double *>psi_r.data, <double *>psi_i.data, data.size, wavelet.fbsp_order, wavelet.bandwidth_frequency, wavelet.center_frequency)
             return (psi_r, psi_i)
         elif wavelet.short_family_name == "cmor":
             psi_r = np.zeros(output_len, np.float64)
             psi_i = np.zeros(output_len, np.float64)
-            c_wt.double_cmor(&data[0], <double *>psi_r.data, <double *>psi_i.data, data.size, wavelet.bandwidth_frequency, wavelet.center_frequency)
+            with nogil:
+                c_wt.double_cmor(&data[0], <double *>psi_r.data, <double *>psi_i.data, data.size, wavelet.bandwidth_frequency, wavelet.center_frequency)
             return (psi_r, psi_i)
             
     elif data_t is np.float32_t:
         if wavelet.short_family_name == "gaus":
             psi = np.zeros(output_len, np.float32)
-            c_wt.float_gaus(&data[0], <float *>psi.data, data.size, wavelet.family_number)
+            with nogil:
+                c_wt.float_gaus(&data[0], <float *>psi.data, data.size, wavelet.family_number)
             return psi
         elif wavelet.short_family_name == "mexh":
             psi = np.zeros(output_len, np.float32)
-            c_wt.float_mexh(&data[0], <float *>psi.data, data.size)
+            with nogil:
+                c_wt.float_mexh(&data[0], <float *>psi.data, data.size)
             return psi
         elif wavelet.short_family_name == "morl":
             psi = np.zeros(output_len, np.float32)
-            c_wt.float_morl(&data[0], <float *>psi.data, data.size)
+            with nogil:
+                c_wt.float_morl(&data[0], <float *>psi.data, data.size)
             return psi
         elif wavelet.short_family_name == "cgau":
             psi_r = np.zeros(output_len, np.float32)
             psi_i = np.zeros(output_len, np.float32)
-            c_wt.float_cgau(&data[0], <float *>psi_r.data, <float *>psi_i.data, data.size, wavelet.family_number)
+            with nogil:
+                c_wt.float_cgau(&data[0], <float *>psi_r.data, <float *>psi_i.data, data.size, wavelet.family_number)
             return (psi_r, psi_i)
         elif wavelet.short_family_name == "shan":
             psi_r = np.zeros(output_len, np.float32)
             psi_i = np.zeros(output_len, np.float32)
-            c_wt.float_shan(&data[0], <float *>psi_r.data, <float *>psi_i.data, data.size, wavelet.bandwidth_frequency, wavelet.center_frequency)
+            with nogil:
+                c_wt.float_shan(&data[0], <float *>psi_r.data, <float *>psi_i.data, data.size, wavelet.bandwidth_frequency, wavelet.center_frequency)
             return (psi_r, psi_i)
         elif wavelet.short_family_name == "fbsp":
             psi_r = np.zeros(output_len, np.float32)
             psi_i = np.zeros(output_len, np.float32)
-            c_wt.float_fbsp(&data[0], <float *>psi_r.data, <float *>psi_i.data, data.size, wavelet.fbsp_order, wavelet.bandwidth_frequency, wavelet.center_frequency)
+            with nogil:
+                c_wt.float_fbsp(&data[0], <float *>psi_r.data, <float *>psi_i.data, data.size, wavelet.fbsp_order, wavelet.bandwidth_frequency, wavelet.center_frequency)
             return (psi_r, psi_i)
         elif wavelet.short_family_name == "cmor":
             psi_r = np.zeros(output_len, np.float32)
             psi_i = np.zeros(output_len, np.float32)
-            c_wt.float_cmor(&data[0], <float *>psi_r.data, <float *>psi_i.data, data.size, wavelet.bandwidth_frequency, wavelet.center_frequency)
+            with nogil:
+                c_wt.float_cmor(&data[0], <float *>psi_r.data, <float *>psi_i.data, data.size, wavelet.bandwidth_frequency, wavelet.center_frequency)
             return (psi_r, psi_i)
 

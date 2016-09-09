@@ -75,7 +75,7 @@ class _Modes(object):
     -----
     Extending data in context of PyWavelets does not mean reallocation of the
     data in computer's physical memory and copying values, but rather computing
-    the extra values only when they are needed.  This feature saves extra
+    the extra values only when they are needed. This feature saves extra
     memory and CPU resources and helps to avoid page swapping when handling
     relatively big data arrays on computers with low physical memory.
 
@@ -168,7 +168,7 @@ def wavelist(family=None):
     Parameters
     ----------
     family : {'haar', 'db', 'sym', 'coif', 'bior', 'rbio', 'dmey', 'gaus', 'mexh', 'morl', 'cgau', 'shan', 'fbsp', 'cmor'}
-        Short family name.  If the family name is None (default) then names
+        Short family name. If the family name is None (default) then names
         of all the built-in wavelets are returned. Otherwise the function
         returns names of wavelets that belong to the given family.
 
@@ -753,7 +753,7 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
         -----
         The effective support are set with lower_bound and upper_bound
         The wavelet function is complex for cmor, shan, fbsp and cgau.
-        The  complex frequency B-spline  wavelet (fbsp) has bandwidth_frequency, center_frequency and fbsp_order as addional parameter
+        The complex frequency B-spline wavelet (fbsp) has bandwidth_frequency, center_frequency and fbsp_order as addional parameter
         The complex Shannon wavelet (shan) has bandwidth_frequency and center_frequency as addional parameter
         The complex Morlet wavelet (cmor) has bandwidth_frequency and center_frequency as addional parameter
         Examples
