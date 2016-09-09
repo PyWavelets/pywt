@@ -122,6 +122,7 @@ int CAT(TYPE, _downsampling_convolution)(const TYPE * const restrict input, cons
     if (mode == MODE_SMOOTH && N < 2)
         mode = MODE_CONSTANT_EDGE;
 
+    // left boundary overhang
     for(; i < F && i < N; i+=step, ++o){
         TYPE sum = 0;
         size_t j;
@@ -135,6 +136,15 @@ int CAT(TYPE, _downsampling_convolution)(const TYPE * const restrict input, cons
                 for(k = 0; k < N && j < F; ++j, ++k)
                     sum += filter[j]*input[k];
                 for(k = 0; k < N && j < F; ++k, ++j)
+                    sum += filter[j] * input[N-1-k];
+            }
+            break;
+        case MODE_REFLECT:
+            while (j < F){
+                size_t k;
+                for(k = 1; k < N && j < F; ++j, ++k)
+                    sum += filter[j]*input[k];
+                for(k = 1; k < N && j < F; ++k, ++j)
                     sum += filter[j] * input[N-1-k];
             }
             break;
@@ -162,6 +172,7 @@ int CAT(TYPE, _downsampling_convolution)(const TYPE * const restrict input, cons
         output[o] = sum;
     }
 
+    // center (if input equal or wider than filter: N >= F)
     for(; i < N; i+=step, ++o){
         TYPE sum = 0;
         size_t j;
@@ -170,6 +181,7 @@ int CAT(TYPE, _downsampling_convolution)(const TYPE * const restrict input, cons
         output[o] = sum;
     }
 
+    // center (if filter is wider than input: F > N)
     for(; i < F; i+=step, ++o){
         TYPE sum = 0;
         size_t j = 0;
@@ -185,6 +197,15 @@ int CAT(TYPE, _downsampling_convolution)(const TYPE * const restrict input, cons
                 for(k = 0; k < N && i-j >= N; ++j, ++k)
                     sum += filter[i-N-j]*input[N-1-k];
                 for(k = 0; k < N && i-j >= N; ++j, ++k)
+                    sum += filter[i-N-j]*input[k];
+            }
+            break;
+        case MODE_REFLECT:
+            while (i - j >= N){
+                size_t k;
+                for(k = 1; k < N && i-j >= N; ++j, ++k)
+                    sum += filter[i-N-j]*input[N-1-k];
+                for(k = 1; k < N && i-j >= N; ++j, ++k)
                     sum += filter[i-N-j]*input[k];
             }
             break;
@@ -224,6 +245,15 @@ int CAT(TYPE, _downsampling_convolution)(const TYPE * const restrict input, cons
                     sum += filter[j] * input[N-1-k];
             }
             break;
+        case MODE_REFLECT:
+            while (j < F){
+                size_t k;
+                for(k = 1; k < N && j < F; ++j, ++k)
+                    sum += filter[j]*input[k];
+                for(k = 1; k < N && j < F; ++k, ++j)
+                    sum += filter[j] * input[N-1-k];
+            }
+            break;
         case MODE_CONSTANT_EDGE:
             for(; j < F; ++j)
                 sum += filter[j]*input[0];
@@ -248,6 +278,7 @@ int CAT(TYPE, _downsampling_convolution)(const TYPE * const restrict input, cons
         output[o] = sum;
     }
 
+    // right boundary overhang
     for(; i < N+F-1; i += step, ++o){
         TYPE sum = 0;
         size_t j = 0;
@@ -259,6 +290,15 @@ int CAT(TYPE, _downsampling_convolution)(const TYPE * const restrict input, cons
                 for(k = 0; k < N && i-j >= N; ++j, ++k)
                     sum += filter[i-N-j]*input[N-1-k];
                 for(k = 0; k < N && i-j >= N; ++j, ++k)
+                    sum += filter[i-N-j]*input[k];
+            }
+            break;
+        case MODE_REFLECT:
+            while (i - j >= N){
+                size_t k;
+                for(k = 1; k < N && i-j >= N; ++j, ++k)
+                    sum += filter[i-N-j]*input[N-1-k];
+                for(k = 1; k < N && i-j >= N; ++j, ++k)
                     sum += filter[i-N-j]*input[k];
             }
             break;
