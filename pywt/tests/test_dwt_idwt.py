@@ -91,10 +91,10 @@ def test_dwt_coeff_len():
     w = pywt.Wavelet('sym3')
     ln_modes = [pywt.dwt_coeff_len(len(x), w.dec_len, mode) for mode in
                 pywt.Modes.modes]
-    assert_allclose(ln_modes, [6, 6, 6, 6, 6, 4])
+    assert_allclose(ln_modes, [6, 6, 6, 6, 6, 6, 4])
     ln_modes = [pywt.dwt_coeff_len(len(x), w, mode) for mode in
                 pywt.Modes.modes]
-    assert_allclose(ln_modes, [6, 6, 6, 6, 6, 4])
+    assert_allclose(ln_modes, [6, 6, 6, 6, 6, 6, 4])
 
 
 def test_idwt_none_input():
