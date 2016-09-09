@@ -39,6 +39,7 @@ else:
 modes = [('zero', 'zpd'),
          ('constant', 'sp0'),
          ('symmetric', 'sym'),
+         # ('reflect', 'symw'),  # TODO: added in which Matlab version?
          ('periodic', 'ppd'),
          ('smooth', 'sp1'),
          ('periodization', 'per')]
