@@ -252,6 +252,20 @@ def families(int short=True):
 
 
 def DiscreteContinuousWavelet(name=u"", object filter_bank=None):
+    """
+    DiscreteContinuousWavelet(name, filter_bank=None) returns a 
+    Wavelet or a ContinuousWavelet object depending of the given name.
+
+    In order to use a built-in wavelet the parameter name must be
+    a valid name from the wavelist() list.
+    To create a custom wavelet object, filter_bank parameter must
+    be specified. It can be either a list of four filters or an object
+    that a `filter_bank` attribute which returns a list of four
+    filters - just like the Wavelet instance itself.
+    
+    For a ContinuousWavelet, filter_bank cannot be used and must remain unset.
+
+    """
     if not name and filter_bank is None:
         raise TypeError("Wavelet name or filter bank must be specified.")
     if filter_bank is None:
@@ -732,8 +746,8 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
         """
         wavefun(self, level=8, length = None)
 
-        Calculates approximations of scaling function (`phi`) and wavelet
-        function (`psi`) on xgrid (`x`) at a given level of refinement.
+        Calculates approximations of wavelet
+        function (`psi`) on xgrid (`x`) at a given level of refinement or length itself.
 
         Parameters
         ----------
@@ -810,10 +824,9 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
             else:
                 output_length = <pywt_index_t>length
             if (self.dt == np.float64):
-                x64 = np.linspace(self.w.lower_bound, self.w.upper_bound, output_length)
+                x64 = np.linspace(self.w.lower_bound, self.w.upper_bound, output_length, dtype = self.dt)
             else:
-                x = np.linspace(self.w.lower_bound, self.w.upper_bound, output_length)
-                x32 = np.asarray(x, dtype=np.float32)
+                x32 = np.linspace(self.w.lower_bound, self.w.upper_bound, output_length, dtype = self.dt)
             #x = np.asarray(x, dtype=self.dt)
             if self.w.complex_cwt:
                 if (self.dt == np.float64):

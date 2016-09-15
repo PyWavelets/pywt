@@ -141,7 +141,7 @@ def ecg():
 
 def nino():
     """
-    NINO3 sea surface temperature 1871-1996 (in C; from the UKMO GISST2.3):
+    sea surface temperature NINO3 1871-1996 (in C; from the UKMO GISST2.3):
     Seasonally-averaged, minus the annual cycle
 
     Parameters
