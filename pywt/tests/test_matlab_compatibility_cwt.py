@@ -105,7 +105,7 @@ def test_accuracy_precomputed_cwt():
     rstate = np.random.RandomState(1234)
     # has to be improved
     epsilon = 1e-15
-    epsilon32 = 1e-6
+    epsilon32 = 1e-5
     epsilon_psi = 1e-15
     for wavelet in wavelets:
         w = pywt.ContinuousWavelet(wavelet)

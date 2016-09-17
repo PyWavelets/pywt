@@ -824,10 +824,9 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
             else:
                 output_length = <pywt_index_t>length
             if (self.dt == np.float64):
-                x64 = np.linspace(self.w.lower_bound, self.w.upper_bound, output_length)
+                x64 = np.linspace(self.w.lower_bound, self.w.upper_bound, output_length, dtype=self.dt)
             else:
-                x32 = np.linspace(self.w.lower_bound, self.w.upper_bound, output_length)
-                x32 = np.asarray(x32, dtype=np.float32)
+                x32 = np.linspace(self.w.lower_bound, self.w.upper_bound, output_length, dtype=self.dt)
             if self.w.complex_cwt:
                 if (self.dt == np.float64):
                     psi_r, psi_i = cwt_psi_single(x64, self, output_length)
