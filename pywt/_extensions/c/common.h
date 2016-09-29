@@ -66,6 +66,11 @@ typedef enum {
        MODE_SMOOTH,        /* linear extrapolation (first derivative) */
        MODE_PERIODIC,      /* signal is treated as being periodic */
        MODE_PERIODIZATION, /* signal is treated as being periodic, minimal output length */
+       MODE_REFLECT,       /* signal extended symmetrically (reflect)
+                            * For extensions greater than signal length,
+                            * reflect back and forth without repeating edge values:
+                            * 1 2 3 2 | 1 2 3 | 2 1 2 3
+                            */
        MODE_MAX,
 } MODE;
 

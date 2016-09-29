@@ -50,6 +50,7 @@ class _Modes(object):
     zero - zero-padding                   0  0 | x1 x2 ... xn | 0  0
     constant - constant-padding              x1 x1 | x1 x2 ... xn | xn xn
     symmetric - symmetric-padding             x2 x1 | x1 x2 ... xn | xn xn-1
+    reflect - reflect-padding             x3 x2 | x1 x2 ... xn | xn-1 xn-2
     periodic - periodic-padding            xn-1 xn | x1 x2 ... xn | x1 x2
     smooth - smooth-padding               (1st derivative interpolation)
 
@@ -65,7 +66,7 @@ class _Modes(object):
     --------
     >>> import pywt
     >>> pywt.Modes.modes
-        ['zero', 'constant', 'symmetric', 'periodic', 'smooth', 'periodization']
+        ['zero', 'constant', 'symmetric', 'reflect', 'periodic', 'smooth', 'periodization']
     >>> # The different ways of passing wavelet and mode parameters
     >>> (a, d) = pywt.dwt([1,2,3,4,5,6], 'db2', 'smooth')
     >>> (a, d) = pywt.dwt([1,2,3,4,5,6], pywt.Wavelet('db2'), pywt.Modes.smooth)
@@ -82,12 +83,13 @@ class _Modes(object):
     zero = common.MODE_ZEROPAD
     constant = common.MODE_CONSTANT_EDGE
     symmetric = common.MODE_SYMMETRIC
+    reflect = common.MODE_REFLECT
     periodic = common.MODE_PERIODIC
     smooth = common.MODE_SMOOTH
     periodization = common.MODE_PERIODIZATION
 
-    modes = ["zero", "constant", "symmetric", "periodic", "smooth",
-             "periodization"]
+    modes = ["zero", "constant", "symmetric", "reflect", "periodic",
+             "smooth", "periodization"]
 
     def from_object(self, mode):
         if isinstance(mode, int):

@@ -22,7 +22,7 @@ else:
 
 if use_precomputed:
     data_dir = os.path.join(os.path.dirname(__file__), 'data')
-    matlab_data_file = os.path.join(data_dir, 'dwt_matlabR2015b_result.npz')
+    matlab_data_file = os.path.join(data_dir, 'dwt_matlabR2012a_result.npz')
     matlab_result_dict = np.load(matlab_data_file)
 else:
     try:
@@ -39,6 +39,7 @@ else:
 modes = [('zero', 'zpd'),
          ('constant', 'sp0'),
          ('symmetric', 'sym'),
+         ('reflect', 'symw'),
          ('periodic', 'ppd'),
          ('smooth', 'sp1'),
          ('periodization', 'per')]
