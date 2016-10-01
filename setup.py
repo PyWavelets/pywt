@@ -5,10 +5,12 @@ import os
 import sys
 import subprocess
 from functools import partial
+from distutils.sysconfig import get_python_inc
 
+import setuptools
 from setuptools import setup, Extension
 from numpy import get_include as get_numpy_include
-from distutils.sysconfig import get_python_inc
+
 
 try:
     from Cython.Build import cythonize
@@ -147,6 +149,53 @@ ext_modules = [
     for module, source, in zip(cython_modules, cython_sources)
 ]
 
+
+from setuptools.command.develop import develop
+class develop_build_clib(develop):
+    """Ugly monkeypatching to get clib to build for development installs
+
+    See coverage comment above for why we don't just let libraries be built
+    via extensions.
+
+    All this is a copy of the relevant part of `install_for_development`
+    for current master (Sep 2016) of setuptools.
+
+    Note: if you want to build in-place with ``python setup.py build_ext``,
+    that will only work if you first do ``python setup.py build_clib``.
+
+    """
+    def install_for_development(self):
+        self.run_command('egg_info')
+
+        # Build extensions in-place (the next 7 lines are the monkeypatch)
+        import glob
+        hitlist = glob.glob(os.path.join('build', '*', 'libc_wt.*'))
+        if hitlist:
+            # Remove existing clib - running build_clib twice in a row fails
+            os.remove(hitlist[0])
+        self.reinitialize_command('build_clib', inplace=1)
+        self.run_command('build_clib')
+
+        self.reinitialize_command('build_ext', inplace=1)
+        self.run_command('build_ext')
+
+        self.install_site_py()  # ensure that target dir is site-safe
+
+        if setuptools.bootstrap_install_from:
+            self.easy_install(setuptools.bootstrap_install_from)
+            setuptools.bootstrap_install_from = None
+
+        # create an .egg-link in the installation dir, pointing to our egg
+        from distutils import log
+        log.info("Creating %s (link to %s)", self.egg_link, self.egg_base)
+        if not self.dry_run:
+            with open(self.egg_link, "w") as f:
+                f.write(self.egg_path + "\n" + self.setup_path)
+        # postprocess the installed distro, fixing up .pth, installing scripts,
+        # and handling requirements
+        self.process_distribution(None, self.dist, not self.no_deps)
+
+
 if __name__ == '__main__':
     # Rewrite the version file everytime
     write_version_py()
@@ -198,6 +247,7 @@ if __name__ == '__main__':
         package_data={'pywt.data': ['*.npy', '*.npz']},
         ext_modules=ext_modules,
         libraries=[c_lib],
+        cmdclass={'develop': develop_build_clib},
         test_suite='nose.collector',
 
         # A function is imported in setup.py, so not really useful
