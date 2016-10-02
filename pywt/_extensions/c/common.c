@@ -2,6 +2,8 @@
 /* See COPYING for license details. */
 
 #include "common.h"
+#include <stdint.h> // for SIZE_MAX
+#include <limits.h> // for U*_MAX
 
 #ifdef PY_EXTENSION
 void *wtcalloc(size_t len, size_t size){
