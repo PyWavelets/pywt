@@ -36,7 +36,7 @@ unsigned char size_log2(size_t x){
     unsigned char leading_zeros = (unsigned char) __builtin_clz(x);
 #elif SIZE_MAX == ULONG_MAX
     unsigned char leading_zeros = (unsigned char) __builtin_clzl(x);
-#elif SIZE_MAX == ULONGLONG_MAX
+#elif SIZE_MAX == ULLONG_MAX
     unsigned char leading_zeros = (unsigned char) __builtin_clzll(x);
 #else
 #error "Unrecognized SIZE_MAX"
