@@ -144,8 +144,8 @@ def nino():
     This data contains the averaged monthly sea surface temperature in degrees
     Celcius of the Pacific Ocean, between 0-10 degrees South and 90-80 degrees West, from 1950 to 2016.
     This dataset is in the public domain and was obtained from NOAA.
-    National Oceanic and Atmospheric Administration’s National Weather Service
-    ERSSTv4  dataset, Nino 3 http://www.cpc.ncep.noaa.gov/data/indices/
+    National Oceanic and Atmospheric Administration's National Weather Service
+    ERSSTv4 dataset, nino 3, http://www.cpc.ncep.noaa.gov/data/indices/
 
     Parameters
     ----------
