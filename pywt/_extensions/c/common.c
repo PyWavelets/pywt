@@ -36,6 +36,8 @@ unsigned char size_log2(size_t x){
     unsigned char leading_zeros = (unsigned char) __builtin_clzl(x);
 #elif SIZE_MAX == ULONGLONG_MAX
     unsigned char leading_zeros = (unsigned char) __builtin_clzll(x);
+#else
+#error "Unrecognized SIZE_MAX"
 #endif /* SIZE_MAX */
     return sizeof(size_t) * 8 - leading_zeros - 1;
 #endif /* _MSC_VER */
