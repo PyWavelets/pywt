@@ -608,7 +608,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
             u"  Biorthogonal:   %s" % self.biorthogonal,
             u"  Symmetry:       %s" % self.symmetry,
             u"  DWT:            True",
-            u"  CWT:            True"
+            u"  CWT:            False"
             ]:
             s.append(x.rstrip())
         return u'\n'.join(s)

@@ -141,9 +141,12 @@ def ecg():
 
 def nino():
     """
-    sea surface temperature NINO3 1871-1996 (in C; from the UKMO GISST2.3):
-    Seasonally-averaged, minus the annual cycle
-
+    This data contains the averaged monthly sea surface temperature in degrees 
+    Celcius of the Pacific Ocean, between 0-10 degrees South and 90-80 degrees West, from 1950 to 2016. 
+    This dataset was obtained from NOAA.
+    National Oceanic and Atmospheric Administration’s National Weather Service
+    ERSSTv4  dataset, Nino 3 http://www.cpc.ncep.noaa.gov/data/indices/
+    
     Parameters
     ----------
     None
@@ -159,7 +162,7 @@ def nino():
     --------
     >>> import pywt.data
     >>> time, sst = pywt.data.nino()
-    >>> sst.shape == (504,)
+    >>> sst.shape == (264,)
     True
 
     >>> import matplotlib.pyplot as plt
@@ -168,12 +171,16 @@ def nino():
     >>> plt.show() # doctest: +SKIP
     """
     fname = os.path.join(os.path.dirname(__file__), 'sst_nino3.npz')
-    sst = np.load(fname)['sst']
-    # taken from
-    # http://paos.colorado.edu/research/wavelets/wave_python/
+    sst_csv = np.load(fname)['sst_csv']
+    # sst_csv = pd.read_csv("http://www.cpc.ncep.noaa.gov/data/indices/ersst4.nino.mth.81-10.ascii", sep=' ', skipinitialspace=True)
+    # take only full years    
+    n = np.floor(sst_csv.shape[0]/12.)*12.
+    # Building the mean of three mounth
+    # the 4. column is nino 3
+    sst = np.mean(np.reshape(np.array(sst_csv)[:n,4],(n/3,-1)),axis=1)
     variance = np.std(sst, ddof=1) ** 2
     sst = (sst - np.mean(sst)) / np.std(sst, ddof=1)
-    n = len(sst)
+
     dt = 0.25
-    time = np.arange(len(sst)) * dt + 1871.0  # construct time array
+    time = np.arange(len(sst)) * dt + 1950.0  # construct time array
     return time, sst
