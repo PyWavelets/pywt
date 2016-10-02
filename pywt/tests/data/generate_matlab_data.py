@@ -25,6 +25,7 @@ size_set = 'reduced'
 modes = [('zero', 'zpd'),
          ('constant', 'sp0'),
          ('symmetric', 'sym'),
+         ('reflect', 'symw'),
          ('periodic', 'ppd'),
          ('smooth', 'sp1'),
          ('periodization', 'per')]
@@ -90,4 +91,4 @@ try:
 finally:
     mlab.stop()
 
-np.savez('dwt_matlabR2015b_result.npz', **all_matlab_results)
+np.savez('dwt_matlabR2012a_result.npz', **all_matlab_results)

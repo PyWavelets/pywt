@@ -25,6 +25,12 @@ def test_dwt_idwt_basic():
     x_roundtrip = pywt.idwt(cA, cD, 'db2')
     assert_allclose(x_roundtrip, x, rtol=1e-10)
 
+    # mismatched dtypes OK
+    x_roundtrip2 = pywt.idwt(cA.astype(np.float64), cD.astype(np.float32),
+                             'db2')
+    assert_allclose(x_roundtrip2, x, rtol=1e-7, atol=1e-7)
+    assert_(x_roundtrip.dtype == np.float64)
+
 
 def test_dwt_idwt_dtypes():
     wavelet = pywt.Wavelet('haar')
@@ -91,10 +97,10 @@ def test_dwt_coeff_len():
     w = pywt.Wavelet('sym3')
     ln_modes = [pywt.dwt_coeff_len(len(x), w.dec_len, mode) for mode in
                 pywt.Modes.modes]
-    assert_allclose(ln_modes, [6, 6, 6, 6, 6, 4])
+    assert_allclose(ln_modes, [6, 6, 6, 6, 6, 6, 4])
     ln_modes = [pywt.dwt_coeff_len(len(x), w, mode) for mode in
                 pywt.Modes.modes]
-    assert_allclose(ln_modes, [6, 6, 6, 6, 6, 4])
+    assert_allclose(ln_modes, [6, 6, 6, 6, 6, 6, 4])
 
 
 def test_idwt_none_input():

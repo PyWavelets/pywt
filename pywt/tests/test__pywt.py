@@ -3,7 +3,8 @@
 from __future__ import division, print_function, absolute_import
 
 import numpy as np
-from numpy.testing import run_module_suite, assert_allclose, assert_, assert_raises
+from numpy.testing import (run_module_suite, assert_allclose, assert_,
+                           assert_raises)
 
 import pywt
 
@@ -29,6 +30,21 @@ def test_downcoef_multilevel():
     # call with level=nlevels once
     a3 = pywt.downcoef('a', r, 'haar', level=nlevels)
     assert_allclose(a1, a3)
+
+
+def test_downcoef_complex():
+    rstate = np.random.RandomState(1234)
+    r = rstate.randn(16) + 1j * rstate.randn(16)
+    nlevels = 3
+    a = pywt.downcoef('a', r, 'haar', level=nlevels)
+    a_ref = pywt.downcoef('a', r.real, 'haar', level=nlevels)
+    a_ref = a_ref + 1j * pywt.downcoef('a', r.imag, 'haar', level=nlevels)
+    assert_allclose(a, a_ref)
+
+
+def test_downcoef_errs():
+    # invalid part string (not 'a' or 'd')
+    assert_raises(ValueError, pywt.downcoef, 'f', np.ones(16), 'haar')
 
 
 def test_compare_downcoef_coeffs():
@@ -59,6 +75,21 @@ def test_upcoef_multilevel():
     # call with level=nlevels once
     a3 = pywt.upcoef('a', r, 'haar', level=nlevels)
     assert_allclose(a1, a3)
+
+
+def test_upcoef_complex():
+    rstate = np.random.RandomState(1234)
+    r = rstate.randn(4) + 1j*rstate.randn(4)
+    nlevels = 3
+    a = pywt.upcoef('a', r, 'haar', level=nlevels)
+    a_ref = pywt.upcoef('a', r.real, 'haar', level=nlevels)
+    a_ref = a_ref + 1j*pywt.upcoef('a', r.imag, 'haar', level=nlevels)
+    assert_allclose(a, a_ref)
+
+
+def test_upcoef_errs():
+    # invalid part string (not 'a' or 'd')
+    assert_raises(ValueError, pywt.upcoef, 'f', np.ones(4), 'haar')
 
 
 def test_wavelet_repr():

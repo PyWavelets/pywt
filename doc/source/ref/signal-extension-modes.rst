@@ -41,6 +41,13 @@ minimize this negative effect:
 
       ... x2 x1 | x1 x2 ... xn | xn xn-1 ...
 
+  .. _`Modes.reflect`:
+
+  * ``reflect`` - **reflect-padding** - signal is extended by *reflecting*
+    samples::
+
+      ... x3 x2 | x1 x2 ... xn | xn-1 xn-2 ...
+
   .. _`Modes.periodic`:
   .. _`periodic-padding`:
 
@@ -89,3 +96,22 @@ parameters:
     This feature saves extra memory and CPU resources and helps to avoid page
     swapping when handling relatively big data arrays on computers with low
     physical memory.
+
+Naming Conventions
+------------------
+The correspondence between PyWavelets edge modes and the extension modes
+available in Matlab's dwtmode and numpy's pad are tabulated here for reference.
+
+================== ============= ===================
+**PyWavelets**     **Matlab**    **numpy.pad**
+================== ============= ===================
+symmetric          sym, symh     symmetric
+reflect            symw          reflect
+smooth             spd, sp1      N/A
+constant           sp0           edge
+zero               zpd           constant, cval=0
+periodic           ppd           wrap
+periodization      per           N/A
+N/A                asym, asymh   N/A
+N/A                asymw         N/A
+================== ============= ===================

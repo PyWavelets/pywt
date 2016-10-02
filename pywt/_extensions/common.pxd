@@ -22,6 +22,7 @@ cdef extern from "c/common.h":
         MODE_SMOOTH
         MODE_PERIODIC
         MODE_PERIODIZATION
+        MODE_REFLECT
         MODE_MAX
 
     # buffers lengths
