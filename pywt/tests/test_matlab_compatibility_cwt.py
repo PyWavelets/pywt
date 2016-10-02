@@ -35,14 +35,6 @@ else:
               "package installed.")
         _matlab_missing = True
 
-# list of mode names in pywt and matlab
-modes = [('zero', 'zpd'),
-         ('constant', 'sp0'),
-         ('symmetric', 'sym'),
-         ('periodic', 'ppd'),
-         ('smooth', 'sp1'),
-         ('periodization', 'per')]
-
 families = ('gaus', 'mexh', 'morl', 'cgau', 'shan', 'fbsp', 'cmor')
 wavelets = sum([pywt.wavelist(name) for name in families], [])
 
