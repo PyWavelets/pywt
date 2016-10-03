@@ -2,8 +2,12 @@
 /* See COPYING for license details. */
 
 #include "common.h"
-#include <stdint.h> // for SIZE_MAX
 #include <limits.h> // for U*_MAX
+
+// MSVC <= 2008 does not have stdint.h, but defines SIZE_MAX in limits.h
+#if (!defined(_MSC_VER)) || (_MSC_VER > 1500)
+#include <stdint.h> // for SIZE_MAX
+#endif /* _MSC_VER */
 
 #ifdef PY_EXTENSION
 void *wtcalloc(size_t len, size_t size){
