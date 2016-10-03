@@ -53,14 +53,15 @@ def test_compare_downcoef_coeffs():
     # compare downcoef against wavedec outputs
     for nlevels in [1, 2, 3]:
         for wavelet in pywt.wavelist():
-            wavelet = pywt.Wavelet(wavelet)
-            max_level = pywt.dwt_max_level(r.size, wavelet.dec_len)
-            if nlevels <= max_level:
-                a = pywt.downcoef('a', r, wavelet, level=nlevels)
-                d = pywt.downcoef('d', r, wavelet, level=nlevels)
-                coeffs = pywt.wavedec(r, wavelet, level=nlevels)
-                assert_allclose(a, coeffs[0])
-                assert_allclose(d, coeffs[1])
+            wavelet = pywt.DiscreteContinuousWavelet(wavelet)
+            if isinstance(wavelet, pywt.Wavelet):
+                max_level = pywt.dwt_max_level(r.size, wavelet.dec_len)
+                if nlevels <= max_level:
+                    a = pywt.downcoef('a', r, wavelet, level=nlevels)
+                    d = pywt.downcoef('d', r, wavelet, level=nlevels)
+                    coeffs = pywt.wavedec(r, wavelet, level=nlevels)
+                    assert_allclose(a, coeffs[0])
+                    assert_allclose(d, coeffs[1])
 
 
 def test_upcoef_multilevel():
@@ -106,6 +107,19 @@ def test_dwt_max_level():
     assert_(pywt.dwt_max_level(16, 9) == 1)
     assert_(pywt.dwt_max_level(16, 10) == 0)
     assert_(pywt.dwt_max_level(16, 18) == 0)
+
+
+def test_ContinuousWavelet_errs():
+    assert_raises(ValueError, pywt.ContinuousWavelet, 'qwertz')
+
+
+def test_ContinuousWavelet_repr():
+    from pywt._extensions import _pywt
+    wavelet = _pywt.ContinuousWavelet('gaus2')
+
+    repr_wavelet = eval(wavelet.__repr__())
+
+    assert_(wavelet.__repr__() == repr_wavelet.__repr__())
 
 
 if __name__ == '__main__':

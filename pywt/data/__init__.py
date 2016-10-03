@@ -1,1 +1,1 @@
-from ._readers import ascent, aero, ecg, camera
+from ._readers import ascent, aero, ecg, camera, nino

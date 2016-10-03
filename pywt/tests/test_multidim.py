@@ -51,10 +51,11 @@ def test_dwdtn_idwtn_allwavelets():
     if 'dmey' in wavelist:
         wavelist.remove('dmey')
     for wavelet in wavelist:
-        for mode in pywt.Modes.modes:
-            coeffs = pywt.dwtn(r, wavelet, mode=mode)
-            assert_allclose(pywt.idwtn(coeffs, wavelet, mode=mode),
-                            r, rtol=1e-7, atol=1e-7)
+        if isinstance(pywt.DiscreteContinuousWavelet(wavelet), pywt.Wavelet):
+            for mode in pywt.Modes.modes:
+                coeffs = pywt.dwtn(r, wavelet, mode=mode)
+                assert_allclose(pywt.idwtn(coeffs, wavelet, mode=mode),
+                                r, rtol=1e-7, atol=1e-7)
 
 
 def test_stride():

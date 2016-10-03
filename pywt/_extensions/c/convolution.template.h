@@ -68,5 +68,7 @@ int CAT(TYPE, _upsampling_convolution_valid_sf)(const TYPE * const restrict inpu
  *                                  TYPE* output, int step, int mode);
  */
 
+
+
 #undef restrict
 #endif /* TYPE */

@@ -109,18 +109,18 @@ if sys.platform == "darwin":
 
 make_ext_path = partial(os.path.join, "pywt", "_extensions")
 
-sources = ["c/common.c", "c/convolution.c", "c/wt.c", "c/wavelets.c"]
+sources = ["c/common.c", "c/convolution.c", "c/wt.c", "c/wavelets.c", "c/cwt.c"]
 sources = list(map(make_ext_path, sources))
-source_templates = ["c/convolution.template.c", "c/wt.template.c"]
+source_templates = ["c/convolution.template.c", "c/wt.template.c", "c/cwt.template.c"]
 source_templates = list(map(make_ext_path, source_templates))
 headers = ["c/templating.h", "c/wavelets_coeffs.h",
-            "c/common.h", "c/convolution.h", "c/wt.h", "c/wavelets.h"]
+            "c/common.h", "c/convolution.h", "c/wt.h", "c/wavelets.h", "c/cwt.h"]
 headers = list(map(make_ext_path, headers))
 header_templates = ["c/convolution.template.h", "c/wt.template.h",
-                    "c/wavelets_coeffs.template.h"]
+                    "c/wavelets_coeffs.template.h", "c/cwt.template.h"]
 header_templates = list(map(make_ext_path, header_templates))
 
-cython_modules = ['_pywt', '_dwt', '_swt']
+cython_modules = ['_pywt', '_dwt', '_swt', '_cwt']
 cython_sources = [('{0}.pyx' if USE_CYTHON else '{0}.c').format(module)
                   for module in cython_modules]
 
@@ -133,7 +133,7 @@ if os.environ.get("CYTHON_TRACE"):
 
 # By default C object files are rebuilt for every extension
 # C files must be built once only for coverage to work
-c_lib = ('c_wt', {'sources': sources,
+c_lib = ('c_wt',{'sources': sources,
                   'depends': source_templates + header_templates + headers,
                   'include_dirs': [make_ext_path("c"), get_python_inc()],
                   'macros': c_macros,})
@@ -222,7 +222,7 @@ if __name__ == '__main__':
         * Single and double precision calculations
         * Results compatibility with Matlab Wavelet Toolbox (tm)
         """,
-        keywords=["wavelets", "wavelet transform", "DWT", "SWT", "scientific"],
+        keywords=["wavelets", "wavelet transform", "DWT", "SWT", "CWT", "scientific"],
         classifiers=[
             "Development Status :: 5 - Production/Stable",
             "Intended Audience :: Developers",

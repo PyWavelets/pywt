@@ -20,6 +20,7 @@ from ._thresholding import *
 from ._wavelet_packets import *
 from ._dwt import *
 from ._swt import *
+from ._cwt import *
 
 from . import data
 

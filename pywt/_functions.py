@@ -14,7 +14,7 @@ import warnings
 import numpy as np
 from numpy.fft import fft
 
-from ._extensions._pywt import Wavelet
+from ._extensions._pywt import DiscreteContinuousWavelet, Wavelet, ContinuousWavelet
 
 
 __all__ = ["integrate_wavelet", "central_frequency", "scale2frequency", "qmf",
@@ -93,8 +93,8 @@ def integrate_wavelet(wavelet, precision=8):
         msg = ("Integration of a general signal is deprecated "
                "and will be removed in a future version of pywt.")
         warnings.warn(msg, DeprecationWarning)
-    elif not isinstance(wavelet, Wavelet):
-        wavelet = Wavelet(wavelet)
+    elif not isinstance(wavelet, (Wavelet, ContinuousWavelet)):
+        wavelet = DiscreteContinuousWavelet(wavelet)
 
     if type(wavelet) in (tuple, list):
         psi, x = np.asarray(wavelet[0]), np.asarray(wavelet[1])
@@ -138,8 +138,8 @@ def central_frequency(wavelet, precision=8):
 
     """
 
-    if not isinstance(wavelet, Wavelet):
-        wavelet = Wavelet(wavelet)
+    if not isinstance(wavelet, (Wavelet, ContinuousWavelet)):
+        wavelet = DiscreteContinuousWavelet(wavelet)
 
     functions_approximations = wavelet.wavefun(precision)
 
