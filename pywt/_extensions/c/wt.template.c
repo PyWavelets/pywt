@@ -405,7 +405,7 @@ int CAT(TYPE, _swt_)(TYPE input[], pywt_index_t input_len,
                      TYPE output[], pywt_index_t output_len, int level){
 
     TYPE * e_filter;
-    pywt_index_t i, e_filter_len, jstep;
+    pywt_index_t i, e_filter_len, fstep;
     int ret;
 
     if(level < 1)
@@ -424,7 +424,7 @@ int CAT(TYPE, _swt_)(TYPE input[], pywt_index_t input_len,
         e_filter = wtcalloc(e_filter_len, sizeof(TYPE));
         if(e_filter == NULL)
             return -1;
-        jstep = 1 << (level - 1)
+        fstep = 1 << (level - 1);  // spacing between non-zero filter entries
 
         /* compute upsampled filter values */
         for(i = 0; i < filter_len; ++i){
@@ -432,7 +432,7 @@ int CAT(TYPE, _swt_)(TYPE input[], pywt_index_t input_len,
         }
         ret = CAT(TYPE, _downsampling_convolution_periodization)(input, input_len, e_filter,
                                                    e_filter_len, output, 1,
-                                                   jstep);
+                                                   fstep);
         wtfree(e_filter);
         return ret;
 
