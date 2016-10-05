@@ -73,7 +73,7 @@ int CAT(TYPE, _downsampling_convolution_periodization)(const TYPE * const restri
         size_t k_start = 0;
         while (i-j >= N){
             size_t k;
-            // TODO: fstep for reverse indices
+            // for simplicity, not using fstep here
             for (k = 0; k < padding && i-j >= N; ++k, ++j)
                 sum += filter[i-N-j] * input[N-1];
             for (k = 0; k < N && i-j >= N; ++k, ++j)
@@ -99,6 +99,7 @@ int CAT(TYPE, _downsampling_convolution_periodization)(const TYPE * const restri
         TYPE sum = 0;
         size_t j = 0;
         while (i-j >= N){
+            // for simplicity, not using fstep here
             size_t k;
             for (k = 0; k < padding && i-j >= N; ++k, ++j)
                 sum += filter[i-N-j] * input[N-1];
