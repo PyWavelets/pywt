@@ -2,6 +2,12 @@
 /* See COPYING for license details. */
 
 #include "common.h"
+#include <limits.h> // for U*_MAX
+
+// MSVC <= 2008 does not have stdint.h, but defines SIZE_MAX in limits.h
+#if (!defined(_MSC_VER)) || (_MSC_VER > 1500)
+#include <stdint.h> // for SIZE_MAX
+#endif /* _MSC_VER */
 
 #ifdef PY_EXTENSION
 void *wtcalloc(size_t len, size_t size){
@@ -19,16 +25,26 @@ void *wtcalloc(size_t len, size_t size){
 unsigned char size_log2(size_t x){
 #if defined(_MSC_VER)
     unsigned long i;
-#if defined (_WIN64)
+#if SIZE_MAX == 0xFFFFFFFF
+    _BitScanReverse(&i, x);
+#elif SIZE_MAX == 0xFFFFFFFFFFFFFFFF
     _BitScanReverse64(&i, x);
 #else
-    _BitScanReverse(&i, x);
-#endif /* _WIN64 */
+#error "Unrecognized SIZE_MAX"
+#endif /* SIZE_MAX */
     return i;
 #else
     // GCC and clang
     // Safe cast: 0 <= clzl < arch_bits (64) where result is defined
+#if SIZE_MAX == UINT_MAX
+    unsigned char leading_zeros = (unsigned char) __builtin_clz(x);
+#elif SIZE_MAX == ULONG_MAX
     unsigned char leading_zeros = (unsigned char) __builtin_clzl(x);
+#elif SIZE_MAX == ULLONG_MAX
+    unsigned char leading_zeros = (unsigned char) __builtin_clzll(x);
+#else
+#error "Unrecognized SIZE_MAX"
+#endif /* SIZE_MAX */
     return sizeof(size_t) * 8 - leading_zeros - 1;
 #endif /* _MSC_VER */
 }
