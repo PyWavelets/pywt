@@ -3,12 +3,106 @@ PyWavelets 0.5.0 Release Notes
 ==============================
 
 .. note:: PyWavelets 0.5.0 is not released yet!
+.. |MATLAB|  unicode:: MATLAB U+02122 .. with trademark sign
 
 .. contents::
+
+PyWavelets is a Python toolbox implementing both discrete and continuous
+wavelet transforms (mathematical time-frequency transforms) with a wide range
+of built-in wavelets.  C/Cython are used for the low-level routines, enabling
+high performance.  Key Features of PyWavelets are:
+
+  * 1D, 2D and nD Forward and Inverse Discrete Wavelet Transform (DWT and IDWT)
+  * 1D, 2D and nD Multilevel DWT and IDWT
+  * 1D and 2D Forward and Inverse Stationary Wavelet Transform
+  * 1D and 2D Wavelet Packet decomposition and reconstruction
+  * 1D Continuous Wavelet Transform
+  * When multiple valid implementations are available, we have chosen to maintain consistency with |MATLAB|'s Wavelet Toolbox.
+
+PyWavelets 0.5.0 is the culmination of 1 year of work.  In addition to
+several new features, substantial refactoring of the underlying C and Cython
+code have been made.
+
+This release requires Python 2.6, 2.7 or 3.3-3.5 and NumPy 1.9.1 or greater.
+This will be the final release supporting Python 2.6 and 3.3.
+
+Highlights of this release include:
+
+- 1D continuous wavelet transforms
+- new discrete wavelets added (additional Debauchies and Coiflet wavelets)
+- new 'reflect' extension mode for discrete wavelet transforms
+- faster performance for multilevel forward stationary wavelet transforms (SWT)
+- n-dimensional support added to forward SWT
+- routines to convert multilevel DWT coefficients to and from a single array
+- axis support for multilevel DWT
+- substantial refactoring/reorganization of the underlying C and Cython code
 
 
 New features
 ============
+
+1D Continous Wavelet Transforms
+-------------------------------
+A wide range of continous wavelets are now available.  These include the
+following:
+
+- Gaussian wavelets (``gaus1``...``gaus8``)
+- Mexican hat wavelet (``mexh``)
+- Morlet wavelet (``morl``)
+- Complex Gaussian wavelets (``cgau1``...``cgau8``)
+- Shannon wavelet (``shan``)
+- Frequency B-Spline wavelet (``fbsp``)
+- Complex Morlet wavelet (``cmor``)
+
+Also, see the new CWT-related demo: demo/cwt_analysis.py
+
+New discrete wavelets
+---------------------
+Additional Debauchies wavelets (``db20``...``db38``) and Coiflets
+(``coif6``...``coif17``) have been added.
+
+New extension mode: reflect
+---------------------------
+Discrete wavelet transforms support a new extension mode, ``reflect``.  This
+mode pads an array symmetrically, but without repeating the edge value.  As an
+example::
+
+     pad      array      pad
+    4 3 2 | 1 2 3 4 5 | 4 3 2
+
+This differs from ``symmetric``, which repeats the values at the boundaries::
+
+     pad      array      pad
+    3 2 1 | 1 2 3 4 5 | 5 4 3
+
+Multilevel DWT Coefficient Handling
+-----------------------------------
+New routines to convert the coefficients returned by multilevel DWT routines
+to and from a single n-dimensional array have been added.
+``pywt.coeffs_to_array`` concatenates the output of ``wavedec``, ``wavedec2``
+or ``wavedecn`` into a single numpy array.  ``pywt.array_to_coeffs`` can be
+used to transform back from a single coefficient array to a format appropriate
+for ``waverec``, ``waverec2`` or ``waverecn``.
+
+More C function calls release the GIL
+-------------------------------------
+Cython code calling the wavelet filtering routines (DWT and SWT) now releases
+the global interpreter lock (GIL) where possible.  A potential use case is in
+speeding up the batch computation of several large DWTs using multi-threading
+(e.g. via concurrent.futures).
+
+Multilevel wavelet transforms along specific axes
+-------------------------------------------------
+The axis specific transform support introduced in the prior release was
+extended to the multilevel DWT transforms.  All ``wavedec*`` and ``waverec*``
+routines have a new `axis` (1D) or `axes` (2D, nD) keyword argument.  If
+unspecified the default behaviour is to transform all axes of the input.
+
+Faster multilevel stationary wavelet transforms
+-----------------------------------------------
+Stationary wavelet transforms are now faster when the number of levels is
+greater than one.  The improvement can be very large (multiple orders of
+magnitude) for transforms with a large number of levels.
 
 
 Deprecated features
@@ -18,23 +112,126 @@ Deprecated features
 Backwards incompatible changes
 ==============================
 
+A FutureWarning was added to ``swt2`` and ``iswt2`` to warn about a pending
+backwards incompatible change to the order of the coefficients in the list
+returned by these routines.  The actual change will not occur until the next
+release. Transform coefficients will be returned in descending rather than
+ascending order.  This change is being made for consistency with all other
+existing multi-level transforms in PyWavelets.
 
 Bugs Fixed
 ==========
 
+``demo/image_blender.py`` was updated to support the new api of Pillow 3.x
+
+A bug related to size of assumed ``size_t`` on some platforms/compilers
+(e.g. Windows with mingw64) was fixed.
+
+Fix to memory leak in ``(i)dwt_axis``
+
+Fix to a performance regression in ``idwt`` and ``iswt`` that was introduced
+in v0.4.0.
+
+Fixed a bug in ``dwtn`` and ``idwtn`` for data with complex dtype when
+``axes != None``.
 
 Other changes
 =============
 
+The minimum supported numpy version has been increased to 1.9.1.
+
+Test coverage (including for the Cython and C code) via
+`Codecov <https://codecov.io/>`_ was added and the overall test coverage has
+been improved.
+
+A substantial overhaul of the C extension code has been performed.  Custom
+templating is no longer used.  The intention is to make this code easier to
+maintain and expand in the future.
+
+The Cython code has been split out into a multiple files to hopefully make
+relevant portions of the wrappers easier to find for future developers.
+
+``setup.py`` now relies on setuptools in all cases (rather than distutils).
 
 Authors
 =======
+
+* Jonathan Dan +
+* Ralf Gommers
+* David Menéndez Hurtado
+* Gregory R. Lee
+* Holger Nahrstaedt +
+* Daniel M. Pelt +
+* Alexandre Saint +
+* Scott Sievert +
+* Kai Wohlfahrt
+* Frank Yu +
+
+A total of 10 people contributed to this release.
+People with a "+" by their names contributed a patch for the first time.
+This list of names is automatically generated, and may not be fully complete.
 
 
 Issues closed for v0.5.0
 ------------------------
 
+- `#48 <https://github.com/PyWavelets/pywt/issues/48>`__: Continous wavelet transform?
+- `#127 <https://github.com/PyWavelets/pywt/issues/127>`__: Reorganize _pywt
+- `#160 <https://github.com/PyWavelets/pywt/issues/160>`__: Appveyor failing on recent PRs
+- `#163 <https://github.com/PyWavelets/pywt/issues/163>`__: Set up coveralls
+- `#166 <https://github.com/PyWavelets/pywt/issues/166>`__: Wavelet coefficients to single array (and vice versa?)
+- `#177 <https://github.com/PyWavelets/pywt/issues/177>`__: Fail to install pywt due to the use of index_t which conflict with the defination in /usr/include/sys/types.h on smartos sysmte(open solaris like system)
+- `#180 <https://github.com/PyWavelets/pywt/issues/180>`__: Memory leak
+- `#187 <https://github.com/PyWavelets/pywt/issues/187>`__: 'reflect' signal extension mode
+- `#189 <https://github.com/PyWavelets/pywt/issues/189>`__: bump minimum numpy version?
+- `#191 <https://github.com/PyWavelets/pywt/issues/191>`__: Upgrade removed Pillow methods
+- `#196 <https://github.com/PyWavelets/pywt/issues/196>`__: building in-place for development.
+- `#200 <https://github.com/PyWavelets/pywt/issues/200>`__: swt implementation is considerably slower than MATLAB
+- `#209 <https://github.com/PyWavelets/pywt/issues/209>`__: broken doctests
+- `#210 <https://github.com/PyWavelets/pywt/issues/210>`__: Run doctests in CI setup
+- `#211 <https://github.com/PyWavelets/pywt/issues/211>`__: Typo in iswt documentation
+- `#217 <https://github.com/PyWavelets/pywt/issues/217>`__: `blank_discrete_wavelet` does not properly intiailize some properties
 
 Pull requests for v0.5.0
 ------------------------
 
+- `#148 <https://github.com/PyWavelets/pywt/pull/148>`__: Reorganize C v2
+- `#161 <https://github.com/PyWavelets/pywt/pull/161>`__: Remove numpy distutils
+- `#162 <https://github.com/PyWavelets/pywt/pull/162>`__: fix: iswt/idwt performance regression
+- `#164 <https://github.com/PyWavelets/pywt/pull/164>`__: Improved coefficients for db and coif
+- `#167 <https://github.com/PyWavelets/pywt/pull/167>`__: Add coverage (codecov.io)
+- `#168 <https://github.com/PyWavelets/pywt/pull/168>`__: convert transform coefficients to and from a single n-dimensional array
+- `#169 <https://github.com/PyWavelets/pywt/pull/169>`__: Remove templating
+- `#170 <https://github.com/PyWavelets/pywt/pull/170>`__: :Always install new pip on Appveyor
+- `#172 <https://github.com/PyWavelets/pywt/pull/172>`__: Adding of missing wavelets from the matlab list
+- `#178 <https://github.com/PyWavelets/pywt/pull/178>`__: use Index_t instead of index_t
+- `#179 <https://github.com/PyWavelets/pywt/pull/179>`__: add axis/axes support to multilevel discrete wavelet transforms
+- `#181 <https://github.com/PyWavelets/pywt/pull/181>`__: Fix memory leak
+- `#182 <https://github.com/PyWavelets/pywt/pull/182>`__: improve test coverage for _multidim.py and _multilevel.py
+- `#183 <https://github.com/PyWavelets/pywt/pull/183>`__: improve coverage for _dwt.py
+- `#184 <https://github.com/PyWavelets/pywt/pull/184>`__: fix corner case in coeffs_to_array
+- `#188 <https://github.com/PyWavelets/pywt/pull/188>`__: Drop GIL in c_wt calls
+- `#190 <https://github.com/PyWavelets/pywt/pull/190>`__: bump minimum numpy to 1.9
+- `#192 <https://github.com/PyWavelets/pywt/pull/192>`__: Upgrade to Pillow>=3 api
+- `#193 <https://github.com/PyWavelets/pywt/pull/193>`__: ENH: add 'reflect' extension mode
+- `#197 <https://github.com/PyWavelets/pywt/pull/197>`__: BLD: fix "python setup.py develop". Closes gh-196
+- `#198 <https://github.com/PyWavelets/pywt/pull/198>`__: Choose clz* based on SIZE_MAX
+- `#201 <https://github.com/PyWavelets/pywt/pull/201>`__: speedup multi-level swt
+- `#205 <https://github.com/PyWavelets/pywt/pull/205>`__: fix dwtn/idwtn with axes != None and complex data
+- `#206 <https://github.com/PyWavelets/pywt/pull/206>`__:  DOC: correct typo in iswt docstring
+- `#207 <https://github.com/PyWavelets/pywt/pull/207>`__:  minor documentation updates
+- `#208 <https://github.com/PyWavelets/pywt/pull/208>`__: document coeff_to_array and array_to_coeff
+- `#214 <https://github.com/PyWavelets/pywt/pull/214>`__: FIX: update several doctests to reflect the new wavelets added
+- `#218 <https://github.com/PyWavelets/pywt/pull/218>`__: FIX: initialize all properties of a blank discrete wavelet
+- `#219 <https://github.com/PyWavelets/pywt/pull/219>`__: document coordinate conventions for 2D DWT routines.
+- `#220 <https://github.com/PyWavelets/pywt/pull/220>`__: Run doctests on TravisCI
+- `#221 <https://github.com/PyWavelets/pywt/pull/221>`__: Documentation for cwt and ContinuousWavelet
+- `#222 <https://github.com/PyWavelets/pywt/pull/222>`__: consistent use of double backticks in docs
+- `#223 <https://github.com/PyWavelets/pywt/pull/223>`__: add FutureWarning about swt2 coefficient order
+- `#224 <https://github.com/PyWavelets/pywt/pull/224>`__: n-dimensional stationary wavelet transform (swtn) and axis support in swt, swt2
+- `#225 <https://github.com/PyWavelets/pywt/pull/225>`__: BUG: fix breakage on 32-bit Python.
+- `#226 <https://github.com/PyWavelets/pywt/pull/226>`__: DOC: update Copyright statements.
+- `#227 <https://github.com/PyWavelets/pywt/pull/227>`__: ENH: add kind keyword to wavelist()
+- `#228 <https://github.com/PyWavelets/pywt/pull/228>`__: MAINT: avoid using a builtin as variable name in qmf().
+- `#229 <https://github.com/PyWavelets/pywt/pull/229>`__: DOC: add swtn, iswt, iswt2 to the API documentation
+- `#230 <https://github.com/PyWavelets/pywt/pull/230>`__: add demo of batch processing via concurrent.futures
