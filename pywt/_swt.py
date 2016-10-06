@@ -19,7 +19,7 @@ def swt(data, wavelet, level=None, start_level=0):
     wavelet :
         Wavelet to use (Wavelet object or name)
     level : int, optional
-        Transform level.
+        The number of decomposition steps to perform.
     start_level : int, optional
         The level at which the decomposition will begin (it allows one to
         skip a given number of transform steps and compute
@@ -33,9 +33,10 @@ def swt(data, wavelet, level=None, start_level=0):
 
             [(cAn, cDn), ..., (cA2, cD2), (cA1, cD1)]
 
-        where ``n`` equals input parameter `level`.
+        where n equals input parameter ``level``.
 
-        If *m* = *start_level* is given, then the beginning *m* steps are skipped::
+        If ``start_level = m`` is given, then the beginning m steps are
+        skipped::
 
             [(cAm+n, cDm+n), ..., (cAm+1, cDm+1), (cAm, cDm)]
 
