@@ -10,7 +10,6 @@ and Inverse Discrete Wavelet Transform.
 
 from __future__ import division, print_function, absolute_import
 
-import warnings
 from copy import copy
 import numpy as np
 
@@ -23,7 +22,7 @@ from ._utils import _as_wavelet, _wavelets_per_axis, _modes_per_axis
 __all__ = ['wavedec', 'waverec', 'wavedec2', 'waverec2', 'wavedecn',
            'waverecn', 'coeffs_to_array', 'array_to_coeffs', 'ravel_coeffs',
            'unravel_coeffs', 'dwtn_max_level', 'wavedecn_size',
-           'wavedecn_shapes']
+           'wavedecn_shapes', 'fswt', 'ifswt']
 
 
 def _check_level(sizes, dec_lens, level):
@@ -1163,10 +1162,10 @@ def fswt(data, wavelet, mode='symmetric', levels=None, axes=None):
     mode : str, optional
         Signal extension mode, see Modes (default: 'symmetric')
     levels : int or sequence of ints, optional
-        Decomposition level (must be >= 0). If level is None (default) then it
-        will be calculated using the ``dwt_max_level`` function for each axis.
-        If an integer is provided, the same number of levels are used for all
-        axes.
+        Decomposition levels along each axis (must be >= 0). If an integer is
+        provided, the same number of levels are used for all axes.If ``levels``
+        is None (default), ``dwt_max_level`` will be used to compute the
+        maximum number of levels possible for each axis.
     axes : sequence of ints, optional
         Axes over which to compute the FSWT. Axes may not be repeated.  The
         default is to transform along all axes.
@@ -1181,8 +1180,8 @@ def fswt(data, wavelet, mode='symmetric', levels=None, axes=None):
         number of levels.  Example:  The approximation coefficients for a 2D
         transform correspond to:
         ``a = coeffs_arr[coeff_slices[0][0], coeff_slices[1][0]]``
-        whereas detail coefficients for `n` levels of decomposition along the
-        first axis and `m` levels along the second would be given by:
+        whereas detail coefficients for ``n`` levels of decomposition along the
+        first axis and ``m`` levels along the second would be given by:
         ``dnm = coeffs_arr[coeff_slices[0][n], coeff_slices[1][m]]``
 
     Notes
@@ -1253,7 +1252,11 @@ def ifswt(coeffs_arr, coeff_slices, wavelet, mode='symmetric', axes=None):
     coeffs_arr : array-like
         n-dimensional array of wavelet coefficients
     coeff_slices : list of lists
-        TODO
+        A list with length equal to the number signal dimensions.  Each element
+        is a list with length matching the number of transform levels along the
+        corresponding dimension.  In other words, ``coeff_slices[m][n]`` is a
+        slice for axis ``m`` of ``coeffs_arr`` that returns the coefficients
+        corresponding to level ``n``.
     wavelet : Wavelet object or name string
         Wavelet to use
     mode : str, optional
