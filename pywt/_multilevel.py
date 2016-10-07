@@ -660,6 +660,9 @@ def coeffs_to_array(coeffs, padding=0):
         `coeff_arr[coeff_slices[1]['dd']]` would extract the first level detail
         coefficients from `coeff_arr`.
 
+    See Also
+    --------
+    array_to_coeffs : the inverse of coeffs_to_array
 
     Notes
     -----
@@ -672,11 +675,11 @@ def coeffs_to_array(coeffs, padding=0):
     |               |               |                               |
     |     c[0]      |  c[1]['da']   |                               |
     |               |               |                               |
-    ----------------+---------------+           c[2]['da']          |
+    +---------------+---------------+           c[2]['da']          |
     |               |               |                               |
     | c[1]['ad']    |  c[1]['dd']   |                               |
     |               |               |                               |
-    ----------------+---------------+ ------------------------------+
+    +---------------+---------------+ ------------------------------+
     |                               |                               |
     |                               |                               |
     |                               |                               |
@@ -684,17 +687,14 @@ def coeffs_to_array(coeffs, padding=0):
     |                               |                               |
     |                               |                               |
     |                               |                               |
-    --------------------------------+-------------------------------+
-
-    See Also
-    --------
-    array_to_coeffs : the inverse of coeffs_to_array
+    +-------------------------------+-------------------------------+
 
     Examples
     --------
-    cam = pywt.data.camera()
-    coeffs = pywt.wavedecn(cam, wavelet='db2', level=3)
-    arr, coeff_slices = pywt.coeffs_to_array(coeffs)
+    >>> cam = pywt.data.camera()
+    >>> coeffs = pywt.wavedecn(cam, wavelet='db2', level=3)
+    >>> arr, coeff_slices = pywt.coeffs_to_array(coeffs)
+
     """
     if not isinstance(coeffs, list) or len(coeffs) == 0:
         raise ValueError("input must be a list of coefficients from wavedecn")
@@ -799,11 +799,11 @@ def array_to_coeffs(arr, coeff_slices, output_format='wavedecn'):
     |               |               |                               |
     |     c[0]      |  c[1]['da']   |                               |
     |               |               |                               |
-    ----------------+---------------+           c[2]['da']          |
+    +---------------+---------------+           c[2]['da']          |
     |               |               |                               |
     | c[1]['ad']    |  c[1]['dd']   |                               |
     |               |               |                               |
-    ----------------+---------------+ ------------------------------+
+    +---------------+---------------+ ------------------------------+
     |                               |                               |
     |                               |                               |
     |                               |                               |
@@ -811,16 +811,16 @@ def array_to_coeffs(arr, coeff_slices, output_format='wavedecn'):
     |                               |                               |
     |                               |                               |
     |                               |                               |
-    --------------------------------+-------------------------------+
+    +-------------------------------+-------------------------------+
 
     Examples
     --------
-    cam = pywt.data.camera()
-    coeffs = pywt.wavedecn(cam, wavelet='db2', level=3)
-    arr, coeff_slices = pywt.coeffs_to_array(coeffs)
-    coeffs_from_arr = pywt.array_to_coeffs(arr, coeff_slices)
-    cam_recon = pywt.waverecn(coeffs_from_arr, wavelet='db2')
-    assert_array_almost_equal(cam, cam_recon)
+    >>> cam = pywt.data.camera()
+    >>> coeffs = pywt.wavedecn(cam, wavelet='db2', level=3)
+    >>> arr, coeff_slices = pywt.coeffs_to_array(coeffs)
+    >>> coeffs_from_arr = pywt.array_to_coeffs(arr, coeff_slices)
+    >>> cam_recon = pywt.waverecn(coeffs_from_arr, wavelet='db2')
+    >>> assert_array_almost_equal(cam, cam_recon)
 
     """
     arr = np.asarray(arr)
