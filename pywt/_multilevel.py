@@ -266,9 +266,10 @@ def iswt(coeffs, wavelet):
     coeffs : array_like
         Coefficients list of tuples::
 
-            [(cA1, cD1), (cA2, cD2), ..., (cAn, cDn)]
+            [(cAn, cDn), (cA2, cD2), ..., (cA1, cD1)]
 
-        where cA is approximation, cD is details, and n is start_level.
+        where cA is approximation, cD is details.  Index 1 corresponds to
+        ``start_level`` from ``pywt.swt``.
     wavelet : Wavelet object or name string
         Wavelet to use
 
@@ -343,8 +344,8 @@ def iswt2(coeffs, wavelet):
             ]
 
         where cA is approximation, cH is horizontal details, cV is
-        vertical details, cD is diagonal details and n is number of
-        levels.
+        vertical details, cD is diagonal details and n is the number of
+        levels.  Index 1 corresponds to ``start_level`` from ``pywt.swt2``.
     wavelet : Wavelet object or name string
         Wavelet to use
 
