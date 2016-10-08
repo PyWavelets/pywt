@@ -1,5 +1,5 @@
-PyWavelets - Discrete Wavelet Transform in Python
-=================================================
+PyWavelets - Wavelet Transforms in Python
+=========================================
 
 PyWavelets is free and Open Source wavelet transform software for the Python_
 programming language. It combines a simple high level interface with low level
@@ -24,6 +24,7 @@ The main features of PyWavelets are:
   * 1D, 2D and nD Multilevel DWT and IDWT
   * 1D and 2D Stationary Wavelet Transform (Undecimated Wavelet Transform)
   * 1D and 2D Wavelet Packet decomposition and reconstruction
+  * 1D Continuous Wavelet Transform
   * Approximating wavelet and scaling functions
   * Over seventy `built-in wavelet filters`_
     and custom wavelets supported
@@ -37,7 +38,7 @@ Requirements
 PyWavelets is a package for the Python programming language. It requires:
 
  - Python_ 2.6, 2.7 or >=3.3
- - Numpy_ >= 1.6.2
+ - Numpy_ >= 1.9.1
 
 Download
 --------
