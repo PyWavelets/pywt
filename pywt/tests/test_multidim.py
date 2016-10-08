@@ -243,7 +243,7 @@ def test_dwtn_axes():
     data = np.array([[0, 1, 2, 3],
                      [1, 1, 1, 1],
                      [1, 4, 2, 8]])
-
+    data = data + 1j*data  # test with complex data
     coefs = pywt.dwtn(data, 'haar', axes=(1,))
     expected_a = list(map(lambda x: pywt.dwt(x, 'haar')[0], data))
     assert_equal(coefs['a'], expected_a)
@@ -261,6 +261,7 @@ def test_idwtn_axes():
     data = np.array([[0, 1, 2, 3],
                      [1, 1, 1, 1],
                      [1, 4, 2, 8]])
+    data = data + 1j*data  # test with complex data
     coefs = pywt.dwtn(data, 'haar', axes=(1, 1))
     assert_allclose(pywt.idwtn(coefs, 'haar', axes=(1, 1)), data, atol=1e-14)
 

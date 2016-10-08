@@ -153,10 +153,9 @@ def dwtn(data, wavelet, mode='symmetric', axes=None):
     """
     data = np.asarray(data)
     if np.iscomplexobj(data):
-        keys = (''.join(k) for k in product('ad', repeat=data.ndim))
-        real = dwtn(data.real, wavelet, mode)
-        imag = dwtn(data.imag, wavelet, mode)
-        return dict((k, real[k] + 1j * imag[k]) for k in keys)
+        real = dwtn(data.real, wavelet, mode, axes)
+        imag = dwtn(data.imag, wavelet, mode, axes)
+        return dict((k, real[k] + 1j * imag[k]) for k in real.keys())
 
     if data.dtype == np.dtype('object'):
         raise TypeError("Input must be a numeric array-like")
@@ -243,8 +242,8 @@ def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
     if any(np.iscomplexobj(v) for v in coeffs.values()):
         real_coeffs = dict((k, v.real) for k, v in coeffs.items())
         imag_coeffs = dict((k, v.imag) for k, v in coeffs.items())
-        return (idwtn(real_coeffs, wavelet, mode)
-                + 1j * idwtn(imag_coeffs, wavelet, mode))
+        return (idwtn(real_coeffs, wavelet, mode, axes) +
+                1j * idwtn(imag_coeffs, wavelet, mode, axes))
 
     ndim = max(len(key) for key in coeffs.keys())
 
