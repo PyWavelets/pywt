@@ -817,6 +817,7 @@ def array_to_coeffs(arr, coeff_slices, output_format='wavedecn'):
     Examples
     --------
     >>> import pywt
+    >>> from numpy.testing import assert_array_almost_equal
     >>> cam = pywt.data.camera()
     >>> coeffs = pywt.wavedecn(cam, wavelet='db2', level=3)
     >>> arr, coeff_slices = pywt.coeffs_to_array(coeffs)
