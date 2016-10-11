@@ -25,8 +25,11 @@ else:
 
 
 NAME_MAP = {
+    u('Gregory Lee'): u('Gregory R. Lee'),
+    u('Daniel M Pelt'): u('Daniel M. Pelt'),
     u('Helder'): u('Helder Oliveira'),
     u('Kai'): u('Kai Wohlfahrt'),
+    u('asnt'): u('Alexandre Saint'),
 }
 
 
