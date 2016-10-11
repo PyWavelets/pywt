@@ -266,7 +266,7 @@ def iswt(coeffs, wavelet):
     coeffs : array_like
         Coefficients list of tuples::
 
-            [(cAn, cDn), (cA2, cD2), ..., (cA1, cD1)]
+            [(cAn, cDn), ..., (cA2, cD2), (cA1, cD1)]
 
         where cA is approximation, cD is details.  Index 1 corresponds to
         ``start_level`` from ``pywt.swt``.
