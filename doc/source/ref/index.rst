@@ -12,6 +12,7 @@ API Reference
    idwt-inverse-discrete-wavelet-transform
    2d-dwt-and-idwt
    nd-dwt-and-idwt
+   dwt-coefficient-handling
    swt-stationary-wavelet-transform
    wavelet-packets
    thresholding-functions
