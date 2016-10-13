@@ -169,6 +169,17 @@ def test_custom_wavelet():
     filter_bank = ([val]*2, [-val, val], [val]*2, [val, -val])
     haar_custom2 = pywt.Wavelet('Custom Haar Wavelet',
                                 filter_bank=filter_bank)
+
+    # check expected default wavelet properties
+    assert_(~haar_custom2.orthogonal)
+    assert_(~haar_custom2.biorthogonal)
+    assert_(haar_custom2.symmetry == 'unknown')
+    assert_(haar_custom2.family_name == '')
+    assert_(haar_custom2.short_family_name == '')
+    assert_(haar_custom2.vanishing_moments_phi == 0)
+    assert_(haar_custom2.vanishing_moments_psi == 0)
+
+    # Some properties can be set by the user
     haar_custom2.orthogonal = True
     haar_custom2.biorthogonal = True
 
