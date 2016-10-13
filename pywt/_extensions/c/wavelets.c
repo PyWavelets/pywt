@@ -551,6 +551,8 @@ DiscreteWavelet* blank_discrete_wavelet(size_t filters_length)
     w->base.compact_support = 0;
     w->base.family_name = "";
     w->base.short_name = "";
+    w->vanishing_moments_psi = 0;
+    w->vanishing_moments_phi = 0;
     return w;
 }
 
