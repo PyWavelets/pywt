@@ -164,34 +164,32 @@ Now when we know a bit about the builtin Wavelets, let's see how to create
 Note that such custom wavelets **will not** have all the properties set
 to correct values:
 
-    .. TODO: fix this doctest
-    .. >>> print(my_wavelet)
-    .. Wavelet My Haar Wavelet
-    ..   Family name:
-    ..   Short name:
-    ..   Filters length: 2
-    ..   Orthogonal:     False
-    ..   Biorthogonal:   False
-    ..   Symmetry:       unknown
-    ..   DWT:            True
-    ..   CWT:            False
+    >>> print(my_wavelet)
+    Wavelet My Haar Wavelet
+      Family name:
+      Short name:
+      Filters length: 2
+      Orthogonal:     False
+      Biorthogonal:   False
+      Symmetry:       unknown
+      DWT:            True
+      CWT:            False
 
-    You can however set a few of them on your own:
+    You can however set a couple of them on your own:
 
-    .. >>> my_wavelet.orthogonal = True
-    .. >>> my_wavelet.biorthogonal = True
+    >>> my_wavelet.orthogonal = True
+    >>> my_wavelet.biorthogonal = True
 
-    .. TODO: fix this doctest
-    .. >>> print(my_wavelet)
-    .. Wavelet My Haar Wavelet
-    ..   Family name:
-    ..   Short name:
-    ..   Filters length: 2
-    ..   Orthogonal:     True
-    ..   Biorthogonal:   True
-    ..   Symmetry:       unknown
-    ..   DWT:            True
-    ..   CWT:            False
+    >>> print(my_wavelet)
+    Wavelet My Haar Wavelet
+      Family name:
+      Short name:
+      Filters length: 2
+      Orthogonal:     True
+      Biorthogonal:   True
+      Symmetry:       unknown
+      DWT:            True
+      CWT:            False
 
 And now... the `wavefun`!
 -------------------------

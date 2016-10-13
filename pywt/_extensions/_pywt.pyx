@@ -183,7 +183,7 @@ def wavelist(family=None):
     --------
     >>> import pywt
     >>> pywt.wavelist('coif')
-    ['coif1', 'coif2', 'coif3', 'coif4', 'coif5', 'coif6', 'coif7', 'coif8', 'coif9', 'coif10', 'coif11', 'coif12', 'coif13', 'coif14', 'coif15', 'coif16', 'coif17']
+    ['coif1', 'coif2', 'coif3', 'coif4', 'coif5', 'coif6', 'coif7', ...
 
     """
     cdef object wavelets, sorting_list
