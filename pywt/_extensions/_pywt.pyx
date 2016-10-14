@@ -183,7 +183,7 @@ def wavelist(family=None):
     --------
     >>> import pywt
     >>> pywt.wavelist('coif')
-    ['coif1', 'coif2', 'coif3', 'coif4', 'coif5']
+    ['coif1', 'coif2', 'coif3', 'coif4', 'coif5', 'coif6', 'coif7', ...
 
     """
     cdef object wavelets, sorting_list
@@ -255,7 +255,7 @@ def families(int short=True):
 
 def DiscreteContinuousWavelet(name=u"", object filter_bank=None):
     """
-    DiscreteContinuousWavelet(name, filter_bank=None) returns a 
+    DiscreteContinuousWavelet(name, filter_bank=None) returns a
     Wavelet or a ContinuousWavelet object depending of the given name.
 
     In order to use a built-in wavelet the parameter name must be
@@ -264,7 +264,7 @@ def DiscreteContinuousWavelet(name=u"", object filter_bank=None):
     be specified. It can be either a list of four filters or an object
     that a `filter_bank` attribute which returns a list of four
     filters - just like the Wavelet instance itself.
-    
+
     For a ContinuousWavelet, filter_bank cannot be used and must remain unset.
 
     """
@@ -410,7 +410,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
         "Decomposition filters length"
         def __get__(self):
             return self.w.dec_len
-    
+
     property family_number:
         "Wavelet family number"
         def __get__(self):
@@ -819,7 +819,7 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
         cdef np.float32_t[::1] x32, psi32
 
         p = (pow(2., <double>level))
-        
+
         if self.w is not NULL:
             if length is None:
                 output_length = <pywt_index_t>p
@@ -832,21 +832,21 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
             if self.w.complex_cwt:
                 if (self.dt == np.float64):
                     psi_r, psi_i = cwt_psi_single(x64, self, output_length)
-                    return [np.asarray(psi_r, dtype=self.dt) + 1j * np.asarray(psi_i, dtype=self.dt), 
+                    return [np.asarray(psi_r, dtype=self.dt) + 1j * np.asarray(psi_i, dtype=self.dt),
                         np.asarray(x64, dtype=self.dt)]
                 else:
                     psi_r, psi_i = cwt_psi_single(x32, self, output_length)
-                    return [np.asarray(psi_r, dtype=self.dt) + 1j * np.asarray(psi_i, dtype=self.dt), 
+                    return [np.asarray(psi_r, dtype=self.dt) + 1j * np.asarray(psi_i, dtype=self.dt),
                             np.asarray(x32, dtype=self.dt)]
             else:
                 if (self.dt == np.float64):
                     psi = cwt_psi_single(x64, self, output_length)
-                    return [np.asarray(psi, dtype=self.dt), 
+                    return [np.asarray(psi, dtype=self.dt),
                             np.asarray(x64, dtype=self.dt)]
 
                 else:
                     psi = cwt_psi_single(x32, self, output_length)
-                    return [np.asarray(psi, dtype=self.dt), 
+                    return [np.asarray(psi, dtype=self.dt),
                             np.asarray(x32, dtype=self.dt)]
 
     def __str__(self):

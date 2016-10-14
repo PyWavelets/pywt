@@ -142,6 +142,8 @@ Built-in wavelets - ``wavelist()``
       Orthogonal:     True
       Biorthogonal:   True
       Symmetry:       asymmetric
+      DWT:            True
+      CWT:            False
     >>> print(format_array(wavelet.dec_lo), format_array(wavelet.dec_hi))
     [0.70710678118655, 0.70710678118655] [-0.70710678118655, 0.70710678118655]
     >>> print(format_array(wavelet.rec_lo), format_array(wavelet.rec_hi))
