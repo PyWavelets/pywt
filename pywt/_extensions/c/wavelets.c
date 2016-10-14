@@ -40,7 +40,7 @@ int is_discrete_wavelet(WAVELET_NAME name)
         case CMOR:
             return 0;
     }
-    
+
 }
 
 
@@ -517,12 +517,12 @@ DiscreteWavelet* blank_discrete_wavelet(size_t filters_length)
         w->dec_hi_float = wtcalloc(filters_length, sizeof(float));
         w->rec_lo_float = wtcalloc(filters_length, sizeof(float));
         w->rec_hi_float = wtcalloc(filters_length, sizeof(float));
-    
+
         w->dec_lo_double = wtcalloc(filters_length, sizeof(double));
         w->dec_hi_double = wtcalloc(filters_length, sizeof(double));
         w->rec_lo_double = wtcalloc(filters_length, sizeof(double));
         w->rec_hi_double = wtcalloc(filters_length, sizeof(double));
-    
+
         if(w->dec_lo_float == NULL || w->dec_hi_float == NULL ||
            w->rec_lo_float == NULL || w->rec_hi_float == NULL ||
            w->dec_lo_double == NULL || w->dec_hi_double == NULL ||
@@ -537,13 +537,22 @@ DiscreteWavelet* blank_discrete_wavelet(size_t filters_length)
         w->dec_hi_float = NULL;
         w->rec_lo_float = NULL;
         w->rec_hi_float = NULL;
-    
+
         w->dec_lo_double = NULL;
         w->dec_hi_double = NULL;
         w->rec_lo_double = NULL;
         w->rec_hi_double = NULL;
     }
-    /* set properties to "blank" values */
+    /* set w->base properties to "blank" values */
+    w->base.support_width = -1;
+    w->base.orthogonal = 0;
+    w->base.biorthogonal = 0;
+    w->base.symmetry = UNKNOWN;
+    w->base.compact_support = 0;
+    w->base.family_name = "";
+    w->base.short_name = "";
+    w->vanishing_moments_psi = 0;
+    w->vanishing_moments_phi = 0;
     return w;
 }
 
@@ -593,7 +602,7 @@ DiscreteWavelet* copy_discrete_wavelet(DiscreteWavelet* base)
     {
         w->dec_lo_float = NULL;
         w->dec_hi_float = NULL;
-    
+
         w->dec_lo_double = NULL;
         w->dec_hi_double = NULL;
     }
@@ -613,7 +622,7 @@ DiscreteWavelet* copy_discrete_wavelet(DiscreteWavelet* base)
     {
         w->rec_lo_float = NULL;
         w->rec_hi_float = NULL;
-    
+
         w->rec_lo_double = NULL;
         w->rec_hi_double = NULL;
     }
