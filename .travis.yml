@@ -53,7 +53,7 @@ before_install:
   - set -o pipefail
   - |
     if [ "${REFGUIDE_CHECK}" == "1" ]; then
-        travis_retry pip install matplotlib Sphinx==1.2.3
+        pip install sphinx numpydoc
     fi
 
 script:
