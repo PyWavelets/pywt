@@ -2,7 +2,7 @@
 """
 refguide_check.py [OPTIONS] [-- ARGS]
 
-Check for a Scipy submodule whether the objects in its __all__ dict
+Check for a PyWavelets submodule whether the objects in its __all__ dict
 correspond to the objects included in the reference guide.
 
 Example of usage::
@@ -38,10 +38,11 @@ from docutils.parsers.rst import directives
 import shutil
 import glob
 from doctest import NORMALIZE_WHITESPACE, ELLIPSIS, IGNORE_EXCEPTION_DETAIL
-from argparse import ArgumentParser, REMAINDER
+from argparse import ArgumentParser
 import numpy as np
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'doc', 'sphinxext'))
+# sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'doc',
+#                 'sphinxext'))
 from numpydoc.docscrape_sphinx import get_doc_object
 # Remove sphinx directives that don't run without Sphinx environment
 directives._directives.pop('versionadded', None)
@@ -52,67 +53,20 @@ directives._directives.pop('codeauthor', None)
 directives._directives.pop('toctree', None)
 
 
-BASE_MODULE = "scipy"
+BASE_MODULE = "pywt"
 
-PUBLIC_SUBMODULES = [
-    'cluster',
-    'cluster.hierarchy',
-    'cluster.vq',
-    'constants',
-    'fftpack',
-    'fftpack.convolve',
-    'integrate',
-    'interpolate',
-    'io',
-    'io.arff',
-    'io.wavfile',
-    'linalg',
-    'linalg.blas',
-    'linalg.lapack',
-    'linalg.interpolative',
-    'misc',
-    'ndimage',
-    'odr',
-    'optimize',
-    'signal',
-    'sparse',
-    'sparse.csgraph',
-    'sparse.linalg',
-    'spatial',
-    'spatial.distance',
-    'special',
-    'stats',
-    'stats.mstats',
-]
+PUBLIC_SUBMODULES = []
 
 # Docs for these modules are included in the parent module
-OTHER_MODULE_DOCS = {
-    'fftpack.convolve': 'fftpack',
-    'io.wavfile': 'io',
-    'io.arff': 'io',
-}
+OTHER_MODULE_DOCS = {}
 
 # these names are known to fail doctesting and we like to keep it that way
 # e.g. sometimes pseudocode is acceptable etc
-DOCTEST_SKIPLIST = set([
-    'scipy.stats.kstwobign', # inaccurate cdf or ppf
-    'scipy.stats.levy_stable',
-    'scipy.special.sinc', # comes from numpy
-    'scipy.misc.who', # comes from numpy
-    'weave.rst',  # tutorial for a deprecated module
-    'io.rst',   # XXX: need to figure out how to deal w/ mat files
-])
+DOCTEST_SKIPLIST = set([])
 
 # these names are not required to be present in ALL despite being in
 # autosummary:: listing
-REFGUIDE_ALL_SKIPLIST = [
-    r'scipy\.sparse\.csgraph',
-    r'scipy\.sparse\.linalg',
-    r'scipy\.spatial\.distance',
-    r'scipy\.linalg\.blas\.[sdczi].*',
-    r'scipy\.linalg\.lapack\.[sdczi].*',
-]
-
+REFGUIDE_ALL_SKIPLIST = []
 
 HAVE_MATPLOTLIB = False
 
@@ -224,16 +178,18 @@ def compare(all_dict, others, names, module_name):
 
     return only_all, only_ref, missing
 
+
 def is_deprecated(f):
     with warnings.catch_warnings(record=True) as w:
         warnings.simplefilter("error")
         try:
-            f(**{"not a kwarg":None})
+            f(**{"not a kwarg": None})
         except DeprecationWarning:
             return True
         except:
             pass
         return False
+
 
 def check_items(all_dict, names, deprecated, others, module_name, dots=True):
     num_all = len(all_dict)
@@ -364,7 +320,6 @@ def check_rest(module, names, dots=True):
         # python 3
         skip_types = (dict, str, float, int)
 
-
     results = []
 
     if module.__name__[6:] not in OTHER_MODULE_DOCS:
@@ -411,7 +366,8 @@ def check_rest(module, names, dots=True):
         else:
             file_full_name = full_name
 
-        results.append((full_name,) + validate_rst_syntax(text, file_full_name, dots=dots))
+        results.append((full_name,) +
+                       validate_rst_syntax(text, file_full_name, dots=dots))
 
     return results
 
@@ -438,7 +394,7 @@ CHECK_NAMESPACE = {
       'nan': np.nan,
       'NaN': np.nan,
       'inf': np.inf,
-      'Inf': np.inf,}
+      'Inf': np.inf, }
 
 
 class DTRunner(doctest.DocTestRunner):
@@ -462,7 +418,8 @@ class DTRunner(doctest.DocTestRunner):
     def report_success(self, out, test, example, got):
         if self._verbose:
             self._report_item_name(out, new_line=True)
-        return doctest.DocTestRunner.report_success(self, out, test, example, got)
+        return doctest.DocTestRunner.report_success(
+            self, out, test, example, got)
 
     def report_unexpected_exception(self, out, test, example, exc_info):
         self._report_item_name(out)
@@ -480,8 +437,8 @@ class Checker(doctest.OutputChecker):
     rndm_markers = {'# random', '# Random', '#random', '#Random', "# may vary"}
     stopwords = {'plt.', '.hist', '.show', '.ylim', '.subplot(',
                  'set_title', 'imshow', 'plt.show', 'ax.axis', 'plt.plot(',
-                 '.bar(', '.title', '.ylabel', '.xlabel', 'set_ylim', 'set_xlim',
-                 '# reformatted'}
+                 '.bar(', '.title', '.ylabel', '.xlabel', 'set_ylim',
+                 'set_xlim', '# reformatted'}
 
     def __init__(self, parse_namedtuples=True, ns=None, atol=1e-8, rtol=1e-2):
         self.parse_namedtuples = parse_namedtuples
@@ -668,7 +625,7 @@ def check_doctests(module, verbose, ns=None,
 
 
 def check_doctests_testfile(fname, verbose, ns=None,
-                   dots=True, doctest_warnings=False):
+                            dots=True, doctest_warnings=False):
     """Check code in a text file.
 
     Mimic `check_doctests` above, differing mostly in test discovery.
@@ -764,20 +721,22 @@ def init_matplotlib():
 def main(argv):
     parser = ArgumentParser(usage=__doc__.lstrip())
     parser.add_argument("module_names", metavar="SUBMODULES", default=[],
-                        nargs='*', help="Submodules to check (default: all public)")
-    parser.add_argument("--doctests", action="store_true", help="Run also doctests")
+                        nargs='*',
+                        help="Submodules to check (default: all public)")
+    parser.add_argument("--doctests", action="store_true",
+                        help="Run also doctests")
     parser.add_argument("-v", "--verbose", action="count", default=0)
     parser.add_argument("--doctest-warnings", action="store_true",
                         help="Enforce warning checking for doctests")
-    parser.add_argument("--skip-tutorial", action="store_true",
-                        help="Skip running doctests in the tutorial.")
+    parser.add_argument("--skip-examples", action="store_true",
+                        help="Skip running doctests in the examples.")
     args = parser.parse_args(argv)
 
     modules = []
     names_dict = {}
 
     if args.module_names:
-        args.skip_tutorial = True
+        args.skip_examples = True
     else:
         args.module_names = list(PUBLIC_SUBMODULES)
 
@@ -807,7 +766,7 @@ def main(argv):
 
     print("Running checks for %d modules:" % (len(modules),))
 
-    if args.doctests or not args.skip_tutorial:
+    if args.doctests or not args.skip_examples:
         init_matplotlib()
 
     for module in modules:
@@ -837,21 +796,23 @@ def main(argv):
         sys.stderr.write("\n")
         sys.stderr.flush()
 
-    if not args.skip_tutorial:
-        tut_path = os.path.join(os.getcwd(), 'doc', 'source', 'tutorial', '*.rst')
-        print('\nChecking tutorial files at %s:' % tut_path)
-        for filename in sorted(glob.glob(tut_path)):
+    if not args.skip_examples:
+        examples_path = os.path.join(
+            os.getcwd(), 'doc', 'source', 'regression', '*.rst')
+        print('\nChecking examples files at %s:' % examples_path)
+        for filename in sorted(glob.glob(examples_path)):
             if dots:
                 sys.stderr.write('\n')
                 sys.stderr.write(os.path.split(filename)[1] + ' ')
                 sys.stderr.flush()
 
-            tut_results = check_doctests_testfile(filename, (args.verbose >= 2),
-                    dots=dots, doctest_warnings=args.doctest_warnings)
+            examples_results = check_doctests_testfile(
+                filename, (args.verbose >= 2), dots=dots,
+                doctest_warnings=args.doctest_warnings)
 
             def scratch(): pass        # stub out a "module", see below
             scratch.__name__ = filename
-            results.append((scratch, tut_results))
+            results.append((scratch, examples_results))
 
         if dots:
             sys.stderr.write("\n")
