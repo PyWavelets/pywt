@@ -35,7 +35,7 @@ matrix:
     - python: 2.7
       env:
         - NUMPYSPEC=numpy
-    - python: 2.7
+    - python: 3.5
       env:
         - NUMPYSPEC=numpy
         - REFGUIDE_CHECK=1  # run doctests only
@@ -61,11 +61,12 @@ before_install:
 
 script:
   # Define a fixed build dir so next step works
-  - CFLAGS="--coverage" python setup.py build --build-lib build/lib/ --build-temp build/tmp/
   - |
     if [ "${REFGUIDE_CHECK}" == "1" ]; then
+        pip install -e . -v
         python util/refguide_check.py --doctests
     else
+        CFLAGS="--coverage" python setup.py build --build-lib build/lib/ --build-temp build/tmp/
         nosetests build/lib/ --tests pywt/tests
     fi
 
