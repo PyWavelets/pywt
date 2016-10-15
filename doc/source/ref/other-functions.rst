@@ -57,6 +57,7 @@ The following example datasets are available in the module ``pywt.data``:
     aero     grayscale image (512x512)
    ascent    grayscale image (512x512)
    camera    grayscale image (512x512)
+    nino     sea surface temperature (264 samples)
   ========  =============================
 
 Each can be loaded via a function of the same name.
