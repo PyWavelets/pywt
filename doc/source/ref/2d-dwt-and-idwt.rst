@@ -46,3 +46,36 @@ Single level ``idwt2``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. autofunction:: waverec2
+
+
+2D coordinate conventions
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The labels for "horizontal" and "vertical" used by ``dwt2`` and ``idwt2``
+follow the common mathematical convention that coordinate axis 0
+is horizontal while axis 1 is vertical::
+
+    dwt2, idwt2 convention
+    ----------------------
+
+    axis 1 ^
+           |
+           |
+           |
+           |--------->
+                   axis 0
+
+Note that this is different from another common convention used in computer
+graphics and image processing (e.g. by matplotlib's `imshow` and functions in
+`scikit-image`).  In those packages axis 0 is a vertical axis and axis 1 is
+horizontal as follows::
+
+     imshow convention
+    -------------------
+                 axis 1
+           |--------->
+           |
+           |
+           |
+    axis 0 v
+
