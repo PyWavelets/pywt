@@ -98,7 +98,7 @@ naming convention (as wavelet packet transform is based on the dwt2 transform)::
 
 
 Knowing what the nodes names are, we can now access them using the indexing
-operator `obj[x]` (:meth:`WaveletPacket2D.__getitem__`):
+operator ``obj[x]`` (:meth:`WaveletPacket2D.__getitem__`):
 
     >>> print(wp['a'].data)
     [[  3.   7.  11.  15.]
@@ -396,7 +396,7 @@ Lazy evaluation:
 >>> x = numpy.array([[1, 2, 3, 4, 5, 6, 7, 8]] * 8)
 >>> wp = pywt.WaveletPacket2D(data=x, wavelet='db1', mode='symmetric')
 
-1) At first the wp's attribute `a` is ``None``
+1) At first the wp's attribute ``a`` is ``None``
 
    >>> print(wp.a)
    None
@@ -412,7 +412,7 @@ Lazy evaluation:
     [  3.   7.  11.  15.]
     [  3.   7.  11.  15.]]
 
-3) Now the `a` is set to the newly created node:
+3) Now the ``a`` is set to the newly created node:
 
     >>> print(wp.a)
     a: [[  3.   7.  11.  15.]

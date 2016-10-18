@@ -192,8 +192,8 @@ to correct values:
       DWT:            True
       CWT:            False
 
-And now... the `wavefun`!
--------------------------
+And now... the ``wavefun``!
+---------------------------
 
 We all know that the fun with wavelets is in wavelet functions.
 Now what would be this package without a tool to compute wavelet

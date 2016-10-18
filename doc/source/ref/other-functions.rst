@@ -48,7 +48,7 @@ Orthogonal Filter Banks
 Example Datasets
 ----------------
 
-The following example datasets are available in the module `pywt.data`:
+The following example datasets are available in the module ``pywt.data``:
 
   ========  =============================
   **name**         **description**
