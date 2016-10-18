@@ -39,7 +39,8 @@ def dwt2(data, wavelet, mode='symmetric', axes=(-2, -1)):
     -------
     (cA, (cH, cV, cD)) : tuple
         Approximation, horizontal detail, vertical detail and diagonal
-        detail coefficients respectively.  Horizontal refers to array axis 0.
+        detail coefficients respectively.  Horizontal refers to array axis 0
+        (or axes[0] for user-specified ``axes``).
 
     Examples
     --------
@@ -149,6 +150,9 @@ def dwtn(data, wavelet, mode='symmetric', axes=None):
              'da': <coeffs>  # H(HL) - det. on 1st dim, approx. on 2nd dim
              'dd': <coeffs>  # D(HH) - det. on 1st dim, det. on 2nd dim
             }
+
+        For user-specified ``axes``, the order of the characters in the
+        dictionary keys map to the specified ``axes``.
 
     """
     data = np.asarray(data)
