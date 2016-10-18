@@ -165,13 +165,13 @@ def wavedec2(data, wavelet, mode='symmetric', level=None, axes=(-2, -1)):
         Decomposition level (must be >= 0). If level is None (default) then it
         will be calculated using the ``dwt_max_level`` function.
     axes : 2-tuple of ints, optional
-        Axes over which to compute the DWT. Repeated elements mean the DWT will
-        be performed multiple times along these axes.
+        Axes over which to compute the DWT. Repeated elements are not allowed.
 
     Returns
     -------
     [cAn, (cHn, cVn, cDn), ... (cH1, cV1, cD1)] : list
-        Coefficients list
+        Coefficients list.  For user-specified ``axes``, ``cH*``
+        correspond to ``axes[0]`` while ``cV*`` correspond to ``axes[1]``.
 
     Examples
     --------
@@ -229,8 +229,7 @@ def waverec2(coeffs, wavelet, mode='symmetric', axes=(-2, -1)):
     mode : str, optional
         Signal extension mode, see Modes (default: 'symmetric')
     axes : 2-tuple of ints, optional
-        Axes over which to compute the IDWT. Repeated elements mean the IDWT
-        will be performed multiple times along these axes.
+        Axes over which to compute the IDWT. Repeated elements are not allowed.
 
     Returns
     -------
