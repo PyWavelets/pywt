@@ -127,8 +127,8 @@ Other Wavelet's properties are:
         >>> print(w.symmetry)
         asymmetric
 
-    - Number of vanishing moments for the scaling function *phi*
-      (:attr:`~Wavelet.vanishing_moments_phi`) and the wavelet function *psi*
+    - Number of vanishing moments for the scaling function ``phi``
+      (:attr:`~Wavelet.vanishing_moments_phi`) and the wavelet function ``psi``
       (:attr:`~Wavelet.vanishing_moments_psi`) associated with the filters:
 
         >>> w.vanishing_moments_phi
@@ -139,7 +139,7 @@ Other Wavelet's properties are:
 Now when we know a bit about the builtin Wavelets, let's see how to create
 :ref:`custom Wavelets <custom-wavelets>` objects. These can be done in two ways:
 
-    1) Passing the filter bank object that implements the `filter_bank`
+    1) Passing the filter bank object that implements the ``filter_bank``
        attribute. The attribute must return four filters coefficients.
 
        >>> class MyHaarFilterBank(object):
@@ -153,7 +153,8 @@ Now when we know a bit about the builtin Wavelets, let's see how to create
        >>> my_wavelet = pywt.Wavelet('My Haar Wavelet', filter_bank=MyHaarFilterBank())
 
 
-    2) Passing the filters coefficients directly as the *filter_bank* parameter.
+    2) Passing the filters coefficients directly as the ``filter_bank``
+       parameter.
 
         >>> from math import sqrt
         >>> my_filter_bank = ([sqrt(2)/2, sqrt(2)/2], [-sqrt(2)/2, sqrt(2)/2],
@@ -199,8 +200,8 @@ Now what would be this package without a tool to compute wavelet
 and scaling functions approximations?
 
 This is the purpose of the :meth:`~Wavelet.wavefun` method, which is used to
-approximate scaling function (*phi*) and wavelet function (*psi*) at the given
-level of refinement, based on the filters coefficients.
+approximate scaling function (``phi``) and wavelet function (``psi``) at the
+given level of refinement, based on the filters coefficients.
 
 The number of returned values varies depending on the wavelet's
 orthogonality property. For orthogonal wavelets the result is tuple

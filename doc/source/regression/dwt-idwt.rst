@@ -8,8 +8,8 @@ DWT and IDWT
 Discrete Wavelet Transform
 --------------------------
 
-Let's do a :func:`Discrete Wavelet Transform <dwt>` of a sample data *x* using
-the ``db2`` wavelet. It's simple..
+Let's do a :func:`Discrete Wavelet Transform <dwt>` of a sample data ``x``
+using the ``db2`` wavelet. It's simple..
 
     >>> import pywt
     >>> x = [3, 7, 1, 1, -2, 5, 4, 6]

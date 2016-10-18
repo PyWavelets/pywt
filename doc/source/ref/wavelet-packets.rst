@@ -140,7 +140,7 @@ BaseNode - a common interface of WaveletPacket and WaveletPacket2D
 
   .. method:: __getitem__(path)
 
-     Used to access nodes in the decomposition tree by string *path*.
+     Used to access nodes in the decomposition tree by string ``path``.
 
      :param path: Path string composed from valid node names. See
                   :attr:`Node.node_name` and :attr:`Node2D.node_name` for node
@@ -155,7 +155,7 @@ BaseNode - a common interface of WaveletPacket and WaveletPacket2D
   .. method:: __setitem__(path, data)
 
      Used to set node or node's data in the decomposition tree. Nodes are
-     identified by string *path*.
+     identified by string ``path``.
 
      :param path: Path string composed from valid node names.
                   See :attr:`Node.node_name` and :attr:`Node2D.node_name` for
@@ -176,7 +176,7 @@ BaseNode - a common interface of WaveletPacket and WaveletPacket2D
      Traverses through the decomposition tree and collects leaf nodes (nodes
      without any subnodes).
 
-     :param decompose: If *decompose* is ``True``, the method will try to
+     :param decompose: If ``decompose`` is ``True``, the method will try to
                        decompose the tree up to the
                        :attr:`maximum level <BaseNode.maxlevel>`.
 
@@ -191,11 +191,11 @@ BaseNode - a common interface of WaveletPacket and WaveletPacket2D
 
                     func(node, *args, **kwargs)
 
-     :args: arguments to pass to the *func*
+     :args: arguments to pass to the ``func``
 
-     :kwargs: keyword arguments to pass to the *func*
+     :kwargs: keyword arguments to pass to the ``func``
 
-     :param decompose: If *decompose* is ``True`` (default), the method will
+     :param decompose: If ``decompose`` is ``True`` (default), the method will
                        also try to decompose the tree up to the
                        :attr:`maximum level <BaseNode.maxlevel>`.
 
@@ -209,12 +209,12 @@ BaseNode - a common interface of WaveletPacket and WaveletPacket2D
 
                     func(node, *args, **kwargs)
 
-     :args: arguments to pass to the *func*
+     :args: arguments to pass to the ``func``
 
-     :kwargs: keyword arguments to pass to the *func*
+     :kwargs: keyword arguments to pass to the ``func``
 
-     :param decompose: If *decompose* is ``True``, the method will also try to
-                       decompose the tree up to the
+     :param decompose: If ``decompose`` is ``True``, the method will also try
+                       to decompose the tree up to the
                        :attr:`maximum level <BaseNode.maxlevel>`.
 
 
@@ -252,24 +252,24 @@ WaveletPacket and WaveletPacket tree Node
                   and :func:`idwt` decomposition and reconstruction functions.
 
      :param maxlevel: Maximum allowed level of decomposition. If not specified
-                      it will be calculated based on the *wavelet* and *data*
-                      length using :func:`pywt.dwt_max_level`.
+                      it will be calculated based on the ``wavelet`` and
+                      ``data`` length using :func:`pywt.dwt_max_level`.
 
   .. method:: get_level(level, [order="natural", [decompose=True]])
 
      Collects nodes from the given level of decomposition.
 
-     :param level: Specifies decomposition *level* from which the nodes will be
-                   collected.
+     :param level: Specifies decomposition ``level`` from which the nodes will
+                   be collected.
 
      :param order: Specifies nodes order - natural (``natural``) or frequency
                    (``freq``).
 
      :param decompose: If set then the method will try to decompose the data up
-                       to the specified *level*.
+                       to the specified ``level``.
 
      If nodes at the given level are missing (i.e. the tree is partially
-     decomposed) and the *decompose* is set to ``False``, only existing nodes
+     decomposed) and the ``decompose`` is set to ``False``, only existing nodes
      will be returned.
 
 WaveletPacket2D and WaveletPacket2D tree Node2D
@@ -307,22 +307,22 @@ WaveletPacket2D and WaveletPacket2D tree Node2D
                   and :func:`idwt` decomposition and reconstruction functions.
 
      :param maxlevel: Maximum allowed level of decomposition. If not specified
-                      it will be calculated based on the *wavelet* and *data*
-                      length using :func:`pywt.dwt_max_level`.
+                      it will be calculated based on the ``wavelet`` and
+                      ``data`` length using :func:`pywt.dwt_max_level`.
 
   .. method:: get_level(level, [order="natural", [decompose=True]])
 
      Collects nodes from the given level of decomposition.
 
-     :param level: Specifies decomposition *level* from which the nodes will be
-                   collected.
+     :param level: Specifies decomposition ``level`` from which the nodes will
+                   be collected.
 
      :param order: Specifies nodes order - natural (``natural``) or frequency
                    (``freq``).
 
      :param decompose: If set then the method will try to decompose the data up
-                       to the specified *level*.
+                       to the specified ``level``.
 
      If nodes at the given level are missing (i.e. the tree is partially
-     decomposed) and the *decompose* is set to ``False``, only existing nodes
+     decomposed) and the ``decompose`` is set to ``False``, only existing nodes
      will be returned.

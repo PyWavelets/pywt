@@ -26,12 +26,11 @@ Built-in wavelets - ``wavelist()``
 
 .. class:: Wavelet(name[, filter_bank=None])
 
-  Describes properties of a wavelet identified by the specified wavelet *name*.
-  In order to use a built-in wavelet the *name* parameter must be a valid
-  wavelet name from the :func:`pywt.wavelist` list.
+  Describes properties of a wavelet identified by the specified wavelet
+  ``name``. In order to use a built-in wavelet the ``name`` parameter must be a valid wavelet name from the :func:`pywt.wavelist` list.
 
   Custom Wavelet objects can be created by passing a user-defined filters set
-  with the *filter_bank* parameter.
+  with the ``filter_bank`` parameter.
 
   :param name: Wavelet name
   :param filter_bank: Use a user supplied filter bank instead of a built-in :class:`Wavelet`.
@@ -92,8 +91,8 @@ Built-in wavelets - ``wavelist()``
 
   .. attribute:: inverse_filter_bank
 
-      Returns list of reverse wavelet filters coefficients. The mapping from the
-      `filter_coeffs` list is as follows::
+      Returns list of reverse wavelet filters coefficients. The mapping from
+      the ``filter_coeffs`` list is as follows::
 
         [rec_lo[::-1], rec_hi[::-1], dec_lo[::-1], dec_hi[::-1]]
 
@@ -160,8 +159,8 @@ Approximating wavelet and scaling functions - ``Wavelet.wavefun()``
     added.
 
   The :meth:`~Wavelet.wavefun` method can be used to calculate approximations of
-  scaling function (*phi*) and wavelet function (*psi*) at the given level of
-  refinement.
+  scaling function (``phi``) and wavelet function (``psi``) at the given level
+  of refinement.
 
   For :attr:`orthogonal <Wavelet.orthogonal>` wavelets returns approximations of
   scaling function and wavelet function with corresponding x-grid coordinates::
@@ -211,7 +210,7 @@ PyWavelets comes with a :func:`long list <pywt.wavelist>` of the most popular
 wavelets built-in and ready to use. If you need to use a specific wavelet which
 is not included in the list it is very easy to do so. Just pass a list of four
 filters or an object with a :attr:`~Wavelet.filter_bank` attribute as a
-*filter_bank* argument to the :class:`Wavelet` constructor.
+``filter_bank`` argument to the :class:`Wavelet` constructor.
 
 .. compound::
 

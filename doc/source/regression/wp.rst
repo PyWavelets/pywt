@@ -27,7 +27,7 @@ Ok, let's create a sample :class:`WaveletPacket`:
     >>> x = [1, 2, 3, 4, 5, 6, 7, 8]
     >>> wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='symmetric')
 
-The input *data* and decomposition coefficients are stored in the
+The input ``data`` and decomposition coefficients are stored in the
 :attr:`WaveletPacket.data` attribute:
 
     >>> print(wp.data)
@@ -41,7 +41,7 @@ node the path is ``''`` and the decomposition level is ``0``.
     >>> print(wp.level)
     0
 
-The *maxlevel*, if not given as param in the constructor, is automatically
+The ``maxlevel``, if not given as param in the constructor, is automatically
 computed:
 
     >>> print(wp['ad'].maxlevel)
@@ -160,7 +160,7 @@ or sorted based on the band frequency (``freq``):
     ['aaa', 'aad', 'add', 'ada', 'dda', 'ddd', 'dad', 'daa']
 
 Note that :meth:`WaveletPacket.get_level` also performs automatic decomposition
-until it reaches the specified *level*.
+until it reaches the specified ``level``.
 
 
 Reconstructing data from Wavelet Packets:
@@ -188,8 +188,8 @@ And reconstruct the data from the ``aa``, ``ad`` and ``d`` packets.
     >>> print(new_wp.reconstruct(update=False))
     [ 1.  2.  3.  4.  5.  6.  7.  8.]
 
-If the *update* param in the reconstruct method is set to ``False``, the node's
-:attr:`~Node.data` will not be updated.
+If the ``update`` param in the reconstruct method is set to ``False``, the
+node's :attr:`~Node.data` will not be updated.
 
     >>> print(new_wp.data)
     None
