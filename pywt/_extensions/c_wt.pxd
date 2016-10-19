@@ -81,20 +81,29 @@ cdef extern from "c/wt.h":
     cdef int float_swt_d(float input[], pywt_index_t input_len, DiscreteWavelet* wavelet,
                          float output[], pywt_index_t output_len, int level) nogil
 
+    cdef int float_swt_axis(const float * const input, const ArrayInfo input_info,
+                            float * const output, const ArrayInfo output_info,
+                            const DiscreteWavelet * const wavelet, const size_t axis,
+                            const Coefficient detail, unsigned int level) nogil
+    cdef int double_swt_axis(const double * const input, const ArrayInfo input_info,
+                             double * const output, const ArrayInfo output_info,
+                             const DiscreteWavelet * const wavelet, const size_t axis,
+                             const Coefficient detail, unsigned int level) nogil
+
 cdef extern from "c/cwt.h":
     # Cython does not know the 'restrict' keyword
-    
+
     cdef void double_gaus(const double * const input, double * const output, const size_t N,
                                   const size_t number) nogil
 
     cdef void double_mexh(const double * const input, double * const output, const size_t N) nogil
-    
+
     cdef void double_morl(const double * const input, double * const output, const size_t N) nogil
-    
+
 
     cdef void double_cgau(const double * const input, double * const output_r, double * const output_i, const size_t N,
                                   const size_t number) nogil
-    
+
     cdef void double_shan(const double * const input, double * const output_r, double * const output_i, const size_t N,
                                   double FB, double FC) nogil
     cdef void double_fbsp(const double * const input, double * const output_r, double * const output_i, const size_t N,
@@ -107,9 +116,9 @@ cdef extern from "c/cwt.h":
                                   const size_t number) nogil
 
     cdef void float_mexh(const float * const input, float * const output, const size_t N) nogil
-    
+
     cdef void float_morl(const float * const input, float * const output, const size_t N) nogil
-    
+
     cdef void float_cgau(const float * const input, float * const output_r, float * const output_i, const size_t N,
                                   const size_t number) nogil
 
