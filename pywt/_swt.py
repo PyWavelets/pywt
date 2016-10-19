@@ -1,4 +1,4 @@
-from ._extensions._swt import swt_max_level, swt as _swt
+from ._extensions._swt import swt_max_level, swt as _swt, swt_axis as _swt_axis
 from ._extensions._pywt import Wavelet, _check_dtype
 
 import numpy as np
@@ -6,7 +6,7 @@ import numpy as np
 __all__ = ["swt", "swt_max_level"]
 
 
-def swt(data, wavelet, level=None, start_level=0):
+def swt(data, wavelet, level=None, start_level=0, axis=-1):
     """
     swt(data, wavelet, level=None, start_level=0)
 
@@ -24,6 +24,9 @@ def swt(data, wavelet, level=None, start_level=0):
         The level at which the decomposition will begin (it allows one to
         skip a given number of transform steps and compute
         coefficients starting from start_level) (default: 0)
+    axis: int, optional
+        Axis over which to compute the DWT. If not given, the
+        last axis is used.
 
     Returns
     -------
@@ -58,5 +61,13 @@ def swt(data, wavelet, level=None, start_level=0):
     if level is None:
         level = swt_max_level(len(data))
 
-    ret = _swt(data, wavelet, level, start_level)
+    if axis < 0:
+        axis = axis + data.ndim
+    if not 0 <= axis < data.ndim:
+        raise ValueError("Axis greater than data dimensions")
+
+    if data.ndim == 1:
+        ret = _swt(data, wavelet, level, start_level)
+    else:
+        ret = _swt_axis(data, wavelet, level, start_level, axis)
     return [(np.asarray(cA), np.asarray(cD)) for cA, cD in ret]
