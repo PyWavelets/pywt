@@ -121,17 +121,14 @@ cpdef swt_axis(np.ndarray data, Wavelet wavelet, size_t level,
                "start_level is %d)." % (swt_max_level(data.size) - start_level))
         raise ValueError(msg)
 
-    output_len = common.swt_buffer_length(data.size)
-    if output_len < 1:
-        raise RuntimeError("Invalid output length.")
-    if output_len != data.size:
-        raise RuntimeError("swt_axis assumes output_len matches data.size")
-
     data = data.astype(_check_dtype(data), copy=False)
 
     input_shape = <size_t [:data.ndim]> <size_t *> data.shape
     output_shape = input_shape.copy()
     output_shape[axis] = common.swt_buffer_length(data.shape[axis])
+    if output_shape[axis] != input_shape[axis]:
+        raise RuntimeError("swt_axis assume output_shape is the same as "
+                           "input_shape")
 
     data_info.ndim = data.ndim
     data_info.strides = <pywt_index_t *> data.strides
@@ -186,8 +183,11 @@ cpdef swt_axis(np.ndarray data, Wavelet wavelet, size_t level,
         else:
             raise TypeError("Array must be floating point, not {}"
                             .format(data.dtype))
-        data = cA
         ret.append((cA, cD))
 
+        # previous approx coeffs are the data for the next level
+        data = cA
+        data_info = output_info
+
     ret.reverse()
-    return (cA, cD)
+    return ret
