@@ -277,7 +277,7 @@ def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
     return coeffs['']
 
 
-def swt2(data, wavelet, level, start_level=0):
+def swt2(data, wavelet, level, start_level=0, axes=(-2, -1)):
     """
     2D Stationary Wavelet Transform.
 
@@ -291,6 +291,8 @@ def swt2(data, wavelet, level, start_level=0):
         The number of decomposition steps to perform.
     start_level : int, optional
         The level at which the decomposition will start (default: 0)
+    axes : 2-tuple of ints, optional
+        Axes over which to compute the IDWT. Repeated elements are not allowed.
 
     Returns
     -------
@@ -314,52 +316,29 @@ def swt2(data, wavelet, level, start_level=0):
         vertical details, cD is diagonal details and m is ``start_level``.
 
     """
+    axes = tuple(axes)
     data = np.asarray(data)
-    if data.ndim != 2:
-        raise ValueError("Expected 2D data array")
+    if len(axes) != 2:
+        raise ValueError("Expected 2 axes")
+    if len(axes) != len(set(axes)):
+        raise ValueError("The axes passed to swt2 must be unique.")
+    if data.ndim < len(np.unique(axes)):
+        raise ValueError("Input array has fewer dimensions than the specified "
+                         "axes")
 
-    if not isinstance(wavelet, Wavelet):
-        wavelet = Wavelet(wavelet)
-
+    coefs = swtn(data, wavelet, level, start_level, axes)
     ret = []
-    for i in range(start_level, start_level + level):
-        # filter rows
-        H, L = [], []
-        for row in data:
-            cA, cD = swt(row, wavelet, level=1, start_level=i)[0]
-            L.append(cA)
-            H.append(cD)
-
-        # filter columns
-        H = np.transpose(H)
-        L = np.transpose(L)
-
-        LL, LH = [], []
-        for row in L:
-            cA, cD = swt(row, wavelet, level=1, start_level=i)[0]
-            LL.append(cA)
-            LH.append(cD)
-
-        HL, HH = [], []
-        for row in H:
-            cA, cD = swt(row, wavelet, level=1, start_level=i)[0]
-            HL.append(cA)
-            HH.append(cD)
-
-        # build result structure: (approx, (horizontal, vertical, diagonal))
-        approx = np.transpose(LL)
-        ret.append((approx,
-                    (np.transpose(LH), np.transpose(HL), np.transpose(HH))))
-
-        # for next iteration
-        data = approx
+    for c in coefs:
+        ret.append((c['aa'], (c['da'], c['ad'], c['dd'])))
 
     warnings.warn(
         "For consistency with the rest of PyWavelets, the order of the list "
         "returned by swt2 will be reversed in the next release. "
         "In other words, the levels will be sorted in descending rather than "
         "ascending order.", FutureWarning)
-
+    # reverse order for backwards compatiblity
+    # TODO:  deprecate this for consistency with swtn, swt, wavedecn, etc.
+    ret.reverse()
     return ret
 
 
