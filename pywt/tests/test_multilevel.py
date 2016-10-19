@@ -6,7 +6,7 @@ import warnings
 import numpy as np
 from numpy.testing import (run_module_suite, assert_almost_equal,
                            assert_allclose, assert_, assert_equal,
-                           assert_raises, dec)
+                           assert_raises, dec, assert_array_equal)
 
 import pywt
 
@@ -154,6 +154,59 @@ def test_swt_decomposition():
     coeffs = pywt.swt(x, db1)
     assert_(len(coeffs) == 3)
     assert_(pywt.swt_max_level(len(x)) == 3)
+
+
+def test_swt_axis():
+    x = [3, 7, 1, 3, -2, 6, 4, 6]
+
+    db1 = pywt.Wavelet('db1')
+    (cA2, cD2), (cA1, cD1) = pywt.swt(x, db1, level=2)
+
+    # test cases use 2D arrays based on tiling x along an axis and then
+    # calling swt along the other axis.
+    for order in ['C', 'F']:
+        # test SWT of 2D data along default axis (-1)
+        x_2d = np.asarray(x).reshape((-1, 1))
+        x_2d = np.stack((x, )*5, axis=0)
+        if order == 'C':
+            x_2d = np.ascontiguousarray(x_2d)
+        elif order == 'F':
+            x_2d = np.asfortranarray(x_2d)
+        (cA2_2d, cD2_2d), (cA1_2d, cD1_2d) = pywt.swt(x_2d, db1, level=2)
+
+        for c in [cA2_2d, cD2_2d, cA1_2d, cD1_2d]:
+            assert_(c.shape == x_2d.shape)
+        # each row should match the 1D result
+        for row in cA1_2d:
+            assert_array_equal(row, cA1)
+        for row in cA2_2d:
+            assert_array_equal(row, cA2)
+        for row in cD1_2d:
+            assert_array_equal(row, cD1)
+        for row in cD2_2d:
+            assert_array_equal(row, cD2)
+
+        # test SWT of 2D data along other axis (0)
+        x_2d = np.asarray(x).reshape((1, -1))
+        x_2d = np.stack((x, )*5, axis=1)
+        if order == 'C':
+            x_2d = np.ascontiguousarray(x_2d)
+        elif order == 'F':
+            x_2d = np.asfortranarray(x_2d)
+        (cA2_2d, cD2_2d), (cA1_2d, cD1_2d) = pywt.swt(x_2d, db1, level=2,
+                                                      axis=0)
+
+        for c in [cA2_2d, cD2_2d, cA1_2d, cD1_2d]:
+            assert_(c.shape == x_2d.shape)
+        # each column should match the 1D result
+        for row in cA1_2d.transpose((1, 0)):
+            assert_array_equal(row, cA1)
+        for row in cA2_2d.transpose((1, 0)):
+            assert_array_equal(row, cA2)
+        for row in cD1_2d.transpose((1, 0)):
+            assert_array_equal(row, cD1)
+        for row in cD2_2d.transpose((1, 0)):
+            assert_array_equal(row, cD2)
 
 
 def test_swt_iswt_integration():
