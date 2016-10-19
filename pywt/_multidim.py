@@ -9,7 +9,7 @@
 
 from __future__ import division, print_function, absolute_import
 
-__all__ = ['dwt2', 'idwt2', 'swt2', 'dwtn', 'idwtn']
+__all__ = ['dwt2', 'idwt2', 'swt2', 'swtn', 'dwtn', 'idwtn']
 
 import warnings
 from itertools import product
@@ -386,7 +386,11 @@ def swtn(data, wavelet, level, start_level=0, axes=None):
     if np.iscomplexobj(data):
         real = swtn(data.real, wavelet, level, start_level, axes)
         imag = swtn(data.imag, wavelet, level, start_level, axes)
-        return dict((k, real[k] + 1j * imag[k]) for k in real.keys())
+        cplx = []
+        for rdict, idict in zip(real, imag):
+            cplx.append(
+                dict((k, rdict[k] + 1j * idict[k]) for k in rdict.keys()))
+        return cplx
 
     if data.dtype == np.dtype('object'):
         raise TypeError("Input must be a numeric array-like")
