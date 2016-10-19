@@ -66,8 +66,8 @@ is horizontal while axis 1 is vertical::
                    axis 0
 
 Note that this is different from another common convention used in computer
-graphics and image processing (e.g. by matplotlib's `imshow` and functions in
-`scikit-image`).  In those packages axis 0 is a vertical axis and axis 1 is
+graphics and image processing (e.g. by matplotlib's ``imshow`` and functions in
+``scikit-image``).  In those packages axis 0 is a vertical axis and axis 1 is
 horizontal as follows::
 
      imshow convention

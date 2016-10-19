@@ -13,7 +13,7 @@ Integrating wavelet functions
 
 .. autofunction:: integrate_wavelet
 
-The result of the call depends on the *wavelet* argument:
+The result of the call depends on the ``wavelet`` argument:
 
 * for orthogonal and continuous wavelets - an integral of the
   wavelet function specified on an x-grid::
@@ -26,8 +26,8 @@ The result of the call depends on the *wavelet* argument:
     [int_psi_d, int_psi_r, x_grid] = integrate_wavelet(wavelet, precision)
 
 
-Central frequency of *psi* wavelet function
--------------------------------------------
+Central frequency of ``psi`` wavelet function
+---------------------------------------------
 
 .. autofunction:: central_frequency
 
@@ -48,7 +48,7 @@ Orthogonal Filter Banks
 Example Datasets
 ----------------
 
-The following example datasets are available in the module `pywt.data`:
+The following example datasets are available in the module ``pywt.data``:
 
   ========  =============================
   **name**         **description**

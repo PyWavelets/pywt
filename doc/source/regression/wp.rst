@@ -27,7 +27,7 @@ Ok, let's create a sample :class:`WaveletPacket`:
     >>> x = [1, 2, 3, 4, 5, 6, 7, 8]
     >>> wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='symmetric')
 
-The input *data* and decomposition coefficients are stored in the
+The input ``data`` and decomposition coefficients are stored in the
 :attr:`WaveletPacket.data` attribute:
 
     >>> print(wp.data)
@@ -41,7 +41,7 @@ node the path is ``''`` and the decomposition level is ``0``.
     >>> print(wp.level)
     0
 
-The *maxlevel*, if not given as param in the constructor, is automatically
+The ``maxlevel``, if not given as param in the constructor, is automatically
 computed:
 
     >>> print(wp['ad'].maxlevel)
@@ -112,7 +112,8 @@ Accessing Node's attributes:
 of :class:`Node` objects. :class:`WaveletPacket` is just a special subclass
 of the :class:`Node` class (which in turn inherits from the :class:`BaseNode`).
 
-Tree nodes can be accessed using the *obj[x]* (:meth:`Node.__getitem__`) operator.
+Tree nodes can be accessed using the ``obj[x]`` (:meth:`Node.__getitem__`)
+operator.
 Each tree node has a set of attributes: :attr:`~Node.data`, :attr:`~Node.path`,
 :attr:`~Node.node_name`, :attr:`~Node.parent`, :attr:`~Node.level`,
 :attr:`~Node.maxlevel` and :attr:`~Node.mode`.
@@ -160,7 +161,7 @@ or sorted based on the band frequency (``freq``):
     ['aaa', 'aad', 'add', 'ada', 'dda', 'ddd', 'dad', 'daa']
 
 Note that :meth:`WaveletPacket.get_level` also performs automatic decomposition
-until it reaches the specified *level*.
+until it reaches the specified ``level``.
 
 
 Reconstructing data from Wavelet Packets:
@@ -188,8 +189,8 @@ And reconstruct the data from the ``aa``, ``ad`` and ``d`` packets.
     >>> print(new_wp.reconstruct(update=False))
     [ 1.  2.  3.  4.  5.  6.  7.  8.]
 
-If the *update* param in the reconstruct method is set to ``False``, the node's
-:attr:`~Node.data` will not be updated.
+If the ``update`` param in the reconstruct method is set to ``False``, the
+node's :attr:`~Node.data` will not be updated.
 
     >>> print(new_wp.data)
     None
@@ -232,7 +233,7 @@ First, start with a tree decomposition at level 2. Leaf nodes in the tree are:
     >>> print(node)
     ad: [-2. -2.]
 
-To remove a node from the WP tree, use Python's `del obj[x]`
+To remove a node from the WP tree, use Python's ``del obj[x]``
 (:class:`Node.__delitem__`):
 
     >>> del wp['ad']
@@ -278,7 +279,7 @@ Lazy evaluation:
 >>> x = [1, 2, 3, 4, 5, 6, 7, 8]
 >>> wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='symmetric')
 
-1) At first the wp's attribute `a` is None
+1) At first the wp's attribute ``a`` is None
 
    >>> print(wp.a)
    None
@@ -291,12 +292,12 @@ Lazy evaluation:
    >>> print(wp['a'])
    a: [  2.12132034   4.94974747   7.77817459  10.60660172]
 
-3) Now the `wp.a` is set to the newly created node:
+3) Now the ``wp.a`` is set to the newly created node:
 
    >>> print(wp.a)
    a: [  2.12132034   4.94974747   7.77817459  10.60660172]
 
-   And so is `wp.d`:
+   And so is ``wp.d``:
 
    >>> print(wp.d)
    d: [-0.70710678 -0.70710678 -0.70710678 -0.70710678]

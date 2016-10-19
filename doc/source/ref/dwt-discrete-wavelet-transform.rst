@@ -51,10 +51,11 @@ Result coefficients length - ``dwt_coeff_len``
 
 .. autofunction:: dwt_coeff_len
 
-Based on the given *input data length*, Wavelet *decomposition filter length*
-and :ref:`signal extension mode <Modes>`, the :func:`dwt_coeff_len` function
-calculates the length of the resulting coefficients arrays that would be
-created while performing :func:`dwt` transform.
+Based on the given input data length (``data_len``), wavelet decomposition
+filter length (``filter_len``) and :ref:`signal extension mode <Modes>`, the
+:func:`dwt_coeff_len` function calculates the length of the resulting
+coefficients arrays that would be created while performing :func:`dwt`
+transform.
 
-*filter_len* can be either an *int* or :class:`Wavelet` object for
+``filter_len`` can be either an ``int`` or :class:`Wavelet` object for
 convenience.

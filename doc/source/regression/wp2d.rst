@@ -34,7 +34,7 @@ Now create a :class:`2D Wavelet Packet <WaveletPacket2D>` object:
 
     >>> wp = pywt.WaveletPacket2D(data=x, wavelet='db1', mode='symmetric')
 
-The input *data* and decomposition coefficients are stored in the
+The input ``data`` and decomposition coefficients are stored in the
 :attr:`WaveletPacket2D.data` attribute:
 
     >>> print(wp.data)
@@ -98,7 +98,7 @@ naming convention (as wavelet packet transform is based on the dwt2 transform)::
 
 
 Knowing what the nodes names are, we can now access them using the indexing
-operator `obj[x]` (:meth:`WaveletPacket2D.__getitem__`):
+operator ``obj[x]`` (:meth:`WaveletPacket2D.__getitem__`):
 
     >>> print(wp['a'].data)
     [[  3.   7.  11.  15.]
@@ -307,7 +307,7 @@ Now set the ``va`` node with the known values and do the reconstruction again:
      [ 1.  2.  3.  4.  5.  6.  7.  8.]
      [ 1.  2.  3.  4.  5.  6.  7.  8.]]
 
-which is just the same as the base sample data *x*.
+which is just the same as the base sample data ``x``.
 
 Of course we can go the other way and remove nodes from the tree. If we delete
 the ``va`` node, again, we get the "not complete" tree from one of the previous
@@ -328,7 +328,7 @@ Just restore the node before next examples.
 
     >>> new_wp['va'] = wp['va'].data
 
-If the *update* param in the :meth:`WaveletPacket2D.reconstruct` method is set
+If the ``update`` param in the :meth:`WaveletPacket2D.reconstruct` method is set
 to ``False``, the node's :attr:`Node2D.data` attribute will not be updated.
 
     >>> print(new_wp.data)
@@ -363,8 +363,8 @@ non-zero leaf nodes from the WP tree:
     >>> print([n.path for n in new_wp.get_leaf_nodes()])
     ['a', 'h', 'va', 'vh', 'vv', 'vd', 'd']
 
-Passing the *decompose=True* parameter to the method will force the WP object
-to do a full decomposition up to the *maximum level* of decomposition:
+Passing the ``decompose = True`` parameter to the method will force the WP
+object to do a full decomposition up to the *maximum level* of decomposition:
 
     >>> paths = [n.path for n in new_wp.get_leaf_nodes(decompose=True)]
     >>> len(paths)
@@ -396,7 +396,7 @@ Lazy evaluation:
 >>> x = numpy.array([[1, 2, 3, 4, 5, 6, 7, 8]] * 8)
 >>> wp = pywt.WaveletPacket2D(data=x, wavelet='db1', mode='symmetric')
 
-1) At first the wp's attribute `a` is ``None``
+1) At first the wp's attribute ``a`` is ``None``
 
    >>> print(wp.a)
    None
@@ -412,7 +412,7 @@ Lazy evaluation:
     [  3.   7.  11.  15.]
     [  3.   7.  11.  15.]]
 
-3) Now the `a` is set to the newly created node:
+3) Now the ``a`` is set to the newly created node:
 
     >>> print(wp.a)
     a: [[  3.   7.  11.  15.]
