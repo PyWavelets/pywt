@@ -166,8 +166,8 @@ def test_swt_axis():
     # calling swt along the other axis.
     for order in ['C', 'F']:
         # test SWT of 2D data along default axis (-1)
-        x_2d = np.asarray(x).reshape((-1, 1))
-        x_2d = np.stack((x, )*5, axis=0)
+        x_2d = np.asarray(x).reshape((1, -1))
+        x_2d = np.concatenate((x_2d, )*5, axis=0)
         if order == 'C':
             x_2d = np.ascontiguousarray(x_2d)
         elif order == 'F':
@@ -187,8 +187,8 @@ def test_swt_axis():
             assert_array_equal(row, cD2)
 
         # test SWT of 2D data along other axis (0)
-        x_2d = np.asarray(x).reshape((1, -1))
-        x_2d = np.stack((x, )*5, axis=1)
+        x_2d = np.asarray(x).reshape((-1, 1))
+        x_2d = np.concatenate((x_2d, )*5, axis=1)
         if order == 'C':
             x_2d = np.ascontiguousarray(x_2d)
         elif order == 'F':
