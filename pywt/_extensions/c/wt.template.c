@@ -549,11 +549,13 @@ int CAT(TYPE, _swt_axis)(const TYPE * const restrict input, const ArrayInfo inpu
         switch (coef){
         case COEF_APPROX:
             CAT(TYPE, _swt_a)(input_row, input_info.shape[axis],
-                              wavelet, output,output_info.shape[axis], level);
+                              wavelet, output_row, output_info.shape[axis],
+                              level);
             break;
         case COEF_DETAIL:
             CAT(TYPE, _swt_d)(input_row, input_info.shape[axis],
-                              wavelet, output,output_info.shape[axis], level);
+                              wavelet, output_row, output_info.shape[axis],
+                              level);
             break;
         }
 
