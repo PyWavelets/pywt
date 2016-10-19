@@ -405,7 +405,8 @@ int CAT(TYPE, _idwt)(const TYPE * const restrict coeffs_a, const size_t coeffs_a
 /* basic SWT step (TODO: optimize) */
 int CAT(TYPE, _swt_)(TYPE input[], pywt_index_t input_len,
                      const TYPE filter[], pywt_index_t filter_len,
-                     TYPE output[], pywt_index_t output_len, int level){
+                     TYPE output[], pywt_index_t output_len,
+                     unsigned int level){
 
     TYPE * e_filter;
     pywt_index_t i, e_filter_len, fstep;
@@ -450,8 +451,10 @@ int CAT(TYPE, _swt_)(TYPE input[], pywt_index_t input_len,
  * Approximation at specified level
  * input - approximation coeffs from upper level or signal if level == 1
  */
-int CAT(TYPE, _swt_a)(TYPE input[], pywt_index_t input_len, DiscreteWavelet* wavelet,
-                      TYPE output[], pywt_index_t output_len, int level){
+int CAT(TYPE, _swt_a)(TYPE input[], pywt_index_t input_len
+                      DiscreteWavelet* wavelet,
+                      TYPE output[], pywt_index_t output_len,
+                      unsigned int level){
     return CAT(TYPE, _swt_)(input, input_len, wavelet->CAT(dec_lo_, TYPE),
                             wavelet->dec_len, output, output_len, level);
 }
@@ -459,8 +462,10 @@ int CAT(TYPE, _swt_a)(TYPE input[], pywt_index_t input_len, DiscreteWavelet* wav
 /* Details at specified level
  * input - approximation coeffs from upper level or signal if level == 1
  */
-int CAT(TYPE, _swt_d)(TYPE input[], pywt_index_t input_len, DiscreteWavelet* wavelet,
-                      TYPE output[], pywt_index_t output_len, int level){
+int CAT(TYPE, _swt_d)(TYPE input[], pywt_index_t input_len,
+                      DiscreteWavelet* wavelet,
+                      TYPE output[], pywt_index_t output_len,
+                      unsigned int level){
     return CAT(TYPE, _swt_)(input, input_len, wavelet->CAT(dec_hi_, TYPE),
                             wavelet->dec_len, output, output_len, level);
 }
@@ -468,7 +473,7 @@ int CAT(TYPE, _swt_d)(TYPE input[], pywt_index_t input_len, DiscreteWavelet* wav
 int CAT(TYPE, _swt_axis)(const TYPE * const restrict input, const ArrayInfo input_info,
                          TYPE * const restrict output, const ArrayInfo output_info,
                          const DiscreteWavelet * const restrict wavelet, const size_t axis,
-                         const Coefficient coef, int level){
+                         const Coefficient coef, unsigned int level){
     size_t i;
     size_t num_loops = 1;
     TYPE * temp_input = NULL, * temp_output = NULL;
