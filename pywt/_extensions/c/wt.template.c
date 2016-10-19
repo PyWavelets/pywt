@@ -448,7 +448,7 @@ int CAT(TYPE, _swt_)(TYPE input[], pywt_index_t input_len,
  * Approximation at specified level
  * input - approximation coeffs from upper level or signal if level == 1
  */
-int CAT(TYPE, _swt_a)(TYPE input[], pywt_index_t input_len
+int CAT(TYPE, _swt_a)(TYPE input[], pywt_index_t input_len,
                       DiscreteWavelet* wavelet,
                       TYPE output[], pywt_index_t output_len,
                       unsigned int level){
