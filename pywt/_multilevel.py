@@ -10,6 +10,7 @@ and Inverse Discrete Wavelet Transform.
 
 from __future__ import division, print_function, absolute_import
 
+import warnings
 from copy import copy
 import numpy as np
 

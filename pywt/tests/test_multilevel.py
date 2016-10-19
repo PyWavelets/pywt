@@ -2,6 +2,7 @@
 
 from __future__ import division, print_function, absolute_import
 
+import warnings
 import numpy as np
 from numpy.testing import (run_module_suite, assert_almost_equal,
                            assert_allclose, assert_, assert_equal,
@@ -190,15 +191,19 @@ def test_swt_dtypes():
                 "swt: " + errmsg)
 
         # swt2
-        x = np.ones((8, 8), dtype=dt_in)
-        cA, (cH, cV, cD) = pywt.swt2(x, wavelet, level=1)[0]
-        assert_(cA.dtype == cH.dtype == cV.dtype == cD.dtype == dt_out,
-                "swt2: " + errmsg)
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', FutureWarning)
+            x = np.ones((8, 8), dtype=dt_in)
+            cA, (cH, cV, cD) = pywt.swt2(x, wavelet, level=1)[0]
+            assert_(cA.dtype == cH.dtype == cV.dtype == cD.dtype == dt_out,
+                    "swt2: " + errmsg)
 
 
 def test_swt2_ndim_error():
     x = np.ones(8)
-    assert_raises(ValueError, pywt.swt2, x, 'haar', level=1)
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore', FutureWarning)
+        assert_raises(ValueError, pywt.swt2, x, 'haar', level=1)
 
 
 def test_swt2_iswt2_integration():
@@ -224,8 +229,11 @@ def test_swt2_iswt2_integration():
                 current_wavelet.rec_len))))
             input_length = 2**(input_length_power + max_level - 1)
             X = np.arange(input_length**2).reshape(input_length, input_length)
-            coeffs = pywt.swt2(X, current_wavelet, max_level)
-            Y = pywt.iswt2(coeffs, current_wavelet)
+
+            with warnings.catch_warnings():
+                warnings.simplefilter('ignore', FutureWarning)
+                coeffs = pywt.swt2(X, current_wavelet, max_level)
+                Y = pywt.iswt2(coeffs, current_wavelet)
             assert_allclose(Y, X, rtol=1e-5, atol=1e-5)
 
 ####
