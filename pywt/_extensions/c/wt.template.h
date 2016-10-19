@@ -69,5 +69,10 @@ int CAT(TYPE, _swt_d)(TYPE input[], pywt_index_t input_len,
                       TYPE output[], pywt_index_t output_len,
                       int level);
 
+int CAT(TYPE, _swt_axis)(const TYPE * const restrict input, const ArrayInfo input_info,
+                              TYPE * const restrict output, const ArrayInfo output_info,
+                              const DiscreteWavelet * const restrict wavelet, const size_t axis,
+                              const Coefficient detail, int level);
+
 #endif /* TYPE */
 #undef restrict
