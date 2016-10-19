@@ -127,7 +127,7 @@ cpdef swt_axis(np.ndarray data, Wavelet wavelet, size_t level,
     output_shape = input_shape.copy()
     output_shape[axis] = common.swt_buffer_length(data.shape[axis])
     if output_shape[axis] != input_shape[axis]:
-        raise RuntimeError("swt_axis assume output_shape is the same as "
+        raise RuntimeError("swt_axis assumes output_shape is the same as "
                            "input_shape")
 
     data_info.ndim = data.ndim

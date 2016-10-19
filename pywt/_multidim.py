@@ -18,6 +18,7 @@ import numpy as np
 
 from ._extensions._pywt import Wavelet, Modes
 from ._extensions._dwt import dwt_axis, idwt_axis
+from ._extensions._swt import swt_axis as _swt_axis
 from ._swt import swt
 
 
@@ -359,4 +360,85 @@ def swt2(data, wavelet, level, start_level=0):
         "In other words, the levels will be sorted in descending rather than "
         "ascending order.", FutureWarning)
 
+    return ret
+
+
+def swtn(data, wavelet, level, start_level=0, axes=None):
+    """
+    n-dimensional stationary wavelet transform.
+
+    Parameters
+    ----------
+    data : array_like
+        n-dimensional array with input data.
+    wavelet : Wavelet object or name string
+        Wavelet to use.
+    axes : sequence of ints, optional
+        Axes over which to compute the DWT. Repeated elements mean the DWT will
+        be performed multiple times along these axes. A value of `None` (the
+        default) selects all axes.
+
+        Axes may be repeated, but information about the original size may be
+        lost if it is not divisible by `2 ** nrepeats`. The reconstruction will
+        be larger, with additional values derived according to the `mode`
+        parameter. `pywt.wavedecn` should be used for multilevel decomposition.
+
+    Returns
+    -------
+    [{coeffs_level_n}, ..., {coeffs_level_1}]: list of dict
+        Results for each level are arranged in a dictionary, where the key
+        specifies the transform type on each dimension and value is a
+        n-dimensional coefficients array.
+
+        For example, for a 2D case the result at a given level will look
+        something like this::
+
+            {'aa': <coeffs>  # A(LL) - approx. on 1st dim, approx. on 2nd dim
+             'ad': <coeffs>  # V(LH) - approx. on 1st dim, det. on 2nd dim
+             'da': <coeffs>  # H(HL) - det. on 1st dim, approx. on 2nd dim
+             'dd': <coeffs>  # D(HH) - det. on 1st dim, det. on 2nd dim
+            }
+
+        For user-specified ``axes``, the order of the characters in the
+        dictionary keys map to the specified ``axes``.
+
+    """
+    data = np.asarray(data)
+    if np.iscomplexobj(data):
+        real = swtn(data.real, wavelet, level, start_level, axes)
+        imag = swtn(data.imag, wavelet, level, start_level, axes)
+        return dict((k, real[k] + 1j * imag[k]) for k in real.keys())
+
+    if data.dtype == np.dtype('object'):
+        raise TypeError("Input must be a numeric array-like")
+    if data.ndim < 1:
+        raise ValueError("Input data must be at least 1D")
+
+    if axes is None:
+        axes = range(data.ndim)
+    axes = [a + data.ndim if a < 0 else a for a in axes]
+    num_axes = len(axes)
+
+    if not isinstance(wavelet, Wavelet):
+        wavelet = Wavelet(wavelet)
+
+    ret = []
+    for i in range(start_level, start_level + level):
+        coeffs = [('', data)]
+        for axis in axes:
+            new_coeffs = []
+            for subband, x in coeffs:
+                cA, cD = _swt_axis(x, wavelet, level=1, start_level=i,
+                                   axis=axis)[0]
+                new_coeffs.extend([(subband + 'a', cA),
+                                   (subband + 'd', cD)])
+            coeffs = new_coeffs
+
+        coeffs = dict(coeffs)
+        ret.append(coeffs)
+
+        # data for the next level is the approximation coeffs from this level
+        data = coeffs['a' * num_axes]
+
+    ret.reverse()
     return ret
