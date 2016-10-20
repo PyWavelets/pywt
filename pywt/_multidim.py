@@ -11,6 +11,7 @@ from __future__ import division, print_function, absolute_import
 
 __all__ = ['dwt2', 'idwt2', 'swt2', 'dwtn', 'idwtn']
 
+import warnings
 from itertools import product
 
 import numpy as np
@@ -351,5 +352,11 @@ def swt2(data, wavelet, level, start_level=0):
 
         # for next iteration
         data = approx
+
+    warnings.warn(
+        "For consistency with the rest of PyWavelets, the order of the list "
+        "returned by swt2 will be reversed in the next release. "
+        "In other words, the levels will be sorted in descending rather than "
+        "ascending order.", FutureWarning)
 
     return ret

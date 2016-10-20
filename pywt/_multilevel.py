@@ -10,6 +10,7 @@ and Inverse Discrete Wavelet Transform.
 
 from __future__ import division, print_function, absolute_import
 
+import warnings
 from copy import copy
 import numpy as np
 
@@ -422,6 +423,12 @@ def iswt2(coeffs, wavelet):
                 x4 = np.roll(x4, 1, axis=0)
                 x4 = np.roll(x4, 1, axis=1)
                 output[indices_h, indices_w] = (x1 + x2 + x3 + x4) / 4
+
+    warnings.warn(
+        "For consistency with the rest of PyWavelets, the order of levels in "
+        "coeffs expected by iswt2 will be reversed in the next release. "
+        "In other words, the levels will be sorted in descending rather than "
+        "ascending order.", FutureWarning)
 
     return output
 
