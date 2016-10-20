@@ -209,6 +209,9 @@ def test_swt_axis():
         for row in cD2_2d.transpose((1, 0)):
             assert_array_equal(row, cD2)
 
+    # axis too large
+    assert_raises(ValueError, pywt.swt, x, db1, level=2, axis=5)
+
 
 def test_swt_iswt_integration():
     # This function performs a round-trip swt/iswt transform test on
@@ -340,18 +343,21 @@ def test_swtn_axes():
     assert_equal(empty, [])
 
     # duplicate axes not allowed
-    assert_raises(ValueError, pywt.swt2, X, current_wavelet, 1, axes=(0, 0))
+    assert_raises(ValueError, pywt.swtn, X, current_wavelet, 1, axes=(0, 0))
 
     # data.ndim = 0
-    assert_raises(ValueError, pywt.swt2, np.asarray([]), current_wavelet, 1)
+    assert_raises(ValueError, pywt.swtn, np.asarray([]), current_wavelet, 1)
 
     # start_level too large
-    assert_raises(ValueError, pywt.swt2, X, current_wavelet,
+    assert_raises(ValueError, pywt.swtn, X, current_wavelet,
                   level=1, start_level=2)
 
     # level < 1 in swt_axis call
     assert_raises(ValueError, swt_axis, X, current_wavelet, level=0,
                   start_level=0)
+    # odd-sized data not allowed
+    assert_raises(ValueError, swt_axis, X[:-1, :], current_wavelet, level=0,
+                  start_level=0, axis=0)
 
 
 ####

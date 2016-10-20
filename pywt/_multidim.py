@@ -292,7 +292,7 @@ def swt2(data, wavelet, level, start_level=0, axes=(-2, -1)):
     start_level : int, optional
         The level at which the decomposition will start (default: 0)
     axes : 2-tuple of ints, optional
-        Axes over which to compute the IDWT. Repeated elements are not allowed.
+        Axes over which to compute the SWT. Repeated elements are not allowed.
 
     Returns
     -------
@@ -353,14 +353,8 @@ def swtn(data, wavelet, level, start_level=0, axes=None):
     wavelet : Wavelet object or name string
         Wavelet to use.
     axes : sequence of ints, optional
-        Axes over which to compute the DWT. Repeated elements mean the DWT will
-        be performed multiple times along these axes. A value of `None` (the
-        default) selects all axes.
-
-        Axes may be repeated, but information about the original size may be
-        lost if it is not divisible by `2 ** nrepeats`. The reconstruction will
-        be larger, with additional values derived according to the `mode`
-        parameter. `pywt.wavedecn` should be used for multilevel decomposition.
+        Axes over which to compute the SWT. A value of `None` (the
+        default) selects all axes. Axes may not be repeated.
 
     Returns
     -------
@@ -400,6 +394,8 @@ def swtn(data, wavelet, level, start_level=0, axes=None):
     if axes is None:
         axes = range(data.ndim)
     axes = [a + data.ndim if a < 0 else a for a in axes]
+    if len(axes) != len(set(axes)):
+        raise ValueError("The axes passed to swtn must be unique.")
     num_axes = len(axes)
 
     if not isinstance(wavelet, Wavelet):
