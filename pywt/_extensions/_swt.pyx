@@ -112,13 +112,13 @@ cpdef swt_axis(np.ndarray data, Wavelet wavelet, size_t level,
 
     if level < 1:
         raise ValueError("Level value must be greater than zero.")
-    if start_level >= common.swt_max_level(data.size):
+    if start_level >= common.swt_max_level(data.shape[axis]):
         raise ValueError("start_level must be less than %d." %
-                         common.swt_max_level(data.size))
+                         common.swt_max_level(data.shape[axis]))
 
-    if end_level > common.swt_max_level(data.size):
+    if end_level > common.swt_max_level(data.shape[axis]):
         msg = ("Level value too high (max level for current data size and "
-               "start_level is %d)." % (swt_max_level(data.size) - start_level))
+               "start_level is %d)." % (swt_max_level(data.shape[axis]) - start_level))
         raise ValueError(msg)
 
     data = data.astype(_check_dtype(data), copy=False)
