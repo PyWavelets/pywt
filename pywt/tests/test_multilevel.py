@@ -9,6 +9,7 @@ from numpy.testing import (run_module_suite, assert_almost_equal,
                            assert_raises, dec, assert_array_equal)
 
 import pywt
+from pywt._extensions._swt import swt_axis
 
 # Check that float32 and complex64 are preserved.  Other real types get
 # converted to float64.
@@ -293,6 +294,65 @@ def test_swt2_iswt2_integration():
                 coeffs = pywt.swt2(X, current_wavelet, max_level)
                 Y = pywt.iswt2(coeffs, current_wavelet)
             assert_allclose(Y, X, rtol=1e-5, atol=1e-5)
+
+
+def test_swt2_axes():
+    atol = 1e-14
+    current_wavelet = pywt.Wavelet('db2')
+    input_length_power = int(np.ceil(np.log2(max(
+        current_wavelet.dec_len,
+        current_wavelet.rec_len))))
+    input_length = 2**(input_length_power)
+    X = np.arange(input_length**2).reshape(input_length, input_length)
+    (cA1, (cH1, cV1, cD1)) = pywt.swt2(X, current_wavelet, level=1)[0]
+    # opposite order
+    (cA2, (cH2, cV2, cD2)) = pywt.swt2(X, current_wavelet, level=1,
+                                       axes=(1, 0))[0]
+    assert_allclose(cA1, cA2, atol=atol)
+    assert_allclose(cH1, cV2, atol=atol)
+    assert_allclose(cV1, cH2, atol=atol)
+    assert_allclose(cD1, cD2, atol=atol)
+
+    # duplicate axes not allowed
+    assert_raises(ValueError, pywt.swt2, X, current_wavelet, 1, axes=(0, 0))
+    # too few axes
+    assert_raises(ValueError, pywt.swt2, X, current_wavelet, 1, axes=(0, ))
+
+
+def test_swtn_axes():
+    atol = 1e-14
+    current_wavelet = pywt.Wavelet('db2')
+    input_length_power = int(np.ceil(np.log2(max(
+        current_wavelet.dec_len,
+        current_wavelet.rec_len))))
+    input_length = 2**(input_length_power)
+    X = np.arange(input_length**2).reshape(input_length, input_length)
+    coeffs = pywt.swtn(X, current_wavelet, level=1, axes=None)[0]
+    # opposite order
+    coeffs2 = pywt.swtn(X, current_wavelet, level=1, axes=(1, 0))[0]
+    assert_allclose(coeffs['aa'], coeffs2['aa'], atol=atol)
+    assert_allclose(coeffs['ad'], coeffs2['da'], atol=atol)
+    assert_allclose(coeffs['da'], coeffs2['ad'], atol=atol)
+    assert_allclose(coeffs['dd'], coeffs2['dd'], atol=atol)
+
+    # 0-level transform
+    empty = pywt.swtn(X, current_wavelet, level=0)
+    assert_equal(empty, [])
+
+    # duplicate axes not allowed
+    assert_raises(ValueError, pywt.swt2, X, current_wavelet, 1, axes=(0, 0))
+
+    # data.ndim = 0
+    assert_raises(ValueError, pywt.swt2, np.asarray([]), current_wavelet, 1)
+
+    # start_level too large
+    assert_raises(ValueError, pywt.swt2, X, current_wavelet,
+                  level=1, start_level=2)
+
+    # level < 1 in swt_axis call
+    assert_raises(ValueError, swt_axis, X, current_wavelet, level=0,
+                  start_level=0)
+
 
 ####
 # 2d multilevel dwt function tests
