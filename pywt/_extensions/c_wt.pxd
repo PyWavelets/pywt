@@ -1,7 +1,8 @@
 # Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/>
 # See COPYING for license details.
 
-from common cimport MODE, pywt_index_t, ArrayInfo, Coefficient
+from common cimport (MODE, pywt_index_t, ArrayInfo, Coefficient,
+                     DiscreteTransformType)
 from wavelet cimport DiscreteWavelet, ContinuousWavelet
 
 
@@ -10,7 +11,9 @@ cdef extern from "c/wt.h":
     cdef int double_downcoef_axis(const double * const input, const ArrayInfo input_info,
                                   double * const output, const ArrayInfo output_info,
                                   const DiscreteWavelet * const wavelet, const size_t axis,
-                                  const Coefficient detail, const MODE mode) nogil
+                                  const Coefficient detail, const MODE dwt_mode,
+                                  const size_t swt_level,
+                                  const DiscreteTransformType transform) nogil
     cdef int double_idwt_axis(const double * const coefs_a, const ArrayInfo * const a_info,
                               const double * const coefs_d, const ArrayInfo * const d_info,
                               double * const output, const ArrayInfo output_info,
@@ -47,7 +50,9 @@ cdef extern from "c/wt.h":
     cdef int float_downcoef_axis(const float * const input, const ArrayInfo input_info,
                                  float * const output, const ArrayInfo output_info,
                                  const DiscreteWavelet * const wavelet, const size_t axis,
-                                 const Coefficient detail, const MODE mode) nogil
+                                 const Coefficient detail, const MODE dwt_mode,
+                                 const size_t swt_level,
+                                 const DiscreteTransformType transform) nogil
     cdef int float_idwt_axis(const float * const coefs_a, const ArrayInfo * const a_info,
                              const float * const coefs_d, const ArrayInfo * const d_info,
                              float * const output, const ArrayInfo output_info,
@@ -78,15 +83,6 @@ cdef extern from "c/wt.h":
                          float output[], pywt_index_t output_len, int level) nogil
     cdef int float_swt_d(float input[], pywt_index_t input_len, DiscreteWavelet* wavelet,
                          float output[], pywt_index_t output_len, int level) nogil
-
-    cdef int float_swt_axis(const float * const input, const ArrayInfo input_info,
-                            float * const output, const ArrayInfo output_info,
-                            const DiscreteWavelet * const wavelet, const size_t axis,
-                            const Coefficient detail, unsigned int level) nogil
-    cdef int double_swt_axis(const double * const input, const ArrayInfo input_info,
-                             double * const output, const ArrayInfo output_info,
-                             const DiscreteWavelet * const wavelet, const size_t axis,
-                             const Coefficient detail, unsigned int level) nogil
 
 cdef extern from "c/cwt.h":
     # Cython does not know the 'restrict' keyword

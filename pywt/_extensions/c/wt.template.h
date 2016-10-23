@@ -23,7 +23,9 @@
 int CAT(TYPE, _downcoef_axis)(const TYPE * const restrict input, const ArrayInfo input_info,
                               TYPE * const restrict output, const ArrayInfo output_info,
                               const DiscreteWavelet * const restrict wavelet, const size_t axis,
-                              const Coefficient detail, const MODE mode);
+                              const Coefficient detail, const MODE dwt_mode,
+                              const size_t swt_level,
+                              const DiscreteTransformType transform);
 
 // a_info and d_info are pointers, as they may be NULL
 int CAT(TYPE, _idwt_axis)(const TYPE * const restrict coefs_a, const ArrayInfo * a_info,

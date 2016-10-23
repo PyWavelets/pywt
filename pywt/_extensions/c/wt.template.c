@@ -20,7 +20,9 @@
 int CAT(TYPE, _downcoef_axis)(const TYPE * const restrict input, const ArrayInfo input_info,
                               TYPE * const restrict output, const ArrayInfo output_info,
                               const DiscreteWavelet * const restrict wavelet, const size_t axis,
-                              const Coefficient coef, const MODE mode){
+                              const Coefficient coef, const MODE dwt_mode,
+                              const size_t swt_level,
+                              const DiscreteTransformType transform){
     size_t i;
     size_t num_loops = 1;
     TYPE * temp_input = NULL, * temp_output = NULL;
@@ -35,9 +37,18 @@ int CAT(TYPE, _downcoef_axis)(const TYPE * const restrict input, const ArrayInfo
 
     for (i = 0; i < input_info.ndim; ++i){
         if (i == axis){
-            if (dwt_buffer_length(input_info.shape[i], wavelet->dec_len, mode)
-                != output_info.shape[i])
-                return 1;
+            switch (transform) {
+            case DWT_TRANSFORM:
+                if (dwt_buffer_length(input_info.shape[i], wavelet->dec_len,
+                                      dwt_mode) != output_info.shape[i])
+                    return 1;
+                break;
+            case SWT_TRANSFORM:
+                if (swt_buffer_length(input_info.shape[i])
+                    != output_info.shape[i])
+                    return 1;
+                break;
+            }
         } else {
             if (input_info.shape[i] != output_info.shape[i])
                 return 1;
@@ -92,16 +103,43 @@ int CAT(TYPE, _downcoef_axis)(const TYPE * const restrict input, const ArrayInfo
         output_row = make_temp_output ? temp_output
             : (TYPE *)((char *) output + output_offset);
 
-        // Apply along axis
-        switch (coef){
-        case COEF_APPROX:
-            CAT(TYPE, _dec_a)(input_row, input_info.shape[axis], wavelet,
-                              output_row, output_info.shape[axis], mode);
-            break;
-        case COEF_DETAIL:
-            CAT(TYPE, _dec_d)(input_row, input_info.shape[axis], wavelet,
-                              output_row, output_info.shape[axis], mode);
-            break;
+
+        switch (transform) {
+            case DWT_TRANSFORM:
+                // Apply along axis
+                switch (coef){
+                case COEF_APPROX:
+                    CAT(TYPE, _dec_a)(input_row, input_info.shape[axis],
+                                      wavelet,
+                                      output_row, output_info.shape[axis],
+                                      dwt_mode);
+                    break;
+                case COEF_DETAIL:
+                    CAT(TYPE, _dec_d)(input_row, input_info.shape[axis],
+                                      wavelet,
+                                      output_row, output_info.shape[axis],
+                                      dwt_mode);
+                    break;
+                }
+                break;
+
+            case SWT_TRANSFORM:
+                // Apply along axis
+                switch (coef){
+                case COEF_APPROX:
+                    CAT(TYPE, _swt_a)(input_row, input_info.shape[axis],
+                                      wavelet,
+                                      output_row, output_info.shape[axis],
+                                      swt_level);
+                    break;
+                case COEF_DETAIL:
+                    CAT(TYPE, _swt_d)(input_row, input_info.shape[axis],
+                                      wavelet,
+                                      output_row, output_info.shape[axis],
+                                      swt_level);
+                    break;
+                }
+                break;
         }
 
         // Copy from temporary output if necessary
@@ -465,113 +503,6 @@ int CAT(TYPE, _swt_d)(TYPE input[], pywt_index_t input_len,
                       unsigned int level){
     return CAT(TYPE, _swt_)(input, input_len, wavelet->CAT(dec_hi_, TYPE),
                             wavelet->dec_len, output, output_len, level);
-}
-
-int CAT(TYPE, _swt_axis)(const TYPE * const restrict input, const ArrayInfo input_info,
-                         TYPE * const restrict output, const ArrayInfo output_info,
-                         const DiscreteWavelet * const restrict wavelet, const size_t axis,
-                         const Coefficient coef, unsigned int level){
-    size_t i;
-    size_t num_loops = 1;
-    TYPE * temp_input = NULL, * temp_output = NULL;
-
-    // These are boolean values, but MSVC does not have <stdbool.h>
-    int make_temp_input, make_temp_output;
-
-    if (input_info.ndim != output_info.ndim)
-        return 1;
-    if (axis >= input_info.ndim)
-        return 1;
-
-    for (i = 0; i < input_info.ndim; ++i){
-        if (i == axis){
-            if (swt_buffer_length(input_info.shape[i])
-                != output_info.shape[i])
-                return 1;
-        } else {
-            if (input_info.shape[i] != output_info.shape[i])
-                return 1;
-        }
-    }
-
-    make_temp_input = input_info.strides[axis] != sizeof(TYPE);
-    make_temp_output = output_info.strides[axis] != sizeof(TYPE);
-    if (make_temp_input)
-        if ((temp_input = malloc(input_info.shape[axis] * sizeof(TYPE))) == NULL)
-            goto cleanup;
-    if (make_temp_output)
-        if ((temp_output = malloc(output_info.shape[axis] * sizeof(TYPE))) == NULL)
-            goto cleanup;
-
-    for (i = 0; i < output_info.ndim; ++i){
-        if (i != axis)
-            num_loops *= output_info.shape[i];
-    }
-
-    for (i = 0; i < num_loops; ++i){
-        size_t j;
-        size_t input_offset = 0, output_offset = 0;
-        const TYPE * input_row;
-        TYPE * output_row;
-
-        // Calculate offset into linear buffer
-        {
-            size_t reduced_idx = i;
-            for (j = 0; j < output_info.ndim; ++j){
-                size_t j_rev = output_info.ndim - 1 - j;
-                if (j_rev != axis){
-                    size_t axis_idx = reduced_idx % output_info.shape[j_rev];
-                    reduced_idx /= output_info.shape[j_rev];
-
-                    input_offset += (axis_idx * input_info.strides[j_rev]);
-                    output_offset += (axis_idx * output_info.strides[j_rev]);
-                }
-            }
-        }
-
-        // Copy to temporary input if necessary
-        if (make_temp_input)
-            for (j = 0; j < input_info.shape[axis]; ++j)
-                // Offsets are byte offsets, to need to cast to char and back
-                temp_input[j] = *(TYPE *)(((char *) input) + input_offset
-                                          + j * input_info.strides[axis]);
-
-        // Select temporary or direct output and input
-        input_row = make_temp_input ? temp_input
-            : (const TYPE *)((const char *) input + input_offset);
-        output_row = make_temp_output ? temp_output
-            : (TYPE *)((char *) output + output_offset);
-
-        // Apply along axis
-        switch (coef){
-        case COEF_APPROX:
-            CAT(TYPE, _swt_a)(input_row, input_info.shape[axis],
-                              wavelet, output_row, output_info.shape[axis],
-                              level);
-            break;
-        case COEF_DETAIL:
-            CAT(TYPE, _swt_d)(input_row, input_info.shape[axis],
-                              wavelet, output_row, output_info.shape[axis],
-                              level);
-            break;
-        }
-
-        // Copy from temporary output if necessary
-        if (make_temp_output)
-            for (j = 0; j < output_info.shape[axis]; ++j)
-                // Offsets are byte offsets, to need to cast to char and back
-                *(TYPE *)((char *) output + output_offset
-                          + j * output_info.strides[axis]) = output_row[j];
-    }
-
-    free(temp_input);
-    free(temp_output);
-    return 0;
-
- cleanup:
-    free(temp_input);
-    free(temp_output);
-    return 2;
 }
 
 #endif /* TYPE */

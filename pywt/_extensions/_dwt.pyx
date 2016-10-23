@@ -83,26 +83,30 @@ cpdef dwt_axis(np.ndarray data, Wavelet wavelet, MODE mode, unsigned int axis=0)
         with nogil:
             retval = c_wt.double_downcoef_axis(<double *> data.data, data_info,
                                          <double *> cA.data, output_info,
-                                         wavelet.w, axis, common.COEF_APPROX, mode)
+                                         wavelet.w, axis, common.COEF_APPROX, mode,
+                                         0, common.DWT_TRANSFORM)
         if retval:
             raise RuntimeError("C wavelet transform failed")
         with nogil:
             retval = c_wt.double_downcoef_axis(<double *> data.data, data_info,
                                      <double *> cD.data, output_info,
-                                     wavelet.w, axis, common.COEF_DETAIL, mode)
+                                     wavelet.w, axis, common.COEF_DETAIL, mode,
+                                     0, common.DWT_TRANSFORM)
         if retval:
             raise RuntimeError("C wavelet transform failed")
     elif data.dtype == np.float32:
         with nogil:
             retval = c_wt.float_downcoef_axis(<float *> data.data, data_info,
                                     <float *> cA.data, output_info,
-                                    wavelet.w, axis, common.COEF_APPROX, mode)
+                                    wavelet.w, axis, common.COEF_APPROX, mode,
+                                    0, common.DWT_TRANSFORM)
         if retval:
             raise RuntimeError("C wavelet transform failed")
         with nogil:
             retval = c_wt.float_downcoef_axis(<float *> data.data, data_info,
                                     <float *> cD.data, output_info,
-                                    wavelet.w, axis, common.COEF_DETAIL, mode)
+                                    wavelet.w, axis, common.COEF_DETAIL, mode,
+                                    0, common.DWT_TRANSFORM)
         if retval:
             raise RuntimeError("C wavelet transform failed")
     else:

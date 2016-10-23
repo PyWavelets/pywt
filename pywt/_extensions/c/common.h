@@ -53,6 +53,11 @@ typedef enum {
     COEF_DETAIL = 1,
 } Coefficient;
 
+typedef enum {
+    DWT_TRANSFORM = 0,
+    SWT_TRANSFORM = 1,
+} DiscreteTransformType;
+
 /* Signal extension modes */
 typedef enum {
        MODE_INVALID = -1,
