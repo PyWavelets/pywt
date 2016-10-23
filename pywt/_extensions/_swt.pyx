@@ -145,39 +145,43 @@ cpdef swt_axis(np.ndarray data, Wavelet wavelet, size_t level,
         if data.dtype == np.float64:
             cA = np.zeros(output_shape, dtype=np.float64)
             with nogil:
-                retval = c_wt.double_swt_axis(<double *> data.data, data_info,
-                                              <double *> cA.data, output_info,
-                                              wavelet.w, axis,
-                                              common.COEF_APPROX,
-                                              i)
+                retval = c_wt.double_downcoef_axis(
+                    <double *> data.data, data_info,
+                    <double *> cA.data, output_info,
+                    wavelet.w, axis,
+                    common.COEF_APPROX, common.MODE_PERIODIZATION,
+                    i, common.SWT_TRANSFORM)
             if retval:
                 raise RuntimeError("C wavelet transform failed")
             cD = np.zeros(output_shape, dtype=np.float64)
             with nogil:
-                retval = c_wt.double_swt_axis(<double *> data.data, data_info,
-                                              <double *> cD.data, output_info,
-                                              wavelet.w, axis,
-                                              common.COEF_DETAIL,
-                                              i)
+                retval = c_wt.double_downcoef_axis(
+                    <double *> data.data, data_info,
+                    <double *> cD.data, output_info,
+                    wavelet.w, axis,
+                    common.COEF_DETAIL, common.MODE_PERIODIZATION,
+                    i, common.SWT_TRANSFORM)
             if retval:
                 raise RuntimeError("C wavelet transform failed")
         elif data.dtype == np.float32:
             cA = np.zeros(output_shape, dtype=np.float32)
             with nogil:
-                retval = c_wt.float_swt_axis(<float *> data.data, data_info,
-                                             <float *> cA.data, output_info,
-                                             wavelet.w, axis,
-                                             common.COEF_APPROX,
-                                             i)
+                retval = c_wt.float_downcoef_axis(
+                    <float *> data.data, data_info,
+                    <float *> cA.data, output_info,
+                    wavelet.w, axis,
+                    common.COEF_APPROX, common.MODE_PERIODIZATION,
+                    i, common.SWT_TRANSFORM)
             if retval:
                 raise RuntimeError("C wavelet transform failed")
             cD = np.zeros(output_shape, dtype=np.float32)
             with nogil:
-                retval = c_wt.float_swt_axis(<float *> data.data, data_info,
-                                             <float *> cD.data, output_info,
-                                             wavelet.w, axis,
-                                             common.COEF_DETAIL,
-                                             i)
+                retval = c_wt.float_downcoef_axis(
+                    <float *> data.data, data_info,
+                    <float *> cD.data, output_info,
+                    wavelet.w, axis,
+                    common.COEF_DETAIL, common.MODE_PERIODIZATION,
+                    i, common.SWT_TRANSFORM)
             if retval:
                 raise RuntimeError("C wavelet transform failed")
         else:
