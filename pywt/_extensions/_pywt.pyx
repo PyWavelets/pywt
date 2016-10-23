@@ -1,11 +1,12 @@
 # Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/>
+# Copyright (c) 2012-2016 The PyWavelets Developers
+#                         <https://github.com/PyWavelets/pywt>
 # See COPYING for license details.
 
-__doc__ = """Pyrex wrapper for low-level C wavelet transform implementation."""
+__doc__ = """Cython wrapper for low-level C wavelet transform implementation."""
 __all__ = ['MODES', 'Modes', 'DiscreteContinuousWavelet', 'Wavelet', 'ContinuousWavelet', 'wavelist', 'families']
 
-###############################################################################
-# imports
+
 import warnings
 
 cimport c_wt
@@ -18,8 +19,6 @@ from libc.math cimport pow, sqrt
 import numpy as np
 
 
-###############################################################################
-# Modes
 _old_modes = ['zpd',
               'cpd',
               'sym',
@@ -31,6 +30,7 @@ _old_modes = ['zpd',
 _attr_deprecation_msg = ('{old} has been renamed to {new} and will '
                          'be unavailable in a future version '
                          'of pywt.')
+
 
 class _Modes(object):
     """

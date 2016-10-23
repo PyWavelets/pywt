@@ -1,4 +1,6 @@
 # Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/>
+# Copyright (c) 2012-2016 The PyWavelets Developers
+#                         <https://github.com/PyWavelets/pywt>
 # See COPYING for license details.
 
 from common cimport MODE, pywt_index_t, ArrayInfo, Coefficient

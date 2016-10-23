@@ -1,7 +1,8 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 # Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/>
+# Copyright (c) 2012-2016 The PyWavelets Developers
+#                         <https://github.com/PyWavelets/pywt>
 # See COPYING for license details.
 
 """
