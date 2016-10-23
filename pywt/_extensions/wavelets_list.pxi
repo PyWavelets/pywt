@@ -1,7 +1,9 @@
 # Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/>
+# Copyright (c) 2012-2016 The PyWavelets Developers
+#                         <https://github.com/PyWavelets/pywt>
 # See COPYING for license details.
 
-## Mapping of wavelet names to the C backend codes
+# Mapping of wavelet names to the C backend codes
 
 cdef extern from "c/wavelets.h":   
     ctypedef enum WAVELET_NAME:
