@@ -248,3 +248,143 @@ from plain Python lists of filter coefficients and a *filter bank-like* objects.
     ...         return [dec_lo, dec_hi, rec_lo, rec_hi]
     >>> filter_bank = HaarFilterBank()
     >>> myOtherWavelet = pywt.Wavelet(name="myHaarWavelet", filter_bank=filter_bank)
+
+
+``ContinuousWavelet`` object
+------------------
+
+.. class:: ContinuousWavelet(name)
+
+  Describes properties of a continous wavelet identified by the specified wavelet *name*.
+  In order to use a built-in wavelet the *name* parameter must be a valid
+  wavelet name from the :func:`pywt.wavelist` list.
+
+  :param name: Wavelet name
+
+  **Example:**
+
+  .. sourcecode:: python
+
+    >>> import pywt
+    >>> wavelet = pywt.ContinuousWavelet('gaus1')
+
+  .. attribute:: name
+
+      Continuous Wavelet name.
+
+  .. attribute:: short_family_name
+
+      Wavelet short family name
+
+  .. attribute:: family_name
+
+      Wavelet family name
+
+  .. attribute:: orthogonal
+
+      Set if wavelet is orthogonal
+
+  .. attribute:: biorthogonal
+
+      Set if wavelet is biorthogonal
+
+  .. attribute:: complex_cwt
+
+      Returns if wavelet is complex
+
+  .. attribute:: lower_bound
+
+      Set the lower bound of the effective support
+
+  .. attribute:: upper_bound
+
+      Set the upper bound of the effective support
+
+  .. attribute:: center_frequency
+
+      Set the center frequency for the shan, fbsp and cmor wavelets
+
+  .. attribute:: bandwidth_frequency
+
+      Set the bandwidth frequency for the shan, fbsp and cmor wavelets
+
+  .. attribute:: fbsp_order
+
+      Set the order for the fbsp wavelet
+
+  .. attribute:: symmetry
+
+      ``asymmetric``, ``near symmetric``, ``symmetric``, ``anti-symmetric``
+
+  **Example:**
+
+  .. sourcecode:: python
+
+    >>> import pywt
+    >>> wavelet = pywt.ContinuousWavelet('gaus1')
+    >>> print(wavelet)
+    ContinuousWavelet gaus1
+      Family name:    Gaussian
+      Short name:     db
+      Symmetry:       anti-symmetric
+      DWT:            False
+      CWT:            True
+      Complex CWT:    False
+
+Approximating wavelet functions - ``ContinuousWavelet.wavefun()``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. method:: ContinuousWavelet.wavefun(level, length = None)
+
+
+  The :meth:`~ContinuousWavelet.wavefun` method can be used to calculate approximations of
+  scaling function (*psi*) with grid (*x*). The vector length is set by *length*.
+  The vector length can also be defined by 2**level if *length* is not set.
+
+  For :attr:`complex_cwt <ContinuousWavelet.complex_cwt>` wavelets returns a complex approximations of
+  wavelet function with corresponding x-grid coordinates::
+
+    [psi, x] = wavelet.wavefun(level)
+
+  **Example:**
+
+  .. sourcecode:: python
+
+    >>> import pywt
+    >>> wavelet = pywt.ContinuousWavelet('gaus1')
+    >>> psi, x = wavelet.wavefun(level=5)
+
+Approximating wavelet functions - ``ContinuousWavelet.wavefun()``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. method:: DiscreteContinuousWavelet(name, [filter_bank = None])
+
+
+  The :meth:`~DiscreteContinuousWavelet` returns a
+    Wavelet or a ContinuousWavelet object depending of the given name.
+
+  **Example:**
+
+  .. sourcecode:: python
+
+    >>> import pywt
+    >>> wavelet = pywt.DiscreteContinuousWavelet('db1')
+    >>> print(wavelet)
+    Wavelet db1
+      Family name:    Daubechies
+      Short name:     db
+      Filters length: 2
+      Orthogonal:     True
+      Biorthogonal:   True
+      Symmetry:       asymmetric
+      DWT:            True
+      CWT:            False
+    >>> wavelet = pywt.DiscreteContinuousWavelet('gaus1')
+    >>> print(wavelet)
+    ContinuousWavelet gaus1
+      Family name:    Gaussian
+      Short name:     db
+      Symmetry:       anti-symmetric
+      DWT:            False
+      CWT:            True
+      Complex CWT:    False
