@@ -25,7 +25,7 @@ def swt(data, wavelet, level=None, start_level=0, axis=-1):
         skip a given number of transform steps and compute
         coefficients starting from start_level) (default: 0)
     axis: int, optional
-        Axis over which to compute the DWT. If not given, the
+        Axis over which to compute the SWT. If not given, the
         last axis is used.
 
     Returns

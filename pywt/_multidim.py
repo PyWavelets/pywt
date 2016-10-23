@@ -129,13 +129,14 @@ def dwtn(data, wavelet, mode='symmetric', axes=None):
         Signal extension mode, see `Modes`.  Default is 'symmetric'.
     axes : sequence of ints, optional
         Axes over which to compute the DWT. Repeated elements mean the DWT will
-        be performed multiple times along these axes. A value of `None` (the
+        be performed multiple times along these axes. A value of ``None`` (the
         default) selects all axes.
 
         Axes may be repeated, but information about the original size may be
-        lost if it is not divisible by `2 ** nrepeats`. The reconstruction will
-        be larger, with additional values derived according to the `mode`
-        parameter. `pywt.wavedecn` should be used for multilevel decomposition.
+        lost if it is not divisible by ``2 ** nrepeats``. The reconstruction
+        will be larger, with additional values derived according to the
+        ``mode`` parameter. ``pywt.wavedecn`` should be used for multilevel
+        decomposition.
 
     Returns
     -------
@@ -222,11 +223,11 @@ def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
         see Modes (default: 'symmetric').
     axes : sequence of ints, optional
         Axes over which to compute the IDWT. Repeated elements mean the IDWT
-        will be performed multiple times along these axes. A value of `None`
+        will be performed multiple times along these axes. A value of ``None``
         (the default) selects all axes.
 
         For the most accurate reconstruction, the axes should be provided in
-        the same order as they were provided to `dwtn`.
+        the same order as they were provided to ``dwtn``.
 
     Returns
     -------
@@ -337,7 +338,6 @@ def swt2(data, wavelet, level, start_level=0, axes=(-2, -1)):
         "In other words, the levels will be sorted in descending rather than "
         "ascending order.", FutureWarning)
     # reverse order for backwards compatiblity
-    # TODO:  deprecate this for consistency with swtn, swt, wavedecn, etc.
     ret.reverse()
     return ret
 
@@ -352,8 +352,12 @@ def swtn(data, wavelet, level, start_level=0, axes=None):
         n-dimensional array with input data.
     wavelet : Wavelet object or name string
         Wavelet to use.
+    level : int
+        The number of decomposition steps to perform.
+    start_level : int, optional
+        The level at which the decomposition will start (default: 0)
     axes : sequence of ints, optional
-        Axes over which to compute the SWT. A value of `None` (the
+        Axes over which to compute the SWT. A value of ``None`` (the
         default) selects all axes. Axes may not be repeated.
 
     Returns
