@@ -307,19 +307,22 @@ def test_swt2_axes():
         current_wavelet.rec_len))))
     input_length = 2**(input_length_power)
     X = np.arange(input_length**2).reshape(input_length, input_length)
-    (cA1, (cH1, cV1, cD1)) = pywt.swt2(X, current_wavelet, level=1)[0]
-    # opposite order
-    (cA2, (cH2, cV2, cD2)) = pywt.swt2(X, current_wavelet, level=1,
-                                       axes=(1, 0))[0]
-    assert_allclose(cA1, cA2, atol=atol)
-    assert_allclose(cH1, cV2, atol=atol)
-    assert_allclose(cV1, cH2, atol=atol)
-    assert_allclose(cD1, cD2, atol=atol)
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore', FutureWarning)
+        (cA1, (cH1, cV1, cD1)) = pywt.swt2(X, current_wavelet, level=1)[0]
+        # opposite order
+        (cA2, (cH2, cV2, cD2)) = pywt.swt2(X, current_wavelet, level=1,
+                                           axes=(1, 0))[0]
+        assert_allclose(cA1, cA2, atol=atol)
+        assert_allclose(cH1, cV2, atol=atol)
+        assert_allclose(cV1, cH2, atol=atol)
+        assert_allclose(cD1, cD2, atol=atol)
 
-    # duplicate axes not allowed
-    assert_raises(ValueError, pywt.swt2, X, current_wavelet, 1, axes=(0, 0))
-    # too few axes
-    assert_raises(ValueError, pywt.swt2, X, current_wavelet, 1, axes=(0, ))
+        # duplicate axes not allowed
+        assert_raises(ValueError, pywt.swt2, X, current_wavelet, 1,
+                      axes=(0, 0))
+        # too few axes
+        assert_raises(ValueError, pywt.swt2, X, current_wavelet, 1, axes=(0, ))
 
 
 def test_swtn_axes():
