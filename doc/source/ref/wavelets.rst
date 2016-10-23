@@ -27,7 +27,8 @@ Built-in wavelets - ``wavelist()``
 .. class:: Wavelet(name[, filter_bank=None])
 
   Describes properties of a wavelet identified by the specified wavelet
-  ``name``. In order to use a built-in wavelet the ``name`` parameter must be a valid wavelet name from the :func:`pywt.wavelist` list.
+  ``name``. In order to use a built-in wavelet the ``name`` parameter must be a
+  valid wavelet name from the :func:`pywt.wavelist` list.
 
   Custom Wavelet objects can be created by passing a user-defined filters set
   with the ``filter_bank`` parameter.
@@ -228,7 +229,7 @@ filters or an object with a :attr:`~Wavelet.filter_bank` attribute as a
 The Wavelet object created in this way is a standard :class:`Wavelet` instance.
 
 The following example illustrates the way of creating custom Wavelet objects
-from plain Python lists of filter coefficients and a *filter bank-like* objects.
+from plain Python lists of filter coefficients and a *filter bank-like* object.
 
   **Example:**
 
@@ -251,12 +252,12 @@ from plain Python lists of filter coefficients and a *filter bank-like* objects.
 
 
 ``ContinuousWavelet`` object
-------------------
+----------------------------
 
 .. class:: ContinuousWavelet(name)
 
-  Describes properties of a continous wavelet identified by the specified wavelet *name*.
-  In order to use a built-in wavelet the *name* parameter must be a valid
+  Describes properties of a continous wavelet identified by the specified wavelet ``name``.
+  In order to use a built-in wavelet the ``name`` parameter must be a valid
   wavelet name from the :func:`pywt.wavelist` list.
 
   :param name: Wavelet name
@@ -332,14 +333,14 @@ from plain Python lists of filter coefficients and a *filter bank-like* objects.
       Complex CWT:    False
 
 Approximating wavelet functions - ``ContinuousWavelet.wavefun()``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. method:: ContinuousWavelet.wavefun(level, length = None)
 
 
   The :meth:`~ContinuousWavelet.wavefun` method can be used to calculate approximations of
-  scaling function (*psi*) with grid (*x*). The vector length is set by *length*.
-  The vector length can also be defined by 2**level if *length* is not set.
+  scaling function (``psi``) with grid (``x``). The vector length is set by ``length``.
+  The vector length can also be defined by ``2**level`` if ``length`` is not set.
 
   For :attr:`complex_cwt <ContinuousWavelet.complex_cwt>` wavelets returns a complex approximations of
   wavelet function with corresponding x-grid coordinates::
@@ -355,13 +356,13 @@ Approximating wavelet functions - ``ContinuousWavelet.wavefun()``
     >>> psi, x = wavelet.wavefun(level=5)
 
 Approximating wavelet functions - ``ContinuousWavelet.wavefun()``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. method:: DiscreteContinuousWavelet(name, [filter_bank = None])
 
 
   The :meth:`~DiscreteContinuousWavelet` returns a
-    Wavelet or a ContinuousWavelet object depending of the given name.
+    Wavelet or a ContinuousWavelet object depending on the given name.
 
   **Example:**
 
