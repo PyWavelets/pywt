@@ -122,5 +122,18 @@ def test_ContinuousWavelet_repr():
     assert_(wavelet.__repr__() == repr_wavelet.__repr__())
 
 
+def test_wavelist():
+    for name in pywt.wavelist(family='coif'):
+        assert_(name.startswith('coif'))
+
+    assert_('cgau7' in pywt.wavelist(kind='continuous'))
+    assert_('sym20' in pywt.wavelist(kind='discrete'))
+    assert_(len(pywt.wavelist(kind='continuous')) +
+            len(pywt.wavelist(kind='discrete')) ==
+            len(pywt.wavelist(kind='all')))
+
+    assert_raises(ValueError, pywt.wavelist, kind='foobar')
+
+
 if __name__ == '__main__':
     run_module_suite()

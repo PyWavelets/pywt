@@ -175,5 +175,12 @@ __wname_to_code = {
 ## Lists of family names
 
 cdef __wfamily_list_short, __wfamily_list_long
-__wfamily_list_short = ["haar", "db", "sym", "coif", "bior", "rbio", "dmey", "gaus", "mexh", "morl", "cgau", "shan", "fbsp", "cmor"]
-__wfamily_list_long = ["Haar", "Daubechies", "Symlets", "Coiflets", "Biorthogonal", "Reverse biorthogonal", "Discrete Meyer (FIR Approximation)", "Gaussian", "Mexican hat wavelet", "Morlet wavelet", "Complex Gaussian wavelets", "Shannon wavelets", "Frequency B-Spline wavelets",  "Complex Morlet wavelets"]
+__wfamily_list_short = [
+    "haar", "db", "sym", "coif", "bior", "rbio", "dmey", "gaus", "mexh",
+    "morl", "cgau", "shan", "fbsp", "cmor"]
+_wfamily_list_long = [
+    "Haar", "Daubechies", "Symlets", "Coiflets", "Biorthogonal",
+    "Reverse biorthogonal", "Discrete Meyer (FIR Approximation)", "Gaussian",
+    "Mexican hat wavelet", "Morlet wavelet", "Complex Gaussian wavelets",
+    "Shannon wavelets", "Frequency B-Spline wavelets",
+    "Complex Morlet wavelets"]
