@@ -152,9 +152,6 @@ cdef object wname_to_code(name):
     cdef object code_number
     try:
         code_number = __wname_to_code[name]
-        assert len(code_number) == 2
-        assert isinstance(code_number[0], int)
-        assert isinstance(code_number[1], int)
         return code_number
     except KeyError:
         raise ValueError("Unknown wavelet name '%s', check wavelist() for the "
