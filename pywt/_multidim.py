@@ -9,17 +9,14 @@
 
 from __future__ import division, print_function, absolute_import
 
-__all__ = ['dwt2', 'idwt2', 'swt2', 'swtn', 'dwtn', 'idwtn']
+__all__ = ['dwt2', 'idwt2', 'dwtn', 'idwtn']
 
-import warnings
 from itertools import product
 
 import numpy as np
 
 from ._extensions._pywt import Wavelet, Modes
 from ._extensions._dwt import dwt_axis, idwt_axis
-from ._extensions._swt import swt_axis as _swt_axis
-from ._swt import swt
 
 
 def dwt2(data, wavelet, mode='symmetric', axes=(-2, -1)):
@@ -276,152 +273,3 @@ def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
         coeffs = new_coeffs
 
     return coeffs['']
-
-
-def swt2(data, wavelet, level, start_level=0, axes=(-2, -1)):
-    """
-    2D Stationary Wavelet Transform.
-
-    Parameters
-    ----------
-    data : array_like
-        2D array with input data
-    wavelet : Wavelet object or name string
-        Wavelet to use
-    level : int
-        The number of decomposition steps to perform.
-    start_level : int, optional
-        The level at which the decomposition will start (default: 0)
-    axes : 2-tuple of ints, optional
-        Axes over which to compute the SWT. Repeated elements are not allowed.
-
-    Returns
-    -------
-    coeffs : list
-        Approximation and details coefficients::
-
-            [
-                (cA_m,
-                    (cH_m, cV_m, cD_m)
-                ),
-                (cA_m+1,
-                    (cH_m+1, cV_m+1, cD_m+1)
-                ),
-                ...,
-                (cA_m+level,
-                    (cH_m+level, cV_m+level, cD_m+level)
-                )
-            ]
-
-        where cA is approximation, cH is horizontal details, cV is
-        vertical details, cD is diagonal details and m is ``start_level``.
-
-    """
-    axes = tuple(axes)
-    data = np.asarray(data)
-    if len(axes) != 2:
-        raise ValueError("Expected 2 axes")
-    if len(axes) != len(set(axes)):
-        raise ValueError("The axes passed to swt2 must be unique.")
-    if data.ndim < len(np.unique(axes)):
-        raise ValueError("Input array has fewer dimensions than the specified "
-                         "axes")
-
-    coefs = swtn(data, wavelet, level, start_level, axes)
-    ret = []
-    for c in coefs:
-        ret.append((c['aa'], (c['da'], c['ad'], c['dd'])))
-
-    warnings.warn(
-        "For consistency with the rest of PyWavelets, the order of the list "
-        "returned by swt2 will be reversed in the next release. "
-        "In other words, the levels will be sorted in descending rather than "
-        "ascending order.", FutureWarning)
-    # reverse order for backwards compatiblity
-    ret.reverse()
-    return ret
-
-
-def swtn(data, wavelet, level, start_level=0, axes=None):
-    """
-    n-dimensional stationary wavelet transform.
-
-    Parameters
-    ----------
-    data : array_like
-        n-dimensional array with input data.
-    wavelet : Wavelet object or name string
-        Wavelet to use.
-    level : int
-        The number of decomposition steps to perform.
-    start_level : int, optional
-        The level at which the decomposition will start (default: 0)
-    axes : sequence of ints, optional
-        Axes over which to compute the SWT. A value of ``None`` (the
-        default) selects all axes. Axes may not be repeated.
-
-    Returns
-    -------
-    [{coeffs_level_n}, ..., {coeffs_level_1}]: list of dict
-        Results for each level are arranged in a dictionary, where the key
-        specifies the transform type on each dimension and value is a
-        n-dimensional coefficients array.
-
-        For example, for a 2D case the result at a given level will look
-        something like this::
-
-            {'aa': <coeffs>  # A(LL) - approx. on 1st dim, approx. on 2nd dim
-             'ad': <coeffs>  # V(LH) - approx. on 1st dim, det. on 2nd dim
-             'da': <coeffs>  # H(HL) - det. on 1st dim, approx. on 2nd dim
-             'dd': <coeffs>  # D(HH) - det. on 1st dim, det. on 2nd dim
-            }
-
-        For user-specified ``axes``, the order of the characters in the
-        dictionary keys map to the specified ``axes``.
-
-    """
-    data = np.asarray(data)
-    if np.iscomplexobj(data):
-        real = swtn(data.real, wavelet, level, start_level, axes)
-        imag = swtn(data.imag, wavelet, level, start_level, axes)
-        cplx = []
-        for rdict, idict in zip(real, imag):
-            cplx.append(
-                dict((k, rdict[k] + 1j * idict[k]) for k in rdict.keys()))
-        return cplx
-
-    if data.dtype == np.dtype('object'):
-        raise TypeError("Input must be a numeric array-like")
-    if data.ndim < 1:
-        raise ValueError("Input data must be at least 1D")
-
-    if axes is None:
-        axes = range(data.ndim)
-    axes = [a + data.ndim if a < 0 else a for a in axes]
-    if len(axes) != len(set(axes)):
-        raise ValueError("The axes passed to swtn must be unique.")
-    num_axes = len(axes)
-
-    if not isinstance(wavelet, Wavelet):
-        wavelet = Wavelet(wavelet)
-
-    ret = []
-    for i in range(start_level, start_level + level):
-        coeffs = [('', data)]
-        for axis in axes:
-            new_coeffs = []
-            for subband, x in coeffs:
-                cA, cD = _swt_axis(x, wavelet, level=1, start_level=i,
-                                   axis=axis)[0]
-                new_coeffs.extend([(subband + 'a', cA),
-                                   (subband + 'd', cD)])
-            coeffs = new_coeffs
-
-        coeffs = dict(coeffs)
-        ret.append(coeffs)
-
-        # data for the next level is the approximation coeffs from this level
-        data = coeffs['a' * num_axes]
-
-    ret.reverse()
-    return ret
