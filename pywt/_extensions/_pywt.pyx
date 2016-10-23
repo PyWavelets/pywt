@@ -158,7 +158,7 @@ cdef object wname_to_code(name):
                          "list of available builtin wavelets." % name)
 
 
-def wavelist(family=None):
+def wavelist(family=None, kind='all'):
     """
     wavelist(family=None)
 
@@ -166,30 +166,57 @@ def wavelist(family=None):
 
     Parameters
     ----------
-    family : {'haar', 'db', 'sym', 'coif', 'bior', 'rbio', 'dmey', 'gaus', 'mexh', 'morl', 'cgau', 'shan', 'fbsp', 'cmor'}
+    family : str, optional
         Short family name. If the family name is None (default) then names
         of all the built-in wavelets are returned. Otherwise the function
         returns names of wavelets that belong to the given family.
+        Valid names are::
+
+            'haar', 'db', 'sym', 'coif', 'bior', 'rbio', 'dmey', 'gaus',
+            'mexh', 'morl', 'cgau', 'shan', 'fbsp', 'cmor'
+
+        kind : {'all', 'continuous', 'discrete'}, optional
+            Whether to return only wavelet names of discrete or continuous
+            wavelets, or all wavelets.  Default is ``'all'``.
+            Ignored if ``family`` is specified.
 
     Returns
     -------
-    wavelist : list
-        List of available wavelet names
+    wavelist : list of str
+        List of available wavelet names.
 
     Examples
     --------
     >>> import pywt
     >>> pywt.wavelist('coif')
     ['coif1', 'coif2', 'coif3', 'coif4', 'coif5', 'coif6', 'coif7', ...
+    >>> pywt.wavelist(kind='continuous')
+    ['cgau1', 'cgau2', 'cgau3', 'cgau4', 'cgau5', 'cgau6', 'cgau7', ...
 
     """
     cdef object wavelets, sorting_list
+
+    if kind not in ('all', 'continuous', 'discrete'):
+        raise ValueError("Unrecognized value for `kind`: %s" % kind)
+
+    def _check_kind(name, kind):
+        if kind == 'all':
+            return True
+
+        family_code, family_number = wname_to_code(name)
+        is_discrete = wavelet.is_discrete_wavelet(family_code)
+        if kind == 'discrete':
+            return is_discrete
+        else:
+            return not is_discrete
+
     sorting_list = []  # for natural sorting order
     wavelets = []
     cdef object name
     if family is None:
         for name in __wname_to_code:
-            sorting_list.append((name[:2], len(name), name))
+            if _check_kind(name, kind):
+                sorting_list.append((name[:2], len(name), name))
     elif family in __wfamily_list_short:
         for name in __wname_to_code:
             if name.startswith(family):
