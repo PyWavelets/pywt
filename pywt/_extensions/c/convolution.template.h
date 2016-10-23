@@ -34,6 +34,24 @@ int CAT(TYPE, _downsampling_convolution)(const TYPE * const restrict input, cons
                                          TYPE * const restrict output, const size_t step,
                                          MODE mode);
 
+
+/* downsampling convolution routine specific to periodization mode.
+ *
+ * input    - input data
+ * N        - input data length
+ * filter   - filter data
+ * F        - filter data length
+ * output   - output data
+ * step     - decimation step
+ * fstep    - step size between non-zero entries in filter
+ *            (used to improve performance for the multilevel swt)
+ */
+int CAT(TYPE, _downsampling_convolution_periodization)(
+    const TYPE * const restrict input, const size_t N,
+    const TYPE * const restrict filter, const size_t F,
+    TYPE * const restrict output, const size_t step,
+    const size_t fstep);
+
 /*
  * Performs normal (full) convolution of "upsampled" input coeffs array with
  * filter Requires zero-filled output buffer (adds values instead of

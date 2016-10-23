@@ -128,7 +128,7 @@ def test_waverec_all_wavelets_modes():
 def test_swt_decomposition():
     x = [3, 7, 1, 3, -2, 6, 4, 6]
     db1 = pywt.Wavelet('db1')
-    (cA2, cD2), (cA1, cD1) = pywt.swt(x, db1, level=2)
+    (cA3, cD3), (cA2, cD2), (cA1, cD1) = pywt.swt(x, db1, level=3)
     expected_cA1 = [7.07106781, 5.65685425, 2.82842712, 0.70710678,
                     2.82842712, 7.07106781, 7.07106781, 6.36396103]
     assert_allclose(cA1, expected_cA1)
@@ -139,6 +139,11 @@ def test_swt_decomposition():
     assert_allclose(cA2, expected_cA2, rtol=tol_double)
     expected_cD2 = [3, 3.5, 0, -4.5, -3, 0.5, 0, 0.5]
     assert_allclose(cD2, expected_cD2, rtol=tol_double, atol=1e-14)
+    expected_cA3 = [9.89949494, ] * 8
+    assert_allclose(cA3, expected_cA3)
+    expected_cD3 = [0.00000000, -3.53553391, -4.24264069, -2.12132034,
+                    0.00000000, 3.53553391, 4.24264069, 2.12132034]
+    assert_allclose(cD3, expected_cD3)
 
     # level=1, start_level=1 decomposition should match level=2
     res = pywt.swt(cA1, db1, level=1, start_level=1)
