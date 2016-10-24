@@ -2,7 +2,6 @@
 
 from __future__ import division, print_function, absolute_import
 
-import warnings
 import numpy as np
 from numpy.testing import (run_module_suite, assert_almost_equal,
                            assert_allclose, assert_, assert_equal,
@@ -119,127 +118,6 @@ def test_waverec_all_wavelets_modes():
             coeffs = pywt.wavedec(r, wavelet, mode=mode)
             assert_allclose(pywt.waverec(coeffs, wavelet, mode=mode),
                             r, rtol=tol_single, atol=tol_single)
-
-####
-# 1d multilevel swt tests
-####
-
-
-def test_swt_decomposition():
-    x = [3, 7, 1, 3, -2, 6, 4, 6]
-    db1 = pywt.Wavelet('db1')
-    (cA3, cD3), (cA2, cD2), (cA1, cD1) = pywt.swt(x, db1, level=3)
-    expected_cA1 = [7.07106781, 5.65685425, 2.82842712, 0.70710678,
-                    2.82842712, 7.07106781, 7.07106781, 6.36396103]
-    assert_allclose(cA1, expected_cA1)
-    expected_cD1 = [-2.82842712, 4.24264069, -1.41421356, 3.53553391,
-                    -5.65685425, 1.41421356, -1.41421356, 2.12132034]
-    assert_allclose(cD1, expected_cD1)
-    expected_cA2 = [7, 4.5, 4, 5.5, 7, 9.5, 10, 8.5]
-    assert_allclose(cA2, expected_cA2, rtol=tol_double)
-    expected_cD2 = [3, 3.5, 0, -4.5, -3, 0.5, 0, 0.5]
-    assert_allclose(cD2, expected_cD2, rtol=tol_double, atol=1e-14)
-    expected_cA3 = [9.89949494, ] * 8
-    assert_allclose(cA3, expected_cA3)
-    expected_cD3 = [0.00000000, -3.53553391, -4.24264069, -2.12132034,
-                    0.00000000, 3.53553391, 4.24264069, 2.12132034]
-    assert_allclose(cD3, expected_cD3)
-
-    # level=1, start_level=1 decomposition should match level=2
-    res = pywt.swt(cA1, db1, level=1, start_level=1)
-    cA2, cD2 = res[0]
-    assert_allclose(cA2, expected_cA2, rtol=tol_double)
-    assert_allclose(cD2, expected_cD2, rtol=tol_double, atol=1e-14)
-
-    coeffs = pywt.swt(x, db1)
-    assert_(len(coeffs) == 3)
-    assert_(pywt.swt_max_level(len(x)) == 3)
-
-
-def test_swt_iswt_integration():
-    # This function performs a round-trip swt/iswt transform test on
-    # all available types of wavelets in PyWavelets - except the
-    # 'dmey' wavelet. The latter has been excluded because it does not
-    # produce very precise results. This is likely due to the fact
-    # that the 'dmey' wavelet is a discrete approximation of a
-    # continuous wavelet. All wavelets are tested up to 3 levels. The
-    # test validates neither swt or iswt as such, but it does ensure
-    # that they are each other's inverse.
-
-    max_level = 3
-    wavelets = pywt.wavelist()
-    if 'dmey' in wavelets:
-        # The 'dmey' wavelet seems to be a bit special - disregard it for now
-        wavelets.remove('dmey')
-    for current_wavelet_str in wavelets:
-        current_wavelet = pywt.DiscreteContinuousWavelet(current_wavelet_str)
-        if isinstance(current_wavelet, pywt.Wavelet):
-            input_length_power = int(np.ceil(np.log2(max(
-                current_wavelet.dec_len,
-                current_wavelet.rec_len))))
-            input_length = 2**(input_length_power + max_level - 1)
-            X = np.arange(input_length)
-            coeffs = pywt.swt(X, current_wavelet, max_level)
-            Y = pywt.iswt(coeffs, current_wavelet)
-            assert_allclose(Y, X, rtol=1e-5, atol=1e-7)
-
-
-def test_swt_dtypes():
-    wavelet = pywt.Wavelet('haar')
-    for dt_in, dt_out in zip(dtypes_in, dtypes_out):
-        errmsg = "wrong dtype returned for {0} input".format(dt_in)
-
-        # swt
-        x = np.ones(8, dtype=dt_in)
-        (cA2, cD2), (cA1, cD1) = pywt.swt(x, wavelet, level=2)
-        assert_(cA2.dtype == cD2.dtype == cA1.dtype == cD1.dtype == dt_out,
-                "swt: " + errmsg)
-
-        # swt2
-        with warnings.catch_warnings():
-            warnings.simplefilter('ignore', FutureWarning)
-            x = np.ones((8, 8), dtype=dt_in)
-            cA, (cH, cV, cD) = pywt.swt2(x, wavelet, level=1)[0]
-            assert_(cA.dtype == cH.dtype == cV.dtype == cD.dtype == dt_out,
-                    "swt2: " + errmsg)
-
-
-def test_swt2_ndim_error():
-    x = np.ones(8)
-    with warnings.catch_warnings():
-        warnings.simplefilter('ignore', FutureWarning)
-        assert_raises(ValueError, pywt.swt2, x, 'haar', level=1)
-
-
-def test_swt2_iswt2_integration():
-    # This function performs a round-trip swt2/iswt2 transform test on
-    # all available types of wavelets in PyWavelets - except the
-    # 'dmey' wavelet. The latter has been excluded because it does not
-    # produce very precise results. This is likely due to the fact
-    # that the 'dmey' wavelet is a discrete approximation of a
-    # continuous wavelet. All wavelets are tested up to 3 levels. The
-    # test validates neither swt2 or iswt2 as such, but it does ensure
-    # that they are each other's inverse.
-
-    max_level = 3
-    wavelets = pywt.wavelist()
-    if 'dmey' in wavelets:
-        # The 'dmey' wavelet seems to be a bit special - disregard it for now
-        wavelets.remove('dmey')
-    for current_wavelet_str in wavelets:
-        current_wavelet = pywt.DiscreteContinuousWavelet(current_wavelet_str)
-        if isinstance(current_wavelet, pywt.Wavelet):
-            input_length_power = int(np.ceil(np.log2(max(
-                current_wavelet.dec_len,
-                current_wavelet.rec_len))))
-            input_length = 2**(input_length_power + max_level - 1)
-            X = np.arange(input_length**2).reshape(input_length, input_length)
-
-            with warnings.catch_warnings():
-                warnings.simplefilter('ignore', FutureWarning)
-                coeffs = pywt.swt2(X, current_wavelet, max_level)
-                Y = pywt.iswt2(coeffs, current_wavelet)
-            assert_allclose(Y, X, rtol=1e-5, atol=1e-5)
 
 ####
 # 2d multilevel dwt function tests

@@ -9,16 +9,14 @@
 
 from __future__ import division, print_function, absolute_import
 
-__all__ = ['dwt2', 'idwt2', 'swt2', 'dwtn', 'idwtn']
+__all__ = ['dwt2', 'idwt2', 'dwtn', 'idwtn']
 
-import warnings
 from itertools import product
 
 import numpy as np
 
 from ._extensions._pywt import Wavelet, Modes
 from ._extensions._dwt import dwt_axis, idwt_axis
-from ._swt import swt
 
 
 def dwt2(data, wavelet, mode='symmetric', axes=(-2, -1)):
@@ -128,13 +126,14 @@ def dwtn(data, wavelet, mode='symmetric', axes=None):
         Signal extension mode, see `Modes`.  Default is 'symmetric'.
     axes : sequence of ints, optional
         Axes over which to compute the DWT. Repeated elements mean the DWT will
-        be performed multiple times along these axes. A value of `None` (the
+        be performed multiple times along these axes. A value of ``None`` (the
         default) selects all axes.
 
         Axes may be repeated, but information about the original size may be
-        lost if it is not divisible by `2 ** nrepeats`. The reconstruction will
-        be larger, with additional values derived according to the `mode`
-        parameter. `pywt.wavedecn` should be used for multilevel decomposition.
+        lost if it is not divisible by ``2 ** nrepeats``. The reconstruction
+        will be larger, with additional values derived according to the
+        ``mode`` parameter. ``pywt.wavedecn`` should be used for multilevel
+        decomposition.
 
     Returns
     -------
@@ -221,11 +220,11 @@ def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
         see Modes (default: 'symmetric').
     axes : sequence of ints, optional
         Axes over which to compute the IDWT. Repeated elements mean the IDWT
-        will be performed multiple times along these axes. A value of `None`
+        will be performed multiple times along these axes. A value of ``None``
         (the default) selects all axes.
 
         For the most accurate reconstruction, the axes should be provided in
-        the same order as they were provided to `dwtn`.
+        the same order as they were provided to ``dwtn``.
 
     Returns
     -------
@@ -274,89 +273,3 @@ def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
         coeffs = new_coeffs
 
     return coeffs['']
-
-
-def swt2(data, wavelet, level, start_level=0):
-    """
-    2D Stationary Wavelet Transform.
-
-    Parameters
-    ----------
-    data : array_like
-        2D array with input data
-    wavelet : Wavelet object or name string
-        Wavelet to use
-    level : int
-        The number of decomposition steps to perform.
-    start_level : int, optional
-        The level at which the decomposition will start (default: 0)
-
-    Returns
-    -------
-    coeffs : list
-        Approximation and details coefficients::
-
-            [
-                (cA_m,
-                    (cH_m, cV_m, cD_m)
-                ),
-                (cA_m+1,
-                    (cH_m+1, cV_m+1, cD_m+1)
-                ),
-                ...,
-                (cA_m+level,
-                    (cH_m+level, cV_m+level, cD_m+level)
-                )
-            ]
-
-        where cA is approximation, cH is horizontal details, cV is
-        vertical details, cD is diagonal details and m is ``start_level``.
-
-    """
-    data = np.asarray(data)
-    if data.ndim != 2:
-        raise ValueError("Expected 2D data array")
-
-    if not isinstance(wavelet, Wavelet):
-        wavelet = Wavelet(wavelet)
-
-    ret = []
-    for i in range(start_level, start_level + level):
-        # filter rows
-        H, L = [], []
-        for row in data:
-            cA, cD = swt(row, wavelet, level=1, start_level=i)[0]
-            L.append(cA)
-            H.append(cD)
-
-        # filter columns
-        H = np.transpose(H)
-        L = np.transpose(L)
-
-        LL, LH = [], []
-        for row in L:
-            cA, cD = swt(row, wavelet, level=1, start_level=i)[0]
-            LL.append(cA)
-            LH.append(cD)
-
-        HL, HH = [], []
-        for row in H:
-            cA, cD = swt(row, wavelet, level=1, start_level=i)[0]
-            HL.append(cA)
-            HH.append(cD)
-
-        # build result structure: (approx, (horizontal, vertical, diagonal))
-        approx = np.transpose(LL)
-        ret.append((approx,
-                    (np.transpose(LH), np.transpose(HL), np.transpose(HH))))
-
-        # for next iteration
-        data = approx
-
-    warnings.warn(
-        "For consistency with the rest of PyWavelets, the order of the list "
-        "returned by swt2 will be reversed in the next release. "
-        "In other words, the levels will be sorted in descending rather than "
-        "ascending order.", FutureWarning)
-
-    return ret

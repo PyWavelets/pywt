@@ -14,6 +14,10 @@ cdef extern from "c/common.h":
         COEF_APPROX = 0
         COEF_DETAIL = 1
 
+    ctypedef enum DiscreteTransformType:
+        DWT_TRANSFORM = 0
+        SWT_TRANSFORM = 1
+
     ctypedef enum MODE:
         MODE_INVALID = -1
         MODE_ZEROPAD = 0

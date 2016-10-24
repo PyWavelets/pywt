@@ -5,7 +5,8 @@ cimport c_wt
 import numpy as np
 cimport numpy as np
 
-from ._pywt cimport c_wavelet_from_object, data_t, Wavelet
+from common cimport pywt_index_t
+from ._pywt cimport c_wavelet_from_object, data_t, Wavelet, _check_dtype
 
 
 def swt_max_level(size_t input_len):
@@ -91,6 +92,106 @@ def swt(data_t[::1] data, Wavelet wavelet, size_t level, size_t start_level):
 
         data = cA
         ret.append((cA, cD))
+
+    ret.reverse()
+    return ret
+
+
+cpdef swt_axis(np.ndarray data, Wavelet wavelet, size_t level,
+               size_t start_level, unsigned int axis=0):
+    # memory-views do not support n-dimensional arrays, use np.ndarray instead
+    cdef common.ArrayInfo data_info, output_info
+    cdef np.ndarray cD, cA
+    # Explicit input_shape necessary to prevent memory leak
+    cdef size_t[::1] input_shape, output_shape
+    cdef size_t end_level = start_level + level
+    cdef int i, retval
+
+    if data.size % 2:
+        raise ValueError("Length of data must be even.")
+
+    if level < 1:
+        raise ValueError("Level value must be greater than zero.")
+    if start_level >= common.swt_max_level(data.shape[axis]):
+        raise ValueError("start_level must be less than %d." %
+                         common.swt_max_level(data.shape[axis]))
+
+    if end_level > common.swt_max_level(data.shape[axis]):
+        msg = ("Level value too high (max level for current data size and "
+               "start_level is %d)." % (swt_max_level(data.shape[axis]) - start_level))
+        raise ValueError(msg)
+
+    data = data.astype(_check_dtype(data), copy=False)
+
+    input_shape = <size_t [:data.ndim]> <size_t *> data.shape
+    output_shape = input_shape.copy()
+    output_shape[axis] = common.swt_buffer_length(data.shape[axis])
+    if output_shape[axis] != input_shape[axis]:
+        raise RuntimeError("swt_axis assumes output_shape is the same as "
+                           "input_shape")
+
+    data_info.ndim = data.ndim
+    data_info.strides = <pywt_index_t *> data.strides
+    data_info.shape = <size_t *> data.shape
+
+    cA = np.empty(output_shape, data.dtype)
+    output_info.ndim = cA.ndim
+    output_info.strides = <pywt_index_t *> cA.strides
+    output_info.shape = <size_t *> cA.shape
+
+    ret = []
+    for i in range(start_level+1, end_level+1):
+
+        if data.dtype == np.float64:
+            cA = np.zeros(output_shape, dtype=np.float64)
+            with nogil:
+                retval = c_wt.double_downcoef_axis(
+                    <double *> data.data, data_info,
+                    <double *> cA.data, output_info,
+                    wavelet.w, axis,
+                    common.COEF_APPROX, common.MODE_PERIODIZATION,
+                    i, common.SWT_TRANSFORM)
+            if retval:
+                raise RuntimeError("C wavelet transform failed")
+            cD = np.zeros(output_shape, dtype=np.float64)
+            with nogil:
+                retval = c_wt.double_downcoef_axis(
+                    <double *> data.data, data_info,
+                    <double *> cD.data, output_info,
+                    wavelet.w, axis,
+                    common.COEF_DETAIL, common.MODE_PERIODIZATION,
+                    i, common.SWT_TRANSFORM)
+            if retval:
+                raise RuntimeError("C wavelet transform failed")
+        elif data.dtype == np.float32:
+            cA = np.zeros(output_shape, dtype=np.float32)
+            with nogil:
+                retval = c_wt.float_downcoef_axis(
+                    <float *> data.data, data_info,
+                    <float *> cA.data, output_info,
+                    wavelet.w, axis,
+                    common.COEF_APPROX, common.MODE_PERIODIZATION,
+                    i, common.SWT_TRANSFORM)
+            if retval:
+                raise RuntimeError("C wavelet transform failed")
+            cD = np.zeros(output_shape, dtype=np.float32)
+            with nogil:
+                retval = c_wt.float_downcoef_axis(
+                    <float *> data.data, data_info,
+                    <float *> cD.data, output_info,
+                    wavelet.w, axis,
+                    common.COEF_DETAIL, common.MODE_PERIODIZATION,
+                    i, common.SWT_TRANSFORM)
+            if retval:
+                raise RuntimeError("C wavelet transform failed")
+        else:
+            raise TypeError("Array must be floating point, not {}"
+                            .format(data.dtype))
+        ret.append((cA, cD))
+
+        # previous approx coeffs are the data for the next level
+        data = cA
+        data_info = output_info
 
     ret.reverse()
     return ret
