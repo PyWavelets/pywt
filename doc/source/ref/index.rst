@@ -14,6 +14,7 @@ API Reference
    nd-dwt-and-idwt
    dwt-coefficient-handling
    swt-stationary-wavelet-transform
+   iswt-inverse-stationary-wavelet-transform
    wavelet-packets
    cwt
    thresholding-functions
