@@ -171,7 +171,11 @@ def wavedec2(data, wavelet, mode='symmetric', level=None, axes=(-2, -1)):
     -------
     [cAn, (cHn, cVn, cDn), ... (cH1, cV1, cD1)] : list
         Coefficients list.  For user-specified ``axes``, ``cH*``
-        correspond to ``axes[0]`` while ``cV*`` correspond to ``axes[1]``.
+        corresponds to ``axes[0]`` while ``cV*`` corresponds to ``axes[1]``.
+        The first element returned is the approximation coefficients for the
+        nth level of decomposition.  Remaining elements are tuples of detail
+        coefficients in descending order of decomposition level.
+        (i.e. cH1 are the horizontal detail coefficients at the first level)
 
     Examples
     --------
@@ -200,10 +204,10 @@ def wavedec2(data, wavelet, mode='symmetric', level=None, axes=(-2, -1)):
     if len(axes) != len(set(axes)):
         raise ValueError("The axes passed to wavedec2 must be unique.")
     try:
-        axes_shapes = [data.shape[ax] for ax in axes]
+        axes_sizes = [data.shape[ax] for ax in axes]
     except IndexError:
         raise ValueError("Axis greater than data dimensions")
-    level = _check_level(min(axes_shapes), wavelet.dec_len, level)
+    level = _check_level(min(axes_sizes), wavelet.dec_len, level)
 
     coeffs_list = []
 
@@ -297,15 +301,27 @@ def wavedecn(data, wavelet, mode='symmetric', level=None, axes=None):
     mode : str, optional
         Signal extension mode, see Modes (default: 'symmetric')
     level : int, optional
-        Dxecomposition level (must be >= 0). If level is None (default) then it
+        Decomposition level (must be >= 0). If level is None (default) then it
         will be calculated using the ``dwt_max_level`` function.
     axes : sequence of ints, optional
-        Axes over which to compute the DWT. Axes may not be repeated.
+        Axes over which to compute the DWT. Axes may not be repeated. The
+        default is ``None``, which means transform all axes
+        (``axes = range(data.ndim)``).
 
     Returns
     -------
     [cAn, {details_level_n}, ... {details_level_1}] : list
-        Coefficients list
+        Coefficients list.  Coefficients are listed in descending order of
+        decomposition level.  ``cAn`` are the approximation coefficients at
+        level ``n``.  Each ``details_level_i`` element is a dictionary
+        containing detail coefficients at level `i` of the decomposition.  As
+        a concrete example, a 3D decomposition would have the following set of
+        keys in each ``details_level_i`` dictionary::
+
+            {'aad', 'ada', 'daa', 'add', 'dad', 'dda', 'ddd'}
+
+        where the order of the characters in each key map to the specified
+        ``axes``.
 
     Examples
     --------
