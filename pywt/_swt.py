@@ -12,9 +12,7 @@ __all__ = ["swt", "swt_max_level", 'iswt', 'swt2', 'iswt2', 'swtn']
 
 def swt(data, wavelet, level=None, start_level=0, axis=-1):
     """
-    swt(data, wavelet, level=None, start_level=0)
-
-    Performs multilevel Stationary Wavelet Transform.
+    Multilevel 1D stationary wavelet transform.
 
     Parameters
     ----------
@@ -79,7 +77,7 @@ def swt(data, wavelet, level=None, start_level=0, axis=-1):
 
 def iswt(coeffs, wavelet):
     """
-    Multilevel 1D Inverse Discrete Stationary Wavelet Transform.
+    Multilevel 1D inverse discrete stationary wavelet transform.
 
     Parameters
     ----------
@@ -143,7 +141,7 @@ def iswt(coeffs, wavelet):
 
 def swt2(data, wavelet, level, start_level=0, axes=(-2, -1)):
     """
-    2D Stationary Wavelet Transform.
+    Multilevel 2D stationary wavelet transform.
 
     Parameters
     ----------
@@ -207,7 +205,7 @@ def swt2(data, wavelet, level, start_level=0, axes=(-2, -1)):
 
 def iswt2(coeffs, wavelet):
     """
-    Multilevel 2D Inverse Discrete Stationary Wavelet Transform.
+    Multilevel 2D inverse discrete stationary wavelet transform.
 
     Parameters
     ----------
