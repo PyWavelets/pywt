@@ -40,7 +40,7 @@ def dwt2(data, wavelet, mode='symmetric', axes=(-2, -1)):
     (cA, (cH, cV, cD)) : tuple
         Approximation, horizontal detail, vertical detail and diagonal
         detail coefficients respectively.  Horizontal refers to array axis 0
-        (or axes[0] for user-specified ``axes``).
+        (or ``axes[0]`` for user-specified ``axes``).
 
     Examples
     --------

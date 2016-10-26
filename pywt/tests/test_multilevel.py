@@ -448,7 +448,8 @@ def test_array_to_coeffs_invalid_inputs():
 
 
 def test_waverec_axes_subsets():
-    data = np.random.standard_normal((8, 8, 8))
+    rstate = np.random.RandomState(0)
+    data = rstate.standard_normal((8, 8, 8))
     # test all combinations of 1 out of 3 axes transformed
     for axis in [0, 1, 2]:
         coefs = pywt.wavedec(data, 'haar', axis=axis)
@@ -457,7 +458,8 @@ def test_waverec_axes_subsets():
 
 
 def test_waverec2_axes_subsets():
-    data = np.random.standard_normal((8, 8, 8))
+    rstate = np.random.RandomState(0)
+    data = rstate.standard_normal((8, 8, 8))
     # test all combinations of 2 out of 3 axes transformed
     for axes in combinations((0, 1, 2), 2):
         coefs = pywt.wavedec2(data, 'haar', axes=axes)
@@ -466,7 +468,8 @@ def test_waverec2_axes_subsets():
 
 
 def test_waverecn_axes_subsets():
-    data = np.random.standard_normal((8, 8, 8, 8))
+    rstate = np.random.RandomState(0)
+    data = rstate.standard_normal((8, 8, 8, 8))
     # test all combinations of 3 out of 4 axes transformed
     for axes in combinations((0, 1, 2, 3), 3):
         coefs = pywt.wavedecn(data, 'haar', axes=axes)
@@ -476,7 +479,8 @@ def test_waverecn_axes_subsets():
 
 def test_waverecn_int_axis():
     # waverecn should also work for axes as an integer
-    data = np.random.standard_normal((8, 8))
+    rstate = np.random.RandomState(0)
+    data = rstate.standard_normal((8, 8))
     for axis in [0, 1]:
         coefs = pywt.wavedecn(data, 'haar', axes=axis)
         rec = pywt.waverecn(coefs, 'haar', axes=axis)
