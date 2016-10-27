@@ -41,7 +41,7 @@ def _check_level(size, dec_len, level):
     return level
 
 
-def wavedec(data, wavelet, mode='symmetric', level=None):
+def wavedec(data, wavelet, mode='symmetric', level=None, axis=-1):
     """
     Multilevel 1D Discrete Wavelet Transform of data.
 
@@ -56,6 +56,9 @@ def wavedec(data, wavelet, mode='symmetric', level=None):
     level : int, optional
         Decomposition level (must be >= 0). If level is None (default) then it
         will be calculated using the ``dwt_max_level`` function.
+    axis: int, optional
+        Axis over which to compute the DWT. If not given, the
+        last axis is used.
 
     Returns
     -------
@@ -83,13 +86,17 @@ def wavedec(data, wavelet, mode='symmetric', level=None):
     if not isinstance(wavelet, Wavelet):
         wavelet = Wavelet(wavelet)
 
-    level = _check_level(min(data.shape), wavelet.dec_len, level)
+    try:
+        axes_shape = data.shape[axis]
+    except IndexError:
+        raise ValueError("Axis greater than data dimensions")
+    level = _check_level(axes_shape, wavelet.dec_len, level)
 
     coeffs_list = []
 
     a = data
     for i in range(level):
-        a, d = dwt(a, wavelet, mode)
+        a, d = dwt(a, wavelet, mode, axis)
         coeffs_list.append(d)
 
     coeffs_list.append(a)
@@ -98,7 +105,7 @@ def wavedec(data, wavelet, mode='symmetric', level=None):
     return coeffs_list
 
 
-def waverec(coeffs, wavelet, mode='symmetric'):
+def waverec(coeffs, wavelet, mode='symmetric', axis=-1):
     """
     Multilevel 1D Inverse Discrete Wavelet Transform.
 
@@ -110,6 +117,9 @@ def waverec(coeffs, wavelet, mode='symmetric'):
         Wavelet to use
     mode : str, optional
         Signal extension mode, see Modes (default: 'symmetric')
+    axis: int, optional
+        Axis over which to compute the inverse DWT. If not given, the
+        last axis is used.
 
     Examples
     --------
@@ -134,12 +144,12 @@ def waverec(coeffs, wavelet, mode='symmetric'):
     for d in ds:
         if (a is not None) and (d is not None) and (len(a) == len(d) + 1):
             a = a[:-1]
-        a = idwt(a, d, wavelet, mode)
+        a = idwt(a, d, wavelet, mode, axis)
 
     return a
 
 
-def wavedec2(data, wavelet, mode='symmetric', level=None):
+def wavedec2(data, wavelet, mode='symmetric', level=None, axes=(-2, -1)):
     """
     Multilevel 2D Discrete Wavelet Transform.
 
@@ -154,11 +164,18 @@ def wavedec2(data, wavelet, mode='symmetric', level=None):
     level : int, optional
         Decomposition level (must be >= 0). If level is None (default) then it
         will be calculated using the ``dwt_max_level`` function.
+    axes : 2-tuple of ints, optional
+        Axes over which to compute the DWT. Repeated elements are not allowed.
 
     Returns
     -------
     [cAn, (cHn, cVn, cDn), ... (cH1, cV1, cD1)] : list
-        Coefficients list
+        Coefficients list.  For user-specified ``axes``, ``cH*``
+        corresponds to ``axes[0]`` while ``cV*`` corresponds to ``axes[1]``.
+        The first element returned is the approximation coefficients for the
+        nth level of decomposition.  Remaining elements are tuples of detail
+        coefficients in descending order of decomposition level.
+        (i.e. cH1 are the horizontal detail coefficients at the first level)
 
     Examples
     --------
@@ -175,20 +192,28 @@ def wavedec2(data, wavelet, mode='symmetric', level=None):
            [ 1.,  1.,  1.,  1.]])
     """
     data = np.asarray(data)
-
-    if data.ndim != 2:
-        raise ValueError("Expected 2D input data.")
+    if data.ndim < 2:
+        raise ValueError("Expected input data to have at least 2 dimensions.")
 
     if not isinstance(wavelet, Wavelet):
         wavelet = Wavelet(wavelet)
 
-    level = _check_level(min(data.shape), wavelet.dec_len, level)
+    axes = tuple(axes)
+    if len(axes) != 2:
+        raise ValueError("Expected 2 axes")
+    if len(axes) != len(set(axes)):
+        raise ValueError("The axes passed to wavedec2 must be unique.")
+    try:
+        axes_sizes = [data.shape[ax] for ax in axes]
+    except IndexError:
+        raise ValueError("Axis greater than data dimensions")
+    level = _check_level(min(axes_sizes), wavelet.dec_len, level)
 
     coeffs_list = []
 
     a = data
     for i in range(level):
-        a, ds = dwt2(a, wavelet, mode)
+        a, ds = dwt2(a, wavelet, mode, axes)
         coeffs_list.append(ds)
 
     coeffs_list.append(a)
@@ -197,7 +222,7 @@ def wavedec2(data, wavelet, mode='symmetric', level=None):
     return coeffs_list
 
 
-def waverec2(coeffs, wavelet, mode='symmetric'):
+def waverec2(coeffs, wavelet, mode='symmetric', axes=(-2, -1)):
     """
     Multilevel 2D Inverse Discrete Wavelet Transform.
 
@@ -207,6 +232,8 @@ def waverec2(coeffs, wavelet, mode='symmetric'):
         Wavelet to use
     mode : str, optional
         Signal extension mode, see Modes (default: 'symmetric')
+    axes : 2-tuple of ints, optional
+        Axes over which to compute the IDWT. Repeated elements are not allowed.
 
     Returns
     -------
@@ -229,6 +256,9 @@ def waverec2(coeffs, wavelet, mode='symmetric'):
 
     if not isinstance(coeffs, (list, tuple)):
         raise ValueError("Expected sequence of coefficient arrays.")
+
+    if len(axes) != len(set(axes)):
+        raise ValueError("The axes passed to waverec2 must be unique.")
 
     if len(coeffs) < 1:
         raise ValueError(
@@ -253,12 +283,12 @@ def waverec2(coeffs, wavelet, mode='symmetric'):
                 raise ValueError("All detail shapes must be the same length.")
             idxs = tuple(slice(None, -1 if a_len == d_len + 1 else None)
                          for a_len, d_len in zip(a.shape, d_shape))
-        a = idwt2((a[idxs], d), wavelet, mode)
+        a = idwt2((a[idxs], d), wavelet, mode, axes)
 
     return a
 
 
-def wavedecn(data, wavelet, mode='symmetric', level=None):
+def wavedecn(data, wavelet, mode='symmetric', level=None, axes=None):
     """
     Multilevel nD Discrete Wavelet Transform.
 
@@ -271,13 +301,27 @@ def wavedecn(data, wavelet, mode='symmetric', level=None):
     mode : str, optional
         Signal extension mode, see Modes (default: 'symmetric')
     level : int, optional
-        Dxecomposition level (must be >= 0). If level is None (default) then it
+        Decomposition level (must be >= 0). If level is None (default) then it
         will be calculated using the ``dwt_max_level`` function.
+    axes : sequence of ints, optional
+        Axes over which to compute the DWT. Axes may not be repeated. The
+        default is ``None``, which means transform all axes
+        (``axes = range(data.ndim)``).
 
     Returns
     -------
     [cAn, {details_level_n}, ... {details_level_1}] : list
-        Coefficients list
+        Coefficients list.  Coefficients are listed in descending order of
+        decomposition level.  ``cAn`` are the approximation coefficients at
+        level ``n``.  Each ``details_level_i`` element is a dictionary
+        containing detail coefficients at level `i` of the decomposition.  As
+        a concrete example, a 3D decomposition would have the following set of
+        keys in each ``details_level_i`` dictionary::
+
+            {'aad', 'ada', 'daa', 'add', 'dad', 'dda', 'ddd'}
+
+        where the order of the characters in each key map to the specified
+        ``axes``.
 
     Examples
     --------
@@ -314,13 +358,27 @@ def wavedecn(data, wavelet, mode='symmetric', level=None):
     if not isinstance(wavelet, Wavelet):
         wavelet = Wavelet(wavelet)
 
-    level = _check_level(min(data.shape), wavelet.dec_len, level)
+    if np.isscalar(axes):
+        axes = (axes, )
+    if axes is None:
+        axes = range(data.ndim)
+    else:
+        axes = tuple(axes)
+    if len(axes) != len(set(axes)):
+        raise ValueError("The axes passed to wavedecn must be unique.")
+    ndim_transform = len(axes)
+    try:
+        axes_shapes = [data.shape[ax] for ax in axes]
+    except IndexError:
+        raise ValueError("Axis greater than data dimensions")
+    level = _check_level(min(axes_shapes), wavelet.dec_len, level)
+
     coeffs_list = []
 
     a = data
     for i in range(level):
-        coeffs = dwtn(a, wavelet, mode)
-        a = coeffs.pop('a' * data.ndim)
+        coeffs = dwtn(a, wavelet, mode, axes)
+        a = coeffs.pop('a' * ndim_transform)
         coeffs_list.append(coeffs)
 
     coeffs_list.append(a)
@@ -344,7 +402,7 @@ def _match_coeff_dims(a_coeff, d_coeff_dict):
     return a_coeff[[slice(s) for s in d_coeff.shape]]
 
 
-def waverecn(coeffs, wavelet, mode='symmetric'):
+def waverecn(coeffs, wavelet, mode='symmetric', axes=None):
     """
     Multilevel nD Inverse Discrete Wavelet Transform.
 
@@ -354,6 +412,8 @@ def waverecn(coeffs, wavelet, mode='symmetric'):
         Wavelet to use
     mode : str, optional
         Signal extension mode, see Modes (default: 'symmetric')
+    axes : sequence of ints, optional
+        Axes over which to compute the IDWT.  Axes may not be repeated.
 
     Returns
     -------
@@ -416,6 +476,16 @@ def waverecn(coeffs, wavelet, mode='symmetric'):
         raise ValueError(
             "All coefficients must have a matching number of dimensions")
 
+    if np.isscalar(axes):
+        axes = (axes, )
+    if axes is None:
+        axes = range(ndim)
+    else:
+        axes = tuple(axes)
+    if len(axes) != len(set(axes)):
+        raise ValueError("The axes passed to waverecn must be unique.")
+    ndim_transform = len(axes)
+
     for idx, d in enumerate(ds):
         if a is None and not d:
             continue
@@ -424,8 +494,8 @@ def waverecn(coeffs, wavelet, mode='symmetric'):
         # stored detail coefficients by 1 on any given axis.
         if idx > 0:
             a = _match_coeff_dims(a, d)
-        d['a' * ndim] = a
-        a = idwtn(d, wavelet, mode)
+        d['a' * ndim_transform] = a
+        a = idwtn(d, wavelet, mode, axes)
 
     return a
 

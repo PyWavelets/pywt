@@ -39,7 +39,8 @@ def dwt2(data, wavelet, mode='symmetric', axes=(-2, -1)):
     -------
     (cA, (cH, cV, cD)) : tuple
         Approximation, horizontal detail, vertical detail and diagonal
-        detail coefficients respectively.  Horizontal refers to array axis 0.
+        detail coefficients respectively.  Horizontal refers to array axis 0
+        (or ``axes[0]`` for user-specified ``axes``).
 
     Examples
     --------
@@ -150,6 +151,9 @@ def dwtn(data, wavelet, mode='symmetric', axes=None):
              'dd': <coeffs>  # D(HH) - det. on 1st dim, det. on 2nd dim
             }
 
+        For user-specified ``axes``, the order of the characters in the
+        dictionary keys map to the specified ``axes``.
+
     """
     data = np.asarray(data)
     if np.iscomplexobj(data):
@@ -245,11 +249,12 @@ def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
         return (idwtn(real_coeffs, wavelet, mode, axes) +
                 1j * idwtn(imag_coeffs, wavelet, mode, axes))
 
-    ndim = max(len(key) for key in coeffs.keys())
+    # key length matches the number of axes transformed
+    ndim_transform = max(len(key) for key in coeffs.keys())
 
     try:
         coeff_shapes = (v.shape for k, v in coeffs.items()
-                        if v is not None and len(k) == ndim)
+                        if v is not None and len(k) == ndim_transform)
         coeff_shape = next(coeff_shapes)
     except StopIteration:
         raise ValueError("`coeffs` must contain at least one non-null wavelet "
@@ -258,12 +263,18 @@ def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
         raise ValueError("`coeffs` must all be of equal size (or None)")
 
     if axes is None:
-        axes = range(ndim)
+        axes = range(ndim_transform)
+        ndim = ndim_transform
+    else:
+        ndim = len(coeff_shape)
     axes = (a + ndim if a < 0 else a for a in axes)
 
     for key_length, axis in reversed(list(enumerate(axes))):
+        if axis < 0 or axis >= ndim:
+            raise ValueError("Axis greater than data dimensions")
+
         new_coeffs = {}
-        new_keys = [''.join(coeff) for coeff in product('ad', repeat=key_length)]
+        new_keys = [''.join(coef) for coef in product('ad', repeat=key_length)]
 
         for key in new_keys:
             L = coeffs.get(key + 'a', None)

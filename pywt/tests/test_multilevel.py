@@ -2,11 +2,11 @@
 
 from __future__ import division, print_function, absolute_import
 
+from itertools import combinations
 import numpy as np
 from numpy.testing import (run_module_suite, assert_almost_equal,
                            assert_allclose, assert_, assert_equal,
                            assert_raises, dec)
-
 import pywt
 
 # Check that float32 and complex64 are preserved.  Other real types get
@@ -445,6 +445,96 @@ def test_array_to_coeffs_invalid_inputs():
 
     # invalid format name
     assert_raises(ValueError, pywt.array_to_coeffs, arr, arr_slices, 'foo')
+
+
+def test_waverec_axes_subsets():
+    rstate = np.random.RandomState(0)
+    data = rstate.standard_normal((8, 8, 8))
+    # test all combinations of 1 out of 3 axes transformed
+    for axis in [0, 1, 2]:
+        coefs = pywt.wavedec(data, 'haar', axis=axis)
+        rec = pywt.waverec(coefs, 'haar', axis=axis)
+        assert_allclose(rec, data, atol=1e-14)
+
+
+def test_waverec2_axes_subsets():
+    rstate = np.random.RandomState(0)
+    data = rstate.standard_normal((8, 8, 8))
+    # test all combinations of 2 out of 3 axes transformed
+    for axes in combinations((0, 1, 2), 2):
+        coefs = pywt.wavedec2(data, 'haar', axes=axes)
+        rec = pywt.waverec2(coefs, 'haar', axes=axes)
+        assert_allclose(rec, data, atol=1e-14)
+
+
+def test_waverecn_axes_subsets():
+    rstate = np.random.RandomState(0)
+    data = rstate.standard_normal((8, 8, 8, 8))
+    # test all combinations of 3 out of 4 axes transformed
+    for axes in combinations((0, 1, 2, 3), 3):
+        coefs = pywt.wavedecn(data, 'haar', axes=axes)
+        rec = pywt.waverecn(coefs, 'haar', axes=axes)
+        assert_allclose(rec, data, atol=1e-14)
+
+
+def test_waverecn_int_axis():
+    # waverecn should also work for axes as an integer
+    rstate = np.random.RandomState(0)
+    data = rstate.standard_normal((8, 8))
+    for axis in [0, 1]:
+        coefs = pywt.wavedecn(data, 'haar', axes=axis)
+        rec = pywt.waverecn(coefs, 'haar', axes=axis)
+        assert_allclose(rec, data, atol=1e-14)
+
+
+def test_wavedec_axis_error():
+    data = np.ones(4)
+    # out of range axis not allowed
+    assert_raises(ValueError, pywt.wavedec, data, 'haar', axis=1)
+
+
+def test_waverec_axis_error():
+    c = pywt.wavedec(np.ones(4), 'haar')
+    # out of range axis not allowed
+    assert_raises(ValueError, pywt.waverec, c, 'haar', axis=1)
+
+
+def test_wavedec2_axes_errors():
+    data = np.ones((4, 4))
+    # integer axes not allowed
+    assert_raises(TypeError, pywt.wavedec2, data, 'haar', axes=1)
+    # non-unique axes not allowed
+    assert_raises(ValueError, pywt.wavedec2, data, 'haar', axes=(0, 0))
+    # out of range axis not allowed
+    assert_raises(ValueError, pywt.wavedec2, data, 'haar', axes=(0, 2))
+
+
+def test_waverec2_axes_errors():
+    data = np.ones((4, 4))
+    c = pywt.wavedec2(data, 'haar')
+    # integer axes not allowed
+    assert_raises(TypeError, pywt.waverec2, c, 'haar', axes=1)
+    # non-unique axes not allowed
+    assert_raises(ValueError, pywt.waverec2, c, 'haar', axes=(0, 0))
+    # out of range axis not allowed
+    assert_raises(ValueError, pywt.waverec2, c, 'haar', axes=(0, 2))
+
+
+def test_wavedecn_axes_errors():
+    data = np.ones((8, 8, 8))
+    # repeated axes not allowed
+    assert_raises(ValueError, pywt.wavedecn, data, 'haar', axes=(1, 1))
+    # out of range axis not allowed
+    assert_raises(ValueError, pywt.wavedecn, data, 'haar', axes=(0, 1, 3))
+
+
+def test_waverecn_axes_errors():
+    data = np.ones((8, 8, 8))
+    c = pywt.wavedecn(data, 'haar')
+    # repeated axes not allowed
+    assert_raises(ValueError, pywt.waverecn, c, 'haar', axes=(1, 1))
+    # out of range axis not allowed
+    assert_raises(ValueError, pywt.waverecn, c, 'haar', axes=(0, 1, 3))
 
 
 if __name__ == '__main__':
