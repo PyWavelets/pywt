@@ -527,12 +527,13 @@ def _coeffs_wavedec2_to_wavedecn(coeffs):
     return coeffs
 
 
-def _determine_coeff_array_shape(coeffs):
+def _determine_coeff_array_shape(coeffs, axes):
     arr_shape = np.asarray(coeffs[0].shape)
+    axes = np.asarray(axes)  # axes that were transformed
+    ndim_transform = len(axes)
     ncoeffs = coeffs[0].size
-    ndim = len(arr_shape)
     for d in coeffs[1:]:
-        arr_shape += np.asarray(d['d'*ndim].shape)
+        arr_shape[axes] += np.asarray(d['d'*ndim_transform].shape)[axes]
         for k, v in d.items():
             ncoeffs += v.size
     arr_shape = tuple(arr_shape.tolist())
@@ -542,7 +543,7 @@ def _determine_coeff_array_shape(coeffs):
     return arr_shape, is_tight_packing
 
 
-def coeffs_to_array(coeffs, padding=0):
+def coeffs_to_array(coeffs, padding=0, axes=None):
     """
     Arrange a wavelet coefficient list from `wavedecn` into a single array.
 
@@ -553,6 +554,9 @@ def coeffs_to_array(coeffs, padding=0):
         dictionary of wavelet coefficients as returned by pywt.wavedecn
     padding : float or None, optional
         If None, raise an error if the coefficients cannot be tightly packed.
+    axes : sequence of ints, optional
+        Axes over which the DWT that created ``coeffs`` was performed.  The
+        default value of ``None`` corresponds to all axes.
 
     Returns
     -------
@@ -625,8 +629,22 @@ def coeffs_to_array(coeffs, padding=0):
         # only a single approximation coefficient array was found
         return a_coeffs, [[slice(None)] * ndim]
 
+    # Determine the number of dimensions that were transformed via key length
+    ndim_transform = len(list(coeffs[1].keys())[0])
+    if axes is None:
+        if ndim_transform < ndim:
+            raise ValueError(
+                "coeffs corresponds to a DWT performed over only a subset of "
+                "the axes.  In this case, axes must be specified.")
+        axes = np.arange(ndim)
+
+    if len(axes) != ndim_transform:
+        raise ValueError(
+            "The length of axes doesn't match the number of dimensions "
+            "transformed.")
+
     # determine size of output and if tight packing is possible
-    arr_shape, is_tight_packing = _determine_coeff_array_shape(coeffs)
+    arr_shape, is_tight_packing = _determine_coeff_array_shape(coeffs, axes)
 
     # preallocate output array
     if padding is None:
@@ -650,15 +668,17 @@ def coeffs_to_array(coeffs, padding=0):
         if np.any([d is None for d in coeff_dict.values()]):
             raise ValueError("coeffs_to_array does not support missing "
                              "coefficients.")
-        d_shape = coeff_dict['d' * ndim].shape
+        d_shape = coeff_dict['d' * ndim_transform].shape
         for key in coeff_dict.keys():
             d = coeff_dict[key]
             slice_array = [slice(None), ] * ndim
             for i, let in enumerate(key):
+                ax_i = axes[i]  # axis corresponding to this transform index
                 if let == 'a':
-                    slice_array[i] = slice(d.shape[i])
+                    slice_array[ax_i] = slice(d.shape[ax_i])
                 elif let == 'd':
-                    slice_array[i] = slice(a_shape[i], a_shape[i] + d.shape[i])
+                    slice_array[ax_i] = slice(a_shape[ax_i],
+                                              a_shape[ax_i] + d.shape[ax_i])
                 else:
                     raise ValueError("unexpected letter: {}".format(let))
             coeff_arr[slice_array] = d

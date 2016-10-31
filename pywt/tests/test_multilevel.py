@@ -390,6 +390,35 @@ def test_wavedecn_coeff_reshape_even():
                 assert_allclose(x1, x1r, rtol=1e-4, atol=1e-4)
 
 
+def test_wavedecn_coeff_reshape_axes_subset():
+    # verify round trip is correct when only a subset of axes are transformed:
+    #   wavedecn - >coeffs_to_array-> array_to_coeffs -> waverecn
+    # This is done for wavedec{1, 2, n}
+    rng = np.random.RandomState(1234)
+    mode = 'symmetric'
+    w = pywt.Wavelet('db2')
+    N = 16
+    ndim = 3
+    for axes in [(-1, ), (0, ), (1, ), (0, 1), (1, 2), (0, 2), None]:
+        x1 = rng.randn(*([N] * ndim))
+        coeffs = pywt.wavedecn(x1, w, mode=mode, axes=axes)
+        coeff_arr, coeff_slices = pywt.coeffs_to_array(coeffs, axes=axes)
+        if axes is not None:
+            # if axes is not None, it must be provided to coeffs_to_array
+            assert_raises(ValueError, pywt.coeffs_to_array, coeffs)
+
+        # mismatched axes size
+        assert_raises(ValueError, pywt.coeffs_to_array, coeffs,
+                      axes=(0, 1, 2, 3))
+        assert_raises(ValueError, pywt.coeffs_to_array, coeffs,
+                      axes=())
+
+        coeffs2 = pywt.array_to_coeffs(coeff_arr, coeff_slices)
+        x1r = pywt.waverecn(coeffs2, w, mode=mode, axes=axes)
+
+        assert_allclose(x1, x1r, rtol=1e-4, atol=1e-4)
+
+
 def test_coeffs_to_array_padding():
     rng = np.random.RandomState(1234)
     x1 = rng.randn(32, 32)
