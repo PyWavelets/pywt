@@ -1,8 +1,6 @@
 .. _ref-iswt:
 
 .. currentmodule:: pywt
-.. include:: ../substitutions.rst
-
 
 Inverse Stationary Wavelet Transform
 ------------------------------------

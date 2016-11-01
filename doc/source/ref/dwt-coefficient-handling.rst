@@ -1,5 +1,4 @@
 .. _ref-dwt-coef:
-.. include:: ../substitutions.rst
 
 =========================
 Handling DWT Coefficients

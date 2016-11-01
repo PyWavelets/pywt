@@ -66,7 +66,7 @@ print "PyWavelets (VERSION %s)" % (version,)
 #today_fmt = '%B %d, %Y'
 
 # List of documents that shouldn't be included in the build.
-unused_docs = ['substitutions', 'overview']
+unused_docs = ['substitutions', ]
 
 # List of directories, relative to source directory, that shouldn't be searched
 # for source files.
@@ -201,3 +201,7 @@ latex_documents = [
 
 # If false, no module index is generated.
 #latex_use_modindex = True
+
+# List of patterns, relative to source directory, that match files and
+# directories to ignore when looking for source files.
+exclude_patterns = ['substitutions.rst', ]

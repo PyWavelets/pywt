@@ -1,7 +1,6 @@
 .. _ref-other:
 
 .. currentmodule:: pywt
-.. include:: ../substitutions.rst
 
 ===============
 Other functions

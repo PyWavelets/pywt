@@ -1,7 +1,6 @@
 .. _ref-dwt:
 
 .. currentmodule:: pywt
-.. include:: ../substitutions.rst
 
 ================================
 Discrete Wavelet Transform (DWT)

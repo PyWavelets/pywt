@@ -1,7 +1,6 @@
 .. _ref-idwt:
 
 .. currentmodule:: pywt
-.. include:: ../substitutions.rst
 
 =========================================
 Inverse Discrete Wavelet Transform (IDWT)

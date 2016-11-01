@@ -1,7 +1,6 @@
 .. _ref-dwt2:
 
 .. currentmodule:: pywt
-.. include:: ../substitutions.rst
 
 =================================================
 2D Forward and Inverse Discrete Wavelet Transform
