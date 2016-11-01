@@ -14,10 +14,14 @@ from numpy import get_include as get_numpy_include
 
 try:
     from Cython.Build import cythonize
+    USE_CYTHON = True
 except ImportError:
     USE_CYTHON = False
-else:
-    USE_CYTHON = True
+    if not os.path.exists(os.path.join('pywt', '_extensions', '_pywt.c')):
+        msg = ("Cython must be installed when working with a development "
+               "version of PyWavelets")
+        raise RuntimeError(msg)
+
 
 MAJOR = 0
 MINOR = 5
