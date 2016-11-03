@@ -2,7 +2,6 @@
 PyWavelets 0.5.0 Release Notes
 ==============================
 
-.. note:: PyWavelets 0.5.0 is not released yet!
 .. |MATLAB|  unicode:: MATLAB U+02122 .. with trademark sign
 
 .. contents::
