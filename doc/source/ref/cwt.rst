@@ -1,7 +1,6 @@
 .. _ref-cwt:
 
 .. currentmodule:: pywt
-.. include:: ../substitutions.rst
 
 =================================
 Continous Wavelet Transform (CWT)

@@ -1,1 +1,0 @@
-Moved to :ref:`index <dev-index>`.

@@ -1,5 +1,4 @@
 .. _ref-dwtn:
-.. include:: ../substitutions.rst
 
 =================================================
 nD Forward and Inverse Discrete Wavelet Transform
