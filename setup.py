@@ -210,7 +210,7 @@ if __name__ == '__main__':
     setup(
         name="PyWavelets",
         maintainer="The PyWavelets Developers",
-        maintainer_email="http://groups.google.com/group/pywavelets",
+        maintainer_email="pywavelets@googlegroups.com",
         url="https://github.com/PyWavelets/pywt",
         download_url="https://github.com/PyWavelets/pywt/releases",
         license="MIT",
