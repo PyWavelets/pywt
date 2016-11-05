@@ -1216,9 +1216,9 @@ def fswt(data, wavelet, mode='symmetric', levels=None, axes=None):
     Netherlands, 1989.  (see Section 2.3)
     http://resolver.tudelft.nl/uuid:a4d195c3-1f89-4d66-913d-db9af0969509
 
-    ..[2] CP Rosiene and TQ Nguyen. "Tensor-product wavelet vs. Mallat
+    ..[2] CP Rosiene and TQ Nguyen. Tensor-product wavelet vs. Mallat
     decomposition: A comparative analysis, in Proc. IEEE Int. Symp. Circuits
-    and Systems, Orlando, FL, Jun. 1999, pp. 431434.
+    and Systems, Orlando, FL, Jun. 1999, pp. 431-434.
 
     ..[3] V Velisavljevic, B Beferull-Lozano, M Vetterli and PL Dragotti.
     Directionlets: Anisotropic Multidirectional Representation With Separable
@@ -1226,7 +1226,7 @@ def fswt(data, wavelet, mode='symmetric', levels=None, axes=None):
     2006.
 
     ..[4] RA DeVore, SV Konyagin and VN Temlyakov. "Hyperbolic wavelet
-    approximation," Constr. Approx. 14 (1998), 126.
+    approximation," Constr. Approx. 14 (1998), 1-26.
     """
     data = np.asarray(data)
     if axes is None:
@@ -1311,9 +1311,9 @@ def ifswt(coeffs_arr, coeff_slices, wavelet, mode='symmetric', axes=None):
     Netherlands, 1989.  (see Section 2.3)
     http://resolver.tudelft.nl/uuid:a4d195c3-1f89-4d66-913d-db9af0969509
 
-    ..[2] CP Rosiene and TQ Nguyen. "Tensor-product wavelet vs. Mallat
+    ..[2] CP Rosiene and TQ Nguyen. Tensor-product wavelet vs. Mallat
     decomposition: A comparative analysis, in Proc. IEEE Int. Symp. Circuits
-    and Systems, Orlando, FL, Jun. 1999, pp. 431434.
+    and Systems, Orlando, FL, Jun. 1999, pp. 431-434.
 
     ..[3] V Velisavljevic, B Beferull-Lozano, M Vetterli and PL Dragotti.
     Directionlets: Anisotropic Multidirectional Representation With Separable
@@ -1321,7 +1321,7 @@ def ifswt(coeffs_arr, coeff_slices, wavelet, mode='symmetric', axes=None):
     2006.
 
     ..[4] RA DeVore, SV Konyagin and VN Temlyakov. "Hyperbolic wavelet
-    approximation," Constr. Approx. 14 (1998), 126.
+    approximation," Constr. Approx. 14 (1998), 1-26.
     """
     coeffs_arr = np.asarray(coeffs_arr)
     if axes is None:
