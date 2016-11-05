@@ -22,19 +22,15 @@ matrix:
       script:
         - PYFLAKES_NODOCTEST=1 pyflakes pywt demo | grep -E -v 'unable to detect undefined names|assigned to but never used|imported but unused|redefinition of unused' > test.out; cat test.out; test \! -s test.out
         - pep8 pywt demo
-
     - python: 3.5
       env:
         - NUMPYSPEC=numpy
     - python: 3.4
       env:
         - NUMPYSPEC=numpy
-    - python: 2.6
-      env:
-        - NUMPYSPEC="numpy==1.9.3"
     - python: 2.7
       env:
-        - NUMPYSPEC=numpy
+        - NUMPYSPEC="numpy==1.9.3"
     - python: 3.5
       env:
         - NUMPYSPEC=numpy

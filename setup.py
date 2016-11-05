@@ -23,10 +23,10 @@ except ImportError:
         raise RuntimeError(msg)
 
 
-MAJOR = 0
-MINOR = 5
+MAJOR = 1
+MINOR = 0
 MICRO = 0
-ISRELEASED = True
+ISRELEASED = False
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 
 

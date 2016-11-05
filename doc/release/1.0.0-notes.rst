@@ -1,0 +1,54 @@
+==============================
+PyWavelets 1.0.0 Release Notes
+==============================
+
+.. |MATLAB|  unicode:: MATLAB U+02122 .. with trademark sign
+
+.. contents::
+
+PyWavelets is a Python toolbox implementing both discrete and continuous
+wavelet transforms (mathematical time-frequency transforms) with a wide range
+of built-in wavelets.  C/Cython are used for the low-level routines, enabling
+high performance.  Key Features of PyWavelets are:
+
+  * 1D, 2D and nD Forward and Inverse Discrete Wavelet Transform (DWT and IDWT)
+  * 1D, 2D and nD Multilevel DWT and IDWT
+  * 1D and 2D Forward and Inverse Stationary Wavelet Transform
+  * 1D and 2D Wavelet Packet decomposition and reconstruction
+  * 1D Continuous Wavelet Transform
+  * When multiple valid implementations are available, we have chosen to maintain consistency with |MATLAB|'s Wavelet Toolbox.
+
+
+New features
+============
+
+
+Deprecated features
+===================
+
+
+Backwards incompatible changes
+==============================
+
+Python 2.6 and 3.3 are no longer officially supported.
+
+
+Bugs Fixed
+==========
+
+
+Other changes
+=============
+
+
+Authors
+=======
+
+
+Issues closed for v1.0.0
+------------------------
+
+
+Pull requests for v1.0.0
+------------------------
+
