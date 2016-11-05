@@ -1211,21 +1211,22 @@ def fswt(data, wavelet, mode='symmetric', levels=None, axes=None):
 
     References
     ----------
-    ..[1] P. H. Westerink. Subband Coding of Images. Ph.D. dissertation, Dept.
-    Elect. Eng., Inf. Theory Group, Delft Univ. Technol., Delft, The Nether-
-    lands, 1989.  (see Section 2.3)
+    ..[1] PH Westerink. Subband Coding of Images. Ph.D. dissertation, Dept.
+    Elect. Eng., Inf. Theory Group, Delft Univ. Technol., Delft, The
+    Netherlands, 1989.  (see Section 2.3)
     http://resolver.tudelft.nl/uuid:a4d195c3-1f89-4d66-913d-db9af0969509
 
-    ..[2] C. P. Rosiene and T. Q. Nguyen. "Tensor-product wavelet vs. Mallat
-    decomposition: A comparative analysis,” in Proc. IEEE Int. Symp. Circuits
-    and Systems, Orlando, FL, Jun. 1999, pp. 431–434.
+    ..[2] CP Rosiene and TQ Nguyen. "Tensor-product wavelet vs. Mallat
+    decomposition: A comparative analysis, in Proc. IEEE Int. Symp. Circuits
+    and Systems, Orlando, FL, Jun. 1999, pp. 431434.
 
-    ..[3] V. Velisavljevic, B. Beferull-Lozano, M. Vetterli and P.L. Dragotti.
+    ..[3] V Velisavljevic, B Beferull-Lozano, M Vetterli and PL Dragotti.
     Directionlets: Anisotropic Multidirectional Representation With Separable
-    Filtering. IEEE TRANSACTIONS ON IMAGE PROCESSING, VOL. 15, NO. 7, JULY 2006
+    Filtering. IEEE Transactions on Image Processing, Vol. 15, No. 7, July
+    2006.
 
-    ..[4] R. A. DeVore, S. V. Konyagin, and V. N. Temlyakov. "Hyperbolic
-    wavelet approximation," Constr. Approx. 14 (1998), 1–26.
+    ..[4] RA DeVore, SV Konyagin and VN Temlyakov. "Hyperbolic wavelet
+    approximation," Constr. Approx. 14 (1998), 126.
     """
     data = np.asarray(data)
     if axes is None:
@@ -1305,21 +1306,22 @@ def ifswt(coeffs_arr, coeff_slices, wavelet, mode='symmetric', axes=None):
 
     References
     ----------
-    ..[1] P. H. Westerink. Subband Coding of Images. Ph.D. dissertation, Dept.
-    Elect. Eng., Inf. Theory Group, Delft Univ. Technol., Delft, The Nether-
-    lands, 1989.  (see Section 2.3)
+    ..[1] PH Westerink. Subband Coding of Images. Ph.D. dissertation, Dept.
+    Elect. Eng., Inf. Theory Group, Delft Univ. Technol., Delft, The
+    Netherlands, 1989.  (see Section 2.3)
     http://resolver.tudelft.nl/uuid:a4d195c3-1f89-4d66-913d-db9af0969509
 
-    ..[2] C. P. Rosiene and T. Q. Nguyen. "Tensor-product wavelet vs. Mallat
-    decomposition: A comparative analysis,” in Proc. IEEE Int. Symp. Circuits
-    and Systems, Orlando, FL, Jun. 1999, pp. 431–434.
+    ..[2] CP Rosiene and TQ Nguyen. "Tensor-product wavelet vs. Mallat
+    decomposition: A comparative analysis, in Proc. IEEE Int. Symp. Circuits
+    and Systems, Orlando, FL, Jun. 1999, pp. 431434.
 
-    ..[3] V. Velisavljevic, B. Beferull-Lozano, M. Vetterli and P.L. Dragotti.
+    ..[3] V Velisavljevic, B Beferull-Lozano, M Vetterli and PL Dragotti.
     Directionlets: Anisotropic Multidirectional Representation With Separable
-    Filtering. IEEE TRANSACTIONS ON IMAGE PROCESSING, VOL. 15, NO. 7, JULY 2006
+    Filtering. IEEE Transactions on Image Processing, Vol. 15, No. 7, July
+    2006.
 
-    ..[4] R. A. DeVore, S. V. Konyagin, and V. N. Temlyakov. "Hyperbolic
-    wavelet approximation," Constr. Approx. 14 (1998), 1–26.
+    ..[4] RA DeVore, SV Konyagin and VN Temlyakov. "Hyperbolic wavelet
+    approximation," Constr. Approx. 14 (1998), 126.
     """
     coeffs_arr = np.asarray(coeffs_arr)
     if axes is None:
