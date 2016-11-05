@@ -126,8 +126,8 @@ def dwt(data, wavelet, mode='symmetric', axis=-1):
     """
     if np.iscomplexobj(data):
         data = np.asarray(data)
-        cA_r, cD_r = dwt(data.real, wavelet, mode)
-        cA_i, cD_i = dwt(data.imag, wavelet, mode)
+        cA_r, cD_r = dwt(data.real, wavelet, mode, axis)
+        cA_i, cD_i = dwt(data.imag, wavelet, mode, axis)
         return (cA_r + 1j*cA_i, cD_r + 1j*cD_i)
 
     # accept array_like input; make a copy to ensure a contiguous array
@@ -196,8 +196,8 @@ def idwt(cA, cD, wavelet, mode='symmetric', axis=-1):
         elif cD is None:
             cA = np.asarray(cA)
             cD = np.zeros_like(cA)
-        return (idwt(cA.real, cD.real, wavelet, mode) +
-                1j*idwt(cA.imag, cD.imag, wavelet, mode))
+        return (idwt(cA.real, cD.real, wavelet, mode, axis) +
+                1j*idwt(cA.imag, cD.imag, wavelet, mode, axis))
 
     if cA is not None:
         dt = _check_dtype(cA)
