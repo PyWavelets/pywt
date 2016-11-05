@@ -142,6 +142,8 @@ def test_idwt_single_axis():
     x = [[3, 7, 1, 1],
          [-2, 5, 4, 6]]
 
+    x = np.asarray(x)
+    x = x + 1j*x   # test with complex data
     cA, cD = pywt.dwt(x, 'db2', axis=-1)
 
     x0 = pywt.idwt(cA[0], cD[0], 'db2', axis=-1)
