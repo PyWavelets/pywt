@@ -1150,6 +1150,16 @@ def unravel_coeffs(arr, coeff_slices, coeff_shapes, output_format='wavedecn'):
     return coeffs
 
 
+def _check_fswt_axes(data, axes):
+    """axes checks common to fswt, ifswt. """
+    if len(axes) != len(set(axes)):
+        raise ValueError("The axes passed to wavedecn must be unique.")
+    try:
+        [data.shape[ax] for ax in axes]
+    except IndexError:
+        raise ValueError("Axis greater than data dimensions")
+
+
 def fswt(data, wavelet, mode='symmetric', levels=None, axes=None):
     """Fully Separable Wavelet Transform.
 
@@ -1220,6 +1230,8 @@ def fswt(data, wavelet, mode='symmetric', levels=None, axes=None):
     data = np.asarray(data)
     if axes is None:
         axes = tuple(np.arange(data.ndim))
+    _check_fswt_axes(data, axes)
+
     if levels is None or np.isscalar(levels):
         levels = [levels, ] * len(axes)
     if len(levels) != len(axes):
@@ -1312,8 +1324,10 @@ def ifswt(coeffs_arr, coeff_slices, wavelet, mode='symmetric', axes=None):
     coeffs_arr = np.asarray(coeffs_arr)
     if axes is None:
         axes = tuple(np.arange(coeffs_arr.ndim))
+    _check_fswt_axes(coeffs_arr, axes)
     if len(axes) != len(coeff_slices):
         raise ValueError("dimension mismatch")
+
     arr = coeffs_arr
     csl = [slice(None), ] * arr.ndim
     for ax_count, ax in enumerate(axes):
