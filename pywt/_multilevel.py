@@ -1222,6 +1222,8 @@ def fswt(data, wavelet, mode='symmetric', levels=None, axes=None):
         axes = tuple(np.arange(data.ndim))
     if levels is None or np.isscalar(levels):
         levels = [levels, ] * len(axes)
+    if len(levels) != len(axes):
+        raise ValueError("levels must match the length of the axes list")
     coeff_slices = [slice(None), ] * len(axes)
     coeffs_arr = data
     for ax_count, ax in enumerate(axes):
@@ -1313,12 +1315,12 @@ def ifswt(coeffs_arr, coeff_slices, wavelet, mode='symmetric', axes=None):
     if len(axes) != len(coeff_slices):
         raise ValueError("dimension mismatch")
     arr = coeffs_arr
-    csl = [slice(None), ] * len(axes)
+    csl = [slice(None), ] * arr.ndim
     for ax_count, ax in enumerate(axes):
         coeffs = []
-        for sl in coeff_slices[ax]:
-            csl[ax_count] = sl
+        for sl in coeff_slices[ax_count]:
+            csl[ax] = sl
             coeffs.append(arr[csl])
-        csl[ax_count] = slice(None)
+        csl[ax] = slice(None)
         arr = waverec(coeffs, wavelet, mode=mode, axis=ax)
     return arr
