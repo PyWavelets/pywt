@@ -9,8 +9,8 @@ import pywt
 
 
 def test_available_modes():
-    modes = ['zero', 'constant', 'symmetric', 'reflect',
-             'periodic', 'smooth', 'periodization']
+    modes = ['zero', 'constant', 'symmetric', 'periodic', 'smooth',
+             'periodization', 'reflect']
     assert_equal(pywt.Modes.modes, modes)
     assert_equal(pywt.Modes.from_object('constant'), 2)
 
