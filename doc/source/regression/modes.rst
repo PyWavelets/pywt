@@ -19,7 +19,7 @@ Import :mod:`pywt` first
 List of available signal extension :ref:`modes <Modes>`:
 
     >>> print(pywt.Modes.modes)
-    ['zero', 'constant', 'symmetric', 'reflect', 'periodic', 'smooth', 'periodization']
+    ['zero', 'constant', 'symmetric', 'periodic', 'smooth', 'periodization', 'reflect']
 
 
 Invalid mode name should rise a :exc:`ValueError`:
