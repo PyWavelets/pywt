@@ -19,6 +19,7 @@ from libc.math cimport pow, sqrt
 import numpy as np
 
 
+# Caution: order of _old_modes entries must match _Modes.modes below
 _old_modes = ['zpd',
               'cpd',
               'sym',
@@ -89,8 +90,9 @@ class _Modes(object):
     smooth = common.MODE_SMOOTH
     periodization = common.MODE_PERIODIZATION
 
-    modes = ["zero", "constant", "symmetric", "reflect", "periodic",
-             "smooth", "periodization"]
+    # Caution: order in modes list below must match _old_modes above
+    modes = ["zero", "constant", "symmetric", "periodic", "smooth",
+             "periodization", "reflect"]
 
     def from_object(self, mode):
         if isinstance(mode, int):

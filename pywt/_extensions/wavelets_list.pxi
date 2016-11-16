@@ -5,7 +5,7 @@
 
 # Mapping of wavelet names to the C backend codes
 
-cdef extern from "c/wavelets.h":   
+cdef extern from "c/wavelets.h":
     ctypedef enum WAVELET_NAME:
         HAAR
         RBIO
@@ -25,7 +25,7 @@ cdef extern from "c/wavelets.h":
 cdef __wname_to_code
 __wname_to_code = {
     "haar": (HAAR, 0),
-    
+
     "db1": (DB, 1),
     "db2": (DB, 2),
     "db3": (DB, 3),
@@ -35,7 +35,7 @@ __wname_to_code = {
     "db7": (DB, 7),
     "db8": (DB, 8),
     "db9": (DB, 9),
-    
+
     "db10": (DB, 10),
     "db11": (DB, 11),
     "db12": (DB, 12),
@@ -46,7 +46,7 @@ __wname_to_code = {
     "db17": (DB, 17),
     "db18": (DB, 18),
     "db19": (DB, 19),
-    
+
     "db20": (DB, 20),
     "db21": (DB, 21),
     "db22": (DB, 22),
@@ -57,7 +57,7 @@ __wname_to_code = {
     "db27": (DB, 27),
     "db28": (DB, 28),
     "db29": (DB, 29),
-    
+
     "db30": (DB, 30),
     "db31": (DB, 31),
     "db32": (DB, 32),
@@ -67,7 +67,7 @@ __wname_to_code = {
     "db36": (DB, 36),
     "db37": (DB, 37),
     "db38": (DB, 38),
-    
+
     "sym2": (SYM, 2),
     "sym3": (SYM, 3),
     "sym4": (SYM, 4),
@@ -76,7 +76,7 @@ __wname_to_code = {
     "sym7": (SYM, 7),
     "sym8": (SYM, 8),
     "sym9": (SYM, 9),
-    
+
     "sym10": (SYM, 10),
     "sym11": (SYM, 11),
     "sym12": (SYM, 12),
@@ -98,7 +98,7 @@ __wname_to_code = {
     "coif7": (COIF, 7),
     "coif8": (COIF, 8),
     "coif9": (COIF, 9),
-    
+
     "coif10": (COIF, 10),
     "coif11": (COIF, 11),
     "coif12": (COIF, 12),
@@ -142,7 +142,7 @@ __wname_to_code = {
     "rbio6.8": (RBIO, 68),
 
     "dmey": (DMEY, 0),
-    
+
     "gaus1": (GAUS, 1),
     "gaus2": (GAUS, 2),
     "gaus3": (GAUS, 3),
@@ -151,11 +151,11 @@ __wname_to_code = {
     "gaus6": (GAUS, 6),
     "gaus7": (GAUS, 7),
     "gaus8": (GAUS, 8),
-    
+
     "mexh": (MEXH, 0),
-    
+
     "morl": (MORL, 0),
-    
+
     "cgau1": (CGAU, 1),
     "cgau2": (CGAU, 2),
     "cgau3": (CGAU, 3),
@@ -164,11 +164,11 @@ __wname_to_code = {
     "cgau6": (CGAU, 6),
     "cgau7": (CGAU, 7),
     "cgau8": (CGAU, 8),
-    
+
     "shan": (SHAN, 0),
-    
+
     "fbsp": (FBSP, 0),
-    
+
     "cmor": (CMOR, 0),
 }
 
@@ -178,7 +178,7 @@ cdef __wfamily_list_short, __wfamily_list_long
 __wfamily_list_short = [
     "haar", "db", "sym", "coif", "bior", "rbio", "dmey", "gaus", "mexh",
     "morl", "cgau", "shan", "fbsp", "cmor"]
-_wfamily_list_long = [
+__wfamily_list_long = [
     "Haar", "Daubechies", "Symlets", "Coiflets", "Biorthogonal",
     "Reverse biorthogonal", "Discrete Meyer (FIR Approximation)", "Gaussian",
     "Mexican hat wavelet", "Morlet wavelet", "Complex Gaussian wavelets",

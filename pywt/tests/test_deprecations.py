@@ -1,4 +1,7 @@
-from numpy.testing import assert_warns
+import warnings
+
+import numpy as np
+from numpy.testing import assert_warns, run_module_suite, assert_array_equal
 
 import pywt
 
@@ -74,3 +77,22 @@ def test_MODES_deprecation_getattr():
         return getattr(pywt.MODES, 'symmetric')
 
     assert_warns(DeprecationWarning, use_MODES_new)
+
+
+def test_mode_equivalence():
+    old_new = [('zpd', 'zero'),
+               ('cpd', 'constant'),
+               ('sym', 'symmetric'),
+               ('ppd', 'periodic'),
+               ('sp1', 'smooth'),
+               ('per', 'periodization')]
+    x = np.arange(8.)
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore', DeprecationWarning)
+        for old, new in old_new:
+            assert_array_equal(pywt.dwt(x, 'db2', mode=old),
+                               pywt.dwt(x, 'db2', mode=new))
+
+
+if __name__ == '__main__':
+    run_module_suite()
