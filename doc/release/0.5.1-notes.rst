@@ -1,0 +1,21 @@
+==============================
+PyWavelets 0.5.1 Release Notes
+==============================
+
+PyWavelets 0.5.1 is a bug-fix release with no new features compared to 0.5.0
+
+
+Bugs Fixed
+==========
+
+
+Authors
+=======
+
+
+Issues closed for v0.5.1
+------------------------
+
+
+Pull requests for v0.5.1
+------------------------
