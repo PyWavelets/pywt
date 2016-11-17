@@ -1,8 +1,9 @@
 from ._extensions._swt import swt_max_level, swt as _swt, swt_axis as _swt_axis
-from ._extensions._pywt import Wavelet, _check_dtype
+from ._extensions._pywt import Wavelet, Modes, _check_dtype
 
 import warnings
 import numpy as np
+from ._extensions._dwt import idwt_axis
 from ._extensions._swt import swt_axis as _swt_axis
 from ._dwt import idwt
 from ._multidim import idwt2
@@ -103,16 +104,26 @@ def iswt(coeffs, wavelet):
     array([ 1.,  2.,  3.,  4.,  5.,  6.,  7.,  8.])
     """
 
-    output = coeffs[0][0].copy()  # Avoid modification of input data
+    output = coeffs[0][0]
+    if np.iscomplexobj(output):
+        # compute real and imaginary separately then combine
+        coeffs_real = [(cA.real, cD.real) for (cA, cD) in coeffs]
+        coeffs_imag = [(cA.imag, cD.imag) for (cA, cD) in coeffs]
+        return iswt(coeffs_real, wavelet) + 1j*iswt(coeffs_imag, wavelet)
+    dt = _check_dtype(output)
+    output = np.array(output, dtype=dt)  # avoid modification of input data
 
     # num_levels, equivalent to the decomposition level, n
     num_levels = len(coeffs)
     if not isinstance(wavelet, Wavelet):
         wavelet = Wavelet(wavelet)
+    mode = Modes.from_object('periodization')
     for j in range(num_levels, 0, -1):
         step_size = int(pow(2, j-1))
         last_index = step_size
         _, cD = coeffs[num_levels - j]
+        dt = _check_dtype(cD)
+        cD = np.asarray(cD, dtype=dt)  # doesn't copy if dtype matches
         for first in range(last_index):  # 0 to last_index - 1
 
             # Getting the indices that we will transform
@@ -125,10 +136,11 @@ def iswt(coeffs, wavelet):
 
             # perform the inverse dwt on the selected indices,
             # making sure to use periodic boundary conditions
-            x1 = idwt(output[even_indices], cD[even_indices],
-                      wavelet, 'periodization')
-            x2 = idwt(output[odd_indices], cD[odd_indices],
-                      wavelet, 'periodization')
+            # idwt_axis instead of idwt_single to support non-contiguous arrays
+            x1 = idwt_axis(output[even_indices], cD[even_indices],
+                           wavelet, mode, 0)
+            x2 = idwt_axis(output[odd_indices], cD[odd_indices],
+                           wavelet, mode, 0)
 
             # perform a circular shift right
             x2 = np.roll(x2, 1)
