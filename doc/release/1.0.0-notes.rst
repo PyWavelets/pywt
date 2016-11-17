@@ -30,7 +30,7 @@ Deprecated features
 Backwards incompatible changes
 ==============================
 
-Python 2.6 and 3.3 are no longer officially supported.
+Python 2.6 and 3.3 are no longer supported.
 
 
 Bugs Fixed
