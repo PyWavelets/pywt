@@ -225,7 +225,8 @@ if __name__ == '__main__':
         * Computing Approximations of wavelet and scaling functions
         * Over 100 built-in wavelet filters and support for custom wavelets
         * Single and double precision calculations
-        * Results compatibility with Matlab Wavelet Toolbox (tm)
+        * Real and complex calculations
+        * Results compatible with Matlab Wavelet Toolbox (TM)
         """,
         keywords=["wavelets", "wavelet transform", "DWT", "SWT", "CWT", "scientific"],
         classifiers=[
@@ -238,11 +239,10 @@ if __name__ == '__main__':
             "Programming Language :: C",
             "Programming Language :: Python",
             "Programming Language :: Python :: 3",
-            "Programming Language :: Python :: 2.6",
             "Programming Language :: Python :: 2.7",
-            "Programming Language :: Python :: 3.3",
             "Programming Language :: Python :: 3.4",
             "Programming Language :: Python :: 3.5",
+            "Programming Language :: Python :: 3.6",
             "Topic :: Software Development :: Libraries :: Python Modules"
         ],
         platforms=["Windows", "Linux", "Solaris", "Mac OS-X", "Unix"],
