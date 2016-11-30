@@ -1,8 +1,7 @@
 import sys
 
-from PyQt4 import QtGui
-
 import pywt
+from PyQt4 import QtGui
 import pyqtgraph as pg
 
 
@@ -14,7 +13,11 @@ def main():
     tabs = QtGui.QTabWidget()
 
     for family in families:
+        scroller = QtGui.QScrollArea()
         vb = pg.GraphicsWindow()
+        vb.setMinimumHeight(3000)
+        vb.setMinimumWidth(1900)
+        scroller.setWidget(vb)
         for i, name in enumerate(pywt.wavelist(family)):
             pen = pg.intColor(i)
             wavelet = pywt.Wavelet(name)
@@ -34,15 +37,13 @@ def main():
                 ax.plot(phi_r, pen=pen)
                 bx = vb.addPlot(title=wavelet.name + " psi_r")
                 bx.plot(psi_r, pen=pen)
-            if ((not wavelet.orthogonal) and i % 2 == 0) or i % 4 == 0:
+            if i % 2 == 0:
                 vb.nextRow()
-        tabs.addTab(vb, family)
-
-    tabs.resize(1200, 800)
+        tabs.addTab(scroller, family)
 
     tabs.setWindowTitle('Wavelets')
-    tabs.showMaximized()
-
+    tabs.resize(1920, 1080)
+    tabs.show()
     sys.exit(app.exec_())
 
 
