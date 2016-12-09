@@ -7,6 +7,12 @@ ctypedef fused data_t:
     np.float32_t
     np.float64_t
 
+ctypedef fused cdata_t:
+    np.float32_t
+    np.float64_t
+    np.complex64_t
+    np.complex128_t
+
 cdef public class Wavelet [type WaveletType, object WaveletObject]:
     cdef wavelet.DiscreteWavelet* w
 
