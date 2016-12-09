@@ -10,6 +10,10 @@
 #error TYPE must be defined here.
 #else
 
+#ifndef REAL_TYPE
+#error REAL_TYPE must be defined here.
+#else
+
 #include "wt.h"
 
 #if defined _MSC_VER
@@ -275,7 +279,7 @@ int CAT(TYPE, _idwt_axis)(const TYPE * const restrict coefs_a, const ArrayInfo *
                 : (const TYPE *)((const char *) coefs_a + a_offset);
             CAT(TYPE, _upsampling_convolution_valid_sf)
                 (a_row, a_info->shape[axis],
-                 wavelet->CAT(rec_lo_, TYPE), wavelet->rec_len,
+                 wavelet->CAT(rec_lo_, REAL_TYPE), wavelet->rec_len,
                  output_row, output_info.shape[axis],
                  mode);
         }
@@ -285,7 +289,7 @@ int CAT(TYPE, _idwt_axis)(const TYPE * const restrict coefs_a, const ArrayInfo *
                 : (const TYPE *)((const char *) coefs_d + d_offset);
             CAT(TYPE, _upsampling_convolution_valid_sf)
                 (d_row, d_info->shape[axis],
-                 wavelet->CAT(rec_hi_, TYPE), wavelet->rec_len,
+                 wavelet->CAT(rec_hi_, REAL_TYPE), wavelet->rec_len,
                  output_row, output_info.shape[axis],
                  mode);
         }
@@ -322,7 +326,7 @@ int CAT(TYPE, _dec_a)(const TYPE * const restrict input, const size_t input_len,
     }
 
     return CAT(TYPE, _downsampling_convolution)(input, input_len,
-                                                wavelet->CAT(dec_lo_, TYPE),
+                                                wavelet->CAT(dec_lo_, REAL_TYPE),
                                                 wavelet->dec_len, output,
                                                 2, mode);
 }
@@ -340,7 +344,7 @@ int CAT(TYPE, _dec_d)(const TYPE * const restrict input, const size_t input_len,
         return -1;
 
     return CAT(TYPE, _downsampling_convolution)(input, input_len,
-                                                wavelet->CAT(dec_hi_, TYPE),
+                                                wavelet->CAT(dec_hi_, REAL_TYPE),
                                                 wavelet->dec_len, output,
                                                 2, mode);
 }
@@ -357,7 +361,7 @@ int CAT(TYPE, _rec_a)(const TYPE * const restrict coeffs_a, const size_t coeffs_
         return -1;
 
     return CAT(TYPE, _upsampling_convolution_full)(coeffs_a, coeffs_len,
-                                                   wavelet->CAT(rec_lo_, TYPE),
+                                                   wavelet->CAT(rec_lo_, REAL_TYPE),
                                                    wavelet->rec_len, output,
                                                    output_len);
 }
@@ -374,7 +378,7 @@ int CAT(TYPE, _rec_d)(const TYPE * const restrict coeffs_d, const size_t coeffs_
         return -1;
 
     return CAT(TYPE, _upsampling_convolution_full)(coeffs_d, coeffs_len,
-                                                   wavelet->CAT(rec_hi_, TYPE),
+                                                   wavelet->CAT(rec_hi_, REAL_TYPE),
                                                    wavelet->rec_len, output,
                                                    output_len);
 }
@@ -415,7 +419,7 @@ int CAT(TYPE, _idwt)(const TYPE * const restrict coeffs_a, const size_t coeffs_a
     /* reconstruct approximation coeffs with lowpass reconstruction filter */
     if(coeffs_a){
         if(CAT(TYPE, _upsampling_convolution_valid_sf)(coeffs_a, input_len,
-                                                  wavelet->CAT(rec_lo_, TYPE),
+                                                  wavelet->CAT(rec_lo_, REAL_TYPE),
                                                   wavelet->rec_len, output,
                                                   output_len, mode) < 0){
             goto error;
@@ -427,7 +431,7 @@ int CAT(TYPE, _idwt)(const TYPE * const restrict coeffs_a, const size_t coeffs_a
      */
     if(coeffs_d){
         if(CAT(TYPE, _upsampling_convolution_valid_sf)(coeffs_d, input_len,
-                                                  wavelet->CAT(rec_hi_, TYPE),
+                                                  wavelet->CAT(rec_hi_, REAL_TYPE),
                                                   wavelet->rec_len, output,
                                                   output_len, mode) < 0){
             goto error;
@@ -493,7 +497,7 @@ int CAT(TYPE, _swt_a)(const TYPE * const restrict input, pywt_index_t input_len,
                       const DiscreteWavelet * const restrict wavelet,
                       TYPE * const restrict output, pywt_index_t output_len,
                       unsigned int level){
-    return CAT(TYPE, _swt_)(input, input_len, wavelet->CAT(dec_lo_, TYPE),
+    return CAT(TYPE, _swt_)(input, input_len, wavelet->CAT(dec_lo_, REAL_TYPE),
                             wavelet->dec_len, output, output_len, level);
 }
 
@@ -504,9 +508,10 @@ int CAT(TYPE, _swt_d)(const TYPE * const restrict input, pywt_index_t input_len,
                       const DiscreteWavelet * const restrict wavelet,
                       TYPE * const restrict output, pywt_index_t output_len,
                       unsigned int level){
-    return CAT(TYPE, _swt_)(input, input_len, wavelet->CAT(dec_hi_, TYPE),
+    return CAT(TYPE, _swt_)(input, input_len, wavelet->CAT(dec_hi_, REAL_TYPE),
                             wavelet->dec_len, output, output_len, level);
 }
 
+#endif /* REAL_TYPE */
 #endif /* TYPE */
 #undef restrict
