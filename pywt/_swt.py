@@ -49,14 +49,6 @@ def swt(data, wavelet, level=None, start_level=0, axis=-1):
             [(cAm+n, cDm+n), ..., (cAm+1, cDm+1), (cAm, cDm)]
 
     """
-    if np.iscomplexobj(data):
-        data = np.asarray(data)
-        coeffs_real = swt(data.real, wavelet, level, start_level)
-        coeffs_imag = swt(data.imag, wavelet, level, start_level)
-        coeffs_cplx = []
-        for (cA_r, cD_r), (cA_i, cD_i) in zip(coeffs_real, coeffs_imag):
-            coeffs_cplx.append((cA_r + 1j*cA_i, cD_r + 1j*cD_i))
-        return coeffs_cplx
 
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(data)
@@ -106,15 +98,7 @@ def iswt(coeffs, wavelet):
     array([ 1.,  2.,  3.,  4.,  5.,  6.,  7.,  8.])
     """
 
-    output = coeffs[0][0]
-    if np.iscomplexobj(output):
-        # compute real and imaginary separately then combine
-        coeffs_real = [(cA.real, cD.real) for (cA, cD) in coeffs]
-        coeffs_imag = [(cA.imag, cD.imag) for (cA, cD) in coeffs]
-        return iswt(coeffs_real, wavelet) + 1j*iswt(coeffs_imag, wavelet)
-    dt = _check_dtype(output)
-    output = np.array(output, dtype=dt)  # avoid modification of input data
-
+    output = coeffs[0][0].copy()  # Avoid modification of input data
     # num_levels, equivalent to the decomposition level, n
     num_levels = len(coeffs)
     if not isinstance(wavelet, Wavelet):
@@ -376,15 +360,6 @@ def swtn(data, wavelet, level, start_level=0, axes=None):
 
     """
     data = np.asarray(data)
-    if np.iscomplexobj(data):
-        real = swtn(data.real, wavelet, level, start_level, axes)
-        imag = swtn(data.imag, wavelet, level, start_level, axes)
-        cplx = []
-        for rdict, idict in zip(real, imag):
-            cplx.append(
-                dict((k, rdict[k] + 1j * idict[k]) for k in rdict.keys()))
-        return cplx
-
     if data.dtype == np.dtype('object'):
         raise TypeError("Input must be a numeric array-like")
     if data.ndim < 1:

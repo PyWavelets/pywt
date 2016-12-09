@@ -294,7 +294,7 @@ cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d,
                                 wavelet.w, axis, mode)
         if retval:
             raise RuntimeError("C inverse wavelet transform failed")
-    if output.dtype == np.complex128:
+    elif output.dtype == np.complex128:
         with nogil:
             retval = c_wt.double_complex_idwt_axis(<double complex *> data_a, a_info_p,
                                  <double complex *> data_d, d_info_p,

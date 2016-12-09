@@ -119,10 +119,10 @@ cdef extern from "c/wt.h":
                          double complex * const output, const size_t output_len,
                          const DiscreteWavelet * const wavelet, const MODE mode) nogil
 
-    cdef int double_complex_swt_a(double input[], pywt_index_t input_len, DiscreteWavelet* wavelet,
-                          double output[], pywt_index_t output_len, int level) nogil
-    cdef int double_complex_swt_d(double input[], pywt_index_t input_len, DiscreteWavelet* wavelet,
-                          double output[], pywt_index_t output_len, int level) nogil
+    cdef int double_complex_swt_a(double complex input[], pywt_index_t input_len, DiscreteWavelet* wavelet,
+                          double complex output[], pywt_index_t output_len, int level) nogil
+    cdef int double_complex_swt_d(double complex input[], pywt_index_t input_len, DiscreteWavelet* wavelet,
+                          double complex output[], pywt_index_t output_len, int level) nogil
 
 
 
@@ -158,10 +158,10 @@ cdef extern from "c/wt.h":
                         float complex * const output, const size_t output_len,
                         const DiscreteWavelet * const wavelet, const MODE mode) nogil
 
-    cdef int float_complex_swt_a(float input[], pywt_index_t input_len, DiscreteWavelet* wavelet,
-                         float output[], pywt_index_t output_len, int level) nogil
-    cdef int float_complex_swt_d(float input[], pywt_index_t input_len, DiscreteWavelet* wavelet,
-                         float output[], pywt_index_t output_len, int level) nogil
+    cdef int float_complex_swt_a(float complex input[], pywt_index_t input_len, DiscreteWavelet* wavelet,
+                         float complex output[], pywt_index_t output_len, int level) nogil
+    cdef int float_complex_swt_d(float complex input[], pywt_index_t input_len, DiscreteWavelet* wavelet,
+                         float complex output[], pywt_index_t output_len, int level) nogil
 
 cdef extern from "c/cwt.h":
     # Cython does not know the 'restrict' keyword
