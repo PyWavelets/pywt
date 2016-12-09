@@ -130,6 +130,10 @@ cython_sources = [('{0}.pyx' if USE_CYTHON else '{0}.c').format(module)
 
 c_macros = [("PY_EXTENSION", None)]
 cython_macros = []
+
+# avoid compiler warnings:  tell Cython to use C99 complex types
+cython_macros.append(('CYTHON_CCOMPLEX', 1))
+
 cythonize_opts = {}
 if os.environ.get("CYTHON_TRACE"):
     cythonize_opts['linetrace'] = True

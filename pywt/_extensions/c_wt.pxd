@@ -118,10 +118,10 @@ cdef extern from "c/wt.h":
                          double complex * const output, const size_t output_len,
                          const DiscreteWavelet * const wavelet, const MODE mode) nogil
 
-    cdef int double_complex_swt_a(const double complex * const input, pywt_index_t input_len, const DiscreteWavelet * const wavelet,
-                          double complex * const output, pywt_index_t output_len, int level) nogil
-    cdef int double_complex_swt_d(const double complex * const input, pywt_index_t input_len, const DiscreteWavelet * const wavelet,
-                          double complex * const output, pywt_index_t output_len, int level) nogil
+    cdef int double_complex_swt_a(const double complex * const input, size_t input_len, const DiscreteWavelet * const wavelet,
+                          double complex * const output, size_t output_len, int level) nogil
+    cdef int double_complex_swt_d(const double complex * const input, size_t input_len, const DiscreteWavelet * const wavelet,
+                          double complex * const output, size_t output_len, int level) nogil
 
 
 
@@ -157,10 +157,10 @@ cdef extern from "c/wt.h":
                         float complex * const output, const size_t output_len,
                         const DiscreteWavelet * const wavelet, const MODE mode) nogil
 
-    cdef int float_complex_swt_a(const float complex * const input, pywt_index_t input_len, const DiscreteWavelet* const wavelet,
-                         float complex * const output, pywt_index_t output_len, int level) nogil
-    cdef int float_complex_swt_d(const float complex * const input, pywt_index_t input_len, const DiscreteWavelet* const wavelet,
-                         float complex * const output, pywt_index_t output_len, int level) nogil
+    cdef int float_complex_swt_a(const float complex * const input, size_t input_len, const DiscreteWavelet* const wavelet,
+                         float complex * const output, size_t output_len, int level) nogil
+    cdef int float_complex_swt_d(const float complex * const input, size_t input_len, const DiscreteWavelet* const wavelet,
+                         float complex * const output, size_t output_len, int level) nogil
 
 cdef extern from "c/cwt.h":
     # Cython does not know the 'restrict' keyword
