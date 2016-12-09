@@ -48,7 +48,6 @@ cdef extern from "c/wt.h":
                           double * const output, pywt_index_t output_len, int level) nogil
 
 
-
     cdef int float_downcoef_axis(const float * const input, const ArrayInfo input_info,
                                  float * const output, const ArrayInfo output_info,
                                  const DiscreteWavelet * const wavelet, const size_t axis,
@@ -114,15 +113,15 @@ cdef extern from "c/wt.h":
                           const DiscreteWavelet * const wavelet,
                           double complex * const output, const size_t output_len) nogil
 
-    cdef int double_complex_idwt(double complex * const coeffs_a, const size_t coeffs_a_len,
-                         double complex * const coeffs_d, const size_t coeffs_d_len,
+    cdef int double_complex_idwt(const double complex * const coeffs_a, const size_t coeffs_a_len,
+                         const double complex * const coeffs_d, const size_t coeffs_d_len,
                          double complex * const output, const size_t output_len,
                          const DiscreteWavelet * const wavelet, const MODE mode) nogil
 
-    cdef int double_complex_swt_a(double complex input[], pywt_index_t input_len, DiscreteWavelet* wavelet,
-                          double complex output[], pywt_index_t output_len, int level) nogil
-    cdef int double_complex_swt_d(double complex input[], pywt_index_t input_len, DiscreteWavelet* wavelet,
-                          double complex output[], pywt_index_t output_len, int level) nogil
+    cdef int double_complex_swt_a(const double complex * const input, pywt_index_t input_len, const DiscreteWavelet * const wavelet,
+                          double complex * const output, pywt_index_t output_len, int level) nogil
+    cdef int double_complex_swt_d(const double complex * const input, pywt_index_t input_len, const DiscreteWavelet * const wavelet,
+                          double complex * const output, pywt_index_t output_len, int level) nogil
 
 
 
@@ -158,10 +157,10 @@ cdef extern from "c/wt.h":
                         float complex * const output, const size_t output_len,
                         const DiscreteWavelet * const wavelet, const MODE mode) nogil
 
-    cdef int float_complex_swt_a(float complex input[], pywt_index_t input_len, DiscreteWavelet* wavelet,
-                         float complex output[], pywt_index_t output_len, int level) nogil
-    cdef int float_complex_swt_d(float complex input[], pywt_index_t input_len, DiscreteWavelet* wavelet,
-                         float complex output[], pywt_index_t output_len, int level) nogil
+    cdef int float_complex_swt_a(const float complex * const input, pywt_index_t input_len, const DiscreteWavelet* const wavelet,
+                         float complex * const output, pywt_index_t output_len, int level) nogil
+    cdef int float_complex_swt_d(const float complex * const input, pywt_index_t input_len, const DiscreteWavelet* const wavelet,
+                         float complex * const output, pywt_index_t output_len, int level) nogil
 
 cdef extern from "c/cwt.h":
     # Cython does not know the 'restrict' keyword

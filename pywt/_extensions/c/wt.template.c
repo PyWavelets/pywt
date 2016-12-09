@@ -446,11 +446,11 @@ int CAT(TYPE, _idwt)(const TYPE * const restrict coeffs_a, const size_t coeffs_a
 
 /* basic SWT step (TODO: optimize) */
 int CAT(TYPE, _swt_)(const TYPE * const restrict input, pywt_index_t input_len,
-                     const TYPE * const restrict filter, pywt_index_t filter_len,
+                     const REAL_TYPE * const restrict filter, pywt_index_t filter_len,
                      TYPE * const restrict output, size_t output_len,
                      unsigned int level){
 
-    TYPE * e_filter;
+    REAL_TYPE * e_filter;
     pywt_index_t i, e_filter_len, fstep;
     int ret;
 
