@@ -58,7 +58,7 @@ TYPE CAT(TYPE, _sin)(const TYPE x)
         return sinf(x);
 }
 
-TYPE CAT(TYPE, _pi)()
+TYPE CAT(TYPE, _pi)(void)
 {
     if (sizeof(TYPE) == sizeof(double))
         return M_PI;

@@ -1,4 +1,4 @@
-/* Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/> 
+/* Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/>
  * Copyright (c) 2012-2016 The PyWavelets Developers
  *                         <https://github.com/PyWavelets/pywt>
  * See COPYING for license details.
@@ -559,7 +559,7 @@ DiscreteWavelet* blank_discrete_wavelet(size_t filters_length)
     return w;
 }
 
-ContinuousWavelet* blank_continous_wavelet()
+ContinuousWavelet* blank_continous_wavelet(void)
 {
     ContinuousWavelet* w;
 
