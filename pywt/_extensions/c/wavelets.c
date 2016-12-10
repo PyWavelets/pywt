@@ -42,6 +42,8 @@ int is_discrete_wavelet(WAVELET_NAME name)
             return 0;
         case CMOR:
             return 0;
+        default:
+            return -1;
     }
 
 }
