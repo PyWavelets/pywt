@@ -37,15 +37,15 @@ cdef extern from "c/wt.h":
                           const DiscreteWavelet * const wavelet,
                           double * const output, const size_t output_len) nogil
 
-    cdef int double_idwt(double * const coeffs_a, const size_t coeffs_a_len,
-                         double * const coeffs_d, const size_t coeffs_d_len,
+    cdef int double_idwt(const double * const coeffs_a, const size_t coeffs_a_len,
+                         const double * const coeffs_d, const size_t coeffs_d_len,
                          double * const output, const size_t output_len,
                          const DiscreteWavelet * const wavelet, const MODE mode) nogil
 
-    cdef int double_swt_a(double input[], pywt_index_t input_len, DiscreteWavelet* wavelet,
-                          double output[], pywt_index_t output_len, int level) nogil
-    cdef int double_swt_d(double input[], pywt_index_t input_len, DiscreteWavelet* wavelet,
-                          double output[], pywt_index_t output_len, int level) nogil
+    cdef int double_swt_a(const double * const input, pywt_index_t input_len, const DiscreteWavelet * const wavelet,
+                          double * const output, pywt_index_t output_len, int level) nogil
+    cdef int double_swt_d(const double * const input, pywt_index_t input_len, const DiscreteWavelet * const wavelet,
+                          double * const output, pywt_index_t output_len, int level) nogil
 
 
 
@@ -81,10 +81,10 @@ cdef extern from "c/wt.h":
                         float * const output, const size_t output_len,
                         const DiscreteWavelet * const wavelet, const MODE mode) nogil
 
-    cdef int float_swt_a(float input[], pywt_index_t input_len, DiscreteWavelet* wavelet,
-                         float output[], pywt_index_t output_len, int level) nogil
-    cdef int float_swt_d(float input[], pywt_index_t input_len, DiscreteWavelet* wavelet,
-                         float output[], pywt_index_t output_len, int level) nogil
+    cdef int float_swt_a(const float * const input, pywt_index_t input_len, const DiscreteWavelet * const wavelet,
+                         float * const output, pywt_index_t output_len, int level) nogil
+    cdef int float_swt_d(const float * const input, pywt_index_t input_len, const DiscreteWavelet * const wavelet,
+                         float * const output, pywt_index_t output_len, int level) nogil
 
 cdef extern from "c/cwt.h":
     # Cython does not know the 'restrict' keyword

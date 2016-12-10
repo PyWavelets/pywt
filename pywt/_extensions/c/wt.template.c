@@ -1,4 +1,4 @@
-/* Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/> 
+/* Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/>
  * Copyright (c) 2012-2016 The PyWavelets Developers
  *                         <https://github.com/PyWavelets/pywt>
  * See COPYING for license details.
@@ -441,9 +441,9 @@ int CAT(TYPE, _idwt)(const TYPE * const restrict coeffs_a, const size_t coeffs_a
 }
 
 /* basic SWT step (TODO: optimize) */
-int CAT(TYPE, _swt_)(TYPE input[], pywt_index_t input_len,
-                     const TYPE filter[], pywt_index_t filter_len,
-                     TYPE output[], pywt_index_t output_len,
+int CAT(TYPE, _swt_)(const TYPE * const restrict input, pywt_index_t input_len,
+                     const TYPE * const restrict filter, pywt_index_t filter_len,
+                     TYPE * const restrict output, pywt_index_t output_len,
                      unsigned int level){
 
     TYPE * e_filter;
@@ -489,9 +489,9 @@ int CAT(TYPE, _swt_)(TYPE input[], pywt_index_t input_len,
  * Approximation at specified level
  * input - approximation coeffs from upper level or signal if level == 1
  */
-int CAT(TYPE, _swt_a)(TYPE input[], pywt_index_t input_len,
-                      DiscreteWavelet* wavelet,
-                      TYPE output[], pywt_index_t output_len,
+int CAT(TYPE, _swt_a)(const TYPE * const restrict input, pywt_index_t input_len,
+                      const DiscreteWavelet * const restrict wavelet,
+                      TYPE * const restrict output, pywt_index_t output_len,
                       unsigned int level){
     return CAT(TYPE, _swt_)(input, input_len, wavelet->CAT(dec_lo_, TYPE),
                             wavelet->dec_len, output, output_len, level);
@@ -500,9 +500,9 @@ int CAT(TYPE, _swt_a)(TYPE input[], pywt_index_t input_len,
 /* Details at specified level
  * input - approximation coeffs from upper level or signal if level == 1
  */
-int CAT(TYPE, _swt_d)(TYPE input[], pywt_index_t input_len,
-                      DiscreteWavelet* wavelet,
-                      TYPE output[], pywt_index_t output_len,
+int CAT(TYPE, _swt_d)(const TYPE * const restrict input, pywt_index_t input_len,
+                      const DiscreteWavelet * const restrict wavelet,
+                      TYPE * const restrict output, pywt_index_t output_len,
                       unsigned int level){
     return CAT(TYPE, _swt_)(input, input_len, wavelet->CAT(dec_hi_, TYPE),
                             wavelet->dec_len, output, output_len, level);

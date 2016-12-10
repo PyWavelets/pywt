@@ -1,4 +1,4 @@
-/* Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/> 
+/* Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/>
  * Copyright (c) 2012-2016 The PyWavelets Developers
  *                         <https://github.com/PyWavelets/pywt>
  * See COPYING for license details.
@@ -61,17 +61,17 @@ int CAT(TYPE, _rec_d)(const TYPE * const restrict coeffs_d, const size_t coeffs_
 int CAT(TYPE, _idwt)(const TYPE * const restrict coeffs_a, const size_t coeffs_a_len,
                      const TYPE * const restrict coeffs_d, const size_t coeffs_d_len,
                      TYPE * const restrict output, const size_t output_len,
-                     const DiscreteWavelet * const wavelet, const MODE mode);
+                     const DiscreteWavelet * const restrict wavelet, const MODE mode);
 
 /* SWT decomposition at given level */
-int CAT(TYPE, _swt_a)(TYPE input[], pywt_index_t input_len,
-                      DiscreteWavelet* wavelet,
-                      TYPE output[], pywt_index_t output_len,
+int CAT(TYPE, _swt_a)(const TYPE * const restrict input, pywt_index_t input_len,
+                      const DiscreteWavelet * const restrict wavelet,
+                      TYPE * const restrict output, pywt_index_t output_len,
                       unsigned int level);
 
-int CAT(TYPE, _swt_d)(TYPE input[], pywt_index_t input_len,
-                      DiscreteWavelet* wavelet,
-                      TYPE output[], pywt_index_t output_len,
+int CAT(TYPE, _swt_d)(const TYPE * const restrict input, pywt_index_t input_len,
+                      const DiscreteWavelet * const restrict wavelet,
+                      TYPE * const restrict output, pywt_index_t output_len,
                       unsigned int level);
 
 int CAT(TYPE, _swt_axis)(const TYPE * const restrict input, const ArrayInfo input_info,
