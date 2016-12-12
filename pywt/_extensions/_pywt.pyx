@@ -162,7 +162,7 @@ cdef object wname_to_code(name):
 
 def wavelist(family=None, kind='all'):
     """
-    wavelist(family=None)
+    wavelist(family=None, kind='all')
 
     Returns list of available wavelet names for the given family name.
 
@@ -177,10 +177,10 @@ def wavelist(family=None, kind='all'):
             'haar', 'db', 'sym', 'coif', 'bior', 'rbio', 'dmey', 'gaus',
             'mexh', 'morl', 'cgau', 'shan', 'fbsp', 'cmor'
 
-        kind : {'all', 'continuous', 'discrete'}, optional
-            Whether to return only wavelet names of discrete or continuous
-            wavelets, or all wavelets.  Default is ``'all'``.
-            Ignored if ``family`` is specified.
+    kind : {'all', 'continuous', 'discrete'}, optional
+        Whether to return only wavelet names of discrete or continuous
+        wavelets, or all wavelets.  Default is ``'all'``.
+        Ignored if ``family`` is specified.
 
     Returns
     -------
