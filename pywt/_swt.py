@@ -3,7 +3,7 @@ from ._extensions._pywt import Wavelet, Modes, _check_dtype
 
 import warnings
 import numpy as np
-from ._extensions._dwt import idwt_axis
+from ._extensions._dwt import idwt_single
 from ._extensions._swt import swt_axis as _swt_axis
 from ._dwt import idwt
 from ._multidim import idwt2
@@ -136,11 +136,13 @@ def iswt(coeffs, wavelet):
 
             # perform the inverse dwt on the selected indices,
             # making sure to use periodic boundary conditions
-            # idwt_axis instead of idwt_single to support non-contiguous arrays
-            x1 = idwt_axis(output[even_indices], cD[even_indices],
-                           wavelet, mode, 0)
-            x2 = idwt_axis(output[odd_indices], cD[odd_indices],
-                           wavelet, mode, 0)
+            # copy used to ensure idwt_single inputs are contiguous
+            x1 = idwt_single(output[even_indices].copy(),
+                             cD[even_indices].copy(),
+                             wavelet, mode)
+            x2 = idwt_single(output[odd_indices].copy(),
+                             cD[odd_indices].copy(),
+                             wavelet, mode)
 
             # perform a circular shift right
             x2 = np.roll(x2, 1)
