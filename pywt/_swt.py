@@ -1,14 +1,14 @@
+import warnings
+from itertools import product
+
+import numpy as np
+
+from ._extensions._dwt import idwt_single
 from ._extensions._swt import swt_max_level, swt as _swt, swt_axis as _swt_axis
 from ._extensions._pywt import Wavelet, Modes, _check_dtype
+from ._multidim import idwt2, idwtn
 
-import warnings
-import numpy as np
-from ._extensions._dwt import idwt_single
-from ._extensions._swt import swt_axis as _swt_axis
-from ._dwt import idwt
-from ._multidim import idwt2
-
-__all__ = ["swt", "swt_max_level", 'iswt', 'swt2', 'iswt2', 'swtn']
+__all__ = ["swt", "swt_max_level", 'iswt', 'swt2', 'iswt2', 'swtn', 'iswtn']
 
 
 def swt(data, wavelet, level=None, start_level=0, axis=-1):
@@ -265,7 +265,6 @@ def iswt2(coeffs, wavelet):
     """
 
     output = coeffs[-1][0].copy()  # Avoid modification of input data
-
     # num_levels, equivalent to the decomposition level, n
     num_levels = len(coeffs)
     if not isinstance(wavelet, Wavelet):
@@ -412,3 +411,112 @@ def swtn(data, wavelet, level, start_level=0, axes=None):
 
     ret.reverse()
     return ret
+
+
+def iswtn(coeffs, wavelet, axes=None):
+    """
+    Multilevel nD inverse discrete stationary wavelet transform.
+
+    Parameters
+    ----------
+    coeffs : list
+        [{coeffs_level_n}, ..., {coeffs_level_1}]: list of dict
+    wavelet : Wavelet object or name string
+        Wavelet to use
+    axes : sequence of ints, optional
+        Axes over which to compute the inverse SWT. Axes may not be repeated.
+        The default is ``None``, which means transform all axes
+        (``axes = range(data.ndim)``).
+
+    Returns
+    -------
+    nD array of reconstructed data.
+
+    Examples
+    --------
+    >>> import pywt
+    >>> coeffs = pywt.swtn([[1,2,3,4],[5,6,7,8],
+    ...                     [9,10,11,12],[13,14,15,16]],
+    ...                    'db1', level=2)
+    >>> pywt.iswtn(coeffs, 'db1')
+    array([[  1.,   2.,   3.,   4.],
+           [  5.,   6.,   7.,   8.],
+           [  9.,  10.,  11.,  12.],
+           [ 13.,  14.,  15.,  16.]])
+
+    """
+
+    # key length matches the number of axes transformed
+    ndim_transform = max(len(key) for key in coeffs[0].keys())
+
+    output = coeffs[0]['a'*ndim_transform].copy()  # Avoid modifying input data
+    ndim = output.ndim
+
+    if axes is None:
+        axes = range(output.ndim)
+    axes = [a + ndim if a < 0 else a for a in axes]
+    if len(axes) != len(set(axes)):
+        raise ValueError("The axes passed to swtn must be unique.")
+    if ndim_transform != len(axes):
+        raise ValueError("The number of axes used in iswtn must match the "
+                         "number of dimensions transformed in swtn.")
+
+    # num_levels, equivalent to the decomposition level, n
+    num_levels = len(coeffs)
+    if not isinstance(wavelet, Wavelet):
+        wavelet = Wavelet(wavelet)
+
+    # initialize various slice objects used in the loops below
+    # these will remain slice(None) only on axes that aren't transformed
+    indices = [slice(None), ]*ndim
+    even_indices = [slice(None), ]*ndim
+    odd_indices = [slice(None), ]*ndim
+    odd_even_slices = [slice(None), ]*ndim
+
+    for j in range(num_levels):
+        step_size = int(pow(2, num_levels-j-1))
+        last_index = step_size
+        a = coeffs[j].pop('a'*ndim_transform)  # will restore later
+        details = coeffs[j]
+        # We assume all coefficient arrays are of equal size
+        shapes = [v.shape for k, v in details.items()]
+        dshape = shapes[0]
+        if len(set(shapes)) != 1:
+            raise RuntimeError(
+                "Mismatch in shape of intermediate coefficient arrays")
+
+        # nested loop over all combinations of axis offsets at this level
+        for firsts in product(*([range(last_index), ]*ndim_transform)):
+            for first, sh, ax in zip(firsts, dshape, axes):
+                indices[ax] = slice(first, sh, step_size)
+                even_indices[ax] = slice(first, sh, 2*step_size)
+                odd_indices[ax] = slice(first+step_size, sh, 2*step_size)
+
+            # nested loop over all combinations of odd/even inidices
+            approx = output.copy()
+            output[indices] = 0
+            ntransforms = 0
+            for odds in product(*([(0, 1), ]*ndim_transform)):
+                for o, ax in zip(odds, axes):
+                    if o:
+                        odd_even_slices[ax] = odd_indices[ax]
+                    else:
+                        odd_even_slices[ax] = even_indices[ax]
+                # extract the odd/even indices for all detail coefficients
+                details_slice = {}
+                for key, value in details.items():
+                    details_slice[key] = value[odd_even_slices]
+                details_slice['a'*ndim_transform] = approx[odd_even_slices]
+
+                # perform the inverse dwt on the selected indices,
+                # making sure to use periodic boundary conditions
+                x = idwtn(details_slice, wavelet, 'periodization', axes=axes)
+                for o, ax in zip(odds, axes):
+                    # circular shift along any odd indexed axis
+                    if o:
+                        x = np.roll(x, 1, axis=ax)
+                output[indices] += x
+                ntransforms += 1
+            output[indices] /= ntransforms  # normalize
+        coeffs[j]['a'*ndim_transform] = a  # restore approx coeffs to dict
+    return output
