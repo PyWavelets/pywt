@@ -136,12 +136,13 @@ def iswt(coeffs, wavelet):
 
             # perform the inverse dwt on the selected indices,
             # making sure to use periodic boundary conditions
-            # copy used to ensure idwt_single inputs are contiguous
-            x1 = idwt_single(output[even_indices].copy(),
-                             cD[even_indices].copy(),
+            # Note:  indexing with an array of ints returns a contiguous
+            #        copy as required by idwt_single.
+            x1 = idwt_single(output[even_indices],
+                             cD[even_indices],
                              wavelet, mode)
-            x2 = idwt_single(output[odd_indices].copy(),
-                             cD[odd_indices].copy(),
+            x2 = idwt_single(output[odd_indices],
+                             cD[odd_indices],
                              wavelet, mode)
 
             # perform a circular shift right
