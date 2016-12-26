@@ -795,9 +795,9 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
         -----
         The effective support are set with lower_bound and upper_bound
         The wavelet function is complex for cmor, shan, fbsp and cgau.
-        The complex frequency B-spline wavelet (fbsp) has bandwidth_frequency, center_frequency and fbsp_order as addional parameter
-        The complex Shannon wavelet (shan) has bandwidth_frequency and center_frequency as addional parameter
-        The complex Morlet wavelet (cmor) has bandwidth_frequency and center_frequency as addional parameter
+        The complex frequency B-spline wavelet (fbsp) has bandwidth_frequency, center_frequency and fbsp_order as additional parameter
+        The complex Shannon wavelet (shan) has bandwidth_frequency and center_frequency as additional parameter
+        The complex Morlet wavelet (cmor) has bandwidth_frequency and center_frequency as additional parameter
         Examples
         --------
         >>> import pywt
