@@ -160,6 +160,26 @@ def test_swt_dtypes():
                     "swt2: " + errmsg)
 
 
+def test_swt_roudtrip_dtypes():
+    # verify perfect reconstruction for all dtypes
+    rstate = np.random.RandomState(5)
+    wavelet = pywt.Wavelet('haar')
+    for dt_in, dt_out in zip(dtypes_in, dtypes_out):
+        # swt, iswt
+        x = rstate.standard_normal((8, )).astype(dt_in)
+        c = pywt.swt(x, wavelet, level=2)
+        xr = pywt.iswt(c, wavelet)
+        assert_allclose(x, xr, rtol=1e-6, atol=1e-7)
+
+        # swt2, iswt2
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', FutureWarning)
+            x = rstate.standard_normal((8, 8)).astype(dt_in)
+            c = pywt.swt2(x, wavelet, level=2)
+            xr = pywt.iswt2(c, wavelet)
+            assert_allclose(x, xr, rtol=1e-6, atol=1e-7)
+
+
 def test_swt2_ndim_error():
     x = np.ones(8)
     with warnings.catch_warnings():
