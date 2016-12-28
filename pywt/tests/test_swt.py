@@ -3,8 +3,10 @@
 from __future__ import division, print_function, absolute_import
 
 import warnings
+from copy import deepcopy
+from itertools import combinations
 import numpy as np
-from numpy.testing import (run_module_suite, assert_allclose, assert_,
+from numpy.testing import (run_module_suite, dec, assert_allclose, assert_,
                            assert_equal, assert_raises, assert_array_equal)
 
 import pywt
@@ -123,21 +125,20 @@ def test_swt_iswt_integration():
     # that they are each other's inverse.
 
     max_level = 3
-    wavelets = pywt.wavelist()
+    wavelets = pywt.wavelist(kind='discrete')
     if 'dmey' in wavelets:
         # The 'dmey' wavelet seems to be a bit special - disregard it for now
         wavelets.remove('dmey')
     for current_wavelet_str in wavelets:
-        current_wavelet = pywt.DiscreteContinuousWavelet(current_wavelet_str)
-        if isinstance(current_wavelet, pywt.Wavelet):
-            input_length_power = int(np.ceil(np.log2(max(
-                current_wavelet.dec_len,
-                current_wavelet.rec_len))))
-            input_length = 2**(input_length_power + max_level - 1)
-            X = np.arange(input_length)
-            coeffs = pywt.swt(X, current_wavelet, max_level)
-            Y = pywt.iswt(coeffs, current_wavelet)
-            assert_allclose(Y, X, rtol=1e-5, atol=1e-7)
+        current_wavelet = pywt.Wavelet(current_wavelet_str)
+        input_length_power = int(np.ceil(np.log2(max(
+            current_wavelet.dec_len,
+            current_wavelet.rec_len))))
+        input_length = 2**(input_length_power + max_level - 1)
+        X = np.arange(input_length)
+        coeffs = pywt.swt(X, current_wavelet, max_level)
+        Y = pywt.iswt(coeffs, current_wavelet)
+        assert_allclose(Y, X, rtol=1e-5, atol=1e-7)
 
 
 def test_swt_dtypes():
@@ -160,7 +161,7 @@ def test_swt_dtypes():
                     "swt2: " + errmsg)
 
 
-def test_swt_roudtrip_dtypes():
+def test_swt_roundtrip_dtypes():
     # verify perfect reconstruction for all dtypes
     rstate = np.random.RandomState(5)
     wavelet = pywt.Wavelet('haar')
@@ -187,7 +188,8 @@ def test_swt2_ndim_error():
         assert_raises(ValueError, pywt.swt2, x, 'haar', level=1)
 
 
-def test_swt2_iswt2_integration():
+@dec.slow
+def test_swt2_iswt2_integration(wavelets=None):
     # This function performs a round-trip swt2/iswt2 transform test on
     # all available types of wavelets in PyWavelets - except the
     # 'dmey' wavelet. The latter has been excluded because it does not
@@ -198,24 +200,28 @@ def test_swt2_iswt2_integration():
     # that they are each other's inverse.
 
     max_level = 3
-    wavelets = pywt.wavelist()
-    if 'dmey' in wavelets:
-        # The 'dmey' wavelet seems to be a bit special - disregard it for now
-        wavelets.remove('dmey')
+    if wavelets is None:
+        wavelets = pywt.wavelist(kind='discrete')
+        if 'dmey' in wavelets:
+            # The 'dmey' wavelet is a special case - disregard it for now
+            wavelets.remove('dmey')
     for current_wavelet_str in wavelets:
-        current_wavelet = pywt.DiscreteContinuousWavelet(current_wavelet_str)
-        if isinstance(current_wavelet, pywt.Wavelet):
-            input_length_power = int(np.ceil(np.log2(max(
-                current_wavelet.dec_len,
-                current_wavelet.rec_len))))
-            input_length = 2**(input_length_power + max_level - 1)
-            X = np.arange(input_length**2).reshape(input_length, input_length)
+        current_wavelet = pywt.Wavelet(current_wavelet_str)
+        input_length_power = int(np.ceil(np.log2(max(
+            current_wavelet.dec_len,
+            current_wavelet.rec_len))))
+        input_length = 2**(input_length_power + max_level - 1)
+        X = np.arange(input_length**2).reshape(input_length, input_length)
 
-            with warnings.catch_warnings():
-                warnings.simplefilter('ignore', FutureWarning)
-                coeffs = pywt.swt2(X, current_wavelet, max_level)
-                Y = pywt.iswt2(coeffs, current_wavelet)
-            assert_allclose(Y, X, rtol=1e-5, atol=1e-5)
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', FutureWarning)
+            coeffs = pywt.swt2(X, current_wavelet, max_level)
+            Y = pywt.iswt2(coeffs, current_wavelet)
+        assert_allclose(Y, X, rtol=1e-5, atol=1e-5)
+
+
+def test_swt2_iswt2_quick():
+    test_swt2_iswt2_integration(wavelets=['db1', ])
 
 
 def test_swt2_axes():
@@ -280,6 +286,67 @@ def test_swtn_axes():
     # odd-sized data not allowed
     assert_raises(ValueError, swt_axis, X[:-1, :], current_wavelet, level=0,
                   start_level=0, axis=0)
+
+
+@dec.slow
+def test_swtn_iswtn_integration(wavelets=None):
+    # This function performs a round-trip swtn/iswtn transform for various
+    # possible combinations of:
+    #   1.) 1 out of 2 axes of a 2D array
+    #   2.) 2 out of 3 axes of a 3D array
+    #
+    # To keep test time down, only wavelets of length <= 8 are run.
+    #
+    # This test does not validate swtn or iswtn individually, but only
+    # confirms that iswtn yields an (almost) perfect reconstruction of swtn.
+    max_level = 3
+    if wavelets is None:
+        wavelets = pywt.wavelist(kind='discrete')
+        if 'dmey' in wavelets:
+            # The 'dmey' wavelet is a special case - disregard it for now
+            wavelets.remove('dmey')
+    for ndim_transform in range(1, 3):
+        ndim = ndim_transform + 1
+        for axes in combinations(range(ndim), ndim_transform):
+            for current_wavelet_str in wavelets:
+                wav = pywt.Wavelet(current_wavelet_str)
+                if wav.dec_len > 8:
+                    continue  # avoid excessive test duration
+                input_length_power = int(np.ceil(np.log2(max(
+                    wav.dec_len,
+                    wav.rec_len))))
+                N = 2**(input_length_power + max_level - 1)
+                X = np.arange(N**ndim).reshape((N, )*ndim)
+
+                coeffs = pywt.swtn(X, wav, max_level, axes=axes)
+                coeffs_copy = deepcopy(coeffs)
+                Y = pywt.iswtn(coeffs, wav, axes=axes)
+                assert_allclose(Y, X, rtol=1e-5, atol=1e-5)
+
+                # verify the inverse transform didn't modify any coeffs
+                for c, c2 in zip(coeffs, coeffs_copy):
+                    for k, v in c.items():
+                        assert_array_equal(c2[k], v)
+
+
+def test_swtn_iswtn_quick():
+    test_swtn_iswtn_integration(wavelets=['db1', ])
+
+
+def test_iswtn_errors():
+    x = np.arange(8**3).reshape(8, 8, 8)
+    max_level = 2
+    axes = (0, 1)
+    w = pywt.Wavelet('db1')
+    coeffs = pywt.swtn(x, w, max_level, axes=axes)
+
+    # more axes than dimensions transformed
+    assert_raises(ValueError, pywt.iswtn, coeffs, w, axes=(0, 1, 2))
+    # duplicate axes not allowed
+    assert_raises(ValueError, pywt.iswtn, coeffs, w, axes=(0, 0))
+    # mismatched coefficient size
+    coeffs[0]['da'] = coeffs[0]['da'][:-1, :]
+    assert_raises(RuntimeError, pywt.iswtn, coeffs, w, axes=axes)
 
 
 if __name__ == '__main__':
