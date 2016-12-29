@@ -33,6 +33,15 @@ _attr_deprecation_msg = ('{old} has been renamed to {new} and will '
                          'of pywt.')
 
 
+# raises exception if the wavelet name is undefined
+cdef int is_discrete_wav(WAVELET_NAME name):
+    cdef int is_discrete
+    discrete = wavelet.is_discrete_wavelet(name)
+    if discrete == -1:
+        raise ValueError("unrecognized wavelet family name")
+    return discrete
+
+
 class _Modes(object):
     """
     Because the most common and practical way of representing digital signals
@@ -206,7 +215,7 @@ def wavelist(family=None, kind='all'):
             return True
 
         family_code, family_number = wname_to_code(name)
-        is_discrete = wavelet.is_discrete_wavelet(family_code)
+        is_discrete = is_discrete_wav(family_code)
         if kind == 'discrete':
             return is_discrete
         else:
@@ -299,7 +308,7 @@ def DiscreteContinuousWavelet(name=u"", object filter_bank=None):
     if filter_bank is None:
         name = name.lower()
         family_code, family_number = wname_to_code(name)
-        if (wavelet.is_discrete_wavelet(family_code)):
+        if is_discrete_wav(family_code):
             return Wavelet(name, filter_bank)
         else:
             return ContinuousWavelet(name)
@@ -334,7 +343,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
             # builtin wavelet
             self.name = name.lower()
             family_code, family_number = wname_to_code(self.name)
-            if (wavelet.is_discrete_wavelet(family_code)):
+            if is_discrete_wav(family_code):
                 self.w = <wavelet.DiscreteWavelet*> wavelet.discrete_wavelet(family_code, family_number)
             if self.w is NULL:
                 raise ValueError("Invalid wavelet name.")

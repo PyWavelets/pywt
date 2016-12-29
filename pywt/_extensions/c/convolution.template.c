@@ -1,4 +1,4 @@
-/* Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/> 
+/* Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/>
  * Copyright (c) 2012-2016 The PyWavelets Developers
  *                         <https://github.com/PyWavelets/pywt>
  * See COPYING for license details.
@@ -545,9 +545,9 @@ int CAT(TYPE, _upsampling_convolution_valid_sf)(const TYPE * const restrict inpu
 }
 
 /* -> swt - todo */
-int CAT(TYPE, _upsampled_filter_convolution)(const TYPE* input, const size_t N,
-                                             const TYPE* filter, const size_t F,
-                                             TYPE* output,
+int CAT(TYPE, _upsampled_filter_convolution)(const TYPE * const restrict input, const size_t N,
+                                             const TYPE * const restrict filter, const size_t F,
+                                             TYPE * const restrict output,
                                              const size_t step, MODE mode)
 {
     return -1;
