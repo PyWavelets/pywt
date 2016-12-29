@@ -135,5 +135,11 @@ def test_wavelist():
     assert_raises(ValueError, pywt.wavelist, kind='foobar')
 
 
+def test_wavelet_errormsgs():
+    try:
+        pywt.Wavelet('gaus1')
+    except ValueError as e:
+        assert_(e.args[0].startswith('The `Wavelet` class'))
+
 if __name__ == '__main__':
     run_module_suite()

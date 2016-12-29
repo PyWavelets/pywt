@@ -346,7 +346,12 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
             if is_discrete_wav(family_code):
                 self.w = <wavelet.DiscreteWavelet*> wavelet.discrete_wavelet(family_code, family_number)
             if self.w is NULL:
-                raise ValueError("Invalid wavelet name.")
+                if self.name in wavelist(kind='continuous'):
+                    raise ValueError("The `Wavelet` class is for discrete "
+                          "wavelets, %s is a continuous wavelet.  Use "
+                          "pywt.ContinuousWavelet instead" % self.name)
+                else:
+                    raise ValueError("Invalid wavelet name.")
             self.number = family_number
         else:
             if hasattr(filter_bank, "filter_bank"):
