@@ -846,7 +846,7 @@ def test_fswt_ifswt_roundtrip():
                 assert_(rec.dtype == dt_out)
 
 
-def test_fswt_ifswt_zero_levelS():
+def test_fswt_ifswt_zero_levels():
     # zero level transform gives coefs matching the original data
     rstate = np.random.RandomState(0)
     ndim = 2
