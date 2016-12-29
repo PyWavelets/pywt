@@ -21,3 +21,11 @@ Multilevel decomposition - ``wavedecn``
 Multilevel reconstruction - ``waverecn``
 ----------------------------------------
 .. autofunction:: waverecn
+
+Multilevel fully separable decomposition - ``fswt``
+---------------------------------------------------
+.. autofunction:: fswt
+
+Multilevel fully separable reconstruction - ``ifswt``
+-----------------------------------------------------
+.. autofunction:: ifswt
