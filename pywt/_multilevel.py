@@ -54,7 +54,7 @@ def wavedec(data, wavelet, mode='symmetric', level=None, axis=-1):
     wavelet : Wavelet object or name string
         Wavelet to use
     mode : str, optional
-        Signal extension mode, see Modes (default: 'symmetric')
+        Signal extension mode, see `Modes` (default: 'symmetric')
     level : int, optional
         Decomposition level (must be >= 0). If level is None (default) then it
         will be calculated using the `dwt_max_level` function.
@@ -116,7 +116,7 @@ def waverec(coeffs, wavelet, mode='symmetric', axis=-1):
     wavelet : Wavelet object or name string
         Wavelet to use
     mode : str, optional
-        Signal extension mode, see Modes (default: 'symmetric')
+        Signal extension mode, see `Modes` (default: 'symmetric')
     axis: int, optional
         Axis over which to compute the inverse DWT. If not given, the
         last axis is used.
@@ -181,7 +181,7 @@ def wavedec2(data, wavelet, mode='symmetric', level=None, axes=(-2, -1)):
         Wavelet to use.  This can also be a tuple containing a wavelet to
         apply along each axis in `axes`.
     mode : str or 2-tuple of str, optional
-        Signal extension mode, see Modes (default: 'symmetric').  This can
+        Signal extension mode, see `Modes` (default: 'symmetric').  This can
         also be a tuple containing a mode to apply along each axis in `axes`.
     level : int, optional
         Decomposition level (must be >= 0). If level is None (default) then it
@@ -255,7 +255,7 @@ def waverec2(coeffs, wavelet, mode='symmetric', axes=(-2, -1)):
         Wavelet to use.  This can also be a tuple containing a wavelet to
         apply along each axis in `axes`.
     mode : str or 2-tuple of str, optional
-        Signal extension mode, see Modes (default: 'symmetric').  This can
+        Signal extension mode, see `Modes` (default: 'symmetric').  This can
         also be a tuple containing a mode to apply along each axis in `axes`.
     axes : 2-tuple of ints, optional
         Axes over which to compute the IDWT. Repeated elements are not allowed.
@@ -356,7 +356,7 @@ def wavedecn(data, wavelet, mode='symmetric', level=None, axes=None):
         Wavelet to use.  This can also be a tuple containing a wavelet to
         apply along each axis in `axes`.
     mode : str or tuple of str, optional
-        Signal extension mode, see Modes (default: 'symmetric').  This can
+        Signal extension mode, see `Modes` (default: 'symmetric').  This can
         also be a tuple containing a mode to apply along each axis in `axes`.
     level : int, optional
         Decomposition level (must be >= 0). If level is None (default) then it
@@ -454,7 +454,7 @@ def waverecn(coeffs, wavelet, mode='symmetric', axes=None):
         Wavelet to use.  This can also be a tuple containing a wavelet to
         apply along each axis in `axes`.
     mode : str or tuple of str, optional
-        Signal extension mode, see Modes (default: 'symmetric').  This can
+        Signal extension mode, see `Modes` (default: 'symmetric').  This can
         also be a tuple containing a mode to apply along each axis in `axes`.
     axes : sequence of ints, optional
         Axes over which to compute the IDWT.  Axes may not be repeated.
@@ -1153,7 +1153,7 @@ def unravel_coeffs(arr, coeff_slices, coeff_shapes, output_format='wavedecn'):
 def _check_fswt_axes(data, axes):
     """axes checks common to fswt, ifswt. """
     if len(axes) != len(set(axes)):
-        raise ValueError("The axes passed to wavedecn must be unique.")
+        raise ValueError("The axes passed to fswt must be unique.")
     try:
         [data.shape[ax] for ax in axes]
     except IndexError:
@@ -1163,6 +1163,12 @@ def _check_fswt_axes(data, axes):
 def fswt(data, wavelet, mode='symmetric', levels=None, axes=None):
     """Fully Separable Wavelet Transform.
 
+    This is a variant of the multilevel discrete wavelet transform where all
+    levels of decomposition are performed along a single axis prior to moving
+    onto the next axis.  Unlike in ``wavedecn``, the number of levels of
+    decomposition are not required to be the same along each axis which can be
+    a benefit for anisotropic data.
+
     Parameters
     ----------
     data: array_like
@@ -1170,12 +1176,12 @@ def fswt(data, wavelet, mode='symmetric', levels=None, axes=None):
     wavelet : Wavelet object or name string
         Wavelet to use
     mode : str, optional
-        Signal extension mode, see Modes (default: 'symmetric')
+        Signal extension mode, see `Modes` (default: 'symmetric')
     levels : int or sequence of ints, optional
         Decomposition levels along each axis (must be >= 0). If an integer is
-        provided, the same number of levels are used for all axes.If ``levels``
-        is None (default), ``dwt_max_level`` will be used to compute the
-        maximum number of levels possible for each axis.
+        provided, the same number of levels are used for all axes. If
+        ``levels`` is None (default), `dwt_max_level` will be used to compute
+        the maximum number of levels possible for each axis.
     axes : sequence of ints, optional
         Axes over which to compute the FSWT. Axes may not be repeated.  The
         default is to transform along all axes.
@@ -1197,11 +1203,11 @@ def fswt(data, wavelet, mode='symmetric', levels=None, axes=None):
     Notes
     -----
     This transformation has been variously referred to as the (fully) separable
-    wavelet transform (e.g. refs _[1], _[3]), the tensor-product wavelet
-    (_[2]) or the hyperbolic wavelet transform (_[4]).  It is well suited to
+    wavelet transform (e.g. refs [1]_, [3]_), the tensor-product wavelet
+    ([2]_) or the hyperbolic wavelet transform ([4]_).  It is well suited to
     data with anisotropic smoothness.
 
-    In _[2] it was demonstrated that FSWT performs at least as well as the DWT
+    In [2]_ it was demonstrated that FSWT performs at least as well as the DWT
     for image compression.  Computation time is a factor 2 larger than that for
     the DWT.
 
@@ -1211,22 +1217,22 @@ def fswt(data, wavelet, mode='symmetric', levels=None, axes=None):
 
     References
     ----------
-    ..[1] PH Westerink. Subband Coding of Images. Ph.D. dissertation, Dept.
-    Elect. Eng., Inf. Theory Group, Delft Univ. Technol., Delft, The
-    Netherlands, 1989.  (see Section 2.3)
-    http://resolver.tudelft.nl/uuid:a4d195c3-1f89-4d66-913d-db9af0969509
+    .. [1] PH Westerink. Subband Coding of Images. Ph.D. dissertation, Dept.
+       Elect. Eng., Inf. Theory Group, Delft Univ. Technol., Delft, The
+       Netherlands, 1989.  (see Section 2.3)
+       http://resolver.tudelft.nl/uuid:a4d195c3-1f89-4d66-913d-db9af0969509
 
-    ..[2] CP Rosiene and TQ Nguyen. Tensor-product wavelet vs. Mallat
-    decomposition: A comparative analysis, in Proc. IEEE Int. Symp. Circuits
-    and Systems, Orlando, FL, Jun. 1999, pp. 431-434.
+    .. [2] CP Rosiene and TQ Nguyen. Tensor-product wavelet vs. Mallat
+       decomposition: A comparative analysis, in Proc. IEEE Int. Symp.
+       Circuits and Systems, Orlando, FL, Jun. 1999, pp. 431-434.
 
-    ..[3] V Velisavljevic, B Beferull-Lozano, M Vetterli and PL Dragotti.
-    Directionlets: Anisotropic Multidirectional Representation With Separable
-    Filtering. IEEE Transactions on Image Processing, Vol. 15, No. 7, July
-    2006.
+    .. [3] V Velisavljevic, B Beferull-Lozano, M Vetterli and PL Dragotti.
+       Directionlets: Anisotropic Multidirectional Representation With
+       Separable Filtering. IEEE Transactions on Image Processing, Vol. 15,
+       No. 7, July 2006.
 
-    ..[4] RA DeVore, SV Konyagin and VN Temlyakov. "Hyperbolic wavelet
-    approximation," Constr. Approx. 14 (1998), 1-26.
+    .. [4] RA DeVore, SV Konyagin and VN Temlyakov. "Hyperbolic wavelet
+       approximation," Constr. Approx. 14 (1998), 1-26.
     """
     data = np.asarray(data)
     if axes is None:
@@ -1262,8 +1268,6 @@ def ifswt(coeffs_arr, coeff_slices, wavelet, mode='symmetric', axes=None):
 
     Parameters
     ----------
-    Returns
-    -------
     coeffs_arr : array-like
         n-dimensional array of wavelet coefficients
     coeff_slices : list of lists
@@ -1275,7 +1279,7 @@ def ifswt(coeffs_arr, coeff_slices, wavelet, mode='symmetric', axes=None):
     wavelet : Wavelet object or name string
         Wavelet to use
     mode : str, optional
-        Signal extension mode, see Modes (default: 'symmetric')
+        Signal extension mode, see `Modes` (default: 'symmetric')
     axes : sequence of ints, optional
         Axes over which to compute the FSWT. Axes may not be repeated.  The
         default is to transform along all axes.
@@ -1291,14 +1295,13 @@ def ifswt(coeffs_arr, coeff_slices, wavelet, mode='symmetric', axes=None):
     Notes
     -----
     This transformation has been variously referred to as the (fully) separable
-    wavelet transform (e.g. refs _[1], _[3]), the tensor-product wavelet
-    (_[2]) or the hyperbolic wavelet transform (_[4]).  It is well suited to
+    wavelet transform (e.g. refs [1]_, [3]_), the tensor-product wavelet
+    ([2]_) or the hyperbolic wavelet transform ([4]_).  It is well suited to
     data with anisotropic smoothness.
 
-    In _[2] it was demonstrated that FSWT performs at least as well as the DWT
+    In [2]_ it was demonstrated that FSWT performs at least as well as the DWT
     for image compression.  Computation time is a factor 2 larger than that for
     the DWT.
-
 
     See Also
     --------
@@ -1306,22 +1309,22 @@ def ifswt(coeffs_arr, coeff_slices, wavelet, mode='symmetric', axes=None):
 
     References
     ----------
-    ..[1] PH Westerink. Subband Coding of Images. Ph.D. dissertation, Dept.
-    Elect. Eng., Inf. Theory Group, Delft Univ. Technol., Delft, The
-    Netherlands, 1989.  (see Section 2.3)
-    http://resolver.tudelft.nl/uuid:a4d195c3-1f89-4d66-913d-db9af0969509
+    .. [1] PH Westerink. Subband Coding of Images. Ph.D. dissertation, Dept.
+       Elect. Eng., Inf. Theory Group, Delft Univ. Technol., Delft, The
+       Netherlands, 1989.  (see Section 2.3)
+       http://resolver.tudelft.nl/uuid:a4d195c3-1f89-4d66-913d-db9af0969509
 
-    ..[2] CP Rosiene and TQ Nguyen. Tensor-product wavelet vs. Mallat
-    decomposition: A comparative analysis, in Proc. IEEE Int. Symp. Circuits
-    and Systems, Orlando, FL, Jun. 1999, pp. 431-434.
+    .. [2] CP Rosiene and TQ Nguyen. Tensor-product wavelet vs. Mallat
+       decomposition: A comparative analysis, in Proc. IEEE Int. Symp.
+       Circuits and Systems, Orlando, FL, Jun. 1999, pp. 431-434.
 
-    ..[3] V Velisavljevic, B Beferull-Lozano, M Vetterli and PL Dragotti.
-    Directionlets: Anisotropic Multidirectional Representation With Separable
-    Filtering. IEEE Transactions on Image Processing, Vol. 15, No. 7, July
-    2006.
+    .. [3] V Velisavljevic, B Beferull-Lozano, M Vetterli and PL Dragotti.
+       Directionlets: Anisotropic Multidirectional Representation With
+       Separable Filtering. IEEE Transactions on Image Processing, Vol. 15,
+       No. 7, July 2006.
 
-    ..[4] RA DeVore, SV Konyagin and VN Temlyakov. "Hyperbolic wavelet
-    approximation," Constr. Approx. 14 (1998), 1-26.
+    .. [4] RA DeVore, SV Konyagin and VN Temlyakov. "Hyperbolic wavelet
+       approximation," Constr. Approx. 14 (1998), 1-26.
     """
     coeffs_arr = np.asarray(coeffs_arr)
     if axes is None:
