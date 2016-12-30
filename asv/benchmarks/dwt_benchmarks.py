@@ -21,9 +21,6 @@ class DwtTimeSuite(DwtTimeSuiteBase):
     def time_dwt(self, n, wavelet, mode):
         pywt.dwt(self.data, wavelet, mode)
 
-    def time_dwt_ext(self, n, wavelet, mode):
-        pywt._extensions._dwt.dwt_single(self.data, self.wavelet, self.mode)
-
 
 class IdwtTimeSuite(DwtTimeSuiteBase):
     def setup(self, n, wavelet, mode):
@@ -32,9 +29,6 @@ class IdwtTimeSuite(DwtTimeSuiteBase):
 
     def time_idwt(self, n, wavelet, mode):
         pywt.idwt(self.cA, self.cD, wavelet, mode)
-
-    def time_idwt_ext(self, n, wavelet, mode):
-        pywt._extensions._dwt.idwt_single(self.cA, self.cD, self.wavelet, self.mode)
 
 
 class DwtnTimeSuiteBase(object):
