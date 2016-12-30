@@ -4,7 +4,8 @@
 # See COPYING for license details.
 
 __doc__ = """Cython wrapper for low-level C wavelet transform implementation."""
-__all__ = ['MODES', 'Modes', 'DiscreteContinuousWavelet', 'Wavelet', 'ContinuousWavelet', 'wavelist', 'families']
+__all__ = ['MODES', 'Modes', 'DiscreteContinuousWavelet', 'Wavelet',
+           'ContinuousWavelet', 'wavelist', 'families']
 
 
 import warnings
@@ -31,7 +32,6 @@ _old_modes = ['zpd',
 _attr_deprecation_msg = ('{old} has been renamed to {new} and will '
                          'be unavailable in a future version '
                          'of pywt.')
-
 
 # raises exception if the wavelet name is undefined
 cdef int is_discrete_wav(WAVELET_NAME name):

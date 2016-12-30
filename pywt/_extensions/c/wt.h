@@ -24,17 +24,19 @@
 #undef REAL_TYPE
 #undef TYPE
 
-#define TYPE float_complex
-#define REAL_TYPE float
-#include "wt.template.h"
-#undef REAL_TYPE
-#undef TYPE
+#ifdef HAVE_C99_COMPLEX
+    #define TYPE float_complex
+    #define REAL_TYPE float
+    #include "wt.template.h"
+    #undef REAL_TYPE
+    #undef TYPE
 
-#define TYPE double_complex
-#define REAL_TYPE double
-#include "wt.template.h"
-#undef REAL_TYPE
-#undef TYPE
+    #define TYPE double_complex
+    #define REAL_TYPE double
+    #include "wt.template.h"
+    #undef REAL_TYPE
+    #undef TYPE
+#endif
 
 #endif /* REAL_TYPE */
 #endif /* TYPE */

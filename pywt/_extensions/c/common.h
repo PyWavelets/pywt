@@ -11,9 +11,11 @@
 #include <stdlib.h>
 #include <memory.h>
 
-/* For templating, we need typedefs for complex types without spaces. */
-typedef float _Complex float_complex;
-typedef double _Complex double_complex;
+#ifdef HAVE_C99_COMPLEX
+    /* For templating, we need typedefs without spaces for complex types. */
+    typedef float _Complex float_complex;
+    typedef double _Complex double_complex;
+#endif
 
 /* ##### Typedefs ##### */
 

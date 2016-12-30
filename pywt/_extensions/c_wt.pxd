@@ -7,6 +7,7 @@ from common cimport (MODE, pywt_index_t, ArrayInfo, Coefficient,
                      DiscreteTransformType)
 from wavelet cimport DiscreteWavelet, ContinuousWavelet
 
+include "config.pxi"
 
 cdef extern from "c/wt.h":
     # Cython does not know the 'restrict' keyword
@@ -85,82 +86,83 @@ cdef extern from "c/wt.h":
     cdef int float_swt_d(const float * const input, pywt_index_t input_len, const DiscreteWavelet * const wavelet,
                          float * const output, pywt_index_t output_len, int level) nogil
 
-    # complex variants
-    cdef int double_complex_downcoef_axis(const double complex * const input, const ArrayInfo input_info,
+    IF HAVE_C99_CPLX:
+        # complex variants only available if the compiler supports C99 complex
+        cdef int double_complex_downcoef_axis(const double complex * const input, const ArrayInfo input_info,
+                                      double complex * const output, const ArrayInfo output_info,
+                                      const DiscreteWavelet * const wavelet, const size_t axis,
+                                      const Coefficient detail, const MODE dwt_mode,
+                                      const size_t swt_level,
+                                      const DiscreteTransformType transform) nogil
+        cdef int double_complex_idwt_axis(const double complex * const coefs_a, const ArrayInfo * const a_info,
+                                  const double complex * const coefs_d, const ArrayInfo * const d_info,
                                   double complex * const output, const ArrayInfo output_info,
                                   const DiscreteWavelet * const wavelet, const size_t axis,
-                                  const Coefficient detail, const MODE dwt_mode,
-                                  const size_t swt_level,
-                                  const DiscreteTransformType transform) nogil
-    cdef int double_complex_idwt_axis(const double complex * const coefs_a, const ArrayInfo * const a_info,
-                              const double complex * const coefs_d, const ArrayInfo * const d_info,
-                              double complex * const output, const ArrayInfo output_info,
-                              const DiscreteWavelet * const wavelet, const size_t axis,
+                                  const MODE mode) nogil
+        cdef int double_complex_dec_a(const double complex * const input, const size_t input_len,
+                              const DiscreteWavelet * const wavelet,
+                              double complex * const output, const size_t output_len,
                               const MODE mode) nogil
-    cdef int double_complex_dec_a(const double complex * const input, const size_t input_len,
-                          const DiscreteWavelet * const wavelet,
-                          double complex * const output, const size_t output_len,
-                          const MODE mode) nogil
-    cdef int double_complex_dec_d(const double complex * const input, const size_t input_len,
-                          const DiscreteWavelet * const wavelet,
-                          double complex * const output, const size_t output_len,
-                          const MODE mode) nogil
+        cdef int double_complex_dec_d(const double complex * const input, const size_t input_len,
+                              const DiscreteWavelet * const wavelet,
+                              double complex * const output, const size_t output_len,
+                              const MODE mode) nogil
 
-    cdef int double_complex_rec_a(const double complex * const coeffs_a, const size_t coeffs_len,
-                          const DiscreteWavelet * const wavelet,
-                          double complex * const output, const size_t output_len) nogil
-    cdef int double_complex_rec_d(const double complex * const coeffs_d, const size_t coeffs_len,
-                          const DiscreteWavelet * const wavelet,
-                          double complex * const output, const size_t output_len) nogil
+        cdef int double_complex_rec_a(const double complex * const coeffs_a, const size_t coeffs_len,
+                              const DiscreteWavelet * const wavelet,
+                              double complex * const output, const size_t output_len) nogil
+        cdef int double_complex_rec_d(const double complex * const coeffs_d, const size_t coeffs_len,
+                              const DiscreteWavelet * const wavelet,
+                              double complex * const output, const size_t output_len) nogil
 
-    cdef int double_complex_idwt(const double complex * const coeffs_a, const size_t coeffs_a_len,
-                         const double complex * const coeffs_d, const size_t coeffs_d_len,
-                         double complex * const output, const size_t output_len,
-                         const DiscreteWavelet * const wavelet, const MODE mode) nogil
+        cdef int double_complex_idwt(const double complex * const coeffs_a, const size_t coeffs_a_len,
+                             const double complex * const coeffs_d, const size_t coeffs_d_len,
+                             double complex * const output, const size_t output_len,
+                             const DiscreteWavelet * const wavelet, const MODE mode) nogil
 
-    cdef int double_complex_swt_a(const double complex * const input, size_t input_len, const DiscreteWavelet * const wavelet,
-                          double complex * const output, size_t output_len, int level) nogil
-    cdef int double_complex_swt_d(const double complex * const input, size_t input_len, const DiscreteWavelet * const wavelet,
-                          double complex * const output, size_t output_len, int level) nogil
+        cdef int double_complex_swt_a(const double complex * const input, size_t input_len, const DiscreteWavelet * const wavelet,
+                              double complex * const output, size_t output_len, int level) nogil
+        cdef int double_complex_swt_d(const double complex * const input, size_t input_len, const DiscreteWavelet * const wavelet,
+                              double complex * const output, size_t output_len, int level) nogil
 
 
 
-    cdef int float_complex_downcoef_axis(const float complex * const input, const ArrayInfo input_info,
+        cdef int float_complex_downcoef_axis(const float complex * const input, const ArrayInfo input_info,
+                                     float complex * const output, const ArrayInfo output_info,
+                                     const DiscreteWavelet * const wavelet, const size_t axis,
+                                     const Coefficient detail, const MODE dwt_mode,
+                                     const size_t swt_level,
+                                     const DiscreteTransformType transform) nogil
+        cdef int float_complex_idwt_axis(const float complex * const coefs_a, const ArrayInfo * const a_info,
+                                 const float complex * const coefs_d, const ArrayInfo * const d_info,
                                  float complex * const output, const ArrayInfo output_info,
                                  const DiscreteWavelet * const wavelet, const size_t axis,
-                                 const Coefficient detail, const MODE dwt_mode,
-                                 const size_t swt_level,
-                                 const DiscreteTransformType transform) nogil
-    cdef int float_complex_idwt_axis(const float complex * const coefs_a, const ArrayInfo * const a_info,
-                             const float complex * const coefs_d, const ArrayInfo * const d_info,
-                             float complex * const output, const ArrayInfo output_info,
-                             const DiscreteWavelet * const wavelet, const size_t axis,
+                                 const MODE mode) nogil
+        cdef int float_complex_dec_a(const float complex * const input, const size_t input_len,
+                             const DiscreteWavelet * const wavelet,
+                             float complex * const output, const size_t output_len,
                              const MODE mode) nogil
-    cdef int float_complex_dec_a(const float complex * const input, const size_t input_len,
-                         const DiscreteWavelet * const wavelet,
-                         float complex * const output, const size_t output_len,
-                         const MODE mode) nogil
-    cdef int float_complex_dec_d(const float complex * const input, const size_t input_len,
-                         const DiscreteWavelet * const wavelet,
-                         float complex * const output, const size_t output_len,
-                         const MODE mode) nogil
+        cdef int float_complex_dec_d(const float complex * const input, const size_t input_len,
+                             const DiscreteWavelet * const wavelet,
+                             float complex * const output, const size_t output_len,
+                             const MODE mode) nogil
 
-    cdef int float_complex_rec_a(const float complex * const coeffs_a, const size_t coeffs_len,
-                         const DiscreteWavelet * const wavelet,
-                         float complex * const output, const size_t output_len) nogil
-    cdef int float_complex_rec_d(const float complex * const coeffs_d, const size_t coeffs_len,
-                         const DiscreteWavelet * const wavelet,
-                         float complex * const output, const size_t output_len) nogil
+        cdef int float_complex_rec_a(const float complex * const coeffs_a, const size_t coeffs_len,
+                             const DiscreteWavelet * const wavelet,
+                             float complex * const output, const size_t output_len) nogil
+        cdef int float_complex_rec_d(const float complex * const coeffs_d, const size_t coeffs_len,
+                             const DiscreteWavelet * const wavelet,
+                             float complex * const output, const size_t output_len) nogil
 
-    cdef int float_complex_idwt(const float complex * const coeffs_a, const size_t coeffs_a_len,
-                        const float complex * const coeffs_d, const size_t coeffs_d_len,
-                        float complex * const output, const size_t output_len,
-                        const DiscreteWavelet * const wavelet, const MODE mode) nogil
+        cdef int float_complex_idwt(const float complex * const coeffs_a, const size_t coeffs_a_len,
+                            const float complex * const coeffs_d, const size_t coeffs_d_len,
+                            float complex * const output, const size_t output_len,
+                            const DiscreteWavelet * const wavelet, const MODE mode) nogil
 
-    cdef int float_complex_swt_a(const float complex * const input, size_t input_len, const DiscreteWavelet* const wavelet,
-                         float complex * const output, size_t output_len, int level) nogil
-    cdef int float_complex_swt_d(const float complex * const input, size_t input_len, const DiscreteWavelet* const wavelet,
-                         float complex * const output, size_t output_len, int level) nogil
+        cdef int float_complex_swt_a(const float complex * const input, size_t input_len, const DiscreteWavelet* const wavelet,
+                             float complex * const output, size_t output_len, int level) nogil
+        cdef int float_complex_swt_d(const float complex * const input, size_t input_len, const DiscreteWavelet* const wavelet,
+                             float complex * const output, size_t output_len, int level) nogil
 
 cdef extern from "c/cwt.h":
     # Cython does not know the 'restrict' keyword

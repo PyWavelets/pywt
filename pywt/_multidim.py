@@ -13,6 +13,7 @@ from itertools import product
 
 import numpy as np
 
+from ._c99_config import _have_c99_complex
 from ._extensions._dwt import dwt_axis, idwt_axis
 from ._utils import _wavelets_per_axis, _modes_per_axis
 
@@ -163,6 +164,11 @@ def dwtn(data, wavelet, mode='symmetric', axes=None):
 
     """
     data = np.asarray(data)
+    if not _have_c99_complex and np.iscomplexobj(data):
+        real = dwtn(data.real, wavelet, mode, axes)
+        imag = dwtn(data.imag, wavelet, mode, axes)
+        return dict((k, real[k] + 1j * imag[k]) for k in real.keys())
+
     if data.dtype == np.dtype('object'):
         raise TypeError("Input must be a numeric array-like")
     if data.ndim < 1:
@@ -245,6 +251,13 @@ def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
 
     # Raise error for invalid key combinations
     coeffs = _fix_coeffs(coeffs)
+
+    if (not _have_c99_complex and
+            any(np.iscomplexobj(v) for v in coeffs.values())):
+        real_coeffs = dict((k, v.real) for k, v in coeffs.items())
+        imag_coeffs = dict((k, v.imag) for k, v in coeffs.items())
+        return (idwtn(real_coeffs, wavelet, mode, axes) +
+                1j * idwtn(imag_coeffs, wavelet, mode, axes))
 
     # key length matches the number of axes transformed
     ndim_transform = max(len(key) for key in coeffs.keys())
