@@ -1,6 +1,12 @@
 import numpy as np
 import pywt
 
+try:
+    Modes = pywt.Modes
+except AttributeError:
+    # old v0.3.0 API
+    Modes = pywt.MODES
+
 
 class DwtTimeSuiteBase(object):
     """
@@ -8,13 +14,13 @@ class DwtTimeSuiteBase(object):
     """
     params = ([16, 100, 101, 256, 512, 2048],
               ['haar', 'db4', 'sym8'],
-              pywt.Modes.modes)
+              Modes.modes)
     param_names = ('n', 'wavelet', 'modes')
 
     def setup(self, n, wavelet, mode):
         self.data = np.ones(n, dtype='float')
         self.wavelet = pywt.Wavelet(wavelet)
-        self.mode = pywt.Modes.from_object(mode)
+        self.mode = Modes.from_object(mode)
 
 
 class DwtTimeSuite(DwtTimeSuiteBase):
@@ -158,6 +164,10 @@ class WavedecnTimeSuiteBase(object):
     param_names = ('D', 'n', 'wavelet', 'dtype')
 
     def setup(self, D, n, wavelet, dtype):
+        try:
+            from pywt import wavedecn
+        except ImportError:
+            raise NotImplementedError("wavedecn not available")
         self.data = np.ones((n,) * D, dtype=dtype)
         self.wavelet = pywt.Wavelet(wavelet)
 
@@ -169,6 +179,10 @@ class WavedecnTimeSuite(WavedecnTimeSuiteBase):
 
 class WaverecnTimeSuite(WavedecnTimeSuiteBase):
     def setup(self, D, n, wavelet, dtype):
+        try:
+            from pywt import waverecn
+        except ImportError:
+            raise NotImplementedError("waverecn not available")
         super(WaverecnTimeSuite, self).setup(D, n, wavelet, dtype)
         self.data = pywt.wavedecn(self.data, self.wavelet)
 

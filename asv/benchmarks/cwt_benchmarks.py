@@ -12,6 +12,10 @@ class CwtTimeSuiteBase(object):
     param_names = ('n', 'wavelet', 'max_scale')
 
     def setup(self, n, wavelet, max_scale):
+        try:
+            from pywt import cwt
+        except ImportError:
+            raise NotImplementedError("cwt not available")
         self.data = np.ones(n, dtype='float')
         self.wavelet = pywt.ContinuousWavelet(wavelet)
         self.scales = np.arange(1, max_scale+1)

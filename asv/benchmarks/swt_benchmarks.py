@@ -22,6 +22,10 @@ class SwtTimeSuite(SwtTimeSuiteBase):
 
 class IswtTimeSuite(SwtTimeSuiteBase):
     def setup(self, n, wavelet):
+        try:
+            from pywt import iswt
+        except ImportError:
+            raise NotImplementedError("iswt not available")
         super(IswtTimeSuite, self).setup(n, wavelet)
         self.coeffs = pywt.swt(self.data, self.wavelet)
 
