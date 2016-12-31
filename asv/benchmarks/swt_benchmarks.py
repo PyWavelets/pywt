@@ -12,12 +12,11 @@ class SwtTimeSuiteBase(object):
 
     def setup(self, n, wavelet):
         self.data = np.ones(n, dtype='float')
-        self.wavelet = pywt.Wavelet(wavelet)
 
 
 class SwtTimeSuite(SwtTimeSuiteBase):
     def time_swt(self, n, wavelet):
-        pywt.swt(self.data, self.wavelet)
+        pywt.swt(self.data, wavelet)
 
 
 class IswtTimeSuite(SwtTimeSuiteBase):
@@ -27,10 +26,10 @@ class IswtTimeSuite(SwtTimeSuiteBase):
         except ImportError:
             raise NotImplementedError("iswt not available")
         super(IswtTimeSuite, self).setup(n, wavelet)
-        self.coeffs = pywt.swt(self.data, self.wavelet)
+        self.coeffs = pywt.swt(self.data, wavelet)
 
     def time_iswt(self, n, wavelet):
-        pywt.iswt(self.coeffs, self.wavelet)
+        pywt.iswt(self.coeffs, wavelet)
 
 
 class Swt2TimeSuiteBase(object):

@@ -17,10 +17,9 @@ class CwtTimeSuiteBase(object):
         except ImportError:
             raise NotImplementedError("cwt not available")
         self.data = np.ones(n, dtype='float')
-        self.wavelet = pywt.ContinuousWavelet(wavelet)
         self.scales = np.arange(1, max_scale+1)
 
 
 class CwtTimeSuite(CwtTimeSuiteBase):
     def time_cwt(self, n, wavelet, max_scale):
-        pywt.cwt(self.data, self.scales, self.wavelet)
+        pywt.cwt(self.data, self.scales, wavelet)
