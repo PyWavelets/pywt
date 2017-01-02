@@ -33,9 +33,9 @@ def swt_max_level(size_t input_len):
 def swt(data_t[::1] data, Wavelet wavelet, size_t level, size_t start_level):
     cdef data_t[::1] cA, cD
     cdef Wavelet w
-    cdef int i, retval
+    cdef int retval
     cdef size_t end_level = start_level + level
-    cdef size_t data_size, output_len
+    cdef size_t data_size, output_len, i
 
     if data.size % 2:
         raise ValueError("Length of data must be even.")
@@ -105,7 +105,8 @@ cpdef swt_axis(np.ndarray data, Wavelet wavelet, size_t level,
     # Explicit input_shape necessary to prevent memory leak
     cdef size_t[::1] input_shape, output_shape
     cdef size_t end_level = start_level + level
-    cdef int i, retval
+    cdef int retval
+    cdef size_t i
 
     if data.size % 2:
         raise ValueError("Length of data must be even.")

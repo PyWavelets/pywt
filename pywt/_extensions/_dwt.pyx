@@ -233,7 +233,8 @@ cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d,
 
     return output
 
-cpdef upcoef(bint do_rec_a, data_t[::1] coeffs, Wavelet wavelet, int level, int take):
+cpdef upcoef(bint do_rec_a, data_t[::1] coeffs, Wavelet wavelet, int level,
+             size_t take):
     cdef data_t[::1] rec
     cdef int i, retval
     cdef size_t rec_len, left_bound, right_bound, coeffs_size
