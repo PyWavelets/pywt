@@ -584,9 +584,6 @@ DiscreteWavelet* copy_discrete_wavelet(DiscreteWavelet* base)
 
     if(base == NULL) return NULL;
 
-    if(base->dec_len < 0 || base->rec_len < 0)
-        return NULL;
-
     w = wtmalloc(sizeof(DiscreteWavelet));
     if(w == NULL) return NULL;
 
