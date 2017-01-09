@@ -9,11 +9,12 @@ from __future__ import division, print_function, absolute_import
 
 __all__ = ["BaseNode", "Node", "WaveletPacket", "Node2D", "WaveletPacket2D"]
 
+from itertools import product
 import numpy as np
 
 from ._extensions._pywt import Wavelet, _check_dtype
 from ._dwt import dwt, idwt, dwt_max_level
-from ._multidim import dwt2, idwt2
+from ._multidim import dwt2, idwt2, dwtn, idwtn
 
 
 def get_graycode_order(level, x='a', y='d'):
@@ -84,11 +85,12 @@ class BaseNode(object):
     def _create_subnode(self, part, data=None, overwrite=True):
         raise NotImplementedError()
 
-    def _create_subnode_base(self, node_cls, part, data=None, overwrite=True):
+    def _create_subnode_base(self, node_cls, part, data=None, overwrite=True,
+                             **kwargs):
         self._validate_node_name(part)
         if not overwrite and self._get_node(part) is not None:
             return self._get_node(part)
-        node = node_cls(self, data, part)
+        node = node_cls(self, data, part, **kwargs)
         self._set_node(part, node)
         return node
 
@@ -234,8 +236,8 @@ class BaseNode(object):
         parent node.
         """
         if isinstance(path, str):
-            if (self.maxlevel is not None
-                    and len(path) > self.maxlevel * self.PART_LEN):
+            if (self.maxlevel is not None and
+                    len(path) > self.maxlevel * self.PART_LEN):
                 raise IndexError("Path length is out of range.")
             if path:
                 return self.get_subnode(path[0:self.PART_LEN], True)[
@@ -260,8 +262,8 @@ class BaseNode(object):
 
         if isinstance(path, str):
             if (
-                self.maxlevel is not None
-                and len(self.path) + len(path) > self.maxlevel * self.PART_LEN
+                self.maxlevel is not None and
+                len(self.path) + len(path) > self.maxlevel * self.PART_LEN
             ):
                 raise IndexError("Path length out of range.")
             if path:
@@ -504,8 +506,8 @@ class Node2D(BaseNode):
         if node_hh is not None:
             data_hh = node_hh.reconstruct()
 
-        if (data_ll is None and data_lh is None
-                and data_hl is None and data_hh is None):
+        if (data_ll is None and data_lh is None and
+                data_hl is None and data_hh is None):
             raise ValueError(
                 "Tree is missing data - all subnodes of `%s` node "
                 "are None. Cannot reconstruct node." % self.path
@@ -529,6 +531,112 @@ class Node2D(BaseNode):
         }
         return (''.join([expanded_paths[p][0] for p in path]),
                 ''.join([expanded_paths[p][1] for p in path]))
+
+
+class NodeND(BaseNode):
+    """
+    WaveletPacket tree node.
+
+    Subnodes are called 'a' (LL), 'h' (HL), 'v' (LH) and  'd' (HH), like
+    approximation and detail coefficients in the 2D Discrete Wavelet Transform
+    """
+    def __init__(self, parent, data, node_name, ndim):
+        super(NodeND, self).__init__(parent=parent, data=data,
+                                     node_name=node_name)
+        self.PARTS = {''.join(key):None for key in product(*(('ad', )*ndim))}
+        self.PART_LEN = ndim
+        #for part in self.PARTS:
+        #    eval("self.{0} = '{0}'".format(part))  # TODO: don't use this method.  try LEAF_DICT or something similar instead
+
+    def _init_subnodes(self):
+        # need this empty so the BaseNode's _init_subnodes isn't called during
+        # __init__.  We use a dictionary for PARTS instead for the nd case.
+        pass
+
+    def _get_node(self, part):
+        return self.PARTS[part]
+
+    def _set_node(self, part, node):
+        if part not in self.PARTS:
+            raise ValueError("invalid part")
+        self.PARTS[part] = node
+
+    def _delete_node(self, part):
+        self._set_node(part, None)
+
+    def _validate_node_name(self, part):
+        if part not in self.PARTS:
+            raise ValueError(
+                "Subnode name must be in [%s], not '%s'." %
+                (', '.join("'%s'" % p for p in list(self.PARTS.keys())), part))
+
+    def _create_subnode(self, part, data=None, overwrite=True):
+        return self._create_subnode_base(node_cls=NodeND, part=part, data=data,
+                                         overwrite=overwrite, ndim=self.ndim)
+
+    def _evaluate_maxlevel(self, evaluate_from='parent'):
+        """
+        Try to find the value of maximum decomposition level if it is not
+        specified explicitly.
+
+        Parameters
+        ----------
+        evaluate_from : {'parent', 'subnodes'}
+        """
+        assert evaluate_from in ('parent', 'subnodes')
+
+        if self._maxlevel is not None:
+            return self._maxlevel
+        elif self.data is not None:
+            return self.level + dwt_max_level(
+                min(self.data.shape), self.wavelet)
+
+        if evaluate_from == 'parent':
+            if self.parent is not None:
+                return self.parent._evaluate_maxlevel(evaluate_from)
+        elif evaluate_from == 'subnodes':
+            for node_name, node in self.PARTS.items():
+                if node is not None:
+                    level = node._evaluate_maxlevel(evaluate_from)
+                    if level is not None:
+                        return level
+        return None
+
+    def _decompose(self):
+        """
+        See also
+        --------
+        dwt2 : for 2D Discrete Wavelet Transform output coefficients.
+        """
+        if self.is_empty:
+            coefs = {key: None for key in self.PARTS.keys()}
+        else:
+            coefs = dwtn(self.data, self.wavelet, self.mode)
+
+        for key, data in coefs.items():
+            self._create_subnode(key, data)
+        return (self._get_node(key) for key in self.PARTS.keys())
+
+    def _reconstruct(self, update):
+        coeffs = {key: None for key in self.PARTS.keys()}
+
+        nnodes = 0
+        for key in self.PARTS.keys():
+            node = self._get_node(key)
+            if node is not None:
+                nnodes += 1
+                coeffs[key] = node.reconstruct()
+
+        if nnodes == 0:
+            raise ValueError(
+                "Tree is missing data - all subnodes of `%s` node "
+                "are None. Cannot reconstruct node." % self.path
+            )
+        else:
+            rec = idwtn(coeffs, self.wavelet, self.mode)
+            if update:
+                self.data = rec
+            return rec
 
 
 class WaveletPacket(Node):
@@ -730,4 +838,98 @@ class WaveletPacket2D(Node2D):
                 result.append(
                     [row[path] for path in graycode_order if path in row]
                 )
+        return result
+
+
+class WaveletPacketND(NodeND):
+    """
+    Data structure representing ND Wavelet Packet decomposition of signal.
+
+    Parameters
+    ----------
+    data : ND ndarray
+        Data associated with the node.
+    wavelet : Wavelet object or name string
+        Wavelet used in DWT decomposition and reconstruction
+    mode : str, optional
+        Signal extension mode for the `dwt` and `idwt` decomposition and
+        reconstruction functions.
+    maxlevel : int
+        Maximum level of decomposition.
+        If None, it will be calculated based on the `wavelet` and `data`
+        length using `pywt.dwt_max_level`.
+    """
+    def __init__(self, data, wavelet, mode='smooth', maxlevel=None):
+        super(WaveletPacketND, self).__init__(None, data, "")
+
+        if not isinstance(wavelet, Wavelet):
+            wavelet = Wavelet(wavelet)
+        self.wavelet = wavelet
+        self.mode = mode
+
+        if data is not None:
+            data = np.asarray(data, dtype=np.float64)
+            if data.ndim == 0:
+                raise ValueError("data must be at least 1D")
+            self.data_size = data.shape
+            if maxlevel is None:
+                maxlevel = dwt_max_level(min(self.data_size), self.wavelet)
+        else:
+            self.data_size = None
+        self._maxlevel = maxlevel
+
+    def reconstruct(self, update=True):
+        """
+        Reconstruct data using coefficients from subnodes.
+
+        Parameters
+        ----------
+        update : bool, optional
+            If True (default) then the coefficients of the current node
+            and its subnodes will be replaced with values from reconstruction.
+        """
+        if self.has_any_subnode:
+            data = super(WaveletPacketND, self).reconstruct(update)
+            if self.data_size is not None and (data.shape != self.data_size):
+                data = data[[slice(sz) for sz in self.data_size]]
+            if update:
+                self.data = data
+            return data
+        return self.data  # return original data
+
+    def get_level(self, level, order="natural", decompose=True):
+        """
+        Returns all nodes from specified level.
+
+        Parameters
+        ----------
+        level : int
+            Decomposition `level` from which the nodes will be
+            collected.
+        order : {'natural', 'freq'}, optional
+            If `natural` (default) a flat list is returned.
+            If `freq`, a 2d structure with rows and cols
+            sorted by corresponding dimension frequency of 2d
+            coefficient array (adapted from 1d case).
+        decompose : bool, optional
+            If set then the method will try to decompose the data up
+            to the specified `level` (default: True).
+        """
+        assert order in ["natural", "freq"]
+        if level > self.maxlevel:
+            raise ValueError("The level cannot be greater than the maximum"
+                             " decomposition level value (%d)" % self.maxlevel)
+
+        result = []
+
+        def collect(node):
+            if node.level == level:
+                result.append(node)
+                return False
+            return True
+
+        self.walk(collect, decompose=decompose)
+
+        if order == "freq":
+            raise NotImplementedError("freq order not implemented for nd")
         return result
