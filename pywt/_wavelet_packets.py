@@ -7,9 +7,11 @@
 
 from __future__ import division, print_function, absolute_import
 
-__all__ = ["BaseNode", "Node", "WaveletPacket", "Node2D", "WaveletPacket2D"]
+__all__ = ["BaseNode", "Node", "WaveletPacket", "Node2D", "WaveletPacket2D",
+           "NodeND", "WaveletPacketND"]
 
 from itertools import product
+from collections import OrderedDict
 import numpy as np
 
 from ._extensions._pywt import Wavelet, _check_dtype
@@ -543,8 +545,12 @@ class NodeND(BaseNode):
     def __init__(self, parent, data, node_name, ndim):
         super(NodeND, self).__init__(parent=parent, data=data,
                                      node_name=node_name)
-        self.PARTS = {''.join(key):None for key in product(*(('ad', )*ndim))}
+        # self.PARTS = {''.join(key):None for key in product(*(('ad', )*ndim))}
+        self.PARTS = OrderedDict()
+        for key in product(*(('ad', )*ndim)):
+            self.PARTS[''.join(key)] = None
         self.PART_LEN = ndim
+        self.ndim = ndim
         #for part in self.PARTS:
         #    eval("self.{0} = '{0}'".format(part))  # TODO: don't use this method.  try LEAF_DICT or something similar instead
 
@@ -860,7 +866,7 @@ class WaveletPacketND(NodeND):
         length using `pywt.dwt_max_level`.
     """
     def __init__(self, data, wavelet, mode='smooth', maxlevel=None):
-        super(WaveletPacketND, self).__init__(None, data, "")
+        super(WaveletPacketND, self).__init__(None, data, "", data.ndim)
 
         if not isinstance(wavelet, Wavelet):
             wavelet = Wavelet(wavelet)
