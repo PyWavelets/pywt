@@ -545,7 +545,6 @@ class NodeND(BaseNode):
     def __init__(self, parent, data, node_name, ndim):
         super(NodeND, self).__init__(parent=parent, data=data,
                                      node_name=node_name)
-        # self.PARTS = {''.join(key):None for key in product(*(('ad', )*ndim))}
         self.PARTS = OrderedDict()
         for key in product(*(('ad', )*ndim)):
             self.PARTS[''.join(key)] = None
@@ -579,6 +578,14 @@ class NodeND(BaseNode):
     def _create_subnode(self, part, data=None, overwrite=True):
         return self._create_subnode_base(node_cls=NodeND, part=part, data=data,
                                          overwrite=overwrite, ndim=self.ndim)
+
+    @property
+    def pretty_path(self):
+        # version of path with commas between levels
+        path = self.path
+        nlev = len(path)//self.PART_LEN
+        return ','.join([path[(n-1)*self.PART_LEN:n*self.PART_LEN]
+                         for n in range(1, nlev+1)])
 
     def _evaluate_maxlevel(self, evaluate_from='parent'):
         """
