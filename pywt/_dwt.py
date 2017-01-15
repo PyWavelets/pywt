@@ -1,12 +1,22 @@
+import sys
 import numpy as np
+from numbers import Number
 
-from ._extensions._pywt import Wavelet, Modes, _check_dtype
+
+from ._extensions._pywt import (Wavelet, Modes, _check_dtype, wavelist)
 from ._extensions._dwt import (dwt_single, dwt_axis, idwt_single, idwt_axis,
                                upcoef as _upcoef, downcoef as _downcoef,
                                dwt_max_level as _dwt_max_level,
                                dwt_coeff_len as _dwt_coeff_len)
 
-__all__ = ["dwt", "idwt", "downcoef", "upcoef", "dwt_max_level", "dwt_coeff_len"]
+__all__ = ["dwt", "idwt", "downcoef", "upcoef", "dwt_max_level",
+           "dwt_coeff_len"]
+
+# define string_types as in six for Python 2/3 compatibility
+if sys.version_info[0] == 3:
+    string_types = str,
+else:
+    string_types = basestring,
 
 
 def dwt_max_level(data_len, filter_len):
@@ -19,8 +29,9 @@ def dwt_max_level(data_len, filter_len):
     ----------
     data_len : int
         Input data length.
-    filter_len : int
-        Wavelet filter length.
+    filter_len : int, str or Wavelet
+        The wavelet filter length.  Alternatively, the name of a discrete
+        wavelet or a Wavelet object can be specified.
 
     Returns
     -------
@@ -35,9 +46,26 @@ def dwt_max_level(data_len, filter_len):
     6
     >>> pywt.dwt_max_level(1000, w)
     6
+    >>> pywt.dwt_max_level(1000, 'sym5')
+    6
     """
     if isinstance(filter_len, Wavelet):
         filter_len = filter_len.dec_len
+    elif isinstance(filter_len, string_types):
+        if filter_len in wavelist(kind='discrete'):
+            filter_len = Wavelet(filter_len).dec_len
+        else:
+            raise ValueError(
+                ("'{}', is not a recognized discrete wavelet.  A list of "
+                 "supported wavelet names can be obtained via "
+                 "pywt.wavelist(kind='discrete')").format(filter_len))
+    elif not (isinstance(filter_len, Number) and filter_len % 1 == 0):
+        raise ValueError(
+            "filter_len must be an integer, discrete Wavelet object, or the "
+            "name of a discrete wavelet.")
+
+    if filter_len < 2:
+        raise ValueError("invalid wavelet filter length")
 
     return _dwt_max_level(data_len, filter_len)
 
