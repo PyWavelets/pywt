@@ -18,6 +18,7 @@ from ._extensions._pywt import Wavelet
 from ._extensions._dwt import dwt_max_level
 from ._dwt import dwt, idwt
 from ._multidim import dwt2, idwt2, dwtn, idwtn, _fix_coeffs
+from ._utils import _wavelets_per_axis
 
 __all__ = ['wavedec', 'waverec', 'wavedec2', 'waverec2', 'wavedecn',
            'waverecn', 'coeffs_to_array', 'array_to_coeffs']
@@ -195,9 +196,6 @@ def wavedec2(data, wavelet, mode='symmetric', level=None, axes=(-2, -1)):
     if data.ndim < 2:
         raise ValueError("Expected input data to have at least 2 dimensions.")
 
-    if not isinstance(wavelet, Wavelet):
-        wavelet = Wavelet(wavelet)
-
     axes = tuple(axes)
     if len(axes) != 2:
         raise ValueError("Expected 2 axes")
@@ -207,7 +205,11 @@ def wavedec2(data, wavelet, mode='symmetric', level=None, axes=(-2, -1)):
         axes_sizes = [data.shape[ax] for ax in axes]
     except IndexError:
         raise ValueError("Axis greater than data dimensions")
-    level = _check_level(min(axes_sizes), wavelet.dec_len, level)
+
+    wavelets = _wavelets_per_axis(wavelet, axes)
+    dec_lengths = [w.dec_len for w in wavelets]
+
+    level = _check_level(min(axes_sizes), max(dec_lengths), level)
 
     coeffs_list = []
 
@@ -355,9 +357,6 @@ def wavedecn(data, wavelet, mode='symmetric', level=None, axes=None):
     if len(data.shape) < 1:
         raise ValueError("Expected at least 1D input data.")
 
-    if not isinstance(wavelet, Wavelet):
-        wavelet = Wavelet(wavelet)
-
     if np.isscalar(axes):
         axes = (axes, )
     if axes is None:
@@ -371,7 +370,11 @@ def wavedecn(data, wavelet, mode='symmetric', level=None, axes=None):
         axes_shapes = [data.shape[ax] for ax in axes]
     except IndexError:
         raise ValueError("Axis greater than data dimensions")
-    level = _check_level(min(axes_shapes), wavelet.dec_len, level)
+
+    wavelets = _wavelets_per_axis(wavelet, axes)
+    dec_lengths = [w.dec_len for w in wavelets]
+
+    level = _check_level(min(axes_shapes), max(dec_lengths), level)
 
     coeffs_list = []
 
