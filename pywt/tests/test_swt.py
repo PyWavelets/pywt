@@ -349,5 +349,26 @@ def test_iswtn_errors():
     assert_raises(RuntimeError, pywt.iswtn, coeffs, w, axes=axes)
 
 
+def test_per_axis_wavelets():
+    # tests seperate wavelet for each axis.
+    rstate = np.random.RandomState(1234)
+    data = rstate.randn(16, 16, 16)
+    level = 3
+
+    # wavelet can be a string or wavelet object
+    wavelets = (pywt.Wavelet('haar'), 'sym2', 'db4')
+
+    coefs = pywt.swtn(data, wavelets, level=level)
+    assert_allclose(pywt.iswtn(coefs, wavelets), data, atol=1e-14)
+
+    # 1-tuple also okay
+    coefs = pywt.swtn(data, wavelets[:1], level=level)
+    assert_allclose(pywt.iswtn(coefs, wavelets[:1]), data, atol=1e-14)
+
+    # length of wavelets doesn't match the length of axes
+    assert_raises(ValueError, pywt.swtn, data, wavelets[:2], level)
+    assert_raises(ValueError, pywt.iswtn, coefs, wavelets[:2])
+
+
 if __name__ == '__main__':
     run_module_suite()

@@ -7,6 +7,8 @@ from ._extensions._dwt import idwt_single
 from ._extensions._swt import swt_max_level, swt as _swt, swt_axis as _swt_axis
 from ._extensions._pywt import Wavelet, Modes, _check_dtype
 from ._multidim import idwt2, idwtn
+from ._utils import _wavelets_per_axis
+
 
 __all__ = ["swt", "swt_max_level", 'iswt', 'swt2', 'iswt2', 'swtn', 'iswtn']
 
@@ -337,7 +339,8 @@ def swtn(data, wavelet, level, start_level=0, axes=None):
     data : array_like
         n-dimensional array with input data.
     wavelet : Wavelet object or name string
-        Wavelet to use.
+        Wavelet to use.  This can also be a tuple of wavelets to apply per
+        axis in ``axes``.
     level : int
         The number of decomposition steps to perform.
     start_level : int, optional
@@ -388,13 +391,12 @@ def swtn(data, wavelet, level, start_level=0, axes=None):
         raise ValueError("The axes passed to swtn must be unique.")
     num_axes = len(axes)
 
-    if not isinstance(wavelet, Wavelet):
-        wavelet = Wavelet(wavelet)
+    wavelets = _wavelets_per_axis(wavelet, axes)
 
     ret = []
     for i in range(start_level, start_level + level):
         coeffs = [('', data)]
-        for axis in axes:
+        for axis, wavelet in zip(axes, wavelets):
             new_coeffs = []
             for subband, x in coeffs:
                 cA, cD = _swt_axis(x, wavelet, level=1, start_level=i,
@@ -422,7 +424,8 @@ def iswtn(coeffs, wavelet, axes=None):
     coeffs : list
         [{coeffs_level_n}, ..., {coeffs_level_1}]: list of dict
     wavelet : Wavelet object or name string
-        Wavelet to use
+        Wavelet to use.  This can also be a tuple of wavelets to apply per
+        axis in ``axes``.
     axes : sequence of ints, optional
         Axes over which to compute the inverse SWT. Axes may not be repeated.
         The default is ``None``, which means transform all axes
@@ -463,8 +466,7 @@ def iswtn(coeffs, wavelet, axes=None):
 
     # num_levels, equivalent to the decomposition level, n
     num_levels = len(coeffs)
-    if not isinstance(wavelet, Wavelet):
-        wavelet = Wavelet(wavelet)
+    wavelets = _wavelets_per_axis(wavelet, axes)
 
     # initialize various slice objects used in the loops below
     # these will remain slice(None) only on axes that aren't transformed
@@ -510,7 +512,7 @@ def iswtn(coeffs, wavelet, axes=None):
 
                 # perform the inverse dwt on the selected indices,
                 # making sure to use periodic boundary conditions
-                x = idwtn(details_slice, wavelet, 'periodization', axes=axes)
+                x = idwtn(details_slice, wavelets, 'periodization', axes=axes)
                 for o, ax in zip(odds, axes):
                     # circular shift along any odd indexed axis
                     if o:
