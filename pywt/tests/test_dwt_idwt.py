@@ -9,8 +9,10 @@ import pywt
 
 # Check that float32 and complex64 are preserved.  Other real types get
 # converted to float64.
-dtypes_in = [np.int8, np.float32, np.float64, np.complex64, np.complex128]
-dtypes_out = [np.float64, np.float32, np.float64, np.complex64, np.complex128]
+dtypes_in = [np.int8, np.float16, np.float32, np.float64, np.complex64,
+             np.complex128]
+dtypes_out = [np.float64, np.float32, np.float32, np.float64, np.complex64,
+              np.complex128]
 
 
 def test_dwt_idwt_basic():

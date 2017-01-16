@@ -11,15 +11,17 @@ import pywt
 
 # Check that float32 and complex64 are preserved.  Other real types get
 # converted to float64.
-dtypes_in = [np.int8, np.float32, np.float64, np.complex64, np.complex128]
-dtypes_out = [np.float64, np.float32, np.float64, np.complex64, np.complex128]
-
+dtypes_in = [np.int8, np.float16, np.float32, np.float64, np.complex64,
+             np.complex128]
+dtypes_out = [np.float64, np.float32, np.float32, np.float64, np.complex64,
+              np.complex128]
 
 # tolerances used in accuracy comparisons
 tol_single = 1e-6
 tol_double = 1e-13
-dtypes_and_tolerances = [(np.float32, tol_single), (np.float64, tol_double),
-                         (np.int8, tol_double), (np.complex64, tol_single),
+dtypes_and_tolerances = [(np.float16, tol_single), (np.float32, tol_single),
+                         (np.float64, tol_double), (np.int8, tol_double),
+                         (np.complex64, tol_single),
                          (np.complex128, tol_double)]
 
 
