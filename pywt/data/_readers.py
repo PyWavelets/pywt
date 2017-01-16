@@ -174,10 +174,10 @@ def nino():
     sst_csv = np.load(fname)['sst_csv']
     # sst_csv = pd.read_csv("http://www.cpc.ncep.noaa.gov/data/indices/ersst4.nino.mth.81-10.ascii", sep=' ', skipinitialspace=True)
     # take only full years
-    n = np.floor(sst_csv.shape[0]/12.)*12.
+    n = int(np.floor(sst_csv.shape[0]/12.)*12.)
     # Building the mean of three mounth
     # the 4. column is nino 3
-    sst = np.mean(np.reshape(np.array(sst_csv)[:n,4],(n/3,-1)),axis=1)
+    sst = np.mean(np.reshape(np.array(sst_csv)[:n, 4], (n//3, -1)), axis=1)
     sst = (sst - np.mean(sst)) / np.std(sst, ddof=1)
 
     dt = 0.25
