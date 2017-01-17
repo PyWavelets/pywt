@@ -947,8 +947,12 @@ cpdef np.dtype _check_dtype(data):
     try:
         dt = data.dtype
         if dt not in (np.float64, np.float32):
-            # integer input was always accepted; convert to float64
-            dt = np.dtype('float64')
+            if dt == np.half:
+                # half-precision input converted to single precision
+                dt = np.dtype('float32')
+            else:
+                # integer input was always accepted; convert to float64
+                dt = np.dtype('float64')
     except AttributeError:
         dt = np.dtype('float64')
     return dt
