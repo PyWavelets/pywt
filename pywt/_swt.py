@@ -165,7 +165,8 @@ def swt2(data, wavelet, level, start_level=0, axes=(-2, -1)):
     data : array_like
         2D array with input data
     wavelet : Wavelet object or name string
-        Wavelet to use
+        Wavelet to use.  This can also be a tuple of wavelets to apply per
+        axis in ``axes``.
     level : int
         The number of decomposition steps to perform.
     start_level : int, optional
@@ -246,7 +247,8 @@ def iswt2(coeffs, wavelet):
         vertical details, cD is diagonal details and n is the number of
         levels.  Index 1 corresponds to ``start_level`` from ``pywt.swt2``.
     wavelet : Wavelet object or name string
-        Wavelet to use
+        Wavelet to use.  This can also be a 2-tuple of wavelets to apply per
+        axis.
 
     Returns
     -------
@@ -267,10 +269,14 @@ def iswt2(coeffs, wavelet):
     """
 
     output = coeffs[-1][0].copy()  # Avoid modification of input data
+    if output.ndim != 2:
+        raise ValueError(
+            "iswt2 only supports 2D arrays.  see iswtn for a general "
+            "n-dimensionsal ISWT")
     # num_levels, equivalent to the decomposition level, n
     num_levels = len(coeffs)
-    if not isinstance(wavelet, Wavelet):
-        wavelet = Wavelet(wavelet)
+    wavelets = _wavelets_per_axis(wavelet, axes=(0, 1))
+
     for j in range(num_levels, 0, -1):
         step_size = int(pow(2, j-1))
         last_index = step_size
@@ -297,22 +303,22 @@ def iswt2(coeffs, wavelet):
                            (cH[even_idx_h, even_idx_w],
                             cV[even_idx_h, even_idx_w],
                             cD[even_idx_h, even_idx_w])),
-                           wavelet, 'periodization')
+                           wavelets, 'periodization')
                 x2 = idwt2((output[even_idx_h, odd_idx_w],
                            (cH[even_idx_h, odd_idx_w],
                             cV[even_idx_h, odd_idx_w],
                             cD[even_idx_h, odd_idx_w])),
-                           wavelet, 'periodization')
+                           wavelets, 'periodization')
                 x3 = idwt2((output[odd_idx_h, even_idx_w],
                            (cH[odd_idx_h, even_idx_w],
                             cV[odd_idx_h, even_idx_w],
                             cD[odd_idx_h, even_idx_w])),
-                           wavelet, 'periodization')
+                           wavelets, 'periodization')
                 x4 = idwt2((output[odd_idx_h, odd_idx_w],
                            (cH[odd_idx_h, odd_idx_w],
                             cV[odd_idx_h, odd_idx_w],
                             cD[odd_idx_h, odd_idx_w])),
-                           wavelet, 'periodization')
+                           wavelets, 'periodization')
 
                 # perform a circular shifts
                 x2 = np.roll(x2, 1, axis=1)
