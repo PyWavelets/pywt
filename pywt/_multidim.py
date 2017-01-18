@@ -9,14 +9,15 @@
 
 from __future__ import division, print_function, absolute_import
 
-__all__ = ['dwt2', 'idwt2', 'dwtn', 'idwtn']
-
 from itertools import product
 
 import numpy as np
 
-from ._extensions._pywt import Wavelet, Modes
 from ._extensions._dwt import dwt_axis, idwt_axis
+from ._utils import _wavelets_per_axis, _modes_per_axis
+
+
+__all__ = ['dwt2', 'idwt2', 'dwtn', 'idwtn']
 
 
 def dwt2(data, wavelet, mode='symmetric', axes=(-2, -1)):
@@ -27,10 +28,13 @@ def dwt2(data, wavelet, mode='symmetric', axes=(-2, -1)):
     ----------
     data : array_like
         2D array with input data
-    wavelet : Wavelet object or name string
-        Wavelet to use
-    mode : str, optional
-        Signal extension mode, see Modes (default: 'symmetric')
+    wavelet : Wavelet object or name string, or 2-tuple of wavelets
+        Wavelet to use.  This can also be a tuple containing a wavelet to
+        apply along each axis in ``axes``.
+    mode : str or 2-tuple of strings, optional
+        Signal extension mode, see Modes (default: 'symmetric').  This can
+        also be a tuple of modes specifying the mode to use on each axis in
+        ``axes``.
     axes : 2-tuple of ints, optional
         Axes over which to compute the DWT. Repeated elements mean the DWT will
         be performed multiple times along these axes.
@@ -80,10 +84,13 @@ def idwt2(coeffs, wavelet, mode='symmetric', axes=(-2, -1)):
     coeffs : tuple
         (cA, (cH, cV, cD)) A tuple with approximation coefficients and three
         details coefficients 2D arrays like from `dwt2()`
-    wavelet : Wavelet object or name string
-        Wavelet to use
-    mode : str, optional
-        Signal extension mode, see Modes (default: 'symmetric')
+    wavelet : Wavelet object or name string, or 2-tuple of wavelets
+        Wavelet to use.  This can also be a tuple containing a wavelet to
+        apply along each axis in ``axes``.
+    mode : str or 2-tuple of strings, optional
+        Signal extension mode, see Modes (default: 'symmetric').  This can
+        also be a tuple of modes specifying the mode to use on each axis in
+        ``axes``.
     axes : 2-tuple of ints, optional
         Axes over which to compute the IDWT. Repeated elements mean the IDWT
         will be performed multiple times along these axes.
@@ -121,10 +128,13 @@ def dwtn(data, wavelet, mode='symmetric', axes=None):
     ----------
     data : array_like
         n-dimensional array with input data.
-    wavelet : Wavelet object or name string
-        Wavelet to use.
-    mode : str, optional
-        Signal extension mode, see `Modes`.  Default is 'symmetric'.
+    wavelet : Wavelet object or name string, or tuple of wavelets
+        Wavelet to use.  This can also be a tuple containing a wavelet to
+        apply along each axis in ``axes``.
+    mode : str or tuple of string, optional
+        Signal extension mode used in the decomposition,
+        see Modes (default: 'symmetric').  This can also be a tuple of modes
+        specifying the mode to use on each axis in ``axes``.
     axes : sequence of ints, optional
         Axes over which to compute the DWT. Repeated elements mean the DWT will
         be performed multiple times along these axes. A value of ``None`` (the
@@ -168,17 +178,16 @@ def dwtn(data, wavelet, mode='symmetric', axes=None):
 
     if axes is None:
         axes = range(data.ndim)
-    axes = (a + data.ndim if a < 0 else a for a in axes)
+    axes = [a + data.ndim if a < 0 else a for a in axes]
 
-    mode = Modes.from_object(mode)
-    if not isinstance(wavelet, Wavelet):
-        wavelet = Wavelet(wavelet)
+    modes = _modes_per_axis(mode, axes)
+    wavelets = _wavelets_per_axis(wavelet, axes)
 
     coeffs = [('', data)]
-    for axis in axes:
+    for axis, wav, mode in zip(axes, wavelets, modes):
         new_coeffs = []
         for subband, x in coeffs:
-            cA, cD = dwt_axis(x, wavelet, mode, axis)
+            cA, cD = dwt_axis(x, wav, mode, axis)
             new_coeffs.extend([(subband + 'a', cA),
                                (subband + 'd', cD)])
         coeffs = new_coeffs
@@ -217,11 +226,13 @@ def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
     coeffs: dict
         Dictionary as in output of `dwtn`. Missing or None items
         will be treated as zeroes.
-    wavelet : Wavelet object or name string
-        Wavelet to use
-    mode : str, optional
+    wavelet : Wavelet object or name string, or tuple of wavelets
+        Wavelet to use.  This can also be a tuple containing a wavelet to
+        apply along each axis in ``axes``.
+    mode : str or list of string, optional
         Signal extension mode used in the decomposition,
-        see Modes (default: 'symmetric').
+        see Modes (default: 'symmetric').  This can also be a tuple of modes
+        specifying the mode to use on each axis in ``axes``.
     axes : sequence of ints, optional
         Axes over which to compute the IDWT. Repeated elements mean the IDWT
         will be performed multiple times along these axes. A value of ``None``
@@ -236,10 +247,6 @@ def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
         Original signal reconstructed from input data.
 
     """
-    if not isinstance(wavelet, Wavelet):
-        wavelet = Wavelet(wavelet)
-    mode = Modes.from_object(mode)
-
     # Raise error for invalid key combinations
     coeffs = _fix_coeffs(coeffs)
 
@@ -267,9 +274,12 @@ def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
         ndim = ndim_transform
     else:
         ndim = len(coeff_shape)
-    axes = (a + ndim if a < 0 else a for a in axes)
+    axes = [a + ndim if a < 0 else a for a in axes]
 
-    for key_length, axis in reversed(list(enumerate(axes))):
+    modes = _modes_per_axis(mode, axes)
+    wavelets = _wavelets_per_axis(wavelet, axes)
+    for key_length, (axis, wav, mode) in reversed(
+            list(enumerate(zip(axes, wavelets, modes)))):
         if axis < 0 or axis >= ndim:
             raise ValueError("Axis greater than data dimensions")
 
@@ -280,7 +290,7 @@ def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
             L = coeffs.get(key + 'a', None)
             H = coeffs.get(key + 'd', None)
 
-            new_coeffs[key] = idwt_axis(L, H, wavelet, mode, axis)
+            new_coeffs[key] = idwt_axis(L, H, wav, mode, axis)
         coeffs = new_coeffs
 
     return coeffs['']

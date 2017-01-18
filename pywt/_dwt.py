@@ -1,22 +1,17 @@
-import sys
-import numpy as np
 from numbers import Number
 
+import numpy as np
 
 from ._extensions._pywt import (Wavelet, Modes, _check_dtype, wavelist)
 from ._extensions._dwt import (dwt_single, dwt_axis, idwt_single, idwt_axis,
                                upcoef as _upcoef, downcoef as _downcoef,
                                dwt_max_level as _dwt_max_level,
                                dwt_coeff_len as _dwt_coeff_len)
+from ._utils import string_types
+
 
 __all__ = ["dwt", "idwt", "downcoef", "upcoef", "dwt_max_level",
            "dwt_coeff_len"]
-
-# define string_types as in six for Python 2/3 compatibility
-if sys.version_info[0] == 3:
-    string_types = str,
-else:
-    string_types = basestring,
 
 
 def dwt_max_level(data_len, filter_len):

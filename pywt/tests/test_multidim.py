@@ -341,5 +341,39 @@ def test_dwt2_dimension_error():
     assert_raises(ValueError, pywt.dwt2, data2, wavelet, axes=(0, 1, 1))
 
 
+def test_per_axis_wavelets_and_modes():
+    # tests seperate wavelet and edge mode for each axis.
+    rstate = np.random.RandomState(1234)
+    data = rstate.randn(16, 16, 16)
+
+    # wavelet can be a string or wavelet object
+    wavelets = (pywt.Wavelet('haar'), 'sym2', 'db4')
+
+    # mode can be a string or a Modes enum
+    modes = ('symmetric', 'periodization',
+             pywt._extensions._pywt.Modes.reflect)
+
+    coefs = pywt.dwtn(data, wavelets, modes)
+    assert_allclose(pywt.idwtn(coefs, wavelets, modes), data, atol=1e-14)
+
+    coefs = pywt.dwtn(data, wavelets[:1], modes)
+    assert_allclose(pywt.idwtn(coefs, wavelets[:1], modes), data, atol=1e-14)
+
+    coefs = pywt.dwtn(data, wavelets, modes[:1])
+    assert_allclose(pywt.idwtn(coefs, wavelets, modes[:1]), data, atol=1e-14)
+
+    # length of wavelets or modes doesn't match the length of axes
+    assert_raises(ValueError, pywt.dwtn, data, wavelets[:2])
+    assert_raises(ValueError, pywt.dwtn, data, wavelets, mode=modes[:2])
+    assert_raises(ValueError, pywt.idwtn, coefs, wavelets[:2])
+    assert_raises(ValueError, pywt.idwtn, coefs, wavelets, mode=modes[:2])
+
+    # dwt2/idwt2 also support per-axis wavelets/modes
+    data2 = data[..., 0]
+    coefs2 = pywt.dwt2(data2, wavelets[:2], modes[:2])
+    assert_allclose(pywt.idwt2(coefs2, wavelets[:2], modes[:2]), data2,
+                    atol=1e-14)
+
+
 if __name__ == '__main__':
     run_module_suite()

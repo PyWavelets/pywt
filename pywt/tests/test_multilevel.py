@@ -568,5 +568,47 @@ def test_waverecn_axes_errors():
     assert_raises(ValueError, pywt.waverecn, c, 'haar', axes=(0, 1, 3))
 
 
+def test_per_axis_wavelets_and_modes():
+    # tests seperate wavelet and edge mode for each axis.
+    rstate = np.random.RandomState(1234)
+    data = rstate.randn(24, 24, 16)
+
+    # wavelet can be a string or wavelet object
+    wavelets = (pywt.Wavelet('haar'), 'sym2', 'db2')
+
+    # The default number of levels should be the minimum over this list
+    max_levels = [pywt._dwt.dwt_max_level(nd, nf) for nd, nf in
+                  zip(data.shape, wavelets)]
+
+    # mode can be a string or a Modes enum
+    modes = ('symmetric', 'periodization',
+             pywt._extensions._pywt.Modes.reflect)
+
+    coefs = pywt.wavedecn(data, wavelets, modes)
+    assert_allclose(pywt.waverecn(coefs, wavelets, modes), data, atol=1e-14)
+    assert_equal(min(max_levels), len(coefs[1:]))
+
+    coefs = pywt.wavedecn(data, wavelets[:1], modes)
+    assert_allclose(pywt.waverecn(coefs, wavelets[:1], modes), data,
+                    atol=1e-14)
+
+    coefs = pywt.wavedecn(data, wavelets, modes[:1])
+    assert_allclose(pywt.waverecn(coefs, wavelets, modes[:1]), data,
+                    atol=1e-14)
+
+    # length of wavelets or modes doesn't match the length of axes
+    assert_raises(ValueError, pywt.wavedecn, data, wavelets[:2])
+    assert_raises(ValueError, pywt.wavedecn, data, wavelets, mode=modes[:2])
+    assert_raises(ValueError, pywt.waverecn, coefs, wavelets[:2])
+    assert_raises(ValueError, pywt.waverecn, coefs, wavelets, mode=modes[:2])
+
+    # dwt2/idwt2 also support per-axis wavelets/modes
+    data2 = data[..., 0]
+    coefs2 = pywt.wavedec2(data2, wavelets[:2], modes[:2])
+    assert_allclose(pywt.waverec2(coefs2, wavelets[:2], modes[:2]), data2,
+                    atol=1e-14)
+    assert_equal(min(max_levels[:2]), len(coefs2[1:]))
+
+
 if __name__ == '__main__':
     run_module_suite()

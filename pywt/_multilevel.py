@@ -18,6 +18,7 @@ from ._extensions._pywt import Wavelet
 from ._extensions._dwt import dwt_max_level
 from ._dwt import dwt, idwt
 from ._multidim import dwt2, idwt2, dwtn, idwtn, _fix_coeffs
+from ._utils import _wavelets_per_axis
 
 __all__ = ['wavedec', 'waverec', 'wavedec2', 'waverec2', 'wavedecn',
            'waverecn', 'coeffs_to_array', 'array_to_coeffs']
@@ -157,10 +158,12 @@ def wavedec2(data, wavelet, mode='symmetric', level=None, axes=(-2, -1)):
     ----------
     data : ndarray
         2D input data
-    wavelet : Wavelet object or name string
-        Wavelet to use
-    mode : str, optional
-        Signal extension mode, see Modes (default: 'symmetric')
+    wavelet : Wavelet object or name string, or 2-tuple of wavelets
+        Wavelet to use.  This can also be a tuple containing a wavelet to
+        apply along each axis in ``axes``.
+    mode : str or 2-tuple of str, optional
+        Signal extension mode, see Modes (default: 'symmetric').  This can
+        also be a tuple containing a mode to apply along each axis in ``axes``.
     level : int, optional
         Decomposition level (must be >= 0). If level is None (default) then it
         will be calculated using the ``dwt_max_level`` function.
@@ -195,9 +198,6 @@ def wavedec2(data, wavelet, mode='symmetric', level=None, axes=(-2, -1)):
     if data.ndim < 2:
         raise ValueError("Expected input data to have at least 2 dimensions.")
 
-    if not isinstance(wavelet, Wavelet):
-        wavelet = Wavelet(wavelet)
-
     axes = tuple(axes)
     if len(axes) != 2:
         raise ValueError("Expected 2 axes")
@@ -207,7 +207,11 @@ def wavedec2(data, wavelet, mode='symmetric', level=None, axes=(-2, -1)):
         axes_sizes = [data.shape[ax] for ax in axes]
     except IndexError:
         raise ValueError("Axis greater than data dimensions")
-    level = _check_level(min(axes_sizes), wavelet.dec_len, level)
+
+    wavelets = _wavelets_per_axis(wavelet, axes)
+    dec_lengths = [w.dec_len for w in wavelets]
+
+    level = _check_level(min(axes_sizes), max(dec_lengths), level)
 
     coeffs_list = []
 
@@ -228,10 +232,12 @@ def waverec2(coeffs, wavelet, mode='symmetric', axes=(-2, -1)):
 
     coeffs : list or tuple
         Coefficients list [cAn, (cHn, cVn, cDn), ... (cH1, cV1, cD1)]
-    wavelet : Wavelet object or name string
-        Wavelet to use
-    mode : str, optional
-        Signal extension mode, see Modes (default: 'symmetric')
+    wavelet : Wavelet object or name string, or 2-tuple of wavelets
+        Wavelet to use.  This can also be a tuple containing a wavelet to
+        apply along each axis in ``axes``.
+    mode : str or 2-tuple of str, optional
+        Signal extension mode, see Modes (default: 'symmetric').  This can
+        also be a tuple containing a mode to apply along each axis in ``axes``.
     axes : 2-tuple of ints, optional
         Axes over which to compute the IDWT. Repeated elements are not allowed.
 
@@ -296,10 +302,12 @@ def wavedecn(data, wavelet, mode='symmetric', level=None, axes=None):
     ----------
     data : ndarray
         nD input data
-    wavelet : Wavelet object or name string
-        Wavelet to use
-    mode : str, optional
-        Signal extension mode, see Modes (default: 'symmetric')
+    wavelet : Wavelet object or name string, or tuple of wavelets
+        Wavelet to use.  This can also be a tuple containing a wavelet to
+        apply along each axis in ``axes``.
+    mode : str or tuple of str, optional
+        Signal extension mode, see Modes (default: 'symmetric').  This can
+        also be a tuple containing a mode to apply along each axis in ``axes``.
     level : int, optional
         Decomposition level (must be >= 0). If level is None (default) then it
         will be calculated using the ``dwt_max_level`` function.
@@ -355,9 +363,6 @@ def wavedecn(data, wavelet, mode='symmetric', level=None, axes=None):
     if len(data.shape) < 1:
         raise ValueError("Expected at least 1D input data.")
 
-    if not isinstance(wavelet, Wavelet):
-        wavelet = Wavelet(wavelet)
-
     if np.isscalar(axes):
         axes = (axes, )
     if axes is None:
@@ -371,7 +376,11 @@ def wavedecn(data, wavelet, mode='symmetric', level=None, axes=None):
         axes_shapes = [data.shape[ax] for ax in axes]
     except IndexError:
         raise ValueError("Axis greater than data dimensions")
-    level = _check_level(min(axes_shapes), wavelet.dec_len, level)
+
+    wavelets = _wavelets_per_axis(wavelet, axes)
+    dec_lengths = [w.dec_len for w in wavelets]
+
+    level = _check_level(min(axes_shapes), max(dec_lengths), level)
 
     coeffs_list = []
 
@@ -408,10 +417,12 @@ def waverecn(coeffs, wavelet, mode='symmetric', axes=None):
 
     coeffs : array_like
         Coefficients list [cAn, {details_level_n}, ... {details_level_1}]
-    wavelet : Wavelet object or name string
-        Wavelet to use
-    mode : str, optional
-        Signal extension mode, see Modes (default: 'symmetric')
+    wavelet : Wavelet object or name string, or tuple of wavelets
+        Wavelet to use.  This can also be a tuple containing a wavelet to
+        apply along each axis in ``axes``.
+    mode : str or tuple of str, optional
+        Signal extension mode, see Modes (default: 'symmetric').  This can
+        also be a tuple containing a mode to apply along each axis in ``axes``.
     axes : sequence of ints, optional
         Axes over which to compute the IDWT.  Axes may not be repeated.
 
@@ -459,7 +470,8 @@ def waverecn(coeffs, wavelet, mode='symmetric', axes=None):
         # level 0 transform (just returns the approximation coefficients)
         return coeffs[0]
     if a is None and not any(ds):
-        raise ValueError("At least one coefficient must contain a valid value.")
+        raise ValueError(
+            "At least one coefficient must contain a valid value.")
 
     coeff_ndims = []
     if a is not None:
