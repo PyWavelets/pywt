@@ -164,7 +164,7 @@ def swt2(data, wavelet, level, start_level=0, axes=(-2, -1)):
     ----------
     data : array_like
         2D array with input data
-    wavelet : Wavelet object or name string
+    wavelet : Wavelet object or name string, or 2-tuple of wavelets
         Wavelet to use.  This can also be a tuple of wavelets to apply per
         axis in ``axes``.
     level : int
@@ -246,7 +246,7 @@ def iswt2(coeffs, wavelet):
         where cA is approximation, cH is horizontal details, cV is
         vertical details, cD is diagonal details and n is the number of
         levels.  Index 1 corresponds to ``start_level`` from ``pywt.swt2``.
-    wavelet : Wavelet object or name string
+    wavelet : Wavelet object or name string, or 2-tuple of wavelets
         Wavelet to use.  This can also be a 2-tuple of wavelets to apply per
         axis.
 
@@ -344,7 +344,7 @@ def swtn(data, wavelet, level, start_level=0, axes=None):
     ----------
     data : array_like
         n-dimensional array with input data.
-    wavelet : Wavelet object or name string
+    wavelet : Wavelet object or name string, or tuple of wavelets
         Wavelet to use.  This can also be a tuple of wavelets to apply per
         axis in ``axes``.
     level : int
@@ -429,7 +429,7 @@ def iswtn(coeffs, wavelet, axes=None):
     ----------
     coeffs : list
         [{coeffs_level_n}, ..., {coeffs_level_1}]: list of dict
-    wavelet : Wavelet object or name string
+    wavelet : Wavelet object or name string, or tuple of wavelets
         Wavelet to use.  This can also be a tuple of wavelets to apply per
         axis in ``axes``.
     axes : sequence of ints, optional

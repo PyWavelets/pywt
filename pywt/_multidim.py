@@ -1,5 +1,5 @@
 # Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/>
-# Copyright (c) 2012-2017 The PyWavelets Developers
+# Copyright (c) 2012-2016 The PyWavelets Developers
 #                         <https://github.com/PyWavelets/pywt>
 # See COPYING for license details.
 
@@ -128,12 +128,12 @@ def dwtn(data, wavelet, mode='symmetric', axes=None):
     ----------
     data : array_like
         n-dimensional array with input data.
-    wavelet : Wavelet object or name string
-        Wavelet to use.  This can also be a list containing a wavelet to
+    wavelet : Wavelet object or name string, or tuple of wavelets
+        Wavelet to use.  This can also be a tuple containing a wavelet to
         apply along each axis in ``axes``.
-    mode : str or list of string, optional
+    mode : str or tuple of string, optional
         Signal extension mode used in the decomposition,
-        see Modes (default: 'symmetric').  This can also be a list of modes
+        see Modes (default: 'symmetric').  This can also be a tuple of modes
         specifying the mode to use on each axis in ``axes``.
     axes : sequence of ints, optional
         Axes over which to compute the DWT. Repeated elements mean the DWT will
@@ -226,12 +226,12 @@ def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
     coeffs: dict
         Dictionary as in output of `dwtn`. Missing or None items
         will be treated as zeroes.
-    wavelet : Wavelet object or name string
-        Wavelet to use.  This can also be a list containing a wavelet to
+    wavelet : Wavelet object or name string, or tuple of wavelets
+        Wavelet to use.  This can also be a tuple containing a wavelet to
         apply along each axis in ``axes``.
     mode : str or list of string, optional
         Signal extension mode used in the decomposition,
-        see Modes (default: 'symmetric').  This can also be a list of modes
+        see Modes (default: 'symmetric').  This can also be a tuple of modes
         specifying the mode to use on each axis in ``axes``.
     axes : sequence of ints, optional
         Axes over which to compute the IDWT. Repeated elements mean the IDWT

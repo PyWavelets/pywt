@@ -26,19 +26,19 @@ def _wavelets_per_axis(wavelet, axes):
 
     Parameters
     ----------
-    wavelet : Wavelet or list of Wavelets
+    wavelet : Wavelet or tuple of Wavelets
         If a single Wavelet is provided, it will used for all axes.  Otherwise
         one Wavelet per axis must be provided.
     axes : list
-        The list of axes to be transormed.
+        The tuple of axes to be transformed.
 
     Returns
     -------
     wavelets : list of Wavelet objects
-        A list of Wavlets equal in length to axes.
+        A tuple of Wavelets equal in length to ``axes``.
 
     """
-    axes = list(axes)
+    axes = tuple(axes)
     if isinstance(wavelet, string_types + (Wavelet, )):
         # same wavelet on all axes
         wavelets = [_as_wavelet(wavelet), ] * len(axes)
@@ -62,19 +62,19 @@ def _modes_per_axis(modes, axes):
 
     Parameters
     ----------
-    modes : str or list of strings
+    modes : str or tuple of strings
         If a single mode is provided, it will used for all axes.  Otherwise
         one mode per axis must be provided.
-    axes : list
-        The list of axes to be transormed.
+    axes : tuple
+        The tuple of axes to be transformed.
 
     Returns
     -------
-    modes : list of int
-        A list of Modes equal in length to axes.
+    modes : tuple of int
+        A tuple of Modes equal in length to ``axes``.
 
     """
-    axes = list(axes)
+    axes = tuple(axes)
     if isinstance(modes, string_types + (int, )):
         # same wavelet on all axes
         modes = [Modes.from_object(modes), ] * len(axes)

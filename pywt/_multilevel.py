@@ -1,5 +1,5 @@
 # Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/>
-# Copyright (c) 2012-2017 The PyWavelets Developers
+# Copyright (c) 2012-2016 The PyWavelets Developers
 #                         <https://github.com/PyWavelets/pywt>
 # See COPYING for license details.
 
@@ -158,10 +158,12 @@ def wavedec2(data, wavelet, mode='symmetric', level=None, axes=(-2, -1)):
     ----------
     data : ndarray
         2D input data
-    wavelet : Wavelet object or name string
-        Wavelet to use
-    mode : str, optional
-        Signal extension mode, see Modes (default: 'symmetric')
+    wavelet : Wavelet object or name string, or 2-tuple of wavelets
+        Wavelet to use.  This can also be a tuple containing a wavelet to
+        apply along each axis in ``axes``.
+    mode : str or 2-tuple of str, optional
+        Signal extension mode, see Modes (default: 'symmetric').  This can
+        also be a tuple containing a mode to apply along each axis in ``axes``.
     level : int, optional
         Decomposition level (must be >= 0). If level is None (default) then it
         will be calculated using the ``dwt_max_level`` function.
@@ -230,10 +232,12 @@ def waverec2(coeffs, wavelet, mode='symmetric', axes=(-2, -1)):
 
     coeffs : list or tuple
         Coefficients list [cAn, (cHn, cVn, cDn), ... (cH1, cV1, cD1)]
-    wavelet : Wavelet object or name string
-        Wavelet to use
-    mode : str, optional
-        Signal extension mode, see Modes (default: 'symmetric')
+    wavelet : Wavelet object or name string, or 2-tuple of wavelets
+        Wavelet to use.  This can also be a tuple containing a wavelet to
+        apply along each axis in ``axes``.
+    mode : str or 2-tuple of str, optional
+        Signal extension mode, see Modes (default: 'symmetric').  This can
+        also be a tuple containing a mode to apply along each axis in ``axes``.
     axes : 2-tuple of ints, optional
         Axes over which to compute the IDWT. Repeated elements are not allowed.
 
@@ -298,10 +302,12 @@ def wavedecn(data, wavelet, mode='symmetric', level=None, axes=None):
     ----------
     data : ndarray
         nD input data
-    wavelet : Wavelet object or name string
-        Wavelet to use
-    mode : str, optional
-        Signal extension mode, see Modes (default: 'symmetric')
+    wavelet : Wavelet object or name string, or tuple of wavelets
+        Wavelet to use.  This can also be a tuple containing a wavelet to
+        apply along each axis in ``axes``.
+    mode : str or tuple of str, optional
+        Signal extension mode, see Modes (default: 'symmetric').  This can
+        also be a tuple containing a mode to apply along each axis in ``axes``.
     level : int, optional
         Decomposition level (must be >= 0). If level is None (default) then it
         will be calculated using the ``dwt_max_level`` function.
@@ -411,10 +417,12 @@ def waverecn(coeffs, wavelet, mode='symmetric', axes=None):
 
     coeffs : array_like
         Coefficients list [cAn, {details_level_n}, ... {details_level_1}]
-    wavelet : Wavelet object or name string
-        Wavelet to use
-    mode : str, optional
-        Signal extension mode, see Modes (default: 'symmetric')
+    wavelet : Wavelet object or name string, or tuple of wavelets
+        Wavelet to use.  This can also be a tuple containing a wavelet to
+        apply along each axis in ``axes``.
+    mode : str or tuple of str, optional
+        Signal extension mode, see Modes (default: 'symmetric').  This can
+        also be a tuple containing a mode to apply along each axis in ``axes``.
     axes : sequence of ints, optional
         Axes over which to compute the IDWT.  Axes may not be repeated.
 
@@ -462,7 +470,8 @@ def waverecn(coeffs, wavelet, mode='symmetric', axes=None):
         # level 0 transform (just returns the approximation coefficients)
         return coeffs[0]
     if a is None and not any(ds):
-        raise ValueError("At least one coefficient must contain a valid value.")
+        raise ValueError(
+            "At least one coefficient must contain a valid value.")
 
     coeff_ndims = []
     if a is not None:
