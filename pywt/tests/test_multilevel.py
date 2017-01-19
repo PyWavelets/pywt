@@ -838,7 +838,7 @@ def test_fswt_ifswt_roundtrip():
                 data = data.astype(dt_in)
                 coefs, coef_slices = pywt.fswt(data, 'haar', levels=levels)
                 rec = pywt.ifswt(coefs, coef_slices, 'haar')
-                if data.real.dtype == np.float32:
+                if data.real.dtype in [np.float32, np.float16]:
                     assert_allclose(rec, data, rtol=1e-7, atol=1e-6)
                 else:
                     assert_allclose(rec, data, rtol=1e-14, atol=1e-14)
