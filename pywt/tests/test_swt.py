@@ -406,9 +406,9 @@ def test_per_axis_wavelets():
     assert_raises(ValueError, pywt.swtn, data, wavelets[:2], level)
     assert_raises(ValueError, pywt.iswtn, coefs, wavelets[:2])
 
-    # swt2/iswt2 also support per-axis wavelets/modes
     with warnings.catch_warnings():
         warnings.simplefilter('ignore', FutureWarning)
+        # swt2/iswt2 also support per-axis wavelets/modes
         data2 = data[..., 0]
         coefs2 = pywt.swt2(data2, wavelets[:2], level)
         assert_allclose(pywt.iswt2(coefs2, wavelets[:2]), data2, atol=1e-14)
