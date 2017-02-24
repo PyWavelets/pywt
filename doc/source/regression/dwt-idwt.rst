@@ -51,7 +51,7 @@ border effect handling:
 
 Note that the output coefficients arrays length depends not only on the input
 data length but also on the :class:Wavelet type (particularly on its
-:attr:`filters lenght <~Wavelet.dec_len>` that are used in the transformation).
+:attr:`filters length <~Wavelet.dec_len>` that are used in the transformation).
 
 To find out what will be the output data size use the :func:`dwt_coeff_len`
 function:
