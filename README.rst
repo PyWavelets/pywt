@@ -39,30 +39,32 @@ For more usage examples see the `demo`_ directory in the source package.
 Installation
 ------------
 
-PyWavelets supports `Python`_ 2.6, 2.7 or >=3.3, and is only dependent on `Numpy`_
+PyWavelets supports `Python`_ 2.7 or >=3.3, and is only dependent on `Numpy`_
 (supported versions are currently ``>= 1.9``). To pass all of the tests,
 `Matplotlib`_ is also required.
 
-Binaries for Windows and OS X (wheels) on PyPi are in the works, however
-currently PyWavelets has to be installed from source.  To do so, a working C
-compiler (any common one will work) and a recent version of `Cython`_ is required.
+There are binary wheels for Intel Linux, Windows and macOS / OSX on PyPi.  If
+you are on one of these platforms, you should get a binary (precompiled)
+installation with::
 
-Binary packages for several Linux distributions can be found, but may be out of date.
-Query your Linux package manager tool for `python-pywavelets`,
-`python-wavelets`, `python-pywt` or a similar package name.
+    pip install PyWavelets
 
-- Install PyWavelets with ``pip install PyWavelets``.
+Several Linux distributions have their own packages for PyWavelets, but these
+tend to be moderately out of date.  Query your Linux package manager tool for
+``python-pywavelets``, ``python-wavelets``, ``python-pywt`` or a similar
+package name.
 
-- To build and install from source, navigate to the PyWavelets source
-  code directory and type ``python setup.py install``.
+If you want or need to install from source, you will need a working C compiler
+(any common one will work) and a recent version of `Cython`_.  Navigate to the
+PyWavelets source code directory (containing ``setup.py``) and type::
+
+    pip install .
 
 The most recent *development* version can be found on GitHub at
 https://github.com/PyWavelets/pywt.
 
-The latest release, including source and binary packages for Windows, is
-available for download from the `Python Package Index`_ or on the
-`Releases Page`_.
-
+The latest release, including source and binary packages, is available for
+download from the `Python Package Index`_ or on the `Releases Page`_.
 
 State of development & Contributing
 -----------------------------------
