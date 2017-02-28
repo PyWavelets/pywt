@@ -45,26 +45,44 @@ Download
 The most recent *development* version can be found on GitHub at
 https://github.com/PyWavelets/pywt.
 
-Latest release, including source and binary package for Windows, is available
-for download from the `Python Package Index`_ or on the `Releases Page`_.
+The latest release, including source and binary packages for Intel Linux,
+macOS and Windows, is available for download from the `Python Package Index`_.
+You can find source releases at the `Releases Page`_.
 
 Install
 -------
 
-In order to build PyWavelets from source, a working C compiler (GCC or MSVC)
-and a recent version of Cython_ is required.
+There are binary wheels for Intel Linux, Windows and macOS / OSX on PyPi.  If
+you are on one of these platforms, you should get a binary (precompiled)
+installation with::
 
- - Install PyWavelets with ``pip install PyWavelets``.
+    pip install PyWavelets
 
- - To build and install from source, navigate to downloaded PyWavelets source
-   code directory and type ``python setup.py install``.
+Users of the Anaconda_ Python distribution may wish to obtain pre-built
+Windows, Intel Linux or macOS / OSX binaries from the conda-forge channel.
+This can be done via::
 
-Prebuilt Windows binaries and source code packages are also
-available from `Python Package Index`_.
+    conda install -c conda-forge pywavelets
 
-Binary packages for several Linux distributors are maintained by Open Source
-community contributors. Query your Linux package manager tool for
-`python-pywavelets`, `python-wavelets`, `python-pywt` or similar package name.
+Several Linux distributions have their own packages for PyWavelets, but these
+tend to be moderately out of date.  Query your Linux package manager tool for
+``python-pywavelets``, ``python-wavelets``, ``python-pywt`` or a similar
+package name.
+
+If you want or need to install from source, you will need a working C compiler
+(any common one will work) and a recent version of `Cython`_.  Navigate to the
+PyWavelets source code directory (containing ``setup.py``) and type::
+
+    pip install .
+
+To run all the tests for PyWavelets, you will also need to install the
+Matplotlib_ package.
+
+The most recent *development* version can be found on GitHub at
+https://github.com/PyWavelets/pywt.
+
+The latest release, including source and binary packages, is available for
+download from the `Python Package Index`_ or on the `Releases Page`_.
 
 .. seealso::  :ref:`Development notes <dev-index>` section contains more
               information on building and installing from source code.
@@ -127,6 +145,7 @@ Contents
 .. _built-in wavelet filters: http://wavelets.pybytes.com/
 .. _Cython: http://cython.org/
 .. _demo: https://github.com/PyWavelets/pywt/tree/master/demo
+.. _Anaconda: https://www.continuum.io
 .. _GitHub: https://github.com/PyWavelets/pywt
 .. _GitHub Issues: https://github.com/PyWavelets/pywt/issues
 .. _Numpy: http://www.numpy.org
@@ -135,3 +154,4 @@ Contents
 .. _Python Package Index: http://pypi.python.org/pypi/PyWavelets/
 .. _PyWavelets discussions group: http://groups.google.com/group/pywavelets
 .. _Releases Page: https://github.com/PyWavelets/pywt/releases
+.. _Matplotlib: http://matplotlib.org
