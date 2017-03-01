@@ -36,7 +36,7 @@ int CAT(TYPE, _downcoef_axis)(const TYPE * const restrict input, const ArrayInfo
     if (input_info.ndim != output_info.ndim)
         return 1;
     if (axis >= input_info.ndim)
-        return 1;
+        return 2;
 
     for (i = 0; i < input_info.ndim; ++i){
         if (i == axis){
@@ -44,17 +44,17 @@ int CAT(TYPE, _downcoef_axis)(const TYPE * const restrict input, const ArrayInfo
             case DWT_TRANSFORM:
                 if (dwt_buffer_length(input_info.shape[i], wavelet->dec_len,
                                       dwt_mode) != output_info.shape[i])
-                    return 1;
+                    return 3;
                 break;
             case SWT_TRANSFORM:
                 if (swt_buffer_length(input_info.shape[i])
                     != output_info.shape[i])
-                    return 1;
+                    return 4;
                 break;
             }
         } else {
             if (input_info.shape[i] != output_info.shape[i])
-                return 1;
+                return 5;
         }
     }
 
@@ -160,7 +160,7 @@ int CAT(TYPE, _downcoef_axis)(const TYPE * const restrict input, const ArrayInfo
  cleanup:
     free(temp_input);
     free(temp_output);
-    return 2;
+    return 6;
 }
 
 
