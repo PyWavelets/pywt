@@ -52,7 +52,7 @@ before_install:
   - pip install --upgrade wheel
   # Set numpy version first, other packages link against it
   - pip install $NUMPYSPEC
-  - pip install Cython matplotlib nose coverage codecov
+  - pip install Cython matplotlib nose coverage codecov futures
   - set -o pipefail
   - |
     if [ "${REFGUIDE_CHECK}" == "1" ]; then
