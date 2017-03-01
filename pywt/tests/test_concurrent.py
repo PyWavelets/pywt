@@ -7,6 +7,7 @@ from __future__ import division, print_function, absolute_import
 
 import sys
 import warnings
+import multiprocessing
 import numpy as np
 from functools import partial
 from numpy.testing import dec, run_module_suite, assert_array_equal
@@ -18,6 +19,7 @@ try:
         import futures
     else:
         from concurrent import futures
+    max_workers = multiprocessing.cpu_count()
     futures_available = True
 except ImportError:
     futures_available = False
@@ -54,7 +56,7 @@ def test_concurrent_swt():
             transform = partial(swt_func, wavelet='haar', level=1)
             for _ in range(10):
                 arrs = [x.copy() for _ in range(100)]
-                with futures.ThreadPoolExecutor() as ex:
+                with futures.ThreadPoolExecutor(max_workers=max_workers) as ex:
                     results = list(ex.map(transform, arrs))
 
         # validate result from  one of the concurrent runs
@@ -65,13 +67,13 @@ def test_concurrent_swt():
 @dec.skipif(not futures_available)
 def test_concurrent_wavedec():
     # wavedec on 1D data calls the Cython dwt_single
-    # other cases call dwt_axes
+    # other cases call dwt_axis
     for wavedec_func, x in zip([pywt.wavedec, pywt.wavedec2, pywt.wavedecn],
                                [np.ones(8), np.eye(16), np.eye(16)]):
         transform = partial(wavedec_func, wavelet='haar', level=1)
         for _ in range(10):
             arrs = [x.copy() for _ in range(100)]
-            with futures.ThreadPoolExecutor() as ex:
+            with futures.ThreadPoolExecutor(max_workers=max_workers) as ex:
                 results = list(ex.map(transform, arrs))
 
         # validate result from  one of the concurrent runs
@@ -82,13 +84,13 @@ def test_concurrent_wavedec():
 @dec.skipif(not futures_available)
 def test_concurrent_dwt():
     # dwt on 1D data calls the Cython dwt_single
-    # other cases call dwt_axes
+    # other cases call dwt_axis
     for dwt_func, x in zip([pywt.dwt, pywt.dwt2, pywt.dwtn],
                            [np.ones(8), np.eye(16), np.eye(16)]):
         transform = partial(dwt_func, wavelet='haar')
         for _ in range(10):
             arrs = [x.copy() for _ in range(100)]
-            with futures.ThreadPoolExecutor() as ex:
+            with futures.ThreadPoolExecutor(max_workers=max_workers) as ex:
                 results = list(ex.map(transform, arrs))
 
         # validate result from  one of the concurrent runs
@@ -104,7 +106,7 @@ def test_concurrent_cwt():
                         sampling_period=dt)
     for _ in range(10):
         arrs = [sst.copy() for _ in range(50)]
-        with futures.ThreadPoolExecutor() as ex:
+        with futures.ThreadPoolExecutor(max_workers=max_workers) as ex:
             results = list(ex.map(transform, arrs))
 
     # validate result from  one of the concurrent runs
