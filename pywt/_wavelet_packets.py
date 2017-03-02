@@ -872,8 +872,15 @@ class WaveletPacketND(NodeND):
         If None, it will be calculated based on the `wavelet` and `data`
         length using `pywt.dwt_max_level`.
     """
-    def __init__(self, data, wavelet, mode='smooth', maxlevel=None):
-        super(WaveletPacketND, self).__init__(None, data, "", data.ndim)
+    def __init__(self, data, wavelet, mode='smooth', maxlevel=None,
+                 ndim=None):
+        if (data is None) and (ndim is None):
+            # ndim is required to create a NodeND object
+            raise ValueError("If data is None, ndim must be specified")
+        if ndim is None:
+            ndim = data.ndim
+
+        super(WaveletPacketND, self).__init__(None, data, "", ndim)
 
         if not isinstance(wavelet, Wavelet):
             wavelet = Wavelet(wavelet)
