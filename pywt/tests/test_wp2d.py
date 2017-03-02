@@ -123,6 +123,8 @@ def test_data_reconstruction_delete_nodes_2d():
     assert_allclose(new_wp.reconstruct(update=False), x, rtol=1e-12)
 
     del(new_wp['va'])
+    # TypeError on accessing deleted node
+    assert_raises(TypeError, lambda: new_wp['va'])
     new_wp['va'] = wp['va'].data
     assert_(new_wp.data is None)
 
