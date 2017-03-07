@@ -25,7 +25,7 @@ install:
   - "util\\appveyor\\build.cmd %PYTHON%\\python.exe -m pip install
      numpy --cache-dir c:\\tmp\\pip-cache"
   - "util\\appveyor\\build.cmd %PYTHON%\\python.exe -m pip install
-     Cython nose coverage matplotlib --cache-dir c:\\tmp\\pip-cache"
+     Cython nose coverage matplotlib futures --cache-dir c:\\tmp\\pip-cache"
 
 test_script:
   - "util\\appveyor\\build.cmd %PYTHON%\\python.exe setup.py build --build-lib build\\lib\\"
