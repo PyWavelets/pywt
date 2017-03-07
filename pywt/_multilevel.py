@@ -143,10 +143,13 @@ def waverec(coeffs, wavelet, mode='symmetric', axis=-1):
 
     for d in ds:
         if (a is not None) and (d is not None):
-            if a.shape[axis] == d.shape[axis] + 1:
-                a = a[[slice(s) for s in d.shape]]
-            elif a.shape[axis] != d.shape[axis]:
-                raise RuntimeError("coefficient shape mismatch")
+            try:
+                if a.shape[axis] == d.shape[axis] + 1:
+                    a = a[[slice(s) for s in d.shape]]
+                elif a.shape[axis] != d.shape[axis]:
+                    raise ValueError("coefficient shape mismatch")
+            except IndexError:
+                raise ValueError("Axis greater than coefficient dimensions")
         a = idwt(a, d, wavelet, mode, axis)
 
     return a
