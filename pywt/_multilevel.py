@@ -440,6 +440,7 @@ def _match_coeff_dims(a_coeff, d_coeff_dict):
     d_coeff = d_coeff_dict[next(iter(d_coeff_dict))]
     size_diffs = np.subtract(a_coeff.shape, d_coeff.shape)
     if np.any((size_diffs < 0) | (size_diffs > 1)):
+        print(size_diffs)
         raise ValueError("incompatible coefficient array sizes")
     return a_coeff[tuple(slice(s) for s in d_coeff.shape)]
 
@@ -1243,11 +1244,15 @@ def fswt(data, wavelet, mode='symmetric', levels=None, axes=None):
         levels = [levels, ] * len(axes)
     if len(levels) != len(axes):
         raise ValueError("levels must match the length of the axes list")
+
+    modes = _modes_per_axis(mode, axes)
+    wavelets = _wavelets_per_axis(wavelet, axes)
+
     coeff_slices = [slice(None), ] * len(axes)
     coeffs_arr = data
-    for ax_count, ax in enumerate(axes):
-        coeffs = wavedec(coeffs_arr, wavelet, mode=mode,
-                         level=levels[ax_count], axis=ax)
+    for ax_count, (ax, lev, wav, mode) in enumerate(
+            zip(axes, levels, wavelets, modes)):
+        coeffs = wavedec(coeffs_arr, wav, mode=mode, level=lev, axis=ax)
 
         # Slice objects for accessing coefficient subsets.
         # These can be used to access specific detail coefficient arrays
@@ -1333,13 +1338,18 @@ def ifswt(coeffs_arr, coeff_slices, wavelet, mode='symmetric', axes=None):
     if len(axes) != len(coeff_slices):
         raise ValueError("dimension mismatch")
 
+    modes = _modes_per_axis(mode, axes)
+    wavelets = _wavelets_per_axis(wavelet, axes)
+
     arr = coeffs_arr
     csl = [slice(None), ] * arr.ndim
-    for ax_count, ax in enumerate(axes):
+    # for ax_count, (ax, wav, mode) in reversed(
+    #         list(enumerate(zip(axes, wavelets, modes)))):
+    for ax_count, (ax, wav, mode) in enumerate(zip(axes, wavelets, modes)):
         coeffs = []
         for sl in coeff_slices[ax_count]:
             csl[ax] = sl
             coeffs.append(arr[csl])
         csl[ax] = slice(None)
-        arr = waverec(coeffs, wavelet, mode=mode, axis=ax)
+        arr = waverec(coeffs, wav, mode=mode, axis=ax)
     return arr

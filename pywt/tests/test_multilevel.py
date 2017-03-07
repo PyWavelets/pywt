@@ -875,6 +875,29 @@ def test_fswt_ifswt_variable_levels():
                   levels=np.log2(np.min(data.shape))+1)
 
 
+def test_fswt_ifswt_variable_wavelets_and_modes():
+    # test with differing number of transform levels per axis
+    rstate = np.random.RandomState(0)
+    ndim = 3
+    data = rstate.standard_normal((16, )*ndim)
+    wavelets = ('haar', 'db2', 'sym3')
+    modes = ('periodic', 'symmetric', 'periodization')
+    coefs, coef_slices = pywt.fswt(data, wavelet=wavelets, mode=modes)
+    for ax in range(ndim):
+        # expect approx + dwt_max_level detail coeffs along each axis
+        assert_equal(len(coef_slices[ax]),
+                     pywt.dwt_max_level(data.shape[ax], wavelets[ax])+1)
+
+    rec = pywt.ifswt(coefs, coef_slices, wavelet=wavelets, mode=modes)
+    assert_allclose(rec, data, atol=1e-14)
+
+    # number of wavelets doesn't match number of axes
+    assert_raises(ValueError, pywt.fswt, data, wavelets[:2])
+
+    # number of modes doesn't match number of axes
+    assert_raises(ValueError, pywt.fswt, data, wavelets[0], mode=modes[:2])
+
+
 def test_fswt_ifswt_axes_subsets():
     """Fully separable DWT over only a subset of axes"""
     rstate = np.random.RandomState(0)
