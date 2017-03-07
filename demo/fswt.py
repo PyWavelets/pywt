@@ -26,3 +26,5 @@ ax2.imshow(np.abs(fswt_array)**0.25,
            interpolation='nearest')
 ax2.set_axis_off()
 ax2.set_title('Fully separable decomposition\n(fswt)')
+
+plt.show()
