@@ -262,6 +262,23 @@ def test_idwtn_axes():
     assert_allclose(pywt.idwtn(coefs, 'haar', axes=(1, 1)), data, atol=1e-14)
 
 
+def test_idwt2_none_coeffs():
+    data = np.array([[0, 1, 2, 3],
+                     [1, 1, 1, 1],
+                     [1, 4, 2, 8]])
+    data = data + 1j*data  # test with complex data
+    cA, (cH, cV, cD) = pywt.dwt2(data, 'haar', axes=(1, 1))
+
+    # verify setting coefficients to None is the same as zeroing them
+    cD = np.zeros_like(cD)
+    result_zeros = pywt.idwt2((cA, (cH, cV, cD)), 'haar', axes=(1, 1))
+
+    cD = None
+    result_none = pywt.idwt2((cA, (cH, cV, cD)), 'haar', axes=(1, 1))
+
+    assert_equal(result_zeros, result_none)
+
+
 def test_idwtn_none_coeffs():
     data = np.array([[0, 1, 2, 3],
                      [1, 1, 1, 1],
