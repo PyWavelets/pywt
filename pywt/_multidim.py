@@ -79,11 +79,14 @@ def idwt2(coeffs, wavelet, mode='symmetric', axes=(-2, -1)):
     ----------
     coeffs : tuple
         (cA, (cH, cV, cD)) A tuple with approximation coefficients and three
-        details coefficients 2D arrays like from `dwt2()`
+        details coefficients 2D arrays like from `dwt2`. If any of these
+        components are set to ``None``, it will be treated as zeros.
     wavelet : Wavelet object or name string
         Wavelet to use
     mode : str, optional
         Signal extension mode, see Modes (default: 'symmetric')
+        details coefficients 2D arrays like from `dwt2`.  If any of these
+        components are set to ``None``, it will be treated as zeros.
     axes : 2-tuple of ints, optional
         Axes over which to compute the IDWT. Repeated elements mean the IDWT
         will be performed multiple times along these axes.
@@ -211,8 +214,8 @@ def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
     Parameters
     ----------
     coeffs: dict
-        Dictionary as in output of `dwtn`. Missing or None items
-        will be treated as zeroes.
+        Dictionary as in output of `dwtn`. Missing or ``None`` items
+        will be treated as zeros.
     wavelet : Wavelet object or name string
         Wavelet to use
     mode : str, optional
