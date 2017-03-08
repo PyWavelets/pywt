@@ -249,7 +249,9 @@ if __name__ == '__main__':
         version=get_version_info()[0],
 
         packages=['pywt', 'pywt._extensions', 'pywt.data'],
-        package_data={'pywt.data': ['*.npy', '*.npz']},
+        package_data={'pywt.data': ['*.npy', '*.npz'],
+                      'pywt': ['tests/*.py', 'tests/data/*.npz',
+                               'tests/data/*.py']},
         ext_modules=ext_modules,
         libraries=[c_lib],
         cmdclass={'develop': develop_build_clib},
