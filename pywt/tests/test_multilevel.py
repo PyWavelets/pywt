@@ -538,6 +538,13 @@ def test_waverec_axis_error():
     assert_raises(ValueError, pywt.waverec, c, 'haar', axis=1)
 
 
+def test_waverec_shape_mismatch_error():
+    c = pywt.wavedec(np.ones(16), 'haar')
+    # truncate a detail coefficient to an incorrect shape
+    c[3] = c[3][:-1]
+    assert_raises(ValueError, pywt.waverec, c, 'haar', axis=1)
+
+
 def test_wavedec2_axes_errors():
     data = np.ones((4, 4))
     # integer axes not allowed
