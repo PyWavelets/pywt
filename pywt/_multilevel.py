@@ -10,10 +10,13 @@ and Inverse Discrete Wavelet Transform.
 
 from __future__ import division, print_function, absolute_import
 
+import numbers
+import warnings
+from itertools import product
 from copy import copy
 import numpy as np
 
-from itertools import product
+from ._extensions._pywt import Wavelet, Modes
 from ._extensions._dwt import dwt_max_level
 from ._dwt import dwt, idwt, dwt_coeff_len
 from ._multidim import dwt2, idwt2, dwtn, idwtn, _fix_coeffs
@@ -22,7 +25,7 @@ from ._utils import _as_wavelet, _wavelets_per_axis, _modes_per_axis
 __all__ = ['wavedec', 'waverec', 'wavedec2', 'waverec2', 'wavedecn',
            'waverecn', 'coeffs_to_array', 'array_to_coeffs', 'ravel_coeffs',
            'unravel_coeffs', 'dwtn_max_level', 'wavedecn_size',
-           'wavedecn_shapes', 'fswt', 'ifswt']
+           'wavedecn_shapes', 'fswt', 'ifswt', 'TransformResult']
 
 
 def _check_level(sizes, dec_lens, level):
@@ -256,7 +259,11 @@ def waverec2(coeffs, wavelet, mode='symmetric', axes=(-2, -1)):
         apply along each axis in `axes`.
     mode : str or 2-tuple of str, optional
         Signal extension mode, see `Modes` (default: 'symmetric').  This can
+<<<<<<< HEAD
         also be a tuple containing a mode to apply along each axis in `axes`.
+=======
+        also be a tuple containing a mode to apply along each axis in ``axes``.
+>>>>>>> 646e10b... use a TransformResults class to store the results of FSWT
     axes : 2-tuple of ints, optional
         Axes over which to compute the IDWT. Repeated elements are not allowed.
 
@@ -289,7 +296,6 @@ def waverec2(coeffs, wavelet, mode='symmetric', axes=(-2, -1)):
            [ 1.,  1.,  1.,  1.],
            [ 1.,  1.,  1.,  1.]])
     """
-
     if not isinstance(coeffs, (list, tuple)):
         raise ValueError("Expected sequence of coefficient arrays.")
 
@@ -1152,13 +1158,189 @@ def unravel_coeffs(arr, coeff_slices, coeff_shapes, output_format='wavedecn'):
 
 
 def _check_fswt_axes(data, axes):
-    """axes checks common to fswt, ifswt. """
+    """Axes checks common to fswt, ifswt."""
     if len(axes) != len(set(axes)):
         raise ValueError("The axes passed to fswt must be unique.")
     try:
         [data.shape[ax] for ax in axes]
     except IndexError:
         raise ValueError("Axis greater than data dimensions")
+
+
+class TransformResult(object):
+    """Object representing fully separable wavelet transform coefficients.
+
+    Parameters
+    ----------
+    coeffs : ndarray
+        The coefficient array.
+    coeff_slices : dict
+        Dictionary of slices corresponding to each detail or approximatin
+        coefficient array.
+    wavelets : list of pywt.DiscreteWavelet objects
+        The wavelets used.  Will be a list with length equal to
+        ``len(axes)``.
+    mode_enums : list of int
+        The border modes used.  Will be a list with length equal to
+        ``len(axes)``.
+    axes : tuple of int
+        The set of axes over which the transform was performed.
+
+    """
+    def __init__(self, coeffs, coeff_slices, wavelets, mode_enums,
+                 axes):
+        self._coeffs = coeffs
+        self._coeff_slices = coeff_slices
+        self._axes = axes
+        if not np.all(isinstance(w, Wavelet) for w in wavelets):
+            raise ValueError(
+                "wavelets must contain pywt.Wavelet objects")
+        self._wavelets = wavelets
+        if not np.all(isinstance(m, int) for m in mode_enums):
+            raise ValueError(
+                "mode_enums must be integers")
+        self._mode_enums = mode_enums
+
+    @property
+    def coeffs(self):
+        """ndarray: All coefficients stacked into a single array."""
+        return self._coeffs
+
+    @coeffs.setter
+    def coeffs(self, c):
+        if c.shape != self._coeffs.shape:
+            raise ValueError("new coefficient array must match the existing "
+                             "coefficient shape")
+        self._coeffs = c
+
+    @property
+    def coeff_slices(self):
+        """Dict: Dictionary of coeffficient slices."""
+        return self._coeff_slices
+
+    @property
+    def ndim(self):
+        """int: Number of data dimensions."""
+        return self.coeffs.ndim
+
+    @property
+    def ndim_transform(self):
+        """int: Number of axes transformed."""
+        return len(self.axes)
+
+    @property
+    def axes(self):
+        """List of str: The axes the transform was performed along."""
+        return self._axes
+
+    @property
+    def levels(self):
+        """List of int: Levels of decomposition along each transformed axis."""
+        return [len(s) - 1 for s in self.coeff_slices]
+
+    @property
+    def wavelets(self):
+        """List of pywt.DiscreteWavelet: wavelet for each transformed axis."""
+        return self._wavelets
+
+    @property
+    def wavelet_names(self):
+        """List of pywt.DiscreteWavelet: wavelet for each transformed axis."""
+        return [w.name for w in self._wavelets]
+
+    @property
+    def modes(self):
+        """List of str: The border mode used along each transformed axis."""
+        names_dict = {getattr(Modes, mode): mode
+                      for mode in Modes.modes}
+        return [names_dict[m] for m in self._mode_enums]
+
+    def _get_coef_sl(self, levels):
+        sl = [slice(None), ] * self.ndim
+        for n, (ax, lev) in enumerate(zip(self.axes, levels)):
+            sl[ax] = self.coeff_slices[n][lev]
+        return sl
+
+    @property
+    def approx(self):
+        """ndarray: The approximation coefficients."""
+        sl = self._get_coef_sl((0, )*self.ndim)
+        return self._coeffs[sl]
+
+    @approx.setter
+    def approx(self, a):
+        sl = self._get_coef_sl((0, )*self.ndim)
+        if self._coeffs[sl].shape != a.shape:
+            raise ValueError(
+                "x does not match the shape of the requested coefficient")
+        self._coeffs[sl] = a
+
+    def _validate_index(self, levels):
+        levels = tuple(levels)
+
+        if len(levels) != len(self.axes):
+            raise ValueError(
+                "levels must match the number of transformed axes")
+
+        # check that all elements are non-negative integers
+        if (not np.all([isinstance(lev, numbers.Number) for lev in levels]) or
+                np.any(np.asarray(levels) % 1 > 0) or
+                np.any([lev < 0 for lev in levels])):
+            raise ValueError("Index must be a tuple of non-negative integers")
+        # convert integer-valued floats to int
+        levels = tuple([int(lev) for lev in levels])
+
+        # check for out of range levels
+        if np.any([lev > maxlev for lev, maxlev in zip(levels, self.levels)]):
+            raise ValueError(
+                "Specified indices exceed the number of transform levels.")
+
+    def __getitem__(self, levels):
+        """Retrieve a coefficient subband.
+
+        Parameters
+        ----------
+            levels : tuple of int
+                The number of degrees of decomposition along each transformed
+                axis.
+        """
+        self._validate_index(levels)
+        sl = self._get_coef_sl(levels)
+        return self._coeffs[sl]
+
+    def __setitem__(self, levels, x):
+        """Assign values to a coefficient subband.
+
+        Parameters
+        ----------
+            levels : tuple of int
+                The number of degrees of decomposition along each transformed
+                axis.
+            x : ndarray
+                The data corresponding to assign. It must match the expected
+                shape and dtype of the specified subband.
+        """
+        self._validate_index(levels)
+        sl = self._get_coef_sl(levels)
+        if self._coeffs[sl].shape != x.shape:
+            raise ValueError(
+                "x does not match the shape of the requested coefficient")
+        if x.dtype != sl.dtype:
+            warnings.warn("dtype mismatch:  converting the provided array to"
+                          "dtype {}".format(sl.dtype))
+        self._coeffs[sl] = x
+
+    def detail_keys(self):
+        """Return a list of all detail coefficient keys.
+
+        Returns
+        -------
+        keys : list of str
+            List of all detail coefficient keys.
+        """
+        keys = list(product(*(range(l+1) for l in self.levels)))
+        keys.remove((0, )*len(self.axes))
+        return sorted(keys)
 
 
 def fswt(data, wavelet, mode='symmetric', levels=None, axes=None):
@@ -1174,10 +1356,12 @@ def fswt(data, wavelet, mode='symmetric', levels=None, axes=None):
     ----------
     data: array_like
         Input data
-    wavelet : Wavelet object or name string
-        Wavelet to use
-    mode : str, optional
-        Signal extension mode, see `Modes` (default: 'symmetric')
+    wavelet : Wavelet object or name string, or tuple of wavelets
+        Wavelet to use.  This can also be a tuple containing a wavelet to
+        apply along each axis in ``axes``.
+    mode : str or tuple of str, optional
+        Signal extension mode, see `Modes` (default: 'symmetric').  This can
+        also be a tuple containing a mode to apply along each axis in ``axes``.
     levels : int or sequence of ints, optional
         Decomposition levels along each axis (must be >= 0). If an integer is
         provided, the same number of levels are used for all axes. If
@@ -1199,7 +1383,7 @@ def fswt(data, wavelet, mode='symmetric', levels=None, axes=None):
         ``a = coeffs_arr[coeff_slices[0][0], coeff_slices[1][0]]``
         whereas detail coefficients for ``n`` levels of decomposition along the
         first axis and ``m`` levels along the second would be given by:
-        ``dnm = coeffs_arr[coeff_slices[0][n], coeff_slices[1][m]]``
+        ``dnm = coeffs_arr[coeff_slices[0][-n], coeff_slices[1][-m]]``
 
     Notes
     -----
@@ -1265,37 +1449,20 @@ def fswt(data, wavelet, mode='symmetric', levels=None, axes=None):
         # stack the coefficients from all levels into a single array
         coeffs_arr = np.concatenate(coeffs, axis=ax)
 
-    return coeffs_arr, coeff_slices
+    return TransformResult(coeffs_arr, coeff_slices, wavelets, modes, axes)
 
 
-def ifswt(coeffs_arr, coeff_slices, wavelet, mode='symmetric', axes=None):
+def ifswt(transform_result):
     """Fully Separable Inverse Wavelet Transform.
 
     Parameters
     ----------
-    coeffs_arr : array-like
-        n-dimensional array of wavelet coefficients
-    coeff_slices : list of lists
-        A list with length equal to the number signal dimensions.  Each element
-        is a list with length matching the number of transform levels along the
-        corresponding dimension.  In other words, ``coeff_slices[m][n]`` is a
-        slice for axis ``m`` of ``coeffs_arr`` that returns the coefficients
-        corresponding to level ``n``.
-    wavelet : Wavelet object or name string
-        Wavelet to use
-    mode : str, optional
-        Signal extension mode, see `Modes` (default: 'symmetric')
-    axes : sequence of ints, optional
-        Axes over which to compute the FSWT. Axes may not be repeated.  The
-        default is to transform along all axes.
+    transform_result : TransformResult object
+        TransformResult object from ``fswt``.
 
     Returns
     -------
     nD array of reconstructed data.
-
-    See Also
-    --------
-    ifswt : inverse of fswt
 
     Notes
     -----
@@ -1305,12 +1472,12 @@ def ifswt(coeffs_arr, coeff_slices, wavelet, mode='symmetric', axes=None):
     data with anisotropic smoothness.
 
     In [2]_ it was demonstrated that FSWT performs at least as well as the DWT
-    for image compression.  Computation time is a factor 2 larger than that for
+    for image compression. Computation time is a factor 2 larger than that for
     the DWT.
 
     See Also
     --------
-    ifswt : inverse of fswt
+    fswt : inverse of ifswt
 
     References
     ----------
@@ -1331,15 +1498,15 @@ def ifswt(coeffs_arr, coeff_slices, wavelet, mode='symmetric', axes=None):
     .. [4] RA DeVore, SV Konyagin and VN Temlyakov. "Hyperbolic wavelet
        approximation," Constr. Approx. 14 (1998), 1-26.
     """
-    coeffs_arr = np.asarray(coeffs_arr)
-    if axes is None:
-        axes = tuple(np.arange(coeffs_arr.ndim))
+    coeffs_arr = transform_result.coeffs
+    coeff_slices = transform_result.coeff_slices
+    axes = transform_result.axes
+    modes = transform_result.modes
+    wavelets = transform_result.wavelets
+
     _check_fswt_axes(coeffs_arr, axes)
     if len(axes) != len(coeff_slices):
         raise ValueError("dimension mismatch")
-
-    modes = _modes_per_axis(mode, axes)
-    wavelets = _wavelets_per_axis(wavelet, axes)
 
     arr = coeffs_arr
     csl = [slice(None), ] * arr.ndim

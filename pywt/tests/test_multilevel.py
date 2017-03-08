@@ -827,6 +827,7 @@ def test_per_axis_wavelets_and_modes():
 
 # Tests for fully separable multi-level transforms
 
+
 def test_fswt_ifswt_roundtrip():
     # verify proper round trip result for 1D through 4D data
     # same DWT as wavedecn/waverecn so don't need to test all modes/wavelets
@@ -836,13 +837,13 @@ def test_fswt_ifswt_roundtrip():
             for levels in (1, None):
                 data = rstate.standard_normal((8, )*ndim)
                 data = data.astype(dt_in)
-                coefs, coef_slices = pywt.fswt(data, 'haar', levels=levels)
-                rec = pywt.ifswt(coefs, coef_slices, 'haar')
+                T = pywt.fswt(data, 'haar', levels=levels)
+                rec = pywt.ifswt(T)
                 if data.real.dtype in [np.float32, np.float16]:
-                    assert_allclose(rec, data, rtol=1e-7, atol=1e-6)
+                    assert_allclose(rec, data, rtol=1e-6, atol=1e-6)
                 else:
                     assert_allclose(rec, data, rtol=1e-14, atol=1e-14)
-                assert_(coefs.dtype == dt_out)
+                assert_(T.coeffs.dtype == dt_out)
                 assert_(rec.dtype == dt_out)
 
 
@@ -851,10 +852,10 @@ def test_fswt_ifswt_zero_levels():
     rstate = np.random.RandomState(0)
     ndim = 2
     data = rstate.standard_normal((8, )*ndim)
-    coefs, coef_slices = pywt.fswt(data, 'haar', levels=0)
-    assert_array_equal(coefs, data)
-    rec = pywt.ifswt(coefs, coef_slices, 'haar')
-    assert_array_equal(coefs, rec)
+    T = pywt.fswt(data, 'haar', levels=0)
+    assert_array_equal(T.coeffs, data)
+    rec = pywt.ifswt(T)
+    assert_array_equal(T.coeffs, rec)
 
 
 def test_fswt_ifswt_variable_levels():
@@ -862,8 +863,8 @@ def test_fswt_ifswt_variable_levels():
     rstate = np.random.RandomState(0)
     ndim = 3
     data = rstate.standard_normal((16, )*ndim)
-    coefs, coef_slices = pywt.fswt(data, 'haar', levels=(1, 2, 3))
-    rec = pywt.ifswt(coefs, coef_slices, 'haar')
+    T = pywt.fswt(data, 'haar', levels=(1, 2, 3))
+    rec = pywt.ifswt(T)
     assert_allclose(rec, data, atol=1e-14)
 
     # levels doesn't match number of axes
@@ -882,13 +883,13 @@ def test_fswt_ifswt_variable_wavelets_and_modes():
     data = rstate.standard_normal((16, )*ndim)
     wavelets = ('haar', 'db2', 'sym3')
     modes = ('periodic', 'symmetric', 'periodization')
-    coefs, coef_slices = pywt.fswt(data, wavelet=wavelets, mode=modes)
+    T = pywt.fswt(data, wavelet=wavelets, mode=modes)
     for ax in range(ndim):
         # expect approx + dwt_max_level detail coeffs along each axis
-        assert_equal(len(coef_slices[ax]),
+        assert_equal(len(T.coeff_slices[ax]),
                      pywt.dwt_max_level(data.shape[ax], wavelets[ax])+1)
 
-    rec = pywt.ifswt(coefs, coef_slices, wavelet=wavelets, mode=modes)
+    rec = pywt.ifswt(T)
     assert_allclose(rec, data, atol=1e-14)
 
     # number of wavelets doesn't match number of axes
@@ -905,13 +906,9 @@ def test_fswt_ifswt_axes_subsets():
     data = rstate.standard_normal((4, 8, 16, 32))
     # test all combinations of 3 out of 4 axes transformed
     for axes in combinations((0, 1, 2, 3), 3):
-        coefs, coef_slices = pywt.fswt(data, 'haar', axes=axes)
-        rec = pywt.ifswt(coefs, coef_slices, 'haar', axes=axes)
+        T = pywt.fswt(data, 'haar', axes=axes)
+        rec = pywt.ifswt(T)
         assert_allclose(rec, data, atol=1e-14)
-
-    # wrong number of axes in ifswt
-    assert_raises(ValueError, pywt.ifswt, coefs, coef_slices, 'haar',
-                  axes=axes[:len(coef_slices)-1])
 
     # some axes exceed data dimensions
     assert_raises(ValueError, pywt.fswt, data, 'haar', axes=(1, 5))

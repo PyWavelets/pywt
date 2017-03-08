@@ -6,6 +6,8 @@ nD Forward and Inverse Discrete Wavelet Transform
 
 .. currentmodule:: pywt
 
+.. autosummary:: _multilevel
+
 Single level - ``dwtn``
 -----------------------
 .. autofunction:: dwtn
@@ -29,3 +31,7 @@ Multilevel fully separable decomposition - ``fswt``
 Multilevel fully separable reconstruction - ``ifswt``
 -----------------------------------------------------
 .. autofunction:: ifswt
+
+Multilevel fully separable reconstruction coeffs - ``TransformResult``
+-----------------------------------------------------------------------
+.. autoclass:: TransformResult
