@@ -488,6 +488,16 @@ def test_waverec_axes_subsets():
         assert_allclose(rec, data, atol=1e-14)
 
 
+def test_waverec_axis_db2():
+    """test for fix to issue gh-293"""
+    rstate = np.random.RandomState(0)
+    data = rstate.standard_normal((16, 16))
+    for axis in [0, 1]:
+        coefs = pywt.wavedec(data, 'db2', axis=axis)
+        rec = pywt.waverec(coefs, 'db2', axis=axis)
+        assert_allclose(rec, data, atol=1e-14)
+
+
 def test_waverec2_axes_subsets():
     rstate = np.random.RandomState(0)
     data = rstate.standard_normal((8, 8, 8))
@@ -527,6 +537,13 @@ def test_wavedec_axis_error():
 def test_waverec_axis_error():
     c = pywt.wavedec(np.ones(4), 'haar')
     # out of range axis not allowed
+    assert_raises(ValueError, pywt.waverec, c, 'haar', axis=1)
+
+
+def test_waverec_shape_mismatch_error():
+    c = pywt.wavedec(np.ones(16), 'haar')
+    # truncate a detail coefficient to an incorrect shape
+    c[3] = c[3][:-1]
     assert_raises(ValueError, pywt.waverec, c, 'haar', axis=1)
 
 
