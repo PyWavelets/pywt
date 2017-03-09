@@ -196,10 +196,6 @@ def test_error_on_invalid_keys():
     d = {'aa': LL, 'da': HL, 'ad': LH, 'dd': HH, 'ff': LH}
     assert_raises(ValueError, pywt.idwtn, d, wavelet)
 
-    # a key whose value is None
-    d = {'aa': LL, 'da': HL, 'ad': LH, 'dd': None}
-    assert_raises(ValueError, pywt.idwtn, d, wavelet)
-
     # mismatched key lengths
     d = {'a': LL, 'da': HL, 'ad': LH, 'dd': HH}
     assert_raises(ValueError, pywt.idwtn, d, wavelet)
@@ -266,6 +262,40 @@ def test_idwtn_axes():
     data = data + 1j*data  # test with complex data
     coefs = pywt.dwtn(data, 'haar', axes=(1, 1))
     assert_allclose(pywt.idwtn(coefs, 'haar', axes=(1, 1)), data, atol=1e-14)
+
+
+def test_idwt2_none_coeffs():
+    data = np.array([[0, 1, 2, 3],
+                     [1, 1, 1, 1],
+                     [1, 4, 2, 8]])
+    data = data + 1j*data  # test with complex data
+    cA, (cH, cV, cD) = pywt.dwt2(data, 'haar', axes=(1, 1))
+
+    # verify setting coefficients to None is the same as zeroing them
+    cD = np.zeros_like(cD)
+    result_zeros = pywt.idwt2((cA, (cH, cV, cD)), 'haar', axes=(1, 1))
+
+    cD = None
+    result_none = pywt.idwt2((cA, (cH, cV, cD)), 'haar', axes=(1, 1))
+
+    assert_equal(result_zeros, result_none)
+
+
+def test_idwtn_none_coeffs():
+    data = np.array([[0, 1, 2, 3],
+                     [1, 1, 1, 1],
+                     [1, 4, 2, 8]])
+    data = data + 1j*data  # test with complex data
+    coefs = pywt.dwtn(data, 'haar', axes=(1, 1))
+
+    # verify setting coefficients to None is the same as zeroing them
+    coefs['dd'] = np.zeros_like(coefs['dd'])
+    result_zeros = pywt.idwtn(coefs, 'haar', axes=(1, 1))
+
+    coefs['dd'] = None
+    result_none = pywt.idwtn(coefs, 'haar', axes=(1, 1))
+
+    assert_equal(result_zeros, result_none)
 
 
 def test_idwt2_axes():
