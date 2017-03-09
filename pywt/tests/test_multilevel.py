@@ -487,7 +487,7 @@ def test_waverec_axes_subsets():
 
 
 def test_waverec_axis_db2():
-    """test for fix to issue gh-293"""
+    # test for fix to issue gh-293
     rstate = np.random.RandomState(0)
     data = rstate.standard_normal((16, 16))
     for axis in [0, 1]:

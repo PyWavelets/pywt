@@ -85,8 +85,6 @@ def idwt2(coeffs, wavelet, mode='symmetric', axes=(-2, -1)):
         Wavelet to use
     mode : str, optional
         Signal extension mode, see Modes (default: 'symmetric')
-        details coefficients 2D arrays like from `dwt2`.  If any of these
-        components are set to ``None``, it will be treated as zeros.
     axes : 2-tuple of ints, optional
         Axes over which to compute the IDWT. Repeated elements mean the IDWT
         will be performed multiple times along these axes.
