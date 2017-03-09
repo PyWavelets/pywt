@@ -249,12 +249,14 @@ if __name__ == '__main__':
         version=get_version_info()[0],
 
         packages=['pywt', 'pywt._extensions', 'pywt.data'],
-        package_data={'pywt.data': ['*.npy', '*.npz']},
+        package_data={'pywt.data': ['*.npy', '*.npz'],
+                      'pywt': ['tests/*.py', 'tests/data/*.npz',
+                               'tests/data/*.py']},
         ext_modules=ext_modules,
         libraries=[c_lib],
         cmdclass={'develop': develop_build_clib},
         test_suite='nose.collector',
 
         # A function is imported in setup.py, so not really useful
-        install_requires=["numpy"],
+        install_requires=["numpy>=1.9.1"],
     )
