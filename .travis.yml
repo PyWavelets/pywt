@@ -16,6 +16,7 @@ matrix:
         - PYFLAKES=1
         - PEP8=1
         - NUMPYSPEC=numpy
+        - MPLSPEC=matplotlib
       before_install:
         - pip install pep8==1.5.1
         - pip install pyflakes
@@ -25,22 +26,27 @@ matrix:
     - python: 3.5
       env:
         - NUMPYSPEC=numpy
+        - MPLSPEC=matplotlib
         - USE_WHEEL=1
     - os: linux
       python: 3.4
       env:
         - NUMPYSPEC=numpy
+        - MPLSPEC=matplotlib
         - USE_SDIST=1
     - os: linux
       python: 2.6
       env:
         - NUMPYSPEC="numpy==1.9.3"
+        - MPLSPEC="matplotlib<2"
     - python: 2.7
       env:
         - NUMPYSPEC=numpy
+        - MPLSPEC=matplotlib
     - python: 3.5
       env:
         - NUMPYSPEC=numpy
+        - MPLSPEC=matplotlib
         - REFGUIDE_CHECK=1  # run doctests only
 
 cache: pip
@@ -55,7 +61,7 @@ before_install:
   - pip install --upgrade wheel
   # Set numpy version first, other packages link against it
   - pip install $NUMPYSPEC
-  - pip install Cython matplotlib nose coverage codecov futures
+  - pip install Cython $MPLSPEC nose coverage codecov futures
   - set -o pipefail
   - if [ "${USE_WHEEL}" == "1" ]; then pip install wheel; fi
   - |
