@@ -258,5 +258,5 @@ if __name__ == '__main__':
         test_suite='nose.collector',
 
         # A function is imported in setup.py, so not really useful
-        install_requires=["numpy"],
+        install_requires=["numpy>=1.9.1"],
     )
