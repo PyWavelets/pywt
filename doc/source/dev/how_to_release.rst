@@ -110,7 +110,7 @@ Send release announcements to:
 
 - pywavelets@googlegroups.com
 - python-announce-list@python.org
-- scipy-user@scipy.org
+- scipy-user@python.org
 
 
 Prepare for continued development
