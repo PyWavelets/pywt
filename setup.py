@@ -25,7 +25,7 @@ except ImportError:
 
 MAJOR = 0
 MINOR = 5
-MICRO = 1
+MICRO = 3
 ISRELEASED = False
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 
