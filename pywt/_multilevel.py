@@ -122,6 +122,17 @@ def waverec(coeffs, wavelet, mode='symmetric', axis=-1):
         Axis over which to compute the inverse DWT. If not given, the
         last axis is used.
 
+    Notes
+    -----
+    It may sometimes desired to run ``waverec`` with some sets of
+    coefficients omitted.  This can best be done by setting the corresponding
+    arrays to zero arrays of matching shape and dtype.  Explicitly removing
+    list entries or setting them to ``None`` is not supported.
+
+    Specifically, to ignore detail coefficients at level 2, one could do::
+
+        coeffs[-2] == numpy.zeros_like(coeffs[-2])
+
     Examples
     --------
     >>> import pywt
@@ -250,6 +261,17 @@ def waverec2(coeffs, wavelet, mode='symmetric', axes=(-2, -1)):
     Returns
     -------
     2D array of reconstructed data.
+
+    Notes
+    -----
+    It may sometimes desired to run ``waverec2`` with some sets of
+    coefficients omitted.  This can best be done by setting the corresponding
+    arrays to zero arrays of matching shape and dtype.  Explicitly removing
+    list or tuple entries or setting them to ``None`` is not supported.
+
+    Specifically, to ignore all detail coefficients at level 2, one could do::
+
+        coeffs[-2] == tuple([numpy.zeros_like(v) for v in coeffs[-2]])
 
     Examples
     --------
@@ -435,6 +457,17 @@ def waverecn(coeffs, wavelet, mode='symmetric', axes=None):
     Returns
     -------
     nD array of reconstructed data.
+
+    Notes
+    -----
+    It is sometimes desired to run ``waverecn`` with some sets of
+    coefficients omitted.  This can best be done by setting the corresponding
+    arrays to zero arrays of matching shape and dtype.  Explicitly removing
+    list or dictionary entries or setting them to ``None`` is not supported.
+
+    Specifically, to ignore all detail coefficients at level 2, one could do::
+
+        codffs[-2] == {k: numpy.zeros_like(v) for k, v in coeffs[-2].items()}
 
     Examples
     --------
