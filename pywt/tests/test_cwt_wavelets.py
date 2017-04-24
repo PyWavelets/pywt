@@ -317,7 +317,7 @@ def test_cwt_parameters_in_names():
     for func in [pywt.ContinuousWavelet, pywt.DiscreteContinuousWavelet]:
         for name in ['fbsp', 'cmor', 'shan']:
             # additional parameters should be specified within the name
-            assert_warns(Warning, func, name)
+            assert_warns(FutureWarning, func, name)
 
         for name in ['cmor', 'shan']:
             # valid names

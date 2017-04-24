@@ -53,6 +53,9 @@ def test_compare_downcoef_coeffs():
     # compare downcoef against wavedec outputs
     for nlevels in [1, 2, 3]:
         for wavelet in pywt.wavelist():
+            if wavelet in ['cmor', 'shan', 'fbsp']:
+                # skip these CWT families to avoid warnings
+                continue
             wavelet = pywt.DiscreteContinuousWavelet(wavelet)
             if isinstance(wavelet, pywt.Wavelet):
                 max_level = pywt.dwt_max_level(r.size, wavelet.dec_len)

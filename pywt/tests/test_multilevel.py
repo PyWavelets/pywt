@@ -2,6 +2,7 @@
 
 from __future__ import division, print_function, absolute_import
 
+import warnings
 from itertools import combinations
 import numpy as np
 from numpy.testing import (run_module_suite, assert_almost_equal,
@@ -38,11 +39,15 @@ wavelist = pywt.wavelist()
 if 'dmey' in wavelist:
     # accuracy is very low for dmey, so omit it
     wavelist.remove('dmey')
+
 # removing wavelets with dwt_possible == False
 del_list = []
 for wavelet in wavelist:
-    if not isinstance(pywt.DiscreteContinuousWavelet(wavelet), pywt.Wavelet):
-        del_list.append(wavelet)
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore', FutureWarning)
+        if not isinstance(pywt.DiscreteContinuousWavelet(wavelet),
+                          pywt.Wavelet):
+            del_list.append(wavelet)
 for del_ind in del_list:
     wavelist.remove(del_ind)
 

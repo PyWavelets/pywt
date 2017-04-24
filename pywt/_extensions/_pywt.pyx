@@ -709,7 +709,7 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
                         "representing the bandwidth frequency and center "
                         "frequency, respectively (example: {0}1.5-1.0)."
                         ).format(base_name)
-                warnings.warn(msg)
+                warnings.warn(msg, FutureWarning)
         else:
             base_name = self.name
         family_code, family_number = wname_to_code(base_name)
