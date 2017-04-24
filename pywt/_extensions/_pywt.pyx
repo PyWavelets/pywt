@@ -9,6 +9,7 @@ __all__ = ['MODES', 'Modes', 'DiscreteContinuousWavelet', 'Wavelet',
 
 
 import warnings
+import re
 
 cimport c_wt
 cimport common
@@ -32,6 +33,11 @@ _old_modes = ['zpd',
 _attr_deprecation_msg = ('{old} has been renamed to {new} and will '
                          'be unavailable in a future version '
                          'of pywt.')
+
+# Extract float/int parameters from a wavelet name. Examples:
+#    re.findall(cwt_pattern, 'fbsp1-1.5-1') ->  ['1', 1.5', '1']
+cwt_pattern = re.compile(r'\D+(\d+\.*\d*)+')
+
 
 # raises exception if the wavelet name is undefined
 cdef int is_discrete_wav(WAVELET_NAME name):
@@ -162,6 +168,8 @@ include "wavelets_list.pxi"  # __wname_to_code
 cdef object wname_to_code(name):
     cdef object code_number
     try:
+        if len(name) > 4 and name[:4] in ['cmor', 'shan', 'fbsp']:
+            name = name[:4]
         code_number = __wname_to_code[name]
         return code_number
     except KeyError:
@@ -673,7 +681,7 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
 
     """
     #cdef readonly properties
-    def __cinit__(self, name=u"", dtype = None):
+    def __cinit__(self, name=u"", dtype = None, **kwargs):
         cdef object family_code, family_number
 
         # builtin wavelet
@@ -682,12 +690,68 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
             self.dt = np.float64
         else:
             self.dt = dtype
-        family_code, family_number = wname_to_code(self.name)
-        self.w = <wavelet.ContinuousWavelet*> wavelet.continous_wavelet(family_code, family_number)
+        if len(self.name) >= 4 and self.name[:4] in ['cmor', 'shan', 'fbsp']:
+            base_name = self.name[:4]
+            if base_name == self.name:
+                if base_name == 'fbsp':
+                    msg = (
+                        "Wavelets of family {0}, without parameters "
+                        "specified in the name are deprecated.  The name "
+                        "should take the form {0}M-B-C where M is the spline "
+                        "order and B, C are floats representing the bandwidth "
+                        "frequency and center frequency, respectively "
+                        "(example: {0}1-1.5-1.0).").format(base_name)
+                else:
+                    msg = (
+                        "Wavelets from the family {0}, without parameters "
+                        "specified in the name are deprecated. The name "
+                        "should takethe form {0}B-C where B and C are floats "
+                        "representing the bandwidth frequency and center "
+                        "frequency, respectively (example: {0}1.5-1.0)."
+                        ).format(base_name)
+                warnings.warn(msg)
+        else:
+            base_name = self.name
+        family_code, family_number = wname_to_code(base_name)
+        self.w = <wavelet.ContinuousWavelet*> wavelet.continous_wavelet(
+            family_code, family_number)
 
         if self.w is NULL:
             raise ValueError("Invalid wavelet name.")
         self.number = family_number
+
+        # set wavelet attributes based on frequencies extracted from the name
+        if base_name != self.name:
+            freqs = re.findall(cwt_pattern, self.name)
+            if base_name in ['shan', 'cmor']:
+                if len(freqs) != 2:
+                    raise ValueError(
+                        ("For wavelets of family {0}, the name should take "
+                         "the form {0}B-C where B and C are floats "
+                         "representing the bandwidth frequency and center "
+                         "frequency, respectively. (example: {0}1.5-1.0)"
+                        ).format(base_name))
+                self.w.bandwidth_frequency = float(freqs[0])
+                self.w.center_frequency = float(freqs[1])
+            elif base_name in ['fbsp', ]:
+                if len(freqs) != 3:
+                    raise ValueError(
+                        ("For wavelets of family {0}, the name should take "
+                         "the form {0}M-B-C where M is the spline order and B"
+                         ", C are floats representing the bandwidth frequency "
+                         "and center frequency, respectively "
+                         "(example: {0}1-1.5-1.0).").format(base_name))
+                M = float(freqs[0])
+                self.w.bandwidth_frequency = float(freqs[1])
+                self.w.center_frequency = float(freqs[2])
+                if M < 1 or M % 1 != 0:
+                    raise ValueError(
+                        "Wavelet spline order must be an integer >= 1.")
+                self.w.fbsp_order = int(M)
+            else:
+                raise ValueError(
+                    "Invalid continuous wavelet name: " + self.name)
+
 
     def __dealloc__(self):
         if self.w is not NULL:
