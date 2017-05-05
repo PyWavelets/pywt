@@ -88,8 +88,9 @@ def test_byte_offset():
 
         for mode in pywt.Modes.modes:
             expected = pywt.dwtn(data, wavelet)
-            padded = np.ones((3, 6), dtype=np.dtype([('data', data.dtype),
-                                                     ('pad', 'byte')]))
+            padded = np.ones((3, 6), dtype=np.dtype({'data': (data.dtype, 0),
+                                                     'pad': ('byte', data.dtype.itemsize)},
+                                                    align=True))
             padded[:] = data
             padded_dwtn = pywt.dwtn(padded['data'], wavelet)
             for key in expected.keys():
