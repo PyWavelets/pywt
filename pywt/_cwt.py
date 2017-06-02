@@ -6,8 +6,18 @@ from ._functions import integrate_wavelet, scale2frequency
 
 __all__ = ["cwt"]
 
+try:
+    from tqdm import tqdm as _tqdm
+except ImportError:
+    def _tqdm(x, disable):
+        # raise iff a progress bar is requested.
+        if not disable:
+            raise ImportError("`tqdm` is not installed.")
+        else:
+            return x
 
-def cwt(data, scales, wavelet, sampling_period=1.):
+
+def cwt(data, scales, wavelet, sampling_period=1., progress=False):
     """
     cwt(data, scales, wavelet)
 
@@ -23,11 +33,13 @@ def cwt(data, scales, wavelet, sampling_period=1.):
         Wavelet to use
     sampling_period : float
         Sampling period for frequencies output (optional)
+    progress : bool
+        Display a progress bar when iterating over `scales`
 
     Returns
     -------
     coefs : array_like
-        Continous wavelet transform of the input signal for the given scales
+        Continuous wavelet transform of the input signal for the given scales
         and wavelet
     frequencies : array_like
         if the unit of sampling period are seconds and given, than frequencies
@@ -73,7 +85,7 @@ def cwt(data, scales, wavelet, sampling_period=1.):
             out = np.zeros((np.size(scales), data.size), dtype=complex)
         else:
             out = np.zeros((np.size(scales), data.size))
-        for i in np.arange(np.size(scales)):
+        for i in _tqdm(np.arange(np.size(scales)), disable=not progress):
             precision = 10
             int_psi, x = integrate_wavelet(wavelet, precision=precision)
             step = x[1] - x[0]
