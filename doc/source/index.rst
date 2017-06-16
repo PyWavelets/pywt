@@ -59,10 +59,10 @@ installation with::
     pip install PyWavelets
 
 Users of the Anaconda_ Python distribution may wish to obtain pre-built
-Windows, Intel Linux or macOS / OSX binaries from the conda-forge channel.
+Windows, Intel Linux or macOS / OSX binaries from the default channel.
 This can be done via::
 
-    conda install -c conda-forge pywavelets
+    conda install pywavelets
 
 Several Linux distributions have their own packages for PyWavelets, but these
 tend to be moderately out of date.  Query your Linux package manager tool for
