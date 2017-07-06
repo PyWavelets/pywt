@@ -40,11 +40,15 @@ def hard(data, value, substitute=0):
 
 def greater(data, value, substitute=0):
     data = np.asarray(data)
+    if np.iscomplexobj(data):
+        raise ValueError("greater thresholding only supports real data")
     return np.where(np.less(data, value), substitute, data)
 
 
 def less(data, value, substitute=0):
     data = np.asarray(data)
+    if np.iscomplexobj(data):
+        raise ValueError("less thresholding only supports real data")
     return np.where(np.greater(data, value), substitute, data)
 
 
@@ -58,20 +62,23 @@ def threshold(data, value, mode='soft', substitute=0):
     """
     Thresholds the input data depending on the mode argument.
 
-    In ``soft`` thresholding, the data values where their absolute value is
-    less than the value param are replaced with substitute. From the data
-    values with absolute value greater or equal to the thresholding value,
-    a quantity of ``(signum * value)`` is subtracted.
+    In ``soft`` thresholding, data values with absolute value less than
+    `param` are replaced with `substitute`. Data values with absolute value
+    greater or equal to the thresholding value are shrunk toward zero
+    by `value`.  In other words, the new value is
+    ``data/np.abs(data) * np.maximum(np.abs(data) - value, 0)``.
 
     In ``hard`` thresholding, the data values where their absolute value is
-    less than the value param are replaced with substitute. Data values with
+    less than the value param are replaced with `substitute`. Data values with
     absolute value greater or equal to the thresholding value stay untouched.
 
-    In ``greater`` thresholding, the data is replaced with substitute where
+    In ``greater`` thresholding, the data is replaced with `substitute` where
     data is below the thresholding value. Greater data values pass untouched.
 
-    In ``less`` thresholding, the data is replaced with substitute where data
-    is above the thresholding value. Less data values pass untouched.
+    In ``less`` thresholding, the data is replaced with `substitute` where data
+    is above the thresholding value. Lesser data values pass untouched.
+
+    Both ``hard`` and ``soft`` thresholding also support complex-valued data.
 
     Parameters
     ----------
