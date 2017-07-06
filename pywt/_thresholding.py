@@ -22,8 +22,11 @@ def soft(data, value, substitute=0):
     sign = np.sign(data)
     thresholded = (magnitude - value).clip(0) * sign
 
-    cond = np.less(magnitude, value)
-    return np.where(cond, substitute, thresholded)
+    if substitute == 0:
+        return thresholded
+    else:
+        cond = np.less(magnitude, value)
+        return np.where(cond, substitute, thresholded)
 
 
 def hard(data, value, substitute=0):
