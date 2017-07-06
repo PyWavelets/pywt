@@ -63,6 +63,10 @@ def test_threshold():
                     [[1, 2]] * 2, rtol=1e-12)
     assert_allclose(pywt.threshold([[1, 2]] * 2, 2, 'hard'),
                     [[0, 2]] * 2, rtol=1e-12)
+    assert_allclose(pywt.threshold([[1, 2]] * 2, 2, 'hard', substitute=s),
+                    [[s, 2]] * 2, rtol=1e-12)
+    assert_allclose(pywt.threshold([[1+1j, 2+2j]] * 2, 2, 'hard'),
+                    [[0, 2+2j]] * 2, rtol=1e-12)
 
     # greater
     greater_result = [0., 0., 2., 2.5, 3., 3.5, 4.]
@@ -72,14 +76,23 @@ def test_threshold():
                     [[1, 2]] * 2, rtol=1e-12)
     assert_allclose(pywt.threshold([[1, 2]] * 2, 2, 'greater'),
                     [[0, 2]] * 2, rtol=1e-12)
+    assert_allclose(pywt.threshold([[1, 2]] * 2, 2, 'greater', substitute=s),
+                    [[s, 2]] * 2, rtol=1e-12)
+    # greater doesn't allow complex-valued inputs
+    assert_raises(ValueError, pywt.threshold, [1j, 2j], 2, 'greater')
 
     # less
     assert_allclose(pywt.threshold(data, 2, 'less'),
                     np.array([1., 1.5, 2., 0., 0., 0., 0.]), rtol=1e-12)
     assert_allclose(pywt.threshold([[1, 2]] * 2, 1, 'less'),
                     [[1, 0]] * 2, rtol=1e-12)
+    assert_allclose(pywt.threshold([[1, 2]] * 2, 1, 'less', substitute=s),
+                    [[1, s]] * 2, rtol=1e-12)
     assert_allclose(pywt.threshold([[1, 2]] * 2, 2, 'less'),
                     [[1, 2]] * 2, rtol=1e-12)
+
+    # less doesn't allow complex-valued inputs
+    assert_raises(ValueError, pywt.threshold, [1j, 2j], 2, 'less')
 
     # invalid
     assert_raises(ValueError, pywt.threshold, data, 2, 'foo')
