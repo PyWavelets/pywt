@@ -17,10 +17,13 @@ import numpy as np
 
 def soft(data, value, substitute=0):
     data = np.asarray(data)
-
     magnitude = np.absolute(data)
-    sign = np.sign(data)
-    thresholded = (magnitude - value).clip(0) * sign
+
+    with np.errstate(divide='ignore'):
+        # divide by zero okay as np.inf values get clipped, so ignore warning.
+        thresholded = (1 - value/magnitude)
+        thresholded.clip(min=0, max=None, out=thresholded)
+        thresholded = data * thresholded
 
     if substitute == 0:
         return thresholded
