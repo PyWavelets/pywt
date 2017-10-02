@@ -12,9 +12,17 @@ import pywt
 # Other real types get converted to float64.
 # complex256 gets converted to complex128
 dtypes_in = [np.int8, np.float16, np.float32, np.float64, np.complex64,
-             np.complex128, np.complex256]
+             np.complex128]
 dtypes_out = [np.float64, np.float32, np.float32, np.float64, np.complex64,
-              np.complex128, np.complex128]
+              np.complex128]
+
+# test complex256 as well if it is available
+try:
+    dtypes_in += [np.complex256, ]
+    dtypes_out += [np.complex128, ]
+except AttributeError:
+    pass
+
 
 # tolerances used in accuracy comparisons
 tol_single = 1e-6
