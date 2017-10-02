@@ -950,6 +950,9 @@ cpdef np.dtype _check_dtype(data):
             if dt == np.half:
                 # half-precision input converted to single precision
                 dt = np.dtype('float32')
+            elif dt == np.complex256:
+                # complex256 is not supported.  run at reduced precision
+                dt = np.dtype('complex128')
             else:
                 # integer input was always accepted; convert to float64
                 dt = np.dtype('float64')
