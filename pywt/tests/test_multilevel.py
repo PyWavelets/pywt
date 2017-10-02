@@ -16,22 +16,21 @@ dtypes_in = [np.int8, np.float16, np.float32, np.float64, np.complex64,
 dtypes_out = [np.float64, np.float32, np.float32, np.float64, np.complex64,
               np.complex128]
 
-# test complex256 as well if it is available
-try:
-    dtypes_in += [np.complex256, ]
-    dtypes_out += [np.complex128, ]
-except AttributeError:
-    pass
-
-
 # tolerances used in accuracy comparisons
 tol_single = 1e-6
 tol_double = 1e-13
 dtypes_and_tolerances = [(np.float16, tol_single), (np.float32, tol_single),
                          (np.float64, tol_double), (np.int8, tol_double),
                          (np.complex64, tol_single),
-                         (np.complex128, tol_double),
-                         (np.complex256, tol_double)]
+                         (np.complex128, tol_double)]
+
+# test complex256 as well if it is available
+try:
+    dtypes_in += [np.complex256, ]
+    dtypes_out += [np.complex128, ]
+    dtypes_and_tolerances += [(np.complex256, tol_double), ]
+except AttributeError:
+    pass
 
 
 # determine which wavelets to test
