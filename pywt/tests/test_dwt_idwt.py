@@ -7,12 +7,13 @@ from numpy.testing import (run_module_suite, assert_allclose, assert_,
 
 import pywt
 
-# Check that float32 and complex64 are preserved.  Other real types get
-# converted to float64.
+# Check that float32, float64, complex64, complex128 are preserved.
+# Other real types get converted to float64.
+# complex256 gets converted to complex128
 dtypes_in = [np.int8, np.float16, np.float32, np.float64, np.complex64,
-             np.complex128]
+             np.complex128, np.complex256]
 dtypes_out = [np.float64, np.float32, np.float32, np.float64, np.complex64,
-              np.complex128]
+              np.complex128, np.complex128]
 
 
 def test_dwt_idwt_basic():
