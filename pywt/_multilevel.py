@@ -18,7 +18,7 @@ from ._extensions._pywt import Wavelet
 from ._extensions._dwt import dwt_max_level
 from ._dwt import dwt, idwt
 from ._multidim import dwt2, idwt2, dwtn, idwtn, _fix_coeffs
-from ._utils import _wavelets_per_axis
+from ._utils import _as_wavelet, _wavelets_per_axis
 
 __all__ = ['wavedec', 'waverec', 'wavedec2', 'waverec2', 'wavedecn',
            'waverecn', 'coeffs_to_array', 'array_to_coeffs']
@@ -84,9 +84,7 @@ def wavedec(data, wavelet, mode='symmetric', level=None, axis=-1):
     """
     data = np.asarray(data)
 
-    if not isinstance(wavelet, Wavelet):
-        wavelet = Wavelet(wavelet)
-
+    wavelet = _as_wavelet(wavelet)
     try:
         axes_shape = data.shape[axis]
     except IndexError:
