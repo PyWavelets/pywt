@@ -467,7 +467,7 @@ def waverecn(coeffs, wavelet, mode='symmetric', axes=None):
 
     Specifically, to ignore all detail coefficients at level 2, one could do::
 
-        codffs[-2] == {k: numpy.zeros_like(v) for k, v in coeffs[-2].items()}
+        codffs[-2] = {k: numpy.zeros_like(v) for k, v in coeffs[-2].items()}
 
     Examples
     --------
