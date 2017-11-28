@@ -386,5 +386,20 @@ def test_per_axis_wavelets():
     assert_allclose(pywt.iswt2(coefs2, wavelets[:2]), data2, atol=1e-14)
 
 
+def test_error_on_continuous_wavelet():
+    # A ValueError is raised if a Continuous wavelet is selected
+    data = np.ones((16, 16))
+    with warnings.catch_warnings():  # avoid FutureWarning in swt2
+        warnings.simplefilter('ignore', FutureWarning)
+        for dec_func, rec_func in zip([pywt.swt, pywt.swt2, pywt.swtn],
+                                      [pywt.iswt, pywt.iswt2, pywt.iswtn]):
+            for cwave in ['morl', pywt.DiscreteContinuousWavelet('morl')]:
+                assert_raises(ValueError, dec_func, data, wavelet=cwave,
+                              level=3)
+
+                c = dec_func(data, 'db1', level=3)
+                assert_raises(ValueError, rec_func, c, wavelet=cwave)
+
+
 if __name__ == '__main__':
     run_module_suite()

@@ -627,5 +627,17 @@ def test_per_axis_wavelets_and_modes():
     assert_equal(min(max_levels[:2]), len(coefs2[1:]))
 
 
+def test_error_on_continuous_wavelet():
+    # A ValueError is raised if a Continuous wavelet is selected
+    data = np.ones((16, 16))
+    for dec_fun, rec_fun in zip([pywt.wavedec, pywt.wavedec2, pywt.wavedecn],
+                                [pywt.waverec, pywt.waverec2, pywt.waverecn]):
+        for cwave in ['morl', pywt.DiscreteContinuousWavelet('morl')]:
+            assert_raises(ValueError, dec_fun, data, wavelet=cwave)
+
+            c = dec_fun(data, 'db1')
+            assert_raises(ValueError, rec_fun, c, wavelet=cwave)
+
+
 if __name__ == '__main__':
     run_module_suite()

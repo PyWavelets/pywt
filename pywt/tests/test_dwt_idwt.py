@@ -193,5 +193,15 @@ def test_dwt_idwt_axis_excess():
                   pywt.idwt, [1, 2, 4], [4, 1, 3], 'db2', 'symmetric', axis=1)
 
 
+def test_error_on_continuous_wavelet():
+    # A ValueError is raised if a Continuous wavelet is selected
+    data = np.ones((32, ))
+    for cwave in ['morl', pywt.DiscreteContinuousWavelet('morl')]:
+        assert_raises(ValueError, pywt.dwt, data, cwave)
+
+        cA, cD = pywt.dwt(data, 'db1')
+        assert_raises(ValueError, pywt.idwt, cA, cD, cwave)
+
+
 if __name__ == '__main__':
     run_module_suite()
