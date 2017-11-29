@@ -124,14 +124,14 @@ def waverec(coeffs, wavelet, mode='symmetric', axis=-1):
 
     Notes
     -----
-    It may sometimes desired to run ``waverec`` with some sets of
+    It may sometimes be desired to run ``waverec`` with some sets of
     coefficients omitted.  This can best be done by setting the corresponding
     arrays to zero arrays of matching shape and dtype.  Explicitly removing
     list entries or setting them to ``None`` is not supported.
 
     Specifically, to ignore detail coefficients at level 2, one could do::
 
-        coeffs[-2] == numpy.zeros_like(coeffs[-2])
+        coeffs[-2] == np.zeros_like(coeffs[-2])
 
     Examples
     --------
@@ -264,14 +264,14 @@ def waverec2(coeffs, wavelet, mode='symmetric', axes=(-2, -1)):
 
     Notes
     -----
-    It may sometimes desired to run ``waverec2`` with some sets of
+    It may sometimes be desired to run ``waverec2`` with some sets of
     coefficients omitted.  This can best be done by setting the corresponding
     arrays to zero arrays of matching shape and dtype.  Explicitly removing
     list or tuple entries or setting them to ``None`` is not supported.
 
     Specifically, to ignore all detail coefficients at level 2, one could do::
 
-        coeffs[-2] == tuple([numpy.zeros_like(v) for v in coeffs[-2]])
+        coeffs[-2] == tuple([np.zeros_like(v) for v in coeffs[-2]])
 
     Examples
     --------
@@ -460,14 +460,14 @@ def waverecn(coeffs, wavelet, mode='symmetric', axes=None):
 
     Notes
     -----
-    It is sometimes desired to run ``waverecn`` with some sets of
+    It may sometimes be desired to run ``waverecn`` with some sets of
     coefficients omitted.  This can best be done by setting the corresponding
     arrays to zero arrays of matching shape and dtype.  Explicitly removing
     list or dictionary entries or setting them to ``None`` is not supported.
 
     Specifically, to ignore all detail coefficients at level 2, one could do::
 
-        codffs[-2] = {k: numpy.zeros_like(v) for k, v in coeffs[-2].items()}
+        coeffs[-2] = {k: np.zeros_like(v) for k, v in coeffs[-2].items()}
 
     Examples
     --------
