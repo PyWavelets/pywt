@@ -4,7 +4,8 @@
 # See COPYING for license details.
 
 __doc__ = """Cython wrapper for low-level C wavelet transform implementation."""
-__all__ = ['MODES', 'Modes', 'DiscreteContinuousWavelet', 'Wavelet', 'ContinuousWavelet', 'wavelist', 'families']
+__all__ = ['MODES', 'Modes', 'DiscreteContinuousWavelet', 'Wavelet',
+           'ContinuousWavelet', 'wavelist', 'families']
 
 
 import warnings
@@ -31,7 +32,6 @@ _old_modes = ['zpd',
 _attr_deprecation_msg = ('{old} has been renamed to {new} and will '
                          'be unavailable in a future version '
                          'of pywt.')
-
 
 # raises exception if the wavelet name is undefined
 cdef int is_discrete_wav(WAVELET_NAME name):
@@ -946,10 +946,13 @@ cpdef np.dtype _check_dtype(data):
     cdef np.dtype dt
     try:
         dt = data.dtype
-        if dt not in (np.float64, np.float32):
+        if dt not in (np.float64, np.float32, np.complex64, np.complex128):
             if dt == np.half:
                 # half-precision input converted to single precision
                 dt = np.dtype('float32')
+            elif dt == np.complex256:
+                # complex256 is not supported.  run at reduced precision
+                dt = np.dtype('complex128')
             else:
                 # integer input was always accepted; convert to float64
                 dt = np.dtype('float64')

@@ -3,6 +3,7 @@ from itertools import product
 
 import numpy as np
 
+from ._c99_config import _have_c99_complex
 from ._extensions._dwt import idwt_single
 from ._extensions._swt import swt_max_level, swt as _swt, swt_axis as _swt_axis
 from ._extensions._pywt import Modes, _check_dtype
@@ -49,7 +50,7 @@ def swt(data, wavelet, level=None, start_level=0, axis=-1):
             [(cAm+n, cDm+n), ..., (cAm+1, cDm+1), (cAm, cDm)]
 
     """
-    if np.iscomplexobj(data):
+    if not _have_c99_complex and np.iscomplexobj(data):
         data = np.asarray(data)
         coeffs_real = swt(data.real, wavelet, level, start_level)
         coeffs_imag = swt(data.imag, wavelet, level, start_level)
@@ -106,15 +107,12 @@ def iswt(coeffs, wavelet):
     >>> pywt.iswt(coeffs, 'db2')
     array([ 1.,  2.,  3.,  4.,  5.,  6.,  7.,  8.])
     """
-
-    output = coeffs[0][0]
-    if np.iscomplexobj(output):
+    output = coeffs[0][0].copy()  # Avoid modification of input data
+    if not _have_c99_complex and np.iscomplexobj(output):
         # compute real and imaginary separately then combine
         coeffs_real = [(cA.real, cD.real) for (cA, cD) in coeffs]
         coeffs_imag = [(cA.imag, cD.imag) for (cA, cD) in coeffs]
         return iswt(coeffs_real, wavelet) + 1j*iswt(coeffs_imag, wavelet)
-    dt = _check_dtype(output)
-    output = np.array(output, dtype=dt)  # avoid modification of input data
 
     # num_levels, equivalent to the decomposition level, n
     num_levels = len(coeffs)
@@ -376,7 +374,7 @@ def swtn(data, wavelet, level, start_level=0, axes=None):
 
     """
     data = np.asarray(data)
-    if np.iscomplexobj(data):
+    if not _have_c99_complex and np.iscomplexobj(data):
         real = swtn(data.real, wavelet, level, start_level, axes)
         imag = swtn(data.imag, wavelet, level, start_level, axes)
         cplx = []

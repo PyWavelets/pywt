@@ -71,7 +71,7 @@ cpdef cwt_psi_single(data_t[::1] data, ContinuousWavelet wavelet, size_t output_
             with nogil:
                 c_wt.double_cmor(&data[0], <double *>psi_r.data, <double *>psi_i.data, data_size, bandwidth_frequency, center_frequency)
             return (psi_r, psi_i)
-            
+
     elif data_t is np.float32_t:
         if wavelet.short_family_name == "gaus":
             psi = np.zeros(output_len, np.float32)

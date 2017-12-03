@@ -1,4 +1,4 @@
-/* Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/> 
+/* Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/>
  * Copyright (c) 2012-2016 The PyWavelets Developers
  *                         <https://github.com/PyWavelets/pywt>
  * See COPYING for license details.
@@ -10,6 +10,12 @@
 
 #include <stdlib.h>
 #include <memory.h>
+
+#ifdef HAVE_C99_COMPLEX
+    /* For templating, we need typedefs without spaces for complex types. */
+    typedef float _Complex float_complex;
+    typedef double _Complex double_complex;
+#endif
 
 /* ##### Typedefs ##### */
 

@@ -6,8 +6,9 @@ import numpy as np
 cimport numpy as np
 
 from common cimport pywt_index_t
-from ._pywt cimport c_wavelet_from_object, data_t, Wavelet, _check_dtype
+from ._pywt cimport c_wavelet_from_object, cdata_t, Wavelet, _check_dtype
 
+include "config.pxi"
 
 def swt_max_level(size_t input_len):
     """
@@ -36,8 +37,8 @@ def swt_max_level(size_t input_len):
     return common.swt_max_level(input_len)
 
 
-def swt(data_t[::1] data, Wavelet wavelet, size_t level, size_t start_level):
-    cdef data_t[::1] cA, cD
+def swt(cdata_t[::1] data, Wavelet wavelet, size_t level, size_t start_level):
+    cdef cdata_t[::1] cA, cD
     cdef Wavelet w
     cdef int retval
     cdef size_t end_level = start_level + level
@@ -65,36 +66,66 @@ def swt(data_t[::1] data, Wavelet wavelet, size_t level, size_t start_level):
     for i in range(start_level+1, end_level+1):
         data_size = data.size
         # alloc memory, decompose D
-        if data_t is np.float64_t:
+        if cdata_t is np.float64_t:
             cD = np.zeros(output_len, dtype=np.float64)
             with nogil:
                 retval = c_wt.double_swt_d(&data[0], data_size, wavelet.w,
                                  &cD[0], output_len, i)
             if retval < 0:
                 raise RuntimeError("C swt failed.")
-        elif data_t is np.float32_t:
+        elif cdata_t is np.float32_t:
             cD = np.zeros(output_len, dtype=np.float32)
             with nogil:
                 retval = c_wt.float_swt_d(&data[0], data_size, wavelet.w,
                                 &cD[0], output_len, i)
             if retval < 0:
                 raise RuntimeError("C swt failed.")
+        IF HAVE_C99_CPLX:
+            if cdata_t is np.complex128_t:
+                cD = np.zeros(output_len, dtype=np.complex128)
+                with nogil:
+                    retval = c_wt.double_complex_swt_d(&data[0], data_size, wavelet.w,
+                                     &cD[0], output_len, i)
+                if retval < 0:
+                    raise RuntimeError("C swt failed.")
+            elif cdata_t is np.complex64_t:
+                cD = np.zeros(output_len, dtype=np.complex64)
+                with nogil:
+                    retval = c_wt.float_complex_swt_d(&data[0], data_size, wavelet.w,
+                                    &cD[0], output_len, i)
+                if retval < 0:
+                    raise RuntimeError("C swt failed.")
 
         # alloc memory, decompose A
-        if data_t is np.float64_t:
+        if cdata_t is np.float64_t:
             cA = np.zeros(output_len, dtype=np.float64)
             with nogil:
                 retval = c_wt.double_swt_a(&data[0], data_size, wavelet.w,
                                  &cA[0], output_len, i)
             if retval < 0:
                 raise RuntimeError("C swt failed.")
-        elif data_t is np.float32_t:
+        elif cdata_t is np.float32_t:
             cA = np.zeros(output_len, dtype=np.float32)
             with nogil:
                 retval = c_wt.float_swt_a(&data[0], data_size, wavelet.w,
                                 &cA[0], output_len, i)
             if retval < 0:
                 raise RuntimeError("C swt failed.")
+        IF HAVE_C99_CPLX:
+            if cdata_t is np.complex128_t:
+                cA = np.zeros(output_len, dtype=np.complex128)
+                with nogil:
+                    retval = c_wt.double_complex_swt_a(&data[0], data_size, wavelet.w,
+                                     &cA[0], output_len, i)
+                if retval < 0:
+                    raise RuntimeError("C swt failed.")
+            elif cdata_t is np.complex64_t:
+                cA = np.zeros(output_len, dtype=np.complex64)
+                with nogil:
+                    retval = c_wt.float_complex_swt_a(&data[0], data_size, wavelet.w,
+                                    &cA[0], output_len, i)
+                if retval < 0:
+                    raise RuntimeError("C swt failed.")
 
         data = cA
         ret.append((cA, cD))
@@ -110,7 +141,7 @@ cpdef swt_axis(np.ndarray data, Wavelet wavelet, size_t level,
     cdef np.ndarray cD, cA
     cdef size_t[::1] output_shape
     cdef size_t end_level = start_level + level
-    cdef int retval
+    cdef int retval = -5
     cdef size_t i
 
     if data.size % 2:
@@ -186,7 +217,59 @@ cpdef swt_axis(np.ndarray data, Wavelet wavelet, size_t level,
             if retval:
                 raise RuntimeError(
                     "C wavelet transform failed with error code %d" % retval)
-        else:
+
+        IF HAVE_C99_CPLX:
+            if data.dtype == np.complex128:
+                cA = np.zeros(output_shape, dtype=np.complex128)
+                with nogil:
+                    retval = c_wt.double_complex_downcoef_axis(
+                        <double complex *> data.data, data_info,
+                        <double complex *> cA.data, output_info,
+                        wavelet.w, axis,
+                        common.COEF_APPROX, common.MODE_PERIODIZATION,
+                        i, common.SWT_TRANSFORM)
+                if retval:
+                    raise RuntimeError(
+                        "C wavelet transform failed with error code %d" %
+                        retval)
+                cD = np.zeros(output_shape, dtype=np.complex128)
+                with nogil:
+                    retval = c_wt.double_complex_downcoef_axis(
+                        <double complex *> data.data, data_info,
+                        <double complex *> cD.data, output_info,
+                        wavelet.w, axis,
+                        common.COEF_DETAIL, common.MODE_PERIODIZATION,
+                        i, common.SWT_TRANSFORM)
+                if retval:
+                    raise RuntimeError(
+                        "C wavelet transform failed with error code %d" %
+                        retval)
+            elif data.dtype == np.complex64:
+                cA = np.zeros(output_shape, dtype=np.complex64)
+                with nogil:
+                    retval = c_wt.float_complex_downcoef_axis(
+                        <float complex *> data.data, data_info,
+                        <float complex *> cA.data, output_info,
+                        wavelet.w, axis,
+                        common.COEF_APPROX, common.MODE_PERIODIZATION,
+                        i, common.SWT_TRANSFORM)
+                if retval:
+                    raise RuntimeError(
+                        "C wavelet transform failed with error code %d" %
+                        retval)
+                cD = np.zeros(output_shape, dtype=np.complex64)
+                with nogil:
+                    retval = c_wt.float_complex_downcoef_axis(
+                        <float complex *> data.data, data_info,
+                        <float complex *> cD.data, output_info,
+                        wavelet.w, axis,
+                        common.COEF_DETAIL, common.MODE_PERIODIZATION,
+                        i, common.SWT_TRANSFORM)
+                if retval:
+                    raise RuntimeError(
+                        "C wavelet transform failed with error code %d" %
+                        retval)
+        if retval == -5:
             raise TypeError("Array must be floating point, not {}"
                             .format(data.dtype))
         ret.append((cA, cD))

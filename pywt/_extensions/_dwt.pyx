@@ -6,6 +6,8 @@ from ._pywt cimport _check_dtype
 cimport numpy as np
 import numpy as np
 
+include "config.pxi"
+
 
 cpdef dwt_max_level(size_t data_len, size_t filter_len):
     return common.dwt_max_level(data_len, filter_len)
@@ -19,7 +21,7 @@ cpdef dwt_coeff_len(size_t data_len, size_t filter_len, MODE mode):
 
     return common.dwt_buffer_length(data_len, filter_len, mode)
 
-cpdef dwt_single(data_t[::1] data, Wavelet wavelet, MODE mode):
+cpdef dwt_single(cdata_t[::1] data, Wavelet wavelet, MODE mode):
     cdef size_t output_len = dwt_coeff_len(data.size, wavelet.dec_len, mode)
     cdef np.ndarray cA, cD
     cdef int retval_a, retval_d
@@ -27,7 +29,7 @@ cpdef dwt_single(data_t[::1] data, Wavelet wavelet, MODE mode):
     if output_len < 1:
         raise RuntimeError("Invalid output length.")
 
-    if data_t is np.float64_t:
+    if cdata_t is np.float64_t:
         # TODO: Don't think these have to be 0-initialized
         # TODO: Check other methods of allocating (e.g. Cython/CPython arrays)
         cA = np.zeros(output_len, np.float64)
@@ -39,10 +41,9 @@ cpdef dwt_single(data_t[::1] data, Wavelet wavelet, MODE mode):
                             <double *>cD.data, output_len, mode)
         if ( retval_a < 0 or retval_d < 0):
             raise RuntimeError("C dwt failed.")
-    elif data_t is np.float32_t:
+    elif cdata_t is np.float32_t:
         cA = np.zeros(output_len, np.float32)
         cD = np.zeros(output_len, np.float32)
-
         with nogil:
             retval_a = c_wt.float_dec_a(&data[0], data_size, wavelet.w,
                                <float *>cA.data, output_len, mode)
@@ -50,6 +51,28 @@ cpdef dwt_single(data_t[::1] data, Wavelet wavelet, MODE mode):
                            <float *>cD.data, output_len, mode)
         if ( retval_a < 0 or retval_d < 0):
             raise RuntimeError("C dwt failed.")
+
+    IF HAVE_C99_CPLX:
+        if cdata_t is np.complex128_t:
+            cA = np.zeros(output_len, np.complex128)
+            cD = np.zeros(output_len, np.complex128)
+            with nogil:
+                retval_a = c_wt.double_complex_dec_a(&data[0], data_size, wavelet.w,
+                                    <double complex *>cA.data, output_len, mode)
+                retval_d = c_wt.double_complex_dec_d(&data[0], data_size, wavelet.w,
+                                <double complex *>cD.data, output_len, mode)
+            if ( retval_a < 0 or retval_d < 0):
+                raise RuntimeError("C dwt failed.")
+        elif cdata_t is np.complex64_t:
+            cA = np.zeros(output_len, np.complex64)
+            cD = np.zeros(output_len, np.complex64)
+            with nogil:
+                retval_a = c_wt.float_complex_dec_a(&data[0], data_size, wavelet.w,
+                                   <float complex *>cA.data, output_len, mode)
+                retval_d = c_wt.float_complex_dec_d(&data[0], data_size, wavelet.w,
+                               <float complex *>cD.data, output_len, mode)
+            if ( retval_a < 0 or retval_d < 0):
+                raise RuntimeError("C dwt failed.")
 
     return (cA, cD)
 
@@ -60,7 +83,7 @@ cpdef dwt_axis(np.ndarray data, Wavelet wavelet, MODE mode, unsigned int axis=0)
     cdef np.ndarray cD, cA
     # Explicit input_shape necessary to prevent memory leak
     cdef size_t[::1] input_shape, output_shape
-    cdef int retval
+    cdef int retval = -5
 
     data = data.astype(_check_dtype(data), copy=False)
 
@@ -109,7 +132,39 @@ cpdef dwt_axis(np.ndarray data, Wavelet wavelet, MODE mode, unsigned int axis=0)
                                     0, common.DWT_TRANSFORM)
         if retval:
             raise RuntimeError("C wavelet transform failed")
-    else:
+    IF HAVE_C99_CPLX:
+        if data.dtype == np.complex64:
+            with nogil:
+                retval = c_wt.float_complex_downcoef_axis(<float complex *> data.data, data_info,
+                                        <float complex *> cA.data, output_info,
+                                        wavelet.w, axis, common.COEF_APPROX, mode,
+                                        0, common.DWT_TRANSFORM)
+            if retval:
+                raise RuntimeError("C wavelet transform failed")
+            with nogil:
+                retval = c_wt.float_complex_downcoef_axis(<float complex *> data.data, data_info,
+                                        <float complex *> cD.data, output_info,
+                                        wavelet.w, axis, common.COEF_DETAIL, mode,
+                                        0, common.DWT_TRANSFORM)
+            if retval:
+                raise RuntimeError("C wavelet transform failed")
+        elif data.dtype == np.complex128:
+            with nogil:
+                retval = c_wt.double_complex_downcoef_axis(<double complex *> data.data, data_info,
+                                             <double complex *> cA.data, output_info,
+                                             wavelet.w, axis, common.COEF_APPROX, mode,
+                                             0, common.DWT_TRANSFORM)
+            if retval:
+                raise RuntimeError("C wavelet transform failed")
+            with nogil:
+                retval = c_wt.double_complex_downcoef_axis(<double complex *> data.data, data_info,
+                                         <double complex *> cD.data, output_info,
+                                         wavelet.w, axis, common.COEF_DETAIL, mode,
+                                         0, common.DWT_TRANSFORM)
+            if retval:
+                raise RuntimeError("C wavelet transform failed")
+
+    if retval == -5:
         raise TypeError("Array must be floating point, not {}"
                         .format(data.dtype))
     return (cA, cD)
@@ -156,6 +211,25 @@ cpdef idwt_single(np.ndarray cA, np.ndarray cD, Wavelet wavelet, MODE mode):
                            wavelet.w, mode)
         if retval < 0:
             raise RuntimeError("C idwt failed.")
+    IF HAVE_C99_CPLX:
+        if cA.dtype == np.complex128:
+            rec = np.zeros(rec_len, dtype=np.complex128)
+            with nogil:
+                retval = c_wt.double_complex_idwt(<double complex *>cA.data, input_len,
+                                <double complex *>cD.data, input_len,
+                                <double complex *>rec.data, rec_len,
+                                wavelet.w, mode)
+            if retval < 0:
+                raise RuntimeError("C idwt failed.")
+        elif cA.dtype == np.complex64:
+            rec = np.zeros(rec_len, dtype=np.complex64)
+            with nogil:
+                retval = c_wt.float_complex_idwt(<float complex *>cA.data, input_len,
+                               <float complex *>cD.data, input_len,
+                               <float complex *>rec.data, rec_len,
+                               wavelet.w, mode)
+            if retval < 0:
+                raise RuntimeError("C idwt failed.")
 
     return rec
 
@@ -171,6 +245,7 @@ cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d,
     cdef void *data_d = NULL
     # Explicit input_shape necessary to prevent memory leak
     cdef size_t[::1] input_shape, output_shape
+    cdef int retval = -5
 
     if coefs_a is not None:
         if coefs_d is not None and coefs_d.dtype.itemsize > coefs_a.dtype.itemsize:
@@ -227,18 +302,36 @@ cpdef idwt_axis(np.ndarray coefs_a, np.ndarray coefs_d,
                                 wavelet.w, axis, mode)
         if retval:
             raise RuntimeError("C inverse wavelet transform failed")
-    else:
+    IF HAVE_C99_CPLX:
+        if output.dtype == np.complex128:
+            with nogil:
+                retval = c_wt.double_complex_idwt_axis(<double complex *> data_a, a_info_p,
+                                     <double complex *> data_d, d_info_p,
+                                     <double complex *> output.data, output_info,
+                                     wavelet.w, axis, mode)
+            if retval:
+                raise RuntimeError("C inverse wavelet transform failed")
+        elif output.dtype == np.complex64:
+            with nogil:
+                retval = c_wt.float_complex_idwt_axis(<float complex *> data_a, a_info_p,
+                                    <float complex *> data_d, d_info_p,
+                                    <float complex *> output.data, output_info,
+                                    wavelet.w, axis, mode)
+            if retval:
+                raise RuntimeError("C inverse wavelet transform failed")
+
+    if retval == -5:
         raise TypeError("Array must be floating point, not {}"
                         .format(output.dtype))
 
     return output
 
-cpdef upcoef(bint do_rec_a, data_t[::1] coeffs, Wavelet wavelet, int level,
+
+cpdef upcoef(bint do_rec_a, cdata_t[::1] coeffs, Wavelet wavelet, int level,
              size_t take):
-    cdef data_t[::1] rec
+    cdef cdata_t[::1] rec
     cdef int i, retval
     cdef size_t rec_len, left_bound, right_bound, coeffs_size
-
 
     rec_len = 0
 
@@ -256,7 +349,7 @@ cpdef upcoef(bint do_rec_a, data_t[::1] coeffs, Wavelet wavelet, int level,
         # reconstruction is requested, the dec_d variant is only called at the
         # first level to generate the approximation coefficients at the second
         # level.  Subsequent levels apply the reconstruction filter.
-        if data_t is np.float64_t:
+        if cdata_t is np.float64_t:
             rec = np.zeros(rec_len, dtype=np.float64)
             if do_rec_a or i > 0:
                 with nogil:
@@ -270,7 +363,7 @@ cpdef upcoef(bint do_rec_a, data_t[::1] coeffs, Wavelet wavelet, int level,
                                      &rec[0], rec_len)
                 if retval < 0:
                     raise RuntimeError("C rec_d failed.")
-        elif data_t is np.float32_t:
+        elif cdata_t is np.float32_t:
             rec = np.zeros(rec_len, dtype=np.float32)
             if do_rec_a or i > 0:
                 with nogil:
@@ -284,6 +377,35 @@ cpdef upcoef(bint do_rec_a, data_t[::1] coeffs, Wavelet wavelet, int level,
                                     &rec[0], rec_len)
                 if retval < 0:
                     raise RuntimeError("C rec_d failed.")
+        IF HAVE_C99_CPLX:
+            if cdata_t is np.complex128_t:
+                rec = np.zeros(rec_len, dtype=np.complex128)
+                if do_rec_a or i > 0:
+                    with nogil:
+                        retval = c_wt.double_complex_rec_a(&coeffs[0], coeffs_size, wavelet.w,
+                                         &rec[0], rec_len)
+                    if retval < 0:
+                        raise RuntimeError("C rec_a failed.")
+                else:
+                    with nogil:
+                        retval = c_wt.double_complex_rec_d(&coeffs[0], coeffs_size, wavelet.w,
+                                         &rec[0], rec_len)
+                    if retval < 0:
+                        raise RuntimeError("C rec_d failed.")
+            elif cdata_t is np.complex64_t:
+                rec = np.zeros(rec_len, dtype=np.complex64)
+                if do_rec_a or i > 0:
+                    with nogil:
+                        retval = c_wt.float_complex_rec_a(&coeffs[0], coeffs_size, wavelet.w,
+                                        &rec[0], rec_len)
+                    if retval < 0:
+                        raise RuntimeError("C rec_a failed.")
+                else:
+                    with nogil:
+                        retval = c_wt.float_complex_rec_d(&coeffs[0], coeffs_size, wavelet.w,
+                                        &rec[0], rec_len)
+                    if retval < 0:
+                        raise RuntimeError("C rec_d failed.")
         # TODO: this algorithm needs some explaining
         coeffs = rec
 
@@ -298,8 +420,8 @@ cpdef upcoef(bint do_rec_a, data_t[::1] coeffs, Wavelet wavelet, int level,
     return rec
 
 
-cpdef downcoef(bint do_dec_a, data_t[::1] data, Wavelet wavelet, MODE mode, int level):
-    cdef data_t[::1] coeffs
+cpdef downcoef(bint do_dec_a, cdata_t[::1] data, Wavelet wavelet, MODE mode, int level):
+    cdef cdata_t[::1] coeffs
     cdef int i, retval
     cdef size_t output_len, data_size
 
@@ -317,7 +439,7 @@ cpdef downcoef(bint do_dec_a, data_t[::1] data, Wavelet wavelet, MODE mode, int 
         # final level.  All prior levels use dec_a.  In other words, the detail
         # coefficients at level n are those produced via the operation of the
         # detail filter on the approximation coefficients of level n-1.
-        if data_t is np.float64_t:
+        if cdata_t is np.float64_t:
             coeffs = np.zeros(output_len, dtype=np.float64)
             if do_dec_a or (i < level - 1):
                 with nogil:
@@ -331,7 +453,7 @@ cpdef downcoef(bint do_dec_a, data_t[::1] data, Wavelet wavelet, MODE mode, int 
                                      &coeffs[0], output_len, mode)
                 if retval < 0:
                     raise RuntimeError("C dec_d failed.")
-        elif data_t is np.float32_t:
+        elif cdata_t is np.float32_t:
             coeffs = np.zeros(output_len, dtype=np.float32)
             if do_dec_a or (i < level - 1):
                 with nogil:
@@ -345,6 +467,35 @@ cpdef downcoef(bint do_dec_a, data_t[::1] data, Wavelet wavelet, MODE mode, int 
                                     &coeffs[0], output_len, mode)
                 if retval < 0:
                     raise RuntimeError("C dec_d failed.")
+        IF HAVE_C99_CPLX:
+            if cdata_t is np.complex128_t:
+                coeffs = np.zeros(output_len, dtype=np.complex128)
+                if do_dec_a or (i < level - 1):
+                    with nogil:
+                        retval = c_wt.double_complex_dec_a(&data[0], data_size, wavelet.w,
+                                         &coeffs[0], output_len, mode)
+                    if retval < 0:
+                        raise RuntimeError("C dec_a failed.")
+                else:
+                    with nogil:
+                        retval = c_wt.double_complex_dec_d(&data[0], data_size, wavelet.w,
+                                         &coeffs[0], output_len, mode)
+                    if retval < 0:
+                        raise RuntimeError("C dec_d failed.")
+            elif cdata_t is np.complex64_t:
+                coeffs = np.zeros(output_len, dtype=np.complex64)
+                if do_dec_a or (i < level - 1):
+                    with nogil:
+                        retval = c_wt.float_complex_dec_a(&data[0], data_size, wavelet.w,
+                                        &coeffs[0], output_len, mode)
+                    if retval < 0:
+                        raise RuntimeError("C dec_a failed.")
+                else:
+                    with nogil:
+                        retval = c_wt.float_complex_dec_d(&data[0], data_size, wavelet.w,
+                                        &coeffs[0], output_len, mode)
+                    if retval < 0:
+                        raise RuntimeError("C dec_d failed.")
         data = coeffs
 
     return coeffs
