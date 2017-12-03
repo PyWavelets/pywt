@@ -4,7 +4,8 @@
 import sys
 from collections import Iterable
 
-from ._extensions._pywt import Wavelet, Modes
+from ._extensions._pywt import (Wavelet, ContinuousWavelet,
+                                DiscreteContinuousWavelet, Modes)
 
 
 # define string_types as in six for Python 2/3 compatibility
@@ -16,8 +17,14 @@ else:
 
 def _as_wavelet(wavelet):
     """Convert wavelet name to a Wavelet object"""
-    if not isinstance(wavelet, Wavelet):
-        wavelet = Wavelet(wavelet)
+    if not isinstance(wavelet, (ContinuousWavelet, Wavelet)):
+        wavelet = DiscreteContinuousWavelet(wavelet)
+    if isinstance(wavelet, ContinuousWavelet):
+        raise ValueError(
+            "A ContinuousWavelet object was provided, but only discrete "
+            "Wavelet objects are supported by this function.  A list of all "
+            "supported discrete wavelets can be obtained by running:\n"
+            "print(pywt.wavelist(kind='discrete'))")
     return wavelet
 
 

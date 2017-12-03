@@ -5,9 +5,9 @@ import numpy as np
 
 from ._extensions._dwt import idwt_single
 from ._extensions._swt import swt_max_level, swt as _swt, swt_axis as _swt_axis
-from ._extensions._pywt import Wavelet, Modes, _check_dtype
+from ._extensions._pywt import Modes, _check_dtype
 from ._multidim import idwt2, idwtn
-from ._utils import _wavelets_per_axis
+from ._utils import _as_wavelet, _wavelets_per_axis
 
 
 __all__ = ["swt", "swt_max_level", 'iswt', 'swt2', 'iswt2', 'swtn', 'iswtn']
@@ -61,8 +61,9 @@ def swt(data, wavelet, level=None, start_level=0, axis=-1):
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(data)
     data = np.array(data, dtype=dt)
-    if not isinstance(wavelet, Wavelet):
-        wavelet = Wavelet(wavelet)
+
+    wavelet = _as_wavelet(wavelet)
+
     if level is None:
         level = swt_max_level(len(data))
 
@@ -117,8 +118,7 @@ def iswt(coeffs, wavelet):
 
     # num_levels, equivalent to the decomposition level, n
     num_levels = len(coeffs)
-    if not isinstance(wavelet, Wavelet):
-        wavelet = Wavelet(wavelet)
+    wavelet = _as_wavelet(wavelet)
     mode = Modes.from_object('periodization')
     for j in range(num_levels, 0, -1):
         step_size = int(pow(2, j-1))
