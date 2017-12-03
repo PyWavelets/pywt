@@ -26,6 +26,12 @@ def swt_max_level(size_t input_len):
     max_level : int
         Maximum level of Stationary Wavelet Transform for data of given length.
 
+    Notes
+    -----
+    For the current implementation of the stationary wavelet transform, this
+    corresponds to the number of times ``input_len`` is evenly divisible by
+    two.
+
     """
     return common.swt_max_level(input_len)
 

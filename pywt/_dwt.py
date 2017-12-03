@@ -15,7 +15,7 @@ __all__ = ["dwt", "idwt", "downcoef", "upcoef", "dwt_max_level",
 
 
 def dwt_max_level(data_len, filter_len):
-    """
+    r"""
     dwt_max_level(data_len, filter_len)
 
     Compute the maximum useful level of decomposition.
@@ -32,6 +32,20 @@ def dwt_max_level(data_len, filter_len):
     -------
     max_level : int
         Maximum level.
+
+    Notes
+    -----
+    The rational for the choice of levels is the maximum level where at least
+    one coefficient in the output is uncorrupted by edge effects caused by
+    signal extension.  Put another way, decomposition stops when the signal
+    becomes shorter than the FIR filter length for a given wavelet.  This
+    corresponds to:
+
+    .. max_level = floor(log2(data_len/(filter_len - 1)))
+
+    .. math::
+        \mathtt{max\_level} = \left\lfloor\log_2\left(\mathtt{
+            \frac{data\_len}{filter\_len - 1}}\right)\right\rfloor
 
     Examples
     --------
