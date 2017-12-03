@@ -192,12 +192,16 @@ def dwtn(data, wavelet, mode='symmetric', axes=None):
 
 
 def _fix_coeffs(coeffs):
-    missing_keys = [k for k, v in coeffs.items() if
-                    v is None]
+    missing_keys = [k for k, v in coeffs.items() if v is None]
     if missing_keys:
         raise ValueError(
-            "The following detail coefficients were set to None: "
-            "{}.".format(missing_keys))
+            "The following detail coefficients were set to None:\n"
+            "{0}\n"
+            "For multilevel transforms, rather than setting\n"
+            "\tcoeffs[key] = None\n"
+            "use\n"
+            "\tcoeffs[key] = np.zeros_like(coeffs[key])\n".format(
+                missing_keys))
 
     invalid_keys = [k for k, v in coeffs.items() if
                     not set(k) <= set('ad')]
