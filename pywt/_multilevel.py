@@ -21,7 +21,8 @@ from ._multidim import dwt2, idwt2, dwtn, idwtn, _fix_coeffs
 from ._utils import _as_wavelet, _wavelets_per_axis
 
 __all__ = ['wavedec', 'waverec', 'wavedec2', 'waverec2', 'wavedecn',
-           'waverecn', 'coeffs_to_array', 'array_to_coeffs']
+           'waverecn', 'coeffs_to_array', 'array_to_coeffs', 'ravel_coeffs',
+           'unravel_coeffs']
 
 
 def _check_level(sizes, dec_lens, level):
@@ -595,6 +596,60 @@ def _determine_coeff_array_shape(coeffs, axes):
     return arr_shape, is_tight_packing
 
 
+def _determine_coeff_array_size(coeffs):
+    arr_size = np.asarray(coeffs[0].size)
+    for d in coeffs[1:]:
+        for k, v in d.items():
+            arr_size += v.size
+    return arr_size
+
+
+def _prepare_coeffs_axes(coeffs, axes):
+    """Helper function to check type of coeffs and axes.
+
+    This code is used by both coeffs_to_array and ravel_coeffs
+    """
+    if not isinstance(coeffs, list) or len(coeffs) == 0:
+        raise ValueError("input must be a list of coefficients from wavedecn")
+    if coeffs[0] is None:
+        raise ValueError("coeffs_to_array does not support missing "
+                         "coefficients.")
+    if not isinstance(coeffs[0], np.ndarray):
+        raise ValueError("first list element must be a numpy array")
+    ndim = coeffs[0].ndim
+
+    if len(coeffs) > 1:
+        # convert wavedec or wavedec2 format coefficients to waverecn format
+        if isinstance(coeffs[1], dict):
+            pass
+        elif isinstance(coeffs[1], np.ndarray):
+            coeffs = _coeffs_wavedec_to_wavedecn(coeffs)
+        elif isinstance(coeffs[1], (tuple, list)):
+            coeffs = _coeffs_wavedec2_to_wavedecn(coeffs)
+        else:
+            raise ValueError("invalid coefficient list")
+
+    if len(coeffs) == 1:
+        # no detail coefficients were found
+        return coeffs, axes, ndim, None
+
+    # Determine the number of dimensions that were transformed via key length
+    ndim_transform = len(list(coeffs[1].keys())[0])
+    if axes is None:
+        if ndim_transform < ndim:
+            raise ValueError(
+                "coeffs corresponds to a DWT performed over only a subset of "
+                "the axes.  In this case, axes must be specified.")
+        axes = np.arange(ndim)
+
+    if len(axes) != ndim_transform:
+        raise ValueError(
+            "The length of axes doesn't match the number of dimensions "
+            "transformed.")
+
+    return coeffs, axes, ndim, ndim_transform
+
+
 def coeffs_to_array(coeffs, padding=0, axes=None):
     """
     Arrange a wavelet coefficient list from `wavedecn` into a single array.
@@ -656,44 +711,16 @@ def coeffs_to_array(coeffs, padding=0, axes=None):
     >>> arr, coeff_slices = pywt.coeffs_to_array(coeffs)
 
     """
-    if not isinstance(coeffs, list) or len(coeffs) == 0:
-        raise ValueError("input must be a list of coefficients from wavedecn")
-    if coeffs[0] is None:
-        raise ValueError("coeffs_to_array does not support missing "
-                         "coefficients.")
-    if not isinstance(coeffs[0], np.ndarray):
-        raise ValueError("first list element must be a numpy array")
-    if len(coeffs) > 1:
-        # convert wavedec or wavedec2 format coefficients to waverecn format
-        if isinstance(coeffs[1], dict):
-            pass
-        elif isinstance(coeffs[1], np.ndarray):
-            coeffs = _coeffs_wavedec_to_wavedecn(coeffs)
-        elif isinstance(coeffs[1], (tuple, list)):
-            coeffs = _coeffs_wavedec2_to_wavedecn(coeffs)
-        else:
-            raise ValueError("invalid coefficient list")
+
+    coeffs, axes, ndim, ndim_transform = _prepare_coeffs_axes(coeffs, axes)
+
     # initialize with the approximation coefficients.
     a_coeffs = coeffs[0]
     a_shape = a_coeffs.shape
-    ndim = a_coeffs.ndim
+
     if len(coeffs) == 1:
         # only a single approximation coefficient array was found
         return a_coeffs, [tuple([slice(None)] * ndim)]
-
-    # Determine the number of dimensions that were transformed via key length
-    ndim_transform = len(list(coeffs[1].keys())[0])
-    if axes is None:
-        if ndim_transform < ndim:
-            raise ValueError(
-                "coeffs corresponds to a DWT performed over only a subset of "
-                "the axes.  In this case, axes must be specified.")
-        axes = np.arange(ndim)
-
-    if len(axes) != ndim_transform:
-        raise ValueError(
-            "The length of axes doesn't match the number of dimensions "
-            "transformed.")
 
     # determine size of output and if tight packing is possible
     arr_shape, is_tight_packing = _determine_coeff_array_shape(coeffs, axes)
@@ -821,6 +848,156 @@ def array_to_coeffs(arr, coeff_slices, output_format='wavedecn'):
             d = {}
             for k, v in coeff_slices[n].items():
                 d[k] = arr[v]
+        else:
+            raise ValueError(
+                "Unrecognized output format: {}".format(output_format))
+        coeffs.append(d)
+    return coeffs
+
+
+def ravel_coeffs(coeffs, axes=None):
+    """
+    Ravel a wavelet coefficient list from `wavedecn` into a single 1D array.
+
+    Parameters
+    ----------
+    coeffs: array-like
+        dictionary of wavelet coefficients as returned by pywt.wavedecn
+    axes : sequence of ints, optional
+        Axes over which the DWT that created ``coeffs`` was performed.  The
+        default value of ``None`` corresponds to all axes.
+
+    Returns
+    -------
+    coeff_arr : array-like
+        Wavelet transform coefficient array.
+    coeff_slices : list
+        List of slices corresponding to each coefficient.  As a 2D example,
+        `coeff_arr[coeff_slices[1]['dd']]` would extract the first level detail
+        coefficients from `coeff_arr`.
+    coeff_shapes : list
+        List of shapes corresponding to each coefficient.  For example, in 2D,
+        coeff_shapes[1]['dd'] would contain the original shape of the first
+        level detail coefficients array.
+
+    See Also
+    --------
+    unravel_coeffs : the inverse of ravel_coeffs
+
+    Examples
+    --------
+    >>> import pywt
+    >>> cam = pywt.data.camera()
+    >>> coeffs = pywt.wavedecn(cam, wavelet='db2', level=3)
+    >>> arr, coeff_slices, coeff_shapes = pywt.ravel_coeffs(coeffs)
+
+    """
+    coeffs, axes, ndim, ndim_transform = _prepare_coeffs_axes(coeffs, axes)
+
+    # initialize with the approximation coefficients.
+    a_coeffs = coeffs[0]
+    a_size = a_coeffs.size
+
+    if len(coeffs) == 1:
+        # only a single approximation coefficient array was found
+        return a_coeffs, [[slice(None)] * ndim]
+
+    # preallocate output array
+    arr_size = _determine_coeff_array_size(coeffs)
+    coeff_arr = np.empty((arr_size, ), dtype=a_coeffs.dtype)
+
+    a_slice = slice(a_size)
+    coeff_arr[a_slice] = a_coeffs.ravel()
+
+    # initialize list of coefficient slices
+    coeff_slices = []
+    coeff_shapes = []
+    coeff_slices.append(a_slice)
+    coeff_shapes.append(coeffs[0].shape)
+
+    # loop over the detail cofficients, embedding them in coeff_arr
+    ds = coeffs[1:]
+    offset = a_size
+    for coeff_dict in ds:
+        # new dictionaries for detail coefficient slices and shapes
+        coeff_slices.append({})
+        coeff_shapes.append({})
+        if np.any([d is None for d in coeff_dict.values()]):
+            raise ValueError("coeffs_to_array does not support missing "
+                             "coefficients.")
+        for key, d in coeff_dict.items():
+            sl = slice(offset, offset + d.size)
+            offset += d.size
+            coeff_arr[sl] = d.ravel()
+            coeff_slices[-1][key] = sl
+            coeff_shapes[-1][key] = d.shape
+    return coeff_arr, coeff_slices, coeff_shapes
+
+
+def unravel_coeffs(arr, coeff_slices, coeff_shapes, output_format='wavedecn'):
+    """
+    Convert a combined array of coefficients back to a list compatible with
+    `waverecn`.
+
+    Parameters
+    ----------
+
+    arr: array-like
+        An array containing all wavelet coefficients.  This should have been
+        generated via `coeffs_to_array`.
+    coeff_slices : list of tuples
+        List of slices corresponding to each coefficient as obtained from
+        `array_to_coeffs`.
+    output_format : {'wavedec', 'wavedec2', 'wavedecn'}
+        Make the form of the coefficients compatible with this type of
+        multilevel transform.
+
+    Returns
+    -------
+    coeffs: array-like
+        Wavelet transform coefficient array.
+
+    See Also
+    --------
+    coeffs_to_array : the inverse of array_to_coeffs
+
+    Examples
+    --------
+    >>> import pywt
+    >>> from numpy.testing import assert_array_almost_equal
+    >>> cam = pywt.data.camera()
+    >>> coeffs = pywt.wavedecn(cam, wavelet='db2', level=3)
+    >>> arr, coeff_slices, coeff_shapes = pywt.ravel_coeffs(coeffs)
+    >>> coeffs_from_arr = pywt.unravel_coeffs(arr, coeff_slices, coeff_shapes)
+    >>> cam_recon = pywt.waverecn(coeffs_from_arr, wavelet='db2')
+    >>> assert_array_almost_equal(cam, cam_recon)
+
+    """
+    arr = np.asarray(arr)
+    coeffs = []
+    if len(coeff_slices) == 0:
+        raise ValueError("empty list of coefficient slices")
+    elif len(coeff_shapes) == 0:
+        raise ValueError("empty list of coefficient shapes")
+    elif len(coeff_shapes) != len(coeff_slices):
+        raise ValueError("coeff_shapes and coeff_slices have unequal length")
+    else:
+        coeffs.append(arr[coeff_slices[0]].reshape(coeff_shapes[0]))
+
+    # difference coefficients at each level
+    for n in range(1, len(coeff_slices)):
+        slice_dict = coeff_slices[n]
+        shape_dict = coeff_shapes[n]
+        if output_format == 'wavedec':
+            d = arr[slice_dict['d']].reshape(shape_dict['d'])
+        elif output_format == 'wavedec2':
+            d = (arr[slice_dict['da']].reshape(shape_dict['da']),
+                 arr[slice_dict['ad']].reshape(shape_dict['ad']),
+                 arr[slice_dict['dd']].reshape(shape_dict['dd']))
+        elif output_format == 'wavedecn':
+            d = {}
+            for k, v in coeff_slices[n].items():
+                d[k] = arr[v].reshape(shape_dict[k])
         else:
             raise ValueError(
                 "Unrecognized output format: {}".format(output_format))
