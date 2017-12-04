@@ -5,6 +5,7 @@ accuracy against MathWorks Wavelet Toolbox.
 
 from __future__ import division, print_function, absolute_import
 
+import warnings
 import os
 import numpy as np
 from numpy.testing import assert_, dec, run_module_suite
@@ -68,7 +69,9 @@ def test_accuracy_pymatbridge_cwt():
     mlab.start()
     try:
         for wavelet in wavelets:
-            w = pywt.ContinuousWavelet(wavelet)
+            with warnings.catch_warnings():
+                warnings.simplefilter('ignore', FutureWarning)
+                w = pywt.ContinuousWavelet(wavelet)
             if np.any((wavelet == np.array(['shan', 'cmor'])),axis=0):
                 mlab.set_variable('wavelet', wavelet+str(w.bandwidth_frequency)+'-'+str(w.center_frequency))
             elif wavelet == 'fbsp':
@@ -100,8 +103,10 @@ def test_accuracy_precomputed_cwt():
     epsilon32 = 1e-5
     epsilon_psi = 1e-15
     for wavelet in wavelets:
-        w = pywt.ContinuousWavelet(wavelet)
-        w32 = pywt.ContinuousWavelet(wavelet,dtype=np.float32)
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', FutureWarning)
+            w = pywt.ContinuousWavelet(wavelet)
+            w32 = pywt.ContinuousWavelet(wavelet,dtype=np.float32)
         psi = _load_matlab_result_psi(wavelet)
         yield _check_accuracy_psi, w, psi, wavelet, epsilon_psi
 
@@ -160,7 +165,7 @@ def _load_matlab_result_psi(wavelet):
 
 def _check_accuracy(data, w, scales, coefs, wavelet, epsilon):
     # PyWavelets result
-    coefs_pywt,freq = pywt.cwt(data, scales, w)
+    coefs_pywt, freq = pywt.cwt(data, scales, w)
 
     # calculate error measures
     rms = np.real(np.sqrt(np.mean((coefs_pywt - coefs) ** 2)))
@@ -172,7 +177,7 @@ def _check_accuracy(data, w, scales, coefs, wavelet, epsilon):
 
 def _check_accuracy_psi(w, psi, wavelet, epsilon):
     # PyWavelets result
-    psi_pywt,x = w.wavefun(length=1024)
+    psi_pywt, x = w.wavefun(length=1024)
 
     # calculate error measures
     rms = np.real(np.sqrt(np.mean((psi_pywt.flatten() - psi.flatten()) ** 2)))

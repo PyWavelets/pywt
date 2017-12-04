@@ -60,6 +60,9 @@ def test_dwdtn_idwtn_allwavelets():
     if 'dmey' in wavelist:
         wavelist.remove('dmey')
     for wavelet in wavelist:
+        if wavelet in ['cmor', 'shan', 'fbsp']:
+            # skip these CWT families to avoid warnings
+            continue
         if isinstance(pywt.DiscreteContinuousWavelet(wavelet), pywt.Wavelet):
             for mode in pywt.Modes.modes:
                 coeffs = pywt.dwtn(r, wavelet, mode=mode)

@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 from __future__ import division, print_function, absolute_import
 
-from numpy.testing import run_module_suite, assert_allclose
+from numpy.testing import (run_module_suite, assert_allclose, assert_warns,
+                           assert_almost_equal, assert_raises)
 import numpy as np
 import pywt
 
@@ -134,9 +135,9 @@ def test_shan():
     Fc = 1.5
 
     [psi, x] = ref_shan(LB, UB, N, Fb, Fc)
-    w = pywt.ContinuousWavelet("shan")
-    w.center_frequency = Fc
-    w.bandwidth_frequency = Fb
+    w = pywt.ContinuousWavelet("shan{}-{}".format(Fb, Fc))
+    assert_almost_equal(w.center_frequency, Fc)
+    assert_almost_equal(w.bandwidth_frequency, Fb)
     w.upper_bound = UB
     w.lower_bound = LB
     PSI, X = w.wavefun(length=N)
@@ -152,9 +153,9 @@ def test_shan():
     Fc = 1
 
     [psi, x] = ref_shan(LB, UB, N, Fb, Fc)
-    w = pywt.ContinuousWavelet("shan")
-    w.center_frequency = Fc
-    w.bandwidth_frequency = Fb
+    w = pywt.ContinuousWavelet("shan{}-{}".format(Fb, Fc))
+    assert_almost_equal(w.center_frequency, Fc)
+    assert_almost_equal(w.bandwidth_frequency, Fb)
     w.upper_bound = UB
     w.lower_bound = LB
     PSI, X = w.wavefun(length=N)
@@ -172,9 +173,9 @@ def test_cmor():
     Fc = 1.5
 
     [psi, x] = ref_cmor(LB, UB, N, Fb, Fc)
-    w = pywt.ContinuousWavelet("cmor")
-    w.center_frequency = Fc
-    w.bandwidth_frequency = Fb
+    w = pywt.ContinuousWavelet("cmor{}-{}".format(Fb, Fc))
+    assert_almost_equal(w.center_frequency, Fc)
+    assert_almost_equal(w.bandwidth_frequency, Fb)
     w.upper_bound = UB
     w.lower_bound = LB
     PSI, X = w.wavefun(length=N)
@@ -190,9 +191,9 @@ def test_cmor():
     Fc = 1
 
     [psi, x] = ref_cmor(LB, UB, N, Fb, Fc)
-    w = pywt.ContinuousWavelet("cmor")
-    w.center_frequency = Fc
-    w.bandwidth_frequency = Fb
+    w = pywt.ContinuousWavelet("cmor{}-{}".format(Fb, Fc))
+    assert_almost_equal(w.center_frequency, Fc)
+    assert_almost_equal(w.bandwidth_frequency, Fb)
     w.upper_bound = UB
     w.lower_bound = LB
     PSI, X = w.wavefun(length=N)
@@ -211,9 +212,10 @@ def test_fbsp():
     Fc = 1.5
 
     [psi, x] = ref_fbsp(LB, UB, N, M, Fb, Fc)
-    w = pywt.ContinuousWavelet("fbsp")
-    w.center_frequency = Fc
-    w.bandwidth_frequency = Fb
+
+    w = pywt.ContinuousWavelet("fbsp{}-{}-{}".format(M, Fb, Fc))
+    assert_almost_equal(w.center_frequency, Fc)
+    assert_almost_equal(w.bandwidth_frequency, Fb)
     w.fbsp_order = M
     w.upper_bound = UB
     w.lower_bound = LB
@@ -231,9 +233,9 @@ def test_fbsp():
     Fc = 1
 
     [psi, x] = ref_fbsp(LB, UB, N, M, Fb, Fc)
-    w = pywt.ContinuousWavelet("fbsp")
-    w.center_frequency = Fc
-    w.bandwidth_frequency = Fb
+    w = pywt.ContinuousWavelet("fbsp{}-{}-{}".format(M, Fb, Fc))
+    assert_almost_equal(w.center_frequency, Fc)
+    assert_almost_equal(w.bandwidth_frequency, Fb)
     w.fbsp_order = M
     w.upper_bound = UB
     w.lower_bound = LB
@@ -251,9 +253,9 @@ def test_fbsp():
     Fc = 1.2
 
     [psi, x] = ref_fbsp(LB, UB, N, M, Fb, Fc)
-    w = pywt.ContinuousWavelet("fbsp")
-    w.center_frequency = Fc
-    w.bandwidth_frequency = Fb
+    w = pywt.ContinuousWavelet("fbsp{}-{}-{}".format(M, Fb, Fc))
+    assert_almost_equal(w.center_frequency, Fc)
+    assert_almost_equal(w.bandwidth_frequency, Fb)
     w.fbsp_order = M
     w.upper_bound = UB
     w.lower_bound = LB
@@ -308,6 +310,38 @@ def test_mexh():
     assert_allclose(np.real(PSI), np.real(psi))
     assert_allclose(np.imag(PSI), np.imag(psi))
     assert_allclose(X, x)
+
+
+def test_cwt_parameters_in_names():
+
+    for func in [pywt.ContinuousWavelet, pywt.DiscreteContinuousWavelet]:
+        for name in ['fbsp', 'cmor', 'shan']:
+            # additional parameters should be specified within the name
+            assert_warns(FutureWarning, func, name)
+
+        for name in ['cmor', 'shan']:
+            # valid names
+            func(name + '1.5-1.0')
+            func(name + '1-4')
+
+            # invalid names
+            assert_raises(ValueError, func, name + '1.0')
+            assert_raises(ValueError, func, name + 'B-C')
+            assert_raises(ValueError, func, name + '1.0-1.0-1.0')
+
+        # valid names
+        func('fbsp1-1.5-1.0')
+        func('fbsp1.0-1.5-1')
+        func('fbsp2-5-1')
+
+        # invalid name (non-integer order)
+        assert_raises(ValueError, func, 'fbsp1.5-1-1')
+        assert_raises(ValueError, func, 'fbspM-B-C')
+
+        # invalid name (too few or too many params)
+        assert_raises(ValueError, func, 'fbsp1.0')
+        assert_raises(ValueError, func, 'fbsp1.0-0.4')
+        assert_raises(ValueError, func, 'fbsp1-1-1-1')
 
 
 if __name__ == '__main__':

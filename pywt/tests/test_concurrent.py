@@ -102,7 +102,7 @@ def test_concurrent_dwt():
 def test_concurrent_cwt():
     time, sst = pywt.data.nino()
     dt = time[1]-time[0]
-    transform = partial(pywt.cwt, scales=np.arange(1, 4), wavelet='cmor',
+    transform = partial(pywt.cwt, scales=np.arange(1, 4), wavelet='cmor1.5-1',
                         sampling_period=dt)
     for _ in range(10):
         arrs = [sst.copy() for _ in range(50)]
