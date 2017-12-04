@@ -513,6 +513,68 @@ def test_array_to_coeffs_invalid_inputs():
     assert_raises(ValueError, pywt.array_to_coeffs, arr, arr_slices, 'foo')
 
 
+def test_wavedecn_coeff_ravel():
+    # verify round trip is correct:
+    #   wavedecn - >ravel_coeffs-> unravel_coeffs -> waverecn
+    # This is done for wavedec{1, 2, n}
+    rng = np.random.RandomState(1234)
+    params = {'wavedec': {'d': 1, 'dec': pywt.wavedec, 'rec': pywt.waverec},
+              'wavedec2': {'d': 2, 'dec': pywt.wavedec2, 'rec': pywt.waverec2},
+              'wavedecn': {'d': 3, 'dec': pywt.wavedecn, 'rec': pywt.waverecn}}
+    N = 12
+    for f in params:
+        x1 = rng.randn(*([N] * params[f]['d']))
+        for mode in pywt.Modes.modes:
+            for wave in wavelist:
+                w = pywt.Wavelet(wave)
+                maxlevel = pywt.dwt_max_level(np.min(x1.shape), w.dec_len)
+                if maxlevel == 0:
+                    continue
+
+                coeffs = params[f]['dec'](x1, w, mode=mode)
+                coeff_arr, slices, shapes = pywt.ravel_coeffs(coeffs)
+                coeffs2 = pywt.unravel_coeffs(coeff_arr, slices, shapes,
+                                              output_format=f)
+                x1r = params[f]['rec'](coeffs2, w, mode=mode)
+
+                assert_allclose(x1, x1r, rtol=1e-4, atol=1e-4)
+
+
+def test_waverecn_coeff_ravel_odd():
+    # verify round trip is correct:
+    #   wavedecn - >ravel_coeffs-> unravel_coeffs -> waverecn
+    rng = np.random.RandomState(1234)
+    x1 = rng.randn(35, 33)
+    for mode in pywt.Modes.modes:
+        for wave in ['haar', ]:
+            w = pywt.Wavelet(wave)
+            maxlevel = pywt.dwt_max_level(np.min(x1.shape), w.dec_len)
+            if maxlevel == 0:
+                continue
+            coeffs = pywt.wavedecn(x1, w, mode=mode)
+            coeff_arr, slices, shapes = pywt.ravel_coeffs(coeffs)
+            coeffs2 = pywt.unravel_coeffs(coeff_arr, slices, shapes)
+            x1r = pywt.waverecn(coeffs2, w, mode=mode)
+            # truncate reconstructed values to original shape
+            x1r = x1r[[slice(s) for s in x1.shape]]
+            assert_allclose(x1, x1r, rtol=1e-4, atol=1e-4)
+
+
+def test_unravel_invalid_inputs():
+    coeffs = pywt.wavedecn(np.ones(2), 'haar')
+    arr, slices, shapes = pywt.ravel_coeffs(coeffs)
+
+    # empty list for slices or shapes
+    assert_raises(ValueError, pywt.unravel_coeffs, arr, slices, [])
+    assert_raises(ValueError, pywt.unravel_coeffs, arr, [], shapes)
+
+    # unequal length for slices/shapes
+    assert_raises(ValueError, pywt.unravel_coeffs, arr, slices[:-1], shapes)
+
+    # invalid format name
+    assert_raises(ValueError, pywt.unravel_coeffs, arr, slices, shapes, 'foo')
+
+
 def test_waverec_axes_subsets():
     rstate = np.random.RandomState(0)
     data = rstate.standard_normal((8, 8, 8))

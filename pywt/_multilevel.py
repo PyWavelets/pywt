@@ -596,18 +596,10 @@ def _determine_coeff_array_shape(coeffs, axes):
     return arr_shape, is_tight_packing
 
 
-def _determine_coeff_array_size(coeffs):
-    arr_size = np.asarray(coeffs[0].size)
-    for d in coeffs[1:]:
-        for k, v in d.items():
-            arr_size += v.size
-    return arr_size
-
-
 def _prepare_coeffs_axes(coeffs, axes):
     """Helper function to check type of coeffs and axes.
 
-    This code is used by both coeffs_to_array and ravel_coeffs
+    This code is used by both coeffs_to_array and ravel_coeffs.
     """
     if not isinstance(coeffs, list) or len(coeffs) == 0:
         raise ValueError("input must be a list of coefficients from wavedecn")
@@ -855,6 +847,14 @@ def array_to_coeffs(arr, coeff_slices, output_format='wavedecn'):
     return coeffs
 
 
+def _determine_coeff_array_size(coeffs):
+    arr_size = np.asarray(coeffs[0].size)
+    for d in coeffs[1:]:
+        for k, v in d.items():
+            arr_size += v.size
+    return arr_size
+
+
 def ravel_coeffs(coeffs, axes=None):
     """
     Ravel a wavelet coefficient list from `wavedecn` into a single 1D array.
@@ -936,7 +936,7 @@ def ravel_coeffs(coeffs, axes=None):
 
 def unravel_coeffs(arr, coeff_slices, coeff_shapes, output_format='wavedecn'):
     """
-    Convert a combined array of coefficients back to a list compatible with
+    Convert a raveled array of coefficients back to a list compatible with
     `waverecn`.
 
     Parameters
