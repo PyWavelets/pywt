@@ -170,7 +170,7 @@ def dwt(data, wavelet, mode='symmetric', axis=-1):
 
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(data)
-    data = np.array(data, dtype=dt)
+    data = np.asarray(data, dtype=dt, order='C')
     mode = Modes.from_object(mode)
     wavelet = _as_wavelet(wavelet)
 
@@ -238,10 +238,10 @@ def idwt(cA, cD, wavelet, mode='symmetric', axis=-1):
 
     if cA is not None:
         dt = _check_dtype(cA)
-        cA = np.array(cA, dtype=dt)
+        cA = np.asarray(cA, dtype=dt, order='C')
     if cD is not None:
         dt = _check_dtype(cD)
-        cD = np.array(cD, dtype=dt)
+        cD = np.asarray(cD, dtype=dt, order='C')
 
     if cA is not None and cD is not None:
         if cA.dtype != cD.dtype:
@@ -313,7 +313,9 @@ def downcoef(part, data, wavelet, mode='symmetric', level=1):
                 1j*downcoef(part, data.imag, wavelet, mode, level))
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(data)
-    data = np.array(data, dtype=dt)
+    data = np.asarray(data, dtype=dt, order='C')
+    if data.ndim > 1:
+        raise ValueError("downcoef only supports 1d data.")
     if part not in 'ad':
         raise ValueError("Argument 1 must be 'a' or 'd', not '%s'." % part)
     mode = Modes.from_object(mode)
@@ -370,7 +372,9 @@ def upcoef(part, coeffs, wavelet, level=1, take=0):
                 1j*upcoef(part, coeffs.imag, wavelet, level, take))
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(coeffs)
-    coeffs = np.array(coeffs, dtype=dt)
+    coeffs = np.asarray(coeffs, dtype=dt, order='C')
+    if coeffs.ndim > 1:
+        raise ValueError("upcoef only supports 1d coeffs.")
     wavelet = _as_wavelet(wavelet)
     if part not in 'ad':
         raise ValueError("Argument 1 must be 'a' or 'd', not '%s'." % part)

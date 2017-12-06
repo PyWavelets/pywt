@@ -95,6 +95,14 @@ def test_upcoef_errs():
     assert_raises(ValueError, pywt.upcoef, 'f', np.ones(4), 'haar')
 
 
+def test_upcoef_and_downcoef_1d_only():
+    # upcoef and downcoef raise a ValueError if data.ndim > 1d
+    for ndim in [2, 3]:
+        data = np.ones((8, )*ndim)
+        assert_raises(ValueError, pywt.downcoef, 'a', data, 'haar')
+        assert_raises(ValueError, pywt.upcoef, 'a', data, 'haar')
+
+
 def test_wavelet_repr():
     from pywt._extensions import _pywt
     wavelet = _pywt.Wavelet('sym8')
@@ -157,6 +165,7 @@ def test_wavelet_errormsgs():
         pywt.Wavelet('gaus1')
     except ValueError as e:
         assert_(e.args[0].startswith('The `Wavelet` class'))
+
 
 if __name__ == '__main__':
     run_module_suite()
