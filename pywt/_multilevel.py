@@ -972,7 +972,7 @@ def dwtn_max_level(shape, wavelet, axes=None):
     Examples
     --------
     >>> import pywt
-    >>> pywt.dwtn_max_level((64, 32), 'db2')
+    >>> max_level = pywt.dwtn_max_level((64, 32), 'db2')
     """
     # Determine the axes and shape for the transform
     axes, axes_shapes, ndim_transform = _prep_axes_wavedecn(shape, axes)
