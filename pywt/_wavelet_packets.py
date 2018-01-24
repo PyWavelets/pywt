@@ -888,7 +888,7 @@ class WaveletPacketND(NodeND):
         self.mode = mode
 
         if data is not None:
-            data = np.asarray(data, dtype=np.float64)
+            data = np.asarray(data)
             if data.ndim == 0:
                 raise ValueError("data must be at least 1D")
             self.data_size = data.shape
