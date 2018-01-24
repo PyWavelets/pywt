@@ -107,5 +107,24 @@ def test_data_reconstruction_delete_nodes_nd():
     # TODO: decompose=True
 
 
+def test_wavelet_packet_dtypes():
+    shape = (16, 8, 8)
+    for dtype in [np.float32, np.float64, np.complex64, np.complex128]:
+        x = np.random.randn(*shape).astype(dtype)
+        if np.iscomplexobj(x):
+            x = x + 1j*np.random.randn(*shape).astype(x.real.dtype)
+        wp = pywt.WaveletPacketND(data=x, wavelet='db1', mode='symmetric')
+        # no unnecessary copy made
+        assert_(wp.data is x)
+
+        # full decomposition
+        wp.get_level(wp.maxlevel)
+
+        # recontsruct from coefficients should preserve dtype
+        r = wp.reconstruct(False)
+        assert_equal(r.dtype, x.dtype)
+        assert_allclose(r, x, atol=1e-6, rtol=1e-6)
+
+
 if __name__ == '__main__':
     run_module_suite()
