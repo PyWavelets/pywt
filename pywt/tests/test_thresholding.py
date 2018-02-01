@@ -1,8 +1,13 @@
 from __future__ import division, print_function, absolute_import
 import numpy as np
-from numpy.testing import assert_allclose, run_module_suite, assert_raises
+from numpy.testing import (assert_allclose, run_module_suite, assert_raises,
+                           assert_, assert_equal)
 
 import pywt
+
+
+float_dtypes = [np.float32, np.float64, np.complex64, np.complex128]
+real_dtypes = [np.float32, np.float64]
 
 
 def _sign(x):
@@ -96,6 +101,73 @@ def test_threshold():
 
     # invalid
     assert_raises(ValueError, pywt.threshold, data, 2, 'foo')
+
+
+def test_nonnegative_garotte():
+    thresh = 0.3
+    data_real = np.linspace(-1, 1, 100)
+    for dtype in float_dtypes:
+        if dtype in real_dtypes:
+            data = np.asarray(data_real, dtype=dtype)
+        else:
+            data = np.asarray(data_real + 0.1j, dtype=dtype)
+        d_hard = pywt.threshold(data, thresh, 'hard')
+        d_soft = pywt.threshold(data, thresh, 'soft')
+        d_garotte = pywt.threshold(data, thresh, 'garotte')
+
+        # check dtypes
+        assert_equal(d_hard.dtype, data.dtype)
+        assert_equal(d_soft.dtype, data.dtype)
+        assert_equal(d_garotte.dtype, data.dtype)
+
+        # values < threshold are zero
+        lt = np.where(np.abs(data) < thresh)
+        assert_(np.all(d_garotte[lt] == 0))
+
+        # values > than the threshold are intermediate between soft and hard
+        gt = np.where(np.abs(data) > thresh)
+        gt_abs_garotte = np.abs(d_garotte[gt])
+        assert_(np.all(gt_abs_garotte < np.abs(d_hard[gt])))
+        assert_(np.all(gt_abs_garotte > np.abs(d_soft[gt])))
+
+
+def test_threshold_firm():
+    thresh = 0.2
+    thresh2 = 3 * thresh
+    data_real = np.linspace(-1, 1, 100)
+    for dtype in float_dtypes:
+        if dtype in real_dtypes:
+            data = np.asarray(data_real, dtype=dtype)
+        else:
+            data = np.asarray(data_real + 0.1j, dtype=dtype)
+        if data.real.dtype == np.float32:
+            rtol = atol = 1e-6
+        else:
+            rtol = atol = 1e-14
+        d_hard = pywt.threshold(data, thresh, 'hard')
+        d_soft = pywt.threshold(data, thresh, 'soft')
+        d_firm = pywt.threshold_firm(data, thresh, thresh2)
+
+        # check dtypes
+        assert_equal(d_hard.dtype, data.dtype)
+        assert_equal(d_soft.dtype, data.dtype)
+        assert_equal(d_firm.dtype, data.dtype)
+
+        # values < threshold are zero
+        lt = np.where(np.abs(data) < thresh)
+        assert_(np.all(d_firm[lt] == 0))
+
+        # values > than the threshold are equal to hard-thresholding
+        gt = np.where(np.abs(data) >= thresh2)
+        assert_allclose(np.abs(d_hard[gt]), np.abs(d_firm[gt]),
+                        rtol=rtol, atol=atol)
+
+        # other values are intermediate between soft and hard thresholding
+        mt = np.where(np.logical_and(np.abs(data) > thresh,
+                                     np.abs(data) < thresh2))
+        mt_abs_firm = np.abs(d_firm[mt])
+        assert_(np.all(mt_abs_firm < np.abs(d_hard[mt])))
+        assert_(np.all(mt_abs_firm > np.abs(d_soft[mt])))
 
 
 if __name__ == '__main__':
