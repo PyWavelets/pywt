@@ -41,6 +41,12 @@ from doctest import NORMALIZE_WHITESPACE, ELLIPSIS, IGNORE_EXCEPTION_DETAIL
 from argparse import ArgumentParser
 import numpy as np
 
+# FIXME: doctests need the str/repr formatting used in Numpy < 1.14.
+try:
+    np.set_printoptions(legacy='1.13')
+except TypeError:
+    pass
+
 # sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'doc',
 #                 'sphinxext'))
 from numpydoc.docscrape_sphinx import get_doc_object
