@@ -75,18 +75,18 @@ def test_dwt_idwt_allmodes():
 
 def test_dwt_short_input_allmodes():
     # some test cases where the input is shorter than the DWT filter
-    x = [1, 2, 3]
+    x = [1, 3, 2]
     wavelet = 'db2'
     # manually pad each end by the filter size (4 for 'db2' used here)
-    padded_x = {'zero': [0, 0, 0, 0, 1, 2, 3, 0, 0, 0, 0],
-                'constant': [1, 1, 1, 1, 1, 2, 3, 3, 3, 3, 3],
-                'symmetric': [3, 3, 2, 1, 1, 2, 3, 3, 2, 1, 1],
-                'reflect': [1, 2, 3, 2, 1, 2, 3, 2, 1, 2, 3],
-                'periodic': [3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1],
-                'smooth': [-3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7],
+    padded_x = {'zero': [0, 0, 0, 0, 1, 3, 2, 0, 0, 0, 0],
+                'constant': [1, 1, 1, 1, 1, 3, 2, 2, 2, 2, 2],
+                'symmetric': [2, 2, 3, 1, 1, 3, 2, 2, 3, 1, 1],
+                'reflect': [1, 3, 2, 3, 1, 3, 2, 3, 1, 3, 2],
+                'periodic': [2, 1, 3, 2, 1, 3, 2, 1, 3, 2, 1],
+                'smooth': [-7, -5, -3, -1, 1, 3, 2, 1, 0, -1, -2],
                 'antireflect': [1, -2, -3, -2, 1, 2, 3, -2, -1, -2, 3],
-                'antisymmetric': [3, -3, -2, -1, 1, 2, 3, -3, -2, -1, 1],
-                'antireflect': [-3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7],
+                'antisymmetric': [2, -2, -3, -1, 1, 3, 2, -2, -3, -1, 1],
+                'antireflect': [1, -1, 0, -1, 1, 3, 2, 1, 3, 5, 4],
                 }
     for mode, xpad in padded_x.items():
         # DWT of the manually padded array.  will discard edges later so
