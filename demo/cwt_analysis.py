@@ -7,18 +7,18 @@ import matplotlib.pyplot as plt
 import pywt
 
 time, sst = pywt.data.nino()
-dt = time[1]-time[0]
+dt = time[1] - time[0]
 
 # Taken from http://nicolasfauchereau.github.io/climatecode/posts/wavelet-analysis-in-python/
 wavelet = 'cmor1.5-1.0'
-scales = np.arange(1,128)
+scales = np.arange(1, 128)
 
-[cfs,frequencies] = pywt.cwt(sst,scales,wavelet,dt)
+[cfs, frequencies] = pywt.cwt(sst, scales, wavelet, dt)
 power = (abs(cfs)) ** 2
 
 period = 1. / frequencies
 levels = [0.0625, 0.125, 0.25, 0.5, 1, 2, 4, 8]
-f, ax = plt.subplots(figsize=(15,10))
+f, ax = plt.subplots(figsize=(15, 10))
 ax.contourf(time, np.log2(period), np.log2(power), np.log2(levels),
             extend='both')
 
