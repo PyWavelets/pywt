@@ -160,7 +160,7 @@ int CAT(TYPE, _downsampling_convolution)(const TYPE * const restrict input, cons
             }
             break;
         case MODE_ANTISYMMETRIC:
-            // antisymmetric about zero
+            // half-sample anti-symmetric
             while (j < F){
                 size_t k;
                 for(k = 0; k < N && j < F; ++j, ++k)
@@ -179,15 +179,22 @@ int CAT(TYPE, _downsampling_convolution)(const TYPE * const restrict input, cons
             }
             break;
         case MODE_ANTIREFLECT:{
-            // antisymmetric about the edge value
+            // whole-sample anti-symmetric
             size_t k;
-            for(k = 1; k < N && j < F; ++j, ++k)
-                sum += filter[j]*(2*input[0] - input[k]);
-            // second reflection when F > N
-            for(k = 1; k < N && j < F; ++j, ++k)
-                sum += filter[j]*(2*input[0] - 2*input[N-1] + input[N-1-k]);
-            // padding with zeros beyond the second reflection when
-            // F > (2*N - 1).
+            TYPE le = input[0];    // current left edge value
+            TYPE tmp = 0;
+            while (j < F) {
+                for(k = 1; k < N && j < F; ++j, ++k){
+                    tmp = le - (input[k] - input[0]);
+                    sum += filter[j]*tmp;
+                }
+                le = tmp;
+                for(k = 1; k < N && j < F; ++j, ++k){
+                    tmp = le + (input[N-1-k] - input[N-1]);
+                    sum += filter[j]*tmp;
+                }
+                le = tmp;
+            }
             break;
         }
         case MODE_CONSTANT_EDGE:
@@ -243,6 +250,7 @@ int CAT(TYPE, _downsampling_convolution)(const TYPE * const restrict input, cons
             }
             break;
         case MODE_ANTISYMMETRIC:
+            // half-sample anti-symmetric
             while (i - j >= N){
                 size_t k;
                 for(k = 0; k < N && i-j >= N; ++j, ++k)
@@ -261,9 +269,22 @@ int CAT(TYPE, _downsampling_convolution)(const TYPE * const restrict input, cons
             }
             break;
         case MODE_ANTIREFLECT:{
+            // whole-sample anti-symmetric
             size_t k;
-            for(k = 1; k < N && i-j >= N; ++j, ++k)
-                sum += filter[i-N-j]*(2*input[N-1] - input[N-1-k]);
+            TYPE re = input[N-1];    // current right edge value
+            TYPE tmp = 0;
+            while (i - j >= N) {
+                for(k = 1; k < N && i-j >= N; ++j, ++k){
+                    tmp = re - (input[N-1-k] - input[N-1]);
+                    sum += filter[i-N-j]*tmp;
+                }
+                re = tmp;
+                for(k = 1; k < N && i-j >= N; ++j, ++k){
+                    tmp = re + (input[k] - input[0]);
+                    sum += filter[i-N-j]*tmp;
+                }
+                re = tmp;
+            }
             break;
         }
         case MODE_CONSTANT_EDGE:
@@ -303,6 +324,7 @@ int CAT(TYPE, _downsampling_convolution)(const TYPE * const restrict input, cons
             }
             break;
         case MODE_ANTISYMMETRIC:
+            // half-sample anti-symmetric
             while (j < F){
                 size_t k;
                 for(k = 0; k < N && j < F; ++j, ++k)
@@ -321,9 +343,22 @@ int CAT(TYPE, _downsampling_convolution)(const TYPE * const restrict input, cons
             }
             break;
         case MODE_ANTIREFLECT:{
+            // whole-sample anti-symmetric
             size_t k;
-            for(k = 1; k < N && j < F; ++j, ++k)
-                sum += filter[j]*(2*input[0] - input[k]);
+            TYPE le = input[0];    // current left edge value
+            TYPE tmp = 0;
+            while (j < F) {
+                for(k = 1; k < N && j < F; ++j, ++k){
+                    tmp = le - (input[k] - input[0]);
+                    sum += filter[j]*tmp;
+                }
+                le = tmp;
+                for(k = 1; k < N && j < F; ++j, ++k){
+                    tmp = le + (input[N-1-k] - input[N-1]);
+                    sum += filter[j]*tmp;
+                }
+                le = tmp;
+            }
             break;
             }
         case MODE_CONSTANT_EDGE:
@@ -366,7 +401,7 @@ int CAT(TYPE, _downsampling_convolution)(const TYPE * const restrict input, cons
             }
             break;
         case MODE_ANTISYMMETRIC:
-            // Included from original: TODO: j < F-_offset
+            // half-sample anti-symmetric
             while (i - j >= N){
                 size_t k;
                 for(k = 0; k < N && i-j >= N; ++j, ++k)
@@ -385,13 +420,24 @@ int CAT(TYPE, _downsampling_convolution)(const TYPE * const restrict input, cons
             }
             break;
         case MODE_ANTIREFLECT:{
+            // whole-sample anti-symmetric
             size_t k;
-            for(k = 1; k < N && i-j >= N; ++j, ++k)
-                sum += filter[i-N-j]*(2*input[N-1] - input[N-1-k]);
-            // second reflection when F > N
-            for(k = 1; k < N && i-j >= N; ++j, ++k)
-                sum += filter[i-N-j]*(2*input[N-1] - 2*input[0] + input[k]);
-            // padding with zeros beyond the second reflection when F > (2*N - 1)
+            TYPE re = input[N-1];    //current right edge value
+            TYPE tmp = 0;
+            while (i - j >= N) {
+                //first reflection
+                for(k = 1; k < N && i-j >= N; ++j, ++k){
+                    tmp = re - (input[N-1-k] - input[N-1]);
+                    sum += filter[i-N-j]*tmp;
+                }
+                re = tmp;
+                //second reflection
+                for(k = 1; k < N && i-j >= N; ++j, ++k){
+                    tmp = re + (input[k] - input[0]);
+                    sum += filter[i-N-j]*tmp;
+                }
+                re = tmp;
+            }
             break;
             }
         case MODE_CONSTANT_EDGE:
