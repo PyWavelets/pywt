@@ -344,5 +344,22 @@ def test_cwt_parameters_in_names():
         assert_raises(ValueError, func, 'fbsp1-1-1-1')
 
 
+def test_cwt_complex():
+    for dtype in [np.float32, np.float64]:
+        time, sst = pywt.data.nino()
+        sst = np.asarray(sst, dtype=dtype)
+        dt = time[1] - time[0]
+        wavelet = 'cmor1.5-1.0'
+        scales = np.arange(1, 32)
+
+        # real-valued tranfsorm
+        [cfs, f] = pywt.cwt(sst, scales, wavelet, dt)
+
+        # complex-valued tranfsorm equals sum of the transforms of the real and
+        # imaginary components
+        [cfs_complex, f] = pywt.cwt(sst + 1j*sst, scales, wavelet, dt)
+        assert_almost_equal(cfs + 1j*cfs, cfs_complex)
+
+
 if __name__ == '__main__':
     run_module_suite()
