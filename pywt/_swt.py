@@ -49,6 +49,12 @@ def swt(data, wavelet, level=None, start_level=0, axis=-1):
 
             [(cAm+n, cDm+n), ..., (cAm+1, cDm+1), (cAm, cDm)]
 
+    Notes
+    -----
+    The implementation here follows the "algorithm a-trous" and requires that
+    the signal length along the transformed axis be a multiple of ``2**level``.
+    If this is not the case, the user should pad up to an appropriate size
+    using a function such as ``numpy.pad``.
     """
     if not _have_c99_complex and np.iscomplexobj(data):
         data = np.asarray(data)
@@ -193,6 +199,12 @@ def swt2(data, wavelet, level, start_level=0, axes=(-2, -1)):
         where cA is approximation, cH is horizontal details, cV is
         vertical details, cD is diagonal details and m is ``start_level``.
 
+    Notes
+    -----
+    The implementation here follows the "algorithm a-trous" and requires that
+    the signal length along the transformed axes be a multiple of ``2**level``.
+    If this is not the case, the user should pad up to an appropriate size
+    using a function such as ``numpy.pad``.
     """
     axes = tuple(axes)
     data = np.asarray(data)
@@ -372,6 +384,12 @@ def swtn(data, wavelet, level, start_level=0, axes=None):
         For user-specified ``axes``, the order of the characters in the
         dictionary keys map to the specified ``axes``.
 
+    Notes
+    -----
+    The implementation here follows the "algorithm a-trous" and requires that
+    the signal length along the transformed axes be a multiple of ``2**level``.
+    If this is not the case, the user should pad up to an appropriate size
+    using a function such as ``numpy.pad``.
     """
     data = np.asarray(data)
     if not _have_c99_complex and np.iscomplexobj(data):

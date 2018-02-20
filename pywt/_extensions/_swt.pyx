@@ -31,8 +31,9 @@ def swt_max_level(size_t input_len):
     -----
     For the current implementation of the stationary wavelet transform, this
     corresponds to the number of times ``input_len`` is evenly divisible by
-    two.
-
+    two. In other words, for an n-level transform, the signal length must be a
+    multiple of ``2**n``. ``numpy.pad`` can be used to pad a signal up to an
+    appropriate length as needed.
     """
     return common.swt_max_level(input_len)
 
