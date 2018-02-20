@@ -37,14 +37,14 @@ minimize this negative effect:
   .. _`Modes.symmetric`:
 
   * ``symmetric`` - **symmetric-padding** - signal is extended by *mirroring*
-    samples::
+    samples. This mode is also known as half-sample symmetric.::
 
       ... x2 x1 | x1 x2 ... xn | xn xn-1 ...
 
   .. _`Modes.reflect`:
 
   * ``reflect`` - **reflect-padding** - signal is extended by *reflecting*
-    samples::
+    samples. This mode is also known as whole-sample symmetric.::
 
       ... x3 x2 | x1 x2 ... xn | xn-1 xn-2 ...
 
@@ -59,6 +59,20 @@ minimize this negative effect:
 
   * ``smooth`` - **smooth-padding** - signal is extended according to the first
     derivatives calculated on the edges (straight line)
+
+  .. _`Modes.antisymmetric`:
+  * ``antisymmetric`` - **anti-symmetric padding** - signal is extended by
+    *mirroring* and negating samples. This mode is also known as half-sample
+    anti-symmetric::
+
+      ... -x2 -x1 | x1 x2 ... xn | -xn -xn-1 ...
+
+  .. _`Modes.antireflect`:
+  * ``antireflect`` - **anti-symmetric-reflect padding** - signal is extended by
+    *reflecting* anti-symmetrically about the edge samples. This mode is also
+    known as whole-sample anti-symmetric::
+
+      ... (2*x1 - x3) (2*x1 - x2) | x1 x2 ... xn | (2*xn - xn-1) (2*xn - xn-2) ...
 
 :ref:`DWT <ref-dwt>` performed for these extension modes is slightly redundant, but ensures
 perfect reconstruction. To receive the smallest possible number of coefficients,
@@ -76,8 +90,8 @@ computations can be performed with the `periodization`_ mode:
   .. sourcecode:: python
 
     >>> import pywt
-    >>> print pywt.Modes.modes
-    ['zero', 'constant', 'symmetric', 'periodic', 'smooth', 'periodization']
+    >>> print(pywt.Modes.modes)
+    ['zero', 'constant', 'symmetric', 'periodic', 'smooth', 'periodization', 'reflect', 'antisymmetric', 'antireflect']
 
 
 Notice that you can use any of the following ways of passing wavelet and mode
@@ -90,9 +104,9 @@ parameters:
   >>> (a, d) = pywt.dwt([1,2,3,4,5,6], pywt.Wavelet('db2'), pywt.Modes.smooth)
 
 .. note::
-    Extending data in context of PyWavelets does not mean reallocation of the data
-    in computer's physical memory and copying values, but rather computing
-    the extra values only when they are needed.
+    Extending data in context of PyWavelets does not mean reallocation of the
+    data in the computer's physical memory and copying values, but rather
+    computing the extra values only when they are needed.
     This feature saves extra memory and CPU resources and helps to avoid page
     swapping when handling relatively big data arrays on computers with low
     physical memory.
@@ -112,6 +126,6 @@ constant           sp0           edge
 zero               zpd           constant, cval=0
 periodic           ppd           wrap
 periodization      per           N/A
-N/A                asym, asymh   N/A
-N/A                asymw         N/A
+antisymmetric      asym, asymh   N/A
+antireflect        asymw         N/A
 ================== ============= ===================
