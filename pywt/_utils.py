@@ -104,7 +104,7 @@ def is_nose_running():
     """Returns whether we are running the nose test loader
     """
     if 'nose' not in sys.modules:
-        return
+        return False
     try:
         import nose
     except ImportError:
