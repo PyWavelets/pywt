@@ -10,7 +10,7 @@ time, sst = pywt.data.nino()
 dt = time[1]-time[0]
 
 # Taken from http://nicolasfauchereau.github.io/climatecode/posts/wavelet-analysis-in-python/
-wavelet = 'cmor'
+wavelet = 'cmor1.5-1.0'
 scales = np.arange(1,128)
 
 [cfs,frequencies] = pywt.cwt(sst,scales,wavelet,dt)
