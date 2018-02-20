@@ -65,11 +65,13 @@ class _Modes(object):
     used to minimize this negative effect:
 
     zero - zero-padding                   0  0 | x1 x2 ... xn | 0  0
-    constant - constant-padding              x1 x1 | x1 x2 ... xn | xn xn
-    symmetric - symmetric-padding             x2 x1 | x1 x2 ... xn | xn xn-1
-    reflect - reflect-padding             x3 x2 | x1 x2 ... xn | xn-1 xn-2
-    periodic - periodic-padding            xn-1 xn | x1 x2 ... xn | x1 x2
-    smooth - smooth-padding               (1st derivative interpolation)
+    constant - constant-padding          x1 x1 | x1 x2 ... xn | xn xn
+    symmetric - symmetric-padding        x2 x1 | x1 x2 ... xn | xn xn-1
+    reflect - reflect-padding            x3 x2 | x1 x2 ... xn | xn-1 xn-2
+    periodic - periodic-padding        xn-1 xn | x1 x2 ... xn | x1 x2
+    smooth - smooth-padding             (1st derivative interpolation)
+    antisymmetric -                    -x2 -x1 | x1 x2 ... xn | -xn -xn-1
+    antireflect -                      -x3 -x2 | x1 x2 ... xn | -xn-1 -xn-2
 
     DWT performed for these extension modes is slightly redundant, but ensure a
     perfect reconstruction for IDWT. To receive the smallest possible number of
@@ -83,7 +85,7 @@ class _Modes(object):
     --------
     >>> import pywt
     >>> pywt.Modes.modes
-        ['zero', 'constant', 'symmetric', 'reflect', 'periodic', 'smooth', 'periodization']
+        ['zero', 'constant', 'symmetric', 'reflect', 'periodic', 'smooth', 'periodization', 'antisymmetric', 'antireflect']
     >>> # The different ways of passing wavelet and mode parameters
     >>> (a, d) = pywt.dwt([1,2,3,4,5,6], 'db2', 'smooth')
     >>> (a, d) = pywt.dwt([1,2,3,4,5,6], pywt.Wavelet('db2'), pywt.Modes.smooth)
@@ -104,10 +106,12 @@ class _Modes(object):
     periodic = common.MODE_PERIODIC
     smooth = common.MODE_SMOOTH
     periodization = common.MODE_PERIODIZATION
+    antisymmetric = common.MODE_ANTISYMMETRIC
+    antireflect = common.MODE_ANTIREFLECT
 
     # Caution: order in modes list below must match _old_modes above
     modes = ["zero", "constant", "symmetric", "periodic", "smooth",
-             "periodization", "reflect"]
+             "periodization", "reflect", "antisymmetric", "antireflect"]
 
     def from_object(self, mode):
         if isinstance(mode, int):

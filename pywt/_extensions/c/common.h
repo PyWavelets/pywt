@@ -82,6 +82,14 @@ typedef enum {
                             * reflect back and forth without repeating edge values:
                             * 1 2 3 2 | 1 2 3 | 2 1 2 3
                             */
+       MODE_ANTISYMMETRIC,  /* assymmetric version of "MODE_SYMMETRIC"
+                            * 2 3 -3 -2 -1 | 1 2 3 | -3 -2 -1 1 2
+                            */
+       // currently anti-reflect will not pad by more than the original signal
+       // length outside of this region it is equivalent to zero-padding.
+       MODE_ANTIREFLECT,    /* assymmetric version of "MODE_REFLECT"
+                             * 0 0 -2 -1 0 | 1 2 3 | 4 5 6 0 0
+                             */
        MODE_MAX,
 } MODE;
 
