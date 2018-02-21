@@ -11,7 +11,7 @@ wavelet packets signal decomposition and reconstruction module.
 """
 
 from __future__ import division, print_function, absolute_import
-
+from distutils.version import LooseVersion
 
 from ._extensions._pywt import *
 from ._functions import *
@@ -34,6 +34,12 @@ except NameError:
     pass
 
 from pywt.version import version as __version__
+
+import numpy as np
+if np.lib.NumpyVersion(np.__version__) >= '1.14.0':
+    from ._utils import is_nose_running
+    if is_nose_running():
+        np.set_printoptions(legacy='1.13')
 
 from numpy.testing import Tester
 test = Tester().test
