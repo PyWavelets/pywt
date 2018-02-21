@@ -40,7 +40,7 @@ matrix:
     - os: linux
       python: 3.5
       env:
-        - NUMPYSPEC=numpy
+        - NUMPYSPEC="numpy==1.13.3"
         - REFGUIDE_CHECK=1  # run doctests only
     - os: osx
       osx_image: xcode7.3
