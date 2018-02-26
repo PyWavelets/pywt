@@ -112,12 +112,6 @@ All contributions including bug reports, bug fixes, new feature implementations
 and documentation improvements are welcome.  Moreover, developers with an
 interest in PyWavelets are very welcome to join the development team!
 
-
-Python 3
---------
-
-Python 3.x is fully supported from release v0.3.0 on.
-
 Contact
 -------
 
@@ -128,6 +122,17 @@ License
 -------
 
 PyWavelets is a free Open Source software released under the MIT license.
+
+Citing
+------
+
+If you use PyWavelets in a scientific publication, we would appreciate
+citations of the project:
+
+    Lee G, Wasilewski F, Gommers R, Wohlfahrt K, O'Leary A, Nahrstaedt H,
+    and Contributors, "PyWavelets - Wavelet Transforms in Python", 2006-,
+    https://github.com/PyWavelets/pywt [Online; accessed 2018-MM-DD].
+
 
 Contents
 --------
