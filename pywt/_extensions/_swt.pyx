@@ -2,6 +2,7 @@
 cimport common
 cimport c_wt
 
+import warnings
 import numpy as np
 cimport numpy as np
 
@@ -35,7 +36,13 @@ def swt_max_level(size_t input_len):
     multiple of ``2**n``. ``numpy.pad`` can be used to pad a signal up to an
     appropriate length as needed.
     """
-    return common.swt_max_level(input_len)
+    max_level = common.swt_max_level(input_len)
+    if max_level == 0:
+        warnings.warn(
+            "No levels of stationary wavelet decomposition are possible. The "
+            "signal to be transformed must have a size that is a multiple "
+            "of 2**n for an n-level decomposition.")
+    return max_level
 
 
 def swt(cdata_t[::1] data, Wavelet wavelet, size_t level, size_t start_level):
@@ -56,7 +63,8 @@ def swt(cdata_t[::1] data, Wavelet wavelet, size_t level, size_t start_level):
 
     if end_level > common.swt_max_level(data.size):
         msg = ("Level value too high (max level for current data size and "
-               "start_level is %d)." % (swt_max_level(data.size) - start_level))
+               "start_level is %d)." % (
+                common.swt_max_level(data.size) - start_level))
         raise ValueError(msg)
 
     output_len = common.swt_buffer_length(data.size)
@@ -156,7 +164,8 @@ cpdef swt_axis(np.ndarray data, Wavelet wavelet, size_t level,
 
     if end_level > common.swt_max_level(data.shape[axis]):
         msg = ("Level value too high (max level for current data size and "
-               "start_level is %d)." % (swt_max_level(data.shape[axis]) - start_level))
+               "start_level is %d)." % (
+                common.swt_max_level(data.shape[axis]) - start_level))
         raise ValueError(msg)
 
     data = data.astype(_check_dtype(data), copy=False)
