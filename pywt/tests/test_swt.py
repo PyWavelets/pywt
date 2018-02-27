@@ -7,7 +7,8 @@ from copy import deepcopy
 from itertools import combinations
 import numpy as np
 from numpy.testing import (run_module_suite, dec, assert_allclose, assert_,
-                           assert_equal, assert_raises, assert_array_equal)
+                           assert_equal, assert_raises, assert_array_equal,
+                           assert_warns)
 
 import pywt
 from pywt._extensions._swt import swt_axis
@@ -57,7 +58,21 @@ def test_swt_decomposition():
 
     coeffs = pywt.swt(x, db1)
     assert_(len(coeffs) == 3)
-    assert_(pywt.swt_max_level(len(x)) == 3)
+    assert_(pywt.swt_max_level(len(x)), 3)
+
+
+def test_swt_max_level():
+    # odd sized signal will warn about no levels of decomposition possible
+    assert_warns(UserWarning, pywt.swt_max_level, 11)
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore', UserWarning)
+        assert_equal(pywt.swt_max_level(11), 0)
+
+    # no warnings when >= 1 level of decomposition possible
+    assert_equal(pywt.swt_max_level(2), 1)     # divisible by 2**1
+    assert_equal(pywt.swt_max_level(4*3), 2)    # divisible by 2**2
+    assert_equal(pywt.swt_max_level(16), 4)    # divisible by 2**4
+    assert_equal(pywt.swt_max_level(16*3), 4)  # divisible by 2**4
 
 
 def test_swt_axis():
