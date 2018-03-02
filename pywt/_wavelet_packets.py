@@ -73,7 +73,6 @@ class BaseNode(object):
 
         # data - signal on level 0, coeffs on higher levels
         self.data = data
-
         # Need to retain original data size/shape so we can trim any excess
         # boundary coefficients from the inverse transform.
         if self.data is None:
