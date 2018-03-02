@@ -63,14 +63,17 @@ class BaseNode(object):
             self.level = parent.level + 1
             self._maxlevel = parent.maxlevel
             self.path = parent.path + node_name
+            self.axes = parent.axes
         else:
             self.wavelet = None
             self.mode = None
+            self.axes = None
             self.path = ""
             self.level = 0
 
         # data - signal on level 0, coeffs on higher levels
         self.data = data
+
         # Need to retain original data size/shape so we can trim any excess
         # boundary coefficients from the inverse transform.
         if self.data is None:
@@ -427,7 +430,8 @@ class Node(BaseNode):
             if self._get_node(self.D) is None:
                 self._create_subnode(self.D, data_d)
         else:
-            data_a, data_d = dwt(self.data, self.wavelet, self.mode)
+            data_a, data_d = dwt(self.data, self.wavelet, self.mode,
+                                 axis=self.axes)
             self._create_subnode(self.A, data_a)
             self._create_subnode(self.D, data_d)
         return self._get_node(self.A), self._get_node(self.D)
@@ -445,7 +449,7 @@ class Node(BaseNode):
             raise ValueError("Node is a leaf node and cannot be reconstructed"
                              " from subnodes.")
         else:
-            rec = idwt(data_a, data_d, self.wavelet, self.mode)
+            rec = idwt(data_a, data_d, self.wavelet, self.mode, axis=self.axes)
             if self._data_shape is not None and (
                     rec.shape != self._data_shape):
                 rec = rec[tuple([slice(sz) for sz in self._data_shape])]
@@ -484,7 +488,7 @@ class Node2D(BaseNode):
             data_ll, data_lh, data_hl, data_hh = None, None, None, None
         else:
             data_ll, (data_hl, data_lh, data_hh) =\
-                dwt2(self.data, self.wavelet, self.mode)
+                dwt2(self.data, self.wavelet, self.mode, axes=self.axes)
         self._create_subnode(self.LL, data_ll)
         self._create_subnode(self.LH, data_lh)
         self._create_subnode(self.HL, data_hl)
@@ -516,7 +520,7 @@ class Node2D(BaseNode):
             )
         else:
             coeffs = data_ll, (data_hl, data_lh, data_hh)
-            rec = idwt2(coeffs, self.wavelet, self.mode)
+            rec = idwt2(coeffs, self.wavelet, self.mode, axes=self.axes)
             if self._data_shape is not None and (
                     rec.shape != self._data_shape):
                 rec = rec[tuple([slice(sz) for sz in self._data_shape])]
@@ -539,19 +543,23 @@ class NodeND(BaseNode):
     """
     WaveletPacket tree node.
 
-    Subnodes are called 'a' (LL), 'h' (HL), 'v' (LH) and  'd' (HH), like
-    approximation and detail coefficients in the 2D Discrete Wavelet Transform
+    Unlike Node and Node2D self.PARTS is a dictionary.
+    For 1D:  self.PARTS has keys 'a' and 'd'
+    For 2D:  self.PARTS has keys 'aa', 'ad', 'da', 'dd'
+    For 3D:  self.PARTS has keys 'aaa', 'aad', 'ada', 'daa', ..., 'ddd'
+
+    ndim corresponds to the number of data dimensions
+    ndim_transform is the number of dimensions that are to be transformed
     """
-    def __init__(self, parent, data, node_name, ndim):
+    def __init__(self, parent, data, node_name, ndim, ndim_transform):
         super(NodeND, self).__init__(parent=parent, data=data,
                                      node_name=node_name)
+        self.PART_LEN = ndim_transform
         self.PARTS = OrderedDict()
-        for key in product(*(('ad', )*ndim)):
+        for key in product(*(('ad', )*self.PART_LEN)):
             self.PARTS[''.join(key)] = None
-        self.PART_LEN = ndim
         self.ndim = ndim
-        #for part in self.PARTS:
-        #    eval("self.{0} = '{0}'".format(part))  # TODO: don't use this method.  try LEAF_DICT or something similar instead
+        self.ndim_transform = ndim_transform
 
     def _init_subnodes(self):
         # need this empty so the BaseNode's _init_subnodes isn't called during
@@ -577,7 +585,8 @@ class NodeND(BaseNode):
 
     def _create_subnode(self, part, data=None, overwrite=True):
         return self._create_subnode_base(node_cls=NodeND, part=part, data=data,
-                                         overwrite=overwrite, ndim=self.ndim)
+                                         overwrite=overwrite, ndim=self.ndim,
+                                         ndim_transform=self.ndim_transform)
 
     @property
     def pretty_path(self):
@@ -624,7 +633,7 @@ class NodeND(BaseNode):
         if self.is_empty:
             coefs = {key: None for key in self.PARTS.keys()}
         else:
-            coefs = dwtn(self.data, self.wavelet, self.mode)
+            coefs = dwtn(self.data, self.wavelet, self.mode, axes=self.axes)
 
         for key, data in coefs.items():
             self._create_subnode(key, data)
@@ -646,7 +655,7 @@ class NodeND(BaseNode):
                 "are None. Cannot reconstruct node." % self.path
             )
         else:
-            rec = idwtn(coeffs, self.wavelet, self.mode)
+            rec = idwtn(coeffs, self.wavelet, self.mode, axes=self.axes)
             if update:
                 self.data = rec
             return rec
@@ -669,21 +678,28 @@ class WaveletPacket(Node):
         Maximum level of decomposition.
         If None, it will be calculated based on the `wavelet` and `data`
         length using `pywt.dwt_max_level`.
+    axis : int, optional
+        The axis to transform.
     """
-    def __init__(self, data, wavelet, mode='symmetric', maxlevel=None):
+    def __init__(self, data, wavelet, mode='symmetric', maxlevel=None,
+                 axis=-1):
         super(WaveletPacket, self).__init__(None, data, "")
 
         if not isinstance(wavelet, Wavelet):
             wavelet = Wavelet(wavelet)
         self.wavelet = wavelet
         self.mode = mode
+        self.axes = axis  # self.axes is just an integer for 1D transforms
 
         if data is not None:
             data = np.asarray(data)
-            assert data.ndim == 1
-            self.data_size = data.shape[0]
+            if self.axes < 0:
+                self.axes = self.axes + data.ndim
+            if not 0 <= self.axes < data.ndim:
+                raise ValueError("Axis greater than data dimensions")
+            self.data_size = data.shape
             if maxlevel is None:
-                maxlevel = dwt_max_level(self.data_size, self.wavelet)
+                maxlevel = dwt_max_level(data.shape[self.axes], self.wavelet)
         else:
             self.data_size = None
 
@@ -701,6 +717,8 @@ class WaveletPacket(Node):
         """
         if self.has_any_subnode:
             data = super(WaveletPacket, self).reconstruct(update)
+            if self.data_size is not None and (data.shape != self.data_size):
+                data = data[[slice(sz) for sz in self.data_size]]
             if update:
                 self.data = data
             return data
@@ -769,21 +787,29 @@ class WaveletPacket2D(Node2D):
         Maximum level of decomposition.
         If None, it will be calculated based on the `wavelet` and `data`
         length using `pywt.dwt_max_level`.
+    axes : 2-tuple of ints, optional
+        The axes that will be transformed.
     """
-    def __init__(self, data, wavelet, mode='smooth', maxlevel=None):
+    def __init__(self, data, wavelet, mode='smooth', maxlevel=None,
+                 axes=(-2, -1)):
         super(WaveletPacket2D, self).__init__(None, data, "")
 
         if not isinstance(wavelet, Wavelet):
             wavelet = Wavelet(wavelet)
         self.wavelet = wavelet
         self.mode = mode
-
+        self.axes = tuple(axes)
+        if len(np.unique(self.axes)) != 2:
+            raise ValueError("Expected two unique axes.")
         if data is not None:
             data = np.asarray(data)
-            assert data.ndim == 2
+            if data.ndim < 2:
+                raise ValueError(
+                    "WaveletPacket2D requires data with 2 or more dimensions.")
             self.data_size = data.shape
+            transform_size = [data.shape[ax] for ax in self.axes]
             if maxlevel is None:
-                maxlevel = dwt_max_level(min(self.data_size), self.wavelet)
+                maxlevel = dwt_max_level(min(transform_size), self.wavelet)
         else:
             self.data_size = None
         self._maxlevel = maxlevel
@@ -800,6 +826,8 @@ class WaveletPacket2D(Node2D):
         """
         if self.has_any_subnode:
             data = super(WaveletPacket2D, self).reconstruct(update)
+            if self.data_size is not None and (data.shape != self.data_size):
+                data = data[[slice(sz) for sz in self.data_size]]
             if update:
                 self.data = data
             return data
@@ -867,33 +895,54 @@ class WaveletPacketND(NodeND):
     mode : str, optional
         Signal extension mode for the `dwt` and `idwt` decomposition and
         reconstruction functions.
-    maxlevel : int
+    maxlevel : int, optional
         Maximum level of decomposition.
         If None, it will be calculated based on the `wavelet` and `data`
         length using `pywt.dwt_max_level`.
+    axes : tuple of int, optional
+        The axes to transform.  The default value of `None` corresponds to all
+        axes.
     """
     def __init__(self, data, wavelet, mode='smooth', maxlevel=None,
-                 ndim=None):
-        if (data is None) and (ndim is None):
+                 axes=None):
+        if (data is None) and (axes is None):
             # ndim is required to create a NodeND object
-            raise ValueError("If data is None, ndim must be specified")
-        if ndim is None:
-            ndim = data.ndim
+            raise ValueError("If data is None, axes must be specified")
 
-        super(WaveletPacketND, self).__init__(None, data, "", ndim)
-
-        if not isinstance(wavelet, Wavelet):
-            wavelet = Wavelet(wavelet)
-        self.wavelet = wavelet
-        self.mode = mode
+        # axes determines the number of transform dimensions
+        if axes is None:
+            axes = range(data.ndim)
+        elif np.isscalar(axes):
+            axes = (axes, )
+        axes = tuple(axes)
+        if len(np.unique(axes)) != len(axes):
+            raise ValueError("Expected a set of unique axes.")
+        ndim_transform = len(axes)
 
         if data is not None:
             data = np.asarray(data)
             if data.ndim == 0:
                 raise ValueError("data must be at least 1D")
+            ndim = data.ndim
+        else:
+            ndim = len(axes)
+
+        super(WaveletPacketND, self).__init__(None, data, "", ndim,
+                                              ndim_transform)
+        if not isinstance(wavelet, Wavelet):
+            wavelet = Wavelet(wavelet)
+        self.wavelet = wavelet
+        self.mode = mode
+        self.axes = axes
+        self.ndim_transform = ndim_transform
+        if data is not None:
+            if data.ndim < len(axes):
+                raise ValueError("The number of axes exceeds the number of "
+                                 "data dimensions.")
             self.data_size = data.shape
+            transform_size = [data.shape[ax] for ax in self.axes]
             if maxlevel is None:
-                maxlevel = dwt_max_level(min(self.data_size), self.wavelet)
+                maxlevel = dwt_max_level(min(transform_size), self.wavelet)
         else:
             self.data_size = None
         self._maxlevel = maxlevel
