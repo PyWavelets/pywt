@@ -28,12 +28,19 @@ def test_traversing_tree_nd():
     assert_allclose(wp['dd'].data, np.zeros((4, 4)), rtol=1e-12, atol=1e-14)
 
     assert_allclose(wp['aa'*2].data, np.array([[10., 26.]] * 2), rtol=1e-12)
+    # __getitem__ using a tuple acces instead
+    assert_allclose(wp[('aa', 'aa')].data, np.array([[10., 26.]] * 2),
+                    rtol=1e-12)
 
     assert_(wp['aa']['aa'].data is wp['aa'*2].data)
     assert_allclose(wp['aa'*3].data, np.array([[36.]]), rtol=1e-12)
 
     assert_raises(IndexError, lambda: wp['aa'*(wp.maxlevel+1)])
     assert_raises(ValueError, lambda: wp['f'])
+
+    # getitem input must be a string or tuple of strings
+    assert_raises(TypeError, wp.__getitem__, (5, 3))
+    assert_raises(TypeError, wp.__getitem__, 5)
 
 
 def test_accessing_node_atributes_nd():

@@ -239,6 +239,14 @@ class BaseNode(object):
         If node does not exist yet, it will be created by decomposition of its
         parent node.
         """
+        errmsg = ("Invalid path parameter type - expected string or "
+                  "tuple of strings but got %s." % type(path))
+        if isinstance(path, tuple):
+            # concatenate tuple of strings into a single string
+            try:
+                path = ''.join(path)
+            except TypeError:
+                raise TypeError(errmsg)
         if isinstance(path, str):
             if (self.maxlevel is not None and
                     len(path) > self.maxlevel * self.PART_LEN):
@@ -249,8 +257,7 @@ class BaseNode(object):
             else:
                 return self
         else:
-            raise TypeError("Invalid path parameter type - expected string but"
-                            " got %s." % type(path))
+            raise TypeError(errmsg)
 
     def __setitem__(self, path, data):
         """
