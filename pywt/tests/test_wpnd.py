@@ -7,7 +7,7 @@ from functools import reduce
 import operator
 import numpy as np
 from numpy.testing import (run_module_suite, assert_allclose, assert_,
-                           assert_raises)
+                           assert_raises, assert_equal)
 
 import pywt
 
@@ -78,8 +78,13 @@ def test_data_reconstruction_delete_nodes_nd():
     x = np.array([[1, 2, 3, 4, 5, 6, 7, 8]] * 8, dtype=np.float64)
     wp = pywt.WaveletPacketND(data=x, wavelet='db1', mode='symmetric')
 
+    # The user must supply either data or axes
+    assert_raises(ValueError, pywt.WaveletPacketND, data=None, wavelet='db1',
+                  axes=None)
+
     new_wp = pywt.WaveletPacketND(data=None, wavelet='db1', mode='symmetric',
-                                  ndim=x.ndim)
+                                  axes=range(x.ndim))
+
     new_wp['ad'+'da'] = wp['ad'+'da'].data
     new_wp['ad'*2] = wp['ad'+'da'].data
     new_wp['ad'+'dd'] = np.zeros((2, 2), dtype=np.float64)
@@ -120,10 +125,38 @@ def test_wavelet_packet_dtypes():
         # full decomposition
         wp.get_level(wp.maxlevel)
 
-        # recontsruct from coefficients should preserve dtype
+        # reconstruction from coefficients should preserve dtype
         r = wp.reconstruct(False)
         assert_equal(r.dtype, x.dtype)
         assert_allclose(r, x, atol=1e-6, rtol=1e-6)
+
+
+def test_wavelet_packet_axes():
+    rstate = np.random.RandomState(0)
+    shape = (32, 16, 8)
+    x = rstate.standard_normal(shape)
+    for axes in [(0, 1), 1, (-3, -2, -1), (0, 2), (1, )]:
+        wp = pywt.WaveletPacketND(data=x, wavelet='db1', mode='symmetric',
+                                  axes=axes)
+
+        # partial decomposition
+        nodes = wp.get_level(1)
+        # size along the transformed axes has changed
+        for ax2 in range(x.ndim):
+            if ax2 in tuple(np.atleast_1d(axes) % x.ndim):
+                nodes[0].data.shape[ax2] < x.shape[ax2]
+            else:
+                nodes[0].data.shape[ax2] == x.shape[ax2]
+
+        # recontsruction from coefficients should preserve dtype
+        r = wp.reconstruct(False)
+        assert_equal(r.dtype, x.dtype)
+        assert_allclose(r, x, atol=1e-12, rtol=1e-12)
+
+    # must have non-duplicate axes
+    assert_raises(ValueError, pywt.WaveletPacketND, data=x, wavelet='db1',
+                  axes=(0, 0))
+
 
 
 if __name__ == '__main__':

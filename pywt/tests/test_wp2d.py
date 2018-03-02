@@ -177,3 +177,34 @@ def test_2d_roundtrip():
                               maxlevel=3)
     r = wp.reconstruct()
     assert_allclose(original, r, atol=1e-12, rtol=1e-12)
+
+
+def test_wavelet_packet_axes():
+    rstate = np.random.RandomState(0)
+    shape = (32, 16)
+    x = rstate.standard_normal(shape)
+    for axes in [(0, 1), (1, 0), (-2, 1)]:
+        wp = pywt.WaveletPacket2D(data=x, wavelet='db1', mode='symmetric',
+                                  axes=axes)
+
+        # partial decomposition
+        nodes = wp.get_level(2)
+        # size along the transformed axes has changed
+        for ax2 in range(x.ndim):
+            if ax2 in tuple(np.asarray(axes) % x.ndim):
+                nodes[0].data.shape[ax2] < x.shape[ax2]
+            else:
+                nodes[0].data.shape[ax2] == x.shape[ax2]
+
+        # recontsruction from coefficients should preserve dtype
+        r = wp.reconstruct(False)
+        assert_equal(r.dtype, x.dtype)
+        assert_allclose(r, x, atol=1e-12, rtol=1e-12)
+
+    # must have two non-duplicate axes
+    assert_raises(ValueError, pywt.WaveletPacket2D, data=x, wavelet='db1',
+                  axes=(0, 0))
+    assert_raises(ValueError, pywt.WaveletPacket2D, data=x, wavelet='db1',
+                  axes=(0, ))
+    assert_raises(ValueError, pywt.WaveletPacket2D, data=x, wavelet='db1',
+                  axes=(0, 1, 2))
