@@ -71,14 +71,14 @@ def swt(data, wavelet, level=None, start_level=0, axis=-1):
 
     wavelet = _as_wavelet(wavelet)
 
-    if level is None:
-        level = swt_max_level(len(data))
-
     if axis < 0:
         axis = axis + data.ndim
     if not 0 <= axis < data.ndim:
         raise ValueError("Axis greater than data dimensions")
 
+    if level is None:
+        level = swt_max_level(data.shape[axis])
+        
     if data.ndim == 1:
         ret = _swt(data, wavelet, level, start_level)
     else:
