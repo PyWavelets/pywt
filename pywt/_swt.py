@@ -78,7 +78,7 @@ def swt(data, wavelet, level=None, start_level=0, axis=-1):
 
     if level is None:
         level = swt_max_level(data.shape[axis])
-        
+
     if data.ndim == 1:
         ret = _swt(data, wavelet, level, start_level)
     else:
