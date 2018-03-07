@@ -652,5 +652,22 @@ def test_error_on_continuous_wavelet():
             assert_raises(ValueError, rec_fun, c, wavelet=cwave)
 
 
+def test_default_level():
+    # default level is the maximum permissible for the transformed axes
+    data = np.ones((128, 32, 4))
+    wavelet = ('db8', 'db1')
+    for dec_func in [pywt.wavedec2, pywt.wavedecn]:
+        for axes in [(0, 1), (2, 1), (0, 2)]:
+            c = dec_func(data, wavelet, axes=axes)
+            max_lev = np.min([pywt.dwt_max_level(data.shape[ax], wav)
+                              for ax, wav in zip(axes, wavelet)])
+            assert_equal(len(c[1:]), max_lev)
+
+    for ax in [0, 1]:
+        c = pywt.wavedecn(data, wavelet[ax], axes=(ax, ))
+        assert_equal(len(c[1:]),
+                     pywt.dwt_max_level(data.shape[ax], wavelet[ax]))
+
+
 if __name__ == '__main__':
     run_module_suite()

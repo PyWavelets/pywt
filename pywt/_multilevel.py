@@ -24,21 +24,21 @@ __all__ = ['wavedec', 'waverec', 'wavedec2', 'waverec2', 'wavedecn',
            'waverecn', 'coeffs_to_array', 'array_to_coeffs']
 
 
-def _check_level(size, dec_len, level):
-    """
-    Set the default decomposition level or check if requested level is valid.
-    """
+def _check_level(sizes, dec_lens, level):
+    if np.isscalar(sizes):
+        sizes = (sizes, )
+    if np.isscalar(dec_lens):
+        dec_lens = (dec_lens, )
+    max_level = np.min([dwt_max_level(s, d) for s, d in zip(sizes, dec_lens)])
     if level is None:
-        level = dwt_max_level(size, dec_len)
+        level = max_level
     elif level < 0:
         raise ValueError(
             "Level value of %d is too low . Minimum level is 0." % level)
-    else:
-        max_level = dwt_max_level(size, dec_len)
-        if level > max_level:
-            raise ValueError(
-                "Level value of %d is too high.  Maximum allowed is %d." % (
-                    level, max_level))
+    elif level > max_level:
+        raise ValueError(
+            "Level value of %d is too high.  Maximum allowed is %d." % (
+                level, max_level))
     return level
 
 
@@ -226,7 +226,7 @@ def wavedec2(data, wavelet, mode='symmetric', level=None, axes=(-2, -1)):
     wavelets = _wavelets_per_axis(wavelet, axes)
     dec_lengths = [w.dec_len for w in wavelets]
 
-    level = _check_level(min(axes_sizes), max(dec_lengths), level)
+    level = _check_level(axes_sizes, dec_lengths, level)
 
     coeffs_list = []
 
@@ -406,7 +406,7 @@ def wavedecn(data, wavelet, mode='symmetric', level=None, axes=None):
     wavelets = _wavelets_per_axis(wavelet, axes)
     dec_lengths = [w.dec_len for w in wavelets]
 
-    level = _check_level(min(axes_shapes), max(dec_lengths), level)
+    level = _check_level(axes_shapes, dec_lengths, level)
 
     coeffs_list = []
 
