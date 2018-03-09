@@ -198,6 +198,15 @@ def test_swt_roundtrip_dtypes():
             assert_allclose(x, xr, rtol=1e-6, atol=1e-7)
 
 
+def test_swt_default_level_by_axis():
+    # make sure default number of levels matches the max level along the axis
+    wav = 'db2'
+    x = np.ones((2**3, 2**4, 2**5))
+    for axis in (0, 1, 2):
+        sdec = pywt.swt(x, wav, level=None, start_level=0, axis=axis)
+        assert_equal(len(sdec), pywt.swt_max_level(x.shape[axis]))
+
+
 def test_swt2_ndim_error():
     x = np.ones(8)
     with warnings.catch_warnings():
