@@ -161,7 +161,7 @@ def waverec(coeffs, wavelet, mode='symmetric', axis=-1):
             except IndexError:
                 raise ValueError("Axis greater than coefficient dimensions")
             except AttributeError:
-                raise AttributeError(" Wrong coefficient format, if using 'array_to_coeffs' please specify"
+                raise AttributeError("Wrong coefficient format, if using 'array_to_coeffs' please specify "
                                      "the 'output_format' parameter")
         a = idwt(a, d, wavelet, mode, axis)
 
