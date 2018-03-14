@@ -3,7 +3,7 @@
 .. currentmodule:: pywt
 
 =================================
-Continous Wavelet Transform (CWT)
+Continuous Wavelet Transform (CWT)
 =================================
 
 This section describes functions used to perform single continous wavelet
