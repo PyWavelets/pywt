@@ -256,7 +256,7 @@ from plain Python lists of filter coefficients and a *filter bank-like* object.
 
 .. class:: ContinuousWavelet(name)
 
-  Describes properties of a continous wavelet identified by the specified wavelet ``name``.
+  Describes properties of a continuous wavelet identified by the specified wavelet ``name``.
   In order to use a built-in wavelet the ``name`` parameter must be a valid
   wavelet name from the :func:`pywt.wavelist` list.
 

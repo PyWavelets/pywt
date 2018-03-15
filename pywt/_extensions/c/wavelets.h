@@ -95,13 +95,13 @@ int is_discrete_wavelet(WAVELET_NAME name);
  * order - order of the wavelet (ie. coif3 has order 3)
  */
 DiscreteWavelet* discrete_wavelet(WAVELET_NAME name, unsigned int order);
-ContinuousWavelet* continous_wavelet(WAVELET_NAME name, unsigned int order);
+ContinuousWavelet* continuous_wavelet(WAVELET_NAME name, unsigned int order);
 /*
  * Allocate blank Discrete Wavelet with zero-filled filters of given length
  */
 DiscreteWavelet* blank_discrete_wavelet(size_t filters_length);
 
-ContinuousWavelet* blank_continous_wavelet(void);
+ContinuousWavelet* blank_continuous_wavelet(void);
 
 /* Deep copy Discrete Wavelet */
 DiscreteWavelet* copy_discrete_wavelet(DiscreteWavelet* base);
@@ -112,4 +112,4 @@ DiscreteWavelet* copy_discrete_wavelet(DiscreteWavelet* base);
  */
 void free_discrete_wavelet(DiscreteWavelet *wavelet);
 
-void free_continous_wavelet(ContinuousWavelet *wavelet);
+void free_continuous_wavelet(ContinuousWavelet *wavelet);
