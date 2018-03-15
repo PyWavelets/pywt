@@ -82,6 +82,7 @@ def test_waverec_invalid_inputs():
     message = "Wrong coefficient format, if using 'array_to_coeffs' please specify the 'output_format' parameter"
     assert_raises_regex(AttributeError, message, pywt.waverec, coeffs_from_arr, 'haar')
 
+
 def test_waverec_accuracies():
     rstate = np.random.RandomState(1234)
     x0 = rstate.randn(8)
