@@ -27,7 +27,7 @@ def cwt(data, scales, wavelet, sampling_period=1.):
     Returns
     -------
     coefs : array_like
-        Continous wavelet transform of the input signal for the given scales
+        Continuous wavelet transform of the input signal for the given scales
         and wavelet
     frequencies : array_like
         if the unit of sampling period are seconds and given, than frequencies

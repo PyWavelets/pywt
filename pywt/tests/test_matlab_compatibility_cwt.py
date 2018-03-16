@@ -1,5 +1,5 @@
 """
-Test used to verify PyWavelets Continous Wavelet Transform computation
+Test used to verify PyWavelets Continuous Wavelet Transform computation
 accuracy against MathWorks Wavelet Toolbox.
 """
 

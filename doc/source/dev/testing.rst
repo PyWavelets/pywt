@@ -7,7 +7,7 @@ Continous integration with Travis-CI
 ------------------------------------
 
 The project is using `Travis-CI <https://travis-ci.org/PyWavelets/pywt>`_ service
-for continous integration and testing.
+for continuous integration and testing.
 
 Current build status is:
 

@@ -352,7 +352,7 @@ DiscreteWavelet* discrete_wavelet(WAVELET_NAME name, unsigned int order)
     return w;
 }
 
-ContinuousWavelet* continous_wavelet(WAVELET_NAME name, unsigned int order)
+ContinuousWavelet* continuous_wavelet(WAVELET_NAME name, unsigned int order)
 {
     ContinuousWavelet *w;
     switch(name){
@@ -360,7 +360,7 @@ ContinuousWavelet* continous_wavelet(WAVELET_NAME name, unsigned int order)
         case GAUS:
             if (order > 8)
                 return NULL;
-            w = blank_continous_wavelet();
+            w = blank_continuous_wavelet();
             if(w == NULL) return NULL;
 
             w->base.support_width = -1;
@@ -381,7 +381,7 @@ ContinuousWavelet* continous_wavelet(WAVELET_NAME name, unsigned int order)
             w->fbsp_order = 0;
             break;
         case MEXH:
-            w = blank_continous_wavelet();
+            w = blank_continuous_wavelet();
             if(w == NULL) return NULL;
 
             w->base.support_width = -1;
@@ -399,7 +399,7 @@ ContinuousWavelet* continous_wavelet(WAVELET_NAME name, unsigned int order)
             w->fbsp_order = 0;
             break;
         case MORL:
-            w = blank_continous_wavelet();
+            w = blank_continuous_wavelet();
             if(w == NULL) return NULL;
 
             w->base.support_width = -1;
@@ -419,7 +419,7 @@ ContinuousWavelet* continous_wavelet(WAVELET_NAME name, unsigned int order)
         case CGAU:
             if (order > 8)
                 return NULL;
-            w = blank_continous_wavelet();
+            w = blank_continuous_wavelet();
             if(w == NULL) return NULL;
 
             w->base.support_width = -1;
@@ -441,7 +441,7 @@ ContinuousWavelet* continous_wavelet(WAVELET_NAME name, unsigned int order)
             break;
         case SHAN:
 
-            w = blank_continous_wavelet();
+            w = blank_continuous_wavelet();
             if(w == NULL) return NULL;
 
             w->base.support_width = -1;
@@ -460,7 +460,7 @@ ContinuousWavelet* continous_wavelet(WAVELET_NAME name, unsigned int order)
             break;
         case FBSP:
 
-            w = blank_continous_wavelet();
+            w = blank_continuous_wavelet();
             if(w == NULL) return NULL;
 
             w->base.support_width = -1;
@@ -479,7 +479,7 @@ ContinuousWavelet* continous_wavelet(WAVELET_NAME name, unsigned int order)
             break;
         case CMOR:
 
-            w = blank_continous_wavelet();
+            w = blank_continuous_wavelet();
             if(w == NULL) return NULL;
 
             w->base.support_width = -1;
@@ -561,7 +561,7 @@ DiscreteWavelet* blank_discrete_wavelet(size_t filters_length)
     return w;
 }
 
-ContinuousWavelet* blank_continous_wavelet(void)
+ContinuousWavelet* blank_continuous_wavelet(void)
 {
     ContinuousWavelet* w;
 
@@ -669,7 +669,7 @@ void free_discrete_wavelet(DiscreteWavelet *w){
     wtfree(w);
 }
 
-void free_continous_wavelet(ContinuousWavelet *w){
+void free_continuous_wavelet(ContinuousWavelet *w){
 
     /* finally free struct */
     wtfree(w);

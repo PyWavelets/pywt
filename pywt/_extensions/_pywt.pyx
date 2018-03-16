@@ -713,7 +713,7 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
         else:
             base_name = self.name
         family_code, family_number = wname_to_code(base_name)
-        self.w = <wavelet.ContinuousWavelet*> wavelet.continous_wavelet(
+        self.w = <wavelet.ContinuousWavelet*> wavelet.continuous_wavelet(
             family_code, family_number)
 
         if self.w is NULL:
@@ -755,7 +755,7 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
 
     def __dealloc__(self):
         if self.w is not NULL:
-            wavelet.free_continous_wavelet(self.w)
+            wavelet.free_continuous_wavelet(self.w)
             self.w = NULL
 
     property family_number:
