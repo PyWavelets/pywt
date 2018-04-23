@@ -467,7 +467,8 @@ int CAT(TYPE, _swt_)(const TYPE * const restrict input, pywt_index_t input_len,
     if(level > 1){
         /* allocate filter first */
         e_filter_len = filter_len << (level-1);
-        e_filter = wtcalloc(e_filter_len, sizeof(TYPE));
+        if ((e_filter = wtcalloc(e_filter_len, sizeof(TYPE))) == NULL)
+            goto cleanup;
         if(e_filter == NULL)
             return -1;
         fstep = 1 << (level - 1);  // spacing between non-zero filter entries
@@ -487,6 +488,9 @@ int CAT(TYPE, _swt_)(const TYPE * const restrict input, pywt_index_t input_len,
                                                     filter_len, output, 1,
                                                     1);
     }
+ cleanup:
+    wtfree(e_filter);
+    return -3;
 }
 
 /*
