@@ -12,15 +12,6 @@
 #include <stdint.h> // for SIZE_MAX
 #endif /* _MSC_VER */
 
-#ifdef PY_EXTENSION
-void *wtcalloc(size_t len, size_t size){
-        void *p = wtmalloc(len*size);
-        if(p)
-            memset(p, 0, len*size);
-        return p;
-}
-#endif
-
 /* Returns the floor of the base-2 log of it's input
  *
  * Undefined for x = 0
