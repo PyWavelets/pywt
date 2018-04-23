@@ -165,6 +165,10 @@ def test_wavelet_errormsgs():
         pywt.Wavelet('gaus1')
     except ValueError as e:
         assert_(e.args[0].startswith('The `Wavelet` class'))
+    try:
+        pywt.Wavelet('cmord')
+    except ValueError as e:
+        assert_(e.args[0] == "Invalid wavelet name 'cmord'.")
 
 
 if __name__ == '__main__':

@@ -359,7 +359,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
                           "wavelets, %s is a continuous wavelet.  Use "
                           "pywt.ContinuousWavelet instead" % self.name)
                 else:
-                    raise ValueError("Invalid wavelet name.")
+                    raise ValueError("Invalid wavelet name '%s'." % self.name)
             self.number = family_number
         else:
             if hasattr(filter_bank, "filter_bank"):
@@ -717,7 +717,7 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
             family_code, family_number)
 
         if self.w is NULL:
-            raise ValueError("Invalid wavelet name.")
+            raise ValueError("Invalid wavelet name '%s'." % self.name)
         self.number = family_number
 
         # set wavelet attributes based on frequencies extracted from the name
@@ -750,7 +750,7 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
                 self.w.fbsp_order = int(M)
             else:
                 raise ValueError(
-                    "Invalid continuous wavelet name: " + self.name)
+                    "Invalid continuous wavelet name '%s'." % self.name)
 
 
     def __dealloc__(self):
