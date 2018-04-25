@@ -291,9 +291,8 @@ def iswt2(coeffs, wavelet):
         step_size = int(pow(2, j-1))
         last_index = step_size
         _, (cH, cV, cD) = coeffs[j-1]
-        # We are going to assume cH, cV, and cD are square and of equal size
-        if (cH.shape != cV.shape) or (cH.shape != cD.shape) or (
-                cH.shape[0] != cH.shape[1]):
+        # We are going to assume cH, cV, and cD are of equal size
+        if (cH.shape != cV.shape) or (cH.shape != cD.shape):
             raise RuntimeError(
                 "Mismatch in shape of intermediate coefficient arrays")
         for first_h in range(last_index):  # 0 to last_index - 1
