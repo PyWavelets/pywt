@@ -250,6 +250,17 @@ def test_swt2_iswt2_quick():
     test_swt2_iswt2_integration(wavelets=['db1', ])
 
 
+def test_swt2_iswt2_non_square(wavelets=None):
+    for nrows in [8, 16, 48]:
+        X = np.arange(nrows*32).reshape(nrows, 32)
+        current_wavelet = 'db1'
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', FutureWarning)
+            coeffs = pywt.swt2(X, current_wavelet, level=2)
+            Y = pywt.iswt2(coeffs, current_wavelet)
+        assert_allclose(Y, X, rtol=tol_single, atol=tol_single)
+
+
 def test_swt2_axes():
     atol = 1e-14
     current_wavelet = pywt.Wavelet('db2')
