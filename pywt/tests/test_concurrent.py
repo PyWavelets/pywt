@@ -53,7 +53,7 @@ def test_concurrent_swt():
         warnings.simplefilter('ignore', FutureWarning)
         for swt_func, x in zip([pywt.swt, pywt.swt2, pywt.swtn],
                                [np.ones(8), np.eye(16), np.eye(16)]):
-            transform = partial(swt_func, wavelet='haar', level=1)
+            transform = partial(swt_func, wavelet='haar', level=3)
             for _ in range(10):
                 arrs = [x.copy() for _ in range(100)]
                 with futures.ThreadPoolExecutor(max_workers=max_workers) as ex:

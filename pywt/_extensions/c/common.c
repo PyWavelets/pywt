@@ -1,4 +1,4 @@
-/* Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/> 
+/* Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/>
  * Copyright (c) 2012-2016 The PyWavelets Developers
  *                         <https://github.com/PyWavelets/pywt>
  * See COPYING for license details.
@@ -11,15 +11,6 @@
 #if (!defined(_MSC_VER)) || (_MSC_VER > 1500)
 #include <stdint.h> // for SIZE_MAX
 #endif /* _MSC_VER */
-
-#ifdef PY_EXTENSION
-void *wtcalloc(size_t len, size_t size){
-        void *p = wtmalloc(len*size);
-        if(p)
-            memset(p, 0, len*size);
-        return p;
-}
-#endif
 
 /* Returns the floor of the base-2 log of it's input
  *
