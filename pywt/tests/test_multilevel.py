@@ -7,7 +7,7 @@ from itertools import combinations
 import numpy as np
 from numpy.testing import (run_module_suite, assert_almost_equal,
                            assert_allclose, assert_, assert_equal,
-                           assert_raises, dec)
+                           assert_raises, assert_raises_regex, dec)
 import pywt
 # Check that float32, float64, complex64, complex128 are preserved.
 # Other real types get converted to float64.
@@ -73,6 +73,14 @@ def test_waverec_invalid_inputs():
 
     # input list cannot be empty
     assert_raises(ValueError, pywt.waverec, [], 'haar')
+
+    # 'array_to_coeffs must specify 'output_format' to perform waverec
+    x = [3, 7, 1, 1, -2, 5, 4, 6]
+    coeffs = pywt.wavedec(x, 'db1')
+    arr, coeff_slices = pywt.coeffs_to_array(coeffs)
+    coeffs_from_arr = pywt.array_to_coeffs(arr, coeff_slices)
+    message = "Wrong coefficient format, if using 'array_to_coeffs' please specify the 'output_format' parameter"
+    assert_raises_regex(AttributeError, message, pywt.waverec, coeffs_from_arr, 'haar')
 
 
 def test_waverec_accuracies():
