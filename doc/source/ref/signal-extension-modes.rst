@@ -93,6 +93,11 @@ computations can be performed with the `periodization`_ mode:
     >>> print(pywt.Modes.modes)
     ['zero', 'constant', 'symmetric', 'periodic', 'smooth', 'periodization', 'reflect', 'antisymmetric', 'antireflect']
 
+The following figure illustrates how a short signal (red) gets extended (black)
+outside of its original extent. Note that periodization first extends the
+signal to an even length prior to using periodic boundary conditions.
+
+.. plot:: pyplots/plot_boundary_modes.py
 
 Notice that you can use any of the following ways of passing wavelet and mode
 parameters:
