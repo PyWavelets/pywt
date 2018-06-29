@@ -1,11 +1,12 @@
 import os
 import numpy as np
-from numpy.testing import assert_allclose, assert_raises, run_module_suite
+from numpy.testing import (assert_allclose, assert_raises, assert_,
+                           run_module_suite)
 
 import pywt.data
 
 data_dir = os.path.join(os.path.dirname(__file__), 'data')
-wavelab_data_file = os.path.join(data_dir, 'wavelab_test_signals2.npz')
+wavelab_data_file = os.path.join(data_dir, 'wavelab_test_signals.npz')
 wavelab_result_dict = np.load(wavelab_data_file)
 
 
@@ -62,6 +63,16 @@ def test_wavelab_signals():
                             rtol=rtol, atol=atol)
             # these functions require a size to be provided
             assert_raises(ValueError, pywt.data.demo_signal, key)
+
+    # can get a list of the available signals
+    available_signals = pywt.data.demo_signal('list')
+    assert_('Doppler' in available_signals)
+
+    # ValueError on unrecognized signal type
+    assert_raises(ValueError, pywt.data.demo_signal, 'unknown_signal')
+
+    # ValueError on invalid length
+    assert_raises(ValueError, pywt.data.demo_signal, 'Doppler', 0)
 
 
 if __name__ == '__main__':
