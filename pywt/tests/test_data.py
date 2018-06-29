@@ -5,7 +5,7 @@ from numpy.testing import assert_allclose, assert_raises, run_module_suite
 import pywt.data
 
 data_dir = os.path.join(os.path.dirname(__file__), 'data')
-wavelab_data_file = os.path.join(data_dir, 'wavelab_test_signals.npz')
+wavelab_data_file = os.path.join(data_dir, 'wavelab_test_signals2.npz')
 wavelab_result_dict = np.load(wavelab_data_file)
 
 
@@ -57,7 +57,6 @@ def test_wavelab_signals():
             assert_allclose(val, pywt.data.demo_signal(key),
                             rtol=rtol, atol=atol)
             assert_raises(ValueError, pywt.data.demo_signal, key, val.size)
-
         else:
             assert_allclose(val, pywt.data.demo_signal(key, val.size),
                             rtol=rtol, atol=atol)
