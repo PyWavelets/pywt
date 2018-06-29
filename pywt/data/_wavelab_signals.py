@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 import numpy as np
 
 __all__ = ['demo_signal']
@@ -29,7 +30,7 @@ def demo_signal(name='Bumps', n=None):
 
     This function can generate a number of common 1D test signals used in
     papers by David Donoho and colleagues (e.g. [1]_) as well as the wavelet
-    book by Stéphane Mallat [2]_. 
+    book by Stéphane Mallat [2]_.
 
     Parameters
     ----------
