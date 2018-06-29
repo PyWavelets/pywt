@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import numpy as np
 
 __all__ = ['demo_signal']
@@ -28,11 +27,9 @@ _implemented_signals = [
 def demo_signal(name='Bumps', n=None):
     """Simple 1D wavelet test functions.
 
-    This is a partial implementation of the `MakeSignal` function from
-    [Wavelab](https://statweb.stanford.edu/~wavelab/). It can be used to
-    generate a number of common 1D test signals used in papers by David Donoho
-    and colleagues (e.g. [1]_) as well as the wavelet book by Stéphane
-    Mallat [2]_.
+    This function can generate a number of common 1D test signals used in
+    papers by David Donoho and colleagues (e.g. [1]_) as well as the wavelet
+    book by Stéphane Mallat [2]_. 
 
     Parameters
     ----------
@@ -56,6 +53,14 @@ def demo_signal(name='Bumps', n=None):
            wavelet shrinkage. Biometrika, vol. 81, pp. 425–455, 1994.
     .. [2] S. Mallat. A Wavelet Tour of Signal Processing: The Sparse Way.
            Academic Press. 2009.
+
+    Notes
+    -----
+    This function is a partial reimplementation of the `MakeSignal` function
+    from the [Wavelab](https://statweb.stanford.edu/~wavelab/) toolbox. These
+    test signals are provided with permission of Dr. Donoho to encourage
+    reproducible research.
+
     """
     if name.lower() == 'list':
         return _implemented_signals
