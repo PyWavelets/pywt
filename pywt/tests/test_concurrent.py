@@ -10,7 +10,8 @@ import warnings
 import multiprocessing
 import numpy as np
 from functools import partial
-from numpy.testing import dec, run_module_suite, assert_array_equal
+from numpy.testing import (dec, run_module_suite, assert_array_equal,
+                           assert_allclose)
 
 import pywt
 
@@ -100,6 +101,7 @@ def test_concurrent_dwt():
 
 @dec.skipif(not futures_available)
 def test_concurrent_cwt():
+    atol = rtol = 1e-14
     time, sst = pywt.data.nino()
     dt = time[1]-time[0]
     transform = partial(pywt.cwt, scales=np.arange(1, 4), wavelet='cmor1.5-1',
@@ -112,7 +114,7 @@ def test_concurrent_cwt():
     # validate result from  one of the concurrent runs
     expected_result = transform(sst)
     for a1, a2 in zip(expected_result, results[-1]):
-        assert_array_equal(a1, a2)
+        assert_allclose(a1, a2, atol=atol, rtol=rtol)
 
 
 if __name__ == '__main__':
