@@ -51,25 +51,28 @@ def test_data_ecg():
 def test_wavelab_signals():
     """Comparison with results generated using WaveLab"""
     rtol = atol = 1e-12
-    for key, val in wavelab_result_dict.items():
-        key = key.replace('_', '-')
+
+    # get a list of the available signals
+    available_signals = pywt.data.demo_signal('list')
+    assert_('Doppler' in available_signals)
+
+    for signal in available_signals:
+        # reference dictionary has lowercase names for the keys
+        key = signal.replace('-', '_').lower()
+        val = wavelab_result_dict[key]
         if key in ['gabor', 'sineoneoverx']:
             # these functions do not allow a size to be provided
-            assert_allclose(val, pywt.data.demo_signal(key),
+            assert_allclose(val, pywt.data.demo_signal(signal),
                             rtol=rtol, atol=atol)
             assert_raises(ValueError, pywt.data.demo_signal, key, val.size)
         else:
-            assert_allclose(val, pywt.data.demo_signal(key, val.size),
+            assert_allclose(val, pywt.data.demo_signal(signal, val.size),
                             rtol=rtol, atol=atol)
             # these functions require a size to be provided
             assert_raises(ValueError, pywt.data.demo_signal, key)
 
-    # can get a list of the available signals
-    available_signals = pywt.data.demo_signal('list')
-    assert_('Doppler' in available_signals)
-
     # ValueError on unrecognized signal type
-    assert_raises(ValueError, pywt.data.demo_signal, 'unknown_signal')
+    assert_raises(ValueError, pywt.data.demo_signal, 'unknown_signal', 512)
 
     # ValueError on invalid length
     assert_raises(ValueError, pywt.data.demo_signal, 'Doppler', 0)
