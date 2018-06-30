@@ -24,7 +24,8 @@ _implemented_signals = [
     'Gabor',
     'sineoneoverx',
     'Piece-Regular',
-    'Piece-Polynomial']
+    'Piece-Polynomial',
+    'Riemann']
 
 
 def demo_signal(name='Bumps', n=None):
@@ -243,6 +244,14 @@ def demo_signal(name='Bumps', n=None):
         # zero-mean
         bias = np.sum(f) / n
         f = f - bias
+    elif name == 'riemann':
+        # Riemann's Non-differentiable Function
+        sqn = int(np.round(np.sqrt(n)))
+        idx = np.arange(1, sqn + 1)
+        idx *= idx
+        f = np.zeros_like(t)
+        f[idx - 1] = 1. / np.arange(1, sqn + 1)
+        f = np.real(np.fft.ifft(f))
     else:
         raise ValueError(
             "unknown name: {}.  name must be one of: {}".format(
