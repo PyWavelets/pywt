@@ -92,7 +92,7 @@ def threshold(data, value, mode='soft', substitute=0):
 
     ``garotte`` corresponds to the Non-negative garrote threshold [2]_, [3]_.
     It is intermediate between ``hard`` and ``soft`` thresholding.  It behaves
-    like soft thresholdding for small data values and approaches hard
+    like soft thresholding for small data values and approaches hard
     thresholding for large data values.
 
     In ``greater`` thresholding, the data is replaced with `substitute` where
@@ -148,6 +148,9 @@ def threshold(data, value, mode='soft', substitute=0):
     array([ 0. ,  0. ,  0. ,  0.5,  1. ,  1.5,  2. ])
     >>> pywt.threshold(data, 2, 'hard')
     array([ 0. ,  0. ,  2. ,  2.5,  3. ,  3.5,  4. ])
+    >>> pywt.threshold(data, 2, 'garotte')
+    array([ 0.        ,  0.        ,  0.        ,  0.9       ,  1.66666667,
+            2.35714286,  3.        ])
     >>> pywt.threshold(data, 2, 'greater')
     array([ 0. ,  0. ,  2. ,  2.5,  3. ,  3.5,  4. ])
     >>> pywt.threshold(data, 2, 'less')
@@ -179,7 +182,7 @@ def threshold_firm(data, value_low, value_high):
     data : array-like
         The data to threshold.  This can be either real or complex-valued.
     value_low : float
-        Any values smaller `value_low` will be set to zero.
+        Any values smaller then `value_low` will be set to zero.
     value_high : float
         Any values larger than `value_high` will not be modified.
 
