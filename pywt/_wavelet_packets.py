@@ -565,8 +565,23 @@ class NodeND(BaseNode):
     For 2D:  self.PARTS has keys 'aa', 'ad', 'da', 'dd'
     For 3D:  self.PARTS has keys 'aaa', 'aad', 'ada', 'daa', ..., 'ddd'
 
-    ndim corresponds to the number of data dimensions
-    ndim_transform is the number of dimensions that are to be transformed
+    Parameters
+    ----------
+    parent :
+        Parent node. If parent is None then the node is considered detached
+        (ie root).
+    data : 1D or 2D array
+        Data associated with the node. 1D or 2D numeric array, depending on the
+        transform type.
+    node_name : string
+        A name identifying the coefficients type.
+        See `Node.node_name` and `Node2D.node_name`
+        for information on the accepted subnodes names.
+    ndim : int
+        The number of data dimensions.
+    ndim_transform : int
+        The number of dimensions that are to be transformed.
+
     """
     def __init__(self, parent, data, node_name, ndim, ndim_transform):
         super(NodeND, self).__init__(parent=parent, data=data,
@@ -579,7 +594,7 @@ class NodeND(BaseNode):
         self.ndim_transform = ndim_transform
 
     def _init_subnodes(self):
-        # need this empty so the BaseNode's _init_subnodes isn't called during
+        # need this empty so BaseNode's _init_subnodes isn't called during
         # __init__.  We use a dictionary for PARTS instead for the nd case.
         pass
 
