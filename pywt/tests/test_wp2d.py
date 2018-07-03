@@ -88,6 +88,23 @@ def test_collecting_nodes_2d():
 
     assert_(paths == expected_paths)
 
+    # test 2D frequency ordering at the first level
+    fnodes = wp.get_level(1, order='freq')
+    assert_(fnodes[0][0].path == 'a')
+    assert_(fnodes[0][1].path == 'v')
+    assert_(fnodes[1][0].path == 'h')
+    assert_(fnodes[1][1].path == 'd')
+
+    # test 2D frequency ordering at the second level
+    fnodes = wp.get_level(2, order='freq')
+    assert_([n.path for n in fnodes[0]] == ['aa', 'av', 'vv', 'va'])
+    assert_([n.path for n in fnodes[1]] == ['ah', 'ad', 'vd', 'vh'])
+    assert_([n.path for n in fnodes[2]] == ['hh', 'hd', 'dd', 'dh'])
+    assert_([n.path for n in fnodes[3]] == ['ha', 'hv', 'dv', 'da'])
+
+    # invalid node collection order
+    assert_raises(ValueError, wp.get_level, 2, 'invalid_order')
+
 
 def test_data_reconstruction_2d():
     x = np.array([[1, 2, 3, 4, 5, 6, 7, 8]] * 8, dtype=np.float64)

@@ -83,6 +83,8 @@ def test_collecting_nodes():
     assert_([node.path for node in wp.get_level(3, 'freq')] ==
             ['aaa', 'aad', 'add', 'ada', 'dda', 'ddd', 'dad', 'daa'])
 
+    assert_raises(ValueError, wp.get_level, 3, 'invalid_order')
+
 
 def test_reconstructing_data():
     x = [1, 2, 3, 4, 5, 6, 7, 8]

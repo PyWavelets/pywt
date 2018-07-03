@@ -770,7 +770,8 @@ class WaveletPacket(Node):
         decomposed) and the `decompose` is set to False, only existing nodes
         will be returned.
         """
-        assert order in ["natural", "freq"]
+        if order not in ["natural", "freq"]:
+            raise ValueError("Invalid order: {}".format(order))
         if level > self.maxlevel:
             raise ValueError("The level cannot be greater than the maximum"
                              " decomposition level value (%d)" % self.maxlevel)
@@ -875,7 +876,8 @@ class WaveletPacket2D(Node2D):
             If set then the method will try to decompose the data up
             to the specified `level` (default: True).
         """
-        assert order in ["natural", "freq"]
+        if order not in ["natural", "freq"]:
+            raise ValueError("Invalid order: {}".format(order))
         if level > self.maxlevel:
             raise ValueError("The level cannot be greater than the maximum"
                              " decomposition level value (%d)" % self.maxlevel)
