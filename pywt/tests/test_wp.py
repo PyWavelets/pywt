@@ -64,6 +64,9 @@ def test_access_node_atributes():
     assert_(wp['ad'].maxlevel == 3)
     assert_(wp['ad'].mode == 'symmetric')
 
+    # tuple-based access is also supported
+    assert_(wp[('a', 'd')].mode == 'symmetric')
+
 
 def test_collecting_nodes():
     x = [1, 2, 3, 4, 5, 6, 7, 8]

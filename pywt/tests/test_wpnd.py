@@ -54,9 +54,10 @@ def test_accessing_node_atributes_nd():
 
     assert_allclose(wp['aa'+'ad'].parent.data,
                     np.array([[3., 7., 11., 15.]] * 4), rtol=1e-12)
-    assert_(wp['aa'+'ad'].level == 2)
-    assert_(wp['aa'+'ad'].maxlevel == 3)
-    assert_(wp['aa'+'ad'].mode == 'symmetric')
+    # can also index via a tuple instead of concatenated strings
+    assert_(wp[('aa', 'ad')].level == 2)
+    assert_(wp[('aa', 'ad')].maxlevel == 3)
+    assert_(wp[('aa', 'ad')].mode == 'symmetric')
 
 
 def test_collecting_nodes_nd():

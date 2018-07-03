@@ -44,9 +44,10 @@ def test_accessing_node_atributes_2d():
 
     assert_allclose(wp['av'].parent.data, np.array([[3., 7., 11., 15.]] * 4),
                     rtol=1e-12)
-    assert_(wp['av'].level == 2)
-    assert_(wp['av'].maxlevel == 3)
-    assert_(wp['av'].mode == 'symmetric')
+    # can also index via a tuple instead of concatenated strings
+    assert_(wp[('a', 'v')].level == 2)
+    assert_(wp[('a', 'v')].maxlevel == 3)
+    assert_(wp[('a', 'v')].mode == 'symmetric')
 
 
 def test_collecting_nodes_2d():
