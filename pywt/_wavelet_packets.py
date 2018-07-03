@@ -112,6 +112,17 @@ class BaseNode(object):
             raise ValueError("Subnode name must be in [%s], not '%s'." %
                              (', '.join("'%s'" % p for p in self.PARTS), part))
 
+    @property
+    def path_tuple(self):
+        """The path to the current node in tuple form.
+
+        The length of the tuple is equal to the number of decomposition levels.
+        """
+        path = self.path
+        nlev = len(path)//self.PART_LEN
+        return tuple([path[(n-1)*self.PART_LEN:n*self.PART_LEN]
+                      for n in range(1, nlev+1)])
+
     def _evaluate_maxlevel(self, evaluate_from='parent'):
         """
         Try to find the value of maximum decomposition level if it is not
@@ -594,14 +605,6 @@ class NodeND(BaseNode):
                                          overwrite=overwrite, ndim=self.ndim,
                                          ndim_transform=self.ndim_transform)
 
-    @property
-    def pretty_path(self):
-        # version of path with commas between levels
-        path = self.path
-        nlev = len(path)//self.PART_LEN
-        return ','.join([path[(n-1)*self.PART_LEN:n*self.PART_LEN]
-                         for n in range(1, nlev+1)])
-
     def _evaluate_maxlevel(self, evaluate_from='parent'):
         """
         Try to find the value of maximum decomposition level if it is not
@@ -972,7 +975,7 @@ class WaveletPacketND(NodeND):
             return data
         return self.data  # return original data
 
-    def get_level(self, level, order="natural", decompose=True):
+    def get_level(self, level, decompose=True):
         """
         Returns all nodes from specified level.
 
@@ -981,16 +984,10 @@ class WaveletPacketND(NodeND):
         level : int
             Decomposition `level` from which the nodes will be
             collected.
-        order : {'natural', 'freq'}, optional
-            If `natural` (default) a flat list is returned.
-            If `freq`, a 2d structure with rows and cols
-            sorted by corresponding dimension frequency of 2d
-            coefficient array (adapted from 1d case).
         decompose : bool, optional
             If set then the method will try to decompose the data up
             to the specified `level` (default: True).
         """
-        assert order in ["natural", "freq"]
         if level > self.maxlevel:
             raise ValueError("The level cannot be greater than the maximum"
                              " decomposition level value (%d)" % self.maxlevel)
@@ -1005,6 +1002,4 @@ class WaveletPacketND(NodeND):
 
         self.walk(collect, decompose=decompose)
 
-        if order == "freq":
-            raise NotImplementedError("freq order not implemented for nd")
         return result

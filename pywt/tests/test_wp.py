@@ -52,7 +52,7 @@ def test_acess_path():
     assert_raises(ValueError, lambda: wp['ac'].path)
 
 
-def test_access_node_atributes():
+def test_access_node_attributes():
     x = [1, 2, 3, 4, 5, 6, 7, 8]
     wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='symmetric')
 
@@ -65,7 +65,10 @@ def test_access_node_atributes():
     assert_(wp['ad'].mode == 'symmetric')
 
     # tuple-based access is also supported
-    assert_(wp[('a', 'd')].mode == 'symmetric')
+    node = wp[('a', 'd')]
+    # can access a node's path as either a single string or in tuple form
+    assert_(node.path == 'ad')
+    assert_(node.path_tuple == ('a', 'd'))
 
 
 def test_collecting_nodes():

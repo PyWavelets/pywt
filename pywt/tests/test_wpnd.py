@@ -43,7 +43,7 @@ def test_traversing_tree_nd():
     assert_raises(TypeError, wp.__getitem__, 5)
 
 
-def test_accessing_node_atributes_nd():
+def test_accessing_node_attributes_nd():
     x = np.array([[1, 2, 3, 4, 5, 6, 7, 8]] * 8, dtype=np.float64)
     wp = pywt.WaveletPacketND(data=x, wavelet='db1', mode='symmetric')
 
@@ -58,6 +58,11 @@ def test_accessing_node_atributes_nd():
     assert_(wp[('aa', 'ad')].level == 2)
     assert_(wp[('aa', 'ad')].maxlevel == 3)
     assert_(wp[('aa', 'ad')].mode == 'symmetric')
+
+    # can access a node's path as either a single string or in tuple form
+    node = wp[('ad', 'dd')]
+    assert_(node.path == 'addd')
+    assert_(node.path_tuple == ('ad', 'dd'))
 
 
 def test_collecting_nodes_nd():

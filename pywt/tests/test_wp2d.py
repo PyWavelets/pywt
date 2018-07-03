@@ -33,7 +33,7 @@ def test_traversing_tree_2d():
     assert_raises(ValueError, lambda: wp['f'])
 
 
-def test_accessing_node_atributes_2d():
+def test_accessing_node_attributes_2d():
     x = np.array([[1, 2, 3, 4, 5, 6, 7, 8]] * 8, dtype=np.float64)
     wp = pywt.WaveletPacket2D(data=x, wavelet='db1', mode='symmetric')
 
@@ -45,9 +45,15 @@ def test_accessing_node_atributes_2d():
     assert_allclose(wp['av'].parent.data, np.array([[3., 7., 11., 15.]] * 4),
                     rtol=1e-12)
     # can also index via a tuple instead of concatenated strings
-    assert_(wp[('a', 'v')].level == 2)
-    assert_(wp[('a', 'v')].maxlevel == 3)
-    assert_(wp[('a', 'v')].mode == 'symmetric')
+    assert_(wp['av'].level == 2)
+    assert_(wp['av'].maxlevel == 3)
+    assert_(wp['av'].mode == 'symmetric')
+
+    # tuple-based access is also supported
+    node = wp[('a', 'v')]
+    # can access a node's path as either a single string or in tuple form
+    assert_(node.path == 'av')
+    assert_(node.path_tuple == ('a', 'v'))
 
 
 def test_collecting_nodes_2d():

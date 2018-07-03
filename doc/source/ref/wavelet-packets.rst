@@ -7,22 +7,27 @@
 Wavelet Packets
 ===============
 
-.. versionadded:: 0.2
-
-Version `0.2` of PyWavelets includes many new features and improvements. One of such
-new feature is a two-dimensional wavelet packet transform structure that is
-almost completely sharing programming interface with the one-dimensional tree
+PyWavelets implements one-dimensional, two-dimensional and n-dimensional
+wavelet packet transform structures. The higher dimensional structures almost
+completely sharing programming interface with the one-dimensional tree
 structure.
 
 In order to achieve this simplification, a new inheritance scheme was used
-in which a :class:`~pywt.BaseNode` base node class is a superclass for both
-:class:`~pywt.Node` and :class:`~pywt.Node2D` node classes.
+in which a :class:`~pywt.BaseNode` base node class is a superclass for the
+:class:`~pywt.Node`,  :class:`~pywt.Node2D` and :class:`~pywt.NodeND`
+classes.
 
-The node classes are used as data wrappers and can be organized in trees (binary
-trees for 1D transform case and quad-trees for the 2D one). They are also
-superclasses to the :class:`~pywt.WaveletPacket` class and
-:class:`~pywt.WaveletPacket2D` class that are used as the decomposition tree
-roots and contain a couple additional methods.
+The node classes are used as data wrappers and can be organized in trees (
+binary trees for 1D transform case, quad-trees for the 2D one and 2**N-ary
+trees in ND). They are also superclasses to the :class:`~pywt.WaveletPacket`,
+:class:`~pywt.WaveletPacket2D` and :class:`~pywt.WaveletPacketND` classes that
+are used as the decomposition tree roots and contain a couple additional
+methods.
+
+Here 1D, 2D and ND refer to the number of axes of the data to be transformed.
+All wavelet packet objects can operate on general n-dimensional arrays, but the
+1D or 2D classes apply transforms along only 1 or 2 dimensions. The ND classes
+allow transforms over an arbtirary number of axes of n-dimensional data.
 
 The below diagram illustrates the inheritance tree:
 
@@ -36,28 +41,34 @@ The below diagram illustrates the inheritance tree:
 
       - :class:`~pywt.WaveletPacket2D` - 2D decomposition tree root node
 
+    - :class:`~pywt.NodeND` - data carrier node in a ND decomposition tree
 
-BaseNode - a common interface of WaveletPacket and WaveletPacket2D
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      - :class:`~pywt.WaveletPacketND` - ND decomposition tree root node
+
+
+BaseNode - a common interface of WaveletPacket, WaveletPacket2D and  WaveletPacketND
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. class:: BaseNode
            Node(BaseNode)
            WaveletPacket(Node)
            Node2D(BaseNode)
            WaveletPacket2D(Node2D)
+           NodeND(BaseNode)
+           WaveletPacketND(NodeND)
 
-  .. note:: The BaseNode is a base class for :class:`Node` and :class:`Node2D`.
-            It should not be used directly unless creating a new transformation
-            type. It is included here to document the common interface of 1D
-            and 2D node an wavelet packet transform classes.
+  .. note:: The BaseNode is a base class for :class:`Node`, :class:`Node2D`,
+            and :class:`NodeND`. It should not be used directly unless creating
+            a new transformation type. It is included here to document the
+            common interface of the node and wavelet packet transform classes.
 
   .. method:: __init__(parent, data, node_name)
 
     :param parent:    parent node. If parent is ``None`` then the node is
                       considered detached.
 
-    :param data:      data associated with the node. 1D or 2D numeric array,
-                      depending on the transform type.
+    :param data:      The data associated with the node. An n-dimensional
+                      numeric array.
 
     :param node_name: a name identifying the coefficients type.
                       See :attr:`Node.node_name` and :attr:`Node2D.node_name`
@@ -65,8 +76,7 @@ BaseNode - a common interface of WaveletPacket and WaveletPacket2D
 
   .. attribute:: data
 
-     Data associated with the node. 1D or 2D numeric array (depends on the
-     transform type).
+     Data associated with the node. An n-dimensional numeric array.
 
   .. attribute:: parent
 
@@ -76,6 +86,11 @@ BaseNode - a common interface of WaveletPacket and WaveletPacket2D
 
      :class:`~pywt.Wavelet` used for decomposition and reconstruction. Inherited
      from parent node.
+
+  .. attribute:: axes
+
+     :class: A tuple of ints containing the axes along which the wavelet packet
+     transform is to be applied.
 
   .. attribute:: mode
 
@@ -91,6 +106,13 @@ BaseNode - a common interface of WaveletPacket and WaveletPacket2D
   .. attribute:: path
 
      Path string defining position of the node in the decomposition tree.
+
+  .. attribute:: path_tuple
+
+     A version of :attr:`path`, but in tuple form rather than as a single
+     string. The tuple form is easier to work with for n-dimensional transforms.
+     The length of the tuple will be equal to the number of levels of
+     decomposition at the current node.
 
   .. attribute:: node_name
 
@@ -235,16 +257,22 @@ WaveletPacket and WaveletPacket tree Node
 
   .. method:: decompose()
 
-    .. seealso::
+     .. seealso::
 
-        - :func:`dwt` for 1D Discrete Wavelet Transform output coefficients.
+        :func:`dwt` for 1D Discrete Wavelet Transform output coefficients.
+
+  .. method:: reconstruct()
+
+     .. seealso::
+
+        :func:`idwt` for 1D Inverse Discrete Wavelet Transform
 
 
 .. class:: WaveletPacket(Node)
 
-  .. method:: __init__(data, wavelet, [mode='symmetric', [maxlevel=None]])
+  .. method:: __init__(data, wavelet, [mode='symmetric', [maxlevel=None, [axis=-1]]])
 
-     :param data: data associated with the node. 1D numeric array.
+     :param data: data associated with the node. N-dimensional numeric array.
 
      :param wavelet: |wavelet|
 
@@ -254,6 +282,8 @@ WaveletPacket and WaveletPacket tree Node
      :param maxlevel: Maximum allowed level of decomposition. If not specified
                       it will be calculated based on the ``wavelet`` and
                       ``data`` length using :func:`pywt.dwt_max_level`.
+
+     :param axis: The axis of the array that is to be transformed.
 
   .. method:: get_level(level, [order="natural", [decompose=True]])
 
@@ -271,6 +301,15 @@ WaveletPacket and WaveletPacket tree Node
      If nodes at the given level are missing (i.e. the tree is partially
      decomposed) and the ``decompose`` is set to ``False``, only existing nodes
      will be returned.
+
+  .. method:: reconstruct([update=True])
+
+     Reconstruct data from the subnodes.
+
+     :param update: A boolean indicating whether the coefficients of the
+                    current node and its subnodes will be replaced with values
+                    from the reconstruction.
+
 
 WaveletPacket2D and WaveletPacket2D tree Node2D
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -292,14 +331,20 @@ WaveletPacket2D and WaveletPacket2D tree Node2D
 
         :func:`dwt2` for 2D Discrete Wavelet Transform output coefficients.
 
+  .. method:: reconstruct()
+
+     .. seealso::
+
+        :func:`idwt2` for 2D Inverse Discrete Wavelet Transform
+
   .. method:: expand_2d_path(self, path):
 
 
 .. class:: WaveletPacket2D(Node2D)
 
-  .. method:: __init__(data, wavelet, [mode='symmetric', [maxlevel=None]])
+  .. method:: __init__(data, wavelet, [mode='symmetric', [maxlevel=None, [axes=(-2, -1)]]])
 
-     :param data: data associated with the node. 2D numeric array.
+     :param data: data associated with the node. N-dimensional numeric array.
 
      :param wavelet: |wavelet|
 
@@ -309,6 +354,8 @@ WaveletPacket2D and WaveletPacket2D tree Node2D
      :param maxlevel: Maximum allowed level of decomposition. If not specified
                       it will be calculated based on the ``wavelet`` and
                       ``data`` length using :func:`pywt.dwt_max_level`.
+
+     :param axes: The axes of the array that are to be transformed.
 
   .. method:: get_level(level, [order="natural", [decompose=True]])
 
@@ -326,3 +373,76 @@ WaveletPacket2D and WaveletPacket2D tree Node2D
      If nodes at the given level are missing (i.e. the tree is partially
      decomposed) and the ``decompose`` is set to ``False``, only existing nodes
      will be returned.
+
+  .. method:: reconstruct([update=True])
+
+     Reconstruct data from the subnodes.
+
+     :param update: A boolean indicating whether the coefficients of the
+                    current node and its subnodes will be replaced with values
+                    from the reconstruction.
+
+WaveletPacketND and WaveletPacketND tree NodeND
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. class:: NodeND(BaseNode)
+           WaveletPacketND(NodeND)
+
+  .. attribute:: node_name
+
+     For :class:`WaveletPacketND` case it is just as in :func:`dwtn`:
+         - in 1D it has keys 'a' and 'd'
+         - in 2D it has keys 'aa', 'ad', 'da', 'dd'
+         - in 3D it has keys 'aaa', 'aad', 'ada', 'daa', ..., 'ddd'
+
+  .. method:: decompose()
+
+     .. seealso::
+
+        :func:`dwtn` for ND Discrete Wavelet Transform output coefficients.
+
+  .. method:: reconstruct()
+
+     .. seealso::
+
+        :func:`idwtn` for ND Inverse Discrete Wavelet Transform
+
+
+.. class:: WaveletPacketND(NodeND)
+
+  .. method:: __init__(data, wavelet, [mode='symmetric', [maxlevel=None, [axes=None]]])
+
+     :param data: data associated with the node. N-dimensional numeric array.
+
+     :param wavelet: |wavelet|
+
+     :param mode: Signal extension :ref:`mode <ref-modes>` for the :func:`dwt`
+                  and :func:`idwt` decomposition and reconstruction functions.
+
+     :param maxlevel: Maximum allowed level of decomposition. If not specified
+                      it will be calculated based on the ``wavelet`` and
+                      ``data`` length using :func:`pywt.dwt_max_level`.
+
+     :param axes: The axes of the array that are to be transformed.
+
+  .. method:: get_level(level, [decompose=True])
+
+     Collects nodes from the given level of decomposition.
+
+     :param level: Specifies decomposition ``level`` from which the nodes will
+                   be collected.
+
+     :param decompose: If set then the method will try to decompose the data up
+                       to the specified ``level``.
+
+     If nodes at the given level are missing (i.e. the tree is partially
+     decomposed) and the ``decompose`` is set to ``False``, only existing nodes
+     will be returned.
+
+  .. method:: reconstruct([update=True])
+
+     Reconstruct data from the subnodes.
+
+     :param update: A boolean indicating whether the coefficients of the
+                    current node and its subnodes will be replaced with values
+                    from the reconstruction.
