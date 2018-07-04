@@ -767,8 +767,20 @@ class WaveletPacket(Node):
         Notes
         -----
         If nodes at the given level are missing (i.e. the tree is partially
-        decomposed) and the `decompose` is set to False, only existing nodes
+        decomposed) and `decompose` is set to False, only existing nodes
         will be returned.
+
+        Frequency order (``order="freq"``) is also known as as sequency order
+        and "natural" order is sometimes referred to as Paley order. A detailed
+        discussion of these orderings is also given in [1]_, [2]_.
+
+        References
+        ----------
+        ..[1] M.V. Wickerhauser. Adapted Wavelet Analysis from Theory to
+              Software. Wellesley. Massachusetts: A K Peters. 1994.
+        ..[2] D.B. Percival and A.T. Walden.  Wavelet Methods for Time Series
+              Analysis. Cambridge University Press. 2000.
+              DOI:10.1017/CBO9780511841040
         """
         if order not in ["natural", "freq"]:
             raise ValueError("Invalid order: {}".format(order))
@@ -875,6 +887,20 @@ class WaveletPacket2D(Node2D):
         decompose : bool, optional
             If set then the method will try to decompose the data up
             to the specified `level` (default: True).
+
+        Notes
+        -----
+        Frequency order (``order="freq"``) is also known as as sequency order
+        and "natural" order is sometimes referred to as Paley order. A detailed
+        discussion of these orderings is also given in [1]_, [2]_.
+
+        References
+        ----------
+        ..[1] M.V. Wickerhauser. Adapted Wavelet Analysis from Theory to
+              Software. Wellesley. Massachusetts: A K Peters. 1994.
+        ..[2] D.B. Percival and A.T. Walden.  Wavelet Methods for Time Series
+              Analysis. Cambridge University Press. 2000.
+              DOI:10.1017/CBO9780511841040
         """
         if order not in ["natural", "freq"]:
             raise ValueError("Invalid order: {}".format(order))
