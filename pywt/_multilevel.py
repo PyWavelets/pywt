@@ -155,7 +155,7 @@ def waverec(coeffs, wavelet, mode='symmetric', axis=-1):
         if (a is not None) and (d is not None):
             try:
                 if a.shape[axis] == d.shape[axis] + 1:
-                    a = a[[slice(s) for s in d.shape]]
+                    a = a[tuple(slice(s) for s in d.shape)]
                 elif a.shape[axis] != d.shape[axis]:
                     raise ValueError("coefficient shape mismatch")
             except IndexError:
@@ -437,7 +437,7 @@ def _match_coeff_dims(a_coeff, d_coeff_dict):
     size_diffs = np.subtract(a_coeff.shape, d_coeff.shape)
     if np.any((size_diffs < 0) | (size_diffs > 1)):
         raise ValueError("incompatible coefficient array sizes")
-    return a_coeff[[slice(s) for s in d_coeff.shape]]
+    return a_coeff[tuple(slice(s) for s in d_coeff.shape)]
 
 
 def waverecn(coeffs, wavelet, mode='symmetric', axes=None):
