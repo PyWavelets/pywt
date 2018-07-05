@@ -13,3 +13,4 @@ Cython==0.20.2
 nose
 wheel
 numpydoc
+matplotlib
