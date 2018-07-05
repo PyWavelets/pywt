@@ -517,7 +517,7 @@ def iswtn(coeffs, wavelet, axes=None):
 
             # nested loop over all combinations of odd/even inidices
             approx = output.copy()
-            output[indices] = 0
+            output[tuple(indices)] = 0
             ntransforms = 0
             for odds in product(*([(0, 1), ]*ndim_transform)):
                 for o, ax in zip(odds, axes):
@@ -528,8 +528,9 @@ def iswtn(coeffs, wavelet, axes=None):
                 # extract the odd/even indices for all detail coefficients
                 details_slice = {}
                 for key, value in details.items():
-                    details_slice[key] = value[odd_even_slices]
-                details_slice['a'*ndim_transform] = approx[odd_even_slices]
+                    details_slice[key] = value[tuple(odd_even_slices)]
+                details_slice['a'*ndim_transform] = approx[
+                    tuple(odd_even_slices)]
 
                 # perform the inverse dwt on the selected indices,
                 # making sure to use periodic boundary conditions
@@ -538,8 +539,8 @@ def iswtn(coeffs, wavelet, axes=None):
                     # circular shift along any odd indexed axis
                     if o:
                         x = np.roll(x, 1, axis=ax)
-                output[indices] += x
+                output[tuple(indices)] += x
                 ntransforms += 1
-            output[indices] /= ntransforms  # normalize
+            output[tuple(indices)] /= ntransforms  # normalize
         coeffs[j]['a'*ndim_transform] = a  # restore approx coeffs to dict
     return output

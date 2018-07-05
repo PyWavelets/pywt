@@ -679,7 +679,7 @@ def coeffs_to_array(coeffs, padding=0, axes=None):
     ndim = a_coeffs.ndim
     if len(coeffs) == 1:
         # only a single approximation coefficient array was found
-        return a_coeffs, [[slice(None)] * ndim]
+        return a_coeffs, [tuple([slice(None)] * ndim)]
 
     # Determine the number of dimensions that were transformed via key length
     ndim_transform = len(list(coeffs[1].keys())[0])
@@ -706,7 +706,7 @@ def coeffs_to_array(coeffs, padding=0, axes=None):
     else:
         coeff_arr = np.full(arr_shape, padding, dtype=a_coeffs.dtype)
 
-    a_slices = [slice(s) for s in a_shape]
+    a_slices = tuple([slice(s) for s in a_shape])
     coeff_arr[a_slices] = a_coeffs
 
     # initialize list of coefficient slices
@@ -733,6 +733,7 @@ def coeffs_to_array(coeffs, padding=0, axes=None):
                                               a_shape[ax_i] + d.shape[ax_i])
                 else:
                     raise ValueError("unexpected letter: {}".format(let))
+            slice_array = tuple(slice_array)
             coeff_arr[slice_array] = d
             coeff_slices[-1][key] = slice_array
         a_shape = [a_shape[n] + d_shape[n] for n in range(ndim)]

@@ -484,7 +484,7 @@ def test_waverecn_coeff_reshape_odd():
             coeffs2 = pywt.array_to_coeffs(coeff_arr, coeff_slices)
             x1r = pywt.waverecn(coeffs2, w, mode=mode)
             # truncate reconstructed values to original shape
-            x1r = x1r[[slice(s) for s in x1.shape]]
+            x1r = x1r[tuple([slice(s) for s in x1.shape])]
             assert_allclose(x1, x1r, rtol=1e-4, atol=1e-4)
 
 
