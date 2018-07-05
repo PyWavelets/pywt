@@ -78,9 +78,9 @@ def cwt(data, scales, wavelet, sampling_period=1.):
             out = np.zeros((np.size(scales), data.size), dtype=complex)
         else:
             out = np.zeros((np.size(scales), data.size))
+        precision = 10
+        int_psi, x = integrate_wavelet(wavelet, precision=precision)
         for i in np.arange(np.size(scales)):
-            precision = 10
-            int_psi, x = integrate_wavelet(wavelet, precision=precision)
             step = x[1] - x[0]
             j = np.floor(
                 np.arange(scales[i] * (x[-1] - x[0]) + 1) / (scales[i] * step))
