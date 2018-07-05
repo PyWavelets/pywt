@@ -25,7 +25,7 @@ from ._utils import _as_wavelet, _wavelets_per_axis, _modes_per_axis
 __all__ = ['wavedec', 'waverec', 'wavedec2', 'waverec2', 'wavedecn',
            'waverecn', 'coeffs_to_array', 'array_to_coeffs', 'ravel_coeffs',
            'unravel_coeffs', 'dwtn_max_level', 'wavedecn_size',
-           'wavedecn_shapes', 'fswt', 'ifswt', 'TransformResult']
+           'wavedecn_shapes', 'fswt', 'ifswt', 'FswtResult']
 
 
 def _check_level(sizes, dec_lens, level):
@@ -1167,7 +1167,7 @@ def _check_fswt_axes(data, axes):
         raise ValueError("Axis greater than data dimensions")
 
 
-class TransformResult(object):
+class FswtResult(object):
     """Object representing fully separable wavelet transform coefficients.
 
     Parameters
@@ -1175,7 +1175,7 @@ class TransformResult(object):
     coeffs : ndarray
         The coefficient array.
     coeff_slices : dict
-        Dictionary of slices corresponding to each detail or approximatin
+        Dictionary of slices corresponding to each detail or approximation
         coefficient array.
     wavelets : list of pywt.DiscreteWavelet objects
         The wavelets used.  Will be a list with length equal to
@@ -1449,20 +1449,21 @@ def fswt(data, wavelet, mode='symmetric', levels=None, axes=None):
         # stack the coefficients from all levels into a single array
         coeffs_arr = np.concatenate(coeffs, axis=ax)
 
-    return TransformResult(coeffs_arr, coeff_slices, wavelets, modes, axes)
+    return FswtResult(coeffs_arr, coeff_slices, wavelets, modes, axes)
 
 
-def ifswt(transform_result):
+def ifswt(fswt_result):
     """Fully Separable Inverse Wavelet Transform.
 
     Parameters
     ----------
-    transform_result : TransformResult object
-        TransformResult object from ``fswt``.
+    fswt_result : FswtResult object
+        FswtResult object from ``fswt``.
 
     Returns
     -------
-    nD array of reconstructed data.
+    reconstructed : ndarray
+        Array of reconstructed data.
 
     Notes
     -----
@@ -1498,11 +1499,11 @@ def ifswt(transform_result):
     .. [4] RA DeVore, SV Konyagin and VN Temlyakov. "Hyperbolic wavelet
        approximation," Constr. Approx. 14 (1998), 1-26.
     """
-    coeffs_arr = transform_result.coeffs
-    coeff_slices = transform_result.coeff_slices
-    axes = transform_result.axes
-    modes = transform_result.modes
-    wavelets = transform_result.wavelets
+    coeffs_arr = fswt_result.coeffs
+    coeff_slices = fswt_result.coeff_slices
+    axes = fswt_result.axes
+    modes = fswt_result.modes
+    wavelets = fswt_result.wavelets
 
     _check_fswt_axes(coeffs_arr, axes)
     if len(axes) != len(coeff_slices):
