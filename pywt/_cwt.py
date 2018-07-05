@@ -84,7 +84,13 @@ def cwt(data, scales, wavelet, sampling_period=1.):
             coef = - np.sqrt(scales[i]) * np.diff(
                 np.convolve(data, int_psi[j.astype(np.int)][::-1]))
             d = (coef.size - data.size) / 2.
-            out[i, :] = coef[int(np.floor(d)):int(-np.ceil(d))]
+            if d > 0:
+                out[i, :] = coef[int(np.floor(d)):int(-np.ceil(d))]
+            elif d == 0.:
+                out[i, :] = coef
+            else:
+                raise ValueError(
+                    "Selected scale of {} too small.".format(scales[i]))
         frequencies = scale2frequency(wavelet, scales, precision)
         if np.isscalar(frequencies):
             frequencies = np.array([frequencies])
