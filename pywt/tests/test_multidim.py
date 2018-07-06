@@ -123,7 +123,7 @@ def test_3D_reconstruct_complex():
     wavelet = pywt.Wavelet('haar')
     d = pywt.dwtn(data, wavelet)
     # idwtn creates even-length shapes (2x dwtn size)
-    original_shape = [slice(None, s) for s in data.shape]
+    original_shape = tuple([slice(None, s) for s in data.shape])
     assert_allclose(data, pywt.idwtn(d, wavelet)[original_shape],
                     rtol=1e-13, atol=1e-13)
 
