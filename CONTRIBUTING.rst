@@ -41,7 +41,7 @@ Coding guidelines
     within the interpreter, and are compiled into a reference guide in html and
     pdf format.  Higher-level documentation for key (areas of) functionality is
     provided in tutorial format and/or in module docstrings.  A guide on how to
-    write documentation is given in `numpydoc docstring guide`_.
+    write documentation is given in the `numpydoc docstring guide`_.
 
 3. Code style
     Uniformity of style in which code is written is important to others trying
