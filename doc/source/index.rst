@@ -110,7 +110,11 @@ where that was decided).
 
 All contributions including bug reports, bug fixes, new feature implementations
 and documentation improvements are welcome.  Moreover, developers with an
-interest in PyWavelets are very welcome to join the development team!
+interest in PyWavelets are very welcome to join the development team! Please
+see our `guidelines for pull requests`_ for more information.
+
+Contributors are expected to behave in a productive and respectful manner in
+accordance with our `community guidelines`_.
 
 Contact
 -------

@@ -11,3 +11,5 @@
 .. _PyWavelets discussions group: http://groups.google.com/group/pywavelets
 .. _Releases Page: https://github.com/PyWavelets/pywt/releases
 .. _Matplotlib: http://matplotlib.org
+.. _guidelines for pull requests: https://github.com/PyWavelets/pywt/tree/master/CONTRIBUTING.rst
+.. _community guildelines: https://github.com/PyWavelets/pywt/tree/master/community_guidelines.rst
