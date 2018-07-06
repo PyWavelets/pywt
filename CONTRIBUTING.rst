@@ -41,7 +41,7 @@ Coding guidelines
     within the interpreter, and are compiled into a reference guide in html and
     pdf format.  Higher-level documentation for key (areas of) functionality is
     provided in tutorial format and/or in module docstrings.  A guide on how to
-    write documentation is given in `how to document`_.
+    write documentation is given in `numpydoc docstring guide`_.
 
 3. Code style
     Uniformity of style in which code is written is important to others trying
@@ -57,7 +57,7 @@ Coding guidelines
 
 .. _pep8 package: http://pypi.python.org/pypi/pep8
 
-.. _how to document: https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt
+.. _numpydoc docstring guide: https://numpydoc.readthedocs.io/en/latest/
 
 .. _doctest: http://www.doughellmann.com/PyMOTW/doctest/
 
