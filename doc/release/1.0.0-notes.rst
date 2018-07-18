@@ -32,6 +32,11 @@ Backwards incompatible changes
 
 Python 2.6 and 3.3 are no longer supported.
 
+The order of coefficients returned by ``swt2`` and input to ``iswt2`` have been
+reversed so that the decomposition levels are now returned in descending rather
+than ascending order. This makes these 2D stationary wavelet functions
+consistent with all of the other multilevel discrete transforms in PyWavelets.
+
 
 Bugs Fixed
 ==========
