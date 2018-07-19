@@ -876,6 +876,7 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
         The complex frequency B-spline wavelet (fbsp) has bandwidth_frequency, center_frequency and fbsp_order as additional parameter
         The complex Shannon wavelet (shan) has bandwidth_frequency and center_frequency as additional parameter
         The complex Morlet wavelet (cmor) has bandwidth_frequency and center_frequency as additional parameter
+
         Examples
         --------
         >>> import pywt
