@@ -42,7 +42,12 @@ modes = [('zero', 'zpd'),
          ('reflect', 'symw'),
          ('periodic', 'ppd'),
          ('smooth', 'sp1'),
-         ('periodization', 'per')]
+         ('periodization', 'per'),
+         # TODO: Now have implemented asymmetric modes too.
+         #       Would be nice to update the Matlab data to test these as well.
+         ('antisymmetric', 'asym'),
+         ('antireflect', 'asymw'),
+         ]
 
 families = ('db', 'sym', 'coif', 'bior', 'rbio')
 wavelets = sum([pywt.wavelist(name) for name in families], [])

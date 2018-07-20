@@ -28,7 +28,9 @@ modes = [('zero', 'zpd'),
          ('reflect', 'symw'),
          ('periodic', 'ppd'),
          ('smooth', 'sp1'),
-         ('periodization', 'per')]
+         ('periodization', 'per'),
+         ('antisymmetric', 'asym'),
+         ('antireflect', 'asymw')]
 
 families = ('db', 'sym', 'coif', 'bior', 'rbio')
 wavelets = sum([pywt.wavelist(name) for name in families], [])

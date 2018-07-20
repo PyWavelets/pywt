@@ -27,6 +27,8 @@ cdef extern from "c/common.h":
         MODE_PERIODIC
         MODE_PERIODIZATION
         MODE_REFLECT
+        MODE_ANTISYMMETRIC
+        MODE_ANTIREFLECT
         MODE_MAX
 
     # buffers lengths
