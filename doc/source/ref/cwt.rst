@@ -147,4 +147,4 @@ scales. The right column are the corresponding Fourier power spectra of each
 filter.. For scales 1 and 2 it can be seen that aliasing due to violation of
 the Nyquist limit occurs.
 
-.. plot:: pyplots/cwt_scaling_demo2.py
+.. plot:: pyplots/cwt_scaling_demo.py
