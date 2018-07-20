@@ -56,7 +56,7 @@ given by:
     \psi(t) = \frac{1}{\sqrt{\pi B}} \exp^{-\frac{t^2}{B}}
               \exp^{\mathrm{j} 2\pi C t}
 
-where :math:`B` is the bandwith and :math:`C` is the center frequency.
+where :math:`B` is the bandwidth and :math:`C` is the center frequency.
 
 
 Gaussian Derivative Wavelets
@@ -100,7 +100,7 @@ point B, C) correspond to the following wavelets:
               \left[\frac{\sin(\pi B \frac{t}{M})}{\pi B \frac{t}{M}}\right]^M
               \exp^{2\mathrm{j} \pi C t}
 
-where :math:`M` is the spline order, :math:`B` is the bandwith and :math:`C` is
+where :math:`M` is the spline order, :math:`B` is the bandwidth and :math:`C` is
 the center frequency.
 
 
@@ -111,10 +111,10 @@ For each of the wavelets described below, the implementation in PyWavelets
 evaluates the wavelet function for :math:`t` over the range
 ``[wavelet.lower_bound, wavelet.upper_bound]`` (with default range
 :math:`[-8, 8]`). ``scale = 1`` corresponds to the case where the extent of the
-wavelet is (wavelet.upper_bound - wavelet.lower_bound + 1) samples of the
+wavelet is ``(wavelet.upper_bound - wavelet.lower_bound + 1)`` samples of the
 digital signal being analyzed. Larger scales correspond to stretching of the
-wavelet. For example, at scale=10 the wavelet is stretched by a factor of 10,
-making it sensitive to lower frequencies in the signal.
+wavelet. For example, at ``scale=10`` the wavelet is stretched by a factor of
+10, making it sensitive to lower frequencies in the signal.
 
 To relate a given scale to a specific signal frequency, the sampling period
 of the signal must be known. :func:`pywt.scale2frequency` can be used to
@@ -126,8 +126,8 @@ For the ``cmor``, ``fbsp`` and ``shan`` wavelets, the user can specify a
 specific a normalized center frequency. A value of 1.0 corresponds to 1/dt
 where dt is the sampling period. In other words, when analyzing a signal
 sampled at 100 Hz, a center frequency of 1.0 corresponds to ~100 Hz at
-scale = 1. This is above the Nyquist rate of 50 Hz, so for this particular
-wavelet, one would analyze a signal using scales >= 2.
+``scale = 1``. This is above the Nyquist rate of 50 Hz, so for this
+particular wavelet, one would analyze a signal using ``scales >= 2``.
 
 .. sourcecode:: python
 

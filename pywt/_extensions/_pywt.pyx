@@ -848,19 +848,21 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
             else:
                 return "unknown"
 
-    def wavefun(self, int level=8, length = None):
+    def wavefun(self, int level=8, length=None):
         """
-        wavefun(self, level=8, length = None)
+        wavefun(self, level=8, length=None)
 
-        Calculates approximations of wavelet
-        function (`psi`) on xgrid (`x`) at a given level of refinement or length itself.
+        Calculates approximations of wavelet function (``psi``) on xgrid
+        (``x``) at a given level of refinement or length itself.
 
         Parameters
         ----------
         level : int, optional
-            Level of refinement (default: 8). Defines the length by 2**level if length is not set.
+            Level of refinement (default: 8). Defines the length by
+            ``2**level`` if length is not set.
         length : int, optional
-            number of samples. If set to None, the length is set to 2**level instead.
+            Number of samples. If set to None, the length is set to
+            ``2**level`` instead.
 
         Returns
         -------
@@ -871,11 +873,19 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
 
         Notes
         -----
-        The effective support are set with lower_bound and upper_bound
-        The wavelet function is complex for cmor, shan, fbsp and cgau.
-        The complex frequency B-spline wavelet (fbsp) has bandwidth_frequency, center_frequency and fbsp_order as additional parameter
-        The complex Shannon wavelet (shan) has bandwidth_frequency and center_frequency as additional parameter
-        The complex Morlet wavelet (cmor) has bandwidth_frequency and center_frequency as additional parameter
+        The effective support are set with ``lower_bound`` and ``upper_bound``.
+        The wavelet function is complex for ``'cmor'``, ``'shan'``, ``'fbsp'``
+        and ``'cgau'``.
+
+        The complex frequency B-spline wavelet (``'fbsp'``) has
+        ``bandwidth_frequency``, ``center_frequency`` and ``fbsp_order`` as
+        additional parameters.
+
+        The complex Shannon wavelet (``'shan'``) has ``bandwidth_frequency``
+        and ``center_frequency`` as additional parameters.
+
+        The complex Morlet wavelet (``'cmor'``) has ``bandwidth_frequency``
+        and ``center_frequency`` as additional parameters.
 
         Examples
         --------
@@ -893,7 +903,7 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
         >>> plt.title("Gaussian Wavelet of order 8") # doctest: +ELLIPSIS
         <matplotlib.text.Text object at ...>
         >>> plt.show() # doctest: +SKIP
-        ---------
+
         >>> import pywt
         >>> import matplotlib.pyplot as plt
         >>> lb = -5
