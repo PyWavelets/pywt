@@ -17,8 +17,8 @@ Built-in wavelets - ``wavelist()``
 
 .. autofunction:: wavelist
 
-  Custom user wavelets are also supported through the :class:`Wavelet` object
-  constructor as described below.
+  Custom discrete wavelets are also supported through the
+  :class:`Wavelet` object constructor as described below.
 
 
 ``Wavelet`` object
@@ -26,8 +26,9 @@ Built-in wavelets - ``wavelist()``
 
 .. class:: Wavelet(name[, filter_bank=None])
 
-  Describes properties of a wavelet identified by the specified wavelet
-  ``name``. In order to use a built-in wavelet the ``name`` parameter must be a
+  Describes properties of a discrete wavelet identified by the specified
+  wavelet ``name``. For continuous wavelets see :class:`pywt.ContinuousWavelet`
+  instead. In order to use a built-in wavelet the ``name`` parameter must be a
   valid wavelet name from the :func:`pywt.wavelist` list.
 
   Custom Wavelet objects can be created by passing a user-defined filters set
