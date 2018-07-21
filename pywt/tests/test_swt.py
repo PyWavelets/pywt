@@ -170,12 +170,10 @@ def test_swt_dtypes():
                 "swt: " + errmsg)
 
         # swt2
-        with warnings.catch_warnings():
-            warnings.simplefilter('ignore', FutureWarning)
-            x = np.ones((8, 8), dtype=dt_in)
-            cA, (cH, cV, cD) = pywt.swt2(x, wavelet, level=1)[0]
-            assert_(cA.dtype == cH.dtype == cV.dtype == cD.dtype == dt_out,
-                    "swt2: " + errmsg)
+        x = np.ones((8, 8), dtype=dt_in)
+        cA, (cH, cV, cD) = pywt.swt2(x, wavelet, level=1)[0]
+        assert_(cA.dtype == cH.dtype == cV.dtype == cD.dtype == dt_out,
+                "swt2: " + errmsg)
 
 
 def test_swt_roundtrip_dtypes():
@@ -190,12 +188,10 @@ def test_swt_roundtrip_dtypes():
         assert_allclose(x, xr, rtol=1e-6, atol=1e-7)
 
         # swt2, iswt2
-        with warnings.catch_warnings():
-            warnings.simplefilter('ignore', FutureWarning)
-            x = rstate.standard_normal((8, 8)).astype(dt_in)
-            c = pywt.swt2(x, wavelet, level=2)
-            xr = pywt.iswt2(c, wavelet)
-            assert_allclose(x, xr, rtol=1e-6, atol=1e-7)
+        x = rstate.standard_normal((8, 8)).astype(dt_in)
+        c = pywt.swt2(x, wavelet, level=2)
+        xr = pywt.iswt2(c, wavelet)
+        assert_allclose(x, xr, rtol=1e-6, atol=1e-7)
 
 
 def test_swt_default_level_by_axis():
@@ -239,10 +235,8 @@ def test_swt2_iswt2_integration(wavelets=None):
         input_length = 2**(input_length_power + max_level - 1)
         X = np.arange(input_length**2).reshape(input_length, input_length)
 
-        with warnings.catch_warnings():
-            warnings.simplefilter('ignore', FutureWarning)
-            coeffs = pywt.swt2(X, current_wavelet, max_level)
-            Y = pywt.iswt2(coeffs, current_wavelet)
+        coeffs = pywt.swt2(X, current_wavelet, max_level)
+        Y = pywt.iswt2(coeffs, current_wavelet)
         assert_allclose(Y, X, rtol=1e-5, atol=1e-5)
 
 
@@ -269,31 +263,28 @@ def test_swt2_axes():
         current_wavelet.rec_len))))
     input_length = 2**(input_length_power)
     X = np.arange(input_length**2).reshape(input_length, input_length)
-    with warnings.catch_warnings():
-        warnings.simplefilter('ignore', FutureWarning)
-        (cA1, (cH1, cV1, cD1)) = pywt.swt2(X, current_wavelet, level=1)[0]
-        # opposite order
-        (cA2, (cH2, cV2, cD2)) = pywt.swt2(X, current_wavelet, level=1,
-                                           axes=(1, 0))[0]
-        assert_allclose(cA1, cA2, atol=atol)
-        assert_allclose(cH1, cV2, atol=atol)
-        assert_allclose(cV1, cH2, atol=atol)
-        assert_allclose(cD1, cD2, atol=atol)
 
-        # duplicate axes not allowed
-        assert_raises(ValueError, pywt.swt2, X, current_wavelet, 1,
-                      axes=(0, 0))
-        # too few axes
-        assert_raises(ValueError, pywt.swt2, X, current_wavelet, 1, axes=(0, ))
+    (cA1, (cH1, cV1, cD1)) = pywt.swt2(X, current_wavelet, level=1)[0]
+    # opposite order
+    (cA2, (cH2, cV2, cD2)) = pywt.swt2(X, current_wavelet, level=1,
+                                       axes=(1, 0))[0]
+    assert_allclose(cA1, cA2, atol=atol)
+    assert_allclose(cH1, cV2, atol=atol)
+    assert_allclose(cV1, cH2, atol=atol)
+    assert_allclose(cD1, cD2, atol=atol)
+
+    # duplicate axes not allowed
+    assert_raises(ValueError, pywt.swt2, X, current_wavelet, 1,
+                  axes=(0, 0))
+    # too few axes
+    assert_raises(ValueError, pywt.swt2, X, current_wavelet, 1, axes=(0, ))
 
 
 def test_iswt2_2d_only():
     # iswt2 is not currently compatible with data that is not 2D
     x_3d = np.ones((4, 4, 4))
-    with warnings.catch_warnings():
-        warnings.simplefilter('ignore', FutureWarning)
-        c = pywt.swt2(x_3d, 'haar', level=1)
-        assert_raises(ValueError, pywt.iswt2, c, 'haar')
+    c = pywt.swt2(x_3d, 'haar', level=1)
+    assert_raises(ValueError, pywt.iswt2, c, 'haar')
 
 
 def test_swtn_axes():
@@ -426,16 +417,14 @@ def test_per_axis_wavelets():
 def test_error_on_continuous_wavelet():
     # A ValueError is raised if a Continuous wavelet is selected
     data = np.ones((16, 16))
-    with warnings.catch_warnings():  # avoid FutureWarning in swt2
-        warnings.simplefilter('ignore', FutureWarning)
-        for dec_func, rec_func in zip([pywt.swt, pywt.swt2, pywt.swtn],
-                                      [pywt.iswt, pywt.iswt2, pywt.iswtn]):
-            for cwave in ['morl', pywt.DiscreteContinuousWavelet('morl')]:
-                assert_raises(ValueError, dec_func, data, wavelet=cwave,
-                              level=3)
+    for dec_func, rec_func in zip([pywt.swt, pywt.swt2, pywt.swtn],
+                                  [pywt.iswt, pywt.iswt2, pywt.iswtn]):
+        for cwave in ['morl', pywt.DiscreteContinuousWavelet('morl')]:
+            assert_raises(ValueError, dec_func, data, wavelet=cwave,
+                          level=3)
 
-                c = dec_func(data, 'db1', level=3)
-                assert_raises(ValueError, rec_func, c, wavelet=cwave)
+            c = dec_func(data, 'db1', level=3)
+            assert_raises(ValueError, rec_func, c, wavelet=cwave)
 
 
 if __name__ == '__main__':

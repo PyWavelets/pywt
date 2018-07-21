@@ -181,18 +181,18 @@ def swt2(data, wavelet, level, start_level=0, axes=(-2, -1)):
     Returns
     -------
     coeffs : list
-        Approximation and details coefficients::
+        Approximation and details coefficients (for ``start_level = m``)::
 
             [
-                (cA_m,
-                    (cH_m, cV_m, cD_m)
+                (cA_m+level,
+                    (cH_m+level, cV_m+level, cD_m+level)
                 ),
+                ...,
                 (cA_m+1,
                     (cH_m+1, cV_m+1, cD_m+1)
                 ),
-                ...,
-                (cA_m+level,
-                    (cH_m+level, cV_m+level, cD_m+level)
+                (cA_m,
+                    (cH_m, cV_m, cD_m)
                 )
             ]
 
@@ -221,13 +221,6 @@ def swt2(data, wavelet, level, start_level=0, axes=(-2, -1)):
     for c in coefs:
         ret.append((c['aa'], (c['da'], c['ad'], c['dd'])))
 
-    warnings.warn(
-        "For consistency with the rest of PyWavelets, the order of the list "
-        "returned by swt2 will be reversed in the next release. "
-        "In other words, the levels will be sorted in descending rather than "
-        "ascending order.", FutureWarning)
-    # reverse order for backwards compatiblity
-    ret.reverse()
     return ret
 
 
@@ -241,15 +234,15 @@ def iswt2(coeffs, wavelet):
         Approximation and details coefficients::
 
             [
-                (cA_1,
-                    (cH_1, cV_1, cD_1)
+                (cA_n,
+                    (cH_n, cV_n, cD_n)
                 ),
+                ...,
                 (cA_2,
                     (cH_2, cV_2, cD_2)
                 ),
-                ...,
-                (cA_n
-                    (cH_n, cV_n, cD_n)
+                (cA_1,
+                    (cH_1, cV_1, cD_1)
                 )
             ]
 
@@ -278,7 +271,7 @@ def iswt2(coeffs, wavelet):
 
     """
 
-    output = coeffs[-1][0].copy()  # Avoid modification of input data
+    output = coeffs[0][0].copy()  # Avoid modification of input data
     if output.ndim != 2:
         raise ValueError(
             "iswt2 only supports 2D arrays.  see iswtn for a general "
@@ -287,10 +280,10 @@ def iswt2(coeffs, wavelet):
     num_levels = len(coeffs)
     wavelets = _wavelets_per_axis(wavelet, axes=(0, 1))
 
-    for j in range(num_levels, 0, -1):
-        step_size = int(pow(2, j-1))
+    for j in range(num_levels):
+        step_size = int(pow(2, num_levels-j-1))
         last_index = step_size
-        _, (cH, cV, cD) = coeffs[j-1]
+        _, (cH, cV, cD) = coeffs[j]
         # We are going to assume cH, cV, and cD are of equal size
         if (cH.shape != cV.shape) or (cH.shape != cD.shape):
             raise RuntimeError(
@@ -335,12 +328,6 @@ def iswt2(coeffs, wavelet):
                 x4 = np.roll(x4, 1, axis=0)
                 x4 = np.roll(x4, 1, axis=1)
                 output[indices_h, indices_w] = (x1 + x2 + x3 + x4) / 4
-
-    warnings.warn(
-        "For consistency with the rest of PyWavelets, the order of levels in "
-        "coeffs expected by iswt2 will be reversed in the next release. "
-        "In other words, the levels will be sorted in descending rather than "
-        "ascending order.", FutureWarning)
 
     return output
 
