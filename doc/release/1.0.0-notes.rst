@@ -18,6 +18,11 @@ high performance.  Key Features of PyWavelets are:
   * 1D Continuous Wavelet Transform
   * When multiple valid implementations are available, we have chosen to maintain consistency with |MATLAB|'s Wavelet Toolbox.
 
+This release requires Python 2.7 or >=3.5 and NumPy 1.9.1 or greater.
+The 1.0 release will be the last release supporting Python 2.7.  It will be a
+Long Term Support (LTS) release, meaning that we will backport critical bug
+fixes to 1.0.x for as long as Python itself does so (i.e. until 1 Jan 2020).
+
 
 New features
 ============
@@ -30,7 +35,7 @@ Deprecated features
 Backwards incompatible changes
 ==============================
 
-Python 2.6 and 3.3 are no longer supported.
+Python 2.6, 3.3 and 3.4 are no longer supported.
 
 The order of coefficients returned by ``swt2`` and input to ``iswt2`` have been
 reversed so that the decomposition levels are now returned in descending rather
