@@ -5,25 +5,13 @@ concurrent.futures.ThreadPoolExecutor does not raise errors.
 
 from __future__ import division, print_function, absolute_import
 
-import sys
 import warnings
-import multiprocessing
 import numpy as np
 from functools import partial
-from numpy.testing import (dec, run_module_suite, assert_array_equal,
-                           assert_allclose)
+from numpy.testing import assert_array_equal, assert_allclose
+from pywt._pytest import uses_futures, futures, max_workers
 
 import pywt
-
-try:
-    if sys.version_info[0] == 2:
-        import futures
-    else:
-        from concurrent import futures
-    max_workers = multiprocessing.cpu_count()
-    futures_available = True
-except ImportError:
-    futures_available = False
 
 
 def _assert_all_coeffs_equal(coefs1, coefs2):
@@ -44,7 +32,7 @@ def _assert_all_coeffs_equal(coefs1, coefs2):
     return True
 
 
-@dec.skipif(not futures_available)
+@uses_futures
 def test_concurrent_swt():
     # tests error-free concurrent operation (see gh-288)
     # swt on 1D data calls the Cython swt
@@ -65,7 +53,7 @@ def test_concurrent_swt():
         _assert_all_coeffs_equal(expected_result, results[-1])
 
 
-@dec.skipif(not futures_available)
+@uses_futures
 def test_concurrent_wavedec():
     # wavedec on 1D data calls the Cython dwt_single
     # other cases call dwt_axis
@@ -82,7 +70,7 @@ def test_concurrent_wavedec():
         _assert_all_coeffs_equal(expected_result, results[-1])
 
 
-@dec.skipif(not futures_available)
+@uses_futures
 def test_concurrent_dwt():
     # dwt on 1D data calls the Cython dwt_single
     # other cases call dwt_axis
@@ -99,7 +87,7 @@ def test_concurrent_dwt():
         _assert_all_coeffs_equal([expected_result, ], [results[-1], ])
 
 
-@dec.skipif(not futures_available)
+@uses_futures
 def test_concurrent_cwt():
     atol = rtol = 1e-14
     time, sst = pywt.data.nino()
@@ -115,7 +103,3 @@ def test_concurrent_cwt():
     expected_result = transform(sst)
     for a1, a2 in zip(expected_result, results[-1]):
         assert_allclose(a1, a2, atol=atol, rtol=rtol)
-
-
-if __name__ == '__main__':
-    run_module_suite()

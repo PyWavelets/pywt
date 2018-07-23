@@ -2,8 +2,7 @@
 from __future__ import division, print_function, absolute_import
 
 import numpy as np
-from numpy.testing import (run_module_suite, assert_allclose, assert_,
-                           assert_raises)
+from numpy.testing import assert_allclose, assert_, assert_raises
 
 import pywt
 
@@ -224,7 +223,3 @@ def test_error_on_continuous_wavelet():
 
         cA, cD = pywt.dwt(data, 'db1')
         assert_raises(ValueError, pywt.idwt, cA, cD, cwave)
-
-
-if __name__ == '__main__':
-    run_module_suite()

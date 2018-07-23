@@ -6,9 +6,9 @@ import warnings
 from copy import deepcopy
 from itertools import combinations, permutations
 import numpy as np
-from numpy.testing import (run_module_suite, dec, assert_allclose, assert_,
-                           assert_equal, assert_raises, assert_array_equal,
-                           assert_warns)
+import pytest
+from numpy.testing import (assert_allclose, assert_, assert_equal,
+                           assert_raises, assert_array_equal, assert_warns)
 
 import pywt
 from pywt._extensions._swt import swt_axis
@@ -210,7 +210,7 @@ def test_swt2_ndim_error():
         assert_raises(ValueError, pywt.swt2, x, 'haar', level=1)
 
 
-@dec.slow
+@pytest.mark.slow
 def test_swt2_iswt2_integration(wavelets=None):
     # This function performs a round-trip swt2/iswt2 transform test on
     # all available types of wavelets in PyWavelets - except the
@@ -325,7 +325,7 @@ def test_swtn_axes():
                   start_level=0, axis=0)
 
 
-@dec.slow
+@pytest.mark.slow
 def test_swtn_iswtn_integration(wavelets=None):
     # This function performs a round-trip swtn/iswtn transform for various
     # possible combinations of:
@@ -525,7 +525,3 @@ def test_iswtn_mixed_dtypes():
         y = pywt.iswtn(coeffs, wav)
         assert_equal(output_dtype, y.dtype)
         assert_allclose(y, x, rtol=1e-3, atol=1e-3)
-
-
-if __name__ == '__main__':
-    run_module_suite()

@@ -2,7 +2,7 @@
 from __future__ import division, print_function, absolute_import
 
 import numpy as np
-from numpy.testing import run_module_suite, assert_allclose, assert_
+from numpy.testing import assert_allclose, assert_
 
 import pywt
 
@@ -264,7 +264,3 @@ def test_wavefun_bior13():
     assert_allclose(phi_r, phi_r_expect, rtol=1e-10, atol=1e-12)
     assert_allclose(psi_d, psi_d_expect, rtol=1e-10, atol=1e-12)
     assert_allclose(psi_r, psi_r_expect, rtol=1e-10, atol=1e-12)
-
-
-if __name__ == '__main__':
-    run_module_suite()

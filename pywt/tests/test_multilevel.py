@@ -5,9 +5,9 @@ from __future__ import division, print_function, absolute_import
 import warnings
 from itertools import combinations
 import numpy as np
-from numpy.testing import (run_module_suite, assert_almost_equal,
-                           assert_allclose, assert_, assert_equal,
-                           assert_raises, assert_raises_regex, dec,
+import pytest
+from numpy.testing import (assert_almost_equal, assert_allclose, assert_,
+                           assert_equal, assert_raises, assert_raises_regex,
                            assert_array_equal, assert_warns)
 import pywt
 # Check that float32, float64, complex64, complex128 are preserved.
@@ -176,7 +176,7 @@ def test_multilevel_dtypes_2d():
         assert_(x_roundtrip.dtype == dt_out, "waverec2: " + errmsg)
 
 
-@dec.slow
+@pytest.mark.slow
 def test_waverec2_all_wavelets_modes():
     # test 2D case using all wavelets and modes
     rstate = np.random.RandomState(1234)
@@ -363,7 +363,7 @@ def test_waverecn_dtypes():
         assert_allclose(pywt.waverecn(coeffs, 'db1'), x, atol=tol, rtol=tol)
 
 
-@dec.slow
+@pytest.mark.slow
 def test_waverecn_all_wavelets_modes():
     # test 2D case using all wavelets and modes
     rstate = np.random.RandomState(1234)
@@ -1013,7 +1013,3 @@ def test_waverec_mixed_precision():
         r = ifunc(coeffs, 'db1')
         assert_allclose(r, x, rtol=1e-7, atol=1e-7)
         assert_equal(r.dtype, np.complex128)
-
-
-if __name__ == '__main__':
-    run_module_suite()

@@ -1,7 +1,6 @@
 from __future__ import division, print_function, absolute_import
 import numpy as np
-from numpy.testing import (assert_allclose, run_module_suite, assert_raises,
-                           assert_, assert_equal)
+from numpy.testing import assert_allclose, assert_raises, assert_, assert_equal
 
 import pywt
 
@@ -168,7 +167,3 @@ def test_threshold_firm():
         mt_abs_firm = np.abs(d_firm[mt])
         assert_(np.all(mt_abs_firm < np.abs(d_hard[mt])))
         assert_(np.all(mt_abs_firm > np.abs(d_soft[mt])))
-
-
-if __name__ == '__main__':
-    run_module_suite()
