@@ -11,6 +11,9 @@ This release requires Python >=3.5 and has dropped Python 2.7 support.
 New features
 ============
 
+Wavelet packet transforms now support ``float32``, ``complex64`` and
+``complex128`` dtypes in addition to ``float64``.
+
 Deprecated features
 ===================
 
