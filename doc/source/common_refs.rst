@@ -12,4 +12,4 @@
 .. _Releases Page: https://github.com/PyWavelets/pywt/releases
 .. _Matplotlib: http://matplotlib.org
 .. _guidelines for pull requests: https://github.com/PyWavelets/pywt/tree/master/CONTRIBUTING.rst
-.. _community guildelines: https://github.com/PyWavelets/pywt/tree/master/community_guidelines.rst
+.. _community guidelines: https://github.com/PyWavelets/pywt/tree/master/community_guidelines.rst
