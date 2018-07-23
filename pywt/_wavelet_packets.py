@@ -296,16 +296,16 @@ class BaseNode(object):
         if parent and node.node_name:
             parent._delete_node(node.node_name)
 
+    @property
     def is_empty(self):
         return self.data is None
-    is_empty = property(is_empty)
 
+    @property
     def has_any_subnode(self):
         for part in self.PARTS:
             if self._get_node(part) is not None:  # and not .is_empty
                 return True
         return False
-    has_any_subnode = property(has_any_subnode)
 
     def get_leaf_nodes(self, decompose=False):
         """
