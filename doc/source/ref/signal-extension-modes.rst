@@ -61,6 +61,7 @@ minimize this negative effect:
     derivatives calculated on the edges (straight line)
 
   .. _`Modes.antisymmetric`:
+
   * ``antisymmetric`` - **anti-symmetric padding** - signal is extended by
     *mirroring* and negating samples. This mode is also known as half-sample
     anti-symmetric::
@@ -68,6 +69,7 @@ minimize this negative effect:
       ... -x2 -x1 | x1 x2 ... xn | -xn -xn-1 ...
 
   .. _`Modes.antireflect`:
+
   * ``antireflect`` - **anti-symmetric-reflect padding** - signal is extended by
     *reflecting* anti-symmetrically about the edge samples. This mode is also
     known as whole-sample anti-symmetric::
