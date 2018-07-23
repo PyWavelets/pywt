@@ -155,6 +155,10 @@ def test_wavelet_packet_dtypes():
         # no unnecessary copy made
         assert_(wp.data is x)
 
+        # assiging to a node should not change supported dtypes
+        wp['d'] = wp['d'].data
+        assert_equal(wp['d'].data.dtype, x.dtype)
+
         # full decomposition
         wp.get_level(wp.maxlevel)
 
