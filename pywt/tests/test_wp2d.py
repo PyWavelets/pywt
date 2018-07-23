@@ -4,7 +4,7 @@ from __future__ import division, print_function, absolute_import
 
 import numpy as np
 from numpy.testing import (run_module_suite, assert_allclose, assert_,
-                           assert_raises)
+                           assert_raises, assert_equal)
 
 import pywt
 
@@ -143,6 +143,25 @@ def test_lazy_evaluation_2D():
                     rtol=1e-12)
     assert_allclose(wp.a.data, np.array([[3., 7., 11., 15.]] * 4), rtol=1e-12)
     assert_allclose(wp.d.data, np.zeros((4, 4)), rtol=1e-12, atol=1e-12)
+
+
+def test_wavelet_packet_dtypes():
+    shape = (16, 16)
+    for dtype in [np.float32, np.float64, np.complex64, np.complex128]:
+        x = np.random.randn(*shape).astype(dtype)
+        if np.iscomplexobj(x):
+            x = x + 1j*np.random.randn(*shape).astype(x.real.dtype)
+        wp = pywt.WaveletPacket2D(data=x, wavelet='db1', mode='symmetric')
+        # no unnecessary copy made
+        assert_(wp.data is x)
+
+        # full decomposition
+        wp.get_level(wp.maxlevel)
+
+        # reconstruction from coefficients should preserve dtype
+        r = wp.reconstruct(False)
+        assert_equal(r.dtype, x.dtype)
+        assert_allclose(r, x, atol=1e-6, rtol=1e-6)
 
 
 if __name__ == '__main__':
