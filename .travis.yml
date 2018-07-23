@@ -56,7 +56,7 @@ before_install:
   - pip install $NUMPYSPEC
   - pip install $MATPLOTLIBSPEC
   - pip install $CYTHONSPEC
-  - pip install nose coverage codecov futures
+  - pip install pytest pytest-cov coverage codecov futures
   - set -o pipefail
   - if [ "${USE_WHEEL}" == "1" ]; then pip install wheel; fi
   - |
@@ -72,7 +72,7 @@ script:
         pip wheel . -v
         pip install PyWavelets*.whl -v
         pushd demo
-        nosetests pywt
+        pytest --pyargs pywt
         python ../pywt/tests/test_doc.py
         popd
     elif [ "${USE_SDIST}" == "1" ]; then
@@ -80,7 +80,7 @@ script:
         # Move out of source directory to avoid finding local pywt
         pushd dist
         pip install PyWavelets* -v
-        nosetests pywt
+        pytest --pyargs pywt
         python ../pywt/tests/test_doc.py
         popd
     elif [ "${REFGUIDE_CHECK}" == "1" ]; then
@@ -88,7 +88,7 @@ script:
         python util/refguide_check.py --doctests
     else
         CFLAGS="--coverage" python setup.py build --build-lib build/lib/ --build-temp build/tmp/
-        nosetests build/lib/ --tests pywt/tests
+        pytest --cov=pywt build/lib/pywt/tests/
     fi
 
 after_success:
