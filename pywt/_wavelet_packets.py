@@ -11,7 +11,7 @@ __all__ = ["BaseNode", "Node", "WaveletPacket", "Node2D", "WaveletPacket2D"]
 
 import numpy as np
 
-from ._extensions._pywt import Wavelet
+from ._extensions._pywt import Wavelet, _check_dtype
 from ._dwt import dwt, idwt, dwt_max_level
 from ._multidim import dwt2, idwt2
 
@@ -266,9 +266,13 @@ class BaseNode(object):
                 subnode[path[self.PART_LEN:]] = data
             else:
                 if isinstance(data, BaseNode):
-                    self.data = np.asarray(data.data, dtype=np.float64)
+                    self.data = np.asarray(data.data)
                 else:
-                    self.data = np.asarray(data, dtype=np.float64)
+                    self.data = np.asarray(data)
+                # convert data to nearest supported dtype
+                dtype = _check_dtype(data)
+                if self.data.dtype != dtype:
+                    self.data = self.data.astype(dtype)
         else:
             raise TypeError("Invalid path parameter type - expected string but"
                             " got %s." % type(path))
@@ -292,16 +296,16 @@ class BaseNode(object):
         if parent and node.node_name:
             parent._delete_node(node.node_name)
 
+    @property
     def is_empty(self):
         return self.data is None
-    is_empty = property(is_empty)
 
+    @property
     def has_any_subnode(self):
         for part in self.PARTS:
             if self._get_node(part) is not None:  # and not .is_empty
                 return True
         return False
-    has_any_subnode = property(has_any_subnode)
 
     def get_leaf_nodes(self, decompose=False):
         """
@@ -542,7 +546,7 @@ class WaveletPacket(Node):
         self.mode = mode
 
         if data is not None:
-            data = np.asarray(data, dtype=np.float64)
+            data = np.asarray(data)
             assert data.ndim == 1
             self.data_size = data.shape[0]
             if maxlevel is None:
@@ -644,7 +648,7 @@ class WaveletPacket2D(Node2D):
         self.mode = mode
 
         if data is not None:
-            data = np.asarray(data, dtype=np.float64)
+            data = np.asarray(data)
             assert data.ndim == 2
             self.data_size = data.shape
             if maxlevel is None:

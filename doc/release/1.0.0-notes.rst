@@ -42,10 +42,12 @@ reversed so that the decomposition levels are now returned in descending rather
 than ascending order. This makes these 2D stationary wavelet functions
 consistent with all of the other multilevel discrete transforms in PyWavelets.
 
-
 Bugs Fixed
 ==========
 
+Assigning new data to the ``Node`` or ``Node2D`` no longer forces a cast to
+``float64`` when the data is one of the other dtypes supported by the dwt
+(``float32``, ``complex64``, ``complex128``).
 
 Other changes
 =============
