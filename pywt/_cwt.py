@@ -18,11 +18,17 @@ def cwt(data, scales, wavelet, sampling_period=1.):
     data : array_like
         Input signal
     scales : array_like
-        scales to use
+        The wavelet scales to use. One can use
+        ``f = scale2frequency(scale, wavelet)/sampling_period`` to determine
+        what physical frequency, ``f``. Here, ``f`` is in hertz when the
+        ``sampling_period`` is given in seconds.
     wavelet : Wavelet object or name
         Wavelet to use
     sampling_period : float
-        Sampling period for frequencies output (optional)
+        Sampling period for the frequencies output (optional).
+        The values computed for ``coefs`` are independent of the choice of
+        ``sampling_period`` (i.e. ``scales`` is not scaled by the sampling
+        period).
 
     Returns
     -------
@@ -30,8 +36,8 @@ def cwt(data, scales, wavelet, sampling_period=1.):
         Continuous wavelet transform of the input signal for the given scales
         and wavelet
     frequencies : array_like
-        if the unit of sampling period are seconds and given, than frequencies
-        are in hertz. Otherwise Sampling period of 1 is assumed.
+        If the unit of sampling period are seconds and given, than frequencies
+        are in hertz. Otherwise, a sampling period of 1 is assumed.
 
     Notes
     -----
@@ -73,9 +79,9 @@ def cwt(data, scales, wavelet, sampling_period=1.):
             out = np.zeros((np.size(scales), data.size), dtype=complex)
         else:
             out = np.zeros((np.size(scales), data.size))
+        precision = 10
+        int_psi, x = integrate_wavelet(wavelet, precision=precision)
         for i in np.arange(np.size(scales)):
-            precision = 10
-            int_psi, x = integrate_wavelet(wavelet, precision=precision)
             step = x[1] - x[0]
             j = np.floor(
                 np.arange(scales[i] * (x[-1] - x[0]) + 1) / (scales[i] * step))
@@ -84,7 +90,13 @@ def cwt(data, scales, wavelet, sampling_period=1.):
             coef = - np.sqrt(scales[i]) * np.diff(
                 np.convolve(data, int_psi[j.astype(np.int)][::-1]))
             d = (coef.size - data.size) / 2.
-            out[i, :] = coef[int(np.floor(d)):int(-np.ceil(d))]
+            if d > 0:
+                out[i, :] = coef[int(np.floor(d)):int(-np.ceil(d))]
+            elif d == 0.:
+                out[i, :] = coef
+            else:
+                raise ValueError(
+                    "Selected scale of {} too small.".format(scales[i]))
         frequencies = scale2frequency(wavelet, scales, precision)
         if np.isscalar(frequencies):
             frequencies = np.array([frequencies])

@@ -361,5 +361,16 @@ def test_cwt_complex():
         assert_almost_equal(cfs + 1j*cfs, cfs_complex)
 
 
+def test_cwt_small_scales():
+    data = np.zeros(32)
+
+    # A scale of 0.1 was chosen specifically to give a filter of length 2 for
+    # mexh.  This corner case should not raise an error.
+    cfs, f = pywt.cwt(data, scales=0.1, wavelet='mexh')
+    assert_allclose(cfs, np.zeros_like(cfs))
+
+    # extremely short scale factors raise a ValueError
+    assert_raises(ValueError, pywt.cwt, data, scales=0.01, wavelet='mexh')
+
 if __name__ == '__main__':
     run_module_suite()
