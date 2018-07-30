@@ -11,7 +11,10 @@ functions.
 from __future__ import division, print_function, absolute_import
 import numpy as np
 
-__all__ = ['threshold', 'threshold_firm']
+from ._multidim import dwtn
+
+
+__all__ = ['threshold', 'threshold_firm', 'estimate_sigma']
 
 
 def soft(data, value, substitute=0):
@@ -245,3 +248,90 @@ def threshold_firm(data, value_low, value_high):
     if np.any(large_vals[0]):
         thresholded[large_vals] = data[large_vals]
     return thresholded
+
+def estimate_sigma(image, average_sigmas=False, multichannel=False):
+    """
+    Robust wavelet-based estimator of the (Gaussian) noise standard deviation.
+    Parameters
+    ----------
+    image : ndarray
+        Image for which to estimate the noise standard deviation.
+    average_sigmas : bool, optional
+        If true, average the channel estimates of `sigma`.  Otherwise return
+        a list of sigmas corresponding to each channel.
+    multichannel : bool
+        Estimate sigma separately for each channel.
+    Returns
+    -------
+    sigma : float or list
+        Estimated noise standard deviation(s).  If `multichannel` is True and
+        `average_sigmas` is False, a separate noise estimate for each channel
+        is returned.  Otherwise, the average of the individual channel
+        estimates is returned.
+    Notes
+    -----
+    This function assumes the noise follows a Gaussian distribution. The
+    estimation algorithm is based on the median absolute deviation of the
+    wavelet detail coefficients as described in section 4.2 of [1]_.
+    References
+    ----------
+    .. [1] D. L. Donoho and I. M. Johnstone. "Ideal spatial adaptation
+       by wavelet shrinkage." Biometrika 81.3 (1994): 425-455.
+       DOI:10.1093/biomet/81.3.425
+    Examples
+    --------
+    >>> import skimage.data
+    >>> from skimage import img_as_float
+    >>> img = img_as_float(skimage.data.camera())
+    >>> sigma = 0.1
+    >>> img = img + sigma * np.random.standard_normal(img.shape)
+    >>> sigma_hat = estimate_sigma(img, multichannel=False)
+    """
+    if multichannel:
+        nchannels = image.shape[-1]
+        sigmas = [estimate_sigma(
+            image[..., c], multichannel=False) for c in range(nchannels)]
+        if average_sigmas:
+            sigmas = np.mean(sigmas)
+        return sigmas
+    elif image.shape[-1] <= 4:
+        msg = ("image is size {0} on the last axis, but multichannel is "
+               "False.  If this is a color image, please set multichannel "
+               "to True for proper noise estimation.")
+        warn(msg.format(image.shape[-1]))
+    coeffs = dwtn(image, wavelet='db2')
+    detail_coeffs = coeffs['d' * image.ndim]
+    return _sigma_est_dwt(detail_coeffs, distribution='Gaussian')
+
+def _sigma_est_dwt(detail_coeffs, distribution='Gaussian'):
+    """Calculate the robust median estimator of the noise standard deviation.
+    Parameters
+    ----------
+    detail_coeffs : ndarray
+        The detail coefficients corresponding to the discrete wavelet
+        transform of an image.
+    distribution : str
+        The underlying noise distribution.
+    Returns
+    -------
+    sigma : float
+        The estimated noise standard deviation (see section 4.2 of [1]_).
+    References
+    ----------
+    .. [1] D. L. Donoho and I. M. Johnstone. "Ideal spatial adaptation
+       by wavelet shrinkage." Biometrika 81.3 (1994): 425-455.
+       DOI:10.1093/biomet/81.3.425
+    """
+    # Consider regions with detail coefficients exactly zero to be masked out
+    detail_coeffs = detail_coeffs[np.nonzero(detail_coeffs)]
+
+    if distribution.lower() == 'gaussian':
+        # 75th quantile of the underlying, symmetric noise distribution
+        # denom = scipy.stats.norm.ppf(0.75)
+        # magic number to fill in because no scipy
+        denom = 0.6744897501960817
+        sigma = np.median(np.abs(detail_coeffs)) / denom
+    else:
+        raise ValueError("Only Gaussian noise estimation is currently "
+                         "supported")
+    return sigma
