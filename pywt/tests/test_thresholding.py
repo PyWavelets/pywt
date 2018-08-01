@@ -169,6 +169,14 @@ def test_threshold_firm():
         assert_(np.all(mt_abs_firm < np.abs(d_hard[mt])))
         assert_(np.all(mt_abs_firm > np.abs(d_soft[mt])))
 
+def test_estimate_sigma():
+    sigma_test_data = np.sin(np.linspace(0,10,1000))
+    np.random.seed(42)
+    sigma_test_noise = np.random.normal(0,1,1000)
+    # TODO: get rid of magic number for test...
+    # can test by creating a list of noise arrays to pass in with varying sigmas
+    assert_allclose(pywt.estimate_sigma(sigma_test_data + sigma_test_noise),
+                 0.9736668419858439)
 
 if __name__ == '__main__':
     run_module_suite()

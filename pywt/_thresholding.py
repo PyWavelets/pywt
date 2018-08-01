@@ -254,51 +254,38 @@ def estimate_sigma(image, average_sigmas=False, multichannel=False):
     Robust wavelet-based estimator of the (Gaussian) noise standard deviation.
     Parameters
     ----------
-    image : ndarray
-        Image for which to estimate the noise standard deviation.
-    average_sigmas : bool, optional
-        If true, average the channel estimates of `sigma`.  Otherwise return
-        a list of sigmas corresponding to each channel.
-    multichannel : bool
-        Estimate sigma separately for each channel.
+    data : ndarray
+        The data used to estimate sigma.
+
     Returns
     -------
-    sigma : float or list
-        Estimated noise standard deviation(s).  If `multichannel` is True and
-        `average_sigmas` is False, a separate noise estimate for each channel
-        is returned.  Otherwise, the average of the individual channel
-        estimates is returned.
+    sigma : float
+        Estimated noise standard deviation.
+
     Notes
     -----
     This function assumes the noise follows a Gaussian distribution. The
     estimation algorithm is based on the median absolute deviation of the
     wavelet detail coefficients as described in section 4.2 of [1]_.
+
     References
     ----------
     .. [1] D. L. Donoho and I. M. Johnstone. "Ideal spatial adaptation
        by wavelet shrinkage." Biometrika 81.3 (1994): 425-455.
        DOI:10.1093/biomet/81.3.425
+    
     Examples
     --------
-    >>> import skimage.data
-    >>> from skimage import img_as_float
-    >>> img = img_as_float(skimage.data.camera())
-    >>> sigma = 0.1
-    >>> img = img + sigma * np.random.standard_normal(img.shape)
-    >>> sigma_hat = estimate_sigma(img, multichannel=False)
+    >>> import numpy as np
+    >>> import pywt
+    >>> data = np.sin(np.linspace(0,10,1000))
+    >>> np.random.seed(42)
+    >>> noise = np.random.normal(0,1,1000)
+    >>> sigma = pywt.estimate_sigma(data + noise)
+    >>> print(sigma)
+    0.9736668419858439
     """
-    if multichannel:
-        nchannels = image.shape[-1]
-        sigmas = [estimate_sigma(
-            image[..., c], multichannel=False) for c in range(nchannels)]
-        if average_sigmas:
-            sigmas = np.mean(sigmas)
-        return sigmas
-    elif image.shape[-1] <= 4:
-        msg = ("image is size {0} on the last axis, but multichannel is "
-               "False.  If this is a color image, please set multichannel "
-               "to True for proper noise estimation.")
-        warn(msg.format(image.shape[-1]))
+    
     coeffs = dwtn(image, wavelet='db2')
     detail_coeffs = coeffs['d' * image.ndim]
     return _sigma_est_dwt(detail_coeffs, distribution='Gaussian')
