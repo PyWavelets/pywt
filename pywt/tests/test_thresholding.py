@@ -169,6 +169,7 @@ def test_threshold_firm():
         assert_(np.all(mt_abs_firm < np.abs(d_hard[mt])))
         assert_(np.all(mt_abs_firm > np.abs(d_soft[mt])))
 
+
 def test_estimate_sigma():
     sigma_test_data = np.sin(np.linspace(0,10,1000))
     np.random.seed(42)

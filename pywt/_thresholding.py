@@ -249,6 +249,7 @@ def threshold_firm(data, value_low, value_high):
         thresholded[large_vals] = data[large_vals]
     return thresholded
 
+
 def estimate_sigma(data):
     """
     Robust wavelet-based estimator of the (Gaussian) noise standard deviation.
@@ -273,7 +274,7 @@ def estimate_sigma(data):
     .. [1] D. L. Donoho and I. M. Johnstone. "Ideal spatial adaptation
        by wavelet shrinkage." Biometrika 81.3 (1994): 425-455.
        DOI:10.1093/biomet/81.3.425
-    
+
     Examples
     --------
     >>> import numpy as np
@@ -285,10 +286,11 @@ def estimate_sigma(data):
     >>> print(sigma)
     0.9736668419858439
     """
-    
+
     coeffs = dwtn(data, wavelet='db2')
     detail_coeffs = coeffs['d' * data.ndim]
     return _sigma_est_dwt(detail_coeffs, distribution='Gaussian')
+
 
 def _sigma_est_dwt(detail_coeffs, distribution='Gaussian'):
     """Calculate the robust median estimator of the noise standard deviation.
