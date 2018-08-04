@@ -283,8 +283,6 @@ def estimate_sigma(data):
     >>> np.random.seed(42)
     >>> noise = np.random.normal(0,1,1000)
     >>> sigma = pywt.estimate_sigma(data + noise)
-    >>> print(sigma)
-    0.9736668419858439
     """
 
     coeffs = dwtn(data, wavelet='db2')
