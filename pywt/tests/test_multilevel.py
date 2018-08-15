@@ -589,11 +589,11 @@ def test_ravel_wavedec2_with_lists():
     coeffs = pywt.wavedec2(x1, wav)
 
     # list [cHn, cVn, cDn] instead of tuple is okay
-    coeffs[1:] = [list(c) for c in coeffs[1:]]  
+    coeffs[1:] = [list(c) for c in coeffs[1:]]
     coeff_arr, slices, shapes = pywt.ravel_coeffs(coeffs)
     coeffs2 = pywt.unravel_coeffs(coeff_arr, slices, shapes,
                                   output_format='wavedec2')
-    x1r = pywt.waverec2(coeffs2, wav)    
+    x1r = pywt.waverec2(coeffs2, wav)
     assert_allclose(x1, x1r, rtol=1e-4, atol=1e-4)
 
     # wrong length list will cause a ValueError
@@ -635,6 +635,45 @@ def test_unravel_invalid_inputs():
 
     # invalid format name
     assert_raises(ValueError, pywt.unravel_coeffs, arr, slices, shapes, 'foo')
+
+
+def test_wavedecn_shapes_and_size():
+    wav = pywt.Wavelet('db2')
+    for data_shape in [(33, ), (64, 32), (1, 15, 30)]:
+        for axes in [None, 0, -1]:
+            for mode in pywt.Modes.modes:
+                coeffs = pywt.wavedecn(np.ones(data_shape), wav,
+                                       mode=mode, axes=axes)
+
+                # verify that the shapes match the coefficient shapes
+                shapes = pywt.wavedecn_shapes(data_shape, wav,
+                                              mode=mode, axes=axes)
+
+                assert_equal(coeffs[0].shape, shapes[0])
+                expected_size = coeffs[0].size
+                for level in range(1, len(coeffs)):
+                    for k, v in coeffs[level].items():
+                        expected_size += v.size
+                        assert_equal(shapes[level][k], v.shape)
+
+                # size can be determined from either the shapes or coeffs
+                size = pywt.wavedecn_size(shapes)
+                assert_equal(size, expected_size)
+
+                size = pywt.wavedecn_size(coeffs)
+                assert_equal(size, expected_size)
+
+
+def test_dwtn_max_level():
+    # predicted and empirical dwtn_max_level match
+    for wav in [pywt.Wavelet('db2'), 'sym8']:
+        for data_shape in [(33, ), (64, 32), (1, 15, 30)]:
+            for axes in [None, 0, -1]:
+                for mode in pywt.Modes.modes:
+                    coeffs = pywt.wavedecn(np.ones(data_shape), wav,
+                                           mode=mode, axes=axes)
+                    max_lev = pywt.dwtn_max_level(data_shape, wav, axes)
+                    assert_equal(len(coeffs[1:]), max_lev)
 
 
 def test_waverec_axes_subsets():
