@@ -321,7 +321,6 @@ def test_wavedecn_many_levels():
                     assert_allclose(data, r, atol=tol, rtol=tol)
 
 
-
 def test_waverecn_accuracies():
     # testing 3D only here
     rstate = np.random.RandomState(1234)

@@ -42,6 +42,11 @@ reversed so that the decomposition levels are now returned in descending rather
 than ascending order. This makes these 2D stationary wavelet functions
 consistent with all of the other multilevel discrete transforms in PyWavelets.
 
+For ``wavedec``, ``wavedec2`` and ``wavedecn``, the ability for the user to
+specify a ``level`` that is greater than the value returned by
+``dwt_max_level``  has been restored. A ``UserWarning`` is raised instead of a
+``ValueError`` in this case.
+
 Bugs Fixed
 ==========
 
