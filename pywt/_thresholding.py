@@ -250,13 +250,17 @@ def threshold_firm(data, value_low, value_high):
     return thresholded
 
 
-def estimate_sigma(data):
+def estimate_sigma(data, distribution='Gaussian', **kwargs):
     """
     Robust wavelet-based estimator of the (Gaussian) noise standard deviation.
     Parameters
     ----------
     data : ndarray
         The data used to estimate sigma.
+    distribution : str or object with ppf method
+        The underlying noise distribution.
+    **kwargs : **kwargs
+        Keyword arguments to pass into distribution ppf method.
 
     Returns
     -------
@@ -287,18 +291,21 @@ def estimate_sigma(data):
 
     coeffs = dwtn(data, wavelet='db2')
     detail_coeffs = coeffs['d' * data.ndim]
-    return _sigma_est_dwt(detail_coeffs, distribution='Gaussian')
+    return _sigma_est_dwt(detail_coeffs, distribution=distribution, **kwargs)
 
 
-def _sigma_est_dwt(detail_coeffs, distribution='Gaussian'):
+def _sigma_est_dwt(detail_coeffs, distribution='Gaussian', **kwargs):
     """Calculate the robust median estimator of the noise standard deviation.
     Parameters
     ----------
     detail_coeffs : ndarray
         The detail coefficients corresponding to the discrete wavelet
         transform of an image.
-    distribution : str
+    distribution : str or object with ppf method
         The underlying noise distribution.
+    **kwargs : **kwargs
+        Keyword arguments to pass into distribution ppf method.
+
     Returns
     -------
     sigma : float
@@ -312,13 +319,17 @@ def _sigma_est_dwt(detail_coeffs, distribution='Gaussian'):
     # Consider regions with detail coefficients exactly zero to be masked out
     detail_coeffs = detail_coeffs[np.nonzero(detail_coeffs)]
 
-    if distribution.lower() == 'gaussian':
+    if hasattr(distribution, 'ppf'):
+        if not kwargs:
+            kwargs = {'q': 0.75}
+        denom = distribution.ppf(**kwargs)
+    elif str(distribution).lower() == 'gaussian':
         # 75th quantile of the underlying, symmetric noise distribution
         # denom = scipy.stats.norm.ppf(0.75)
         # magic number to fill in because no scipy
         denom = 0.6744897501960817
-        sigma = np.median(np.abs(detail_coeffs)) / denom
     else:
-        raise ValueError("Only Gaussian noise estimation is currently "
-                         "supported")
+        raise ValueError("Only Gaussian noise estimation or objects with"
+                         " ppf method currently supported")
+    sigma = np.median(np.abs(detail_coeffs)) / denom
     return sigma
