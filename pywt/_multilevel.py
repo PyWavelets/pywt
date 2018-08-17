@@ -946,7 +946,7 @@ def wavedecn_size(shapes):
         for k, v in d.items():
             if v is None:
                 raise ValueError(
-                    "Setting coefficient arrays to None is not supported.")            
+                    "Setting coefficient arrays to None is not supported.")
             ncoeffs += _size(v)
     return ncoeffs
 
