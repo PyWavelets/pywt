@@ -304,7 +304,21 @@ def test_wavedecn_invalid_inputs():
     # invalid number of levels
     data = np.ones(16)
     assert_raises(ValueError, pywt.wavedecn, data, 'haar', level=-1)
-    assert_raises(ValueError, pywt.wavedecn, data, 'haar', level=100)
+
+
+def test_wavedecn_many_levels():
+    # perfect reconstruction even when level > pywt.dwt_max_level
+    data = np.arange(64).reshape(8, 8)
+    tol = 1e-12
+    dec_funcs = [pywt.wavedec, pywt.wavedec2, pywt.wavedecn]
+    rec_funcs = [pywt.waverec, pywt.waverec2, pywt.waverecn]
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore', UserWarning)
+        for dec_func, rec_func in zip(dec_funcs, rec_funcs):
+            for mode in ['periodization', 'symmetric']:
+                    coeffs = dec_func(data, 'haar', mode=mode, level=20)
+                    r = rec_func(coeffs, 'haar', mode=mode)
+                    assert_allclose(data, r, atol=tol, rtol=tol)
 
 
 def test_waverecn_accuracies():

@@ -36,9 +36,9 @@ def _check_level(sizes, dec_lens, level):
         raise ValueError(
             "Level value of %d is too low . Minimum level is 0." % level)
     elif level > max_level:
-        raise ValueError(
-            "Level value of %d is too high.  Maximum allowed is %d." % (
-                level, max_level))
+        warnings.warn(
+            ("Level value of {} is too high: all coefficients will experience "
+            "boundary effects.").format(level))
     return level
 
 
