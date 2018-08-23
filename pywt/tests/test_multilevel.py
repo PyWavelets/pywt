@@ -8,7 +8,7 @@ import numpy as np
 from numpy.testing import (run_module_suite, assert_almost_equal,
                            assert_allclose, assert_, assert_equal,
                            assert_raises, assert_raises_regex, dec,
-                           assert_array_equal)
+                           assert_array_equal, assert_warns)
 import pywt
 # Check that float32, float64, complex64, complex128 are preserved.
 # Other real types get converted to float64.
@@ -872,8 +872,8 @@ def test_fswt_ifswt_variable_levels():
     assert_raises(ValueError, pywt.fswt, data, 'haar', levels=(1, 1, 1, 1))
 
     # levels too large for array size
-    assert_raises(ValueError, pywt.fswt, data, 'haar',
-                  levels=np.log2(np.min(data.shape))+1)
+    assert_warns(UserWarning, pywt.fswt, data, 'haar',
+                 levels=int(np.log2(np.min(data.shape)))+1)
 
 
 def test_fswt_ifswt_variable_wavelets_and_modes():
