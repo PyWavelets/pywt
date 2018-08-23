@@ -54,11 +54,11 @@ def test_wavelet_coefficients():
     wavelets = sum([pywt.wavelist(name) for name in families], [])
     for wavelet in wavelets:
         if (pywt.Wavelet(wavelet).orthogonal):
-            yield check_coefficients_orthogonal, wavelet
+            check_coefficients_orthogonal(wavelet)
         elif(pywt.Wavelet(wavelet).biorthogonal):
-            yield check_coefficients_biorthogonal, wavelet
+            check_coefficients_biorthogonal(wavelet)
         else:
-            yield check_coefficients, wavelet
+            check_coefficients(wavelet)
 
 
 def check_coefficients_orthogonal(wavelet):

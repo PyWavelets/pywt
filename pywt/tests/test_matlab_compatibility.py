@@ -60,10 +60,10 @@ def test_accuracy_pymatbridge():
                 data = rstate.randn(N)
                 mlab.set_variable('data', data)
                 for pmode, mmode in modes:
-                    ma, md = _compute_matlab_result(data, wavelet, mmode)
-                    yield _check_accuracy, data, w, pmode, ma, md, wavelet, epsilon
+                    ma, md = _compute_matlab_result(data, wavelet, mmode, mlab)
+                    _check_accuracy(data, w, pmode, ma, md, wavelet, epsilon)
                     ma, md = _load_matlab_result_pywt_coeffs(data, wavelet, mmode)
-                    yield _check_accuracy, data, w, pmode, ma, md, wavelet, epsilon_pywt_coeffs
+                    _check_accuracy(data, w, pmode, ma, md, wavelet, epsilon_pywt_coeffs)
 
     finally:
         mlab.stop()
@@ -83,12 +83,12 @@ def test_accuracy_precomputed():
             data = rstate.randn(N)
             for pmode, mmode in modes:
                 ma, md = _load_matlab_result(data, wavelet, mmode)
-                yield _check_accuracy, data, w, pmode, ma, md, wavelet, epsilon
+                _check_accuracy(data, w, pmode, ma, md, wavelet, epsilon)
                 ma, md = _load_matlab_result_pywt_coeffs(data, wavelet, mmode)
-                yield _check_accuracy, data, w, pmode, ma, md, wavelet, epsilon_pywt_coeffs
+                _check_accuracy(data, w, pmode, ma, md, wavelet, epsilon_pywt_coeffs)
 
 
-def _compute_matlab_result(data, wavelet, mmode):
+def _compute_matlab_result(data, wavelet, mmode, mlab):
     """ Compute the result using MATLAB.
 
     This function assumes that the Matlab variables `wavelet` and `data` have

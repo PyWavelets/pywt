@@ -40,7 +40,8 @@ def _get_scales(w):
 @uses_pymatbridge  # skip this case if precomputed results are used instead
 @pytest.mark.slow
 def test_accuracy_pymatbridge_cwt():
-    mlab = pytest.importorskip("pymatbridge.Matlab")
+    Matlab = pytest.importorskip("pymatbridge.Matlab")
+    mlab = Matlab()
     rstate = np.random.RandomState(1234)
     # max RMSE (was 1.0e-10, is reduced to 5.0e-5 due to different coefficents)
     epsilon = 1e-15
@@ -60,13 +61,13 @@ def test_accuracy_pymatbridge_cwt():
             mlab_code = ("psi = wavefun(wavelet,10)")
             res = mlab.run_code(mlab_code)
             psi = np.asarray(mlab.get_variable('psi'))
-            yield _check_accuracy_psi, w, psi, wavelet, epsilon_psi
+            _check_accuracy_psi(w, psi, wavelet, epsilon_psi)
             for N in _get_data_sizes(w):
                 data = rstate.randn(N)
                 mlab.set_variable('data', data)
                 for scales in _get_scales(w):
-                    coefs = _compute_matlab_result(data, wavelet, scales)
-                    yield _check_accuracy, data, w, scales, coefs, wavelet, epsilon
+                    coefs = _compute_matlab_result(data, wavelet, scales, mlab)
+                    _check_accuracy(data, w, scales, coefs, wavelet, epsilon)
 
     finally:
         mlab.stop()
@@ -87,7 +88,7 @@ def test_accuracy_precomputed_cwt():
             w = pywt.ContinuousWavelet(wavelet)
             w32 = pywt.ContinuousWavelet(wavelet,dtype=np.float32)
         psi = _load_matlab_result_psi(wavelet)
-        yield _check_accuracy_psi, w, psi, wavelet, epsilon_psi
+        _check_accuracy_psi(w, psi, wavelet, epsilon_psi)
 
         for N in _get_data_sizes(w):
             data = rstate.randn(N)
@@ -96,11 +97,11 @@ def test_accuracy_precomputed_cwt():
             for scales in _get_scales(w):
                 scales_count += 1
                 coefs = _load_matlab_result(data, wavelet, scales_count)
-                yield _check_accuracy, data, w, scales, coefs, wavelet, epsilon
-                yield _check_accuracy, data32, w32, scales, coefs, wavelet, epsilon32
+                _check_accuracy(data, w, scales, coefs, wavelet, epsilon)
+                _check_accuracy(data32, w32, scales, coefs, wavelet, epsilon32)
 
 
-def _compute_matlab_result(data, wavelet, scales):
+def _compute_matlab_result(data, wavelet, scales, mlab):
     """ Compute the result using MATLAB.
 
     This function assumes that the Matlab variables `wavelet` and `data` have

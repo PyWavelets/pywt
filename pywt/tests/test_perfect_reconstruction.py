@@ -28,7 +28,7 @@ def test_perfect_reconstruction():
     for wavelet in wavelets:
         for pmode, mmode in modes:
             for dt in dtypes:
-                yield check_reconstruction, pmode, mmode, wavelet, dt
+                check_reconstruction(pmode, mmode, wavelet, dt)
 
 
 def check_reconstruction(pmode, mmode, wavelet, dtype):
