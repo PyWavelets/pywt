@@ -962,10 +962,10 @@ def dwtn_max_level(shape, wavelet, axes=None):
     shape : sequence of ints
         Input data shape.
     wavelet : Wavelet object or name string, or tuple of wavelets
-        Wavelet to use.  This can also be a tuple containing a wavelet to
+        Wavelet to use. This can also be a tuple containing a wavelet to
         apply along each axis in ``axes``.
     axes : sequence of ints, optional
-        Axes over which to compute the DWT.  Axes may not be repeated.
+        Axes over which to compute the DWT. Axes may not be repeated.
 
     Returns
     -------
@@ -1002,7 +1002,7 @@ def ravel_coeffs(coeffs, axes=None):
         A list of multilevel wavelet coefficients as returned by
         ``wavedec``, ``wavedec2`` or ``wavedecn``.
     axes : sequence of ints, optional
-        Axes over which the DWT that created ``coeffs`` was performed.  The
+        Axes over which the DWT that created ``coeffs`` was performed. The
         default value of ``None`` corresponds to all axes.
 
     Returns
