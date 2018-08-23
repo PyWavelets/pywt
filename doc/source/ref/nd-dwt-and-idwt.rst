@@ -32,6 +32,6 @@ Multilevel fully separable reconstruction - ``ifswt``
 -----------------------------------------------------
 .. autofunction:: ifswt
 
-Multilevel fully separable reconstruction coeffs - ``TransformResult``
+Multilevel fully separable reconstruction coeffs - ``FswtResult``
 -----------------------------------------------------------------------
-.. autoclass:: TransformResult
+.. autoclass:: FswtResult
