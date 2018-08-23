@@ -10,6 +10,7 @@ and Inverse Discrete Wavelet Transform.
 
 from __future__ import division, print_function, absolute_import
 
+import warnings
 from copy import copy
 import numpy as np
 
@@ -39,7 +40,7 @@ def _check_level(sizes, dec_lens, level):
     elif level > max_level:
         warnings.warn(
             ("Level value of {} is too high: all coefficients will experience "
-            "boundary effects.").format(level))
+             "boundary effects.").format(level))
     return level
 
 
