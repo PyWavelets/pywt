@@ -5,7 +5,7 @@ import pywt
 img = pywt.data.camera().astype(float)
 
 # Fully separable transform
-fswt_array, slices = pywt.fswt(img, 'db2', 'periodization', levels=4)
+fswt_result = pywt.fswt(img, 'db2', 'periodization', levels=4)
 
 # Standard DWT
 coefs = pywt.wavedec2(img, 'db2', 'periodization', level=4)
@@ -21,7 +21,7 @@ ax1.imshow(np.abs(mallat_array)**0.25,
 ax1.set_axis_off()
 ax1.set_title('Mallat decomposition\n(wavedec2)')
 
-ax2.imshow(np.abs(fswt_array)**0.25,
+ax2.imshow(np.abs(fswt_result.coeffs)**0.25,
            cmap=plt.cm.gray,
            interpolation='nearest')
 ax2.set_axis_off()

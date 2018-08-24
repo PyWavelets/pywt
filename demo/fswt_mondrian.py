@@ -59,10 +59,10 @@ coeffs_dwt = pywt.wavedecn(img, wavelet='db1', level=None)
 coeff_array_dwt, _ = pywt.coeffs_to_array(coeffs_dwt)
 
 # perform fully seperable DWT
-coeff_array_fswt, _ = pywt.fswt(img, wavelet='db1')
+fswt_result = pywt.fswt(img, wavelet='db1')
 
 nnz_dwt = np.sum(coeff_array_dwt != 0)
-nnz_fswt = np.sum(coeff_array_fswt != 0)
+nnz_fswt = np.sum(fswt_result.coeffs != 0)
 
 print("Number of nonzero wavedecn coefficients = {}".format(np.sum(nnz_dwt)))
 print("Number of nonzero fswt coefficients = {}".format(np.sum(nnz_fswt)))
@@ -74,8 +74,9 @@ axes[0].imshow(img, **imshow_kwargs)
 axes[0].set_title('Anisotropic Image')
 axes[1].imshow(coeff_array_dwt != 0, **imshow_kwargs)
 axes[1].set_title('Nonzero DWT\ncoefficients\n(N={})'.format(nnz_dwt))
-axes[2].imshow(coeff_array_fswt != 0, **imshow_kwargs)
+axes[2].imshow(fswt_result.coeffs != 0, **imshow_kwargs)
 axes[2].set_title('Nonzero FSWT\ncoefficients\n(N={})'.format(nnz_fswt))
 for ax in axes:
     ax.set_axis_off()
+
 plt.show()

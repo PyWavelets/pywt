@@ -165,8 +165,9 @@ def waverec(coeffs, wavelet, mode='symmetric', axis=-1):
             except IndexError:
                 raise ValueError("Axis greater than coefficient dimensions")
             except AttributeError:
-                raise AttributeError("Wrong coefficient format, if using 'array_to_coeffs' please specify "
-                                     "the 'output_format' parameter")
+                raise AttributeError(
+                    "Wrong coefficient format, if using 'array_to_coeffs' "
+                    "please specify the 'output_format' parameter")
         a = idwt(a, d, wavelet, mode, axis)
 
     return a
@@ -1300,9 +1301,9 @@ class FswtResult(object):
 
         Parameters
         ----------
-            levels : tuple of int
-                The number of degrees of decomposition along each transformed
-                axis.
+        levels : tuple of int
+            The number of degrees of decomposition along each transformed
+            axis.
         """
         self._validate_index(levels)
         sl = self._get_coef_sl(levels)
@@ -1313,12 +1314,12 @@ class FswtResult(object):
 
         Parameters
         ----------
-            levels : tuple of int
-                The number of degrees of decomposition along each transformed
-                axis.
-            x : ndarray
-                The data corresponding to assign. It must match the expected
-                shape and dtype of the specified subband.
+        levels : tuple of int
+            The number of degrees of decomposition along each transformed
+            axis.
+        x : ndarray
+            The data corresponding to assign. It must match the expected
+            shape and dtype of the specified subband.
         """
         self._validate_index(levels)
         sl = self._get_coef_sl(levels)
@@ -1373,17 +1374,10 @@ def fswt(data, wavelet, mode='symmetric', levels=None, axes=None):
 
     Returns
     -------
-    coeffs_arr : array
-        n-dimensional array of wavelet coefficients
-    coeff_slices : list of list of slices
-        Lists of slice objects.  The first index corresponds to the transform
-        axes.  The list of slices for each axes has a length equal to the
-        number of levels.  Example:  The approximation coefficients for a 2D
-        transform correspond to:
-        ``a = coeffs_arr[coeff_slices[0][0], coeff_slices[1][0]]``
-        whereas detail coefficients for ``n`` levels of decomposition along the
-        first axis and ``m`` levels along the second would be given by:
-        ``dnm = coeffs_arr[coeff_slices[0][-n], coeff_slices[1][-m]]``
+    fswt_result : FswtResult object
+        Contains the wavelet coefficients, slice objects to allow obtaining
+        the coefficients per detail or approximation level, and more.
+        See `FswtResult` for details.
 
     Notes
     -----
