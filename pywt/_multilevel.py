@@ -260,11 +260,7 @@ def waverec2(coeffs, wavelet, mode='symmetric', axes=(-2, -1)):
         apply along each axis in `axes`.
     mode : str or 2-tuple of str, optional
         Signal extension mode, see `Modes` (default: 'symmetric').  This can
-<<<<<<< HEAD
         also be a tuple containing a mode to apply along each axis in `axes`.
-=======
-        also be a tuple containing a mode to apply along each axis in ``axes``.
->>>>>>> 646e10b... use a TransformResults class to store the results of FSWT
     axes : 2-tuple of ints, optional
         Axes over which to compute the IDWT. Repeated elements are not allowed.
 
@@ -1345,7 +1341,7 @@ class FswavedecnResult(object):
 
 
 def fswavedecn(data, wavelet, mode='symmetric', levels=None, axes=None):
-    """Fully Separable Wavelet Transform.
+    """Fully Separable Wavelet Decomposition.
 
     This is a variant of the multilevel discrete wavelet transform where all
     levels of decomposition are performed along a single axis prior to moving
@@ -1369,7 +1365,7 @@ def fswavedecn(data, wavelet, mode='symmetric', levels=None, axes=None):
         ``levels`` is None (default), `dwt_max_level` will be used to compute
         the maximum number of levels possible for each axis.
     axes : sequence of ints, optional
-        Axes over which to compute the FSWT. Axes may not be repeated.  The
+        Axes over which to compute the transform. Axes may not be repeated. The
         default is to transform along all axes.
 
     Returns
@@ -1386,9 +1382,9 @@ def fswavedecn(data, wavelet, mode='symmetric', levels=None, axes=None):
     ([2]_) or the hyperbolic wavelet transform ([4]_).  It is well suited to
     data with anisotropic smoothness.
 
-    In [2]_ it was demonstrated that FSWT performs at least as well as the DWT
-    for image compression.  Computation time is a factor 2 larger than that for
-    the DWT.
+    In [2]_ it was demonstrated that fully separable transform performs at
+    least as well as the DWT for image compression.  Computation time is a
+    factor 2 larger than that for the DWT.
 
     See Also
     --------
@@ -1447,7 +1443,7 @@ def fswavedecn(data, wavelet, mode='symmetric', levels=None, axes=None):
 
 
 def fswaverecn(fswavedecn_result):
-    """Fully Separable Inverse Wavelet Transform.
+    """Fully Separable Inverse Wavelet Reconstruction.
 
     Parameters
     ----------
@@ -1466,9 +1462,9 @@ def fswaverecn(fswavedecn_result):
     ([2]_) or the hyperbolic wavelet transform ([4]_).  It is well suited to
     data with anisotropic smoothness.
 
-    In [2]_ it was demonstrated that FSWT performs at least as well as the DWT
-    for image compression. Computation time is a factor 2 larger than that for
-    the DWT.
+    In [2]_ it was demonstrated that the fully separable transform performs at
+    least as well as the DWT for image compression. Computation time is a
+    factor 2 larger than that for the DWT.
 
     See Also
     --------
