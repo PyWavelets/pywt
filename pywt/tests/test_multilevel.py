@@ -828,7 +828,7 @@ def test_per_axis_wavelets_and_modes():
 # Tests for fully separable multi-level transforms
 
 
-def test_fswt_ifswt_roundtrip():
+def test_fswavedecn_fswaverecn_roundtrip():
     # verify proper round trip result for 1D through 4D data
     # same DWT as wavedecn/waverecn so don't need to test all modes/wavelets
     rstate = np.random.RandomState(0)
@@ -837,8 +837,8 @@ def test_fswt_ifswt_roundtrip():
             for levels in (1, None):
                 data = rstate.standard_normal((8, )*ndim)
                 data = data.astype(dt_in)
-                T = pywt.fswt(data, 'haar', levels=levels)
-                rec = pywt.ifswt(T)
+                T = pywt.fswavedecn(data, 'haar', levels=levels)
+                rec = pywt.fswaverecn(T)
                 if data.real.dtype in [np.float32, np.float16]:
                     assert_allclose(rec, data, rtol=1e-6, atol=1e-6)
                 else:
@@ -847,71 +847,71 @@ def test_fswt_ifswt_roundtrip():
                 assert_(rec.dtype == dt_out)
 
 
-def test_fswt_ifswt_zero_levels():
+def test_fswavedecn_fswaverecn_zero_levels():
     # zero level transform gives coefs matching the original data
     rstate = np.random.RandomState(0)
     ndim = 2
     data = rstate.standard_normal((8, )*ndim)
-    T = pywt.fswt(data, 'haar', levels=0)
+    T = pywt.fswavedecn(data, 'haar', levels=0)
     assert_array_equal(T.coeffs, data)
-    rec = pywt.ifswt(T)
+    rec = pywt.fswaverecn(T)
     assert_array_equal(T.coeffs, rec)
 
 
-def test_fswt_ifswt_variable_levels():
+def test_fswavedecn_fswaverecn_variable_levels():
     # test with differing number of transform levels per axis
     rstate = np.random.RandomState(0)
     ndim = 3
     data = rstate.standard_normal((16, )*ndim)
-    T = pywt.fswt(data, 'haar', levels=(1, 2, 3))
-    rec = pywt.ifswt(T)
+    T = pywt.fswavedecn(data, 'haar', levels=(1, 2, 3))
+    rec = pywt.fswaverecn(T)
     assert_allclose(rec, data, atol=1e-14)
 
     # levels doesn't match number of axes
-    assert_raises(ValueError, pywt.fswt, data, 'haar', levels=(1, 1))
-    assert_raises(ValueError, pywt.fswt, data, 'haar', levels=(1, 1, 1, 1))
+    assert_raises(ValueError, pywt.fswavedecn, data, 'haar', levels=(1, 1))
+    assert_raises(ValueError, pywt.fswavedecn, data, 'haar', levels=(1, 1, 1, 1))
 
     # levels too large for array size
-    assert_warns(UserWarning, pywt.fswt, data, 'haar',
+    assert_warns(UserWarning, pywt.fswavedecn, data, 'haar',
                  levels=int(np.log2(np.min(data.shape)))+1)
 
 
-def test_fswt_ifswt_variable_wavelets_and_modes():
+def test_fswavedecn_fswaverecn_variable_wavelets_and_modes():
     # test with differing number of transform levels per axis
     rstate = np.random.RandomState(0)
     ndim = 3
     data = rstate.standard_normal((16, )*ndim)
     wavelets = ('haar', 'db2', 'sym3')
     modes = ('periodic', 'symmetric', 'periodization')
-    T = pywt.fswt(data, wavelet=wavelets, mode=modes)
+    T = pywt.fswavedecn(data, wavelet=wavelets, mode=modes)
     for ax in range(ndim):
         # expect approx + dwt_max_level detail coeffs along each axis
         assert_equal(len(T.coeff_slices[ax]),
                      pywt.dwt_max_level(data.shape[ax], wavelets[ax])+1)
 
-    rec = pywt.ifswt(T)
+    rec = pywt.fswaverecn(T)
     assert_allclose(rec, data, atol=1e-14)
 
     # number of wavelets doesn't match number of axes
-    assert_raises(ValueError, pywt.fswt, data, wavelets[:2])
+    assert_raises(ValueError, pywt.fswavedecn, data, wavelets[:2])
 
     # number of modes doesn't match number of axes
-    assert_raises(ValueError, pywt.fswt, data, wavelets[0], mode=modes[:2])
+    assert_raises(ValueError, pywt.fswavedecn, data, wavelets[0], mode=modes[:2])
 
 
-def test_fswt_ifswt_axes_subsets():
+def test_fswavedecn_fswaverecn_axes_subsets():
     """Fully separable DWT over only a subset of axes"""
     rstate = np.random.RandomState(0)
     # use anisotropic data to result in unique number of levels per axis
     data = rstate.standard_normal((4, 8, 16, 32))
     # test all combinations of 3 out of 4 axes transformed
     for axes in combinations((0, 1, 2, 3), 3):
-        T = pywt.fswt(data, 'haar', axes=axes)
-        rec = pywt.ifswt(T)
+        T = pywt.fswavedecn(data, 'haar', axes=axes)
+        rec = pywt.fswaverecn(T)
         assert_allclose(rec, data, atol=1e-14)
 
     # some axes exceed data dimensions
-    assert_raises(ValueError, pywt.fswt, data, 'haar', axes=(1, 5))
+    assert_raises(ValueError, pywt.fswavedecn, data, 'haar', axes=(1, 5))
 
 
 def test_error_on_continuous_wavelet():

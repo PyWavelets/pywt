@@ -24,14 +24,14 @@ Multilevel reconstruction - ``waverecn``
 ----------------------------------------
 .. autofunction:: waverecn
 
-Multilevel fully separable decomposition - ``fswt``
----------------------------------------------------
-.. autofunction:: fswt
+Multilevel fully separable decomposition - ``fswavedecn``
+---------------------------------------------------------
+.. autofunction:: fswavedecn
 
-Multilevel fully separable reconstruction - ``ifswt``
------------------------------------------------------
-.. autofunction:: ifswt
+Multilevel fully separable reconstruction - ``fswaverecn``
+----------------------------------------------------------
+.. autofunction:: fswaverecn
 
-Multilevel fully separable reconstruction coeffs - ``FswtResult``
+Multilevel fully separable reconstruction coeffs - ``FswaverecnResult``
 -----------------------------------------------------------------------
-.. autoclass:: FswtResult
+.. autoclass:: FswaverecnResult
