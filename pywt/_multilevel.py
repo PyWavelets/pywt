@@ -1,5 +1,5 @@
 # Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/>
-# Copyright (c) 2012-2016 The PyWavelets Developers
+# Copyright (c) 2012-2018 The PyWavelets Developers
 #                         <https://github.com/PyWavelets/pywt>
 # See COPYING for license details.
 
@@ -14,14 +14,16 @@ import warnings
 from copy import copy
 import numpy as np
 
-from ._extensions._pywt import Wavelet
+from itertools import product
 from ._extensions._dwt import dwt_max_level
-from ._dwt import dwt, idwt
+from ._dwt import dwt, idwt, dwt_coeff_len
 from ._multidim import dwt2, idwt2, dwtn, idwtn, _fix_coeffs
-from ._utils import _as_wavelet, _wavelets_per_axis
+from ._utils import _as_wavelet, _wavelets_per_axis, _modes_per_axis
 
 __all__ = ['wavedec', 'waverec', 'wavedec2', 'waverec2', 'wavedecn',
-           'waverecn', 'coeffs_to_array', 'array_to_coeffs']
+           'waverecn', 'coeffs_to_array', 'array_to_coeffs', 'ravel_coeffs',
+           'unravel_coeffs', 'dwtn_max_level', 'wavedecn_size',
+           'wavedecn_shapes']
 
 
 def _check_level(sizes, dec_lens, level):
@@ -38,7 +40,7 @@ def _check_level(sizes, dec_lens, level):
     elif level > max_level:
         warnings.warn(
             ("Level value of {} is too high: all coefficients will experience "
-            "boundary effects.").format(level))
+             "boundary effects.").format(level))
     return level
 
 
@@ -56,7 +58,7 @@ def wavedec(data, wavelet, mode='symmetric', level=None, axis=-1):
         Signal extension mode, see Modes (default: 'symmetric')
     level : int, optional
         Decomposition level (must be >= 0). If level is None (default) then it
-        will be calculated using the ``dwt_max_level`` function.
+        will be calculated using the `dwt_max_level` function.
     axis: int, optional
         Axis over which to compute the DWT. If not given, the
         last axis is used.
@@ -122,10 +124,10 @@ def waverec(coeffs, wavelet, mode='symmetric', axis=-1):
 
     Notes
     -----
-    It may sometimes be desired to run ``waverec`` with some sets of
+    It may sometimes be desired to run `waverec` with some sets of
     coefficients omitted.  This can best be done by setting the corresponding
     arrays to zero arrays of matching shape and dtype.  Explicitly removing
-    list entries or setting them to ``None`` is not supported.
+    list entries or setting them to None is not supported.
 
     Specifically, to ignore detail coefficients at level 2, one could do::
 
@@ -178,25 +180,25 @@ def wavedec2(data, wavelet, mode='symmetric', level=None, axes=(-2, -1)):
         2D input data
     wavelet : Wavelet object or name string, or 2-tuple of wavelets
         Wavelet to use.  This can also be a tuple containing a wavelet to
-        apply along each axis in ``axes``.
+        apply along each axis in `axes`.
     mode : str or 2-tuple of str, optional
         Signal extension mode, see Modes (default: 'symmetric').  This can
-        also be a tuple containing a mode to apply along each axis in ``axes``.
+        also be a tuple containing a mode to apply along each axis in `axes`.
     level : int, optional
         Decomposition level (must be >= 0). If level is None (default) then it
-        will be calculated using the ``dwt_max_level`` function.
+        will be calculated using the `dwt_max_level` function.
     axes : 2-tuple of ints, optional
         Axes over which to compute the DWT. Repeated elements are not allowed.
 
     Returns
     -------
     [cAn, (cHn, cVn, cDn), ... (cH1, cV1, cD1)] : list
-        Coefficients list.  For user-specified ``axes``, ``cH*``
-        corresponds to ``axes[0]`` while ``cV*`` corresponds to ``axes[1]``.
+        Coefficients list.  For user-specified `axes`, `cH*`
+        corresponds to ``axes[0]`` while `cV*` corresponds to ``axes[1]``.
         The first element returned is the approximation coefficients for the
         nth level of decomposition.  Remaining elements are tuples of detail
         coefficients in descending order of decomposition level.
-        (i.e. cH1 are the horizontal detail coefficients at the first level)
+        (i.e. `cH1` are the horizontal detail coefficients at the first level)
 
     Examples
     --------
@@ -252,10 +254,10 @@ def waverec2(coeffs, wavelet, mode='symmetric', axes=(-2, -1)):
         Coefficients list [cAn, (cHn, cVn, cDn), ... (cH1, cV1, cD1)]
     wavelet : Wavelet object or name string, or 2-tuple of wavelets
         Wavelet to use.  This can also be a tuple containing a wavelet to
-        apply along each axis in ``axes``.
+        apply along each axis in `axes`.
     mode : str or 2-tuple of str, optional
         Signal extension mode, see Modes (default: 'symmetric').  This can
-        also be a tuple containing a mode to apply along each axis in ``axes``.
+        also be a tuple containing a mode to apply along each axis in `axes`.
     axes : 2-tuple of ints, optional
         Axes over which to compute the IDWT. Repeated elements are not allowed.
 
@@ -265,10 +267,10 @@ def waverec2(coeffs, wavelet, mode='symmetric', axes=(-2, -1)):
 
     Notes
     -----
-    It may sometimes be desired to run ``waverec2`` with some sets of
+    It may sometimes be desired to run `waverec2` with some sets of
     coefficients omitted.  This can best be done by setting the corresponding
     arrays to zero arrays of matching shape and dtype.  Explicitly removing
-    list or tuple entries or setting them to ``None`` is not supported.
+    list or tuple entries or setting them to None is not supported.
 
     Specifically, to ignore all detail coefficients at level 2, one could do::
 
@@ -323,6 +325,26 @@ def waverec2(coeffs, wavelet, mode='symmetric', axes=(-2, -1)):
     return a
 
 
+def _prep_axes_wavedecn(shape, axes):
+    if len(shape) < 1:
+        raise ValueError("Expected at least 1D input data.")
+    ndim = len(shape)
+    if np.isscalar(axes):
+        axes = (axes, )
+    if axes is None:
+        axes = range(ndim)
+    else:
+        axes = tuple(axes)
+    if len(axes) != len(set(axes)):
+        raise ValueError("The axes passed to wavedecn must be unique.")
+    try:
+        axes_shapes = [shape[ax] for ax in axes]
+    except IndexError:
+        raise ValueError("Axis greater than data dimensions")
+    ndim_transform = len(axes)
+    return axes, axes_shapes, ndim_transform
+
+
 def wavedecn(data, wavelet, mode='symmetric', level=None, axes=None):
     """
     Multilevel nD Discrete Wavelet Transform.
@@ -333,32 +355,32 @@ def wavedecn(data, wavelet, mode='symmetric', level=None, axes=None):
         nD input data
     wavelet : Wavelet object or name string, or tuple of wavelets
         Wavelet to use.  This can also be a tuple containing a wavelet to
-        apply along each axis in ``axes``.
+        apply along each axis in `axes`.
     mode : str or tuple of str, optional
         Signal extension mode, see Modes (default: 'symmetric').  This can
-        also be a tuple containing a mode to apply along each axis in ``axes``.
+        also be a tuple containing a mode to apply along each axis in `axes`.
     level : int, optional
         Decomposition level (must be >= 0). If level is None (default) then it
-        will be calculated using the ``dwt_max_level`` function.
+        will be calculated using the `dwt_max_level` function.
     axes : sequence of ints, optional
         Axes over which to compute the DWT. Axes may not be repeated. The
-        default is ``None``, which means transform all axes
+        default is None, which means transform all axes
         (``axes = range(data.ndim)``).
 
     Returns
     -------
     [cAn, {details_level_n}, ... {details_level_1}] : list
         Coefficients list.  Coefficients are listed in descending order of
-        decomposition level.  ``cAn`` are the approximation coefficients at
-        level ``n``.  Each ``details_level_i`` element is a dictionary
+        decomposition level.  `cAn` are the approximation coefficients at
+        level `n`.  Each `details_level_i` element is a dictionary
         containing detail coefficients at level `i` of the decomposition.  As
         a concrete example, a 3D decomposition would have the following set of
-        keys in each ``details_level_i`` dictionary::
+        keys in each `details_level_i` dictionary::
 
             {'aad', 'ada', 'daa', 'add', 'dad', 'dda', 'ddd'}
 
         where the order of the characters in each key map to the specified
-        ``axes``.
+        `axes`.
 
     Examples
     --------
@@ -388,24 +410,7 @@ def wavedecn(data, wavelet, mode='symmetric', level=None, axes=None):
 
     """
     data = np.asarray(data)
-
-    if len(data.shape) < 1:
-        raise ValueError("Expected at least 1D input data.")
-
-    if np.isscalar(axes):
-        axes = (axes, )
-    if axes is None:
-        axes = range(data.ndim)
-    else:
-        axes = tuple(axes)
-    if len(axes) != len(set(axes)):
-        raise ValueError("The axes passed to wavedecn must be unique.")
-    ndim_transform = len(axes)
-    try:
-        axes_shapes = [data.shape[ax] for ax in axes]
-    except IndexError:
-        raise ValueError("Axis greater than data dimensions")
-
+    axes, axes_shapes, ndim_transform = _prep_axes_wavedecn(data.shape, axes)
     wavelets = _wavelets_per_axis(wavelet, axes)
     dec_lengths = [w.dec_len for w in wavelets]
 
@@ -448,10 +453,10 @@ def waverecn(coeffs, wavelet, mode='symmetric', axes=None):
         Coefficients list [cAn, {details_level_n}, ... {details_level_1}]
     wavelet : Wavelet object or name string, or tuple of wavelets
         Wavelet to use.  This can also be a tuple containing a wavelet to
-        apply along each axis in ``axes``.
+        apply along each axis in `axes`.
     mode : str or tuple of str, optional
         Signal extension mode, see Modes (default: 'symmetric').  This can
-        also be a tuple containing a mode to apply along each axis in ``axes``.
+        also be a tuple containing a mode to apply along each axis in `axes`.
     axes : sequence of ints, optional
         Axes over which to compute the IDWT.  Axes may not be repeated.
 
@@ -461,10 +466,10 @@ def waverecn(coeffs, wavelet, mode='symmetric', axes=None):
 
     Notes
     -----
-    It may sometimes be desired to run ``waverecn`` with some sets of
+    It may sometimes be desired to run `waverecn` with some sets of
     coefficients omitted.  This can best be done by setting the corresponding
     arrays to zero arrays of matching shape and dtype.  Explicitly removing
-    list or dictionary entries or setting them to ``None`` is not supported.
+    list or dictionary entries or setting them to None is not supported.
 
     Specifically, to ignore all detail coefficients at level 2, one could do::
 
@@ -575,6 +580,10 @@ def _coeffs_wavedec2_to_wavedecn(coeffs):
         if not isinstance(coeffs[n], (tuple, list)) or len(coeffs[n]) != 3:
             raise ValueError("expected a 3-tuple of detail coefficients")
         (da, ad, dd) = coeffs[n]
+        if da is None or ad is None or dd is None:
+            raise ValueError(
+                "Expected numpy arrays of detail coefficients. Setting "
+                "coefficients to None is not supported.")
         coeffs[n] = dict(ad=ad, da=da, dd=dd)
     return coeffs
 
@@ -595,6 +604,52 @@ def _determine_coeff_array_shape(coeffs, axes):
     return arr_shape, is_tight_packing
 
 
+def _prepare_coeffs_axes(coeffs, axes):
+    """Helper function to check type of coeffs and axes.
+
+    This code is used by both coeffs_to_array and ravel_coeffs.
+    """
+    if not isinstance(coeffs, list) or len(coeffs) == 0:
+        raise ValueError("input must be a list of coefficients from wavedecn")
+    if coeffs[0] is None:
+        raise ValueError("coeffs_to_array does not support missing "
+                         "coefficients.")
+    if not isinstance(coeffs[0], np.ndarray):
+        raise ValueError("first list element must be a numpy array")
+    ndim = coeffs[0].ndim
+
+    if len(coeffs) > 1:
+        # convert wavedec or wavedec2 format coefficients to waverecn format
+        if isinstance(coeffs[1], dict):
+            pass
+        elif isinstance(coeffs[1], np.ndarray):
+            coeffs = _coeffs_wavedec_to_wavedecn(coeffs)
+        elif isinstance(coeffs[1], (tuple, list)):
+            coeffs = _coeffs_wavedec2_to_wavedecn(coeffs)
+        else:
+            raise ValueError("invalid coefficient list")
+
+    if len(coeffs) == 1:
+        # no detail coefficients were found
+        return coeffs, axes, ndim, None
+
+    # Determine the number of dimensions that were transformed via key length
+    ndim_transform = len(list(coeffs[1].keys())[0])
+    if axes is None:
+        if ndim_transform < ndim:
+            raise ValueError(
+                "coeffs corresponds to a DWT performed over only a subset of "
+                "the axes.  In this case, axes must be specified.")
+        axes = np.arange(ndim)
+
+    if len(axes) != ndim_transform:
+        raise ValueError(
+            "The length of axes doesn't match the number of dimensions "
+            "transformed.")
+
+    return coeffs, axes, ndim, ndim_transform
+
+
 def coeffs_to_array(coeffs, padding=0, axes=None):
     """
     Arrange a wavelet coefficient list from `wavedecn` into a single array.
@@ -602,13 +657,13 @@ def coeffs_to_array(coeffs, padding=0, axes=None):
     Parameters
     ----------
 
-    coeffs: array-like
+    coeffs : array-like
         dictionary of wavelet coefficients as returned by pywt.wavedecn
     padding : float or None, optional
         If None, raise an error if the coefficients cannot be tightly packed.
     axes : sequence of ints, optional
-        Axes over which the DWT that created ``coeffs`` was performed.  The
-        default value of ``None`` corresponds to all axes.
+        Axes over which the DWT that created `coeffs` was performed.  The
+        default value of None corresponds to all axes.
 
     Returns
     -------
@@ -656,44 +711,16 @@ def coeffs_to_array(coeffs, padding=0, axes=None):
     >>> arr, coeff_slices = pywt.coeffs_to_array(coeffs)
 
     """
-    if not isinstance(coeffs, list) or len(coeffs) == 0:
-        raise ValueError("input must be a list of coefficients from wavedecn")
-    if coeffs[0] is None:
-        raise ValueError("coeffs_to_array does not support missing "
-                         "coefficients.")
-    if not isinstance(coeffs[0], np.ndarray):
-        raise ValueError("first list element must be a numpy array")
-    if len(coeffs) > 1:
-        # convert wavedec or wavedec2 format coefficients to waverecn format
-        if isinstance(coeffs[1], dict):
-            pass
-        elif isinstance(coeffs[1], np.ndarray):
-            coeffs = _coeffs_wavedec_to_wavedecn(coeffs)
-        elif isinstance(coeffs[1], (tuple, list)):
-            coeffs = _coeffs_wavedec2_to_wavedecn(coeffs)
-        else:
-            raise ValueError("invalid coefficient list")
+
+    coeffs, axes, ndim, ndim_transform = _prepare_coeffs_axes(coeffs, axes)
+
     # initialize with the approximation coefficients.
     a_coeffs = coeffs[0]
     a_shape = a_coeffs.shape
-    ndim = a_coeffs.ndim
+
     if len(coeffs) == 1:
         # only a single approximation coefficient array was found
         return a_coeffs, [tuple([slice(None)] * ndim)]
-
-    # Determine the number of dimensions that were transformed via key length
-    ndim_transform = len(list(coeffs[1].keys())[0])
-    if axes is None:
-        if ndim_transform < ndim:
-            raise ValueError(
-                "coeffs corresponds to a DWT performed over only a subset of "
-                "the axes.  In this case, axes must be specified.")
-        axes = np.arange(ndim)
-
-    if len(axes) != ndim_transform:
-        raise ValueError(
-            "The length of axes doesn't match the number of dimensions "
-            "transformed.")
 
     # determine size of output and if tight packing is possible
     arr_shape, is_tight_packing = _determine_coeff_array_shape(coeffs, axes)
@@ -748,7 +775,7 @@ def array_to_coeffs(arr, coeff_slices, output_format='wavedecn'):
     Parameters
     ----------
 
-    arr: array-like
+    arr : array-like
         An array containing all wavelet coefficients.  This should have been
         generated via `coeffs_to_array`.
     coeff_slices : list of tuples
@@ -821,6 +848,302 @@ def array_to_coeffs(arr, coeff_slices, output_format='wavedecn'):
             d = {}
             for k, v in coeff_slices[n].items():
                 d[k] = arr[v]
+        else:
+            raise ValueError(
+                "Unrecognized output format: {}".format(output_format))
+        coeffs.append(d)
+    return coeffs
+
+
+def wavedecn_shapes(shape, wavelet, mode='symmetric', level=None, axes=None):
+    """Subband shapes for a multilevel nD discrete wavelet transform.
+
+    Parameters
+    ----------
+    shape : sequence of ints
+        The shape of the data to be transformed.
+    wavelet : Wavelet object or name string, or tuple of wavelets
+        Wavelet to use.  This can also be a tuple containing a wavelet to
+        apply along each axis in `axes`.
+    mode : str or tuple of str, optional
+        Signal extension mode, see Modes (default: 'symmetric').  This can
+        also be a tuple containing a mode to apply along each axis in `axes`.
+    level : int, optional
+        Decomposition level (must be >= 0). If level is None (default) then it
+        will be calculated using the `dwt_max_level` function.
+    axes : sequence of ints, optional
+        Axes over which to compute the DWT. Axes may not be repeated. The
+        default is None, which means transform all axes
+        (``axes = range(data.ndim)``).
+
+    Returns
+    -------
+    shapes : [cAn, {details_level_n}, ... {details_level_1}] : list
+        Coefficients shape list.  Mirrors the output of `wavedecn`, except
+        it contains only the shapes of the coefficient arrays rather than the
+        arrays themselves.
+
+    Examples
+    --------
+    >>> import pywt
+    >>> pywt.wavedecn_shapes((64, 32), wavelet='db2', level=3, axes=(0, ))
+    [(10, 32), {'d': (10, 32)}, {'d': (18, 32)}, {'d': (33, 32)}]
+    """
+    axes, axes_shapes, ndim_transform = _prep_axes_wavedecn(shape, axes)
+    wavelets = _wavelets_per_axis(wavelet, axes)
+    modes = _modes_per_axis(mode, axes)
+    dec_lengths = [w.dec_len for w in wavelets]
+
+    level = _check_level(min(axes_shapes), max(dec_lengths), level)
+
+    shapes = []
+    for i in range(level):
+        detail_keys = [''.join(c) for c in product('ad', repeat=len(axes))]
+        new_shapes = {k: list(shape) for k in detail_keys}
+        for axis, wav, mode in zip(axes, wavelets, modes):
+            s = dwt_coeff_len(shape[axis], filter_len=wav.dec_len, mode=mode)
+            for k in detail_keys:
+                new_shapes[k][axis] = s
+        for k, v in new_shapes.items():
+            new_shapes[k] = tuple(v)
+        shapes.append(new_shapes)
+        shape = new_shapes.pop('a' * ndim_transform)
+    shapes.append(shape)
+    shapes.reverse()
+    return shapes
+
+
+def wavedecn_size(shapes):
+    """Compute the total number of wavedecn coefficients.
+
+    Parameters
+    ----------
+    shapes : list of coefficient shapes
+        A set of coefficient shapes as returned by `wavedecn_shapes`.
+        Alternatively, the user can specify a set of coefficients as returned
+        by `wavedecn`.
+
+    Returns
+    -------
+    size : int
+        The total number of coefficients.
+
+    Examples
+    --------
+    >>> import pywt
+    >>> data_shape = (64, 32)
+    >>> shapes = pywt.wavedecn_shapes(data_shape, 'db2', mode='periodization')
+    >>> pywt.wavedecn_size(shapes)
+    2048
+    >>> coeffs = pywt.wavedecn(np.ones(data_shape), 'sym4', mode='symmetric')
+    >>> pywt.wavedecn_size(coeffs)
+    3087
+    """
+    def _size(x):
+        """Size corresponding to `x` as either a shape tuple or an ndarray."""
+        if isinstance(x, np.ndarray):
+            return x.size
+        else:
+            return np.prod(x)
+    ncoeffs = _size(shapes[0])
+    for d in shapes[1:]:
+        for k, v in d.items():
+            if v is None:
+                raise ValueError(
+                    "Setting coefficient arrays to None is not supported.")
+            ncoeffs += _size(v)
+    return ncoeffs
+
+
+def dwtn_max_level(shape, wavelet, axes=None):
+    """Compute the maximum level of decomposition for n-dimensional data.
+
+    This returns the maximum number of levels of decomposition suitable for use
+    with `wavedec`, `wavedec2` or `wavedecn`.
+
+    Parameters
+    ----------
+    shape : sequence of ints
+        Input data shape.
+    wavelet : Wavelet object or name string, or tuple of wavelets
+        Wavelet to use. This can also be a tuple containing a wavelet to
+        apply along each axis in `axes`.
+    axes : sequence of ints, optional
+        Axes over which to compute the DWT. Axes may not be repeated.
+
+    Returns
+    -------
+    level : int
+        Maximum level.
+
+    Notes
+    -----
+    The level returned is the smallest `dwt_max_level` over all axes.
+
+    Examples
+    --------
+    >>> import pywt
+    >>> pywt.dwtn_max_level((64, 32), 'db2')
+    3
+    """
+    # Determine the axes and shape for the transform
+    axes, axes_shapes, ndim_transform = _prep_axes_wavedecn(shape, axes)
+
+    # initialize a Wavelet object per (transformed) axis
+    wavelets = _wavelets_per_axis(wavelet, axes)
+
+    # maximum level of decomposition per axis
+    max_levels = [dwt_max_level(n, wav.dec_len)
+                  for n, wav in zip(axes_shapes, wavelets)]
+    return min(max_levels)
+
+
+def ravel_coeffs(coeffs, axes=None):
+    """Ravel a set of multilevel wavelet coefficients into a single 1D array.
+
+    Parameters
+    ----------
+    coeffs : array-like
+        A list of multilevel wavelet coefficients as returned by
+        `wavedec`, `wavedec2` or `wavedecn`.
+    axes : sequence of ints, optional
+        Axes over which the DWT that created `coeffs` was performed. The
+        default value of None corresponds to all axes.
+
+    Returns
+    -------
+    coeff_arr : array-like
+        Wavelet transform coefficient array. All coefficients have been
+        concatenated into a single array.
+    coeff_slices : list
+        List of slices corresponding to each coefficient. As a 2D example,
+        ``coeff_arr[coeff_slices[1]['dd']]`` would extract the first level
+        detail coefficients from `coeff_arr`.
+    coeff_shapes : list
+        List of shapes corresponding to each coefficient. For example, in 2D,
+        ``coeff_shapes[1]['dd']`` would contain the original shape of the first
+        level detail coefficients array.
+
+    See Also
+    --------
+    unravel_coeffs : the inverse of ravel_coeffs
+
+    Examples
+    --------
+    >>> import pywt
+    >>> cam = pywt.data.camera()
+    >>> coeffs = pywt.wavedecn(cam, wavelet='db2', level=3)
+    >>> arr, coeff_slices, coeff_shapes = pywt.ravel_coeffs(coeffs)
+
+    """
+    coeffs, axes, ndim, ndim_transform = _prepare_coeffs_axes(coeffs, axes)
+
+    # initialize with the approximation coefficients.
+    a_coeffs = coeffs[0]
+    a_size = a_coeffs.size
+
+    if len(coeffs) == 1:
+        # only a single approximation coefficient array was found
+        return a_coeffs.ravel(), [slice(a_size), ], [a_coeffs.shape, ]
+
+    # preallocate output array
+    arr_size = wavedecn_size(coeffs)
+    coeff_arr = np.empty((arr_size, ), dtype=a_coeffs.dtype)
+
+    a_slice = slice(a_size)
+    coeff_arr[a_slice] = a_coeffs.ravel()
+
+    # initialize list of coefficient slices
+    coeff_slices = []
+    coeff_shapes = []
+    coeff_slices.append(a_slice)
+    coeff_shapes.append(coeffs[0].shape)
+
+    # loop over the detail cofficients, embedding them in coeff_arr
+    ds = coeffs[1:]
+    offset = a_size
+    for coeff_dict in ds:
+        # new dictionaries for detail coefficient slices and shapes
+        coeff_slices.append({})
+        coeff_shapes.append({})
+        if np.any([d is None for d in coeff_dict.values()]):
+            raise ValueError("coeffs_to_array does not support missing "
+                             "coefficients.")
+        for key, d in coeff_dict.items():
+            sl = slice(offset, offset + d.size)
+            offset += d.size
+            coeff_arr[sl] = d.ravel()
+            coeff_slices[-1][key] = sl
+            coeff_shapes[-1][key] = d.shape
+    return coeff_arr, coeff_slices, coeff_shapes
+
+
+def unravel_coeffs(arr, coeff_slices, coeff_shapes, output_format='wavedecn'):
+    """Unravel a raveled array of multilevel wavelet coefficients.
+
+    Parameters
+    ----------
+    arr : array-like
+        An array containing all wavelet coefficients. This should have been
+        generated by applying `ravel_coeffs` to the output of `wavedec`,
+        `wavedec2` or `wavedecn`.
+    coeff_slices : list of tuples
+        List of slices corresponding to each coefficient as obtained from
+        `ravel_coeffs`.
+    coeff_shapes : list of tuples
+        List of shapes corresponding to each coefficient as obtained from
+        `ravel_coeffs`.
+    output_format : {'wavedec', 'wavedec2', 'wavedecn'}, optional
+        Make the form of the unraveled coefficients compatible with this type
+        of multilevel transform. The default is 'wavedecn'.
+
+    Returns
+    -------
+    coeffs: list
+        List of wavelet transform coefficients. The specific format of the list
+        elements is determined by `output_format`.
+
+    See Also
+    --------
+    ravel_coeffs : the inverse of unravel_coeffs
+
+    Examples
+    --------
+    >>> import pywt
+    >>> from numpy.testing import assert_array_almost_equal
+    >>> cam = pywt.data.camera()
+    >>> coeffs = pywt.wavedecn(cam, wavelet='db2', level=3)
+    >>> arr, coeff_slices, coeff_shapes = pywt.ravel_coeffs(coeffs)
+    >>> coeffs_from_arr = pywt.unravel_coeffs(arr, coeff_slices, coeff_shapes)
+    >>> cam_recon = pywt.waverecn(coeffs_from_arr, wavelet='db2')
+    >>> assert_array_almost_equal(cam, cam_recon)
+
+    """
+    arr = np.asarray(arr)
+    coeffs = []
+    if len(coeff_slices) == 0:
+        raise ValueError("empty list of coefficient slices")
+    elif len(coeff_shapes) == 0:
+        raise ValueError("empty list of coefficient shapes")
+    elif len(coeff_shapes) != len(coeff_slices):
+        raise ValueError("coeff_shapes and coeff_slices have unequal length")
+    else:
+        coeffs.append(arr[coeff_slices[0]].reshape(coeff_shapes[0]))
+
+    # difference coefficients at each level
+    for n in range(1, len(coeff_slices)):
+        slice_dict = coeff_slices[n]
+        shape_dict = coeff_shapes[n]
+        if output_format == 'wavedec':
+            d = arr[slice_dict['d']].reshape(shape_dict['d'])
+        elif output_format == 'wavedec2':
+            d = (arr[slice_dict['da']].reshape(shape_dict['da']),
+                 arr[slice_dict['ad']].reshape(shape_dict['ad']),
+                 arr[slice_dict['dd']].reshape(shape_dict['dd']))
+        elif output_format == 'wavedecn':
+            d = {}
+            for k, v in coeff_slices[n].items():
+                d[k] = arr[v].reshape(shape_dict[k])
         else:
             raise ValueError(
                 "Unrecognized output format: {}".format(output_format))
