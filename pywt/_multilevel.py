@@ -1,5 +1,5 @@
 # Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/>
-# Copyright (c) 2012-2016 The PyWavelets Developers
+# Copyright (c) 2012-2018 The PyWavelets Developers
 #                         <https://github.com/PyWavelets/pywt>
 # See COPYING for license details.
 
@@ -58,7 +58,7 @@ def wavedec(data, wavelet, mode='symmetric', level=None, axis=-1):
         Signal extension mode, see Modes (default: 'symmetric')
     level : int, optional
         Decomposition level (must be >= 0). If level is None (default) then it
-        will be calculated using the ``dwt_max_level`` function.
+        will be calculated using the `dwt_max_level` function.
     axis: int, optional
         Axis over which to compute the DWT. If not given, the
         last axis is used.
@@ -124,10 +124,10 @@ def waverec(coeffs, wavelet, mode='symmetric', axis=-1):
 
     Notes
     -----
-    It may sometimes be desired to run ``waverec`` with some sets of
+    It may sometimes be desired to run `waverec` with some sets of
     coefficients omitted.  This can best be done by setting the corresponding
     arrays to zero arrays of matching shape and dtype.  Explicitly removing
-    list entries or setting them to ``None`` is not supported.
+    list entries or setting them to None is not supported.
 
     Specifically, to ignore detail coefficients at level 2, one could do::
 
@@ -180,25 +180,25 @@ def wavedec2(data, wavelet, mode='symmetric', level=None, axes=(-2, -1)):
         2D input data
     wavelet : Wavelet object or name string, or 2-tuple of wavelets
         Wavelet to use.  This can also be a tuple containing a wavelet to
-        apply along each axis in ``axes``.
+        apply along each axis in `axes`.
     mode : str or 2-tuple of str, optional
         Signal extension mode, see Modes (default: 'symmetric').  This can
-        also be a tuple containing a mode to apply along each axis in ``axes``.
+        also be a tuple containing a mode to apply along each axis in `axes`.
     level : int, optional
         Decomposition level (must be >= 0). If level is None (default) then it
-        will be calculated using the ``dwt_max_level`` function.
+        will be calculated using the `dwt_max_level` function.
     axes : 2-tuple of ints, optional
         Axes over which to compute the DWT. Repeated elements are not allowed.
 
     Returns
     -------
     [cAn, (cHn, cVn, cDn), ... (cH1, cV1, cD1)] : list
-        Coefficients list.  For user-specified ``axes``, ``cH*``
-        corresponds to ``axes[0]`` while ``cV*`` corresponds to ``axes[1]``.
+        Coefficients list.  For user-specified `axes`, `cH*`
+        corresponds to ``axes[0]`` while `cV*` corresponds to ``axes[1]``.
         The first element returned is the approximation coefficients for the
         nth level of decomposition.  Remaining elements are tuples of detail
         coefficients in descending order of decomposition level.
-        (i.e. cH1 are the horizontal detail coefficients at the first level)
+        (i.e. `cH1` are the horizontal detail coefficients at the first level)
 
     Examples
     --------
@@ -254,10 +254,10 @@ def waverec2(coeffs, wavelet, mode='symmetric', axes=(-2, -1)):
         Coefficients list [cAn, (cHn, cVn, cDn), ... (cH1, cV1, cD1)]
     wavelet : Wavelet object or name string, or 2-tuple of wavelets
         Wavelet to use.  This can also be a tuple containing a wavelet to
-        apply along each axis in ``axes``.
+        apply along each axis in `axes`.
     mode : str or 2-tuple of str, optional
         Signal extension mode, see Modes (default: 'symmetric').  This can
-        also be a tuple containing a mode to apply along each axis in ``axes``.
+        also be a tuple containing a mode to apply along each axis in `axes`.
     axes : 2-tuple of ints, optional
         Axes over which to compute the IDWT. Repeated elements are not allowed.
 
@@ -267,10 +267,10 @@ def waverec2(coeffs, wavelet, mode='symmetric', axes=(-2, -1)):
 
     Notes
     -----
-    It may sometimes be desired to run ``waverec2`` with some sets of
+    It may sometimes be desired to run `waverec2` with some sets of
     coefficients omitted.  This can best be done by setting the corresponding
     arrays to zero arrays of matching shape and dtype.  Explicitly removing
-    list or tuple entries or setting them to ``None`` is not supported.
+    list or tuple entries or setting them to None is not supported.
 
     Specifically, to ignore all detail coefficients at level 2, one could do::
 
@@ -355,32 +355,32 @@ def wavedecn(data, wavelet, mode='symmetric', level=None, axes=None):
         nD input data
     wavelet : Wavelet object or name string, or tuple of wavelets
         Wavelet to use.  This can also be a tuple containing a wavelet to
-        apply along each axis in ``axes``.
+        apply along each axis in `axes`.
     mode : str or tuple of str, optional
         Signal extension mode, see Modes (default: 'symmetric').  This can
-        also be a tuple containing a mode to apply along each axis in ``axes``.
+        also be a tuple containing a mode to apply along each axis in `axes`.
     level : int, optional
         Decomposition level (must be >= 0). If level is None (default) then it
-        will be calculated using the ``dwt_max_level`` function.
+        will be calculated using the `dwt_max_level` function.
     axes : sequence of ints, optional
         Axes over which to compute the DWT. Axes may not be repeated. The
-        default is ``None``, which means transform all axes
+        default is None, which means transform all axes
         (``axes = range(data.ndim)``).
 
     Returns
     -------
     [cAn, {details_level_n}, ... {details_level_1}] : list
         Coefficients list.  Coefficients are listed in descending order of
-        decomposition level.  ``cAn`` are the approximation coefficients at
-        level ``n``.  Each ``details_level_i`` element is a dictionary
+        decomposition level.  `cAn` are the approximation coefficients at
+        level `n`.  Each `details_level_i` element is a dictionary
         containing detail coefficients at level `i` of the decomposition.  As
         a concrete example, a 3D decomposition would have the following set of
-        keys in each ``details_level_i`` dictionary::
+        keys in each `details_level_i` dictionary::
 
             {'aad', 'ada', 'daa', 'add', 'dad', 'dda', 'ddd'}
 
         where the order of the characters in each key map to the specified
-        ``axes``.
+        `axes`.
 
     Examples
     --------
@@ -453,10 +453,10 @@ def waverecn(coeffs, wavelet, mode='symmetric', axes=None):
         Coefficients list [cAn, {details_level_n}, ... {details_level_1}]
     wavelet : Wavelet object or name string, or tuple of wavelets
         Wavelet to use.  This can also be a tuple containing a wavelet to
-        apply along each axis in ``axes``.
+        apply along each axis in `axes`.
     mode : str or tuple of str, optional
         Signal extension mode, see Modes (default: 'symmetric').  This can
-        also be a tuple containing a mode to apply along each axis in ``axes``.
+        also be a tuple containing a mode to apply along each axis in `axes`.
     axes : sequence of ints, optional
         Axes over which to compute the IDWT.  Axes may not be repeated.
 
@@ -466,10 +466,10 @@ def waverecn(coeffs, wavelet, mode='symmetric', axes=None):
 
     Notes
     -----
-    It may sometimes be desired to run ``waverecn`` with some sets of
+    It may sometimes be desired to run `waverecn` with some sets of
     coefficients omitted.  This can best be done by setting the corresponding
     arrays to zero arrays of matching shape and dtype.  Explicitly removing
-    list or dictionary entries or setting them to ``None`` is not supported.
+    list or dictionary entries or setting them to None is not supported.
 
     Specifically, to ignore all detail coefficients at level 2, one could do::
 
@@ -662,8 +662,8 @@ def coeffs_to_array(coeffs, padding=0, axes=None):
     padding : float or None, optional
         If None, raise an error if the coefficients cannot be tightly packed.
     axes : sequence of ints, optional
-        Axes over which the DWT that created ``coeffs`` was performed.  The
-        default value of ``None`` corresponds to all axes.
+        Axes over which the DWT that created `coeffs` was performed.  The
+        default value of None corresponds to all axes.
 
     Returns
     -------
@@ -864,16 +864,16 @@ def wavedecn_shapes(shape, wavelet, mode='symmetric', level=None, axes=None):
         The shape of the data to be transformed.
     wavelet : Wavelet object or name string, or tuple of wavelets
         Wavelet to use.  This can also be a tuple containing a wavelet to
-        apply along each axis in ``axes``.
+        apply along each axis in `axes`.
     mode : str or tuple of str, optional
         Signal extension mode, see Modes (default: 'symmetric').  This can
-        also be a tuple containing a mode to apply along each axis in ``axes``.
+        also be a tuple containing a mode to apply along each axis in `axes`.
     level : int, optional
         Decomposition level (must be >= 0). If level is None (default) then it
-        will be calculated using the ``dwt_max_level`` function.
+        will be calculated using the `dwt_max_level` function.
     axes : sequence of ints, optional
         Axes over which to compute the DWT. Axes may not be repeated. The
-        default is ``None``, which means transform all axes
+        default is None, which means transform all axes
         (``axes = range(data.ndim)``).
 
     Returns
@@ -1008,7 +1008,7 @@ def ravel_coeffs(coeffs, axes=None):
         `wavedec`, `wavedec2` or `wavedecn`.
     axes : sequence of ints, optional
         Axes over which the DWT that created `coeffs` was performed. The
-        default value of `None` corresponds to all axes.
+        default value of None corresponds to all axes.
 
     Returns
     -------
