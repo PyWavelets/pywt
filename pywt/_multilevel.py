@@ -1507,7 +1507,7 @@ def fswaverecn(fswavedecn_result):
         coeffs = []
         for sl in coeff_slices[ax_count]:
             csl[ax] = sl
-            coeffs.append(arr[csl])
+            coeffs.append(arr[tuple(csl)])
         csl[ax] = slice(None)
         arr = waverec(coeffs, wav, mode=mode, axis=ax)
     return arr
