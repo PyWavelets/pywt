@@ -59,11 +59,11 @@ previously fixed. See more on this in the section on deprecated features.
 Fully Separable Discrete Wavelet Transfrom
 ------------------------------------------
 A new variant of the multilevel n-dimensional DWT has been implemented. It is
-known as the fully separable wavelet transform (FSWT). The functions ``fswtn``
-and ``ifswtn`` correspond to the forward and inverse transforms, respectively.
-This differs from the existing ``wavedecn`` and ``waverecn`` in dimensions >= 2
-in that all levels of decomposition are performed along a single axis prior to
-moving on to the next.
+known as the fully separable wavelet transform (FSWT). The functions
+``fswavedecn`` ``fswaverecn`` correspond to the forward and inverse transforms,
+respectively. This differs from the existing ``wavedecn`` and ``waverecn`` in
+dimensions >= 2 in that all levels of decomposition are performed along a
+single axis prior to moving on to the next.
 
 New thresholding methods
 ------------------------
@@ -81,8 +81,9 @@ boundary conditions (``antisymmetric`` and ``antireflect``).
 New functions to ravel and unravel wavedecn coefficients
 --------------------------------------------------------
 The function ``ravel_coeffs`` can be used to ravel all coefficients from
-``wavedecn`` into a single 1D array. Unraveling back into a list of individual
-n-dimensional coefficients can be performed by ``unravel_coeffs``.
+``wavedec``, ``wavedec2`` or ``wavedecn`` into a single 1D array. Unraveling
+back into a list of individual n-dimensional coefficients can be performed by
+``unravel_coeffs``.
 
 New functions to determine multilevel DWT coefficient shapes and sizes
 ----------------------------------------------------------------------
