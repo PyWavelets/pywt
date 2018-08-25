@@ -66,15 +66,15 @@ def _2d_wp_basis_coords(shape, keys):
         offset_x = offset_y = 0
         for n, char in enumerate(key):
             if char in ['h', 'd']:
-                offset_x += shape[0]//2**(n+1)
+                offset_x += shape[0] // 2**(n + 1)
             if char in ['v', 'd']:
-                offset_y += shape[1]//2**(n+1)
-        sx = shape[0]//2**(n+1)
-        sy = shape[1]//2**(n+1)
+                offset_y += shape[1] // 2**(n + 1)
+        sx = shape[0] // 2**(n + 1)
+        sy = shape[1] // 2**(n + 1)
         xc, yc = _box((offset_x, -offset_y),
                       (offset_x + sx, -offset_y - sy))
         coords.append((xc, yc))
-        centers[key] = (offset_x + sx//2, -offset_y - sy//2)
+        centers[key] = (offset_x + sx // 2, -offset_y - sy // 2)
     return coords, centers
 
 
@@ -99,7 +99,7 @@ def draw_2d_wp_basis(shape, keys, fmt='k', plot_kwargs={}, ax=None,
     return fig, ax
 
 
-def _2d_fswt_coords(shape, levels):
+def _2d_fswavedecn_coords(shape, levels):
     coords = []
     centers = {}  # retain center of boxes for use in labeling
     for key in product(wavedec_keys(levels), repeat=2):
@@ -108,24 +108,24 @@ def _2d_fswt_coords(shape, levels):
         widths = list(shape)
         for n0, char in enumerate(key0):
             if char in ['d']:
-                offsets[0] += shape[0]//2**(n0+1)
+                offsets[0] += shape[0] // 2**(n0 + 1)
         for n1, char in enumerate(key1):
             if char in ['d']:
-                offsets[1] += shape[1]//2**(n1+1)
-        widths[0] = shape[0]//2**(n0+1)
-        widths[1] = shape[1]//2**(n1+1)
+                offsets[1] += shape[1] // 2**(n1 + 1)
+        widths[0] = shape[0] // 2**(n0 + 1)
+        widths[1] = shape[1] // 2**(n1 + 1)
         xc, yc = _box((offsets[0], -offsets[1]),
                       (offsets[0] + widths[0], -offsets[1] - widths[1]))
         coords.append((xc, yc))
-        centers[(key0, key1)] = (offsets[0] + widths[0]/2,
-                                 -offsets[1] - widths[1]/2)
+        centers[(key0, key1)] = (offsets[0] + widths[0] / 2,
+                                 -offsets[1] - widths[1] / 2)
     return coords, centers
 
 
-def draw_2d_fswt_basis(shape, levels, fmt='k', plot_kwargs={}, ax=None,
-                       label_levels=0):
+def draw_2d_fswavedecn_basis(shape, levels, fmt='k', plot_kwargs={}, ax=None,
+                             label_levels=0):
     """Plot a 2D representation of a WaveletPacket2D basis."""
-    coords, centers = _2d_fswt_coords(shape, levels)
+    coords, centers = _2d_fswavedecn_coords(shape, levels)
     if ax is None:
         fig, ax = plt.subplots(1, 1)
     else:
@@ -162,8 +162,8 @@ draw_2d_wp_basis(shape, wavedec2_keys(max_lev), ax=axes[0],
 axes[0].set_title('wavedec2 ({} level)'.format(max_lev))
 
 # plot for the fully separable case
-draw_2d_fswt_basis(shape, max_lev, ax=axes[1], label_levels=label_levels)
-axes[1].set_title('fswt ({} level)'.format(max_lev))
+draw_2d_fswavedecn_basis(shape, max_lev, ax=axes[1], label_levels=label_levels)
+axes[1].set_title('fswavedecn ({} level)'.format(max_lev))
 
 # get all keys corresponding to a full wavelet packet decomposition
 wp_keys = list(product(['a', 'd', 'h', 'v'], repeat=max_lev))

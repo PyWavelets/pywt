@@ -44,12 +44,12 @@ data prior to moving onto each additional axis in turn. This is illustrated
 for the 2D case in the upper right panel of the figure below. This approach has
 a factor of two higher computational cost as compared to the Mallat approach,
 but has advantages in compactly representing anisotropic data. A demo of this
-is `available <https://github.com/PyWavelets/pywt/tree/master/demo/fswt_mondrian.py>`_).
+is `available <https://github.com/PyWavelets/pywt/tree/master/demo/fswavedecn_mondrian.py>`_).
 
 This form of the DWT is also sometimes referred to as the tensor wavelet
 transform or the hyperbolic wavelet transform. In PyWavelets it is implemented
-for n-dimensional data by :func:`~pywt.fswt` and the inverse by
-:func:`~pywt.ifswt`.
+for n-dimensional data by :func:`~pywt.fswavedecn` and the inverse by
+:func:`~pywt.fswaverecn`.
 
 Wavelet Packet Transform
 ------------------------
