@@ -10,6 +10,7 @@ API Reference
    signal-extension-modes
    dwt-discrete-wavelet-transform
    idwt-inverse-discrete-wavelet-transform
+   2d-decompositions-overview
    2d-dwt-and-idwt
    nd-dwt-and-idwt
    dwt-coefficient-handling
