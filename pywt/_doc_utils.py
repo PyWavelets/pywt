@@ -1,4 +1,6 @@
 """Utilities used to generate various figures in the documentation."""
+from itertools import product
+
 import numpy as np
 from matplotlib import pyplot as plt
 

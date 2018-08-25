@@ -4,52 +4,6 @@ from matplotlib import pyplot as plt
 from pywt._doc_utils import (wavedec_keys, wavedec2_keys, draw_2d_wp_basis,
                              draw_2d_fswavedecn_basis)
 
-
-def _2d_fswavedecn_coords(shape, levels):
-    coords = []
-    centers = {}  # retain center of boxes for use in labeling
-    for key in product(wavedec_keys(levels), repeat=2):
-        (key0, key1) = key
-        offsets = [0, 0]
-        widths = list(shape)
-        for n0, char in enumerate(key0):
-            if char in ['d']:
-                offsets[0] += shape[0] // 2**(n0 + 1)
-        for n1, char in enumerate(key1):
-            if char in ['d']:
-                offsets[1] += shape[1] // 2**(n1 + 1)
-        widths[0] = shape[0] // 2**(n0 + 1)
-        widths[1] = shape[1] // 2**(n1 + 1)
-        xc, yc = _box((offsets[0], -offsets[1]),
-                      (offsets[0] + widths[0], -offsets[1] - widths[1]))
-        coords.append((xc, yc))
-        centers[(key0, key1)] = (offsets[0] + widths[0] / 2,
-                                 -offsets[1] - widths[1] / 2)
-    return coords, centers
-
-
-def draw_2d_fswavedecn_basis(shape, levels, fmt='k', plot_kwargs={}, ax=None,
-                             label_levels=0):
-    """Plot a 2D representation of a WaveletPacket2D basis."""
-    coords, centers = _2d_fswavedecn_coords(shape, levels)
-    if ax is None:
-        fig, ax = plt.subplots(1, 1)
-    else:
-        fig = ax.get_figure()
-    for coord in coords:
-        ax.plot(coord[0], coord[1], fmt)
-    ax.set_axis_off()
-    ax.axis('square')
-    if label_levels > 0:
-        for key, c in centers.items():
-            lev = np.max([len(k) for k in key])
-            if lev <= label_levels:
-                ax.text(c[0], c[1], key,
-                        horizontalalignment='center',
-                        verticalalignment='center')
-    return fig, ax
-
-
 shape = (512, 512)
 
 max_lev = 4       # how many levels of decomposition to draw
