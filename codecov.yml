@@ -1,0 +1,2 @@
+ignore:
+  - "_doc_utils.py"  # utilities only used for creating documentation figures
