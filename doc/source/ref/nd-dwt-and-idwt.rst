@@ -32,6 +32,6 @@ Multilevel fully separable reconstruction - ``fswaverecn``
 ----------------------------------------------------------
 .. autofunction:: fswaverecn
 
-Multilevel fully separable reconstruction coeffs - ``FswaverecnResult``
+Multilevel fully separable reconstruction coeffs - ``FswavedecnResult``
 -----------------------------------------------------------------------
-.. autoclass:: FswaverecnResult
+.. autoclass:: FswavedecnResult
