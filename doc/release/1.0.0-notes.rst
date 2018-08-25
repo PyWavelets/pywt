@@ -27,9 +27,83 @@ fixes to 1.0.x for as long as Python itself does so (i.e. until 1 Jan 2020).
 New features
 ============
 
+New 1D test signals
+-------------------
+Many common synthetic 1D test signals have been implemented in the new
+function ``pywt.data.demo_signals`` to encourage reproducible research. To get
+a list of the available signals, call ``pywt.data.demo_signals('list')``.
+These signals have been validated to match the test signals of the same name
+from the `Wavelab <https://statweb.stanford.edu/~wavelab>`_ toolbox (with the
+kind permission of Dr. David Donoho).
+
+C99 complex support
+-------------------
+The Cython modules and underlying C library can now be built with C99 complex
+support when supported by the compiler. Doing so improves performance when
+running wavelet transforms on complex-valued data. On POSIX systems
+(Linux, Mac OS X), C99 complex support is enabled by default at build time.
+The user can set the environment variable ``USE_C99_COMPLEX`` to 0 or 1 to
+manually disable or enable C99 support at compile time.
+
+complex-valued CWT
+------------------
+The continuous wavelet transform, ``cwt``, now also accepts complex-valued
+data.
+
+More flexible specification of some continuous wavelets
+-------------------------------------------------------
+The continous wavelets ``"cmor"``, ``"shan"`` and ``"fbsp"`` now let the user
+specify attributes such as their center frequency and bandwidth that were
+previously fixed. See more on this in the section on deprecated features.
+
+Fully Separable Discrete Wavelet Transfrom
+------------------------------------------
+A new variant of the multilevel n-dimensional DWT has been implemented. It is
+known as the fully separable wavelet transform (FSWT). The functions
+``fswavedecn`` ``fswaverecn`` correspond to the forward and inverse transforms,
+respectively. This differs from the existing ``wavedecn`` and ``waverecn`` in
+dimensions >= 2 in that all levels of decomposition are performed along a
+single axis prior to moving on to the next.
+
+New thresholding methods
+------------------------
+``pywt.threshold`` now supports non-negative Garotte thresholding
+(``mode='garotte'``).  There is also a new function ``pywt.threshold_firm``
+that implements firm (semi-soft) thresholding. Both of the these new
+thresholding methods are intermediate between soft and hard thresholding.
+
+New anti-symmetric boundary modes
+---------------------------------
+Two new boundary handling modes for the discrete wavelet transforms have been
+implemented. These correspond to whole-sample and half-sample anti-symmetric
+boundary conditions (``antisymmetric`` and ``antireflect``).
+
+New functions to ravel and unravel wavedecn coefficients
+--------------------------------------------------------
+The function ``ravel_coeffs`` can be used to ravel all coefficients from
+``wavedec``, ``wavedec2`` or ``wavedecn`` into a single 1D array. Unraveling
+back into a list of individual n-dimensional coefficients can be performed by
+``unravel_coeffs``.
+
+New functions to determine multilevel DWT coefficient shapes and sizes
+----------------------------------------------------------------------
+The new function ``wavedecn_size`` outputs the total number of coefficients
+that will be produced by a ``wavedecn`` decomposition. The function
+``wavedecn_shapes`` returns full shape information for all coefficient arrays
+produced by ``wavedecn``. These functions provide the size/shape information
+without having to explicitly compute a transform.
 
 Deprecated features
 ===================
+
+The continous wavelets with names ``"cmor"``, ``"shan"`` and ``"fbsp"``
+should now be modified to include formerly hard-coded attributes such as their
+center frequency and bandwidth. Use of the bare names "cmor". "shan" and
+"fbsp"  is now deprecated. For "cmor" (and "shan"), the form of the wavelet
+name is now "cmorB-C" ("shanB-C") where B and C are floats representing the
+bandwidth frequency and center frequency. For "fbsp" the form should now
+incorporate three floats as in "fbspM-B-C" where M is the spline order and B
+and C are the bandwidth and center frequencies.
 
 
 Backwards incompatible changes
@@ -54,18 +128,148 @@ Assigning new data to the ``Node`` or ``Node2D`` no longer forces a cast to
 ``float64`` when the data is one of the other dtypes supported by the dwt
 (``float32``, ``complex64``, ``complex128``).
 
+Calling ``pywt.threshold`` with ``mode='soft'`` now works properly for
+complex-valued inputs.
+
+A segfault when running multiple `swt2` or `swtn` transforms concurrently has
+been fixed.
+
+Several instances of deprecated numpy multi-indexing that caused warnings in
+numpy >=1.15 have been resolved.
+
+The 2d inverse stationary wavelet transform, `iswt2`, now supports non-square
+inputs (an unnecessary check for square inputs was removed).
+
+Wavelet packets no longer convert float32 to float64 upon assignment to nodes.
+
+Doctests have been updated to also work with NumPy >= 1.14,
+
+Indexing conventions have been updated to avoid FutureWarnings in NumPy 1.15.
+
+
 Other changes
 =============
+
+Python 3.7 is now officially supported.
 
 
 Authors
 =======
 
+* 0-tree +
+* Jacopo Antonello +
+* Matthew Brett +
+* Saket Choudhary +
+* Michael V. DePalatis +
+* Daniel Goertzen +
+* Ralf Gommers
+* Mark Harfouche +
+* John Kirkham +
+* Dawid Laszuk +
+* Gregory R. Lee
+* Michel Pelletier +
+* Balint Reczey +
+* SylvainLan +
+* Daniele Tricoli
+* Kai Wohlfahrt
+
+A total of 16 people contributed to this release.
+People with a "+" by their names contributed a patch for the first time.
+This list of names is automatically generated, and may not be fully complete.
+
 
 Issues closed for v1.0.0
 ------------------------
 
+The following 15 issues were closed for this release.
+
+* `#405 <https://github.com/PyWavelets/pywt/issues/405>`__: New warning appearing
+* `#386 <https://github.com/PyWavelets/pywt/issues/386>`__: Improve documentation for cwt
+* `#396 <https://github.com/PyWavelets/pywt/issues/396>`__: Allow more levels in wavedec
+* `#368 <https://github.com/PyWavelets/pywt/issues/368>`__: Bug in ISWT2 for non-rectangular arrays
+* `#363 <https://github.com/PyWavelets/pywt/issues/363>`__: Crash threading swt2
+* `#357 <https://github.com/PyWavelets/pywt/issues/357>`__: reconstruction from array_to_coeff and waverec
+* `#352 <https://github.com/PyWavelets/pywt/issues/352>`__: FYI: PyWavelet does not correctly declare setup.py dependency...
+* `#338 <https://github.com/PyWavelets/pywt/issues/338>`__: upcoef - TypeError: No matching signature found
+* `#335 <https://github.com/PyWavelets/pywt/issues/335>`__: Build issue: PyWavelets does not install from sdist
+* `#333 <https://github.com/PyWavelets/pywt/issues/333>`__: user-friendly error messages regarding discrete vs. continuous...
+* `#326 <https://github.com/PyWavelets/pywt/issues/326>`__: Allow complex dtype of input
+* `#316 <https://github.com/PyWavelets/pywt/issues/316>`__: Test fail in some architectures
+* `#312 <https://github.com/PyWavelets/pywt/issues/312>`__: Documentation should suggest using the default conda channel
+* `#308 <https://github.com/PyWavelets/pywt/issues/308>`__: incorporate bandwidths into CWT wavelet names for families `cmor`,...
+* `#306 <https://github.com/PyWavelets/pywt/issues/306>`__: dwt_max_levels not enough documentation
+* `#302 <https://github.com/PyWavelets/pywt/issues/302>`__: Can't remove cA and then reconstruct
+* `#290 <https://github.com/PyWavelets/pywt/issues/290>`__: idwtn should treat coefficients set to None as zeros
+* `#288 <https://github.com/PyWavelets/pywt/issues/288>`__: RuntimeErrors and segfaults from swt2() in threaded environments
 
 Pull requests for v1.0.0
 ------------------------
 
+A total of 53 pull requests were merged for this release.
+
+* `#248 <https://github.com/PyWavelets/pywt/pull/248>`__: DOC: sync PyWavelets main descriptions.
+* `#249 <https://github.com/PyWavelets/pywt/pull/249>`__: Add pyqtgraph demo for plotting wavelets
+* `#254 <https://github.com/PyWavelets/pywt/pull/254>`__: DOC: fix rendering of wavelist docstring
+* `#255 <https://github.com/PyWavelets/pywt/pull/255>`__: ENH: improve iswt performance
+* `#256 <https://github.com/PyWavelets/pywt/pull/256>`__: ENH: add iswtn (n-dimensional inverse SWT)
+* `#257 <https://github.com/PyWavelets/pywt/pull/257>`__: s/addional/additional/
+* `#260 <https://github.com/PyWavelets/pywt/pull/260>`__: TST: test OS X build on TravisCI. Closes gh-75.
+* `#262 <https://github.com/PyWavelets/pywt/pull/262>`__: avoid some compiler warnings
+* `#263 <https://github.com/PyWavelets/pywt/pull/263>`__: MAINT: better exception message for Wavelet('continuous_familyname')
+* `#264 <https://github.com/PyWavelets/pywt/pull/264>`__: add ASV (continued)
+* `#265 <https://github.com/PyWavelets/pywt/pull/265>`__: MAINT: fix more compiler warnings
+* `#269 <https://github.com/PyWavelets/pywt/pull/269>`__: allow string input in dwt_max_level
+* `#270 <https://github.com/PyWavelets/pywt/pull/270>`__: DOC: update ISWT documentation
+* `#272 <https://github.com/PyWavelets/pywt/pull/272>`__: allow separate wavelet/mode for each axis in routines based on...
+* `#273 <https://github.com/PyWavelets/pywt/pull/273>`__: fix non-integer index error
+* `#275 <https://github.com/PyWavelets/pywt/pull/275>`__: ENH: use single precision routines for half-precision inputs
+* `#276 <https://github.com/PyWavelets/pywt/pull/276>`__: update wp_scalogram demo work with matplotlib 2.0
+* `#285 <https://github.com/PyWavelets/pywt/pull/285>`__: Fix spelling typo
+* `#286 <https://github.com/PyWavelets/pywt/pull/286>`__: MAINT: Package the license file
+* `#291 <https://github.com/PyWavelets/pywt/pull/291>`__: idwtn should allow coefficients to be set as None
+* `#292 <https://github.com/PyWavelets/pywt/pull/292>`__: MAINT: ensure tests are included in wheels
+* `#294 <https://github.com/PyWavelets/pywt/pull/294>`__: FIX: shape adjustment in waverec should not assume a transform...
+* `#299 <https://github.com/PyWavelets/pywt/pull/299>`__: DOC: update outdated scipy-user email address
+* `#300 <https://github.com/PyWavelets/pywt/pull/300>`__: ENH: compiling with C99 support (non-MSVC only)
+* `#303 <https://github.com/PyWavelets/pywt/pull/303>`__: DOC: better document how to handle omitted coefficients in multilevel...
+* `#309 <https://github.com/PyWavelets/pywt/pull/309>`__: Document how max levels are determined for multilevel DWT and...
+* `#310 <https://github.com/PyWavelets/pywt/pull/310>`__: parse CWT wavelet names for parameters
+* `#314 <https://github.com/PyWavelets/pywt/pull/314>`__: TST: Explicity align data records in test_byte_offset()
+* `#317 <https://github.com/PyWavelets/pywt/pull/317>`__: TST: specify rtol and atol for assert_allclose calls in test_swt_decomposition
+* `#320 <https://github.com/PyWavelets/pywt/pull/320>`__: Suggest using default conda channel to install
+* `#321 <https://github.com/PyWavelets/pywt/pull/321>`__: BLD: add pyproject.toml file (PEP 518 support).
+* `#322 <https://github.com/PyWavelets/pywt/pull/322>`__: support soft thresholding of complex valued data
+* `#331 <https://github.com/PyWavelets/pywt/pull/331>`__: Rename to CONTRIBUTING.rst
+* `#337 <https://github.com/PyWavelets/pywt/pull/337>`__: provide a more helpful error message for wrong wavelet type
+* `#339 <https://github.com/PyWavelets/pywt/pull/339>`__: check for wrong number of dimensions in upcoef and downcoef
+* `#340 <https://github.com/PyWavelets/pywt/pull/340>`__: DOC: fix broken link to Airspeed Velocity documentation
+* `#344 <https://github.com/PyWavelets/pywt/pull/344>`__: force legacy numpy repr for doctests
+* `#349 <https://github.com/PyWavelets/pywt/pull/349>`__: test case for CWT with complex input
+* `#350 <https://github.com/PyWavelets/pywt/pull/350>`__: better document the size requirements for swt/swt2/swtn
+* `#351 <https://github.com/PyWavelets/pywt/pull/351>`__: Add two new antisymmetric edge modes
+* `#353 <https://github.com/PyWavelets/pywt/pull/353>`__: DOC: add citation info to the front page of the docs.
+* `#354 <https://github.com/PyWavelets/pywt/pull/354>`__: add firm (semi-soft) and non-negative garotte thresholding
+* `#355 <https://github.com/PyWavelets/pywt/pull/355>`__: swt(): inference of level=None to depend on axis
+* `#356 <https://github.com/PyWavelets/pywt/pull/356>`__: fix: default level in `wavedec2` and `wavedecn` can be too conservative
+* `#360 <https://github.com/PyWavelets/pywt/pull/360>`__: fix Continuous spelling
+* `#361 <https://github.com/PyWavelets/pywt/pull/361>`__: AttributeError when using coeffs_to_array
+* `#362 <https://github.com/PyWavelets/pywt/pull/362>`__: Fix spelling of continuous globally
+* `#364 <https://github.com/PyWavelets/pywt/pull/364>`__: DOC: Explicitly print wavelet name for invalid wavelets
+* `#367 <https://github.com/PyWavelets/pywt/pull/367>`__: fix segfault related to parallel SWT
+* `#369 <https://github.com/PyWavelets/pywt/pull/369>`__: remove iswt2's restriction on non-square inputs
+* `#376 <https://github.com/PyWavelets/pywt/pull/376>`__: add common 1d synthetic signals
+* `#377 <https://github.com/PyWavelets/pywt/pull/377>`__: minor update to demo_signals
+* `#378 <https://github.com/PyWavelets/pywt/pull/378>`__: numpy: 1.15 multiindexing warning. targetted fix
+* `#380 <https://github.com/PyWavelets/pywt/pull/380>`__: BLD: fix doc build on ReadTheDocs, need matplotlib for plots...
+* `#381 <https://github.com/PyWavelets/pywt/pull/381>`__: Fix corner case for small scales in CWT
+* `#382 <https://github.com/PyWavelets/pywt/pull/382>`__: avoid FutureWarnings related to multiindexing in Numpy1.15
+* `#383 <https://github.com/PyWavelets/pywt/pull/383>`__: adding Community guidelines
+* `#384 <https://github.com/PyWavelets/pywt/pull/384>`__: swap swt2 coefficient order (and remove FutureWarnings)
+* `#387 <https://github.com/PyWavelets/pywt/pull/387>`__: improve CWT docs
+* `#390 <https://github.com/PyWavelets/pywt/pull/390>`__: MAINT: update Python version support. Closes gh-385.
+* `#391 <https://github.com/PyWavelets/pywt/pull/391>`__: fix broken link in documentation
+* `#392 <https://github.com/PyWavelets/pywt/pull/392>`__: do not force float64 dtype on assignment to Node, Node2D
+* `#398 <https://github.com/PyWavelets/pywt/pull/398>`__: MAINT: update .gitignore for files generated during build.
+* `#401 <https://github.com/PyWavelets/pywt/pull/401>`__: Fix failing numpy 1.9.3 build on Travis CI
+* `#403 <https://github.com/PyWavelets/pywt/pull/403>`__: Change ValueError to UserWarning when level is > dwt_max_level
+* `#404 <https://github.com/PyWavelets/pywt/pull/404>`__: BLD: fix ReadTheDocs build. Outdated NumPy gave a conflict with MPL.
