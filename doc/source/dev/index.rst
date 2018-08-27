@@ -1,7 +1,7 @@
 .. _dev-index:
 
 
-Development notes
+Development guide
 =================
 
 This section contains information on building and installing PyWavelets

@@ -217,6 +217,24 @@ def idwt(cA, cD, wavelet, mode='symmetric', axis=-1):
     rec: array_like
         Single level reconstruction of signal from given coefficients.
 
+    Examples
+    --------
+    >>> import pywt
+    >>> (cA, cD) = pywt.dwt([1,2,3,4,5,6], 'db2', 'smooth')
+    >>> pywt.idwt(cA, cD, 'db2', 'smooth')
+    array([ 1.,  2.,  3.,  4.,  5.,  6.])
+
+    One of the neat features of `idwt` is that one of the ``cA`` and ``cD``
+    arguments can be set to None.  In that situation the reconstruction will be
+    performed using only the other one.  Mathematically speaking, this is
+    equivalent to passing a zero-filled array as one of the arguments.
+
+    >>> (cA, cD) = pywt.dwt([1,2,3,4,5,6], 'db2', 'smooth')
+    >>> A = pywt.idwt(cA, None, 'db2', 'smooth')
+    >>> D = pywt.idwt(None, cD, 'db2', 'smooth')
+    >>> A + D
+    array([ 1.,  2.,  3.,  4.,  5.,  6.])
+
     """
     # TODO: Lots of possible allocations to eliminate (zeros_like, asarray(rec))
     # accept array_like input; make a copy to ensure a contiguous array
