@@ -52,7 +52,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'PyWavelets'
-copyright = jinja2.filters.do_mark_safe('2006-%s, <a href="https://groups.google.com/forum/#!forum/pywavelets">The PyWavelets Developers</a>' % datetime.date.today().year)
+copyright = '2006-%s, The PyWavelets Developers' % datetime.date.today().year
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
