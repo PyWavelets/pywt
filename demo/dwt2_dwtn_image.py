@@ -9,7 +9,7 @@ import pywt.data
 
 
 # Load image
-original = pywt.data.aero()
+original = pywt.data.camera()
 
 # Wavelet transform of image, and plot approximation and details
 titles = ['Approximation', ' Horizontal detail',
@@ -19,8 +19,10 @@ LL, (LH, HL, HH) = coeffs2
 fig = plt.figure()
 for i, a in enumerate([LL, LH, HL, HH]):
     ax = fig.add_subplot(2, 2, i + 1)
-    ax.imshow(a, origin='image', interpolation="nearest", cmap=plt.cm.gray)
+    ax.imshow(a, interpolation="nearest", cmap=plt.cm.gray)
     ax.set_title(titles[i], fontsize=12)
+    ax.set_xticks([])
+    ax.set_yticks([])
 
 fig.suptitle("dwt2 coefficients", fontsize=14)
 
@@ -39,9 +41,10 @@ coeffsn = pywt.dwtn(original, 'bior1.3')
 fig = plt.figure()
 for i, key in enumerate(['aa', 'ad', 'da', 'dd']):
     ax = fig.add_subplot(2, 2, i + 1)
-    ax.imshow(coeffsn[key], origin='image', interpolation="nearest",
-              cmap=plt.cm.gray)
+    ax.imshow(coeffsn[key], interpolation="nearest", cmap=plt.cm.gray)
     ax.set_title(titles[i], fontsize=12)
+    ax.set_xticks([])
+    ax.set_yticks([])
 
 fig.suptitle("dwtn coefficients", fontsize=14)
 
