@@ -45,7 +45,7 @@ The requirements needed to build from source are:
 To run all the tests for PyWavelets, you will also need to install the
 Matplotlib_ package.
 
-.. seealso::  :ref:`Development notes <dev-index>` section contains more
+.. seealso::  :ref:`Development guide <dev-index>` section contains more
               information on building and installing from source code.
 
 .. include:: common_refs.rst

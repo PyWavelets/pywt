@@ -64,11 +64,11 @@ Contents
 .. toctree::
    :maxdepth: 1
 
+   install
    ref/index
    regression/index
-   dev/index
-   contents
-   install
    contributing
+   dev/index
+   releasenotes
 
 .. include:: common_refs.rst
