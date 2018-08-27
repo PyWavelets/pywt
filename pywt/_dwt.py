@@ -221,7 +221,7 @@ def idwt(cA, cD, wavelet, mode='symmetric', axis=-1):
     --------
     >>> import pywt
     >>> (cA, cD) = pywt.dwt([1,2,3,4,5,6], 'db2', 'smooth')
-    >>> print(pywt.idwt(cA, cD, 'db2', 'smooth'))
+    >>> pywt.idwt(cA, cD, 'db2', 'smooth')
     array([ 1.,  2.,  3.,  4.,  5.,  6.])
 
     One of the neat features of `idwt` is that one of the ``cA`` and ``cD``
@@ -232,7 +232,7 @@ def idwt(cA, cD, wavelet, mode='symmetric', axis=-1):
     >>> (cA, cD) = pywt.dwt([1,2,3,4,5,6], 'db2', 'smooth')
     >>> A = pywt.idwt(cA, None, 'db2', 'smooth')
     >>> D = pywt.idwt(None, cD, 'db2', 'smooth')
-    >>> print(A + D)
+    >>> A + D
     array([ 1.,  2.,  3.,  4.,  5.,  6.])
 
     """
