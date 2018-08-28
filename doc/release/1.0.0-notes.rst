@@ -2,21 +2,20 @@
 PyWavelets 1.0.0 Release Notes
 ==============================
 
-.. |MATLAB|  unicode:: MATLAB U+02122 .. with trademark sign
-
 .. contents::
 
-PyWavelets is a Python toolbox implementing both discrete and continuous
-wavelet transforms (mathematical time-frequency transforms) with a wide range
-of built-in wavelets.  C/Cython are used for the low-level routines, enabling
-high performance.  Key Features of PyWavelets are:
+We are very pleased to announce the release of PyWavelets 1.0.  We view this
+version number as a milestone in the project's now more than a decade long
+history.  It reflects that PyWavelets has stabilized over the past few years,
+and is now a mature package which a lot of other important packages depend on.
+A listing of those package won't be complete, but some we are aware of are:
 
-  * 1D, 2D and nD Forward and Inverse Discrete Wavelet Transform (DWT and IDWT)
-  * 1D, 2D and nD Multilevel DWT and IDWT
-  * 1D and 2D Forward and Inverse Stationary Wavelet Transform
-  * 1D and 2D Wavelet Packet decomposition and reconstruction
-  * 1D Continuous Wavelet Transform
-  * When multiple valid implementations are available, we have chosen to maintain consistency with |MATLAB|'s Wavelet Toolbox.
+- `scikit-image <https://scikit-image.org>`_ - image processing in Python
+- `imagehash <https://github.com/JohannesBuchner/imagehash>`_ - perceptual image hashing
+- `pyradiomics <https://github.com/Radiomics/pyradiomics>`_ - extraction of Radiomics features from 2D and 3D images and binary masks
+- `tomopy <https://github.com/tomopy/tomopy>`_ - Tomographic Reconstruction in Python
+- `SpikeSort <https://github.com/btel/SpikeSort>`_ - Spike sorting library implemented in Python/NumPy/PyTables
+- `ODL <https://github.com/odlgroup/odl>`_ - operator discretization library
 
 This release requires Python 2.7 or >=3.5 and NumPy 1.9.1 or greater.
 The 1.0 release will be the last release supporting Python 2.7.  It will be a
