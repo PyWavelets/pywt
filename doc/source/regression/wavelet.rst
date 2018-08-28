@@ -223,6 +223,11 @@ and the xgrid.
     False
     >>> (phi_d, psi_d, phi_r, psi_r, x) = w.wavefun(level=5)
 
-.. seealso:: You can find live examples of :meth:`~Wavelet.wavefun` usage and
-             images of all the built-in wavelets on the
-             `Wavelet Properties Browser <http://wavelets.pybytes.com>`_ page.
+.. seealso::
+      You can find live examples of :meth:`~Wavelet.wavefun` usage and
+      images of all the built-in wavelets on the
+      `Wavelet Properties Browser <http://wavelets.pybytes.com>`_ page.
+      However, **this website is no longer actively maintained** and does not
+      include every wavelet present in PyWavelets. The precision of the wavelet
+      coefficients at that site is also lower than those included in
+      PyWavelets.
