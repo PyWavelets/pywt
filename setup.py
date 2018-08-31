@@ -4,12 +4,12 @@
 import os
 import sys
 import subprocess
+import textwrap
 from functools import partial
 from distutils.sysconfig import get_python_inc
 
 import setuptools
 from setuptools import setup, Extension
-
 
 
 MAJOR = 1
