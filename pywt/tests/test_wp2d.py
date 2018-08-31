@@ -165,7 +165,7 @@ def test_wavelet_packet_dtypes():
         # reconstruction from coefficients should preserve dtype
         r = wp.reconstruct(False)
         assert_equal(r.dtype, x.dtype)
-        assert_allclose(r, x, atol=1e-6, rtol=1e-6)
+        assert_allclose(r, x, atol=1e-5, rtol=1e-5)
 
 
 if __name__ == '__main__':
