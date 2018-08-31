@@ -1,3 +1,29 @@
++---------------+-----------------+
+| Service       | Master branch   |
++===============+=================+
+| Travis        | |travis_ci|     |
++---------------+-----------------+
+| Appveyor      | |appveyor_ci|   |
++---------------+-----------------+
+| Read the Docs | |read_the_docs| |
++---------------+-----------------+
+
+.. |travis_ci| image:: https://api.travis-ci.org/PyWavelets/pywt.svg?branch=master
+   :align: middle
+   :target: https://travis-ci.org/PyWavelets/pywt
+   :alt: TravisCI Status
+
+.. |appveyor_ci| image:: https://ci.appveyor.com/api/projects/status/github/PyWavelets/pywt
+   :align: middle
+   :target: https://ci.appveyor.com/project/PyWavelets/pywt
+   :alt: Appveyor Status
+
+.. |read_the_docs| image:: https://readthedocs.org/projects/pywavelets/badge/?version=latest
+   :align: middle
+   :target: https://pywavelets.readthedocs.io/en/latest/?badge=latest
+   :alt: Documentation Status
+
+
 PyWavelets
 ==========
 
