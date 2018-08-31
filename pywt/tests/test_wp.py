@@ -186,7 +186,7 @@ def test_wavelet_packet_dtypes():
         # reconstructed data will have modified dtype
         r = wp.reconstruct(False)
         assert_equal(r.dtype, transform_dtype)
-        assert_allclose(r, x.astype(transform_dtype), atol=1e-6, rtol=1e-6)
+        assert_allclose(r, x.astype(transform_dtype), atol=1e-5, rtol=1e-5)
 
 
 if __name__ == '__main__':
