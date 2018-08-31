@@ -183,6 +183,8 @@ Issues closed for v1.0.0
 The following 15 issues were closed for this release.
 
 * `#405 <https://github.com/PyWavelets/pywt/issues/405>`__: New warning appearing
+* `#397 <https://github.com/PyWavelets/pywt/issues/397>`__: Make pip install work if numpy is not yet installed
+* `#396 <https://github.com/PyWavelets/pywt/issues/396>`__: Allow more levels in wavedec
 * `#386 <https://github.com/PyWavelets/pywt/issues/386>`__: Improve documentation for cwt
 * `#396 <https://github.com/PyWavelets/pywt/issues/396>`__: Allow more levels in wavedec
 * `#368 <https://github.com/PyWavelets/pywt/issues/368>`__: Bug in ISWT2 for non-rectangular arrays
@@ -272,3 +274,5 @@ A total of 53 pull requests were merged for this release.
 * `#401 <https://github.com/PyWavelets/pywt/pull/401>`__: Fix failing numpy 1.9.3 build on Travis CI
 * `#403 <https://github.com/PyWavelets/pywt/pull/403>`__: Change ValueError to UserWarning when level is > dwt_max_level
 * `#404 <https://github.com/PyWavelets/pywt/pull/404>`__: BLD: fix ReadTheDocs build. Outdated NumPy gave a conflict with MPL.
+* `#410 <https://github.com/PyWavelets/pywt/pull/410>`__: DOC: rewrite docs front page
+* `#413 <https://github.com/PyWavelets/pywt/pull/413>`__: add wavelets.pybytes.com disclaimer
