@@ -120,14 +120,17 @@ interest in PyWavelets are very welcome to join the development team!
 Contact
 -------
 
-Use `GitHub Issues`_ or the `mailing list`_ to post your
-comments or questions.
-
+Use `GitHub Issues`_ or the `mailing list`_ to post your comments or questions.
 
 License
 -------
 
 PyWavelets is a free Open Source software released under the MIT license.
+
+If you wish to cite PyWavelets in a publication, you may use the following DOI.
+
+.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.1407172.svg
+   :target: https://doi.org/10.5281/zenodo.1407172
 
 .. _built-in wavelet filters: http://wavelets.pybytes.com/
 .. _Cython: http://cython.org/
