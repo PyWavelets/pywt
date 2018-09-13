@@ -109,7 +109,7 @@ def threshold(data, value, mode='soft', substitute=0):
         Numeric data.
     value : scalar
         Thresholding value.
-    mode : {'soft', 'hard', 'greater', 'less'}
+    mode : {'soft', 'hard', 'garotte', 'greater', 'less'}
         Decides the type of thresholding to be applied on input data. Default
         is 'soft'.
     substitute : float, optional
