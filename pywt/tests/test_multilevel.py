@@ -936,12 +936,12 @@ def test_fswavedecnresult():
     result[k] = np.zeros_like(d)
 
     # assigning a differently sized array raises a ValueError
-    with assert_raises(ValueError):
-        result[k] = np.zeros(tuple([s + 1 for s in d.shape]))
+    assert_raises(ValueError, result.__setitem__,
+                  k, np.zeros(tuple([s + 1 for s in d.shape])))
 
     # warns on assigning with a non-matching dtype
-    with assert_warns(UserWarning):
-        result[k] = np.zeros_like(d).astype(np.float32)
+    assert_warns(UserWarning, result.__setitem__,
+                 k, np.zeros_like(d).astype(np.float32))
 
     # all coefficients are stacked into result.coeffs (same ndim)
     assert_equal(result.coeffs.ndim, data.ndim)
