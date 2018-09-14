@@ -914,6 +914,28 @@ def test_fswavedecn_fswaverecn_axes_subsets():
     assert_raises(ValueError, pywt.fswavedecn, data, 'haar', axes=(1, 5))
 
 
+def test_fswavedecnresult():
+    data = np.ones((32, 32))
+    levels = (1, 2)
+    result = pywt.fswavedecn(data, 'sym2', levels=levels)
+
+    # can access the lowpass band via .approx or via __getitem__
+    approx_key = (0, ) * data.ndim
+    assert_array_equal(result[approx_key], result.approx)
+
+    dkeys = result.detail_keys()
+    # the approximation key shouldn't be present in the detail_keys
+    assert_(approx_key not in dkeys)
+
+    # can access all detail coefficients and they have matching ndim
+    for k in dkeys:
+        d = result[k]
+        assert_equal(d.ndim, data.ndim)
+
+    # all coefficients are stacked into result.coeffs (same ndim)
+    assert_equal(result.coeffs.ndim, data.ndim)
+
+
 def test_error_on_continuous_wavelet():
     # A ValueError is raised if a Continuous wavelet is selected
     data = np.ones((16, 16))

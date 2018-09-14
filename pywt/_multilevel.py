@@ -1212,7 +1212,7 @@ class FswavedecnResult(object):
 
     @property
     def coeff_slices(self):
-        """List: List of coeffficient slices."""
+        """List: List of coefficient slices."""
         return self._coeff_slices
 
     @property
