@@ -932,6 +932,17 @@ def test_fswavedecnresult():
         d = result[k]
         assert_equal(d.ndim, data.ndim)
 
+    # can assign modified coefficients
+    result[k] = np.zeros_like(d)
+
+    # assigning a differently sized array raises a ValueError
+    with assert_raises(ValueError):
+        result[k] = np.zeros(tuple([s + 1 for s in d.shape]))
+
+    # warns on assigning with a non-matching dtype
+    with assert_warns(UserWarning):
+        result[k] = np.zeros_like(d).astype(np.float32)
+
     # all coefficients are stacked into result.coeffs (same ndim)
     assert_equal(result.coeffs.ndim, data.ndim)
 

@@ -1319,12 +1319,13 @@ class FswavedecnResult(object):
         """
         self._validate_index(levels)
         sl = self._get_coef_sl(levels)
+        current_dtype = self._coeffs[sl].dtype
         if self._coeffs[sl].shape != x.shape:
             raise ValueError(
                 "x does not match the shape of the requested coefficient")
-        if x.dtype != sl.dtype:
+        if x.dtype != current_dtype:
             warnings.warn("dtype mismatch:  converting the provided array to"
-                          "dtype {}".format(sl.dtype))
+                          "dtype {}".format(current_dtype))
         self._coeffs[sl] = x
 
     def detail_keys(self):
