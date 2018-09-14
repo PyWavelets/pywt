@@ -1256,7 +1256,7 @@ class FswavedecnResult(object):
         sl = [slice(None), ] * self.ndim
         for n, (ax, lev) in enumerate(zip(self.axes, levels)):
             sl[ax] = self.coeff_slices[n][lev]
-        return sl
+        return tuple(sl)
 
     @property
     def approx(self):
