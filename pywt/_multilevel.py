@@ -1072,7 +1072,10 @@ def ravel_coeffs(coeffs, axes=None):
         if np.any([d is None for d in coeff_dict.values()]):
             raise ValueError("coeffs_to_array does not support missing "
                              "coefficients.")
-        for key, d in coeff_dict.items():
+        # sort to make sure key order is consistent across Python versions
+        keys = sorted(coeff_dict.keys())
+        for key in keys:
+            d = coeff_dict[key]
             sl = slice(offset, offset + d.size)
             offset += d.size
             coeff_arr[sl] = d.ravel()
