@@ -1072,7 +1072,10 @@ def ravel_coeffs(coeffs, axes=None):
         if np.any([d is None for d in coeff_dict.values()]):
             raise ValueError("coeffs_to_array does not support missing "
                              "coefficients.")
-        for key, d in coeff_dict.items():
+        # sort to make sure key order is consistent across Python versions
+        keys = sorted(coeff_dict.keys())
+        for key in keys:
+            d = coeff_dict[key]
             sl = slice(offset, offset + d.size)
             offset += d.size
             coeff_arr[sl] = d.ravel()
@@ -1171,8 +1174,8 @@ class FswavedecnResult(object):
     ----------
     coeffs : ndarray
         The coefficient array.
-    coeff_slices : dict
-        Dictionary of slices corresponding to each detail or approximation
+    coeff_slices : list
+        List of slices corresponding to each detail or approximation
         coefficient array.
     wavelets : list of pywt.DiscreteWavelet objects
         The wavelets used.  Will be a list with length equal to
@@ -1212,7 +1215,7 @@ class FswavedecnResult(object):
 
     @property
     def coeff_slices(self):
-        """Dict: Dictionary of coeffficient slices."""
+        """List: List of coefficient slices."""
         return self._coeff_slices
 
     @property
@@ -1256,7 +1259,7 @@ class FswavedecnResult(object):
         sl = [slice(None), ] * self.ndim
         for n, (ax, lev) in enumerate(zip(self.axes, levels)):
             sl[ax] = self.coeff_slices[n][lev]
-        return sl
+        return tuple(sl)
 
     @property
     def approx(self):
@@ -1319,12 +1322,13 @@ class FswavedecnResult(object):
         """
         self._validate_index(levels)
         sl = self._get_coef_sl(levels)
+        current_dtype = self._coeffs[sl].dtype
         if self._coeffs[sl].shape != x.shape:
             raise ValueError(
                 "x does not match the shape of the requested coefficient")
-        if x.dtype != sl.dtype:
+        if x.dtype != current_dtype:
             warnings.warn("dtype mismatch:  converting the provided array to"
-                          "dtype {}".format(sl.dtype))
+                          "dtype {}".format(current_dtype))
         self._coeffs[sl] = x
 
     def detail_keys(self):
@@ -1374,6 +1378,16 @@ def fswavedecn(data, wavelet, mode='symmetric', levels=None, axes=None):
         Contains the wavelet coefficients, slice objects to allow obtaining
         the coefficients per detail or approximation level, and more.
         See `FswavedecnResult` for details.
+
+    Examples
+    --------
+    >>> from pywt import fswavedecn
+    >>> fs_result = fswavedecn(np.ones((32, 32)), 'sym2', levels=(1, 3))
+    >>> print(fs_result.detail_keys())
+    [(0, 1), (0, 2), (0, 3), (1, 0), (1, 1), (1, 2), (1, 3)]
+    >>> approx_coeffs = fs_result.approx
+    >>> detail_1_2 = fs_result[(1, 2)]
+
 
     Notes
     -----
