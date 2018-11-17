@@ -3,9 +3,9 @@
 #                         <https://github.com/PyWavelets/pywt>
 # See COPYING for license details.
 
-from common cimport (MODE, pywt_index_t, ArrayInfo, Coefficient,
-                     DiscreteTransformType)
-from wavelet cimport DiscreteWavelet, ContinuousWavelet
+from .common cimport (MODE, pywt_index_t, ArrayInfo, Coefficient,
+                      DiscreteTransformType)
+from .wavelet cimport DiscreteWavelet, ContinuousWavelet
 
 include "config.pxi"
 

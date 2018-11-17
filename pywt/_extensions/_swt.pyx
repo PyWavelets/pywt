@@ -1,12 +1,12 @@
-#cython: boundscheck=False, wraparound=False
-cimport common
-cimport c_wt
+#cython: language_level=3, boundscheck=False, wraparound=False
+from . cimport common
+from . cimport c_wt
 
 import warnings
 import numpy as np
 cimport numpy as np
 
-from common cimport pywt_index_t
+from .common cimport pywt_index_t
 from ._pywt cimport c_wavelet_from_object, cdata_t, Wavelet, _check_dtype
 
 include "config.pxi"
