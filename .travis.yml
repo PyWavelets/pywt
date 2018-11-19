@@ -12,19 +12,6 @@ env:
 matrix:
   include:
     - os: linux
-      python: 2.7
-      env:
-        - PYFLAKES=1
-        - PEP8=1
-        - NUMPYSPEC=numpy
-        - MATPLOTLIBSPEC=matplotlib
-      before_install:
-        - pip install pep8==1.5.1
-        - pip install pyflakes
-      script:
-        - PYFLAKES_NODOCTEST=1 pyflakes pywt demo | grep -E -v 'unable to detect undefined names|assigned to but never used|imported but unused|redefinition of unused' > test.out; cat test.out; test \! -s test.out
-        - pep8 pywt demo
-    - os: linux
       python: 3.6
       env:
         - NUMPYSPEC=numpy
@@ -36,11 +23,6 @@ matrix:
         - NUMPYSPEC=numpy
         - MATPLOTLIBSPEC=matplotlib
         - USE_SDIST=1
-    - os: linux
-      python: 2.7
-      env:
-        - NUMPYSPEC="numpy==1.9.3"
-        - MATPLOTLIBSPEC="matplotlib<=2.2.2"  # 2.2.3 requires numpy >= 1.10
     - os: linux
       python: 3.5
       env:
