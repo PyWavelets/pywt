@@ -43,7 +43,7 @@ bibliography: paper.bib
 
 Wavelets are a popular tool for computational harmonic analysis. They provide
 localization in both the temporal (or spatial) domain as well as in the
-frequency domain. A prominant feature is the ability to perform a
+frequency domain. A prominent feature is the ability to perform a
 multiresolution analysis. The wavelet transforms of natural signals and images
 tends to have most of their energy concentrated in a small fraction of the
 coefficients. This sparse representation property is key to the good
@@ -51,10 +51,10 @@ performance of wavelets in applications such as data compression and denoising.
 For example, the wavelet transform is a key component of the JPEG 2000 image
 compression standard.
 
-``PyWavelets`` is a Python package implementing a number of n-dimensinoal
+``PyWavelets`` is a Python package implementing a number of n-dimensional
 discrete wavelet transforms as well as the 1D continuous wavelet transform. A
-wide variety of predifined wavelets are provided and it is possible for users
-to specify custom wavelet filterbanks. All discrete wavelet transforms are
+wide variety of predefined wavelets are provided and it is possible for users
+to specify custom wavelet filter banks. All discrete wavelet transforms are
 implemented by convolution with finite impulse response filters. The required
 up/downsampling convolutions are implemented in C for good performance.
 Cython [@cython] is used to wrap the C code and implement axis-specific 1D
@@ -78,7 +78,7 @@ The Operator Discretization Library (ODL) [@odl] uses PyWavelets to enable
 wavelet-based regularization in iterative inverse problems such as computed
 tomography image reconstruction. A number of common 1D demo signals used in
 the literature and in the manuscript by Stephan Mallat [@mallat_book] are
-provided for use in teaching and for purposes of reproducable research. The
+provided for use in teaching and for purposes of reproducible research. The
 source code for ``PyWavelets`` has been archived to Zenodo with the linked DOI:
 [@pywavelets_zenodo].
 
