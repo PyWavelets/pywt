@@ -26,7 +26,7 @@ matrix:
     - os: linux
       python: 3.5
       env:
-        - NUMPYSPEC=numpy
+        - NUMPYSPEC="numpy==1.13.3"
         - MATPLOTLIBSPEC=matplotlib
         - REFGUIDE_CHECK=1  # run doctests only
     - os: osx
