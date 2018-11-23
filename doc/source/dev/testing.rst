@@ -36,9 +36,9 @@ Running tests with Tox
 ----------------------
 
 There's also a config file for running tests with `Tox`_ (``pip install tox``).
-To for example run tests for Python 2.7 and Python 3.4 use::
+To for example run tests for Python 3.5 and 3.6 use::
 
-  tox -e py27,py34
+  tox -e py35,py36
 
 For more information see the `Tox`_ documentation.
 

@@ -14,8 +14,7 @@ Depending on your Python version, a different version of the Microsoft Visual
 C++ compiler will be required to build extensions. The same compiler that was
 used to build Python itself should be used.
 
-For official binary builds of Python 2.6 to 3.2, this will be VS 2008. Python
-3.3 and 3.4 were compiled with VS 2010, and for Python 3.5 it will be MSVC 2015.
+For Python 3.5, 3.6 and 3.7 it will be MSVC 2015.
 
 The MSVC version should be printed when starting a Python REPL, and can be
 checked against the note below:
@@ -31,9 +30,7 @@ checked against the note below:
 
      ::
 
-        Python 2.7.3 (default, Apr 10 2012, 23:31:26) [MSC v.1500 32 bit (Intel)] on win32
-        Python 3.2 (r32:88445, Feb 20 2011, 21:30:00) [MSC v.1500 64 bit (AMD64)] on win32
-
+        Python 3.5.5 (default, Feb 13 2018, 06:15:35) [MSC v.1900 64 bit (AMD64)] on win32
 
 To get started first download, extract and install *Microsoft Windows SDK for
 Windows 7 and .NET Framework 3.5 SP1* from

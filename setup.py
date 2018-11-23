@@ -398,7 +398,6 @@ def setup_package():
             "Programming Language :: C",
             "Programming Language :: Python",
             "Programming Language :: Python :: 3",
-            "Programming Language :: Python :: 2.7",
             "Programming Language :: Python :: 3.5",
             "Programming Language :: Python :: 3.6",
             "Programming Language :: Python :: 3.7",
@@ -415,8 +414,8 @@ def setup_package():
         cmdclass={'develop': develop_build_clib},
         test_suite='nose.collector',
 
-        install_requires=["numpy>=1.9.1"],
-        setup_requires=["numpy>=1.9.1"],
+        install_requires=["numpy>=1.13.3"],
+        setup_requires=["numpy>=1.13.3"],
     )
 
     if "--force" in sys.argv:
