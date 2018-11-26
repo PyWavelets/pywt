@@ -32,7 +32,7 @@ def soft(data, value, substitute=0):
 
 
 def nn_garrote(data, value, substitute=0):
-    """Non-negative Garotte."""
+    """Non-negative Garrote."""
     data = np.asarray(data)
     magnitude = np.absolute(data)
 
@@ -73,7 +73,10 @@ thresholding_options = {'soft': soft,
                         'hard': hard,
                         'greater': greater,
                         'less': less,
-                        'garotte': nn_garrote}
+                        'garrote': nn_garrote,
+                        # misspelled garrote for backwards compatibility
+                        'garotte': nn_garrote,
+                        }
 
 
 def threshold(data, value, mode='soft', substitute=0):
@@ -90,7 +93,7 @@ def threshold(data, value, mode='soft', substitute=0):
     less than the value param are replaced with `substitute`. Data values with
     absolute value greater or equal to the thresholding value stay untouched.
 
-    ``garotte`` corresponds to the Non-negative garrote threshold [2]_, [3]_.
+    ``garrote`` corresponds to the Non-negative garrote threshold [2]_, [3]_.
     It is intermediate between ``hard`` and ``soft`` thresholding.  It behaves
     like soft thresholding for small data values and approaches hard
     thresholding for large data values.
@@ -109,7 +112,7 @@ def threshold(data, value, mode='soft', substitute=0):
         Numeric data.
     value : scalar
         Thresholding value.
-    mode : {'soft', 'hard', 'garotte', 'greater', 'less'}
+    mode : {'soft', 'hard', 'garrote', 'greater', 'less'}
         Decides the type of thresholding to be applied on input data. Default
         is 'soft'.
     substitute : float, optional
@@ -148,7 +151,7 @@ def threshold(data, value, mode='soft', substitute=0):
     array([ 0. ,  0. ,  0. ,  0.5,  1. ,  1.5,  2. ])
     >>> pywt.threshold(data, 2, 'hard')
     array([ 0. ,  0. ,  2. ,  2.5,  3. ,  3.5,  4. ])
-    >>> pywt.threshold(data, 2, 'garotte')
+    >>> pywt.threshold(data, 2, 'garrote')
     array([ 0.        ,  0.        ,  0.        ,  0.9       ,  1.66666667,
             2.35714286,  3.        ])
     >>> pywt.threshold(data, 2, 'greater')
