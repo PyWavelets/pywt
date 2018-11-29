@@ -75,12 +75,13 @@ def cwt(data, scales, wavelet, sampling_period=1.):
     if np.isscalar(scales):
         scales = np.array([scales])
     if data.ndim == 1:
-        if wavelet.complex_cwt:
-            out = np.zeros((np.size(scales), data.size), dtype=complex)
-        else:
-            out = np.zeros((np.size(scales), data.size))
         precision = 10
         int_psi, x = integrate_wavelet(wavelet, precision=precision)
+        if wavelet.complex_cwt:
+            out = np.zeros((np.size(scales), data.size), dtype=complex)
+            int_psi = np.conj(int_psi)
+        else:
+            out = np.zeros((np.size(scales), data.size))
         for i in np.arange(np.size(scales)):
             step = x[1] - x[0]
             j = np.floor(
