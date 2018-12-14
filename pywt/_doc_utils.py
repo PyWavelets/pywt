@@ -202,52 +202,7 @@ def pad(x, pad_widths, mode):
             n += 1
     elif mode == 'antireflect':
         npad_l, npad_r = pad_widths
-        # pad with zeros to get final size
-        xp = np.pad(x, pad_widths, mode='constant', constant_values=0)
-
-        # right and left edge of the original signal within the padded one
-        r_edge = npad_l + x.size - 1
-        l_edge = npad_l
-        # values of the right and left edge of the original signal
-        rv1 = x[-1]
-        lv1 = x[0]
-        # width of each reflected segment
-        seg_width = x.size - 1
-
-        # Generate all reflected segments on the right of the signal.
-        # odd reflections of the signal involve these coefficients
-        xr_odd = x[-2::-1]
-        # even reflections of the signal involve these coefficients
-        xr_even = x[1:]
-        n = 1
-        while r_edge <= xp.size:
-            segment_slice = slice(r_edge + 1,
-                                  min(r_edge + 1 + seg_width, xp.size))
-            orig_sl = slice(segment_slice.stop - segment_slice.start)
-            rv = xp[r_edge]
-            if n % 2:
-                xp[segment_slice] = rv - (xr_odd[orig_sl] - rv1)
-            else:
-                xp[segment_slice] = rv + (xr_even[orig_sl] - lv1)
-            r_edge += seg_width
-            n += 1
-
-        # Generate all reflected segments on the left of the signal.
-        # odd reflections of the signal involve these coefficients
-        xl_odd = x[-1:0:-1]
-        # even reflections of the signal involve these coefficients
-        xl_even = x[:-1]
-        n = 1
-        while l_edge >= 0:
-            segment_slice = slice(max(0, l_edge - seg_width), l_edge)
-            orig_sl = slice(segment_slice.start - segment_slice.stop, None)
-            lv = xp[l_edge]
-            if n % 2:
-                xp[segment_slice] = lv - (xl_odd[orig_sl] - lv1)
-            else:
-                xp[segment_slice] = lv + (xl_even[orig_sl] - rv1)
-            l_edge -= seg_width
-            n += 1
+        xp = np.pad(x, pad_widths, mode='reflect', reflect_type='odd')
     return xp
 
 
