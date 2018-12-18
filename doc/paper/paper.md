@@ -21,7 +21,7 @@ authors:
     orcid: 0000-0002-0970-5539
     affiliation: 5
   - name: Aaron O'Leary
-    orcid:
+    orcid: 0000-0003-1984-2323
     affiliation:
 affiliations:
  - name: Department of Radiology, Cincinnati Children's Hospital Medical Center, Cincinnati, OH, USA
