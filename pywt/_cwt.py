@@ -104,4 +104,4 @@ def cwt(data, scales, wavelet, sampling_period=1.):
             frequencies[i] /= sampling_period
         return out, frequencies
     else:
-        raise ValueError("Only dim == 1 supportet")
+        raise ValueError("Only dim == 1 supported")
