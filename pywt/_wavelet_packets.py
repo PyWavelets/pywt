@@ -71,9 +71,9 @@ class BaseNode(object):
         # Need to retain original data size/shape so we can trim any excess
         # boundary coefficients from the inverse transform.
         if self.data is None:
-            self.data_size = None
+            self.data_shape = None
         else:
-            self.data_size = np.asarray(data).shape
+            self.data_shape = np.asarray(data).shape
 
         self._init_subnodes()
 
@@ -442,8 +442,8 @@ class Node(BaseNode):
                              " from subnodes.")
         else:
             rec = idwt(data_a, data_d, self.wavelet, self.mode)
-            if self.data_size is not None and (rec.shape != self.data_size):
-                rec = rec[tuple([slice(sz) for sz in self.data_size])]
+            if self.data_shape is not None and (rec.shape != self.data_shape):
+                rec = rec[tuple([slice(sz) for sz in self.data_shape])]
             if update:
                 self.data = rec
             return rec
@@ -512,8 +512,8 @@ class Node2D(BaseNode):
         else:
             coeffs = data_ll, (data_hl, data_lh, data_hh)
             rec = idwt2(coeffs, self.wavelet, self.mode)
-            if self.data_size is not None and (rec.shape != self.data_size):
-                rec = rec[tuple([slice(sz) for sz in self.data_size])]
+            if self.data_shape is not None and (rec.shape != self.data_shape):
+                rec = rec[tuple([slice(sz) for sz in self.data_shape])]
             if update:
                 self.data = rec
             return rec
@@ -578,8 +578,6 @@ class WaveletPacket(Node):
         """
         if self.has_any_subnode:
             data = super(WaveletPacket, self).reconstruct(update)
-            if self.data_size is not None and len(data) > self.data_size:
-                data = data[:self.data_size]
             if update:
                 self.data = data
             return data
@@ -679,8 +677,6 @@ class WaveletPacket2D(Node2D):
         """
         if self.has_any_subnode:
             data = super(WaveletPacket2D, self).reconstruct(update)
-            if self.data_size is not None and (data.shape != self.data_size):
-                data = data[:self.data_size[0], :self.data_size[1]]
             if update:
                 self.data = data
             return data
