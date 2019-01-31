@@ -296,7 +296,14 @@ def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
         for key in new_keys:
             L = coeffs.get(key + 'a', None)
             H = coeffs.get(key + 'd', None)
-
+            if L.dtype != H.dtype:
+                # upcast to a common dtype (float64 or complex128)
+                if L.dtype.kind == 'c' or H.dtype.kind == 'c':
+                    dtype = np.complex128
+                else:
+                    dtype = np.float64
+                L = np.asarray(L, dtype=dtype)
+                H = np.asarray(H, dtype=dtype)
             new_coeffs[key] = idwt_axis(L, H, wav, mode, axis)
         coeffs = new_coeffs
 
