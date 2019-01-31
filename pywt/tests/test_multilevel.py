@@ -976,5 +976,44 @@ def test_default_level():
                      pywt.dwt_max_level(data.shape[ax], wavelet[ax]))
 
 
+def test_waverec_mixed_precision():
+    rstate = np.random.RandomState(0)
+    for func, ifunc, shape in [(pywt.wavedec, pywt.waverec, (8, )),
+                               (pywt.wavedec2, pywt.waverec2, (8, 8)),
+                               (pywt.wavedecn, pywt.waverecn, (8, 8, 8))]:
+        x = rstate.randn(*shape)
+        coeffs_real = func(x, 'db1')
+
+        # real: single precision approx, double precision details
+        coeffs_real[0] = coeffs_real[0].astype(np.float32)
+        r = ifunc(coeffs_real, 'db1')
+        assert_allclose(r, x, rtol=1e-7, atol=1e-7)
+        assert_equal(r.dtype, np.float64)
+
+        x = x + 1j*x
+        coeffs = func(x, 'db1')
+
+        # complex: single precision approx, double precision details
+        coeffs[0] = coeffs[0].astype(np.complex64)
+        r = ifunc(coeffs, 'db1')
+        assert_allclose(r, x, rtol=1e-7, atol=1e-7)
+        assert_equal(r.dtype, np.complex128)
+
+        # complex: double precision approx, single precision details
+        if x.ndim == 1:
+            coeffs[0] = coeffs[0].astype(np.complex128)
+            coeffs[1] = coeffs[1].astype(np.complex64)
+        if x.ndim == 2:
+            coeffs[0] = coeffs[0].astype(np.complex128)
+            coeffs[1] = tuple([v.astype(np.complex64) for v in coeffs[1]])
+        if x.ndim == 3:
+            coeffs[0] = coeffs[0].astype(np.complex128)
+            coeffs[1] = {k: v.astype(np.complex64)
+                         for k, v in coeffs[1].items()}
+        r = ifunc(coeffs, 'db1')
+        assert_allclose(r, x, rtol=1e-7, atol=1e-7)
+        assert_equal(r.dtype, np.complex128)
+
+
 if __name__ == '__main__':
     run_module_suite()
