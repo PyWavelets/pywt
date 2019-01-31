@@ -113,7 +113,10 @@ def iswt(coeffs, wavelet):
     >>> pywt.iswt(coeffs, 'db2')
     array([ 1.,  2.,  3.,  4.,  5.,  6.,  7.,  8.])
     """
-    output = coeffs[0][0].copy()  # Avoid modification of input data
+    # copy to avoid modification of input data
+    dt = _check_dtype(coeffs[0][0])
+    output = np.array(coeffs[0][0], dtype=dt, copy=True)
+
     if not _have_c99_complex and np.iscomplexobj(output):
         # compute real and imaginary separately then combine
         coeffs_real = [(cA.real, cD.real) for (cA, cD) in coeffs]
@@ -128,8 +131,15 @@ def iswt(coeffs, wavelet):
         step_size = int(pow(2, j-1))
         last_index = step_size
         _, cD = coeffs[num_levels - j]
-        dt = _check_dtype(cD)
-        cD = np.asarray(cD, dtype=dt)  # doesn't copy if dtype matches
+        cD = np.asarray(cD, dtype=_check_dtype(cD))
+        if cD.dtype != output.dtype:
+            # upcast to a common dtype (float64 or complex128)
+            if output.dtype.kind == 'c' or cD.dtype.kind == 'c':
+                dtype = np.complex128
+            else:
+                dtype = np.float64
+            output = np.asarray(output, dtype=dtype)
+            cD = np.asarray(cD, dtype=dtype)
         for first in range(last_index):  # 0 to last_index - 1
 
             # Getting the indices that we will transform
@@ -271,7 +281,10 @@ def iswt2(coeffs, wavelet):
 
     """
 
-    output = coeffs[0][0].copy()  # Avoid modification of input data
+    # copy to avoid modification of input data
+    dt = _check_dtype(coeffs[0][0])
+    output = np.array(coeffs[0][0], dtype=dt, copy=True)
+
     if output.ndim != 2:
         raise ValueError(
             "iswt2 only supports 2D arrays.  see iswtn for a general "
@@ -288,6 +301,14 @@ def iswt2(coeffs, wavelet):
         if (cH.shape != cV.shape) or (cH.shape != cD.shape):
             raise RuntimeError(
                 "Mismatch in shape of intermediate coefficient arrays")
+
+        # make sure output shares the common dtype
+        # (conversion of dtype for individual coeffs is handled within idwt2 )
+        common_dtype = np.result_type(*(
+            [dt, ] + [_check_dtype(c) for c in [cH, cV, cD]]))
+        if output.dtype != common_dtype:
+            output = output.astype(common_dtype)
+
         for first_h in range(last_index):  # 0 to last_index - 1
             for first_w in range(last_index):  # 0 to last_index - 1
                 # Getting the indices that we will transform
@@ -460,7 +481,9 @@ def iswtn(coeffs, wavelet, axes=None):
     # key length matches the number of axes transformed
     ndim_transform = max(len(key) for key in coeffs[0].keys())
 
-    output = coeffs[0]['a'*ndim_transform].copy()  # Avoid modifying input data
+    # copy to avoid modification of input data
+    dt = _check_dtype(coeffs[0]['a'*ndim_transform])
+    output = np.array(coeffs[0]['a'*ndim_transform], dtype=dt, copy=True)
     ndim = output.ndim
 
     if axes is None:
@@ -488,6 +511,11 @@ def iswtn(coeffs, wavelet, axes=None):
         last_index = step_size
         a = coeffs[j].pop('a'*ndim_transform)  # will restore later
         details = coeffs[j]
+        # make sure dtype matches the coarsest level approximation coefficients
+        common_dtype = np.result_type(*(
+            [dt, ] + [v.dtype for v in details.values()]))
+        if output.dtype != common_dtype:
+            output = output.astype(common_dtype)
         # We assume all coefficient arrays are of equal size
         shapes = [v.shape for k, v in details.items()]
         dshape = shapes[0]
