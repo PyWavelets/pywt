@@ -29,12 +29,14 @@ matrix:
       env:
         - NUMPYSPEC=numpy
         - MATPLOTLIBSPEC=matplotlib
+        - CYTHONSPEC=cython
         - USE_WHEEL=1
     - os: linux
       python: 3.7-dev
       env:
         - NUMPYSPEC=numpy
         - MATPLOTLIBSPEC=matplotlib
+        - CYTHONSPEC=cython
         - USE_SDIST=1
     - os: linux
       python: 2.7
@@ -46,6 +48,7 @@ matrix:
       env:
         - NUMPYSPEC=numpy
         - MATPLOTLIBSPEC=matplotlib
+        - CYTHONSPEC="cython==0.23.5"
         - REFGUIDE_CHECK=1  # run doctests only
     - os: osx
       osx_image: xcode7.3
@@ -53,6 +56,7 @@ matrix:
       env:
         - NUMPYSPEC=numpy
         - MATPLOTLIBSPEC=matplotlib
+        - CYTHONSPEC=cython
         - TRAVIS_PYTHON_VERSION=3.5
 
 cache: pip
@@ -69,7 +73,8 @@ before_install:
   # Set numpy version first, other packages link against it
   - pip install $NUMPYSPEC
   - pip install $MATPLOTLIBSPEC
-  - pip install Cython nose coverage codecov futures
+  - pip install $CYTHONSPEC
+  - pip install nose coverage codecov futures
   - set -o pipefail
   - if [ "${USE_WHEEL}" == "1" ]; then pip install wheel; fi
   - |
