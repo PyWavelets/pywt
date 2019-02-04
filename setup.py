@@ -163,7 +163,7 @@ with open(defines_py, 'w') as fd:
         fd.write('%s = %d\n' % (k, int(v)))
 
 
-cythonize_opts = {}
+cythonize_opts = {'language_level': '2'}
 if os.environ.get("CYTHON_TRACE"):
     cythonize_opts['linetrace'] = True
     cython_macros.append(("CYTHON_TRACE_NOGIL", 1))
