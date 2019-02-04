@@ -1,4 +1,4 @@
-#cython: language_level=3, boundscheck=False, wraparound=False
+#cython: boundscheck=False, wraparound=False
 from . cimport common
 from . cimport c_wt
 from .common cimport pywt_index_t, MODE
