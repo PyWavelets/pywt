@@ -39,7 +39,22 @@ def test_dwt_idwt_basic():
     x_roundtrip2 = pywt.idwt(cA.astype(np.float64), cD.astype(np.float32),
                              'db2')
     assert_allclose(x_roundtrip2, x, rtol=1e-7, atol=1e-7)
-    assert_(x_roundtrip.dtype == np.float64)
+    assert_(x_roundtrip2.dtype == np.float64)
+
+
+def test_idwt_mixed_complex_dtype():
+    x = np.arange(8).astype(float)
+    x = x + 1j*x[::-1]
+    cA, cD = pywt.dwt(x, 'db2')
+
+    x_roundtrip = pywt.idwt(cA, cD, 'db2')
+    assert_allclose(x_roundtrip, x, rtol=1e-10)
+
+    # mismatched dtypes OK
+    x_roundtrip2 = pywt.idwt(cA.astype(np.complex128), cD.astype(np.complex64),
+                             'db2')
+    assert_allclose(x_roundtrip2, x, rtol=1e-7, atol=1e-7)
+    assert_(x_roundtrip2.dtype == np.complex128)
 
 
 def test_dwt_idwt_dtypes():

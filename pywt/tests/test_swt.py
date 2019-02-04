@@ -12,6 +12,7 @@ from numpy.testing import (run_module_suite, dec, assert_allclose, assert_,
 
 import pywt
 from pywt._extensions._swt import swt_axis
+from pywt._extensions._pywt import _check_dtype
 
 # Check that float32 and complex64 are preserved.  Other real types get
 # converted to float64.
@@ -425,6 +426,91 @@ def test_error_on_continuous_wavelet():
 
             c = dec_func(data, 'db1', level=3)
             assert_raises(ValueError, rec_func, c, wavelet=cwave)
+
+
+def test_iswt_mixed_dtypes():
+    # Mixed precision inputs give double precision output
+    x_real = np.arange(16).astype(np.float64)
+    x_complex = x_real + 1j*x_real
+    wav = 'sym2'
+    for dtype1, dtype2 in [(np.float64, np.float32),
+                           (np.float32, np.float64),
+                           (np.float16, np.float64),
+                           (np.complex128, np.complex64),
+                           (np.complex64, np.complex128)]:
+
+        if dtype1 in [np.complex64, np.complex128]:
+            x = x_complex
+            output_dtype = np.complex128
+        else:
+            x = x_real
+            output_dtype = np.float64
+
+        coeffs = pywt.swt(x, wav, 2)
+        # different precision for the approximation coefficients
+        coeffs[0] = [coeffs[0][0].astype(dtype1),
+                     coeffs[0][1].astype(dtype2)]
+        y = pywt.iswt(coeffs, wav)
+        assert_equal(output_dtype, y.dtype)
+        assert_allclose(y, x, rtol=1e-3, atol=1e-3)
+
+
+def test_iswt2_mixed_dtypes():
+    # Mixed precision inputs give double precision output
+    rstate = np.random.RandomState(0)
+    x_real = rstate.randn(8, 8)
+    x_complex = x_real + 1j*x_real
+    wav = 'sym2'
+    for dtype1, dtype2 in [(np.float64, np.float32),
+                           (np.float32, np.float64),
+                           (np.float16, np.float64),
+                           (np.complex128, np.complex64),
+                           (np.complex64, np.complex128)]:
+
+        if dtype1 in [np.complex64, np.complex128]:
+            x = x_complex
+            output_dtype = np.complex128
+        else:
+            x = x_real
+            output_dtype = np.float64
+
+        coeffs = pywt.swt2(x, wav, 2)
+        # different precision for the approximation coefficients
+        coeffs[0] = [coeffs[0][0].astype(dtype1),
+                     tuple([c.astype(dtype2) for c in coeffs[0][1]])]
+        y = pywt.iswt2(coeffs, wav)
+        assert_equal(output_dtype, y.dtype)
+        assert_allclose(y, x, rtol=1e-3, atol=1e-3)
+
+
+def test_iswtn_mixed_dtypes():
+    # Mixed precision inputs give double precision output
+    rstate = np.random.RandomState(0)
+    x_real = rstate.randn(8, 8, 8)
+    x_complex = x_real + 1j*x_real
+    wav = 'sym2'
+    for dtype1, dtype2 in [(np.float64, np.float32),
+                           (np.float32, np.float64),
+                           (np.float16, np.float64),
+                           (np.complex128, np.complex64),
+                           (np.complex64, np.complex128)]:
+
+        if dtype1 in [np.complex64, np.complex128]:
+            x = x_complex
+            output_dtype = np.complex128
+        else:
+            x = x_real
+            output_dtype = np.float64
+
+        coeffs = pywt.swtn(x, wav, 2)
+        # different precision for the approximation coefficients
+        a = coeffs[0].pop('a' * x.ndim)
+        a = a.astype(dtype1)
+        coeffs[0] = {k: c.astype(dtype2) for k, c in coeffs[0].items()}
+        coeffs[0]['a' * x.ndim] = a
+        y = pywt.iswtn(coeffs, wav)
+        assert_equal(output_dtype, y.dtype)
+        assert_allclose(y, x, rtol=1e-3, atol=1e-3)
 
 
 if __name__ == '__main__':
