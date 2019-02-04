@@ -1,4 +1,4 @@
-from common cimport pywt_index_t
+from .common cimport pywt_index_t
 
 cdef extern from "c/wavelets.h":
     ctypedef enum SYMMETRY:

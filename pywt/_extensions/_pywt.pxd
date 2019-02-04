@@ -1,4 +1,4 @@
-cimport wavelet
+from . cimport wavelet
 cimport numpy as np
 include "config.pxi"
 
