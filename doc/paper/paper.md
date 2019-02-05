@@ -77,7 +77,7 @@ it has enabled wavelet-based image denoising in scikit-image [@scikit-image].
 The Operator Discretization Library (ODL) [@odl] uses PyWavelets to enable
 wavelet-based regularization in iterative inverse problems such as computed
 tomography image reconstruction. A number of common 1D demo signals used in
-the literature and in the manuscript by Stephan Mallat [@mallat_book] are
+the literature and in the manuscript by Stephan Mallat [@mallat2008wavelet] are
 provided for use in teaching and for purposes of reproducible research. The
 source code for ``PyWavelets`` has been archived to Zenodo with the linked DOI:
 [@pywavelets_zenodo].
