@@ -3,7 +3,7 @@
 # See COPYING for license details.
 import inspect
 import sys
-from collections import Iterable
+from collections.abc import Iterable
 
 from ._extensions._pywt import (Wavelet, ContinuousWavelet,
                                 DiscreteContinuousWavelet, Modes)
