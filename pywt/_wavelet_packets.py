@@ -71,9 +71,9 @@ class BaseNode(object):
         # Need to retain original data size/shape so we can trim any excess
         # boundary coefficients from the inverse transform.
         if self.data is None:
-            self.data_shape = None
+            self._data_shape = None
         else:
-            self.data_shape = np.asarray(data).shape
+            self._data_shape = np.asarray(data).shape
 
         self._init_subnodes()
 
@@ -442,8 +442,9 @@ class Node(BaseNode):
                              " from subnodes.")
         else:
             rec = idwt(data_a, data_d, self.wavelet, self.mode)
-            if self.data_shape is not None and (rec.shape != self.data_shape):
-                rec = rec[tuple([slice(sz) for sz in self.data_shape])]
+            if self._data_shape is not None and (
+                    rec.shape != self._data_shape):
+                rec = rec[tuple([slice(sz) for sz in self._data_shape])]
             if update:
                 self.data = rec
             return rec
@@ -512,8 +513,9 @@ class Node2D(BaseNode):
         else:
             coeffs = data_ll, (data_hl, data_lh, data_hh)
             rec = idwt2(coeffs, self.wavelet, self.mode)
-            if self.data_shape is not None and (rec.shape != self.data_shape):
-                rec = rec[tuple([slice(sz) for sz in self.data_shape])]
+            if self._data_shape is not None and (
+                    rec.shape != self._data_shape):
+                rec = rec[tuple([slice(sz) for sz in self._data_shape])]
             if update:
                 self.data = rec
             return rec
