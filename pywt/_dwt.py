@@ -264,8 +264,12 @@ def idwt(cA, cD, wavelet, mode='symmetric', axis=-1):
     if cA is not None and cD is not None:
         if cA.dtype != cD.dtype:
             # need to upcast to common type
-            cA = cA.astype(np.float64)
-            cD = cD.astype(np.float64)
+            if cA.dtype.kind == 'c' or cD.dtype.kind == 'c':
+                dtype = np.complex128
+            else:
+                dtype = np.float64
+            cA = cA.astype(dtype)
+            cD = cD.astype(dtype)
     elif cA is None:
         cA = np.zeros_like(cD)
     elif cD is None:
