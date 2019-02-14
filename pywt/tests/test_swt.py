@@ -4,7 +4,7 @@ from __future__ import division, print_function, absolute_import
 
 import warnings
 from copy import deepcopy
-from itertools import combinations
+from itertools import combinations, permutations
 import numpy as np
 from numpy.testing import (run_module_suite, dec, assert_allclose, assert_,
                            assert_equal, assert_raises, assert_array_equal,
@@ -12,7 +12,6 @@ from numpy.testing import (run_module_suite, dec, assert_allclose, assert_,
 
 import pywt
 from pywt._extensions._swt import swt_axis
-from pywt._extensions._pywt import _check_dtype
 
 # Check that float32 and complex64 are preserved.  Other real types get
 # converted to float64.
@@ -385,6 +384,21 @@ def test_iswtn_errors():
     # mismatched coefficient size
     coeffs[0]['da'] = coeffs[0]['da'][:-1, :]
     assert_raises(RuntimeError, pywt.iswtn, coeffs, w, axes=axes)
+
+
+def test_swtn_iswtn_unique_shape_per_axis():
+    # test case for gh-460
+    _shape = (1, 48, 32)  # unique shape per axis
+    wav = 'sym2'
+    max_level = 3
+    rstate = np.random.RandomState(0)
+    for shape in permutations(_shape):
+        # transform only along the non-singleton axes
+        axes = [ax for ax, s in enumerate(shape) if s != 1]
+        x = rstate.standard_normal(shape)
+        c = pywt.swtn(x, wav, max_level, axes=axes)
+        r = pywt.iswtn(c, wav, axes=axes)
+        assert_allclose(x, r, rtol=1e-10, atol=1e-10)
 
 
 def test_per_axis_wavelets():
