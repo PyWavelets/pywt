@@ -516,16 +516,19 @@ def iswtn(coeffs, wavelet, axes=None):
             [dt, ] + [v.dtype for v in details.values()]))
         if output.dtype != common_dtype:
             output = output.astype(common_dtype)
+
         # We assume all coefficient arrays are of equal size
         shapes = [v.shape for k, v in details.items()]
-        dshape = shapes[0]
         if len(set(shapes)) != 1:
             raise RuntimeError(
                 "Mismatch in shape of intermediate coefficient arrays")
 
+        # shape of a single coefficient array, excluding non-transformed axes
+        coeff_trans_shape = tuple([shapes[0][ax] for ax in axes])
+
         # nested loop over all combinations of axis offsets at this level
         for firsts in product(*([range(last_index), ]*ndim_transform)):
-            for first, sh, ax in zip(firsts, dshape, axes):
+            for first, sh, ax in zip(firsts, coeff_trans_shape, axes):
                 indices[ax] = slice(first, sh, step_size)
                 even_indices[ax] = slice(first, sh, 2*step_size)
                 odd_indices[ax] = slice(first+step_size, sh, 2*step_size)
