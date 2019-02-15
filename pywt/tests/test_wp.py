@@ -189,5 +189,13 @@ def test_wavelet_packet_dtypes():
         assert_allclose(r, x.astype(transform_dtype), atol=1e-5, rtol=1e-5)
 
 
+def test_db3_roundtrip():
+    original = np.arange(512)
+    wp = pywt.WaveletPacket(data=original, wavelet='db3', mode='smooth',
+                            maxlevel=3)
+    r = wp.reconstruct()
+    assert_allclose(original, r, atol=1e-12, rtol=1e-12)
+
+
 if __name__ == '__main__':
     run_module_suite()
