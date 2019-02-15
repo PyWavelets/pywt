@@ -73,6 +73,7 @@ script:
         pip install PyWavelets*.whl -v
         pushd demo
         nosetests pywt
+        python ../pywt/tests/test_doc.py
         popd
     elif [ "${USE_SDIST}" == "1" ]; then
         python setup.py sdist
@@ -80,6 +81,7 @@ script:
         pushd dist
         pip install PyWavelets* -v
         nosetests pywt
+        python ../pywt/tests/test_doc.py
         popd
     elif [ "${REFGUIDE_CHECK}" == "1" ]; then
         pip install -e . -v
