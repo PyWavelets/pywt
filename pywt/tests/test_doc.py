@@ -5,6 +5,11 @@ import glob
 import os
 import unittest
 
+try:
+    import numpy as np
+    np.set_printoptions(legacy='1.13')
+except TypeError:
+    pass
 
 pdir = os.path.pardir
 docs_base = os.path.abspath(os.path.join(os.path.dirname(__file__),
