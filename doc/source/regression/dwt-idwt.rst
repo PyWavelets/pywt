@@ -74,7 +74,7 @@ extension mode (please refer to the PyWavelets' documentation for the
 :ref:`extension modes <Modes>` available:
 
     >>> pywt.Modes.modes
-    ['zero', 'constant', 'symmetric', 'periodic', 'smooth', 'periodization', 'reflect']
+    ['zero', 'constant', 'symmetric', 'periodic', 'smooth', 'periodization', 'reflect', 'antisymmetric', 'antireflect']
 
 As you see in the above example, the :ref:`periodization <Modes.periodization>`
 (periodization) mode is slightly different from the others. It's aim when
