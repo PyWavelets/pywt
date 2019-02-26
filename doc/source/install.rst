@@ -40,7 +40,7 @@ The requirements needed to build from source are:
 
  - Python_ 2.7 or >=3.4
  - Numpy_ >= 1.9.1
- - Cython_ >= 0.20.2  (if installing from git, not from a PyPI source release)
+ - Cython_ >= 0.23.5  (if installing from git, not from a PyPI source release)
 
 To run all the tests for PyWavelets, you will also need to install the
 Matplotlib_ package.

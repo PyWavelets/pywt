@@ -1,5 +1,5 @@
 numpy
-Cython==0.20.2
+cython
 nose
 wheel
 numpydoc
