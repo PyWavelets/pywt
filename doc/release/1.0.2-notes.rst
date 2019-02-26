@@ -27,7 +27,8 @@ can be returned by ``pywt.cwt``.
 
 Cython language compatibility has been pinned to ``language_level = '2'``. This
 is in contrast to the `master` branch which is now using
-``language_level = '3'``.
+``language_level = '3'``. To support this, the minimum supported Cython version
+has been raised to 0.23.5.
 
 Authors
 =======
@@ -58,6 +59,7 @@ Pull requests for v1.0.2
 - `#458 <https://github.com/PyWavelets/pywt/issues/458>`__: MAINT: 1.0.x Fix deprecated import for Iterable
 - `#464 <https://github.com/PyWavelets/pywt/issues/464>`__: backport of #448 (fix coefficient shape mismatch in WaveletPacket reconstruction)
 - `#465 <https://github.com/PyWavelets/pywt/issues/465>`__: backport of gh-462 (iswtn axis fix)
+- `#469 <https://github.com/PyWavelets/pywt/issues/469>`__: MAINT 1.0.x backport #452 (bump minimum supported Cython version)
 
 The backports listed above correspond to the following PRs from the master branch
 
@@ -66,6 +68,7 @@ The backports listed above correspond to the following PRs from the master branc
 - `#446 <https://github.com/PyWavelets/pywt/issues/446>`__: Spelling correction
 - `#448 <https://github.com/PyWavelets/pywt/issues/448>`__: Properly trim wavelet packet node coefficients during reconstruction
 - `#450 <https://github.com/PyWavelets/pywt/issues/450>`__: handle mixed dtype cofficients correctly across inverse transforms
+- `#452 <https://github.com/PyWavelets/pywt/issues/452>`__: bump minimum supported Cython version
 - `#462 <https://github.com/PyWavelets/pywt/issues/462>`__: fix bug in iswtn for data of arbitrary shape when using user-specified axes
 
 
