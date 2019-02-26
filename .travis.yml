@@ -43,6 +43,7 @@ matrix:
       env:
         - NUMPYSPEC="numpy==1.9.3"
         - MATPLOTLIBSPEC="matplotlib<=2.2.2"  # 2.2.3 requires numpy >= 1.10
+        - CYTHONSPEC=cython
     - os: linux
       python: 3.5
       env:
