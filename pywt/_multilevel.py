@@ -156,6 +156,12 @@ def waverec(coeffs, wavelet, mode='symmetric', axis=-1):
     a, ds = coeffs[0], coeffs[1:]
 
     for d in ds:
+        if d is not None and not isinstance(d, np.ndarray):
+            raise ValueError((
+                "Unexpected detail coefficient type: {}. Detail coefficients "
+                "must be arrays as returned by wavedec. If you are using "
+                "pywt.array_to_coeffs or pywt.unravel_coeffs, please specify "
+                "output_format='wavedec'").format(type(d)))
         if (a is not None) and (d is not None):
             try:
                 if a.shape[axis] == d.shape[axis] + 1:
@@ -310,6 +316,12 @@ def waverec2(coeffs, wavelet, mode='symmetric', axes=(-2, -1)):
     a = np.asarray(a)
 
     for d in ds:
+        if not isinstance(d, tuple) or len(d) != 3:
+            raise ValueError((
+                "Unexpected detail coefficient type: {}. Detail coefficients "
+                "must be a 3-tuple of arrays as returned by wavedec2. If you "
+                "are using pywt.array_to_coeffs or pywt.unravel_coeffs, "
+                "please specify output_format='wavedec2'").format(type(d)))
         d = tuple(np.asarray(coeff) if coeff is not None else None
                   for coeff in d)
         d_shapes = (coeff.shape for coeff in d if coeff is not None)
@@ -510,6 +522,14 @@ def waverecn(coeffs, wavelet, mode='symmetric', axes=None):
             "Coefficient list too short (minimum 1 array required).")
 
     a, ds = coeffs[0], coeffs[1:]
+
+    # this dictionary check must be prior to the call to _fix_coeffs
+    if len(ds) > 0 and not all([isinstance(d, dict) for d in ds]):
+        raise ValueError((
+            "Unexpected detail coefficient type: {}. Detail coefficients "
+            "must be a dicionary of arrays as returned by wavedecn. If "
+            "you are using pywt.array_to_coeffs or pywt.unravel_coeffs, "
+            "please specify output_format='wavedecn'").format(type(ds[0])))
 
     # Raise error for invalid key combinations
     ds = list(map(_fix_coeffs, ds))
@@ -827,7 +847,8 @@ def array_to_coeffs(arr, coeff_slices, output_format='wavedecn'):
     >>> cam = pywt.data.camera()
     >>> coeffs = pywt.wavedecn(cam, wavelet='db2', level=3)
     >>> arr, coeff_slices = pywt.coeffs_to_array(coeffs)
-    >>> coeffs_from_arr = pywt.array_to_coeffs(arr, coeff_slices)
+    >>> coeffs_from_arr = pywt.array_to_coeffs(arr, coeff_slices,
+    >>>                                        output_format='wavedecn')
     >>> cam_recon = pywt.waverecn(coeffs_from_arr, wavelet='db2')
     >>> assert_array_almost_equal(cam, cam_recon)
 
