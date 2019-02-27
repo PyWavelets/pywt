@@ -844,7 +844,7 @@ def array_to_coeffs(arr, coeff_slices, output_format='wavedecn'):
     >>> coeffs = pywt.wavedecn(cam, wavelet='db2', level=3)
     >>> arr, coeff_slices = pywt.coeffs_to_array(coeffs)
     >>> coeffs_from_arr = pywt.array_to_coeffs(arr, coeff_slices,
-    >>>                                        output_format='wavedecn')
+    ...                                        output_format='wavedecn')
     >>> cam_recon = pywt.waverecn(coeffs_from_arr, wavelet='db2')
     >>> assert_array_almost_equal(cam, cam_recon)
 
@@ -1138,7 +1138,7 @@ def unravel_coeffs(arr, coeff_slices, coeff_shapes, output_format='wavedecn'):
     >>> coeffs = pywt.wavedecn(cam, wavelet='db2', level=3)
     >>> arr, coeff_slices, coeff_shapes = pywt.ravel_coeffs(coeffs)
     >>> coeffs_from_arr = pywt.unravel_coeffs(arr, coeff_slices, coeff_shapes,
-    >>>                                       output_format='wavedecn')
+    ...                                       output_format='wavedecn')
     >>> cam_recon = pywt.waverecn(coeffs_from_arr, wavelet='db2')
     >>> assert_array_almost_equal(cam, cam_recon)
 
