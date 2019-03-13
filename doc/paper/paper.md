@@ -76,11 +76,17 @@ or optional dependency by a number of other software projects. For example,
 it has enabled wavelet-based image denoising in scikit-image [@scikit-image].
 The Operator Discretization Library (ODL) [@odl] uses PyWavelets to enable
 wavelet-based regularization in iterative inverse problems such as computed
-tomography image reconstruction. A number of common 1D demo signals used in
-the literature and in the manuscript by Stephan Mallat [@mallat2008wavelet] are
-provided for use in teaching and for purposes of reproducible research. The
-source code for ``PyWavelets`` has been archived to Zenodo with the linked DOI:
-[@pywavelets_zenodo].
+tomography image reconstruction. Another related package which is independent
+of ``PyWavelets`` is Kymatio, which implements the wavelet scattering
+transform in 1D-3D [@kymatio]. The current implementation in Kymatio uses
+non-separable 2D and 3D wavelets defined in the frequency domain and is well
+suited to signal classification tasks, but does not have a simple inverse
+transform like the standard discrete wavelet transform.
+
+A number of common 1D demo signals used in the literature and in the manuscript
+by Stephan Mallat [@mallat2008wavelet] are provided for use in teaching and for
+purposes of reproducible research. The source code for ``PyWavelets`` has been
+archived to Zenodo with the linked DOI: [@pywavelets_zenodo].
 
 # Acknowledgements
 
