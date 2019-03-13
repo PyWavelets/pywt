@@ -43,13 +43,13 @@ bibliography: paper.bib
 
 Wavelets are a popular tool for computational harmonic analysis. They provide
 localization in both the temporal (or spatial) domain as well as in the
-frequency domain. A prominent feature is the ability to perform a
-multiresolution analysis. The wavelet transforms of natural signals and images
-tends to have most of their energy concentrated in a small fraction of the
-coefficients. This sparse representation property is key to the good
-performance of wavelets in applications such as data compression and denoising.
-For example, the wavelet transform is a key component of the JPEG 2000 image
-compression standard.
+frequency domain [@Daubechies1992]. A prominent feature is the ability to
+perform a multiresolution analysis [@mallat2008wavelet]. The wavelet transform
+of natural signals and images tends to have most of its energy concentrated in
+a small fraction of the coefficients. This sparse representation property is
+key to the good performance of wavelets in applications such as data
+compression and denoising. For example, the wavelet transform is a key
+component of the JPEG 2000 image compression standard.
 
 ``PyWavelets`` is a Python package implementing a number of n-dimensional
 discrete wavelet transforms as well as the 1D continuous wavelet transform. A
