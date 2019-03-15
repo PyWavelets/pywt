@@ -617,3 +617,17 @@ def test_swtn_variance_and_energy_preservation():
 
     # non-orthogonal wavelet with norm=True raises a warning
     assert_warns(UserWarning, pywt.swtn, x, 'bior2.2', level=4, norm=True)
+
+
+def test_swt_ravel_and_unravel():
+    # When trim_approx=True, all swt functions can user pywt.ravel_coeffs
+    for ndim, _swt, _iswt, ravel_type in [
+            (1, pywt.swt, pywt.iswt, 'wavedec'),
+            (2, pywt.swt2, pywt.iswt2, 'wavedec2'),
+            (3, pywt.swtn, pywt.iswtn, 'wavedecn')]:
+        x = np.ones((16, ) * ndim)
+        c = _swt(x, 'sym2', level=3, trim_approx=True)
+        arr, slices, shapes = pywt.ravel_coeffs(c)
+        c = pywt.unravel_coeffs(arr, slices, shapes, output_format=ravel_type)
+        r = _iswt(c, 'sym2')
+        assert_allclose(x, r)
