@@ -154,6 +154,9 @@ def test_swt_iswt_integration():
         input_length = 2**(input_length_power + max_level - 1)
         X = np.arange(input_length)
         for norm in [True, False]:
+            if norm and not current_wavelet.orthogonal:
+                # non-orthogonal wavelets to avoid warnings when norm=True
+                continue
             for trim_approx in [True, False]:
                 coeffs = pywt.swt(X, current_wavelet, max_level,
                                   trim_approx=trim_approx, norm=norm)
@@ -239,6 +242,9 @@ def test_swt2_iswt2_integration(wavelets=None):
         X = np.arange(input_length**2).reshape(input_length, input_length)
 
         for norm in [True, False]:
+            if norm and not current_wavelet.orthogonal:
+                # non-orthogonal wavelets to avoid warnings when norm=True
+                continue
             for trim_approx in [True, False]:
                 coeffs = pywt.swt2(X, current_wavelet, max_level,
                                    trim_approx=trim_approx, norm=norm)
@@ -362,6 +368,9 @@ def test_swtn_iswtn_integration(wavelets=None):
                 X = np.arange(N**ndim).reshape((N, )*ndim)
 
                 for norm in [True, False]:
+                    if norm and not wav.orthogonal:
+                        # non-orthogonal wavelets to avoid warnings
+                        continue
                     for trim_approx in [True, False]:
                         coeffs = pywt.swtn(X, wav, max_level, axes=axes,
                                            trim_approx=trim_approx, norm=norm)
@@ -560,6 +569,9 @@ def test_swt_variance_and_energy_preservation():
     assert_allclose(np.linalg.norm(x),
                     np.linalg.norm(np.concatenate(coeffs)))
 
+    # non-orthogonal wavelet with norm=True raises a warning
+    assert_warns(UserWarning, pywt.swt, x, 'bior2.2', norm=True)
+
 
 def test_swt2_variance_and_energy_preservation():
     """Verify that the 2D SWT partitions variance among the coefficients."""
@@ -580,6 +592,9 @@ def test_swt2_variance_and_energy_preservation():
     assert_allclose(np.linalg.norm(x),
                     np.linalg.norm(np.concatenate(coeff_list)))
 
+    # non-orthogonal wavelet with norm=True raises a warning
+    assert_warns(UserWarning, pywt.swt2, x, 'bior2.2', level=4, norm=True)
+
 
 def test_swtn_variance_and_energy_preservation():
     """Verify that the nD SWT partitions variance among the coefficients."""
@@ -599,3 +614,6 @@ def test_swtn_variance_and_energy_preservation():
     # also verify L2-norm energy preservation property
     assert_allclose(np.linalg.norm(x),
                     np.linalg.norm(np.concatenate(coeff_list)))
+
+    # non-orthogonal wavelet with norm=True raises a warning
+    assert_warns(UserWarning, pywt.swtn, x, 'bior2.2', level=4, norm=True)

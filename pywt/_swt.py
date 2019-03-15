@@ -15,8 +15,13 @@ __all__ = ["swt", "swt_max_level", 'iswt', 'swt2', 'iswt2', 'swtn', 'iswtn']
 
 
 def _rescale_wavelet_filterbank(wavelet, sf):
-    return Wavelet(wavelet.name + 'r',
-                   [np.asarray(f) * sf for f in wavelet.filter_bank])
+    wav = Wavelet(wavelet.name + 'r',
+                  [np.asarray(f) * sf for f in wavelet.filter_bank])
+
+    # copy attributes from the original wavelet
+    wav.orthogonal = wavelet.orthogonal
+    wav.biorthogonal = wavelet.biorthogonal
+    return wav
 
 
 def swt(data, wavelet, level=None, start_level=0, axis=-1,
@@ -112,6 +117,10 @@ def swt(data, wavelet, level=None, start_level=0, axis=-1,
 
     wavelet = _as_wavelet(wavelet)
     if norm:
+        if not wavelet.orthogonal:
+            warnings.warn(
+                "norm=True, but the wavelet is not orthogonal: \n"
+                "\tThe conditions for energy preservation are not satisfied.")
         wavelet = _rescale_wavelet_filterbank(wavelet, 1/np.sqrt(2))
 
     if axis < 0:
@@ -582,6 +591,10 @@ def swtn(data, wavelet, level, start_level=0, axes=None, trim_approx=False,
 
     wavelets = _wavelets_per_axis(wavelet, axes)
     if norm:
+        if not np.all([wav.orthogonal for wav in wavelets]):
+            warnings.warn(
+                "norm=True, but the wavelets used are not orthogonal: \n"
+                "\tThe conditions for energy preservation are not satisfied.")
         wavelets = [_rescale_wavelet_filterbank(wav, 1/np.sqrt(2))
                     for wav in wavelets]
     ret = []
