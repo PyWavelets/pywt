@@ -97,7 +97,18 @@ def swt(data, wavelet, level=None, start_level=0, axis=-1,
         1.) energy is conserved
         2.) variance is partitioned across scales
 
+    When used with ``norm=True``, this transform is closely related to the
+    multiple-overlap DWT (MODWT) as popularized for time-series analysis,
+    although the underlying implementation is slightly different from the one
+    published in [1]_. Specifically, the implementation used here requires a
+    signal that is a multiple of ``2**level`` in length.
+
+    References
+    ----------
+    .. [1] DB Percival and AT Walden. Wavelet Methods for Time Series Analysis.
+         Cambridge University Press, 2000.
     """
+
     if not _have_c99_complex and np.iscomplexobj(data):
         data = np.asarray(data)
         coeffs_real = swt(data.real, wavelet, level, start_level, trim_approx)
