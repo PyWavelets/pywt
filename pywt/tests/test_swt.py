@@ -539,8 +539,63 @@ def test_iswtn_mixed_dtypes():
 def test_swt_zero_size_axes():
     # raise on empty input array
     assert_raises(ValueError, pywt.swt, [], 'db2')
-  
+
     # >1D case uses a different code path so check there as well
     x = np.ones((1, 4))[0:0, :]  # 2D with a size zero axis
     assert_raises(ValueError, pywt.swtn, x, 'db2', level=1, axes=(0,))
 
+
+def test_swt_variance_and_energy_preservation():
+    """Verify that the 1D SWT partitions variance among the coefficients."""
+    # When norm is True and the wavelet is orthogonal, the sum of the
+    # variances of the coefficients should equal the variance of the signal.
+    wav = 'db2'
+    rstate = np.random.RandomState(5)
+    x = rstate.randn(256)
+    coeffs = pywt.swt(x, wav, trim_approx=True, norm=True)
+    variances = [np.var(c) for c in coeffs]
+    assert_allclose(np.sum(variances), np.var(x))
+
+    # also verify L2-norm energy preservation property
+    assert_allclose(np.linalg.norm(x),
+                    np.linalg.norm(np.concatenate(coeffs)))
+
+
+def test_swt2_variance_and_energy_preservation():
+    """Verify that the 2D SWT partitions variance among the coefficients."""
+    # When norm is True and the wavelet is orthogonal, the sum of the
+    # variances of the coefficients should equal the variance of the signal.
+    wav = 'db2'
+    rstate = np.random.RandomState(5)
+    x = rstate.randn(64, 64)
+    coeffs = pywt.swt2(x, wav, level=4, trim_approx=True, norm=True)
+    coeff_list = [coeffs[0].ravel()]
+    for d in coeffs[1:]:
+        for v in d:
+            coeff_list.append(v.ravel())
+    variances = [np.var(v) for v in coeff_list]
+    assert_allclose(np.sum(variances), np.var(x))
+
+    # also verify L2-norm energy preservation property
+    assert_allclose(np.linalg.norm(x),
+                    np.linalg.norm(np.concatenate(coeff_list)))
+
+
+def test_swtn_variance_and_energy_preservation():
+    """Verify that the nD SWT partitions variance among the coefficients."""
+    # When norm is True and the wavelet is orthogonal, the sum of the
+    # variances of the coefficients should equal the variance of the signal.
+    wav = 'db2'
+    rstate = np.random.RandomState(5)
+    x = rstate.randn(64, 64)
+    coeffs = pywt.swtn(x, wav, level=4, trim_approx=True, norm=True)
+    coeff_list = [coeffs[0].ravel()]
+    for d in coeffs[1:]:
+        for k, v in d.items():
+            coeff_list.append(v.ravel())
+    variances = [np.var(v) for v in coeff_list]
+    assert_allclose(np.sum(variances), np.var(x))
+
+    # also verify L2-norm energy preservation property
+    assert_allclose(np.linalg.norm(x),
+                    np.linalg.norm(np.concatenate(coeff_list)))
