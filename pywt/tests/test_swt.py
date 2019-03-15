@@ -153,9 +153,11 @@ def test_swt_iswt_integration():
             current_wavelet.rec_len))))
         input_length = 2**(input_length_power + max_level - 1)
         X = np.arange(input_length)
-        coeffs = pywt.swt(X, current_wavelet, max_level)
-        Y = pywt.iswt(coeffs, current_wavelet)
-        assert_allclose(Y, X, rtol=1e-5, atol=1e-7)
+        for trim_approx in [True, False]:
+            coeffs = pywt.swt(X, current_wavelet, max_level,
+                              trim_approx=trim_approx)
+            Y = pywt.iswt(coeffs, current_wavelet)
+            assert_allclose(Y, X, rtol=1e-5, atol=1e-7)
 
 
 def test_swt_dtypes():
@@ -235,9 +237,11 @@ def test_swt2_iswt2_integration(wavelets=None):
         input_length = 2**(input_length_power + max_level - 1)
         X = np.arange(input_length**2).reshape(input_length, input_length)
 
-        coeffs = pywt.swt2(X, current_wavelet, max_level)
-        Y = pywt.iswt2(coeffs, current_wavelet)
-        assert_allclose(Y, X, rtol=1e-5, atol=1e-5)
+        for trim_approx in [True, False]:
+            coeffs = pywt.swt2(X, current_wavelet, max_level,
+                               trim_approx=trim_approx)
+            Y = pywt.iswt2(coeffs, current_wavelet)
+            assert_allclose(Y, X, rtol=1e-5, atol=1e-5)
 
 
 def test_swt2_iswt2_quick():
@@ -355,10 +359,12 @@ def test_swtn_iswtn_integration(wavelets=None):
                 N = 2**(input_length_power + max_level - 1)
                 X = np.arange(N**ndim).reshape((N, )*ndim)
 
-                coeffs = pywt.swtn(X, wav, max_level, axes=axes)
-                coeffs_copy = deepcopy(coeffs)
-                Y = pywt.iswtn(coeffs, wav, axes=axes)
-                assert_allclose(Y, X, rtol=1e-5, atol=1e-5)
+                for trim_approx in [True, False]:
+                    coeffs = pywt.swtn(X, wav, max_level, axes=axes,
+                                       trim_approx=trim_approx)
+                    coeffs_copy = deepcopy(coeffs)
+                    Y = pywt.iswtn(coeffs, wav, axes=axes)
+                    assert_allclose(Y, X, rtol=1e-5, atol=1e-5)
 
                 # verify the inverse transform didn't modify any coeffs
                 for c, c2 in zip(coeffs, coeffs_copy):
