@@ -12,7 +12,7 @@ from ._utils import string_types, _as_wavelet
 
 
 __all__ = ["dwt", "idwt", "downcoef", "upcoef", "dwt_max_level",
-           "dwt_coeff_len"]
+           "dwt_coeff_len", "pad"]
 
 
 def dwt_max_level(data_len, filter_len):
@@ -401,3 +401,80 @@ def upcoef(part, coeffs, wavelet, level=1, take=0):
     if part not in 'ad':
         raise ValueError("Argument 1 must be 'a' or 'd', not '%s'." % part)
     return np.asarray(_upcoef(part == 'a', coeffs, wavelet, level, take))
+
+
+def pad(x, pad_widths, mode):
+    """Extend a 1D signal using a given boundary mode.
+
+    This is like `numpy.pad` but supports all PyWavelets boundary modes.
+
+    Parameters
+    ----------
+    x : ndarray
+        The array to pad
+    pad_widths : {sequence, array_like, int}
+        Number of values padded to the edges of each axis.
+        ((before_1, after_1), … (before_N, after_N)) unique pad widths for each
+        axis. ((before, after),) yields same before and after pad for each
+        axis. (pad,) or int is a shortcut for before = after = pad width for
+        all axes.
+    mode : str, optional
+        Signal extension mode, see Modes.
+
+    Returns
+    -------
+    pad : ndarray
+        Padded array of rank equal to array with shape increased according to
+        `pad_width`.
+
+    """
+    if np.isscalar(pad_widths):
+        pad_widths = (pad_widths, pad_widths)
+
+    if x.ndim > 1:
+        raise ValueError("This padding function is only for 1D signals.")
+
+    if mode in ['symmetric', 'reflect']:
+        xp = np.pad(x, pad_widths, mode=mode)
+    elif mode in ['periodic', 'periodization']:
+        if mode == 'periodization' and x.size % 2 == 1:
+            raise ValueError("periodization expects an even length signal.")
+        xp = np.pad(x, pad_widths, mode='wrap')
+    elif mode == 'zeros':
+        xp = np.pad(x, pad_widths, mode='constant', constant_values=0)
+    elif mode == 'constant':
+        xp = np.pad(x, pad_widths, mode='edge')
+    elif mode == 'smooth':
+        xp = np.pad(x, pad_widths, mode='linear_ramp',
+                    end_values=(x[0] + pad_widths[0] * (x[0] - x[1]),
+                                x[-1] + pad_widths[1] * (x[-1] - x[-2])))
+    elif mode == 'antisymmetric':
+        # implement by flipping portions symmetric padding
+        npad_l, npad_r = pad_widths
+        xp = np.pad(x, pad_widths, mode='symmetric')
+        r_edge = npad_l + x.size - 1
+        l_edge = npad_l
+        # width of each reflected segment
+        seg_width = x.size
+        # flip reflected segments on the right of the original signal
+        n = 1
+        while r_edge <= xp.size:
+            segment_slice = slice(r_edge + 1,
+                                  min(r_edge + 1 + seg_width, xp.size))
+            if n % 2:
+                xp[segment_slice] *= -1
+            r_edge += seg_width
+            n += 1
+
+        # flip reflected segments on the left of the original signal
+        n = 1
+        while l_edge >= 0:
+            segment_slice = slice(max(0, l_edge - seg_width), l_edge)
+            if n % 2:
+                xp[segment_slice] *= -1
+            l_edge -= seg_width
+            n += 1
+    elif mode == 'antireflect':
+        npad_l, npad_r = pad_widths
+        xp = np.pad(x, pad_widths, mode='reflect', reflect_type='odd')
+    return xp
