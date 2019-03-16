@@ -88,7 +88,10 @@ script:
         python util/refguide_check.py --doctests
     else
         CFLAGS="--coverage" python setup.py build --build-lib build/lib/ --build-temp build/tmp/
-        pytest --cov=pywt build/lib/pywt/tests/
+        CFLAGS="--coverage" pip install -e . -v
+        pushd demo
+        pytest --pyargs pywt --cov=pywt
+        popd
     fi
 
 after_success:
