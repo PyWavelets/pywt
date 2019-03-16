@@ -22,6 +22,7 @@ from ._wavelet_packets import *
 from ._dwt import *
 from ._swt import *
 from ._cwt import *
+from ._mra import *
 
 from . import data
 
