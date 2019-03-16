@@ -13,7 +13,34 @@ __all__ = ["mra", "mra2", "mran"]
 
 def mra(data, wavelet, level=None, axis=-1, transform='swt',
         mode='periodization'):
+    """Forward 1D multiresolution analysis.
 
+    This is also known as an additive decomposition. It is a projection onto
+    the wavelet subspaces.
+
+    Parameters
+    ----------
+    data: array_like
+        Input data
+    wavelet : Wavelet object or name string
+        Wavelet to use
+    level : int, optional
+        Decomposition level (must be >= 0). If level is None (default) then it
+        will be calculated using the `dwt_max_level` function.
+    axis: int, optional
+        Axis over which to compute the DWT. If not given, the last axis is
+        used. Currently only available when ``transform='dwt'``.
+    transform : {'dwt', 'swt'}
+        Whether to use the DWT or SWT for the transforms.
+    mode : str, optional
+        Signal extension mode, see `Modes` (default: 'symmetric'). This option
+        is only used when transform='dwt'.
+
+    Returns
+    -------
+    [cAn, {details_level_n}, ... {details_level_1}] : list
+        For more information, see the detailed description in `wavedec`
+    """
     if transform == 'swt':
         if mode != 'periodization':
             raise ValueError(
@@ -23,10 +50,12 @@ def mra(data, wavelet, level=None, axis=-1, transform='swt',
         if axis % data.ndim != data.ndim - 1:
             raise ValueError("swt only supports axis=-1")
         inverse = partial(iswt, **kwargs)
+        is_swt = True
     elif transform == 'dwt':
         kwargs = dict(wavelet=wavelet, mode=mode, axis=axis)
         forward = partial(wavedec, level=level, **kwargs)
         inverse = partial(waverec, **kwargs)
+        is_swt = False
     else:
         raise ValueError("unrecognized transform: {}".format(transform))
 
@@ -34,8 +63,15 @@ def mra(data, wavelet, level=None, axis=-1, transform='swt',
 
     mra_coeffs = []
     nc = len(wav_coeffs)
-    z = np.zeros_like(wav_coeffs[0])
-    tmp = [z, ] * nc
+
+    if is_swt:
+        # replicate same zeros array to save memory
+        z = np.zeros_like(wav_coeffs[0])
+        tmp = [z, ] * nc
+    else:
+        # zero arrays have variable size in DWT case
+        tmp = [np.zeros_like(c) for c in wav_coeffs]
+
     for j in range(nc):
         # tmp has arrays of zeros except for the jth entry
         tmp[j] = wav_coeffs[j]
@@ -48,7 +84,10 @@ def mra(data, wavelet, level=None, axis=-1, transform='swt',
         mra_coeffs.append(rec)
 
         # restore zeros
-        tmp[j] = z
+        if is_swt:
+            tmp[j] = z
+        else:
+            tmp[j] = np.zeros_like(tmp[j])
     return mra_coeffs
 
 
@@ -70,7 +109,35 @@ def imra(mra_coeffs):
 
 def mra2(data, wavelet, level=None, axes=(-2, -1), transform='swt2',
          mode='periodization'):
+    """Forward 2D multiresolution analysis.
 
+    This is also known as an additive decomposition. It is a projection onto
+    the wavelet subspaces.
+
+    Parameters
+    ----------
+    data: array_like
+        Input data
+    wavelet : Wavelet object or name string, or 2-tuple of wavelets
+        Wavelet to use.  This can also be a tuple containing a wavelet to
+        apply along each axis in `axes`.
+    level : int, optional
+        Decomposition level (must be >= 0). If level is None (default) then it
+        will be calculated using the `dwt_max_level` function.
+    axes : 2-tuple of ints, optional
+        Axes over which to compute the DWT. Repeated elements are not allowed.
+        Currently only available when ``transform='dwt2'``.
+    transform : {'dwt2', 'swt2'}
+        Whether to use the DWT or SWT for the transforms.
+    mode : str or 2-tuple of str, optional
+        Signal extension mode, see `Modes` (default: 'symmetric'). This option
+        is only used when transform='dwt2'.
+
+    Returns
+    -------
+    coeffs : list
+        For more information, see the detailed description in `wavedec2`
+    """
     if transform == 'swt2':
         if mode != 'periodization':
             raise ValueError(
@@ -147,33 +214,33 @@ def imra2(mra_coeffs):
 
 def mran(data, wavelet, level=None, axes=None, transform='swtn',
          mode='periodization'):
-    """
-    Multilevel nD Discrete Wavelet Transform.
+    """Forward nD multiresolution analysis.
+
+    This is also known as an additive decomposition. It is a projection onto
+    the wavelet subspaces.
 
     Parameters
     ----------
-    data : ndarray
-        nD input data
+    data: array_like
+        Input data
     wavelet : Wavelet object or name string, or tuple of wavelets
-        Wavelet to use.  This can also be a tuple containing a wavelet to
+        Wavelet to use. This can also be a tuple containing a wavelet to
         apply along each axis in `axes`.
     level : int, optional
         Decomposition level (must be >= 0). If level is None (default) then it
         will be calculated using the `dwt_max_level` function.
-    axes : sequence of ints, optional
-        Axes over which to compute the DWT. Axes may not be repeated. The
-        default is None, which means transform all axes
-        (``axes = range(data.ndim)``).
-    transform : {'swtn', 'dwtn'}
+    axes : tuple of ints, optional
+        Axes over which to compute the DWT. Repeated elements are not allowed.
+    transform : {'dwtn', 'swtn'}
+        Whether to use the DWT or SWT for the transforms.
     mode : str or tuple of str, optional
-        Signal extension mode, see `Modes` (default: 'symmetric').  This can
-        also be a tuple containing a mode to apply along each axis in `axes`.
+        Signal extension mode, see `Modes` (default: 'symmetric'). This option
+        is only used when transform='dwtn'.
 
     Returns
     -------
-    mra_coeffs : list
-        Coefficients are organized exactly like `wavedecn`.
-
+    coeffs : list
+        For more information, see the detailed description in `wavedecn`.
     """
     axes, axes_shapes, ndim_transform = _prep_axes_wavedecn(data.shape, axes)
     wavelets = _wavelets_per_axis(wavelet, axes)
