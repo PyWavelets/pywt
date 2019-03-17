@@ -933,6 +933,7 @@ def wavedecn_size(shapes):
 
     Examples
     --------
+    >>> import numpy as np
     >>> import pywt
     >>> data_shape = (64, 32)
     >>> shapes = pywt.wavedecn_shapes(data_shape, 'db2', mode='periodization')
