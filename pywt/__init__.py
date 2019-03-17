@@ -35,11 +35,5 @@ except NameError:
 
 from pywt.version import version as __version__
 
-import numpy as np
-if np.lib.NumpyVersion(np.__version__) >= '1.14.0':
-    from ._utils import is_nose_running
-    if is_nose_running():
-        np.set_printoptions(legacy='1.13')
-
 from numpy.testing import Tester
 test = Tester().test

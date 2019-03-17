@@ -98,23 +98,3 @@ def _modes_per_axis(modes, axes):
     else:
         raise ValueError("modes must be a str, Mode enum or iterable")
     return modes
-
-
-def is_nose_running():
-    """Returns whether we are running the nose test loader
-    """
-    if 'nose' not in sys.modules:
-        return False
-    try:
-        import nose
-    except ImportError:
-        return False
-    # Now check that we have the loader in the call stask
-    stack = inspect.stack()
-    loader_file_name = nose.loader.__file__
-    if loader_file_name.endswith('.pyc'):
-        loader_file_name = loader_file_name[:-1]
-    for _, file_name, _, _, _, _ in stack:
-        if file_name == loader_file_name:
-            return True
-    return False
