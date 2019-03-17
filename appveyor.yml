@@ -26,8 +26,10 @@ install:
      Cython pytest coverage matplotlib futures --cache-dir c:\\tmp\\pip-cache"
 
 test_script:
-  - "util\\appveyor\\build.cmd %PYTHON%\\python.exe setup.py build --build-lib build\\lib\\"
-  - "%PYTHON%\\Scripts\\pytest build\\lib\\pywt\\tests"
+  - "util\\appveyor\\build.cmd %PYTHON%\\python.exe -m pip install -e . -v"
+  - "cd demo"
+  - "%PYTHON%\\Scripts\\pytest --pyargs pywt"
+  - "cd .."
 
 after_test:
   - "util\\appveyor\\build.cmd %PYTHON%\\python.exe setup.py bdist_wheel"
