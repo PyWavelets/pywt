@@ -135,7 +135,6 @@ def dwt(data, wavelet, mode='symmetric', axis=-1):
         Axis over which to compute the DWT. If not given, the
         last axis is used.
 
-
     Returns
     -------
     (cA, cD) : tuple
@@ -210,7 +209,6 @@ def idwt(cA, cD, wavelet, mode='symmetric', axis=-1):
     axis: int, optional
         Axis over which to compute the inverse DWT. If not given, the
         last axis is used.
-
 
     Returns
     -------
@@ -406,7 +404,7 @@ def upcoef(part, coeffs, wavelet, level=1, take=0):
 def pad(x, pad_widths, mode):
     """Extend a 1D signal using a given boundary mode.
 
-    This function operates like `numpy.pad` but supports all signal extension
+    This function operates like ``numpy.pad`` but supports all signal extension
     modes that can be used by PyWavelets discrete wavelet transforms.
 
     Parameters
@@ -420,7 +418,7 @@ def pad(x, pad_widths, mode):
         axis. (pad,) or int is a shortcut for before = after = pad width for
         all axes.
     mode : str, optional
-        Signal extension mode, see Modes.
+        Signal extension mode, see :ref:`Modes <ref-modes>`.
 
     Returns
     -------
@@ -430,9 +428,9 @@ def pad(x, pad_widths, mode):
 
     Notes
     -----
-    The performance of padding in dimensions > 1 will be substantially slower
-    for modes `smooth` and `antisymmetric` as these modes are not supported in
-    an efficient manner by the underlying `numpy.pad` function.
+    The performance of padding in dimensions > 1 may be substantially slower
+    for modes ``smooth`` and ``antisymmetric`` as these modes are not supported
+    efficiently by the underlying ``numpy.pad`` function.
     """
     x = np.asanyarray(x)
 

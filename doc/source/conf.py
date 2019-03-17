@@ -36,6 +36,7 @@ except TypeError:
 extensions = ['sphinx.ext.doctest', 'sphinx.ext.autodoc', 'sphinx.ext.todo',
               'sphinx.ext.extlinks', 'sphinx.ext.mathjax',
               'sphinx.ext.autosummary', 'numpydoc',
+              'sphinx.ext.intersphinx',
               'matplotlib.sphinxext.plot_directive']
 
 # Add any paths that contain templates here, relative to this directory.
@@ -224,3 +225,9 @@ plot_include_source = True
 plot_formats = [('png', 96), 'pdf']
 plot_html_show_formats = False
 plot_html_show_source_link = False
+
+# -- Options for intersphinx extension ---------------------------------------
+
+# Intersphinx to get Numpy and other targets
+intersphinx_mapping = {
+    'numpy': ('https://docs.scipy.org/doc/numpy/', None)}
