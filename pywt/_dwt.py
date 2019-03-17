@@ -434,11 +434,14 @@ def pad(x, pad_widths, mode):
     for modes `smooth` and `antisymmetric` as these modes are not supported in
     an efficient manner by the underlying `numpy.pad` function.
     """
-    if np.isscalar(pad_widths):
-        pad_widths = (pad_widths, )
-    if len(pad_widths) == 1:
-        pad_widths = (pad_widths[0], ) * x.ndim
-    pad_widths = [(p, p) if np.isscalar(p) else p for p in pad_widths]
+    x = np.asanyarray(x)
+
+    # process pad_widths exactly as in numpy.pad
+    pad_widths = np.array(pad_widths)
+    pad_widths = np.round(pad_widths).astype(np.intp, copy=False)
+    if pad_widths.min() < 0:
+        raise ValueError("pad_widths must be > 0")
+    pad_widths = np.broadcast_to(pad_widths, (x.ndim, 2)).tolist()
 
     if mode in ['symmetric', 'reflect']:
         xp = np.pad(x, pad_widths, mode=mode)
@@ -504,7 +507,6 @@ def pad(x, pad_widths, mode):
             return vector
         xp = np.pad(x, pad_widths, pad_antisymmetric)
     elif mode == 'antireflect':
-        npad_l, npad_r = pad_widths
         xp = np.pad(x, pad_widths, mode='reflect', reflect_type='odd')
     else:
         raise ValueError(
