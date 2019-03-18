@@ -250,6 +250,7 @@ def wavelist(family=None, kind='all'):
     sorting_list.sort()
     for x, x, name in sorting_list:
         wavelets.append(name)
+    wavelets.append('pywtdev_0')
     return wavelets
 
 
