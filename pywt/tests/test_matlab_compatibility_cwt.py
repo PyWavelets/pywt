@@ -99,7 +99,7 @@ def test_accuracy_precomputed_cwt():
     # Keep this specific random seed to match the precomputed Matlab result.
     rstate = np.random.RandomState(1234)
     # has to be improved
-    epsilon = 1e-15
+    epsilon = 2e-15
     epsilon32 = 1e-5
     epsilon_psi = 1e-15
     for wavelet in wavelets:
@@ -168,7 +168,8 @@ def _check_accuracy(data, w, scales, coefs, wavelet, epsilon):
     coefs_pywt, freq = pywt.cwt(data, scales, w)
 
     # calculate error measures
-    rms = np.real(np.sqrt(np.mean((coefs_pywt - coefs) ** 2)))
+    err = coefs_pywt - coefs
+    rms = np.real(np.sqrt(np.mean(np.conj(err) * err)))
 
     msg = ('[RMS > EPSILON] for Scale: %s, Wavelet: %s, '
            'Length: %d, rms=%.3g' % (scales, wavelet, len(data), rms))
@@ -180,7 +181,8 @@ def _check_accuracy_psi(w, psi, wavelet, epsilon):
     psi_pywt, x = w.wavefun(length=1024)
 
     # calculate error measures
-    rms = np.real(np.sqrt(np.mean((psi_pywt.flatten() - psi.flatten()) ** 2)))
+    err = psi_pywt.flatten() - psi.flatten()
+    rms = np.real(np.sqrt(np.mean(np.conj(err) * err)))
 
     msg = ('[RMS > EPSILON] for  Wavelet: %s, '
            'rms=%.3g' % (wavelet, rms))

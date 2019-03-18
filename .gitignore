@@ -26,6 +26,8 @@ pip-log.txt
 # Project working files
 # Expanded Cython
 pywt/_extensions/*.[ch]
+pywt/_c99_config.py
+pywt/_extensions/config.pxi
 cythonize.dat
 pywt/version.py
 build.log

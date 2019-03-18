@@ -34,7 +34,8 @@ except TypeError:
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = ['sphinx.ext.doctest', 'sphinx.ext.autodoc', 'sphinx.ext.todo',
-              'sphinx.ext.extlinks', 'sphinx.ext.mathjax', 'numpydoc',
+              'sphinx.ext.extlinks', 'sphinx.ext.mathjax',
+              'sphinx.ext.autosummary', 'numpydoc',
               'matplotlib.sphinxext.plot_directive']
 
 # Add any paths that contain templates here, relative to this directory.
@@ -51,7 +52,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'PyWavelets'
-copyright = jinja2.filters.do_mark_safe('2006-%s, <a href="https://groups.google.com/forum/#!forum/pywavelets">The PyWavelets Developers</a>' % datetime.date.today().year)
+copyright = '2006-%s, The PyWavelets Developers' % datetime.date.today().year
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -101,7 +102,6 @@ pygments_style = 'sphinx'
 
 # A list of ignored prefixes for module index sorting.
 modindex_common_prefix = ['pywt.']
-
 
 # -- Options for HTML output ---------------------------------------------------
 
@@ -215,3 +215,12 @@ latex_documents = [
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 exclude_patterns = ['substitutions.rst', ]
+
+# numpydoc_show_class_members = False
+numpydoc_class_members_toctree = False
+
+# plot_directive options
+plot_include_source = True
+plot_formats = [('png', 96), 'pdf']
+plot_html_show_formats = False
+plot_html_show_source_link = False

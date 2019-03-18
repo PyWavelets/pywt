@@ -12,41 +12,33 @@ env:
 matrix:
   include:
     - os: linux
-      python: 2.7
-      env:
-        - PYFLAKES=1
-        - PEP8=1
-        - NUMPYSPEC=numpy
-      before_install:
-        - pip install pep8==1.5.1
-        - pip install pyflakes
-      script:
-        - PYFLAKES_NODOCTEST=1 pyflakes pywt demo | grep -E -v 'unable to detect undefined names|assigned to but never used|imported but unused|redefinition of unused' > test.out; cat test.out; test \! -s test.out
-        - pep8 pywt demo
-    - os: linux
       python: 3.6
       env:
         - NUMPYSPEC=numpy
+        - MATPLOTLIBSPEC=matplotlib
+        - CYTHONSPEC=cython
         - USE_WHEEL=1
     - os: linux
       python: 3.7-dev
       env:
         - NUMPYSPEC=numpy
+        - MATPLOTLIBSPEC=matplotlib
+        - CYTHONSPEC=cython
         - USE_SDIST=1
-    - os: linux
-      python: 2.7
-      env:
-        - NUMPYSPEC="numpy==1.9.3"
     - os: linux
       python: 3.5
       env:
-        - NUMPYSPEC=numpy
+        - NUMPYSPEC="numpy==1.13.3"
+        - MATPLOTLIBSPEC=matplotlib
+        - CYTHONSPEC="cython==0.23.5"
         - REFGUIDE_CHECK=1  # run doctests only
     - os: osx
       osx_image: xcode7.3
       language: objective-c
       env:
         - NUMPYSPEC=numpy
+        - MATPLOTLIBSPEC=matplotlib
+        - CYTHONSPEC=cython
         - TRAVIS_PYTHON_VERSION=3.5
 
 cache: pip
@@ -62,7 +54,9 @@ before_install:
   - pip install --upgrade wheel
   # Set numpy version first, other packages link against it
   - pip install $NUMPYSPEC
-  - pip install Cython matplotlib nose coverage codecov futures
+  - pip install $MATPLOTLIBSPEC
+  - pip install $CYTHONSPEC
+  - pip install nose coverage codecov futures
   - set -o pipefail
   - if [ "${USE_WHEEL}" == "1" ]; then pip install wheel; fi
   - |
@@ -79,6 +73,7 @@ script:
         pip install PyWavelets*.whl -v
         pushd demo
         nosetests pywt
+        python ../pywt/tests/test_doc.py
         popd
     elif [ "${USE_SDIST}" == "1" ]; then
         python setup.py sdist
@@ -86,6 +81,7 @@ script:
         pushd dist
         pip install PyWavelets* -v
         nosetests pywt
+        python ../pywt/tests/test_doc.py
         popd
     elif [ "${REFGUIDE_CHECK}" == "1" ]; then
         pip install -e . -v

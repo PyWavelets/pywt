@@ -37,10 +37,11 @@ Partial Discrete Wavelet Transform data decomposition ``downcoef``
 .. autofunction:: downcoef
 
 
-Maximum decomposition level - ``dwt_max_level``
------------------------------------------------
+Maximum decomposition level - ``dwt_max_level``, ``dwtn_max_level``
+-------------------------------------------------------------------
 
 .. autofunction:: dwt_max_level
+.. autofunction:: dwtn_max_level
 
 
 .. _`dwt_coeff_len`:

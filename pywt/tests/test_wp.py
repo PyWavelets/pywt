@@ -163,7 +163,7 @@ def test_wavelet_packet_dtypes():
         # reconstruction from coefficients should preserve dtype
         r = wp.reconstruct(False)
         assert_equal(r.dtype, x.dtype)
-        assert_allclose(r, x, atol=1e-6, rtol=1e-6)
+        assert_allclose(r, x, atol=1e-5, rtol=1e-5)
 
     # first element of the tuple is the input dtype
     # second element of the tuple is the transform dtype
@@ -186,7 +186,15 @@ def test_wavelet_packet_dtypes():
         # reconstructed data will have modified dtype
         r = wp.reconstruct(False)
         assert_equal(r.dtype, transform_dtype)
-        assert_allclose(r, x.astype(transform_dtype), atol=1e-6, rtol=1e-6)
+        assert_allclose(r, x.astype(transform_dtype), atol=1e-5, rtol=1e-5)
+
+
+def test_db3_roundtrip():
+    original = np.arange(512)
+    wp = pywt.WaveletPacket(data=original, wavelet='db3', mode='smooth',
+                            maxlevel=3)
+    r = wp.reconstruct()
+    assert_allclose(original, r, atol=1e-12, rtol=1e-12)
 
 
 if __name__ == '__main__':

@@ -1,0 +1,33 @@
+==============================
+PyWavelets 1.1.0 Release Notes
+==============================
+
+.. contents::
+
+We are very pleased to announce the release of PyWavelets 1.1.
+
+This release requires Python >=3.5 and has dropped Python 2.7 support.
+
+New features
+============
+
+Deprecated features
+===================
+
+Backwards incompatible changes
+==============================
+
+Bugs Fixed
+==========
+
+Other changes
+=============
+
+Authors
+=======
+
+Issues closed for v1.1.0
+------------------------
+
+Pull requests for v1.1.0
+------------------------

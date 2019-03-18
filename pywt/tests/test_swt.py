@@ -4,7 +4,7 @@ from __future__ import division, print_function, absolute_import
 
 import warnings
 from copy import deepcopy
-from itertools import combinations
+from itertools import combinations, permutations
 import numpy as np
 from numpy.testing import (run_module_suite, dec, assert_allclose, assert_,
                            assert_equal, assert_raises, assert_array_equal,
@@ -386,6 +386,21 @@ def test_iswtn_errors():
     assert_raises(RuntimeError, pywt.iswtn, coeffs, w, axes=axes)
 
 
+def test_swtn_iswtn_unique_shape_per_axis():
+    # test case for gh-460
+    _shape = (1, 48, 32)  # unique shape per axis
+    wav = 'sym2'
+    max_level = 3
+    rstate = np.random.RandomState(0)
+    for shape in permutations(_shape):
+        # transform only along the non-singleton axes
+        axes = [ax for ax, s in enumerate(shape) if s != 1]
+        x = rstate.standard_normal(shape)
+        c = pywt.swtn(x, wav, max_level, axes=axes)
+        r = pywt.iswtn(c, wav, axes=axes)
+        assert_allclose(x, r, rtol=1e-10, atol=1e-10)
+
+
 def test_per_axis_wavelets():
     # tests seperate wavelet for each axis.
     rstate = np.random.RandomState(1234)
@@ -406,9 +421,9 @@ def test_per_axis_wavelets():
     assert_raises(ValueError, pywt.swtn, data, wavelets[:2], level)
     assert_raises(ValueError, pywt.iswtn, coefs, wavelets[:2])
 
-    # swt2/iswt2 also support per-axis wavelets/modes
     with warnings.catch_warnings():
         warnings.simplefilter('ignore', FutureWarning)
+        # swt2/iswt2 also support per-axis wavelets/modes
         data2 = data[..., 0]
         coefs2 = pywt.swt2(data2, wavelets[:2], level)
         assert_allclose(pywt.iswt2(coefs2, wavelets[:2]), data2, atol=1e-14)
@@ -425,6 +440,91 @@ def test_error_on_continuous_wavelet():
 
             c = dec_func(data, 'db1', level=3)
             assert_raises(ValueError, rec_func, c, wavelet=cwave)
+
+
+def test_iswt_mixed_dtypes():
+    # Mixed precision inputs give double precision output
+    x_real = np.arange(16).astype(np.float64)
+    x_complex = x_real + 1j*x_real
+    wav = 'sym2'
+    for dtype1, dtype2 in [(np.float64, np.float32),
+                           (np.float32, np.float64),
+                           (np.float16, np.float64),
+                           (np.complex128, np.complex64),
+                           (np.complex64, np.complex128)]:
+
+        if dtype1 in [np.complex64, np.complex128]:
+            x = x_complex
+            output_dtype = np.complex128
+        else:
+            x = x_real
+            output_dtype = np.float64
+
+        coeffs = pywt.swt(x, wav, 2)
+        # different precision for the approximation coefficients
+        coeffs[0] = [coeffs[0][0].astype(dtype1),
+                     coeffs[0][1].astype(dtype2)]
+        y = pywt.iswt(coeffs, wav)
+        assert_equal(output_dtype, y.dtype)
+        assert_allclose(y, x, rtol=1e-3, atol=1e-3)
+
+
+def test_iswt2_mixed_dtypes():
+    # Mixed precision inputs give double precision output
+    rstate = np.random.RandomState(0)
+    x_real = rstate.randn(8, 8)
+    x_complex = x_real + 1j*x_real
+    wav = 'sym2'
+    for dtype1, dtype2 in [(np.float64, np.float32),
+                           (np.float32, np.float64),
+                           (np.float16, np.float64),
+                           (np.complex128, np.complex64),
+                           (np.complex64, np.complex128)]:
+
+        if dtype1 in [np.complex64, np.complex128]:
+            x = x_complex
+            output_dtype = np.complex128
+        else:
+            x = x_real
+            output_dtype = np.float64
+
+        coeffs = pywt.swt2(x, wav, 2)
+        # different precision for the approximation coefficients
+        coeffs[0] = [coeffs[0][0].astype(dtype1),
+                     tuple([c.astype(dtype2) for c in coeffs[0][1]])]
+        y = pywt.iswt2(coeffs, wav)
+        assert_equal(output_dtype, y.dtype)
+        assert_allclose(y, x, rtol=1e-3, atol=1e-3)
+
+
+def test_iswtn_mixed_dtypes():
+    # Mixed precision inputs give double precision output
+    rstate = np.random.RandomState(0)
+    x_real = rstate.randn(8, 8, 8)
+    x_complex = x_real + 1j*x_real
+    wav = 'sym2'
+    for dtype1, dtype2 in [(np.float64, np.float32),
+                           (np.float32, np.float64),
+                           (np.float16, np.float64),
+                           (np.complex128, np.complex64),
+                           (np.complex64, np.complex128)]:
+
+        if dtype1 in [np.complex64, np.complex128]:
+            x = x_complex
+            output_dtype = np.complex128
+        else:
+            x = x_real
+            output_dtype = np.float64
+
+        coeffs = pywt.swtn(x, wav, 2)
+        # different precision for the approximation coefficients
+        a = coeffs[0].pop('a' * x.ndim)
+        a = a.astype(dtype1)
+        coeffs[0] = {k: c.astype(dtype2) for k, c in coeffs[0].items()}
+        coeffs[0]['a' * x.ndim] = a
+        y = pywt.iswtn(coeffs, wav)
+        assert_equal(output_dtype, y.dtype)
+        assert_allclose(y, x, rtol=1e-3, atol=1e-3)
 
 
 if __name__ == '__main__':
