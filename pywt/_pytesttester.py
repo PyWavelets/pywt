@@ -5,13 +5,13 @@ This module implements the ``test()`` function for NumPy modules. The usual
 boiler plate for doing that is to put the following in the module
 ``__init__.py`` file::
 
-    from numpy._pytesttester import PytestTester
+    from pywt._pytesttester import PytestTester
     test = PytestTester(__name__).test
     del PytestTester
 
 
 Warnings filtering and other runtime settings should be dealt with in the
-``pytest.ini`` file in the numpy repo root. The behavior of the test depends on
+``pytest.ini`` file in the pywt repo root. The behavior of the test depends on
 whether or not that file is found as follows:
 
 * ``pytest.ini`` is present (develop mode)
@@ -20,12 +20,9 @@ whether or not that file is found as follows:
     DeprecationWarnings and PendingDeprecationWarnings are ignored, other
     warnings are passed through.
 
-In practice, tests run from the numpy repo are run in develop mode. That
+In practice, tests run from the PyWavelets repo are run in develop mode. That
 includes the standard ``python runtests.py`` invocation.
 
-This module is imported by every numpy subpackage, so lies at the top level to
-simplify circular import issues. For the same reason, it contains no numpy
-imports at module scope, instead importing numpy within function calls.
 """
 from __future__ import division, absolute_import, print_function
 
@@ -35,23 +32,24 @@ import os
 __all__ = ['PytestTester']
 
 
-
-def _show_numpy_info():
-    import numpy as np
-
-    print("NumPy version %s" % np.__version__)
-    relaxed_strides = np.ones((10, 1), order="C").flags.f_contiguous
-    print("NumPy relaxed strides checking option:", relaxed_strides)
+def _show_pywt_info():
+    import pywt
+    from pywt._c99_config import _have_c99_complex
+    print("PyWavelets version %s" % pywt.__version__)
+    if _have_c99_complex:
+        print("Compiled with C99 complex support.")
+    else:
+        print("Compiled without C99 complex support.")
 
 
 class PytestTester(object):
     """
     Pytest test runner.
 
-    This class is made available in ``numpy.testing``, and a test function
+    This class is made available in ``pywt.testing``, and a test function
     is typically added to a package's __init__.py like so::
 
-      from numpy.testing import PytestTester
+      from pywt.testing import PytestTester
       test = PytestTester(__name__).test
       del PytestTester
 
@@ -103,13 +101,6 @@ class PytestTester(object):
         result : bool
             Return True on success, false otherwise.
 
-        Notes
-        -----
-        Each NumPy module exposes `test` in its namespace to run all tests for
-        it. For example, to run all tests for numpy.lib:
-
-        >>> np.lib.test() #doctest: +SKIP
-
         Examples
         --------
         >>> result = np.lib.test() #doctest: +SKIP
@@ -120,14 +111,6 @@ class PytestTester(object):
 
         """
         import pytest
-        import warnings
-
-        #FIXME This is no longer needed? Assume it was for use in tests.
-        # cap verbosity at 3, which is equivalent to the pytest '-vv' option
-        #from . import utils
-        #verbose = min(int(verbose), 3)
-        #utils.verbose = verbose
-        #
 
         module = sys.modules[self.module_name]
         module_path = os.path.abspath(module.__path__[0])
@@ -138,39 +121,12 @@ class PytestTester(object):
         # offset verbosity. The "-q" cancels a "-v".
         pytest_args += ["-q"]
 
-        # Filter out distutils cpu warnings (could be localized to
-        # distutils tests). ASV has problems with top level import,
-        # so fetch module for suppression here.
-        with warnings.catch_warnings():
-            warnings.simplefilter("always")
-            from numpy.distutils import cpuinfo
-
         # Filter out annoying import messages. Want these in both develop and
         # release mode.
         pytest_args += [
             "-W ignore:Not importing directory",
             "-W ignore:numpy.dtype size changed",
-            "-W ignore:numpy.ufunc size changed",
-            "-W ignore::UserWarning:cpuinfo",
-            ]
-
-        # When testing matrices, ignore their PendingDeprecationWarnings
-        pytest_args += [
-            "-W ignore:the matrix subclass is not",
-            ]
-
-        # Ignore python2.7 -3 warnings
-        pytest_args += [
-            r"-W ignore:sys\.exc_clear\(\) not supported in 3\.x:DeprecationWarning",
-            r"-W ignore:in 3\.x, __setslice__:DeprecationWarning",
-            r"-W ignore:in 3\.x, __getslice__:DeprecationWarning",
-            r"-W ignore:buffer\(\) not supported in 3\.x:DeprecationWarning",
-            r"-W ignore:CObject type is not supported in 3\.x:DeprecationWarning",
-            r"-W ignore:comparing unequal types not supported in 3\.x:DeprecationWarning",
-            r"-W ignore:the commands module has been removed in Python 3\.0:DeprecationWarning",
-            r"-W ignore:The 'new' module has been removed in Python 3\.0:DeprecationWarning",
-            ]
-
+            "-W ignore:numpy.ufunc size changed", ]
 
         if doctests:
             raise ValueError("Doctests not supported")
@@ -197,9 +153,8 @@ class PytestTester(object):
 
         pytest_args += ["--pyargs"] + list(tests)
 
-
         # run tests.
-        _show_numpy_info()
+        _show_pywt_info()
 
         try:
             code = pytest.main(pytest_args)
