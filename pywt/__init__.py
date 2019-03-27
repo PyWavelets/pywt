@@ -35,5 +35,6 @@ except NameError:
 
 from pywt.version import version as __version__
 
-from numpy.testing import Tester
-test = Tester().test
+from ._pytesttester import PytestTester
+test = PytestTester(__name__)
+del PytestTester
