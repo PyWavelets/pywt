@@ -1,6 +1,6 @@
 numpy
 cython
-nose
+pytest
 wheel
 numpydoc
 matplotlib

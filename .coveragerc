@@ -5,6 +5,7 @@ include = */pywt/*
 omit =
     */version.py
     */pywt/tests/*
+    */pywt/_doc_utils.py*
     */pywt/data/create_dat.py
     *.pxd
     stringsource

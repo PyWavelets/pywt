@@ -2,8 +2,7 @@
 from __future__ import division, print_function, absolute_import
 
 import numpy as np
-from numpy.testing import (assert_raises, run_module_suite,
-                           assert_equal, assert_allclose)
+from numpy.testing import assert_raises, assert_equal, assert_allclose
 
 import pywt
 
@@ -108,7 +107,3 @@ def test_default_mode():
     assert_allclose(cA, cA2)
     assert_allclose(cD, cD2)
     assert_allclose(pywt.idwt(cA, cD, 'db2'), x)
-
-
-if __name__ == '__main__':
-    run_module_suite()

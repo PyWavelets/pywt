@@ -5,35 +5,13 @@ accuracy against MathWorks Wavelet Toolbox.
 
 from __future__ import division, print_function, absolute_import
 
-import os
 import numpy as np
-from numpy.testing import assert_, dec, run_module_suite
+import pytest
+from numpy.testing import assert_
 
 import pywt
-
-if 'PYWT_XSLOW' in os.environ:
-    # Run a more comprehensive set of problem sizes.  This could take more than
-    # an hour to complete.
-    size_set = 'full'
-    use_precomputed = False
-else:
-    size_set = 'reduced'
-    use_precomputed = True
-
-if use_precomputed:
-    data_dir = os.path.join(os.path.dirname(__file__), 'data')
-    matlab_data_file = os.path.join(data_dir, 'dwt_matlabR2012a_result.npz')
-    matlab_result_dict = np.load(matlab_data_file)
-else:
-    try:
-        from pymatbridge import Matlab
-        mlab = Matlab()
-        _matlab_missing = False
-    except ImportError:
-        print("To run Matlab compatibility tests you need to have MathWorks "
-              "MATLAB, MathWorks Wavelet Toolbox and the pymatbridge Python "
-              "package installed.")
-        _matlab_missing = True
+from pywt._pytest import (uses_pymatbridge, uses_precomputed, size_set)
+from pywt._pytest import matlab_result_dict_dwt as matlab_result_dict
 
 # list of mode names in pywt and matlab
 modes = [('zero', 'zpd'),
@@ -63,9 +41,12 @@ def _get_data_sizes(w):
     return data_sizes
 
 
-@dec.skipif(use_precomputed or _matlab_missing)
-@dec.slow
+@uses_pymatbridge
+@pytest.mark.slow
 def test_accuracy_pymatbridge():
+    Matlab = pytest.importorskip("pymatbridge.Matlab")
+    mlab = Matlab()
+
     rstate = np.random.RandomState(1234)
     # max RMSE (was 1.0e-10, is reduced to 5.0e-5 due to different coefficents)
     epsilon = 5.0e-5
@@ -79,17 +60,17 @@ def test_accuracy_pymatbridge():
                 data = rstate.randn(N)
                 mlab.set_variable('data', data)
                 for pmode, mmode in modes:
-                    ma, md = _compute_matlab_result(data, wavelet, mmode)
-                    yield _check_accuracy, data, w, pmode, ma, md, wavelet, epsilon
+                    ma, md = _compute_matlab_result(data, wavelet, mmode, mlab)
+                    _check_accuracy(data, w, pmode, ma, md, wavelet, epsilon)
                     ma, md = _load_matlab_result_pywt_coeffs(data, wavelet, mmode)
-                    yield _check_accuracy, data, w, pmode, ma, md, wavelet, epsilon_pywt_coeffs
+                    _check_accuracy(data, w, pmode, ma, md, wavelet, epsilon_pywt_coeffs)
 
     finally:
         mlab.stop()
 
 
-@dec.skipif(not use_precomputed)
-@dec.slow
+@uses_precomputed
+@pytest.mark.slow
 def test_accuracy_precomputed():
     # Keep this specific random seed to match the precomputed Matlab result.
     rstate = np.random.RandomState(1234)
@@ -102,12 +83,12 @@ def test_accuracy_precomputed():
             data = rstate.randn(N)
             for pmode, mmode in modes:
                 ma, md = _load_matlab_result(data, wavelet, mmode)
-                yield _check_accuracy, data, w, pmode, ma, md, wavelet, epsilon
+                _check_accuracy(data, w, pmode, ma, md, wavelet, epsilon)
                 ma, md = _load_matlab_result_pywt_coeffs(data, wavelet, mmode)
-                yield _check_accuracy, data, w, pmode, ma, md, wavelet, epsilon_pywt_coeffs
+                _check_accuracy(data, w, pmode, ma, md, wavelet, epsilon_pywt_coeffs)
 
 
-def _compute_matlab_result(data, wavelet, mmode):
+def _compute_matlab_result(data, wavelet, mmode, mlab):
     """ Compute the result using MATLAB.
 
     This function assumes that the Matlab variables `wavelet` and `data` have
@@ -177,7 +158,3 @@ def _check_accuracy(data, w, pmode, ma, md, wavelet, epsilon):
     msg = ('[RMS_D > EPSILON] for Mode: %s, Wavelet: %s, '
            'Length: %d, rms=%.3g' % (pmode, wavelet, len(data), rms_d))
     assert_(rms_d < epsilon, msg=msg)
-
-
-if __name__ == '__main__':
-    run_module_suite()

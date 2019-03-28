@@ -1,7 +1,7 @@
 import warnings
 
 import numpy as np
-from numpy.testing import assert_warns, run_module_suite, assert_array_equal
+from numpy.testing import assert_warns, assert_array_equal
 
 import pywt
 
@@ -87,7 +87,3 @@ def test_mode_equivalence():
         for old, new in old_new:
             assert_array_equal(pywt.dwt(x, 'db2', mode=old),
                                pywt.dwt(x, 'db2', mode=new))
-
-
-if __name__ == '__main__':
-    run_module_suite()
