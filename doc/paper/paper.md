@@ -85,8 +85,7 @@ transform like the standard discrete wavelet transform.
 
 A number of common 1D demo signals used in the literature and in the manuscript
 by Stephan Mallat [-@mallat2008wavelet] are provided for use in teaching and for
-purposes of reproducible research. The source code for ``PyWavelets`` has been
-archived to Zenodo with the linked DOI: [@pywavelets_zenodo].
+purposes of reproducible research.
 
 # Acknowledgements
 
