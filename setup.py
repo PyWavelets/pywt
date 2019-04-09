@@ -14,8 +14,8 @@ from setuptools import setup, Extension
 
 MAJOR = 1
 MINOR = 0
-MICRO = 2
-ISRELEASED = False
+MICRO = 3
+ISRELEASED = True
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 
 
