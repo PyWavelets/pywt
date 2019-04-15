@@ -2,7 +2,7 @@
 from __future__ import division, print_function, absolute_import
 
 from numpy.testing import (assert_allclose, assert_warns, assert_almost_equal,
-                           assert_raises)
+                           assert_raises, assert_equal)
 import numpy as np
 import pywt
 
@@ -371,3 +371,51 @@ def test_cwt_small_scales():
 
     # extremely short scale factors raise a ValueError
     assert_raises(ValueError, pywt.cwt, data, scales=0.01, wavelet='mexh')
+    
+
+def test_cwt_method_fft():
+    data = np.zeros(32, dtype=np.float32)
+    data[15] = 1.
+    scales1  = 1
+    wavelet  = 'cmor1.5-1.0'
+    
+    # build a reference cwt with the legacy np.conv() method
+    cfs_conv, _ = pywt.cwt(data, scales1, wavelet, method='conv')
+
+    # compare with the fft based convolution
+    cfs_fft, _  = pywt.cwt(data, scales1, wavelet, method='fft')
+    assert_allclose(cfs_conv, cfs_fft, rtol=0, atol=1e-13)
+
+
+def test_cwt_method_auto():
+    np.random.seed(1)
+    data = np.random.randn(50)
+    scales  = [1, 5, 25, 125]
+    wavelet  = 'cmor1.5-1.0'
+    
+    # build a reference cwt with the legacy np.conv() method
+    cfs_conv, _ = pywt.cwt(data, scales, wavelet, method='conv')
+
+    # 'fft' method switches for scale 2 with len(data)==50
+    cfs_fft, _  = pywt.cwt(data, scales, wavelet, method='auto')
+    assert_allclose(cfs_conv, cfs_fft, rtol=0, atol=1e-13)
+    
+
+def test_cwt_dtype():
+    """Currently output dtype precision is fixed in version 1.0.2"""
+    wavelet = 'mexh'
+    scales  = 1
+    dtype_expected = {
+        np.float16: np.float64,
+        np.float32: np.float64,
+        np.float64: np.float64,
+        np.float128: np.float64,
+        np.complex64: np.float64,
+        np.complex128: np.float64,
+        np.complex256: np.float64,
+        }
+    for dtype_in, dtype_out in dtype_expected.items():
+        data   = np.zeros(2, dtype=dtype_in)
+        cfs, f = pywt.cwt(data, scales, wavelet)
+        assert_equal(dtype_out, cfs.dtype)
+
