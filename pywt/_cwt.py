@@ -29,17 +29,17 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv'):
         The values computed for ``coefs`` are independent of the choice of
         ``sampling_period`` (i.e. ``scales`` is not scaled by the sampling
         period).
-    method : convolution method name
-        Can be any of     
-            - ``conv`` uses only the ``numpyp.conv`` function
-            - ``fft`` uses frequency domain convolution with ``numpyp.fft.fft``
-            - ``auto`` for automatic selection of the fastest convolution method 
-              depending on the complexity at each scale.
-        The ``conv`` method complexity is O(len(scale)*len(data)).
-        The ``fft`` method is O(N*log2(N)) with N=len(scale)+len(data)-1,
-        it is well suited for large size signals but slower than ``conv`` on
-        small ones.
-        
+    method : {'conv', 'fft', 'auto'}, optional
+        The method used to compute the CWT. Can be any of:
+            - ``conv`` uses ``numpy.convolve``.
+            - ``fft`` uses frequency domain convolution via ``numpy.fft.fft``.
+            - ``auto`` uses automatic selection based on an estimate of the
+              computational complexity at each scale.
+        The ``conv`` method complexity is ``O(len(scale) * len(data))``.
+        The ``fft`` method is ``O(N * log2(N))`` with
+        ``N = len(scale) + len(data) - 1``. It is well suited for large size
+        signals but slower than ``conv`` on small ones.
+
     Returns
     -------
     coefs : array_like
@@ -91,13 +91,13 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv'):
         out = np.zeros((np.size(scales), data.size), dtype=dt_out)
         precision = 10
         int_psi, x = integrate_wavelet(wavelet, precision=precision)
-        
+
         if method in ('auto', 'fft'):
             # - to be as large as the sum of data length and and maximum wavelet
             #   support to avoid circular convolution effects
             # - additional padding to reach a power of 2 for CPU-optimal FFT
             size_pad = lambda s: 2**np.int(np.ceil(np.log2(s[0] + s[1])))
-            size_scale0 = size_pad( (len(data), 
+            size_scale0 = size_pad( (len(data),
                                      np.take(scales, 0) * ((x[-1] - x[0]) + 1)) )
             fft_data = None
         elif not method == 'conv':
@@ -110,7 +110,7 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv'):
             if np.max(j) >= np.size(int_psi):
                 j = np.delete(j, np.where((j >= np.size(int_psi)))[0])
             int_psi_scale = int_psi[j.astype(np.int)][::-1]
-               
+
             if method == 'conv':
                 conv = np.convolve(data, int_psi_scale)
             else:
@@ -130,7 +130,7 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv'):
                     conv = conv[0:len(data)+len(int_psi_scale)-1]
                 else:
                     conv = np.convolve(data, int_psi_scale)
-                
+
             coef = - np.sqrt(scales[i]) * np.diff(conv)
             if not np.iscomplexobj(out):
                 coef = np.real(coef)
