@@ -1,8 +1,11 @@
+from math import sqrt, log2, floor, ceil
+
 import numpy as np
 
 from ._extensions._pywt import (DiscreteContinuousWavelet, ContinuousWavelet,
                                 Wavelet, _check_dtype)
 from ._functions import integrate_wavelet, scale2frequency
+
 
 __all__ = ["cwt"]
 
@@ -88,7 +91,7 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv'):
     if data.ndim == 1:
         if wavelet.complex_cwt:
             dt_out = complex
-        out = np.zeros((np.size(scales), data.size), dtype=dt_out)
+        out = np.empty((np.size(scales), data.size), dtype=dt_out)
         precision = 10
         int_psi, x = integrate_wavelet(wavelet, precision=precision)
 
@@ -96,33 +99,34 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv'):
             # - to be as large as the sum of data length and and maximum
             #   wavelet support to avoid circular convolution effects
             # - additional padding to reach a power of 2 for CPU-optimal FFT
-            size_pad = lambda s: 2**np.int(np.ceil(np.log2(s[0] + s[1])))
-            size_scale0 = size_pad((len(data),
-                                    np.take(scales, 0) * ((x[-1] - x[0]) + 1)))
+            size_pad = lambda s: 2**ceil(log2(s[0] + s[1]))
+            size_scale0 = size_pad((data.size,
+                                    scales[0] * ((x[-1] - x[0]) + 1)))
             fft_data = None
         elif not method == 'conv':
             raise ValueError("method must be in: 'conv', 'fft' or 'auto'")
 
-        for i in np.arange(np.size(scales)):
+        for i, scale in enumerate(scales):
             step = x[1] - x[0]
-            j = np.floor(
-                np.arange(scales[i] * (x[-1] - x[0]) + 1) / (scales[i] * step))
-            if np.max(j) >= np.size(int_psi):
-                j = np.delete(j, np.where((j >= np.size(int_psi)))[0])
-            int_psi_scale = int_psi[j.astype(np.int)][::-1]
+            j = np.arange(scale * (x[-1] - x[0]) + 1) / (scale * step)
+            j = j.astype(int)  # floor
+            if j[-1] >= int_psi.size:
+                j = np.extract(j < int_psi.size, j)
+            int_psi_scale = int_psi[j][::-1]
 
             if method == 'conv':
                 conv = np.convolve(data, int_psi_scale)
             else:
-                size_scale = size_pad((len(data), len(int_psi_scale)))
+                size_scale = size_pad((data.size, int_psi_scale.size))
                 if size_scale != size_scale0:
                     # the fft of data changes when padding size changes thus
                     # it has to be recomputed
                     fft_data = None
                 size_scale0 = size_scale
-                nops_conv = len(data) * len(int_psi_scale)
-                nops_fft = (2 + (fft_data is None))
-                nops_fft *= size_scale * np.log2(size_scale)
+                if method == 'auto':
+                    nops_conv = len(data) * len(int_psi_scale)
+                    nops_fft = ((2 + (fft_data is None)) *
+                                size_scale * log2(size_scale))
                 if (method == 'fft') or (
                         (method == 'auto') and (nops_fft < nops_conv)):
                     if fft_data is None:
@@ -133,22 +137,21 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv'):
                 else:
                     conv = np.convolve(data, int_psi_scale)
 
-            coef = - np.sqrt(scales[i]) * np.diff(conv)
+            coef = - sqrt(scale) * np.diff(conv)
             if not np.iscomplexobj(out):
                 coef = np.real(coef)
             d = (coef.size - data.size) / 2.
             if d > 0:
-                out[i, :] = coef[int(np.floor(d)):int(-np.ceil(d))]
+                out[i, :] = coef[floor(d):-ceil(d)]
             elif d == 0.:
                 out[i, :] = coef
             else:
                 raise ValueError(
-                    "Selected scale of {} too small.".format(scales[i]))
+                    "Selected scale of {} too small.".format(scale))
         frequencies = scale2frequency(wavelet, scales, precision)
         if np.isscalar(frequencies):
             frequencies = np.array([frequencies])
-        for i in np.arange(len(frequencies)):
-            frequencies[i] /= sampling_period
+        frequencies /= sampling_period
         return out, frequencies
     else:
         raise ValueError("Only dim == 1 supported")
