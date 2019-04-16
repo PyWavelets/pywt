@@ -84,7 +84,7 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv'):
         wavelet = DiscreteContinuousWavelet(wavelet)
     if np.isscalar(scales):
         scales = np.array([scales])
-    dt_out = None  # currently keep the 1.0.2 behaviour: TODO fix in/out dtype consistency
+    dt_out = None  # TODO: fix in/out dtype consistency in a subsequent PR
     if data.ndim == 1:
         if wavelet.complex_cwt:
             dt_out = complex
@@ -93,12 +93,12 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv'):
         int_psi, x = integrate_wavelet(wavelet, precision=precision)
 
         if method in ('auto', 'fft'):
-            # - to be as large as the sum of data length and and maximum wavelet
-            #   support to avoid circular convolution effects
+            # - to be as large as the sum of data length and and maximum
+            #   wavelet support to avoid circular convolution effects
             # - additional padding to reach a power of 2 for CPU-optimal FFT
             size_pad = lambda s: 2**np.int(np.ceil(np.log2(s[0] + s[1])))
-            size_scale0 = size_pad( (len(data),
-                                     np.take(scales, 0) * ((x[-1] - x[0]) + 1)) )
+            size_scale0 = size_pad((len(data),
+                                    np.take(scales, 0) * ((x[-1] - x[0]) + 1)))
             fft_data = None
         elif not method == 'conv':
             raise ValueError("method must be in: 'conv', 'fft' or 'auto'")
@@ -114,20 +114,22 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv'):
             if method == 'conv':
                 conv = np.convolve(data, int_psi_scale)
             else:
-                size_scale = size_pad( (len(data), len(int_psi_scale)) )
+                size_scale = size_pad((len(data), len(int_psi_scale)))
                 if size_scale != size_scale0:
                     # the fft of data changes when padding size changes thus
                     # it has to be recomputed
                     fft_data = None
                 size_scale0 = size_scale
                 nops_conv = len(data) * len(int_psi_scale)
-                nops_fft  = (2+(fft_data is None)) * size_scale * np.log2(size_scale)
-                if (method == 'fft') or ((method == 'auto') and (nops_fft < nops_conv)):
+                nops_fft = (2 + (fft_data is None))
+                nops_fft *= size_scale * np.log2(size_scale)
+                if (method == 'fft') or (
+                        (method == 'auto') and (nops_fft < nops_conv)):
                     if fft_data is None:
                         fft_data = np.fft.fft(data, size_scale)
                     fft_wav = np.fft.fft(int_psi_scale, size_scale)
-                    conv = np.fft.ifft(fft_wav*fft_data)
-                    conv = conv[0:len(data)+len(int_psi_scale)-1]
+                    conv = np.fft.ifft(fft_wav * fft_data)
+                    conv = conv[:data.size + int_psi_scale.size - 1]
                 else:
                     conv = np.convolve(data, int_psi_scale)
 
