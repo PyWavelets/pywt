@@ -33,12 +33,10 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv'):
         Can be any of     
             - ``conv`` uses only the ``numpyp.conv`` function
             - ``fft`` uses frequency domain convolution with ``numpyp.fft.fft``
-            - ``auto`` for automatic selection of the fastest convolution method 
-              depending on the complexity at each scale.
         The ``conv`` method complexity is O(len(scale)*len(data)).
         The ``fft`` method is O(N*log2(N)) with N=len(scale)+len(data)-1,
-        it is well suited for large size signals but slower than ``conv`` on
-        small ones.
+        it is well suited for large size signals but slightly slower than 
+        ``conv`` on small ones.
         
     Returns
     -------
@@ -92,7 +90,8 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv'):
         precision = 10
         int_psi, x = integrate_wavelet(wavelet, precision=precision)
         
-        if method in ('auto', 'fft'):
+        if method == 'fft':
+            # for FFT the buffer needs:
             # - to be as large as the sum of data length and and maximum wavelet
             #   support to avoid circular convolution effects
             # - additional padding to reach a power of 2 for CPU-optimal FFT
@@ -101,7 +100,7 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv'):
                                      np.take(scales, 0) * ((x[-1] - x[0]) + 1)) )
             fft_data = None
         elif not method == 'conv':
-            raise ValueError("method must be in: 'conv', 'fft' or 'auto'")
+            raise ValueError("method must be 'conv' or 'fft'")
 
         for i in np.arange(np.size(scales)):
             step = x[1] - x[0]
@@ -120,16 +119,11 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv'):
                     # it has to be recomputed
                     fft_data = None
                 size_scale0 = size_scale
-                nops_conv = len(data) * len(int_psi_scale)
-                nops_fft  = (2+(fft_data is None)) * size_scale * np.log2(size_scale)
-                if (method == 'fft') or ((method == 'auto') and (nops_fft < nops_conv)):
-                    if fft_data is None:
-                        fft_data = np.fft.fft(data, size_scale)
-                    fft_wav = np.fft.fft(int_psi_scale, size_scale)
-                    conv = np.fft.ifft(fft_wav*fft_data)
-                    conv = conv[0:len(data)+len(int_psi_scale)-1]
-                else:
-                    conv = np.convolve(data, int_psi_scale)
+                if fft_data is None:
+                    fft_data = np.fft.fft(data, size_scale)
+                fft_wav = np.fft.fft(int_psi_scale, size_scale)
+                conv = np.fft.ifft(fft_wav*fft_data)
+                conv = conv[0:len(data)+len(int_psi_scale)-1]
                 
             coef = - np.sqrt(scales[i]) * np.diff(conv)
             if not np.iscomplexobj(out):
