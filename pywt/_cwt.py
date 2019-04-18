@@ -16,8 +16,8 @@ except ImportError:
     # Do provide a fallback so scipy is an optional requirement
     def next_fast_len(n):
         """Given a number of samples `n`, returns the next power of two
-        following this numbe to take advantage of FFT speedup.
-        This fallback is less efficient as `scipy.fftpack.next_fast_len`
+        following this number to take advantage of FFT speedup.
+        This fallback is less efficient than `scipy.fftpack.next_fast_len`
         """
         return 2**ceil(np.log2(n))
 
