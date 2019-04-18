@@ -1,7 +1,4 @@
 from math import floor, ceil
-from scipy.fftpack import next_fast_len
-
-import numpy as np
 
 from ._extensions._pywt import (DiscreteContinuousWavelet, ContinuousWavelet,
                                 Wavelet, _check_dtype)
@@ -9,6 +6,20 @@ from ._functions import integrate_wavelet, scale2frequency
 
 
 __all__ = ["cwt"]
+
+
+import numpy as np
+
+try:
+    from scipy.fftpack import next_fast_len
+except ImportError:
+    # Do provide a fallback so scipy is an optional requirement
+    def next_fast_len(n):
+        """Given a number of samples `n`, returns the next power of two
+        following this numbe to take advantage of FFT speedup.
+        This fallback is less efficient as `scipy.fftpack.next_fast_len`
+        """
+        return 2**ceil(np.log2(n))
 
 
 def cwt(data, scales, wavelet, sampling_period=1., method='conv'):
