@@ -5,6 +5,7 @@ import os
 import sys
 import subprocess
 import textwrap
+import warnings
 from functools import partial
 from distutils.sysconfig import get_python_inc
 
