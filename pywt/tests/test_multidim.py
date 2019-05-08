@@ -4,8 +4,7 @@ from __future__ import division, print_function, absolute_import
 
 import numpy as np
 from itertools import combinations
-from numpy.testing import (run_module_suite, assert_allclose, assert_,
-                           assert_raises, assert_equal)
+from numpy.testing import assert_allclose, assert_, assert_raises, assert_equal
 
 import pywt
 # Check that float32, float64, complex64, complex128 are preserved.
@@ -442,7 +441,3 @@ def test_error_on_continuous_wavelet():
 
             c = dec_fun(data, 'db1')
             assert_raises(ValueError, rec_fun, c, wavelet=cwave)
-
-
-if __name__ == '__main__':
-    run_module_suite()

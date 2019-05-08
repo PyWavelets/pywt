@@ -7,7 +7,7 @@ Verify DWT perfect reconstruction.
 from __future__ import division, print_function, absolute_import
 
 import numpy as np
-from numpy.testing import assert_, run_module_suite
+from numpy.testing import assert_
 
 import pywt
 
@@ -28,7 +28,7 @@ def test_perfect_reconstruction():
     for wavelet in wavelets:
         for pmode, mmode in modes:
             for dt in dtypes:
-                yield check_reconstruction, pmode, mmode, wavelet, dt
+                check_reconstruction(pmode, mmode, wavelet, dt)
 
 
 def check_reconstruction(pmode, mmode, wavelet, dtype):
@@ -59,7 +59,3 @@ def check_reconstruction(pmode, mmode, wavelet, dtype):
         msg = ('[RMS_REC > EPSILON] for Mode: %s, Wavelet: %s, '
                'Length: %d, rms=%.3g' % (pmode, wavelet, len(data), rms_rec))
         assert_(rms_rec < epsilon, msg=msg)
-
-
-if __name__ == '__main__':
-    run_module_suite()

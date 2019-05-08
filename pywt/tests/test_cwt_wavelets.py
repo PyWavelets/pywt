@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 from __future__ import division, print_function, absolute_import
 
-from numpy.testing import (run_module_suite, assert_allclose, assert_warns,
-                           assert_almost_equal, assert_raises)
+from numpy.testing import (assert_allclose, assert_warns, assert_almost_equal,
+                           assert_raises)
 import numpy as np
 import pywt
 
@@ -371,6 +371,3 @@ def test_cwt_small_scales():
 
     # extremely short scale factors raise a ValueError
     assert_raises(ValueError, pywt.cwt, data, scales=0.01, wavelet='mexh')
-
-if __name__ == '__main__':
-    run_module_suite()

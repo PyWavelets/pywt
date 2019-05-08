@@ -127,10 +127,18 @@ License
 
 PyWavelets is a free Open Source software released under the MIT license.
 
-If you wish to cite PyWavelets in a publication, you may use the following DOI.
+If you wish to cite PyWavelets in a publication, please use the following
+JOSS publication.
 
-.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.1407172.svg
-   :target: https://doi.org/10.5281/zenodo.1407172
+.. image:: http://joss.theoj.org/papers/10.21105/joss.01237/status.svg
+   :target: https://doi.org/10.21105/joss.01237
+
+Specific releases can also be cited via Zenodo. The DOI below will correspond
+to the most recent release. DOIs for past versions can be found by following
+the link in the badge below to Zenodo:
+
+.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.1407171.svg
+   :target: https://doi.org/10.5281/zenodo.1407171
 
 .. _built-in wavelet filters: http://wavelets.pybytes.com/
 .. _Cython: http://cython.org/

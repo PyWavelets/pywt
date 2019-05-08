@@ -16,13 +16,13 @@ authors:
     affiliation: "3, 4"
   - name: Filip Waselewski
     orcid: 0000-0003-0729-5879
-    affiliation:
+    affiliation: 6
   - name: Kai Wohlfahrt
     orcid: 0000-0002-0970-5539
     affiliation: 5
-  - name: Aaron O'Leary
+  - name: Aaron O&#8217;Leary
     orcid: 0000-0003-1984-2323
-    affiliation:
+    affiliation: 6
 affiliations:
  - name: Department of Radiology, Cincinnati Children's Hospital Medical Center, Cincinnati, OH, USA
    index: 1
@@ -34,6 +34,8 @@ affiliations:
    index: 4
  - name: Department of Biochemistry, University of Cambridge, Old Addenbrookes Site, 80 Tennis Court Road, Cambridge, CB2 1GA, United Kingdom
    index: 5
+ - name: None
+   index: 6
 
 date: 24 August 2018
 bibliography: paper.bib
@@ -84,9 +86,8 @@ suited to signal classification tasks, but does not have a simple inverse
 transform like the standard discrete wavelet transform.
 
 A number of common 1D demo signals used in the literature and in the manuscript
-by Stephan Mallat [@mallat2008wavelet] are provided for use in teaching and for
-purposes of reproducible research. The source code for ``PyWavelets`` has been
-archived to Zenodo with the linked DOI: [@pywavelets_zenodo].
+by Stephan Mallat [-@mallat2008wavelet] are provided for use in teaching and for
+purposes of reproducible research.
 
 # Acknowledgements
 
