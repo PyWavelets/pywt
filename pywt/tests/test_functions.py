@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 from __future__ import division, print_function, absolute_import
 
-from numpy.testing import (run_module_suite, assert_almost_equal,
-                           assert_allclose)
+from numpy.testing import assert_almost_equal, assert_allclose
 
 import pywt
 
@@ -37,7 +36,3 @@ def test_intwave_orthogonal():
     # For x > 0.5, the integral is equal to (1 - x)
     # Ignore last point here, there x > 1 and something goes wrong
     assert_allclose(int_psi[~ix][:-1], 1 - x[~ix][:-1], atol=1e-10)
-
-
-if __name__ == '__main__':
-    run_module_suite()

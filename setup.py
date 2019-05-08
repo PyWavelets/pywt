@@ -5,12 +5,13 @@ import os
 import sys
 import subprocess
 import textwrap
+import warnings
 from functools import partial
 from distutils.sysconfig import get_python_inc
 
 import setuptools
 from setuptools import setup, Extension
-
+from setuptools.command.test import test as TestCommand
 
 MAJOR = 1
 MINOR = 1
@@ -360,6 +361,24 @@ def parse_setuppy_commands():
     return True
 
 
+class PyTest(TestCommand):
+    user_options = [('pytest-args=', 'a', "Arguments to pass to py.test")]
+
+    def initialize_options(self):
+        TestCommand.initialize_options(self)
+        self.pytest_args = []
+
+    def finalize_options(self):
+        TestCommand.finalize_options(self)
+        self.test_args = []
+        self.test_suite = True
+
+    def run_tests(self):
+        #import here, cause outside the eggs aren't loaded
+        import pytest
+        errno = pytest.main(self.pytest_args)
+        sys.exit(errno)
+
 
 def setup_package():
     # Rewrite the version file everytime
@@ -410,8 +429,8 @@ def setup_package():
                       'pywt': ['tests/*.py', 'tests/data/*.npz',
                                'tests/data/*.py']},
         libraries=[c_lib],
-        cmdclass={'develop': develop_build_clib},
-        test_suite='nose.collector',
+        cmdclass={'develop': develop_build_clib, 'test': PyTest},
+        tests_require=['pytest'],
 
         install_requires=["numpy>=1.13.3"],
         setup_requires=["numpy>=1.13.3"],

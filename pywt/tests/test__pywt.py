@@ -3,8 +3,7 @@
 from __future__ import division, print_function, absolute_import
 
 import numpy as np
-from numpy.testing import (run_module_suite, assert_allclose, assert_,
-                           assert_raises)
+from numpy.testing import assert_allclose, assert_, assert_raises
 
 import pywt
 
@@ -169,7 +168,3 @@ def test_wavelet_errormsgs():
         pywt.Wavelet('cmord')
     except ValueError as e:
         assert_(e.args[0] == "Invalid wavelet name 'cmord'.")
-
-
-if __name__ == '__main__':
-    run_module_suite()

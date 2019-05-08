@@ -23,13 +23,22 @@ does not break the build.
 Running tests locally
 ---------------------
 
-Tests are implemented with `nose`_, so use one of:
+Tests are implemented with `pytest`_, so use one of:
 
-    $ nosetests pywt
+    $ pytest --pyargs pywt -v
 
-    >>> pywt.test()  # doctest: +SKIP
+There are also older doctests that can be run by performing the following from
+the root of the project source.
 
-Note doctests require `Matplotlib`_ in addition to the usual dependencies.
+    $ python pywt/tests/test_doc.py
+    $ cd doc
+    $ make doctest
+
+Additionally the examples in the demo subfolder can be checked by running:
+
+    $ python util/refguide_check.py
+
+Note: doctests require `Matplotlib`_ in addition to the usual dependencies.
 
 
 Running tests with Tox
@@ -43,6 +52,6 @@ To for example run tests for Python 3.5 and 3.6 use::
 For more information see the `Tox`_ documentation.
 
 
-.. _nose: http://nose.readthedocs.org/en/latest/
-.. _Tox: http://tox.testrun.org/
-.. _Matplotlib: http://matplotlib.org
+.. _pytest: https://pytest.org
+.. _Tox: https://tox.readthedocs.io/en/latest/
+.. _Matplotlib: https://matplotlib.org

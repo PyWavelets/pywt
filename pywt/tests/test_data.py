@@ -1,7 +1,6 @@
 import os
 import numpy as np
-from numpy.testing import (assert_allclose, assert_raises, assert_,
-                           run_module_suite)
+from numpy.testing import assert_allclose, assert_raises, assert_
 
 import pywt.data
 
@@ -76,7 +75,3 @@ def test_wavelab_signals():
 
     # ValueError on invalid length
     assert_raises(ValueError, pywt.data.demo_signal, 'Doppler', 0)
-
-
-if __name__ == '__main__':
-    run_module_suite()
