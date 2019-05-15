@@ -15,7 +15,7 @@ recursive-include demo *
 include cythonize.dat
 
 # Add build and testing tools
-include tox.ini
+include tox.ini pytest.ini
 recursive-include util *
 
 # Exclude what we don't want to include
