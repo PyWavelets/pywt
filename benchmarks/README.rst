@@ -32,7 +32,7 @@ To record the results use:
 
     asv publish
 
-And to see the results via a web broweser, run:
+And to see the results via a web browser, run:
 
     asv preview
 
