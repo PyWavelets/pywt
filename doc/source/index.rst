@@ -51,12 +51,22 @@ Citing
 ------
 
 If you use PyWavelets in a scientific publication, we would appreciate
-citations of the project:
+citations of the project via the following
+JOSS publication:
 
-    Lee G, Gommers R, Wasilewski F, Wohlfahrt K, O'Leary A, Nahrstaedt H,
-    and Contributors, "PyWavelets - Wavelet Transforms in Python", 2006-,
-    https://github.com/PyWavelets/pywt [Online; accessed 2018-MM-DD].
+  Gregory R. Lee, Ralf Gommers, Filip Wasilewski, Kai Wohlfahrt, Aaron
+  O'Leary (2019). PyWavelets: A Python package for wavelet analysis. Journal
+  of Open Source Software, 4(36), 1237, https://doi.org/10.21105/joss.01237.
 
+.. image:: http://joss.theoj.org/papers/10.21105/joss.01237/status.svg
+   :target: https://doi.org/10.21105/joss.01237
+
+Specific releases can also be cited via Zenodo. The DOI below will correspond
+to the most recent release. DOIs for past versions can be found by following
+the link in the badge below to Zenodo:
+
+.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.1407171.svg
+   :target: https://doi.org/10.5281/zenodo.1407171
 
 Contents
 --------
