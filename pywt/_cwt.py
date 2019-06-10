@@ -19,7 +19,7 @@ def cwt(data, scales, wavelet, sampling_period=1.):
         Input signal
     scales : array_like
         The wavelet scales to use. One can use
-        ``f = scale2frequency(scale, wavelet)/sampling_period`` to determine
+        ``f = scale2frequency(wavelet, scale)/sampling_period`` to determine
         what physical frequency, ``f``. Here, ``f`` is in hertz when the
         ``sampling_period`` is given in seconds.
     wavelet : Wavelet object or name
