@@ -36,6 +36,8 @@ def swt_max_level(size_t input_len):
     multiple of ``2**n``. ``numpy.pad`` can be used to pad a signal up to an
     appropriate length as needed.
     """
+    if input_len < 1:
+        raise ValueError("Cannot apply swt to a size 0 signal.")
     max_level = common.swt_max_level(input_len)
     if max_level == 0:
         warnings.warn(
