@@ -54,6 +54,8 @@ def swt(cdata_t[::1] data, Wavelet wavelet, size_t level, size_t start_level):
 
     if data.size % 2:
         raise ValueError("Length of data must be even.")
+    if data.size < 1:
+        raise ValueError("Data must have non-zero size")
 
     if level < 1:
         raise ValueError("Level value must be greater than zero.")
@@ -66,6 +68,7 @@ def swt(cdata_t[::1] data, Wavelet wavelet, size_t level, size_t start_level):
                "start_level is %d)." % (
                 common.swt_max_level(data.size) - start_level))
         raise ValueError(msg)
+
 
     output_len = common.swt_buffer_length(data.size)
     if output_len < 1:
@@ -153,8 +156,10 @@ cpdef swt_axis(np.ndarray data, Wavelet wavelet, size_t level,
     cdef int retval = -5
     cdef size_t i
 
-    if data.size % 2:
-        raise ValueError("Length of data must be even.")
+    if data.shape[axis] % 2:
+        raise ValueError("Length of data must be even along the transform axis.")
+    if data.shape[axis] < 1:
+        raise ValueError("Data must have non-zero size along the transform axis.")
 
     if level < 1:
         raise ValueError("Level value must be greater than zero.")
