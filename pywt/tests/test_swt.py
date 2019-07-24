@@ -525,3 +525,13 @@ def test_iswtn_mixed_dtypes():
         y = pywt.iswtn(coeffs, wav)
         assert_equal(output_dtype, y.dtype)
         assert_allclose(y, x, rtol=1e-3, atol=1e-3)
+
+
+def test_swt_zero_size_axes():
+    # raise on empty input array
+    assert_raises(ValueError, pywt.swt, [], 'db2')
+  
+    # >1D case uses a different code path so check there as well
+    x = np.ones((1, 4))[0:0, :]  # 2D with a size zero axis
+    assert_raises(ValueError, pywt.swtn, x, 'db2', level=1, axes=(0,))
+

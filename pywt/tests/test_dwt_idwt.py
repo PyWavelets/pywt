@@ -223,3 +223,13 @@ def test_error_on_continuous_wavelet():
 
         cA, cD = pywt.dwt(data, 'db1')
         assert_raises(ValueError, pywt.idwt, cA, cD, cwave)
+
+
+def test_dwt_zero_size_axes():
+    # raise on empty input array
+    assert_raises(ValueError, pywt.dwt, [], 'db2')
+  
+    # >1D case uses a different code path so check there as well
+    x = np.ones((1, 4))[0:0, :]  # 2D with a size zero axis
+    assert_raises(ValueError, pywt.dwt, x, 'db2', axis=0)
+
