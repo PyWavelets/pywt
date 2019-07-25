@@ -11,15 +11,27 @@ __all__ = ["cwt"]
 import numpy as np
 
 try:
-    from scipy.fftpack import next_fast_len
+    # Prefer scipy.fft (new in SciPy 1.4)
+    import scipy.fft
+    fftmodule = scipy.fft
+    next_fast_len = fftmodule.next_fast_len
 except ImportError:
-    # Do provide a fallback so scipy is an optional requirement
-    def next_fast_len(n):
-        """Given a number of samples `n`, returns the next power of two
-        following this number to take advantage of FFT speedup.
-        This fallback is less efficient than `scipy.fftpack.next_fast_len`
-        """
-        return 2**ceil(np.log2(n))
+    try:
+        import scipy.fftpack
+        fftmodule = scipy.fftpack
+        next_fast_len = fftmodule.next_fast_len
+    except ImportError:
+        fftmodule = np.fft
+
+        # provide a fallback so scipy is an optional requirement
+        def next_fast_len(n):
+            """Round up size to the nearest power of two.
+
+            Given a number of samples `n`, returns the next power of two
+            following this number to take advantage of FFT speedup.
+            This fallback is less efficient than `scipy.fftpack.next_fast_len`
+            """
+            return 2**ceil(np.log2(n))
 
 
 def cwt(data, scales, wavelet, sampling_period=1., method='conv'):
@@ -47,7 +59,7 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv'):
     method : {'conv', 'fft'}, optional
         The method used to compute the CWT. Can be any of:
             - ``conv`` uses ``numpy.convolve``.
-            - ``fft`` uses frequency domain convolution via ``numpy.fft.fft``.
+            - ``fft`` uses frequency domain convolution.
             - ``auto`` uses automatic selection based on an estimate of the
               computational complexity at each scale.
         The ``conv`` method complexity is ``O(len(scale) * len(data))``.
@@ -124,18 +136,17 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv'):
             if method == 'conv':
                 conv = np.convolve(data, int_psi_scale)
             else:
-                # the padding is selected for
+                # The padding is selected for:
                 # - optimal FFT complexity
                 # - to be larger than the two signals length to avoid circular
                 #   convolution
                 size_scale = next_fast_len(data.size + int_psi_scale.size - 1)
                 if size_scale != size_scale0:
-                    # the fft of data changes when padding size changes thus
-                    # it has to be recomputed
-                    fft_data = np.fft.fft(data, size_scale)
+                    # Must recompute fft_data when the padding size changes.
+                    fft_data = fftmodule.fft(data, size_scale)
                 size_scale0 = size_scale
-                fft_wav = np.fft.fft(int_psi_scale, size_scale)
-                conv = np.fft.ifft(fft_wav * fft_data)
+                fft_wav = fftmodule.fft(int_psi_scale, size_scale)
+                conv = fftmodule.ifft(fft_wav * fft_data)
                 conv = conv[:data.size + int_psi_scale.size - 1]
 
             coef = - np.sqrt(scale) * np.diff(conv)
