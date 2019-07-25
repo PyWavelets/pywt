@@ -6,8 +6,8 @@ from itertools import product
 from functools import reduce
 import operator
 import numpy as np
-from numpy.testing import (run_module_suite, assert_allclose, assert_,
-                           assert_raises, assert_equal)
+from numpy.testing import (assert_allclose, assert_, assert_raises,
+                           assert_equal)
 
 import pywt
 
@@ -169,8 +169,3 @@ def test_wavelet_packet_axes():
     # must have non-duplicate axes
     assert_raises(ValueError, pywt.WaveletPacketND, data=x, wavelet='db1',
                   axes=(0, 0))
-
-
-
-if __name__ == '__main__':
-    run_module_suite()
