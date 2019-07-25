@@ -33,7 +33,7 @@ def dwt2(data, wavelet, mode='symmetric', axes=(-2, -1)):
         Wavelet to use.  This can also be a tuple containing a wavelet to
         apply along each axis in ``axes``.
     mode : str or 2-tuple of strings, optional
-        Signal extension mode, see Modes (default: 'symmetric').  This can
+        Signal extension mode, see :ref:`Modes <ref-modes>`. This can
         also be a tuple of modes specifying the mode to use on each axis in
         ``axes``.
     axes : 2-tuple of ints, optional
@@ -84,13 +84,13 @@ def idwt2(coeffs, wavelet, mode='symmetric', axes=(-2, -1)):
     ----------
     coeffs : tuple
         (cA, (cH, cV, cD)) A tuple with approximation coefficients and three
-        details coefficients 2D arrays like from `dwt2`.  If any of these
+        details coefficients 2D arrays like from ``dwt2``.  If any of these
         components are set to ``None``, it will be treated as zeros.
     wavelet : Wavelet object or name string, or 2-tuple of wavelets
         Wavelet to use.  This can also be a tuple containing a wavelet to
         apply along each axis in ``axes``.
     mode : str or 2-tuple of strings, optional
-        Signal extension mode, see Modes (default: 'symmetric').  This can
+        Signal extension mode, see :ref:`Modes <ref-modes>`. This can
         also be a tuple of modes specifying the mode to use on each axis in
         ``axes``.
     axes : 2-tuple of ints, optional
@@ -131,7 +131,7 @@ def dwtn(data, wavelet, mode='symmetric', axes=None):
         apply along each axis in ``axes``.
     mode : str or tuple of string, optional
         Signal extension mode used in the decomposition,
-        see Modes (default: 'symmetric').  This can also be a tuple of modes
+        see :ref:`Modes <ref-modes>`. This can also be a tuple of modes
         specifying the mode to use on each axis in ``axes``.
     axes : sequence of ints, optional
         Axes over which to compute the DWT. Repeated elements mean the DWT will
@@ -233,7 +233,7 @@ def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
         apply along each axis in ``axes``.
     mode : str or list of string, optional
         Signal extension mode used in the decomposition,
-        see Modes (default: 'symmetric').  This can also be a tuple of modes
+        see :ref:`Modes <ref-modes>`. This can also be a tuple of modes
         specifying the mode to use on each axis in ``axes``.
     axes : sequence of ints, optional
         Axes over which to compute the IDWT. Repeated elements mean the IDWT

@@ -92,8 +92,8 @@ def dwt_coeff_len(data_len, filter_len, mode):
         Data length.
     filter_len : int
         Filter length.
-    mode : str, optional (default: 'symmetric')
-        Signal extension mode, see Modes
+    mode : str, optional
+        Signal extension mode, see :ref:`Modes <ref-modes>`.
 
     Returns
     -------
@@ -130,7 +130,7 @@ def dwt(data, wavelet, mode='symmetric', axis=-1):
     wavelet : Wavelet object or name
         Wavelet to use
     mode : str, optional
-        Signal extension mode, see Modes
+        Signal extension mode, see :ref:`Modes <ref-modes>`.
     axis: int, optional
         Axis over which to compute the DWT. If not given, the
         last axis is used.
@@ -199,14 +199,14 @@ def idwt(cA, cD, wavelet, mode='symmetric', axis=-1):
     ----------
     cA : array_like or None
         Approximation coefficients.  If None, will be set to array of zeros
-        with same shape as `cD`.
+        with same shape as ``cD``.
     cD : array_like or None
         Detail coefficients.  If None, will be set to array of zeros
-        with same shape as `cA`.
+        with same shape as ``cA``.
     wavelet : Wavelet object or name
         Wavelet to use
     mode : str, optional (default: 'symmetric')
-        Signal extension mode, see Modes
+        Signal extension mode, see :ref:`Modes <ref-modes>`.
     axis: int, optional
         Axis over which to compute the inverse DWT. If not given, the
         last axis is used.
@@ -224,7 +224,7 @@ def idwt(cA, cD, wavelet, mode='symmetric', axis=-1):
     >>> pywt.idwt(cA, cD, 'db2', 'smooth')
     array([ 1.,  2.,  3.,  4.,  5.,  6.])
 
-    One of the neat features of `idwt` is that one of the ``cA`` and ``cD``
+    One of the neat features of ``idwt`` is that one of the ``cA`` and ``cD``
     arguments can be set to None.  In that situation the reconstruction will be
     performed using only the other one.  Mathematically speaking, this is
     equivalent to passing a zero-filled array as one of the arguments.
@@ -300,7 +300,7 @@ def downcoef(part, data, wavelet, mode='symmetric', level=1):
 
     Partial Discrete Wavelet Transform data decomposition.
 
-    Similar to `pywt.dwt`, but computes only one set of coefficients.
+    Similar to ``pywt.dwt``, but computes only one set of coefficients.
     Useful when you need only approximation or only details at the given level.
 
     Parameters
@@ -316,7 +316,7 @@ def downcoef(part, data, wavelet, mode='symmetric', level=1):
     wavelet : Wavelet object or name
         Wavelet to use
     mode : str, optional
-        Signal extension mode, see `Modes`.  Default is 'symmetric'.
+        Signal extension mode, see :ref:`Modes <ref-modes>`.
     level : int, optional
         Decomposition level.  Default is 1.
 
