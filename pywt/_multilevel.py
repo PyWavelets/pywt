@@ -312,7 +312,7 @@ def waverec2(coeffs, wavelet, mode='symmetric', axes=(-2, -1)):
     a = np.asarray(a)
 
     for d in ds:
-        if not isinstance(d, tuple) or len(d) != 3:
+        if not isinstance(d, (list, tuple)) or len(d) != 3:
             raise ValueError((
                 "Unexpected detail coefficient type: {}. Detail coefficients "
                 "must be a 3-tuple of arrays as returned by wavedec2. If you "
