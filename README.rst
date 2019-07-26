@@ -65,9 +65,11 @@ For more usage examples see the `demo`_ directory in the source package.
 Installation
 ------------
 
-PyWavelets supports `Python`_ >=3.5, and is only dependent on `Numpy`_
+PyWavelets supports `Python`_ >=3.5, and is only dependent on `NumPy`_
 (supported versions are currently ``>= 1.13.3``). To pass all of the tests,
-`Matplotlib`_ is also required.
+`Matplotlib`_ is also required. `SciPy`_ is also an optional dependency. When
+present, FFT-based continuous wavelet transforms will use FFTs from SciPy
+rather than NumPy.
 
 There are binary wheels for Intel Linux, Windows and macOS / OSX on PyPi.  If
 you are on one of these platforms, you should get a binary (precompiled)
@@ -146,7 +148,8 @@ the link in the badge below to Zenodo:
 .. _Anaconda: https://www.continuum.io
 .. _GitHub: https://github.com/PyWavelets/pywt
 .. _GitHub Issues: https://github.com/PyWavelets/pywt/issues
-.. _Numpy: http://www.numpy.org
+.. _NumPy: https://www.numpy.org
+.. _SciPy: https://www.scipy.org
 .. _original developer: http://en.ig.ma
 .. _Python: http://python.org/
 .. _Python Package Index: http://pypi.python.org/pypi/PyWavelets/

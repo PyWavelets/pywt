@@ -371,3 +371,18 @@ def test_cwt_small_scales():
 
     # extremely short scale factors raise a ValueError
     assert_raises(ValueError, pywt.cwt, data, scales=0.01, wavelet='mexh')
+
+
+def test_cwt_method_fft():
+    rstate = np.random.RandomState(1)
+    data = rstate.randn(50)
+    data[15] = 1.
+    scales   = np.arange(1, 64)
+    wavelet  = 'cmor1.5-1.0'
+
+    # build a reference cwt with the legacy np.conv() method
+    cfs_conv, _ = pywt.cwt(data, scales, wavelet, method='conv')
+
+    # compare with the fft based convolution
+    cfs_fft, _  = pywt.cwt(data, scales, wavelet, method='fft')
+    assert_allclose(cfs_conv, cfs_fft, rtol=0, atol=1e-13)
