@@ -106,18 +106,22 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv'):
 
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(data)
-    data = np.array(data, dtype=dt)
+    data = np.asarray(data, dtype=dt)
+    dt_cplx = np.result_type(dt, np.complex64)
     if not isinstance(wavelet, (ContinuousWavelet, Wavelet)):
         wavelet = DiscreteContinuousWavelet(wavelet)
     if np.isscalar(scales):
         scales = np.array([scales])
-    dt_out = None  # TODO: fix in/out dtype consistency in a subsequent PR
     if data.ndim == 1:
-        if wavelet.complex_cwt:
-            dt_out = complex
+        dt_out = dt_cplx if wavelet.complex_cwt else dt
         out = np.empty((np.size(scales), data.size), dtype=dt_out)
         precision = 10
         int_psi, x = integrate_wavelet(wavelet, precision=precision)
+
+        # convert int_psi, x to the same precision as the data
+        dt_psi = dt_cplx if int_psi.dtype.kind == 'c' else dt
+        int_psi = np.asarray(int_psi, dtype=dt_psi)
+        x = np.asarray(x, dtype=data.real.dtype)
 
         if method == 'fft':
             size_scale0 = -1
@@ -150,8 +154,8 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv'):
                 conv = conv[:data.size + int_psi_scale.size - 1]
 
             coef = - np.sqrt(scale) * np.diff(conv)
-            if not np.iscomplexobj(out):
-                coef = np.real(coef)
+            if out.dtype.kind != 'c':
+                coef = coef.real
             d = (coef.size - data.size) / 2.
             if d > 0:
                 out[i, :] = coef[floor(d):-ceil(d)]

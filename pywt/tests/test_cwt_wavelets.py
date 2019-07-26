@@ -2,7 +2,7 @@
 from __future__ import division, print_function, absolute_import
 
 from numpy.testing import (assert_allclose, assert_warns, assert_almost_equal,
-                           assert_raises)
+                           assert_raises, assert_equal)
 import numpy as np
 import pywt
 
@@ -345,20 +345,28 @@ def test_cwt_parameters_in_names():
 
 
 def test_cwt_complex():
-    for dtype in [np.float32, np.float64]:
+    for dtype, tol in [(np.float32, 1e-5), (np.float64, 1e-13)]:
         time, sst = pywt.data.nino()
         sst = np.asarray(sst, dtype=dtype)
         dt = time[1] - time[0]
         wavelet = 'cmor1.5-1.0'
         scales = np.arange(1, 32)
 
-        # real-valued tranfsorm
-        [cfs, f] = pywt.cwt(sst, scales, wavelet, dt)
+        for method in ['conv', 'fft']:
+            # real-valued tranfsorm as a reference
+            [cfs, f] = pywt.cwt(sst, scales, wavelet, dt, method=method)
 
-        # complex-valued tranfsorm equals sum of the transforms of the real and
-        # imaginary components
-        [cfs_complex, f] = pywt.cwt(sst + 1j*sst, scales, wavelet, dt)
-        assert_almost_equal(cfs + 1j*cfs, cfs_complex)
+            # verify same precision
+            assert_equal(cfs.real.dtype, sst.dtype)
+
+            # complex-valued transform equals sum of the transforms of the real
+            # and imaginary components
+            sst_complex = sst + 1j*sst
+            [cfs_complex, f] = pywt.cwt(sst_complex, scales, wavelet, dt,
+                                        method=method)
+            assert_allclose(cfs + 1j*cfs, cfs_complex, atol=tol, rtol=tol)
+            # verify dtype is preserved
+            assert_equal(cfs_complex.dtype, sst_complex.dtype)
 
 
 def test_cwt_small_scales():
@@ -377,12 +385,12 @@ def test_cwt_method_fft():
     rstate = np.random.RandomState(1)
     data = rstate.randn(50)
     data[15] = 1.
-    scales   = np.arange(1, 64)
-    wavelet  = 'cmor1.5-1.0'
+    scales = np.arange(1, 64)
+    wavelet = 'cmor1.5-1.0'
 
     # build a reference cwt with the legacy np.conv() method
     cfs_conv, _ = pywt.cwt(data, scales, wavelet, method='conv')
 
     # compare with the fft based convolution
-    cfs_fft, _  = pywt.cwt(data, scales, wavelet, method='fft')
+    cfs_fft, _ = pywt.cwt(data, scales, wavelet, method='fft')
     assert_allclose(cfs_conv, cfs_fft, rtol=0, atol=1e-13)
