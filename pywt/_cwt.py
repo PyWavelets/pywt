@@ -66,12 +66,16 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1):
         The ``fft`` method is ``O(N * log2(N))`` with
         ``N = len(scale) + len(data) - 1``. It is well suited for large size
         signals but slightly slower than ``conv`` on small ones.
+    axis: int, optional
+        Axis over which to compute the CWT. If not given, the last axis is
+        used.
 
     Returns
     -------
     coefs : array_like
         Continuous wavelet transform of the input signal for the given scales
-        and wavelet
+        and wavelet. The first axis of ``coefs`` corresponds to the scales.
+        The remaining axes match the shape of ``data``.
     frequencies : array_like
         If the unit of sampling period are seconds and given, than frequencies
         are in hertz. Otherwise, a sampling period of 1 is assumed.
@@ -135,7 +139,7 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1):
         # move axis to be transformed last (so it is contiguous)
         data = data.swapaxes(-1, axis)
 
-        # reshape to (n_batch, data.shape[axis])
+        # reshape to (n_batch, data.shape[-1])
         data_shape_pre = data.shape
         data = data.reshape((-1, data.shape[-1]))
 
@@ -195,4 +199,3 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1):
         frequencies = np.array([frequencies])
     frequencies /= sampling_period
     return out, frequencies
-
