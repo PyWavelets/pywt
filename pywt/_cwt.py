@@ -34,7 +34,7 @@ except ImportError:
             return 2**ceil(np.log2(n))
 
 
-def cwt(data, scales, wavelet, sampling_period=1., method='conv'):
+def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1):
     """
     cwt(data, scales, wavelet)
 
@@ -112,62 +112,87 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv'):
         wavelet = DiscreteContinuousWavelet(wavelet)
     if np.isscalar(scales):
         scales = np.array([scales])
-    if data.ndim == 1:
-        dt_out = dt_cplx if wavelet.complex_cwt else dt
-        out = np.empty((np.size(scales), data.size), dtype=dt_out)
-        precision = 10
-        int_psi, x = integrate_wavelet(wavelet, precision=precision)
+    if not np.isscalar(axis):
+        raise ValueError("axis must be a scalar.")
 
-        # convert int_psi, x to the same precision as the data
-        dt_psi = dt_cplx if int_psi.dtype.kind == 'c' else dt
-        int_psi = np.asarray(int_psi, dtype=dt_psi)
-        x = np.asarray(x, dtype=data.real.dtype)
+    dt_out = dt_cplx if wavelet.complex_cwt else dt
+    out = np.empty((np.size(scales),) + data.shape, dtype=dt_out)
+    precision = 10
+    int_psi, x = integrate_wavelet(wavelet, precision=precision)
 
-        if method == 'fft':
-            size_scale0 = -1
-            fft_data = None
-        elif not method == 'conv':
-            raise ValueError("method must be 'conv' or 'fft'")
+    # convert int_psi, x to the same precision as the data
+    dt_psi = dt_cplx if int_psi.dtype.kind == 'c' else dt
+    int_psi = np.asarray(int_psi, dtype=dt_psi)
+    x = np.asarray(x, dtype=data.real.dtype)
 
-        for i, scale in enumerate(scales):
-            step = x[1] - x[0]
-            j = np.arange(scale * (x[-1] - x[0]) + 1) / (scale * step)
-            j = j.astype(int)  # floor
-            if j[-1] >= int_psi.size:
-                j = np.extract(j < int_psi.size, j)
-            int_psi_scale = int_psi[j][::-1]
+    if method == 'fft':
+        size_scale0 = -1
+        fft_data = None
+    elif not method == 'conv':
+        raise ValueError("method must be 'conv' or 'fft'")
 
-            if method == 'conv':
+    if data.ndim > 1:
+        # move axis to be transformed last (so it is contiguous)
+        data = data.swapaxes(-1, axis)
+
+        # reshape to (n_batch, data.shape[axis])
+        data_shape_pre = data.shape
+        data = data.reshape((-1, data.shape[-1]))
+
+    for i, scale in enumerate(scales):
+        step = x[1] - x[0]
+        j = np.arange(scale * (x[-1] - x[0]) + 1) / (scale * step)
+        j = j.astype(int)  # floor
+        if j[-1] >= int_psi.size:
+            j = np.extract(j < int_psi.size, j)
+        int_psi_scale = int_psi[j][::-1]
+
+        if method == 'conv':
+            if data.ndim == 1:
                 conv = np.convolve(data, int_psi_scale)
             else:
-                # The padding is selected for:
-                # - optimal FFT complexity
-                # - to be larger than the two signals length to avoid circular
-                #   convolution
-                size_scale = next_fast_len(data.size + int_psi_scale.size - 1)
-                if size_scale != size_scale0:
-                    # Must recompute fft_data when the padding size changes.
-                    fft_data = fftmodule.fft(data, size_scale)
-                size_scale0 = size_scale
-                fft_wav = fftmodule.fft(int_psi_scale, size_scale)
-                conv = fftmodule.ifft(fft_wav * fft_data)
-                conv = conv[:data.size + int_psi_scale.size - 1]
+                # batch convolution via loop
+                conv_shape = list(data.shape)
+                conv_shape[-1] += int_psi_scale.size - 1
+                conv_shape = tuple(conv_shape)
+                conv = np.empty(conv_shape, dtype=dt_out)
+                for n in range(data.shape[0]):
+                    conv[n, :] = np.convolve(data[n], int_psi_scale)
+        else:
+            # The padding is selected for:
+            # - optimal FFT complexity
+            # - to be larger than the two signals length to avoid circular
+            #   convolution
+            size_scale = next_fast_len(
+                data.shape[-1] + int_psi_scale.size - 1
+            )
+            if size_scale != size_scale0:
+                # Must recompute fft_data when the padding size changes.
+                fft_data = fftmodule.fft(data, size_scale, axis=-1)
+            size_scale0 = size_scale
+            fft_wav = fftmodule.fft(int_psi_scale, size_scale, axis=-1)
+            conv = fftmodule.ifft(fft_wav * fft_data, axis=-1)
+            conv = conv[..., :data.shape[-1] + int_psi_scale.size - 1]
 
-            coef = - np.sqrt(scale) * np.diff(conv)
-            if out.dtype.kind != 'c':
-                coef = coef.real
-            d = (coef.size - data.size) / 2.
-            if d > 0:
-                out[i, :] = coef[floor(d):-ceil(d)]
-            elif d == 0.:
-                out[i, :] = coef
-            else:
-                raise ValueError(
-                    "Selected scale of {} too small.".format(scale))
-        frequencies = scale2frequency(wavelet, scales, precision)
-        if np.isscalar(frequencies):
-            frequencies = np.array([frequencies])
-        frequencies /= sampling_period
-        return out, frequencies
-    else:
-        raise ValueError("Only dim == 1 supported")
+        coef = - np.sqrt(scale) * np.diff(conv, axis=-1)
+        if out.dtype.kind != 'c':
+            coef = coef.real
+        # transform axis is always -1 due to the data reshape above
+        d = (coef.shape[-1] - data.shape[-1]) / 2.
+        if d > 0:
+            coef = coef[..., floor(d):-ceil(d)]
+        elif d < 0:
+            raise ValueError(
+                "Selected scale of {} too small.".format(scale))
+        if data.ndim > 1:
+            # restore original data shape and axis position
+            coef = coef.reshape(data_shape_pre)
+            coef = coef.swapaxes(axis, -1)
+        out[i, ...] = coef
+
+    frequencies = scale2frequency(wavelet, scales, precision)
+    if np.isscalar(frequencies):
+        frequencies = np.array([frequencies])
+    frequencies /= sampling_period
+    return out, frequencies
+
