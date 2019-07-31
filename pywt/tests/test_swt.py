@@ -153,9 +153,15 @@ def test_swt_iswt_integration():
             current_wavelet.rec_len))))
         input_length = 2**(input_length_power + max_level - 1)
         X = np.arange(input_length)
-        coeffs = pywt.swt(X, current_wavelet, max_level)
-        Y = pywt.iswt(coeffs, current_wavelet)
-        assert_allclose(Y, X, rtol=1e-5, atol=1e-7)
+        for norm in [True, False]:
+            if norm and not current_wavelet.orthogonal:
+                # non-orthogonal wavelets to avoid warnings when norm=True
+                continue
+            for trim_approx in [True, False]:
+                coeffs = pywt.swt(X, current_wavelet, max_level,
+                                  trim_approx=trim_approx, norm=norm)
+                Y = pywt.iswt(coeffs, current_wavelet, norm=norm)
+                assert_allclose(Y, X, rtol=1e-5, atol=1e-7)
 
 
 def test_swt_dtypes():
@@ -235,9 +241,15 @@ def test_swt2_iswt2_integration(wavelets=None):
         input_length = 2**(input_length_power + max_level - 1)
         X = np.arange(input_length**2).reshape(input_length, input_length)
 
-        coeffs = pywt.swt2(X, current_wavelet, max_level)
-        Y = pywt.iswt2(coeffs, current_wavelet)
-        assert_allclose(Y, X, rtol=1e-5, atol=1e-5)
+        for norm in [True, False]:
+            if norm and not current_wavelet.orthogonal:
+                # non-orthogonal wavelets to avoid warnings when norm=True
+                continue
+            for trim_approx in [True, False]:
+                coeffs = pywt.swt2(X, current_wavelet, max_level,
+                                   trim_approx=trim_approx, norm=norm)
+                Y = pywt.iswt2(coeffs, current_wavelet, norm=norm)
+                assert_allclose(Y, X, rtol=1e-5, atol=1e-5)
 
 
 def test_swt2_iswt2_quick():
@@ -355,10 +367,16 @@ def test_swtn_iswtn_integration(wavelets=None):
                 N = 2**(input_length_power + max_level - 1)
                 X = np.arange(N**ndim).reshape((N, )*ndim)
 
-                coeffs = pywt.swtn(X, wav, max_level, axes=axes)
-                coeffs_copy = deepcopy(coeffs)
-                Y = pywt.iswtn(coeffs, wav, axes=axes)
-                assert_allclose(Y, X, rtol=1e-5, atol=1e-5)
+                for norm in [True, False]:
+                    if norm and not wav.orthogonal:
+                        # non-orthogonal wavelets to avoid warnings
+                        continue
+                    for trim_approx in [True, False]:
+                        coeffs = pywt.swtn(X, wav, max_level, axes=axes,
+                                           trim_approx=trim_approx, norm=norm)
+                        coeffs_copy = deepcopy(coeffs)
+                        Y = pywt.iswtn(coeffs, wav, axes=axes, norm=norm)
+                        assert_allclose(Y, X, rtol=1e-5, atol=1e-5)
 
                 # verify the inverse transform didn't modify any coeffs
                 for c, c2 in zip(coeffs, coeffs_copy):
@@ -530,8 +548,86 @@ def test_iswtn_mixed_dtypes():
 def test_swt_zero_size_axes():
     # raise on empty input array
     assert_raises(ValueError, pywt.swt, [], 'db2')
-  
+
     # >1D case uses a different code path so check there as well
     x = np.ones((1, 4))[0:0, :]  # 2D with a size zero axis
     assert_raises(ValueError, pywt.swtn, x, 'db2', level=1, axes=(0,))
 
+
+def test_swt_variance_and_energy_preservation():
+    """Verify that the 1D SWT partitions variance among the coefficients."""
+    # When norm is True and the wavelet is orthogonal, the sum of the
+    # variances of the coefficients should equal the variance of the signal.
+    wav = 'db2'
+    rstate = np.random.RandomState(5)
+    x = rstate.randn(256)
+    coeffs = pywt.swt(x, wav, trim_approx=True, norm=True)
+    variances = [np.var(c) for c in coeffs]
+    assert_allclose(np.sum(variances), np.var(x))
+
+    # also verify L2-norm energy preservation property
+    assert_allclose(np.linalg.norm(x),
+                    np.linalg.norm(np.concatenate(coeffs)))
+
+    # non-orthogonal wavelet with norm=True raises a warning
+    assert_warns(UserWarning, pywt.swt, x, 'bior2.2', norm=True)
+
+
+def test_swt2_variance_and_energy_preservation():
+    """Verify that the 2D SWT partitions variance among the coefficients."""
+    # When norm is True and the wavelet is orthogonal, the sum of the
+    # variances of the coefficients should equal the variance of the signal.
+    wav = 'db2'
+    rstate = np.random.RandomState(5)
+    x = rstate.randn(64, 64)
+    coeffs = pywt.swt2(x, wav, level=4, trim_approx=True, norm=True)
+    coeff_list = [coeffs[0].ravel()]
+    for d in coeffs[1:]:
+        for v in d:
+            coeff_list.append(v.ravel())
+    variances = [np.var(v) for v in coeff_list]
+    assert_allclose(np.sum(variances), np.var(x))
+
+    # also verify L2-norm energy preservation property
+    assert_allclose(np.linalg.norm(x),
+                    np.linalg.norm(np.concatenate(coeff_list)))
+
+    # non-orthogonal wavelet with norm=True raises a warning
+    assert_warns(UserWarning, pywt.swt2, x, 'bior2.2', level=4, norm=True)
+
+
+def test_swtn_variance_and_energy_preservation():
+    """Verify that the nD SWT partitions variance among the coefficients."""
+    # When norm is True and the wavelet is orthogonal, the sum of the
+    # variances of the coefficients should equal the variance of the signal.
+    wav = 'db2'
+    rstate = np.random.RandomState(5)
+    x = rstate.randn(64, 64)
+    coeffs = pywt.swtn(x, wav, level=4, trim_approx=True, norm=True)
+    coeff_list = [coeffs[0].ravel()]
+    for d in coeffs[1:]:
+        for k, v in d.items():
+            coeff_list.append(v.ravel())
+    variances = [np.var(v) for v in coeff_list]
+    assert_allclose(np.sum(variances), np.var(x))
+
+    # also verify L2-norm energy preservation property
+    assert_allclose(np.linalg.norm(x),
+                    np.linalg.norm(np.concatenate(coeff_list)))
+
+    # non-orthogonal wavelet with norm=True raises a warning
+    assert_warns(UserWarning, pywt.swtn, x, 'bior2.2', level=4, norm=True)
+
+
+def test_swt_ravel_and_unravel():
+    # When trim_approx=True, all swt functions can user pywt.ravel_coeffs
+    for ndim, _swt, _iswt, ravel_type in [
+            (1, pywt.swt, pywt.iswt, 'swt'),
+            (2, pywt.swt2, pywt.iswt2, 'swt2'),
+            (3, pywt.swtn, pywt.iswtn, 'swtn')]:
+        x = np.ones((16, ) * ndim)
+        c = _swt(x, 'sym2', level=3, trim_approx=True)
+        arr, slices, shapes = pywt.ravel_coeffs(c)
+        c = pywt.unravel_coeffs(arr, slices, shapes, output_format=ravel_type)
+        r = _iswt(c, 'sym2')
+        assert_allclose(x, r)

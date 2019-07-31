@@ -1,6 +1,7 @@
 #cython: boundscheck=False, wraparound=False
 from . cimport common
 from . cimport c_wt
+from cpython cimport bool
 
 import warnings
 import numpy as np
@@ -8,6 +9,7 @@ cimport numpy as np
 
 from .common cimport pywt_index_t
 from ._pywt cimport c_wavelet_from_object, cdata_t, Wavelet, _check_dtype
+
 
 include "config.pxi"
 
@@ -47,7 +49,8 @@ def swt_max_level(size_t input_len):
     return max_level
 
 
-def swt(cdata_t[::1] data, Wavelet wavelet, size_t level, size_t start_level):
+def swt(cdata_t[::1] data, Wavelet wavelet, size_t level, size_t start_level,
+        bool trim_approx=False):
     cdef cdata_t[::1] cA, cD
     cdef Wavelet w
     cdef int retval
@@ -142,14 +145,20 @@ def swt(cdata_t[::1] data, Wavelet wavelet, size_t level, size_t start_level):
                     raise RuntimeError("C swt failed.")
 
         data = cA
-        ret.append((cA, cD))
+        if not trim_approx:
+            ret.append((np.asarray(cA), np.asarray(cD)))
+        else:
+            ret.append(np.asarray(cD))
 
+    if trim_approx:
+        ret.append(np.asarray(cA))
     ret.reverse()
     return ret
 
 
 cpdef swt_axis(np.ndarray data, Wavelet wavelet, size_t level,
-               size_t start_level, unsigned int axis=0):
+               size_t start_level, unsigned int axis=0,
+               bool trim_approx=False):
     # memory-views do not support n-dimensional arrays, use np.ndarray instead
     cdef common.ArrayInfo data_info, output_info
     cdef np.ndarray cD, cA
@@ -289,13 +298,19 @@ cpdef swt_axis(np.ndarray data, Wavelet wavelet, size_t level,
         if retval == -5:
             raise TypeError("Array must be floating point, not {}"
                             .format(data.dtype))
-        ret.append((cA, cD))
+        if not trim_approx:
+            ret.append((cA, cD))
+        else:
+            ret.append(cD)
 
         # previous approx coeffs are the data for the next level
         data = cA
         # update data_info to match the new data array
         data_info.strides = <pywt_index_t *> data.strides
         data_info.shape = <size_t *> data.shape
+
+    if trim_approx:
+        ret.append(cA)
 
     ret.reverse()
     return ret
