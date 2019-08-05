@@ -20,6 +20,7 @@ class CwtTimeSuiteBase(object):
         except ImportError:
             raise NotImplementedError("cwt not available")
         self.data = np.ones(n, dtype=dtype)
+        self.batch_data = np.ones((5, n), dtype=dtype)
         self.scales = np.arange(1, max_scale + 1)
 
 
@@ -33,3 +34,12 @@ class CwtTimeSuite(CwtTimeSuiteBase):
                 raise NotImplementedError(
                     "fft-based convolution not available.")
             pywt.cwt(self.data, self.scales, wavelet)
+
+    def time_cwt_batch(self, n, wavelet, max_scale, dtype, method):
+        try:
+            pywt.cwt(self.batch_data, self.scales, wavelet, method=method,
+                     axis=-1)
+        except TypeError:
+            # older PyWavelets does not support the axis argument
+            raise NotImplementedError(
+                "axis argument not available.")

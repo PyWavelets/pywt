@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 from __future__ import division, print_function, absolute_import
+from itertools import product
 
 from numpy.testing import (assert_allclose, assert_warns, assert_almost_equal,
                            assert_raises, assert_equal)
+import pytest
 import numpy as np
 import pywt
 
@@ -344,29 +346,65 @@ def test_cwt_parameters_in_names():
         assert_raises(ValueError, func, 'fbsp1-1-1-1')
 
 
-def test_cwt_complex():
-    for dtype, tol in [(np.float32, 1e-5), (np.float64, 1e-13)]:
-        time, sst = pywt.data.nino()
-        sst = np.asarray(sst, dtype=dtype)
-        dt = time[1] - time[0]
-        wavelet = 'cmor1.5-1.0'
-        scales = np.arange(1, 32)
+@pytest.mark.parametrize('dtype, tol, method',
+                         [(np.float32, 1e-5, 'conv'),
+                          (np.float32, 1e-5, 'fft'),
+                          (np.float64, 1e-13, 'conv'),
+                          (np.float64, 1e-13, 'fft')])
+def test_cwt_complex(dtype, tol, method):
+    time, sst = pywt.data.nino()
+    sst = np.asarray(sst, dtype=dtype)
+    dt = time[1] - time[0]
+    wavelet = 'cmor1.5-1.0'
+    scales = np.arange(1, 32)
 
-        for method in ['conv', 'fft']:
-            # real-valued tranfsorm as a reference
-            [cfs, f] = pywt.cwt(sst, scales, wavelet, dt, method=method)
+    # real-valued tranfsorm as a reference
+    [cfs, f] = pywt.cwt(sst, scales, wavelet, dt, method=method)
 
-            # verify same precision
-            assert_equal(cfs.real.dtype, sst.dtype)
+    # verify same precision
+    assert_equal(cfs.real.dtype, sst.dtype)
 
-            # complex-valued transform equals sum of the transforms of the real
-            # and imaginary components
-            sst_complex = sst + 1j*sst
-            [cfs_complex, f] = pywt.cwt(sst_complex, scales, wavelet, dt,
-                                        method=method)
-            assert_allclose(cfs + 1j*cfs, cfs_complex, atol=tol, rtol=tol)
-            # verify dtype is preserved
-            assert_equal(cfs_complex.dtype, sst_complex.dtype)
+    # complex-valued transform equals sum of the transforms of the real
+    # and imaginary components
+    sst_complex = sst + 1j*sst
+    [cfs_complex, f] = pywt.cwt(sst_complex, scales, wavelet, dt,
+                                method=method)
+    assert_allclose(cfs + 1j*cfs, cfs_complex, atol=tol, rtol=tol)
+    # verify dtype is preserved
+    assert_equal(cfs_complex.dtype, sst_complex.dtype)
+
+
+@pytest.mark.parametrize('axis, method', product([0, 1], ['conv', 'fft']))
+def test_cwt_batch(axis, method):
+    dtype = np.float64
+    time, sst = pywt.data.nino()
+    n_batch = 8
+    batch_axis = 1 - axis
+    sst1 = np.asarray(sst, dtype=dtype)
+    sst = np.stack((sst1, ) * n_batch, axis=batch_axis)
+    dt = time[1] - time[0]
+    wavelet = 'cmor1.5-1.0'
+    scales = np.arange(1, 32)
+
+    # non-batch transform as reference
+    [cfs1, f] = pywt.cwt(sst1, scales, wavelet, dt, method=method, axis=axis)
+
+    shape_in = sst.shape
+    [cfs, f] = pywt.cwt(sst, scales, wavelet, dt, method=method, axis=axis)
+
+    # shape of input is not modified
+    assert_equal(shape_in, sst.shape)
+
+    # verify same precision
+    assert_equal(cfs.real.dtype, sst.dtype)
+
+    # verify expected shape
+    assert_equal(cfs.shape[0], len(scales))
+    assert_equal(cfs.shape[1 + batch_axis], n_batch)
+    assert_equal(cfs.shape[1 + axis], sst.shape[axis])
+
+    # batch result on stacked input is the same as stacked 1d result
+    assert_equal(cfs, np.stack((cfs1,) * n_batch, axis=batch_axis + 1))
 
 
 def test_cwt_small_scales():
