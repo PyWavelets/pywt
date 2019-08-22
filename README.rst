@@ -118,11 +118,16 @@ All contributions including bug reports, bug fixes, new feature implementations
 and documentation improvements are welcome.  Moreover, developers with an
 interest in PyWavelets are very welcome to join the development team!
 
+As of 2019, PyWavelets development is supported by Tidelift.
+`Get supported PyWavelets with the Tidelift Subscription <https://tidelift.com/subscription/pkg/pypi-pywavelets?utm_source=pypi-pywavelets&utm_medium=referral&utm_campaign=readme>`_
+
 
 Contact
 -------
 
 Use `GitHub Issues`_ or the `mailing list`_ to post your comments or questions.
+
+**Report a security vulnerability:** https://tidelift.com/security
 
 License
 -------
