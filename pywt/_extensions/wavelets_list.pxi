@@ -21,6 +21,7 @@ cdef extern from "c/wavelets.h":
         SHAN
         FBSP
         CMOR
+        BEN
 
 cdef __wname_to_code
 __wname_to_code = {
@@ -170,6 +171,8 @@ __wname_to_code = {
     "fbsp": (FBSP, 0),
 
     "cmor": (CMOR, 0),
+    
+    "ben" : (BEN, 0),
 }
 
 ## Lists of family names
@@ -177,10 +180,10 @@ __wname_to_code = {
 cdef __wfamily_list_short, __wfamily_list_long
 __wfamily_list_short = [
     "haar", "db", "sym", "coif", "bior", "rbio", "dmey", "gaus", "mexh",
-    "morl", "cgau", "shan", "fbsp", "cmor"]
+    "morl", "cgau", "shan", "fbsp", "cmor","ben"]
 __wfamily_list_long = [
     "Haar", "Daubechies", "Symlets", "Coiflets", "Biorthogonal",
     "Reverse biorthogonal", "Discrete Meyer (FIR Approximation)", "Gaussian",
     "Mexican hat wavelet", "Morlet wavelet", "Complex Gaussian wavelets",
     "Shannon wavelets", "Frequency B-Spline wavelets",
-    "Complex Morlet wavelets"]
+    "Complex Morlet wavelets","Wavelet of Ben"]
