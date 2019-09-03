@@ -23,6 +23,7 @@ cdef extern from "c/wavelets.h":
         SHAN
         FBSP
         CMOR
+        BEN
 
     ctypedef struct BaseWavelet:
         pywt_index_t support_width
