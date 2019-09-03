@@ -100,7 +100,11 @@ def ref_mexh(LB, UB, N):
     psi = (2/(np.sqrt(3)*np.pi**0.25))*np.exp(-(x**2)/2)*(1 - (x**2))
     return (psi, x)
 
-
+def ref_ben(LB, UB, N):
+    x = np.linspace(LB, UB, N)
+    psi = (2/(np.sqrt(3)*(-np.pi**0.25)))*np.exp(-(x**2)/2)*(1 - (x**2))*np.exp(j*x*Fc)
+    return (psi, x)
+  
 def test_gaus():
     LB = -5
     UB = 5
@@ -305,6 +309,37 @@ def test_mexh():
 
     [psi, x] = ref_mexh(LB, UB, N)
     w = pywt.ContinuousWavelet("mexh")
+    w.upper_bound = UB
+    w.lower_bound = LB
+    PSI, X = w.wavefun(length=N)
+
+    assert_allclose(np.real(PSI), np.real(psi))
+    assert_allclose(np.imag(PSI), np.imag(psi))
+    assert_allclose(X, x)
+    
+ def test_ben():
+    LB = -5
+    UB = 5
+    N = 1000
+    Fc = 1.1
+    [psi, x] = ref_ben(LB, UB, N,Fc)
+    w = pywt.ContinuousWavelet("ben-{}".format(Fc))
+    assert_almost_equal(w.center_frequency, Fc)
+    w.upper_bound = UB
+    w.lower_bound = LB
+    PSI, X = w.wavefun(length=N)
+
+    assert_allclose(np.real(PSI), np.real(psi))
+    assert_allclose(np.imag(PSI), np.imag(psi))
+    assert_allclose(X, x)
+
+    LB = -5
+    UB = 5
+    N = 1001
+
+    [psi, x] = ref_ben(LB, UB, N,Fc)
+    w = pywt.ContinuousWavelet("ben-{}".format(Fc))
+    assert_almost_equal(w.center_frequency, Fc)
     w.upper_bound = UB
     w.lower_bound = LB
     PSI, X = w.wavefun(length=N)
