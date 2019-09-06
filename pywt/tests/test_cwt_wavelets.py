@@ -317,7 +317,7 @@ def test_mexh():
     assert_allclose(np.imag(PSI), np.imag(psi))
     assert_allclose(X, x)
     
- def test_ben():
+def test_ben():
     LB = -5
     UB = 5
     N = 1000
