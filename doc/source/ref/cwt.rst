@@ -91,7 +91,7 @@ where :math:`B` is the bandwidth and :math:`C` is the center frequency.
 
 
 Frequency B-Spline Wavelets
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 The frequency B-spline wavelets (``"fpspM-B-C"`` with integer M and floating
 point B, C) correspond to the following wavelets:
 
