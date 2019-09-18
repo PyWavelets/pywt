@@ -95,6 +95,7 @@ script:
         CFLAGS="--coverage" pip install -e . -v
         pushd demo
         pytest --pyargs pywt --cov=pywt --cov-config=../.coveragerc
+        cp .coverage ..
         popd
     fi
 
