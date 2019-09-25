@@ -123,9 +123,9 @@ Naming Conventions
 The correspondence between PyWavelets edge modes and the extension modes
 available in Matlab's dwtmode and numpy's pad are tabulated here for reference.
 
-================== ============= ===================
+================== ============= ===========================
 **PyWavelets**     **Matlab**    **numpy.pad**
-================== ============= ===================
+================== ============= ===========================
 symmetric          sym, symh     symmetric
 reflect            symw          reflect
 smooth             spd, sp1      N/A
@@ -134,5 +134,5 @@ zero               zpd           constant, cval=0
 periodic           ppd           wrap
 periodization      per           N/A
 antisymmetric      asym, asymh   N/A
-antireflect        asymw         N/A
-================== ============= ===================
+antireflect        asymw         reflect, reflect_type='odd'
+================== ============= ===========================

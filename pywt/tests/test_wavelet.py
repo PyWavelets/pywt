@@ -2,7 +2,7 @@
 from __future__ import division, print_function, absolute_import
 
 import numpy as np
-from numpy.testing import run_module_suite, assert_allclose, assert_
+from numpy.testing import assert_allclose, assert_
 
 import pywt
 
@@ -54,11 +54,11 @@ def test_wavelet_coefficients():
     wavelets = sum([pywt.wavelist(name) for name in families], [])
     for wavelet in wavelets:
         if (pywt.Wavelet(wavelet).orthogonal):
-            yield check_coefficients_orthogonal, wavelet
+            check_coefficients_orthogonal(wavelet)
         elif(pywt.Wavelet(wavelet).biorthogonal):
-            yield check_coefficients_biorthogonal, wavelet
+            check_coefficients_biorthogonal(wavelet)
         else:
-            yield check_coefficients, wavelet
+            check_coefficients(wavelet)
 
 
 def check_coefficients_orthogonal(wavelet):
@@ -264,7 +264,3 @@ def test_wavefun_bior13():
     assert_allclose(phi_r, phi_r_expect, rtol=1e-10, atol=1e-12)
     assert_allclose(psi_d, psi_d_expect, rtol=1e-10, atol=1e-12)
     assert_allclose(psi_r, psi_r_expect, rtol=1e-10, atol=1e-12)
-
-
-if __name__ == '__main__':
-    run_module_suite()

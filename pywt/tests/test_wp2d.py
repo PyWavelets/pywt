@@ -3,8 +3,8 @@
 from __future__ import division, print_function, absolute_import
 
 import numpy as np
-from numpy.testing import (run_module_suite, assert_allclose, assert_,
-                           assert_raises, assert_equal)
+from numpy.testing import (assert_allclose, assert_, assert_raises,
+                           assert_equal)
 
 import pywt
 
@@ -168,5 +168,10 @@ def test_wavelet_packet_dtypes():
         assert_allclose(r, x, atol=1e-5, rtol=1e-5)
 
 
-if __name__ == '__main__':
-    run_module_suite()
+def test_2d_roundtrip():
+    # test case corresponding to PyWavelets issue 447
+    original = pywt.data.camera()
+    wp = pywt.WaveletPacket2D(data=original, wavelet='db3', mode='smooth',
+                              maxlevel=3)
+    r = wp.reconstruct()
+    assert_allclose(original, r, atol=1e-12, rtol=1e-12)

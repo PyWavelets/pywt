@@ -71,5 +71,5 @@ Each can be loaded via a function of the same name.
 
     >>> import pywt
     >>> camera = pywt.data.camera()
-    >>> doppler = pywt.data.demo_signal('doppler')
+    >>> doppler = pywt.data.demo_signal('doppler', 1024)
     >>> available_signals = pywt.data.demo_signal('list')

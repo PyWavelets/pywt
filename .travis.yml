@@ -16,18 +16,24 @@ matrix:
       env:
         - NUMPYSPEC=numpy
         - MATPLOTLIBSPEC=matplotlib
+        - CYTHONSPEC=cython
         - USE_WHEEL=1
     - os: linux
-      python: 3.7-dev
+      python: 3.7
+      dist: xenial # travis-ci/travis-ci/issues/9815
+      sudo: true
       env:
         - NUMPYSPEC=numpy
         - MATPLOTLIBSPEC=matplotlib
+        - CYTHONSPEC=cython
         - USE_SDIST=1
+        - USE_SCIPY=1
     - os: linux
       python: 3.5
       env:
         - NUMPYSPEC="numpy==1.13.3"
         - MATPLOTLIBSPEC=matplotlib
+        - CYTHONSPEC="cython==0.23.5"
         - REFGUIDE_CHECK=1  # run doctests only
     - os: osx
       osx_image: xcode7.3
@@ -35,6 +41,7 @@ matrix:
       env:
         - NUMPYSPEC=numpy
         - MATPLOTLIBSPEC=matplotlib
+        - CYTHONSPEC=cython
         - TRAVIS_PYTHON_VERSION=3.5
 
 cache: pip
@@ -51,9 +58,11 @@ before_install:
   # Set numpy version first, other packages link against it
   - pip install $NUMPYSPEC
   - pip install $MATPLOTLIBSPEC
-  - pip install Cython nose coverage codecov futures
+  - pip install $CYTHONSPEC
+  - pip install pytest pytest-cov coverage codecov futures
   - set -o pipefail
   - if [ "${USE_WHEEL}" == "1" ]; then pip install wheel; fi
+  - if [ "${USE_SCIPY}" == "1" ]; then pip install scipy; fi
   - |
     if [ "${REFGUIDE_CHECK}" == "1" ]; then
         pip install sphinx numpydoc
@@ -67,21 +76,26 @@ script:
         pip wheel . -v
         pip install PyWavelets*.whl -v
         pushd demo
-        nosetests pywt
+        pytest --pyargs pywt
+        python ../pywt/tests/test_doc.py
         popd
     elif [ "${USE_SDIST}" == "1" ]; then
         python setup.py sdist
         # Move out of source directory to avoid finding local pywt
         pushd dist
         pip install PyWavelets* -v
-        nosetests pywt
+        pytest --pyargs pywt
+        python ../pywt/tests/test_doc.py
         popd
     elif [ "${REFGUIDE_CHECK}" == "1" ]; then
         pip install -e . -v
         python util/refguide_check.py --doctests
     else
         CFLAGS="--coverage" python setup.py build --build-lib build/lib/ --build-temp build/tmp/
-        nosetests build/lib/ --tests pywt/tests
+        CFLAGS="--coverage" pip install -e . -v
+        pushd demo
+        pytest --pyargs pywt --cov=pywt
+        popd
     fi
 
 after_success:

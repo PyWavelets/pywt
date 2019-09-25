@@ -1,6 +1,6 @@
 numpy
-Cython==0.20.2
-nose
+cython
+pytest
 wheel
 numpydoc
 matplotlib

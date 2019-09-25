@@ -332,7 +332,7 @@ from plain Python lists of filter coefficients and a *filter bank-like* object.
     >>> print(wavelet)
     ContinuousWavelet gaus1
       Family name:    Gaussian
-      Short name:     db
+      Short name:     gaus
       Symmetry:       anti-symmetric
       DWT:            False
       CWT:            True
@@ -390,7 +390,7 @@ Approximating wavelet functions - ``ContinuousWavelet.wavefun()``
     >>> print(wavelet)
     ContinuousWavelet gaus1
       Family name:    Gaussian
-      Short name:     db
+      Short name:     gaus
       Symmetry:       anti-symmetric
       DWT:            False
       CWT:            True

@@ -1,6 +1,7 @@
 #cython: boundscheck=False, wraparound=False
-cimport common, c_wt
-from common cimport pywt_index_t, MODE
+from . cimport common
+from . cimport c_wt
+from .common cimport pywt_index_t, MODE
 from ._pywt cimport _check_dtype
 
 cimport numpy as np
@@ -89,7 +90,7 @@ cpdef dwt_axis(np.ndarray data, Wavelet wavelet, MODE mode, unsigned int axis=0)
 
     input_shape = <size_t [:data.ndim]> <size_t *> data.shape
     output_shape = input_shape.copy()
-    output_shape[axis] = common.dwt_buffer_length(data.shape[axis], wavelet.dec_len, mode)
+    output_shape[axis] = dwt_coeff_len(data.shape[axis], wavelet.dec_len, mode)
 
     cA = np.empty(output_shape, data.dtype)
     cD = np.empty(output_shape, data.dtype)

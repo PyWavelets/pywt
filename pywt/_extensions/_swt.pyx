@@ -1,13 +1,15 @@
 #cython: boundscheck=False, wraparound=False
-cimport common
-cimport c_wt
+from . cimport common
+from . cimport c_wt
+from cpython cimport bool
 
 import warnings
 import numpy as np
 cimport numpy as np
 
-from common cimport pywt_index_t
+from .common cimport pywt_index_t
 from ._pywt cimport c_wavelet_from_object, cdata_t, Wavelet, _check_dtype
+
 
 include "config.pxi"
 
@@ -36,6 +38,8 @@ def swt_max_level(size_t input_len):
     multiple of ``2**n``. ``numpy.pad`` can be used to pad a signal up to an
     appropriate length as needed.
     """
+    if input_len < 1:
+        raise ValueError("Cannot apply swt to a size 0 signal.")
     max_level = common.swt_max_level(input_len)
     if max_level == 0:
         warnings.warn(
@@ -45,7 +49,8 @@ def swt_max_level(size_t input_len):
     return max_level
 
 
-def swt(cdata_t[::1] data, Wavelet wavelet, size_t level, size_t start_level):
+def swt(cdata_t[::1] data, Wavelet wavelet, size_t level, size_t start_level,
+        bool trim_approx=False):
     cdef cdata_t[::1] cA, cD
     cdef Wavelet w
     cdef int retval
@@ -54,6 +59,8 @@ def swt(cdata_t[::1] data, Wavelet wavelet, size_t level, size_t start_level):
 
     if data.size % 2:
         raise ValueError("Length of data must be even.")
+    if data.size < 1:
+        raise ValueError("Data must have non-zero size")
 
     if level < 1:
         raise ValueError("Level value must be greater than zero.")
@@ -66,6 +73,7 @@ def swt(cdata_t[::1] data, Wavelet wavelet, size_t level, size_t start_level):
                "start_level is %d)." % (
                 common.swt_max_level(data.size) - start_level))
         raise ValueError(msg)
+
 
     output_len = common.swt_buffer_length(data.size)
     if output_len < 1:
@@ -137,14 +145,20 @@ def swt(cdata_t[::1] data, Wavelet wavelet, size_t level, size_t start_level):
                     raise RuntimeError("C swt failed.")
 
         data = cA
-        ret.append((cA, cD))
+        if not trim_approx:
+            ret.append((np.asarray(cA), np.asarray(cD)))
+        else:
+            ret.append(np.asarray(cD))
 
+    if trim_approx:
+        ret.append(np.asarray(cA))
     ret.reverse()
     return ret
 
 
 cpdef swt_axis(np.ndarray data, Wavelet wavelet, size_t level,
-               size_t start_level, unsigned int axis=0):
+               size_t start_level, unsigned int axis=0,
+               bool trim_approx=False):
     # memory-views do not support n-dimensional arrays, use np.ndarray instead
     cdef common.ArrayInfo data_info, output_info
     cdef np.ndarray cD, cA
@@ -153,8 +167,10 @@ cpdef swt_axis(np.ndarray data, Wavelet wavelet, size_t level,
     cdef int retval = -5
     cdef size_t i
 
-    if data.size % 2:
-        raise ValueError("Length of data must be even.")
+    if data.shape[axis] % 2:
+        raise ValueError("Length of data must be even along the transform axis.")
+    if data.shape[axis] < 1:
+        raise ValueError("Data must have non-zero size along the transform axis.")
 
     if level < 1:
         raise ValueError("Level value must be greater than zero.")
@@ -282,13 +298,19 @@ cpdef swt_axis(np.ndarray data, Wavelet wavelet, size_t level,
         if retval == -5:
             raise TypeError("Array must be floating point, not {}"
                             .format(data.dtype))
-        ret.append((cA, cD))
+        if not trim_approx:
+            ret.append((cA, cD))
+        else:
+            ret.append(cD)
 
         # previous approx coeffs are the data for the next level
         data = cA
         # update data_info to match the new data array
         data_info.strides = <pywt_index_t *> data.strides
         data_info.shape = <size_t *> data.shape
+
+    if trim_approx:
+        ret.append(cA)
 
     ret.reverse()
     return ret

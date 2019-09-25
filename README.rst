@@ -65,9 +65,11 @@ For more usage examples see the `demo`_ directory in the source package.
 Installation
 ------------
 
-PyWavelets supports `Python`_ >=3.5, and is only dependent on `Numpy`_
+PyWavelets supports `Python`_ >=3.5, and is only dependent on `NumPy`_
 (supported versions are currently ``>= 1.13.3``). To pass all of the tests,
-`Matplotlib`_ is also required.
+`Matplotlib`_ is also required. `SciPy`_ is also an optional dependency. When
+present, FFT-based continuous wavelet transforms will use FFTs from SciPy
+rather than NumPy.
 
 There are binary wheels for Intel Linux, Windows and macOS / OSX on PyPi.  If
 you are on one of these platforms, you should get a binary (precompiled)
@@ -116,21 +118,34 @@ All contributions including bug reports, bug fixes, new feature implementations
 and documentation improvements are welcome.  Moreover, developers with an
 interest in PyWavelets are very welcome to join the development team!
 
+As of 2019, PyWavelets development is supported in part by Tidelift.
+`Help support PyWavelets with the Tidelift Subscription <https://tidelift.com/subscription/pkg/pypi-pywavelets?utm_source=pypi-pywavelets&utm_medium=referral&utm_campaign=readme>`_
+
 
 Contact
 -------
 
 Use `GitHub Issues`_ or the `mailing list`_ to post your comments or questions.
 
+**Report a security vulnerability:** https://tidelift.com/security
+
 License
 -------
 
 PyWavelets is a free Open Source software released under the MIT license.
 
-If you wish to cite PyWavelets in a publication, you may use the following DOI.
+If you wish to cite PyWavelets in a publication, please use the following
+JOSS publication.
 
-.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.1407172.svg
-   :target: https://doi.org/10.5281/zenodo.1407172
+.. image:: http://joss.theoj.org/papers/10.21105/joss.01237/status.svg
+   :target: https://doi.org/10.21105/joss.01237
+
+Specific releases can also be cited via Zenodo. The DOI below will correspond
+to the most recent release. DOIs for past versions can be found by following
+the link in the badge below to Zenodo:
+
+.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.1407171.svg
+   :target: https://doi.org/10.5281/zenodo.1407171
 
 .. _built-in wavelet filters: http://wavelets.pybytes.com/
 .. _Cython: http://cython.org/
@@ -138,7 +153,8 @@ If you wish to cite PyWavelets in a publication, you may use the following DOI.
 .. _Anaconda: https://www.continuum.io
 .. _GitHub: https://github.com/PyWavelets/pywt
 .. _GitHub Issues: https://github.com/PyWavelets/pywt/issues
-.. _Numpy: http://www.numpy.org
+.. _NumPy: https://www.numpy.org
+.. _SciPy: https://www.scipy.org
 .. _original developer: http://en.ig.ma
 .. _Python: http://python.org/
 .. _Python Package Index: http://pypi.python.org/pypi/PyWavelets/

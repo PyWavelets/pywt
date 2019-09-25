@@ -4,8 +4,7 @@ from __future__ import division, print_function, absolute_import
 
 import numpy as np
 from itertools import combinations
-from numpy.testing import (run_module_suite, assert_allclose, assert_,
-                           assert_raises, assert_equal)
+from numpy.testing import assert_allclose, assert_, assert_raises, assert_equal
 
 import pywt
 # Check that float32, float64, complex64, complex128 are preserved.
@@ -363,6 +362,22 @@ def test_dwtn_idwtn_dtypes():
         assert_(x_roundtrip.dtype == dt_out, "idwtn: " + errmsg)
 
 
+def test_idwtn_mixed_complex_dtype():
+    rstate = np.random.RandomState(0)
+    x = rstate.randn(8, 8, 8)
+    x = x + 1j*x
+    coeffs = pywt.dwtn(x, 'db2')
+
+    x_roundtrip = pywt.idwtn(coeffs, 'db2')
+    assert_allclose(x_roundtrip, x, rtol=1e-10)
+
+    # mismatched dtypes OK
+    coeffs['a' * x.ndim] = coeffs['a' * x.ndim].astype(np.complex64)
+    x_roundtrip2 = pywt.idwtn(coeffs, 'db2')
+    assert_allclose(x_roundtrip2, x, rtol=1e-7, atol=1e-7)
+    assert_(x_roundtrip2.dtype == np.complex128)
+
+
 def test_idwt2_size_mismatch_error():
     LL = np.zeros((6, 6))
     LH = HL = HH = np.zeros((5, 5))
@@ -426,7 +441,3 @@ def test_error_on_continuous_wavelet():
 
             c = dec_fun(data, 'db1')
             assert_raises(ValueError, rec_fun, c, wavelet=cwave)
-
-
-if __name__ == '__main__':
-    run_module_suite()

@@ -5,9 +5,9 @@ from __future__ import division, print_function, absolute_import
 import warnings
 from itertools import combinations
 import numpy as np
-from numpy.testing import (run_module_suite, assert_almost_equal,
-                           assert_allclose, assert_, assert_equal,
-                           assert_raises, assert_raises_regex, dec,
+import pytest
+from numpy.testing import (assert_almost_equal, assert_allclose, assert_,
+                           assert_equal, assert_raises, assert_raises_regex,
                            assert_array_equal, assert_warns)
 import pywt
 # Check that float32, float64, complex64, complex128 are preserved.
@@ -80,8 +80,9 @@ def test_waverec_invalid_inputs():
     coeffs = pywt.wavedec(x, 'db1')
     arr, coeff_slices = pywt.coeffs_to_array(coeffs)
     coeffs_from_arr = pywt.array_to_coeffs(arr, coeff_slices)
-    message = "Wrong coefficient format, if using 'array_to_coeffs' please specify the 'output_format' parameter"
-    assert_raises_regex(AttributeError, message, pywt.waverec, coeffs_from_arr, 'haar')
+    message = "Unexpected detail coefficient type"
+    assert_raises_regex(ValueError, message, pywt.waverec, coeffs_from_arr,
+                        'haar')
 
 
 def test_waverec_accuracies():
@@ -176,7 +177,7 @@ def test_multilevel_dtypes_2d():
         assert_(x_roundtrip.dtype == dt_out, "waverec2: " + errmsg)
 
 
-@dec.slow
+@pytest.mark.slow
 def test_waverec2_all_wavelets_modes():
     # test 2D case using all wavelets and modes
     rstate = np.random.RandomState(1234)
@@ -207,6 +208,13 @@ def test_waverec2_invalid_inputs():
 
     # input list cannot be empty
     assert_raises(ValueError, pywt.waverec2, [], 'haar')
+
+    # coefficients from a difference decomposition used as input
+    for dec_func in [pywt.wavedec, pywt.wavedecn]:
+        coeffs = dec_func(np.ones((8, 8)), 'haar')
+        message = "Unexpected detail coefficient type"
+        assert_raises_regex(ValueError, message, pywt.waverec2, coeffs,
+                            'haar')
 
 
 def test_waverec2_coeff_shape_mismatch():
@@ -283,6 +291,16 @@ def test_waverecn_invalid_coeffs():
 
     # input list cannot be empty
     assert_raises(ValueError, pywt.waverecn, [], 'haar')
+
+
+def test_waverecn_invalid_inputs():
+
+    # coefficients from a difference decomposition used as input
+    for dec_func in [pywt.wavedec, pywt.wavedec2]:
+        coeffs = dec_func(np.ones((8, 8)), 'haar')
+        message = "Unexpected detail coefficient type"
+        assert_raises_regex(ValueError, message, pywt.waverecn, coeffs,
+                            'haar')
 
 
 def test_waverecn_lists():
@@ -363,7 +381,7 @@ def test_waverecn_dtypes():
         assert_allclose(pywt.waverecn(coeffs, 'db1'), x, atol=tol, rtol=tol)
 
 
-@dec.slow
+@pytest.mark.slow
 def test_waverecn_all_wavelets_modes():
     # test 2D case using all wavelets and modes
     rstate = np.random.RandomState(1234)
@@ -976,5 +994,40 @@ def test_default_level():
                      pywt.dwt_max_level(data.shape[ax], wavelet[ax]))
 
 
-if __name__ == '__main__':
-    run_module_suite()
+def test_waverec_mixed_precision():
+    rstate = np.random.RandomState(0)
+    for func, ifunc, shape in [(pywt.wavedec, pywt.waverec, (8, )),
+                               (pywt.wavedec2, pywt.waverec2, (8, 8)),
+                               (pywt.wavedecn, pywt.waverecn, (8, 8, 8))]:
+        x = rstate.randn(*shape)
+        coeffs_real = func(x, 'db1')
+
+        # real: single precision approx, double precision details
+        coeffs_real[0] = coeffs_real[0].astype(np.float32)
+        r = ifunc(coeffs_real, 'db1')
+        assert_allclose(r, x, rtol=1e-7, atol=1e-7)
+        assert_equal(r.dtype, np.float64)
+
+        x = x + 1j*x
+        coeffs = func(x, 'db1')
+
+        # complex: single precision approx, double precision details
+        coeffs[0] = coeffs[0].astype(np.complex64)
+        r = ifunc(coeffs, 'db1')
+        assert_allclose(r, x, rtol=1e-7, atol=1e-7)
+        assert_equal(r.dtype, np.complex128)
+
+        # complex: double precision approx, single precision details
+        if x.ndim == 1:
+            coeffs[0] = coeffs[0].astype(np.complex128)
+            coeffs[1] = coeffs[1].astype(np.complex64)
+        if x.ndim == 2:
+            coeffs[0] = coeffs[0].astype(np.complex128)
+            coeffs[1] = tuple([v.astype(np.complex64) for v in coeffs[1]])
+        if x.ndim == 3:
+            coeffs[0] = coeffs[0].astype(np.complex128)
+            coeffs[1] = {k: v.astype(np.complex64)
+                         for k, v in coeffs[1].items()}
+        r = ifunc(coeffs, 'db1')
+        assert_allclose(r, x, rtol=1e-7, atol=1e-7)
+        assert_equal(r.dtype, np.complex128)

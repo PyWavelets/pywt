@@ -1,5 +1,5 @@
 # Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/>
-# Copyright (c) 2012-2016 The PyWavelets Developers
+# Copyright (c) 2012-2018 The PyWavelets Developers
 #                         <https://github.com/PyWavelets/pywt>
 # See COPYING for license details.
 
@@ -11,8 +11,8 @@ __all__ = ['MODES', 'Modes', 'DiscreteContinuousWavelet', 'Wavelet',
 import warnings
 import re
 
-cimport c_wt
-cimport common
+from . cimport c_wt
+from . cimport common
 from ._dwt cimport upcoef
 from ._cwt cimport cwt_psi_single
 
@@ -1044,7 +1044,7 @@ cpdef np.dtype _check_dtype(data):
 def keep(arr, keep_length):
     length = len(arr)
     if keep_length < length:
-        left_bound = (length - keep_length) / 2
+        left_bound = (length - keep_length) // 2
         return arr[left_bound:left_bound + keep_length]
     return arr
 
