@@ -19,6 +19,9 @@ Backwards incompatible changes
 
 Bugs Fixed
 ==========
+For the complex wavelet transforms, the tests were based on older implementation of Matlab CWT function that had an issue with the phase of the complex wavelet coefficients.
+Consequently, the complex wavelet coefficients were complex conjugates of the proper result.
+The tests were made using cmor1.0-1.0 and compared to the WT implementation proposed by Matlab R2017b and Lancaster University, Physics department Matlab function ``wt.m``.
 
 Other changes
 =============
