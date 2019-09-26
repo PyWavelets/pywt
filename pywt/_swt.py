@@ -86,16 +86,17 @@ def swt(data, wavelet, level=None, start_level=0, axis=-1,
     at cost of redundancy in the transform (the size of the output coefficients
     is larger than the input).
 
-    When the following three conditions are true::
+    When the following three conditions are true:
 
-        1.) The wavelet is orthogonal
-        2.) ``swt`` is called with ``norm=True``
-        3.) ``swt`` is called with ``trim_approx=True``
+        1. The wavelet is orthogonal
+        2. ``swt`` is called with ``norm=True``
+        3. ``swt`` is called with ``trim_approx=True``
 
     the transform has the following additional properties that may be
     desirable in applications:
-        1.) energy is conserved
-        2.) variance is partitioned across scales
+
+        1. energy is conserved
+        2. variance is partitioned across scales
 
     When used with ``norm=True``, this transform is closely related to the
     multiple-overlap DWT (MODWT) as popularized for time-series analysis,
@@ -106,7 +107,7 @@ def swt(data, wavelet, level=None, start_level=0, axis=-1,
     References
     ----------
     .. [1] DB Percival and AT Walden. Wavelet Methods for Time Series Analysis.
-         Cambridge University Press, 2000.
+        Cambridge University Press, 2000.
     """
 
     if not _have_c99_complex and np.iscomplexobj(data):
@@ -328,16 +329,18 @@ def swt2(data, wavelet, level, start_level=0, axes=(-2, -1),
     at cost of redundancy in the transform (the size of the output coefficients
     is larger than the input).
 
-    When the following three conditions are true::
+    When the following three conditions are true:
 
-        1.) The wavelet is orthogonal
-        2.) ``swt2`` is called with ``norm=True``
-        3.) ``swt2`` is called with ``trim_approx=True``
+        1. The wavelet is orthogonal
+        2. ``swt2`` is called with ``norm=True``
+        3. ``swt2`` is called with ``trim_approx=True``
 
     the transform has the following additional properties that may be
     desirable in applications:
-        1.) energy is conserved
-        2.) variance is partitioned across scales
+
+        1. energy is conserved
+        2. variance is partitioned across scales
+
     """
     axes = tuple(axes)
     data = np.asarray(data)
@@ -562,16 +565,18 @@ def swtn(data, wavelet, level, start_level=0, axes=None, trim_approx=False,
     at cost of redundancy in the transform (the size of the output coefficients
     is larger than the input).
 
-    When the following three conditions are true::
+    When the following three conditions are true:
 
-        1.) The wavelet is orthogonal
-        2.) ``swtn`` is called with ``norm=True``
-        3.) ``swtn`` is called with ``trim_approx=True``
+        1. The wavelet is orthogonal
+        2. ``swtn`` is called with ``norm=True``
+        3. ``swtn`` is called with ``trim_approx=True``
 
     the transform has the following additional properties that may be
     desirable in applications:
-        1.) energy is conserved
-        2.) variance is partitioned across scales
+
+        1. energy is conserved
+        2. variance is partitioned across scales
+
     """
     data = np.asarray(data)
     if not _have_c99_complex and np.iscomplexobj(data):

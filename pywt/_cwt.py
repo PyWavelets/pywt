@@ -62,6 +62,7 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv'):
             - ``fft`` uses frequency domain convolution.
             - ``auto`` uses automatic selection based on an estimate of the
               computational complexity at each scale.
+
         The ``conv`` method complexity is ``O(len(scale) * len(data))``.
         The ``fft`` method is ``O(N * log2(N))`` with
         ``N = len(scale) + len(data) - 1``. It is well suited for large size
