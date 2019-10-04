@@ -1,25 +1,30 @@
-SciPy Code of Conduct
-=====================
+PyWavelets Code of Conduct
+==========================
 
 
 Introduction
 ------------
 
-This code of conduct applies to all spaces managed by the SciPy project,
+This code of conduct applies to all spaces managed by the PyWavelets project,
 including all public and private mailing lists, issue trackers, wikis, blogs,
-Twitter, and any other communication channel used by our community.  The SciPy
-project does not organise in-person events, however events related to our
-community should have a code of conduct similar in spirit to this one.
+Twitter, and any other communication channel used by our community. The
+PyWavelets project does not organise in-person events, however events related
+to our community should have a code of conduct similar in spirit to this one.
 
 This code of conduct should be honored by everyone who participates in
-the SciPy community formally or informally, or claims any affiliation with the
-project, in any project-related activities and especially when representing the
-project, in any role.
+the PyWavelets community formally or informally, or claims any affiliation with
+the project, in any project-related activities and especially when representing
+the project, in any role.
 
 This code is not exhaustive or complete. It serves to distill our common
 understanding of a collaborative, shared environment and goals. Please try to
 follow this code in spirit as much as in letter, to create a friendly and
 productive environment that enriches the surrounding community.
+
+This code of conduct was adapted from SciPy's code of conduct without any
+substantial modification in terms. We wish to thank the SciPy contributors for
+their hard work in authoring these terms and in helping develop a community
+consensus them.
 
 
 Specific Guidelines
@@ -53,7 +58,7 @@ We strive to:
 
 5. Be careful in the words that we choose.  We are careful and respectful in
    our communication and we take responsibility for our own speech. Be kind to
-   others. Do not insult or put down other participants.  We will not accept
+   others. Do not insult or put down other participants. We will not accept
    harassment or other exclusionary behaviour, such as:
 
   - Violent threats or language directed against another person.
@@ -72,8 +77,8 @@ We strive to:
 Diversity Statement
 -------------------
 
-The SciPy project welcomes and encourages participation by everyone. We are
-committed to being a community that everyone enjoys being part of. Although
+The PyWavelets project welcomes and encourages participation by everyone. We
+are committed to being a community that everyone enjoys being part of. Although
 we may not always be able to accommodate each individual's preferences, we try
 our best to treat everyone kindly.
 
@@ -84,11 +89,10 @@ national origin, neurotype, phenotype, political beliefs, profession, race,
 religion, sexual orientation, socioeconomic status, subculture and technical
 ability, to the extent that these do not conflict with this code of conduct.
 
-
-Though we welcome people fluent in all languages, SciPy development is
+Though we welcome people fluent in all languages, PyWavelets development is
 conducted in English.
 
-Standards for behaviour in the SciPy community are detailed in the Code of
+Standards for behaviour in the PyWavelets community are detailed in the Code of
 Conduct above. Participants in our community should uphold these standards
 in all their interactions and help others to do so as well (see next section).
 
@@ -109,11 +113,10 @@ most appropriate). If you would prefer not to do that, please feel free to
 report to the Code of Conduct Committee directly, or ask the Committee for
 advice, in confidence.
 
-You can report issues to the SciPy Code of Conduct committee, at
-scipy-conduct@googlegroups.com. Currently, the committee consists of:
+You can report issues to the PyWavelets Code of Conduct committee, at
+PyWavelets-conduct@googlegroups.com. Currently, the committee consists of:
 
-- Stefan van der Walt
-- Nathaniel J. Smith
+- Gregory Lee
 - Ralf Gommers
 
 If your report involves any members of the committee, or if they feel they have
@@ -121,8 +124,7 @@ a conflict of interest in handling it, then they will recuse themselves from
 considering your report. Alternatively, if for any reason you feel
 uncomfortable making a report to the committee, then you can also contact:
 
-- Chair of the SciPy Steering Committee: Ralf Gommers, or
-- Senior `NumFOCUS staff <https://numfocus.org/code-of-conduct#persons-responsible>`__: conduct@numfocus.org
+- Chair of the PyWavelets Steering Committee: Gregory Lee
 
 
 Incident reporting resolution & Code of Conduct enforcement
@@ -131,14 +133,14 @@ Incident reporting resolution & Code of Conduct enforcement
 *This section summarizes the most important points, more details can be found
 in* :ref:`CoC_reporting_manual`.
 
-We will investigate and respond to all complaints. The SciPy Code of Conduct
-Committee and the SciPy Steering Committee (if involved) will protect the
-identity of the reporter, and treat the content of complaints as confidential
-(unless the reporter agrees otherwise).
+We will investigate and respond to all complaints. The PyWavelets Code of
+Conduct Committee and the PyWavelets Steering Committee (if involved) will
+protect the identity of the reporter, and treat the content of complaints as
+confidential (unless the reporter agrees otherwise).
 
 In case of severe and obvious breaches, e.g. personal threat or violent, sexist
-or racist language, we will immediately disconnect the originator from SciPy
-communication channels; please see the manual for details.
+or racist language, we will immediately disconnect the originator from
+PyWavelets communication channels; please see the manual for details.
 
 In cases not involving clear severe and obvious breaches of this code of
 conduct, the process for acting on any received code of conduct violation
@@ -157,8 +159,12 @@ within 72 hours.
 Endnotes
 --------
 
-We are thankful to the groups behind the following documents, from which we
-drew content and inspiration:
+We are thankful to the SciPy developers for creating the code of conduct we
+have adapated here.
+
+- `Scipy Code of Conduct <http://scipy.github.io/devdocs/dev/conduct/code_of_conduct.html>`_
+
+The SciPy code of conduct was in turn inspired by the following documents:
 
 - `The Apache Foundation Code of Conduct <https://www.apache.org/foundation/policies/conduct.html>`_
 - `The Contributor Covenant <https://www.contributor-covenant.org/version/1/4/code-of-conduct/>`_

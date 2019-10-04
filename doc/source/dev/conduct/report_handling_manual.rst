@@ -2,11 +2,11 @@
 
 .. _CoC_reporting_manual:
 
-SciPy Code of Conduct - How to follow up on a report
-----------------------------------------------------
+PyWavelets Code of Conduct - How to follow up on a report
+---------------------------------------------------------
 
-This is the manual followed by SciPy's Code of Conduct Committee. It's used
-when we respond to an issue to make sure we're consistent and fair.
+This is the manual followed by PyWavelets's Code of Conduct Committee. It's
+used when we respond to an issue to make sure we're consistent and fair.
 
 Enforcing the Code of Conduct impacts our community today and for the future.
 It's an action that we do not take lightly. When reviewing enforcement
@@ -100,15 +100,16 @@ severe breaches like personal threats, violent, sexist or racist language.
 When a member of the Code of Conduct committee becomes aware of a clear and
 severe breach, they will do the following:
 
-* Immediately disconnect the originator from all SciPy communication channels.
+* Immediately disconnect the originator from all PyWavelets communication
+  channels.
 * Reply to the reporter that their report has been received and that the
   originator has been disconnected.
 * In every case, the moderator should make a reasonable effort to contact the
   originator, and tell them specifically how their language or actions
   qualify as a "clear and severe breach".  The moderator should also say
   that, if the originator believes this is unfair or they want to be
-  reconnected to SciPy, they have the right to ask for a review, as below, by
-  the Code of Conduct Committee.
+  reconnected to PyWavelets, they have the right to ask for a review, as below,
+  by the Code of Conduct Committee.
   The moderator should copy this explanation to the Code of Conduct Committee.
 * The Code of Conduct Committee will formally review and sign off on all cases
   where this mechanism has been applied to make sure it is not being used to
@@ -195,22 +196,22 @@ Possible responses may include:
   temporarily refrain from community participation. If the individual chooses
   not to take a temporary break voluntarily, the committee may issue a
   "mandatory cooling off period".
-* A permanent or temporary ban from some or all SciPy spaces (mailing lists,
-  gitter.im, etc.). The group will maintain records of all such bans so that
-  they may be reviewed in the future or otherwise maintained.
+* A permanent or temporary ban from some or all PyWavelets spaces (mailing
+  lists, gitter.im, etc.). The group will maintain records of all such bans so
+  that they may be reviewed in the future or otherwise maintained.
 
 Once a resolution is agreed upon, but before it is enacted, the committee will
 contact the original reporter and any other affected parties and explain the
 proposed resolution. The committee will ask if this resolution is acceptable,
 and must note feedback for the record.
 
-Finally, the committee will make a report to the SciPy Steering Council (as
-well as the SciPy core team in the event of an ongoing resolution, such as a
-ban).
+Finally, the committee will make a report to the PyWavelets Steering Council
+(as well as the PyWavelets core team in the event of an ongoing resolution,
+such as a ban).
 
 The committee will never publicly discuss the issue; all public statements will
-be made by the chair of the Code of Conduct Committee or the SciPy Steering
-Council.
+be made by the chair of the Code of Conduct Committee or the PyWavelets
+Steering Council.
 
 
 Conflicts of Interest
