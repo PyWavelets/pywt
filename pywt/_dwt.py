@@ -404,8 +404,8 @@ def upcoef(part, coeffs, wavelet, level=1, take=0):
 def pad(x, pad_widths, mode):
     """Extend a 1D signal using a given boundary mode.
 
-    This function operates like ``numpy.pad`` but supports all signal extension
-    modes that can be used by PyWavelets discrete wavelet transforms.
+    This function operates like :func:`numpy.pad` but supports all signal
+    extension modes that can be used by PyWavelets discrete wavelet transforms.
 
     Parameters
     ----------
@@ -413,10 +413,10 @@ def pad(x, pad_widths, mode):
         The array to pad
     pad_widths : {sequence, array_like, int}
         Number of values padded to the edges of each axis.
-        ((before_1, after_1), … (before_N, after_N)) unique pad widths for each
-        axis. ((before, after),) yields same before and after pad for each
-        axis. (pad,) or int is a shortcut for before = after = pad width for
-        all axes.
+        ``((before_1, after_1), … (before_N, after_N))`` unique pad widths for
+        each axis. ``((before, after),)`` yields same before and after pad for
+        each axis. ``(pad,)`` or int is a shortcut for
+        ``before = after = pad width`` for all axes.
     mode : str, optional
         Signal extension mode, see :ref:`Modes <ref-modes>`.
 
@@ -424,13 +424,17 @@ def pad(x, pad_widths, mode):
     -------
     pad : ndarray
         Padded array of rank equal to array with shape increased according to
-        `pad_width`.
+        ``pad_widths``.
 
     Notes
     -----
     The performance of padding in dimensions > 1 may be substantially slower
-    for modes ``smooth`` and ``antisymmetric`` as these modes are not supported
-    efficiently by the underlying ``numpy.pad`` function.
+    for modes ``'smooth'`` and ``'antisymmetric'`` as these modes are not
+    supported efficiently by the underlying :func:`numpy.pad` function.
+
+    Note that the behavior of the ``'constant'`` mode here follows the
+    PyWavelets convention which is different from NumPy (it is equivalent to
+    ``mode='edge'`` in :func:`numpy.pad`).
     """
     x = np.asanyarray(x)
 
