@@ -1,3 +1,5 @@
+.. _CoC:
+
 PyWavelets Code of Conduct
 ==========================
 
