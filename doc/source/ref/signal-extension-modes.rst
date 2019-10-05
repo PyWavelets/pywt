@@ -136,3 +136,15 @@ periodization      per           N/A
 antisymmetric      asym, asymh   N/A
 antireflect        asymw         reflect, reflect_type='odd'
 ================== ============= ===========================
+
+Padding using PyWavelets Signal Extension Modes - ``pad``
+---------------------------------------------------------
+
+.. autofunction:: pad
+
+Pywavelets provides a function, :func:`pad`, that operate like
+:func:`numpy.pad`, but supporting the PyWavelets signal extension modes
+discussed above. For efficiency, the DWT routines in PyWavelets do not
+expclitly create padded signals using this function. It can be used to manually
+prepad signals to reduce boundary effects in functions such as :func:`cwt` and
+:func:`swt` that do not currently support all of these signal extension modes.

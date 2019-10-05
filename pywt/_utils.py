@@ -2,6 +2,7 @@
 #                    <https://github.com/PyWavelets/pywt>
 # See COPYING for license details.
 import inspect
+import numpy as np
 import sys
 from collections.abc import Iterable
 
@@ -17,7 +18,7 @@ else:
 
 
 def _as_wavelet(wavelet):
-    """Convert wavelet name to a Wavelet object"""
+    """Convert wavelet name to a Wavelet object."""
     if not isinstance(wavelet, (ContinuousWavelet, Wavelet)):
         wavelet = DiscreteContinuousWavelet(wavelet)
     if isinstance(wavelet, ContinuousWavelet):
