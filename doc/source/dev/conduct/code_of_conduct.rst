@@ -120,6 +120,7 @@ PyWavelets-conduct@googlegroups.com. Currently, the committee consists of:
 
 - Gregory Lee
 - Ralf Gommers
+- Alexandre de Siqueira
 
 If your report involves any members of the committee, or if they feel they have
 a conflict of interest in handling it, then they will recuse themselves from
