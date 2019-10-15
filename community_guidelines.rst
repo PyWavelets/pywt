@@ -19,4 +19,4 @@ through our GitHub profiles). We are committed to making this community a
 safe and welcome space.
 
 You can learn more about contributing to PyWavelets at
-http://pywavelets.readthedocs.io/en/latest/#state-of-development-contributing
+https://pywavelets.readthedocs.io/en/latest/contributing.html
