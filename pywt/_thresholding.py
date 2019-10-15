@@ -14,7 +14,7 @@ import numpy as np
 from ._multidim import dwtn
 
 
-__all__ = ['threshold', 'threshold_firm', 'estimate_sigma']
+__all__ = ['threshold', 'threshold_firm', 'estimate_noise']
 
 
 def soft(data, value, substitute=0):
@@ -253,7 +253,7 @@ def threshold_firm(data, value_low, value_high):
     return thresholded
 
 
-def estimate_sigma(data, distribution='Gaussian', **kwargs):
+def estimate_noise(data, distribution='Gaussian', **kwargs):
     """
     Robust wavelet-based estimator of the (Gaussian) noise standard deviation.
 
@@ -290,7 +290,7 @@ def estimate_sigma(data, distribution='Gaussian', **kwargs):
     >>> data = np.sin(np.linspace(0,10,100))
     >>> np.random.seed(42)
     >>> noise = 0.5 * np.random.normal(0,1,100)
-    >>> pywt.estimate_sigma(data + noise)
+    >>> pywt.estimate_noise(data + noise)
     0.45634925413327504
     """
 

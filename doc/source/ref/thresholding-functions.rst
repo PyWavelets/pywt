@@ -12,7 +12,7 @@ Thresholding
 
 .. autofunction:: threshold
 .. autofunction:: threshold_firm
-.. autofunction:: estimate_sigma
+.. autofunction:: estimate_noise
 
 The left panel of the figure below illustrates that non-negative Garotte
 thresholding is intermediate between soft and hard thresholding.  Firm
