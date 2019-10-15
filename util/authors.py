@@ -30,6 +30,7 @@ NAME_MAP = {
     u('Helder'): u('Helder Oliveira'),
     u('Kai'): u('Kai Wohlfahrt'),
     u('asnt'): u('Alexandre Saint'),
+    u('pavleb'): u('Pavle Boškoski'),
 }
 
 
