@@ -256,13 +256,14 @@ def threshold_firm(data, value_low, value_high):
 def estimate_sigma(data, distribution='Gaussian', **kwargs):
     """
     Robust wavelet-based estimator of the (Gaussian) noise standard deviation.
+
     Parameters
     ----------
     data : ndarray
         The data used to estimate sigma.
     distribution : str or object with ppf method
         The underlying noise distribution.
-    **kwargs : **kwargs
+    \\**kwargs : \\**kwargs
         Keyword arguments to pass into distribution ppf method.
 
     Returns
@@ -286,10 +287,11 @@ def estimate_sigma(data, distribution='Gaussian', **kwargs):
     --------
     >>> import numpy as np
     >>> import pywt
-    >>> data = np.sin(np.linspace(0,10,1000))
+    >>> data = np.sin(np.linspace(0,10,100))
     >>> np.random.seed(42)
-    >>> noise = np.random.normal(0,1,1000)
-    >>> sigma = pywt.estimate_sigma(data + noise)
+    >>> noise = 0.5 * np.random.normal(0,1,100)
+    >>> pywt.estimate_sigma(data + noise)
+    0.45634925413327504
     """
 
     coeffs = dwtn(data, wavelet='db2')
@@ -306,7 +308,7 @@ def _sigma_est_dwt(detail_coeffs, distribution='Gaussian', **kwargs):
         transform of an image.
     distribution : str or object with ppf method
         The underlying noise distribution.
-    **kwargs : **kwargs
+    \\**kwargs : \\**kwargs
         Keyword arguments to pass into distribution ppf method.
 
     Returns
