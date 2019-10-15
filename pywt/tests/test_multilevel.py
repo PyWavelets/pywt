@@ -80,8 +80,9 @@ def test_waverec_invalid_inputs():
     coeffs = pywt.wavedec(x, 'db1')
     arr, coeff_slices = pywt.coeffs_to_array(coeffs)
     coeffs_from_arr = pywt.array_to_coeffs(arr, coeff_slices)
-    message = "Wrong coefficient format, if using 'array_to_coeffs' please specify the 'output_format' parameter"
-    assert_raises_regex(AttributeError, message, pywt.waverec, coeffs_from_arr, 'haar')
+    message = "Unexpected detail coefficient type"
+    assert_raises_regex(ValueError, message, pywt.waverec, coeffs_from_arr,
+                        'haar')
 
 
 def test_waverec_accuracies():
@@ -208,6 +209,13 @@ def test_waverec2_invalid_inputs():
     # input list cannot be empty
     assert_raises(ValueError, pywt.waverec2, [], 'haar')
 
+    # coefficients from a difference decomposition used as input
+    for dec_func in [pywt.wavedec, pywt.wavedecn]:
+        coeffs = dec_func(np.ones((8, 8)), 'haar')
+        message = "Unexpected detail coefficient type"
+        assert_raises_regex(ValueError, message, pywt.waverec2, coeffs,
+                            'haar')
+
 
 def test_waverec2_coeff_shape_mismatch():
     x = np.ones((8, 8))
@@ -283,6 +291,16 @@ def test_waverecn_invalid_coeffs():
 
     # input list cannot be empty
     assert_raises(ValueError, pywt.waverecn, [], 'haar')
+
+
+def test_waverecn_invalid_inputs():
+
+    # coefficients from a difference decomposition used as input
+    for dec_func in [pywt.wavedec, pywt.wavedec2]:
+        coeffs = dec_func(np.ones((8, 8)), 'haar')
+        message = "Unexpected detail coefficient type"
+        assert_raises_regex(ValueError, message, pywt.waverecn, coeffs,
+                            'haar')
 
 
 def test_waverecn_lists():

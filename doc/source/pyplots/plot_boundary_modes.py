@@ -5,7 +5,7 @@ the behavior of the various boundary modes.
 
 In practice, which signal extension mode is beneficial will depend on the
 signal characteristics.  For this particular signal, some modes such as
-"periodic",  "antisymmetric" and "zeros" result in large discontinuities that
+"periodic",  "antisymmetric" and "zero" result in large discontinuities that
 would lead to large amplitude boundary coefficients in the detail coefficients
 of a discrete wavelet transform.
 """
@@ -28,5 +28,5 @@ boundary_mode_subplot(x, 'antireflect', axes[4], symw=True)
 boundary_mode_subplot(x, 'periodization', axes[5], symw=False)
 boundary_mode_subplot(x, 'smooth', axes[6], symw=False)
 boundary_mode_subplot(x, 'constant', axes[7], symw=False)
-boundary_mode_subplot(x, 'zeros', axes[8], symw=False)
+boundary_mode_subplot(x, 'zero', axes[8], symw=False)
 plt.show()

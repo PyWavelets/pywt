@@ -6,7 +6,7 @@ import numpy as np
 from ._c99_config import _have_c99_complex
 from ._extensions._dwt import idwt_single
 from ._extensions._swt import swt_max_level, swt as _swt, swt_axis as _swt_axis
-from ._extensions._pywt import Modes, _check_dtype
+from ._extensions._pywt import Wavelet, Modes, _check_dtype
 from ._multidim import idwt2, idwtn
 from ._utils import _as_wavelet, _wavelets_per_axis
 
@@ -14,7 +14,18 @@ from ._utils import _as_wavelet, _wavelets_per_axis
 __all__ = ["swt", "swt_max_level", 'iswt', 'swt2', 'iswt2', 'swtn', 'iswtn']
 
 
-def swt(data, wavelet, level=None, start_level=0, axis=-1):
+def _rescale_wavelet_filterbank(wavelet, sf):
+    wav = Wavelet(wavelet.name + 'r',
+                  [np.asarray(f) * sf for f in wavelet.filter_bank])
+
+    # copy attributes from the original wavelet
+    wav.orthogonal = wavelet.orthogonal
+    wav.biorthogonal = wavelet.biorthogonal
+    return wav
+
+
+def swt(data, wavelet, level=None, start_level=0, axis=-1,
+        trim_approx=False, norm=False):
     """
     Multilevel 1D stationary wavelet transform.
 
@@ -33,6 +44,13 @@ def swt(data, wavelet, level=None, start_level=0, axis=-1):
     axis: int, optional
         Axis over which to compute the SWT. If not given, the
         last axis is used.
+    trim_approx : bool, optional
+        If True, approximation coefficients at the final level are retained.
+    norm : bool, optional
+        If True, transform is normalized so that the energy of the coefficients
+        will be equal to the energy of ``data``. In other words,
+        ``np.linalg.norm(data.ravel())`` will equal the norm of the
+        concatenated transform coefficients when ``trim_approx`` is True.
 
     Returns
     -------
@@ -49,20 +67,60 @@ def swt(data, wavelet, level=None, start_level=0, axis=-1):
 
             [(cAm+n, cDm+n), ..., (cAm+1, cDm+1), (cAm, cDm)]
 
+        If ``trim_approx`` is ``True``, then the output list is exactly as in
+        ``pywt.wavedec``, where the first coefficient in the list is the
+        approximation coefficient at the final level and the rest are the
+        detail coefficients::
+
+            [cAn, cDn, ..., cD2, cD1]
+
     Notes
     -----
     The implementation here follows the "algorithm a-trous" and requires that
     the signal length along the transformed axis be a multiple of ``2**level``.
     If this is not the case, the user should pad up to an appropriate size
     using a function such as ``numpy.pad``.
+
+    A primary benefit of this transform in comparison to its decimated
+    counterpart (``pywt.wavedecn``), is that it is shift-invariant. This comes
+    at cost of redundancy in the transform (the size of the output coefficients
+    is larger than the input).
+
+    When the following three conditions are true:
+
+        1. The wavelet is orthogonal
+        2. ``swt`` is called with ``norm=True``
+        3. ``swt`` is called with ``trim_approx=True``
+
+    the transform has the following additional properties that may be
+    desirable in applications:
+
+        1. energy is conserved
+        2. variance is partitioned across scales
+
+    When used with ``norm=True``, this transform is closely related to the
+    multiple-overlap DWT (MODWT) as popularized for time-series analysis,
+    although the underlying implementation is slightly different from the one
+    published in [1]_. Specifically, the implementation used here requires a
+    signal that is a multiple of ``2**level`` in length.
+
+    References
+    ----------
+    .. [1] DB Percival and AT Walden. Wavelet Methods for Time Series Analysis.
+        Cambridge University Press, 2000.
     """
+
     if not _have_c99_complex and np.iscomplexobj(data):
         data = np.asarray(data)
-        coeffs_real = swt(data.real, wavelet, level, start_level)
-        coeffs_imag = swt(data.imag, wavelet, level, start_level)
-        coeffs_cplx = []
-        for (cA_r, cD_r), (cA_i, cD_i) in zip(coeffs_real, coeffs_imag):
-            coeffs_cplx.append((cA_r + 1j*cA_i, cD_r + 1j*cD_i))
+        coeffs_real = swt(data.real, wavelet, level, start_level, trim_approx)
+        coeffs_imag = swt(data.imag, wavelet, level, start_level, trim_approx)
+        if not trim_approx:
+            coeffs_cplx = []
+            for (cA_r, cD_r), (cA_i, cD_i) in zip(coeffs_real, coeffs_imag):
+                coeffs_cplx.append((cA_r + 1j*cA_i, cD_r + 1j*cD_i))
+        else:
+            coeffs_cplx = [cr + 1j*ci
+                           for (cr, ci) in zip(coeffs_real, coeffs_imag)]
         return coeffs_cplx
 
     # accept array_like input; make a copy to ensure a contiguous array
@@ -70,6 +128,12 @@ def swt(data, wavelet, level=None, start_level=0, axis=-1):
     data = np.array(data, dtype=dt)
 
     wavelet = _as_wavelet(wavelet)
+    if norm:
+        if not wavelet.orthogonal:
+            warnings.warn(
+                "norm=True, but the wavelet is not orthogonal: \n"
+                "\tThe conditions for energy preservation are not satisfied.")
+        wavelet = _rescale_wavelet_filterbank(wavelet, 1/np.sqrt(2))
 
     if axis < 0:
         axis = axis + data.ndim
@@ -80,13 +144,13 @@ def swt(data, wavelet, level=None, start_level=0, axis=-1):
         level = swt_max_level(data.shape[axis])
 
     if data.ndim == 1:
-        ret = _swt(data, wavelet, level, start_level)
+        ret = _swt(data, wavelet, level, start_level, trim_approx)
     else:
-        ret = _swt_axis(data, wavelet, level, start_level, axis)
-    return [(np.asarray(cA), np.asarray(cD)) for cA, cD in ret]
+        ret = _swt_axis(data, wavelet, level, start_level, axis, trim_approx)
+    return ret
 
 
-def iswt(coeffs, wavelet):
+def iswt(coeffs, wavelet, norm=False):
     """
     Multilevel 1D inverse discrete stationary wavelet transform.
 
@@ -101,6 +165,10 @@ def iswt(coeffs, wavelet):
         ``start_level`` from ``pywt.swt``.
     wavelet : Wavelet object or name string
         Wavelet to use
+    norm : bool, optional
+        Controls the normalization used by the inverse transform. This must
+        be set equal to the value that was used by ``pywt.swt`` to preserve the
+        energy of a round-trip transform.
 
     Returns
     -------
@@ -114,23 +182,41 @@ def iswt(coeffs, wavelet):
     array([ 1.,  2.,  3.,  4.,  5.,  6.,  7.,  8.])
     """
     # copy to avoid modification of input data
-    dt = _check_dtype(coeffs[0][0])
-    output = np.array(coeffs[0][0], dtype=dt, copy=True)
 
+    # If swt was called with trim_approx=False, first element is a tuple
+    trim_approx = not isinstance(coeffs[0], (tuple, list))
+
+    if trim_approx:
+        cA = coeffs[0]
+        coeffs = coeffs[1:]
+    else:
+        cA = coeffs[0][0]
+
+    dt = _check_dtype(cA)
+    output = np.array(cA, dtype=dt, copy=True)
     if not _have_c99_complex and np.iscomplexobj(output):
         # compute real and imaginary separately then combine
-        coeffs_real = [(cA.real, cD.real) for (cA, cD) in coeffs]
-        coeffs_imag = [(cA.imag, cD.imag) for (cA, cD) in coeffs]
+        if trim_approx:
+            coeffs_real = [c.real for c in coeffs]
+            coeffs_imag = [c.imag for c in coeffs]
+        else:
+            coeffs_real = [(cA.real, cD.real) for (cA, cD) in coeffs]
+            coeffs_imag = [(cA.imag, cD.imag) for (cA, cD) in coeffs]
         return iswt(coeffs_real, wavelet) + 1j*iswt(coeffs_imag, wavelet)
 
     # num_levels, equivalent to the decomposition level, n
     num_levels = len(coeffs)
     wavelet = _as_wavelet(wavelet)
+    if norm:
+        wavelet = _rescale_wavelet_filterbank(wavelet, np.sqrt(2))
     mode = Modes.from_object('periodization')
     for j in range(num_levels, 0, -1):
         step_size = int(pow(2, j-1))
         last_index = step_size
-        _, cD = coeffs[num_levels - j]
+        if trim_approx:
+            cD = coeffs[-j]
+        else:
+            _, cD = coeffs[-j]
         cD = np.asarray(cD, dtype=_check_dtype(cD))
         if cD.dtype != output.dtype:
             # upcast to a common dtype (float64 or complex128)
@@ -170,7 +256,8 @@ def iswt(coeffs, wavelet):
     return output
 
 
-def swt2(data, wavelet, level, start_level=0, axes=(-2, -1)):
+def swt2(data, wavelet, level, start_level=0, axes=(-2, -1),
+         trim_approx=False, norm=False):
     """
     Multilevel 2D stationary wavelet transform.
 
@@ -187,11 +274,20 @@ def swt2(data, wavelet, level, start_level=0, axes=(-2, -1)):
         The level at which the decomposition will start (default: 0)
     axes : 2-tuple of ints, optional
         Axes over which to compute the SWT. Repeated elements are not allowed.
+    trim_approx : bool, optional
+        If True, approximation coefficients at the final level are retained.
+    norm : bool, optional
+        If True, transform is normalized so that the energy of the coefficients
+        will be equal to the energy of ``data``. In other words,
+        ``np.linalg.norm(data.ravel())`` will equal the norm of the
+        concatenated transform coefficients when ``trim_approx`` is True.
 
     Returns
     -------
     coeffs : list
-        Approximation and details coefficients (for ``start_level = m``)::
+        Approximation and details coefficients (for ``start_level = m``).
+        If ``trim_approx`` is ``True``, approximation coefficients are
+        retained for all levels::
 
             [
                 (cA_m+level,
@@ -209,12 +305,42 @@ def swt2(data, wavelet, level, start_level=0, axes=(-2, -1)):
         where cA is approximation, cH is horizontal details, cV is
         vertical details, cD is diagonal details and m is ``start_level``.
 
+        If ``trim_approx`` is ``False``, approximation coefficients are only
+        retained at the final level of decomposition. This matches the format
+        used by ``pywt.wavedec2``::
+
+            [
+                cA_m+level,
+                (cH_m+level, cV_m+level, cD_m+level),
+                ...,
+                (cH_m+1, cV_m+1, cD_m+1),
+                (cH_m, cV_m, cD_m),
+            ]
+
     Notes
     -----
     The implementation here follows the "algorithm a-trous" and requires that
     the signal length along the transformed axes be a multiple of ``2**level``.
     If this is not the case, the user should pad up to an appropriate size
     using a function such as ``numpy.pad``.
+
+    A primary benefit of this transform in comparison to its decimated
+    counterpart (``pywt.wavedecn``), is that it is shift-invariant. This comes
+    at cost of redundancy in the transform (the size of the output coefficients
+    is larger than the input).
+
+    When the following three conditions are true:
+
+        1. The wavelet is orthogonal
+        2. ``swt2`` is called with ``norm=True``
+        3. ``swt2`` is called with ``trim_approx=True``
+
+    the transform has the following additional properties that may be
+    desirable in applications:
+
+        1. energy is conserved
+        2. variance is partitioned across scales
+
     """
     axes = tuple(axes)
     data = np.asarray(data)
@@ -226,15 +352,20 @@ def swt2(data, wavelet, level, start_level=0, axes=(-2, -1)):
         raise ValueError("Input array has fewer dimensions than the specified "
                          "axes")
 
-    coefs = swtn(data, wavelet, level, start_level, axes)
+    coefs = swtn(data, wavelet, level, start_level, axes, trim_approx, norm)
     ret = []
+    if trim_approx:
+        ret.append(coefs[0])
+        coefs = coefs[1:]
     for c in coefs:
-        ret.append((c['aa'], (c['da'], c['ad'], c['dd'])))
-
+        if trim_approx:
+            ret.append((c['da'], c['ad'], c['dd']))
+        else:
+            ret.append((c['aa'], (c['da'], c['ad'], c['dd'])))
     return ret
 
 
-def iswt2(coeffs, wavelet):
+def iswt2(coeffs, wavelet, norm=False):
     """
     Multilevel 2D inverse discrete stationary wavelet transform.
 
@@ -262,6 +393,10 @@ def iswt2(coeffs, wavelet):
     wavelet : Wavelet object or name string, or 2-tuple of wavelets
         Wavelet to use.  This can also be a 2-tuple of wavelets to apply per
         axis.
+    norm : bool, optional
+        Controls the normalization used by the inverse transform. This must
+        be set equal to the value that was used by ``pywt.swt2`` to preserve
+        the energy of a round-trip transform.
 
     Returns
     -------
@@ -281,9 +416,17 @@ def iswt2(coeffs, wavelet):
 
     """
 
+    # If swt was called with trim_approx=False, first element is a tuple
+    trim_approx = not isinstance(coeffs[0], (tuple, list))
+    if trim_approx:
+        cA = coeffs[0]
+        coeffs = coeffs[1:]
+    else:
+        cA = coeffs[0][0]
+
     # copy to avoid modification of input data
-    dt = _check_dtype(coeffs[0][0])
-    output = np.array(coeffs[0][0], dtype=dt, copy=True)
+    dt = _check_dtype(cA)
+    output = np.array(cA, dtype=dt, copy=True)
 
     if output.ndim != 2:
         raise ValueError(
@@ -292,11 +435,17 @@ def iswt2(coeffs, wavelet):
     # num_levels, equivalent to the decomposition level, n
     num_levels = len(coeffs)
     wavelets = _wavelets_per_axis(wavelet, axes=(0, 1))
+    if norm:
+        wavelets = [_rescale_wavelet_filterbank(wav, np.sqrt(2))
+                    for wav in wavelets]
 
     for j in range(num_levels):
         step_size = int(pow(2, num_levels-j-1))
         last_index = step_size
-        _, (cH, cV, cD) = coeffs[j]
+        if trim_approx:
+            (cH, cV, cD) = coeffs[j]
+        else:
+            _, (cH, cV, cD) = coeffs[j]
         # We are going to assume cH, cV, and cD are of equal size
         if (cH.shape != cV.shape) or (cH.shape != cD.shape):
             raise RuntimeError(
@@ -353,7 +502,8 @@ def iswt2(coeffs, wavelet):
     return output
 
 
-def swtn(data, wavelet, level, start_level=0, axes=None):
+def swtn(data, wavelet, level, start_level=0, axes=None, trim_approx=False,
+         norm=False):
     """
     n-dimensional stationary wavelet transform.
 
@@ -371,6 +521,13 @@ def swtn(data, wavelet, level, start_level=0, axes=None):
     axes : sequence of ints, optional
         Axes over which to compute the SWT. A value of ``None`` (the
         default) selects all axes. Axes may not be repeated.
+    trim_approx : bool, optional
+        If True, approximation coefficients at the final level are retained.
+    norm : bool, optional
+        If True, transform is normalized so that the energy of the coefficients
+        will be equal to the energy of ``data``. In other words,
+        ``np.linalg.norm(data.ravel())`` will equal the norm of the
+        concatenated transform coefficients when ``trim_approx`` is True.
 
     Returns
     -------
@@ -391,19 +548,47 @@ def swtn(data, wavelet, level, start_level=0, axes=None):
         For user-specified ``axes``, the order of the characters in the
         dictionary keys map to the specified ``axes``.
 
+        If ``trim_approx`` is ``True``, the first element of the list contains
+        the array of approximation coefficients from the final level of
+        decomposition, while the remaining coefficient dictionaries contain
+        only detail coefficients. This matches the behavior of `pywt.wavedecn`.
+
     Notes
     -----
     The implementation here follows the "algorithm a-trous" and requires that
     the signal length along the transformed axes be a multiple of ``2**level``.
     If this is not the case, the user should pad up to an appropriate size
     using a function such as ``numpy.pad``.
+
+    A primary benefit of this transform in comparison to its decimated
+    counterpart (``pywt.wavedecn``), is that it is shift-invariant. This comes
+    at cost of redundancy in the transform (the size of the output coefficients
+    is larger than the input).
+
+    When the following three conditions are true:
+
+        1. The wavelet is orthogonal
+        2. ``swtn`` is called with ``norm=True``
+        3. ``swtn`` is called with ``trim_approx=True``
+
+    the transform has the following additional properties that may be
+    desirable in applications:
+
+        1. energy is conserved
+        2. variance is partitioned across scales
+
     """
     data = np.asarray(data)
     if not _have_c99_complex and np.iscomplexobj(data):
-        real = swtn(data.real, wavelet, level, start_level, axes)
-        imag = swtn(data.imag, wavelet, level, start_level, axes)
-        cplx = []
-        for rdict, idict in zip(real, imag):
+        real = swtn(data.real, wavelet, level, start_level, axes, trim_approx)
+        imag = swtn(data.imag, wavelet, level, start_level, axes, trim_approx)
+        if trim_approx:
+            cplx = [real[0] + 1j * imag[0]]
+            offset = 1
+        else:
+            cplx = []
+            offset = 0
+        for rdict, idict in zip(real[offset:], imag[offset:]):
             cplx.append(
                 dict((k, rdict[k] + 1j * idict[k]) for k in rdict.keys()))
         return cplx
@@ -421,7 +606,13 @@ def swtn(data, wavelet, level, start_level=0, axes=None):
     num_axes = len(axes)
 
     wavelets = _wavelets_per_axis(wavelet, axes)
-
+    if norm:
+        if not np.all([wav.orthogonal for wav in wavelets]):
+            warnings.warn(
+                "norm=True, but the wavelets used are not orthogonal: \n"
+                "\tThe conditions for energy preservation are not satisfied.")
+        wavelets = [_rescale_wavelet_filterbank(wav, 1/np.sqrt(2))
+                    for wav in wavelets]
     ret = []
     for i in range(start_level, start_level + level):
         coeffs = [('', data)]
@@ -439,12 +630,15 @@ def swtn(data, wavelet, level, start_level=0, axes=None):
 
         # data for the next level is the approximation coeffs from this level
         data = coeffs['a' * num_axes]
-
+        if trim_approx:
+            coeffs.pop('a' * num_axes)
+    if trim_approx:
+        ret.append(data)
     ret.reverse()
     return ret
 
 
-def iswtn(coeffs, wavelet, axes=None):
+def iswtn(coeffs, wavelet, axes=None, norm=False):
     """
     Multilevel nD inverse discrete stationary wavelet transform.
 
@@ -459,6 +653,10 @@ def iswtn(coeffs, wavelet, axes=None):
         Axes over which to compute the inverse SWT. Axes may not be repeated.
         The default is ``None``, which means transform all axes
         (``axes = range(data.ndim)``).
+    norm : bool, optional
+        Controls the normalization used by the inverse transform. This must
+        be set equal to the value that was used by ``pywt.swtn`` to preserve
+        the energy of a round-trip transform.
 
     Returns
     -------
@@ -479,11 +677,18 @@ def iswtn(coeffs, wavelet, axes=None):
     """
 
     # key length matches the number of axes transformed
-    ndim_transform = max(len(key) for key in coeffs[0].keys())
+    ndim_transform = max(len(key) for key in coeffs[-1].keys())
+
+    trim_approx = not isinstance(coeffs[0], dict)
+    if trim_approx:
+        cA = coeffs[0]
+        coeffs = coeffs[1:]
+    else:
+        cA = coeffs[0]['a'*ndim_transform]
 
     # copy to avoid modification of input data
-    dt = _check_dtype(coeffs[0]['a'*ndim_transform])
-    output = np.array(coeffs[0]['a'*ndim_transform], dtype=dt, copy=True)
+    dt = _check_dtype(cA)
+    output = np.array(cA, dtype=dt, copy=True)
     ndim = output.ndim
 
     if axes is None:
@@ -498,6 +703,9 @@ def iswtn(coeffs, wavelet, axes=None):
     # num_levels, equivalent to the decomposition level, n
     num_levels = len(coeffs)
     wavelets = _wavelets_per_axis(wavelet, axes)
+    if norm:
+        wavelets = [_rescale_wavelet_filterbank(wav, np.sqrt(2))
+                    for wav in wavelets]
 
     # initialize various slice objects used in the loops below
     # these will remain slice(None) only on axes that aren't transformed
@@ -509,7 +717,8 @@ def iswtn(coeffs, wavelet, axes=None):
     for j in range(num_levels):
         step_size = int(pow(2, num_levels-j-1))
         last_index = step_size
-        a = coeffs[j].pop('a'*ndim_transform)  # will restore later
+        if not trim_approx:
+            a = coeffs[j].pop('a'*ndim_transform)  # will restore later
         details = coeffs[j]
         # make sure dtype matches the coarsest level approximation coefficients
         common_dtype = np.result_type(*(
@@ -560,5 +769,6 @@ def iswtn(coeffs, wavelet, axes=None):
                 output[tuple(indices)] += x
                 ntransforms += 1
             output[tuple(indices)] /= ntransforms  # normalize
-        coeffs[j]['a'*ndim_transform] = a  # restore approx coeffs to dict
+        if not trim_approx:
+            coeffs[j]['a'*ndim_transform] = a  # restore approx coeffs to dict
     return output

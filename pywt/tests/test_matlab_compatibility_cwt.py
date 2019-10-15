@@ -147,6 +147,11 @@ def _check_accuracy(data, w, scales, coefs, wavelet, epsilon):
     # PyWavelets result
     coefs_pywt, freq = pywt.cwt(data, scales, w)
 
+    # coefs from Matlab are from R2012a which is missing the complex conjugate
+    # as shown in Eq. 2 of Torrence and Compo. We take the complex conjugate of
+    # the precomputed Matlab result to account for this.
+    coefs = np.conj(coefs)
+
     # calculate error measures
     err = coefs_pywt - coefs
     rms = np.real(np.sqrt(np.mean(np.conj(err) * err)))

@@ -87,10 +87,10 @@ correspond to the following wavelets:
 .. math::
     \psi(t) = \sqrt{B} \frac{\sin(\pi B t)}{\pi B t} \exp^{\mathrm{j}2 \pi C t}
 
-where :math:`B` is the bandwith and :math:`C` is the center frequency.
+where :math:`B` is the bandwidth and :math:`C` is the center frequency.
 
 
-Freuqency B-Spline Wavelets
+Frequency B-Spline Wavelets
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 The frequency B-spline wavelets (``"fpspM-B-C"`` with integer M and floating
 point B, C) correspond to the following wavelets:

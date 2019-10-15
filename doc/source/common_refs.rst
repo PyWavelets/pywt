@@ -5,7 +5,8 @@
 .. _GitHub: https://github.com/PyWavelets/pywt
 .. _GitHub repository: https://github.com/PyWavelets/pywt
 .. _GitHub Issues: https://github.com/PyWavelets/pywt/issues
-.. _Numpy: http://www.numpy.org
+.. _NumPy: https://www.numpy.org
+.. _SciPy: https://www.scipy.org
 .. _original developer: http://en.ig.ma
 .. _Python: http://python.org/
 .. _Python Package Index: http://pypi.python.org/pypi/PyWavelets/

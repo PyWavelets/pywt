@@ -37,7 +37,7 @@ mlab.start()
 try:
     all_matlab_results = {}
     for wavelet in wavelets:
-        w = pywt.Wavelet(wavelet)
+        w = pywt.ContinuousWavelet(wavelet)
         if np.any((wavelet == np.array(['shan', 'cmor'])),axis=0):
             mlab.set_variable('wavelet', wavelet+str(w.bandwidth_frequency)+'-'+str(w.center_frequency))
         elif wavelet == 'fbsp':
