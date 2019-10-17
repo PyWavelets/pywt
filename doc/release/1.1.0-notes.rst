@@ -6,26 +6,67 @@ PyWavelets 1.1.0 Release Notes
 
 We are very pleased to announce the release of PyWavelets 1.1.
 
-This release requires Python >=3.5 and has dropped Python 2.7 support.
+This release includes enhanced functionality for both the stationary wavelet
+transforms (``swt``, ``swt2``, ``swtn``) as well as the continuous wavelet
+transform (``cwt``). In addition, there are a handful of bug fixes as
+described in more detail below.
+
+This release has dropped Python 2.7 support and now requires Python >= 3.5.
+
+
+In addition to these changes to the software itself, a paper describing
+PyWavelets was recently published in The Journal of Open Source Software:
+https://joss.theoj.org/papers/10.21105/joss.01237
+
 
 New features
 ============
 
-Deprecated features
-===================
+- All ``swt`` functions now have a new ``trim_approx`` option that can be used
+  to exclude the approximation coefficients from all but the final level of
+  decomposition. This mode makes the output of these functions consistent with
+  the format of the output from the corresponding ``wavedec`` functions.
+
+- All ``swt`` functions also now have a new ``norm`` option that, when set to
+  ``True`` and used in combination with ``trim_approx=True``, gives a partition
+  of variance across the transform coefficients. In other words, the  sum of
+  the variances of all coefficients is equal to the variance of the original
+  data. This partitioning of variance makes the ``swt`` transform more similar
+  to the multiple-overlap DWT (MODWT) described in Percival and Walden's book,
+  "Wavelet Methods for Time Series Analysis". (#476)
+
+  A demo of this new ``swt`` functionality is available at
+  https://github.com/PyWavelets/pywt/blob/master/demo/swt_variance.py
+
+- The continuous wavelet transform (``cwt``) now offers an FFT-based
+  implementation in addition to the previous convolution based one. The new
+  ``method`` argument can be set to either ``'conv'`` or ``'fft'`` to select
+  between these two implementations. (#490).
+
+- The ``cwt`` now also has ``axis`` support so that CWTs can be applied in
+  batch along any axis of an n-dimensional array. This enables faster batch
+  transformation of signals. (#509)
+
 
 Backwards incompatible changes
 ==============================
 
-When using complex-valued wavelets with the ``cwt``, the output will now be
+- When the input to ``cwt`` is single precision, the computations are now
+  performed in single precision. This was done both for efficiency and to make
+  ``cwt`` handle dtypes consistently with the discrete transforms in
+  PyWavelets. This is a change from the prior behaviour of always performing
+  the ``cwt`` in double precision. (#507)
+
+- When using complex-valued wavelets with the ``cwt``, the output will now be
 the complex conjugate of the result that was produced by PyWavelets 1.0.x.
 This was done to account for a bug described below. The magnitude of the
-``cwt`` coefficients will still match those from previous releases.
+``cwt`` coefficients will still match those from previous releases. (#439)
+
 
 Bugs Fixed
 ==========
 
-For a ``cwt`` with complex wavelets, the results in PyWavelets 1.0.x releases
+- For a ``cwt`` with complex wavelets, the results in PyWavelets 1.0.x releases
 matched the output of Matlab R2012a's ``cwt``. Howveer, older Matlab releases
 like R2012a had a phase that was of opposite sign to that given in textbook
 definitions of the CWT (Eq. 2 of Torrence and Compo's review article, "A
@@ -34,16 +75,86 @@ were the complex conjugates of the expected result. This was validated by
 comparing the results of a transform using ``cmor1.0-1.0`` as compared to the
 ``cwt`` implementation available in Matlab R2017b as well as the function
 ``wt.m`` from the Lancaster University Physics department's
-`MODA toolbox <https://github.com/luphysics/MODA>`_
+`MODA toolbox <https://github.com/luphysics/MODA>`_. (#439)
+
+- For some boundary modes and data sizes, round-trip ``dwt``/``idwt`` can
+  result in an output that has one additional coefficient. Prior to this
+  relese, this could cause a failure during ``WaveletPacket`` or
+  ``WaveletPacket2D`` reconstruction. These wavelet packet transforms have now
+  been fixed and round-trip wavelet packet transforms always preserve the
+  original data shape. (#448)
+
+- All inverse transforms now handle mixed precision coefficients consistently.
+  Prior to this release some inverse transform raised an error upon
+  encountering mixed precision dtypes in the wavelet subbands. In release 1.1,
+  when the user-provided coefficients are a mixture of single and double
+  precision, all coefficients will be promoted to double precision. (#450)
+
+- A bug that caused a failure for ``iswtn`` when using user-provided ``axes``
+  with non-uniform shape along the transformed axes has been fixed. (#462)
 
 Other changes
 =============
 
+- The PyWavelet test suite now uses ``pytest`` rather than ``nose``. (#477)
+
+- Cython code has been updated to use ``language_level=3``. (#435)
+
+- PyWavelets has adopted the SciPy Code of Conduct. (#521)
+
 Authors
 =======
+
+* Pavle Boškoski +
+* Luke M Craig +
+* Corey Goldberg
+* Ralf Gommers
+* Gregory R. Lee
+* Pavle Boškoski +
+* Lokesh Ravindranathan
+* Alexandre Sauve +
+* Arfon Smith +
+* Valentin Valls +
+
+A total of 10 people contributed to this release.
+People with a "+" by their names contributed a patch for the first time.
+This list of names is automatically generated, and may not be fully complete.
 
 Issues closed for v1.1.0
 ------------------------
 
+- `#389 <https://github.com/PyWavelets/pywt/issues/389>`__: Change test suite from nose to pytest
+- `#445 <https://github.com/PyWavelets/pywt/issues/445>`__: Batch load for pywt.cwt
+- `#449 <https://github.com/PyWavelets/pywt/issues/449>`__: Coefficients arrays must have the same dtype error in iswt function
+
+
 Pull requests for v1.1.0
 ------------------------
+
+- `#434 <https://github.com/PyWavelets/pywt/pull/434>`__: Drop Python 2.7 testing on CI and update docs for Python 3.5+...
+- `#435 <https://github.com/PyWavelets/pywt/pull/435>`__: set language_level=3 for Cython
+- `#436 <https://github.com/PyWavelets/pywt/pull/436>`__: Fix deprecated import for Iterable
+- `#438 <https://github.com/PyWavelets/pywt/pull/438>`__: Fix spelling of "Garrote"
+- `#439 <https://github.com/PyWavelets/pywt/pull/439>`__: fix the phase of CWT when using complex mother wavelets
+- `#442 <https://github.com/PyWavelets/pywt/pull/442>`__: document the numpy.pad equivalent of 'antireflect'
+- `#446 <https://github.com/PyWavelets/pywt/pull/446>`__: Spelling correction
+- `#448 <https://github.com/PyWavelets/pywt/pull/448>`__: Properly trim wavelet packet node coefficients during reconstruction
+- `#450 <https://github.com/PyWavelets/pywt/pull/450>`__: handle mixed dtype cofficients correctly across inverse transforms
+- `#462 <https://github.com/PyWavelets/pywt/pull/462>`__: fix bug in iswtn for data of arbitrary shape when using user-specified...
+- `#463 <https://github.com/PyWavelets/pywt/pull/463>`__: TST: fix misc. doctest failures (test_doc.py)
+- `#471 <https://github.com/PyWavelets/pywt/pull/471>`__: user-friendly error messages about multilevel DWT format
+- `#476 <https://github.com/PyWavelets/pywt/pull/476>`__: swt normalization and option to trim the approximation coefficients
+- `#477 <https://github.com/PyWavelets/pywt/pull/477>`__: MAINT/TST: update tests to use pytest
+- `#490 <https://github.com/PyWavelets/pywt/pull/490>`__: cwt with fft convolution support
+- `#495 <https://github.com/PyWavelets/pywt/pull/495>`__: BLD: add missing import of warnings module to setup.py
+- `#499 <https://github.com/PyWavelets/pywt/pull/499>`__: register markers for pytest 4.5 compatibility
+- `#502 <https://github.com/PyWavelets/pywt/pull/502>`__: fix docstring's scale2frequency parameter order
+- `#506 <https://github.com/PyWavelets/pywt/pull/506>`__: Guard against trying to transform along size 0 axes
+- `#507 <https://github.com/PyWavelets/pywt/pull/507>`__: preserve single precision in CWT
+- `#509 <https://github.com/PyWavelets/pywt/pull/509>`__: add axis support to cwt
+- `#510 <https://github.com/PyWavelets/pywt/pull/510>`__: add demo using swt with norm=True to analyze variance across...
+- `#511 <https://github.com/PyWavelets/pywt/pull/511>`__: MAINT: split bundled licenses into a separate file
+- `#514 <https://github.com/PyWavelets/pywt/pull/514>`__: Small typo in the doc
+- `#516 <https://github.com/PyWavelets/pywt/pull/516>`__: Fix docstrings to avoid sphinx warnings
+- `#521 <https://github.com/PyWavelets/pywt/pull/521>`__: DOC: adopt the SciPy Code of Conduct
+- `#525 <https://github.com/PyWavelets/pywt/pull/525>`__: test against Python 3.8
