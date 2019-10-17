@@ -11,7 +11,8 @@ transforms (``swt``, ``swt2``, ``swtn``) as well as the continuous wavelet
 transform (``cwt``). In addition, there are a handful of bug fixes as
 described in more detail below.
 
-This release has dropped Python 2.7 support and now requires Python >=3.5.
+This release has dropped Python 2.7 support and now requires Python >= 3.5.
+
 
 In addition to these changes to the software itself, a paper describing
 PyWavelets was recently published in The Journal of Open Source Software:
@@ -37,12 +38,12 @@ New features
   A demo of this new ``swt`` functionality is available at
   https://github.com/PyWavelets/pywt/blob/master/demo/swt_variance.py
 
-- The contiuous wavelet transform (``cwt``) now offers an FFT-based
+- The continuous wavelet transform (``cwt``) now offers an FFT-based
   implementation in addition to the previous convolution based one. The new
   ``method`` argument can be set to either ``'conv'`` or ``'fft'`` to select
   between these two implementations. (#490).
 
-- The ``cwt`` now also has ``axis`` support so that cwts can be applied in
+- The ``cwt`` now also has ``axis`` support so that CWTs can be applied in
   batch along any axis of an n-dimensional array. This enables faster batch
   transformation of signals. (#509)
 
@@ -99,7 +100,7 @@ Other changes
 
 - Cython code has been updated to use ``language_level=3``. (#435)
 
-- PyWavelets has adopted the Scipy Code of Conduct. (#521)
+- PyWavelets has adopted the SciPy Code of Conduct. (#521)
 
 Authors
 =======
@@ -156,3 +157,4 @@ Pull requests for v1.1.0
 - `#514 <https://github.com/PyWavelets/pywt/pull/514>`__: Small typo in the doc
 - `#516 <https://github.com/PyWavelets/pywt/pull/516>`__: Fix docstrings to avoid sphinx warnings
 - `#521 <https://github.com/PyWavelets/pywt/pull/521>`__: DOC: adopt the SciPy Code of Conduct
+- `#525 <https://github.com/PyWavelets/pywt/pull/525>`__: test against Python 3.8
