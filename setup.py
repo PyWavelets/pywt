@@ -15,8 +15,8 @@ from setuptools.command.test import test as TestCommand
 
 MAJOR = 1
 MINOR = 1
-MICRO = 0
-ISRELEASED = True
+MICRO = 1
+ISRELEASED = False
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 
 
