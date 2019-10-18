@@ -33,6 +33,7 @@ matrix:
         - MATPLOTLIBSPEC=matplotlib
         - CYTHONSPEC=cython
         - USE_SDIST=1
+        - PYTEST_EXTRA_ARGS="--disable-pytest-warnings"
     - os: linux
       python: 3.5
       env:
@@ -80,7 +81,7 @@ script:
         pip wheel . -v
         pip install PyWavelets*.whl -v
         pushd demo
-        pytest --pyargs pywt
+        pytest --pyargs pywt ${PYTEST_EXTRA_ARGS}
         python ../pywt/tests/test_doc.py
         popd
     elif [ "${USE_SDIST}" == "1" ]; then
@@ -88,7 +89,7 @@ script:
         # Move out of source directory to avoid finding local pywt
         pushd dist
         pip install PyWavelets* -v
-        pytest --pyargs pywt
+        pytest --pyargs pywt ${PYTEST_EXTRA_ARGS}
         python ../pywt/tests/test_doc.py
         popd
     elif [ "${REFGUIDE_CHECK}" == "1" ]; then
@@ -98,8 +99,7 @@ script:
         CFLAGS="--coverage" python setup.py build --build-lib build/lib/ --build-temp build/tmp/
         CFLAGS="--coverage" pip install -e . -v
         pushd demo
-        python -c "import pywt; print(pywt.__file__)"
-        pytest --pyargs pywt --cov=pywt --cov-config=../.coveragerc
+        pytest --pyargs pywt --cov=pywt --cov-config=../.coveragerc ${PYTEST_EXTRA_ARGS}
         cp .coverage ..
         popd
     fi
