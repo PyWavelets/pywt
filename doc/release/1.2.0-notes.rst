@@ -1,0 +1,34 @@
+==============================
+PyWavelets 1.2.0 Release Notes
+==============================
+
+.. contents::
+
+
+New features
+============
+
+
+Backwards incompatible changes
+==============================
+
+
+Bugs Fixed
+==========
+
+
+Other changes
+=============
+
+
+Authors
+=======
+
+
+Issues closed for v1.2.0
+------------------------
+
+
+Pull requests for v1.2.0
+------------------------
+
