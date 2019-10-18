@@ -16,6 +16,7 @@ API Reference
    dwt-coefficient-handling
    swt-stationary-wavelet-transform
    iswt-inverse-stationary-wavelet-transform
+   mra
    wavelet-packets
    cwt
    thresholding-functions
