@@ -435,6 +435,7 @@ def setup_package():
 
         install_requires=["numpy>=1.13.3"],
         setup_requires=["numpy>=1.13.3"],
+        python_requires=">=3.5",
     )
 
     if "--force" in sys.argv:
