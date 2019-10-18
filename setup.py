@@ -19,6 +19,9 @@ MICRO = 1
 ISRELEASED = False
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 
+# fail quicker on unsupported Python (prior to Cythonizing)
+if sys.version_info[:2] < (3, 5):
+    raise RuntimeError("Python version >= 3.5 required.")
 
 # Return the git revision as a string
 def git_version():
