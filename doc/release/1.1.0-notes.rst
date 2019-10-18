@@ -157,4 +157,3 @@ Pull requests for v1.1.0
 - `#514 <https://github.com/PyWavelets/pywt/pull/514>`__: Small typo in the doc
 - `#516 <https://github.com/PyWavelets/pywt/pull/516>`__: Fix docstrings to avoid sphinx warnings
 - `#521 <https://github.com/PyWavelets/pywt/pull/521>`__: DOC: adopt the SciPy Code of Conduct
-- `#525 <https://github.com/PyWavelets/pywt/pull/525>`__: test against Python 3.8
