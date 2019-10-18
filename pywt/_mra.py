@@ -8,15 +8,14 @@ from ._multilevel import (wavedec, waverec, wavedec2, waverec2, wavedecn,
 from ._utils import _wavelets_per_axis, _modes_per_axis
 
 
-__all__ = ["mra", "mra2", "mran"]
+__all__ = ["mra", "mra2", "mran", "imra", "imra2", "imran"]
 
 
 def mra(data, wavelet, level=None, axis=-1, transform='swt',
         mode='periodization'):
     """Forward 1D multiresolution analysis.
 
-    This is also known as an additive decomposition. It is a projection onto
-    the wavelet subspaces.
+    It is a projection onto the wavelet subspaces.
 
     Parameters
     ----------
@@ -40,6 +39,19 @@ def mra(data, wavelet, level=None, axis=-1, transform='swt',
     -------
     [cAn, {details_level_n}, ... {details_level_1}] : list
         For more information, see the detailed description in `wavedec`
+
+    Notes
+    -----
+    This is sometimes referred to as an additive decomposition because the
+    inverse transform (``imra``) is just the sum of the coefficient arrays.
+
+    This transform does not share the variance partition property of ``swt``
+    with `norm=True`. It does however, result in coefficients that are
+    temporally aligned regardless of the symmetry of the wavelet used.
+
+    See Also
+    --------
+    ``imra``, ``swt``
     """
     if transform == 'swt':
         if mode != 'periodization':
@@ -103,6 +115,10 @@ def imra(mra_coeffs):
     -------
     rec : ndarray
         The reconstructed signal.
+
+    See Also
+    --------
+    ``mra``
     """
     return reduce(lambda x, y: x + y, mra_coeffs)
 
@@ -111,8 +127,7 @@ def mra2(data, wavelet, level=None, axes=(-2, -1), transform='swt2',
          mode='periodization'):
     """Forward 2D multiresolution analysis.
 
-    This is also known as an additive decomposition. It is a projection onto
-    the wavelet subspaces.
+    It is a projection onto wavelet subspaces.
 
     Parameters
     ----------
@@ -137,6 +152,19 @@ def mra2(data, wavelet, level=None, axes=(-2, -1), transform='swt2',
     -------
     coeffs : list
         For more information, see the detailed description in `wavedec2`
+
+    Notes
+    -----
+    This is sometimes referred to as an additive decomposition because the
+    inverse transform (``imra2``) is just the sum of the coefficient arrays.
+
+    This transform does not share the variance partition property of ``swt2``
+    with `norm=True`. It does however, result in coefficients that are
+    temporally aligned regardless of the symmetry of the wavelet used.
+
+    See Also
+    --------
+    ``imra2``, ``swt2``
     """
     if transform == 'swt2':
         if mode != 'periodization':
@@ -204,6 +232,10 @@ def imra2(mra_coeffs):
     -------
     rec : ndarray
         The reconstructed signal.
+
+    See Also
+    --------
+    ``mra2``
     """
     rec = mra_coeffs[0]
     for j in range(1, len(mra_coeffs)):
@@ -216,8 +248,7 @@ def mran(data, wavelet, level=None, axes=None, transform='swtn',
          mode='periodization'):
     """Forward nD multiresolution analysis.
 
-    This is also known as an additive decomposition. It is a projection onto
-    the wavelet subspaces.
+    It is a projection onto the wavelet subspaces.
 
     Parameters
     ----------
@@ -241,6 +272,19 @@ def mran(data, wavelet, level=None, axes=None, transform='swtn',
     -------
     coeffs : list
         For more information, see the detailed description in `wavedecn`.
+
+    Notes
+    -----
+    This is sometimes referred to as an additive decomposition because the
+    inverse transform (``imran``) is just the sum of the coefficient arrays.
+
+    This transform does not share the variance partition property of ``swtn``
+    with `norm=True`. It does however, result in coefficients that are
+    temporally aligned regardless of the symmetry of the wavelet used.
+
+    See Also
+    --------
+    ``imran``, ``swtn``
     """
     axes, axes_shapes, ndim_transform = _prep_axes_wavedecn(data.shape, axes)
     wavelets = _wavelets_per_axis(wavelet, axes)
@@ -313,6 +357,10 @@ def imran(mra_coeffs):
     -------
     rec : ndarray
         The reconstructed signal.
+
+    See Also
+    --------
+    ``mran``
     """
     rec = mra_coeffs[0]
     for j in range(1, len(mra_coeffs)):
