@@ -49,6 +49,8 @@ def mra(data, wavelet, level=None, axis=-1, transform='swt',
     with `norm=True`. It does however, result in coefficients that are
     temporally aligned regardless of the symmetry of the wavelet used.
 
+    The redundancy of this transform is ``(level + 1)``.
+
     See Also
     --------
     ``imra``, ``swt``
@@ -161,6 +163,8 @@ def mra2(data, wavelet, level=None, axes=(-2, -1), transform='swt2',
     This transform does not share the variance partition property of ``swt2``
     with `norm=True`. It does however, result in coefficients that are
     temporally aligned regardless of the symmetry of the wavelet used.
+
+    The redundancy of this transform is ``3 * level + 1``.
 
     See Also
     --------
@@ -281,6 +285,9 @@ def mran(data, wavelet, level=None, axes=None, transform='swtn',
     This transform does not share the variance partition property of ``swtn``
     with `norm=True`. It does however, result in coefficients that are
     temporally aligned regardless of the symmetry of the wavelet used.
+
+    The redundancy of this transform is ``(2**n - 1) * level + 1`` where ``n``
+    corresponds to the number of axes transformed.
 
     See Also
     --------
