@@ -58,13 +58,12 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source util/travis_osx_install.sh; fi
   - ccache -s
   - which python; python --version
-  - pip install --upgrade pip
-  - pip install --upgrade wheel
+  - pip install --upgrade pip wheel setuptools
   # Set numpy version first, other packages link against it
   - pip install $NUMPYSPEC
   - pip install $MATPLOTLIBSPEC
   - pip install $CYTHONSPEC
-  - pip install pytest pytest-cov coverage codecov futures
+  - pip install pytest pytest-cov coverage codecov
   - set -o pipefail
   - if [ "${USE_WHEEL}" == "1" ]; then pip install wheel; fi
   - if [ "${USE_SCIPY}" == "1" ]; then pip install scipy; fi
@@ -99,6 +98,7 @@ script:
         CFLAGS="--coverage" python setup.py build --build-lib build/lib/ --build-temp build/tmp/
         CFLAGS="--coverage" pip install -e . -v
         pushd demo
+        python -c "import pywt; print(pywt.__file__)"
         pytest --pyargs pywt --cov=pywt --cov-config=../.coveragerc
         cp .coverage ..
         popd
