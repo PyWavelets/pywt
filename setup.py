@@ -15,8 +15,8 @@ from setuptools.command.test import test as TestCommand
 
 MAJOR = 1
 MINOR = 1
-MICRO = 1
-ISRELEASED = True
+MICRO = 2
+ISRELEASED = False
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 
 # fail quicker on unsupported Python (prior to Cythonizing)
