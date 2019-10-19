@@ -16,9 +16,12 @@ from setuptools.command.test import test as TestCommand
 MAJOR = 1
 MINOR = 1
 MICRO = 1
-ISRELEASED = False
+ISRELEASED = True
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 
+# fail quicker on unsupported Python (prior to Cythonizing)
+if sys.version_info[:2] < (3, 5):
+    raise RuntimeError("Python version >= 3.5 required.")
 
 # Return the git revision as a string
 def git_version():
@@ -420,6 +423,8 @@ def setup_package():
             "Programming Language :: Python :: 3.6",
             "Programming Language :: Python :: 3.7",
             "Programming Language :: Python :: 3.8",
+            "Programming Language :: Python :: 3 :: Only",
+            "Programming Language :: Python :: Implementation :: CPython",
             "Topic :: Software Development :: Libraries :: Python Modules"
         ],
         platforms=["Windows", "Linux", "Solaris", "Mac OS-X", "Unix"],
@@ -435,6 +440,7 @@ def setup_package():
 
         install_requires=["numpy>=1.13.3"],
         setup_requires=["numpy>=1.13.3"],
+        python_requires=">=3.5",
     )
 
     if "--force" in sys.argv:
