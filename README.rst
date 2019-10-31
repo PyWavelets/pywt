@@ -119,7 +119,7 @@ and documentation improvements are welcome.  Moreover, developers with an
 interest in PyWavelets are very welcome to join the development team!
 
 As of 2019, PyWavelets development is supported in part by Tidelift.
-`Help support PyWavelets with the Tidelift Subscription <https://tidelift.com/subscription/pkg/pypi-pywavelets?utm_source=pypi-pywavelets&utm_medium=referral&utm_campaign=readme>`_
+`Help support PyWavelets with the Tidelift Subscription <https://tidelift.com/subscription/pkg/pypi-pywavelets?utm_source=pypi-pywavelets&utm_medium=referral&utm_campaign=enterprise>`_
 
 
 Contact
