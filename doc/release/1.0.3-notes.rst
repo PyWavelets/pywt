@@ -1,0 +1,8 @@
+==============================
+PyWavelets 1.0.3 Release Notes
+==============================
+
+PyWavelets 1.0.3 is functionally equivalent to the 1.0.2 release. It was made
+to add the add an archive of the JOSS paper to the 1.0.x branch and serve as a
+reference corresponding to the version of the software reviewed that was peer
+reviewed.

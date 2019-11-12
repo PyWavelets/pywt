@@ -1,0 +1,52 @@
+==============================
+PyWavelets 0.5.2 Release Notes
+==============================
+
+PyWavelets 0.5.2 is a bug-fix release with no new features compared to 0.5.1.
+
+
+Bugs Fixed
+==========
+
+The ``pywt.data.nino`` data reader is now compatible with numpy 1.12. (#273)
+
+The ``wp_scalogram.py`` demo is now compatibile with matplotlib 2.0. (#276)
+
+Fixed a sporadic segmentation fault affecting stationary wavelet transforms of
+multi-dimensional data. (#289)
+
+``idwtn`` now treats coefficients set to None to be treated as zeros (#291).
+This makes the behavior consistent with its docstring as well as idwt2.
+Previously this raised an error.
+
+The tests are now included when installing from wheels or when running
+``python setup.py install``. (#292)
+
+A bug leading to a potential ``RuntimeError`` was fixed in ``waverec``.
+This bug only affected transforms where the data was >1D and the transformed
+axis was not the first axis of the array. (#294).
+
+Authors
+=======
+
+* Ralf Gommers
+* Gregory R. Lee
+
+Issues closed for v0.5.2
+------------------------
+
+- `#280 <https://github.com/PyWavelets/pywt/issues/280>`__: No tests found from installed version
+- `#288 <https://github.com/PyWavelets/pywt/issues/288>`__: RuntimeErrors and segfaults from swt2() in threaded environments
+- `#290 <https://github.com/PyWavelets/pywt/issues/290>`__: idwtn should treat coefficients set to None as zeros
+- `#293 <https://github.com/PyWavelets/pywt/issues/293>`__: bug in waverec of n-dimensional data when axis != 0
+
+Pull requests for v0.5.2
+------------------------
+
+- `#273 <https://github.com/PyWavelets/pywt/issues/273>`__: fix non-integer index error
+- `#276 <https://github.com/PyWavelets/pywt/issues/276>`__: update wp_scalogram demo work with matplotlib 2.0
+- `#289 <https://github.com/PyWavelets/pywt/issues/289>`__: fix memory leak in swt_axis
+- `#291 <https://github.com/PyWavelets/pywt/issues/291>`__: idwtn should allow coefficients to be set as None
+- `#292 <https://github.com/PyWavelets/pywt/issues/292>`__: MAINT: ensure tests are included in wheels
+- `#294 <https://github.com/PyWavelets/pywt/issues/294>`__: FIX: shape adjustment in waverec should not assume a transform along …
+- `#295 <https://github.com/PyWavelets/pywt/issues/295>`__: MAINT: fix readthedocs build issue, update numpy version specifier
