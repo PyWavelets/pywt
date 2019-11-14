@@ -58,24 +58,24 @@ Backwards incompatible changes
   the ``cwt`` in double precision. (#507)
 
 - When using complex-valued wavelets with the ``cwt``, the output will now be
-the complex conjugate of the result that was produced by PyWavelets 1.0.x.
-This was done to account for a bug described below. The magnitude of the
-``cwt`` coefficients will still match those from previous releases. (#439)
+  the complex conjugate of the result that was produced by PyWavelets 1.0.x.
+  This was done to account for a bug described below. The magnitude of the
+  ``cwt`` coefficients will still match those from previous releases. (#439)
 
 
 Bugs Fixed
 ==========
 
 - For a ``cwt`` with complex wavelets, the results in PyWavelets 1.0.x releases
-matched the output of Matlab R2012a's ``cwt``. Howveer, older Matlab releases
-like R2012a had a phase that was of opposite sign to that given in textbook
-definitions of the CWT (Eq. 2 of Torrence and Compo's review article, "A
-Practical Guide to Wavelet Analysis"). Consequently, the wavelet coefficients
-were the complex conjugates of the expected result. This was validated by
-comparing the results of a transform using ``cmor1.0-1.0`` as compared to the
-``cwt`` implementation available in Matlab R2017b as well as the function
-``wt.m`` from the Lancaster University Physics department's
-`MODA toolbox <https://github.com/luphysics/MODA>`_. (#439)
+  matched the output of Matlab R2012a's ``cwt``. Howveer, older Matlab releases
+  like R2012a had a phase that was of opposite sign to that given in textbook
+  definitions of the CWT (Eq. 2 of Torrence and Compo's review article, "A
+  Practical Guide to Wavelet Analysis"). Consequently, the wavelet coefficients
+  were the complex conjugates of the expected result. This was validated by
+  comparing the results of a transform using ``cmor1.0-1.0`` as compared to the
+  ``cwt`` implementation available in Matlab R2017b as well as the function
+  ``wt.m`` from the Lancaster University Physics department's
+  `MODA toolbox <https://github.com/luphysics/MODA>`_. (#439)
 
 - For some boundary modes and data sizes, round-trip ``dwt``/``idwt`` can
   result in an output that has one additional coefficient. Prior to this
