@@ -20,14 +20,19 @@ matrix:
         - USE_WHEEL=1
     - os: linux
       python: 3.7
-      dist: xenial # travis-ci/travis-ci/issues/9815
-      sudo: true
       env:
         - NUMPYSPEC=numpy
         - MATPLOTLIBSPEC=matplotlib
         - CYTHONSPEC=cython
         - USE_SDIST=1
         - USE_SCIPY=1
+    - os: linux
+      python: 3.8
+      env:
+        - NUMPYSPEC=numpy
+        - MATPLOTLIBSPEC=matplotlib
+        - CYTHONSPEC=cython
+        - USE_SDIST=1
     - os: linux
       python: 3.5
       env:
@@ -53,13 +58,12 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source util/travis_osx_install.sh; fi
   - ccache -s
   - which python; python --version
-  - pip install --upgrade pip
-  - pip install --upgrade wheel
+  - pip install --upgrade pip wheel setuptools
   # Set numpy version first, other packages link against it
   - pip install $NUMPYSPEC
   - pip install $MATPLOTLIBSPEC
   - pip install $CYTHONSPEC
-  - pip install pytest pytest-cov coverage codecov futures
+  - pip install pytest pytest-cov coverage codecov
   - set -o pipefail
   - if [ "${USE_WHEEL}" == "1" ]; then pip install wheel; fi
   - if [ "${USE_SCIPY}" == "1" ]; then pip install scipy; fi
