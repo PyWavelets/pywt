@@ -2,16 +2,29 @@
 #   http://lint.travis-ci.org/
 language: python
 sudo: false
-
+arch:
+    - amd64
+    - arm64
 env:
   global:
     # Use non-interactive backend
     - MPLBACKEND: Agg
     - CYTHON_TRACE: 1
+    - NUMPYSPEC=numpy
+    - MATPLOTLIBSPEC=matplotlib
+    - CYTHONSPEC=cython
 
 matrix:
   include:
     - os: linux
+      python: 3.6
+      env:
+        - NUMPYSPEC=numpy
+        - MATPLOTLIBSPEC=matplotlib
+        - CYTHONSPEC=cython
+        - USE_WHEEL=1
+    - arch: arm64
+      os: linux
       python: 3.6
       env:
         - NUMPYSPEC=numpy
@@ -26,6 +39,16 @@ matrix:
         - CYTHONSPEC=cython
         - USE_SDIST=1
         - USE_SCIPY=1
+    - arch: arm64
+      os: linux
+      python: 3.7
+      dist: bionic # travis-ci/travis-ci/issues/9815
+      sudo: true
+      env:
+        - NUMPYSPEC=numpy
+        - MATPLOTLIBSPEC=matplotlib
+        - CYTHONSPEC=cython
+        - USE_SDIST=1
     - os: linux
       python: 3.8
       env:
@@ -48,7 +71,6 @@ matrix:
         - MATPLOTLIBSPEC=matplotlib
         - CYTHONSPEC=cython
         - TRAVIS_PYTHON_VERSION=3.5
-
 cache: pip
 
 before_install:
@@ -58,6 +80,7 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source util/travis_osx_install.sh; fi
   - ccache -s
   - which python; python --version
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install libatlas-base-dev; fi
   - pip install --upgrade pip wheel setuptools
   # Set numpy version first, other packages link against it
   - pip install $NUMPYSPEC
@@ -81,7 +104,9 @@ script:
         pip install PyWavelets*.whl -v
         pushd demo
         pytest --pyargs pywt
-        python ../pywt/tests/test_doc.py
+        if [[ "${TRAVIS_CPU_ARCH}" != "arm64" ]]; then
+        python ../pywt/tests/test_doc.py;
+        fi
         popd
     elif [ "${USE_SDIST}" == "1" ]; then
         python setup.py sdist
@@ -89,7 +114,9 @@ script:
         pushd dist
         pip install PyWavelets* -v
         pytest --pyargs pywt
-        python ../pywt/tests/test_doc.py
+        if [[ "${TRAVIS_CPU_ARCH}" != "arm64" ]]; then
+        python ../pywt/tests/test_doc.py;
+        fi
         popd
     elif [ "${REFGUIDE_CHECK}" == "1" ]; then
         pip install -e . -v
