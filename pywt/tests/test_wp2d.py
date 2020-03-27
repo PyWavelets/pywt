@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-from __future__ import division, print_function, absolute_import
+import os
+import pickle
 
 import numpy as np
 from numpy.testing import (assert_allclose, assert_, assert_raises,
@@ -175,3 +176,13 @@ def test_2d_roundtrip():
                               maxlevel=3)
     r = wp.reconstruct()
     assert_allclose(original, r, atol=1e-12, rtol=1e-12)
+
+
+def test_wavelet_packet2d_pickle(tmpdir):
+    packet = pywt.WaveletPacket2D(np.arange(256).reshape(16, 16), 'sym4')
+    filename = os.path.join(tmpdir, 'wp2d.pickle')
+    with open(filename, 'wb') as f:
+        pickle.dump(packet, f)
+    with open(filename, 'rb') as f:
+        packet2 = pickle.load(f)
+    assert isinstance(packet2, pywt.WaveletPacket2D)
