@@ -115,6 +115,21 @@ def test_gaus():
         assert_allclose(X, x)
 
 
+@pytest.mark.parametrize('dtype', [np.float32, np.float64])
+def test_continuous_wavelet_dtype(dtype):
+    wavelet = pywt.ContinuousWavelet('cmor1.5-1.0', dtype)
+    int_psi, x = pywt.integrate_wavelet(wavelet)
+    assert int_psi.real.dtype == dtype
+    assert x.dtype == dtype
+
+
+def test_continuous_wavelet_invalid_dtype():
+    with pytest.raises(ValueError):
+        pywt.ContinuousWavelet('gaus5', np.complex64)
+    with pytest.raises(ValueError):
+        pywt.ContinuousWavelet('gaus5', np.int)
+
+
 def test_cgau():
     LB = -5
     UB = 5

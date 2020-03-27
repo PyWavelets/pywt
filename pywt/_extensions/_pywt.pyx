@@ -691,6 +691,10 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
         # builtin wavelet
         self.name = name.lower()
         self.dt = dtype
+        if np.dtype(self.dt) not in [np.float32, np.float64]:
+            raise ValueError(
+                "Only np.float32 and np.float64 dtype are supported for "
+                "ContinuousWavelet objects.")
         if len(self.name) >= 4 and self.name[:4] in ['cmor', 'shan', 'fbsp']:
             base_name = self.name[:4]
             if base_name == self.name:
