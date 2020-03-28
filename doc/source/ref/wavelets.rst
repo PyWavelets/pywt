@@ -260,13 +260,14 @@ from plain Python lists of filter coefficients and a *filter bank-like* object.
 ``ContinuousWavelet`` object
 ----------------------------
 
-.. class:: ContinuousWavelet(name)
+.. class:: ContinuousWavelet(name, dtype=np.float64)
 
   Describes properties of a continuous wavelet identified by the specified wavelet ``name``.
   In order to use a built-in wavelet the ``name`` parameter must be a valid
   wavelet name from the :func:`pywt.wavelist` list.
 
   :param name: Wavelet name
+  :param dtype: numpy.dtype to use for the wavelet. Can be numpy.float64 or numpy.float32.
 
   **Example:**
 
