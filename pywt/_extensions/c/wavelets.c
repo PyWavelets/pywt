@@ -42,6 +42,8 @@ int is_discrete_wavelet(WAVELET_NAME name)
             return 0;
         case CMOR:
             return 0;
+        case BEN:
+            return 0;
         default:
             return -1;
     }
@@ -496,6 +498,25 @@ ContinuousWavelet* continuous_wavelet(WAVELET_NAME name, unsigned int order)
             w->bandwidth_frequency = 1;
             w->fbsp_order = 0;
             break;
+         case BEN:
+
+            w = blank_continuous_wavelet();
+            if(w == NULL) return NULL;
+
+            w->base.support_width = -1;
+            w->base.orthogonal = 0;
+            w->base.biorthogonal = 0;
+            w->base.symmetry = ASYMMETRIC;
+            w->base.compact_support = 0;
+            w->base.family_name = "Wavelet of Ben";
+            w->base.short_name = "ben";
+            w->complex_cwt = 1;
+            w->lower_bound = -8;
+            w->upper_bound = 8;
+            w->center_frequency = 0.5;
+            w->bandwidth_frequency = 1;
+            w->fbsp_order = 0;
+            break;   
         default:
             return NULL;
     }
