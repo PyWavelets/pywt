@@ -9,6 +9,7 @@ import numpy as np
 
 include "config.pxi"
 
+np.import_array()
 
 cpdef dwt_max_level(size_t data_len, size_t filter_len):
     return common.dwt_max_level(data_len, filter_len)
