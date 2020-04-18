@@ -7,7 +7,7 @@ from ._pywt cimport _check_dtype
 cimport numpy as np
 import numpy as np
 
-
+np.import_array()
 
 
 cpdef cwt_psi_single(data_t[::1] data, ContinuousWavelet wavelet, size_t output_len):
