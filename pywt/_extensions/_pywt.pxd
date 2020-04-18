@@ -1,5 +1,8 @@
 from . cimport wavelet
 cimport numpy as np
+
+np.import_array()
+
 include "config.pxi"
 
 ctypedef Py_ssize_t pywt_index_t
