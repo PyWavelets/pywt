@@ -40,10 +40,17 @@ def mra(data, wavelet, level=None, axis=-1, transform='swt',
     [cAn, {details_level_n}, ... {details_level_1}] : list
         For more information, see the detailed description in `wavedec`
 
+    See Also
+    --------
+    ``imra``, ``swt``
+
     Notes
     -----
     This is sometimes referred to as an additive decomposition because the
-    inverse transform (``imra``) is just the sum of the coefficient arrays.
+    inverse transform (``imra``) is just the sum of the coefficient arrays
+    [1]_. The decomposition using ``transform='dwt'`` corresponds to section
+    2.2 while that using an undecimated transform (``transform='swt'``) is
+    described in section 3.2 and appendix A.
 
     This transform does not share the variance partition property of ``swt``
     with `norm=True`. It does however, result in coefficients that are
@@ -51,9 +58,13 @@ def mra(data, wavelet, level=None, axis=-1, transform='swt',
 
     The redundancy of this transform is ``(level + 1)``.
 
-    See Also
-    --------
-    ``imra``, ``swt``
+    References
+    ----------
+    .. [1] Donald B. Percival and Harold O. Mofjeld. Analysis of Subtidal
+        Coastal Sea Level Fluctuations Using Wavelets. Journal of the American
+        Statistical Association Vol. 92, No. 439 (Sep., 1997), pp. 868-880.
+        https://doi.org/10.2307/2965551
+
     """
     if transform == 'swt':
         if mode != 'periodization':
@@ -121,6 +132,13 @@ def imra(mra_coeffs):
     See Also
     --------
     ``mra``
+
+    References
+    ----------
+    .. [1] Donald B. Percival and Harold O. Mofjeld. Analysis of Subtidal
+        Coastal Sea Level Fluctuations Using Wavelets. Journal of the American
+        Statistical Association Vol. 92, No. 439 (Sep., 1997), pp. 868-880.
+        https://doi.org/10.2307/2965551
     """
     return reduce(lambda x, y: x + y, mra_coeffs)
 
@@ -158,7 +176,10 @@ def mra2(data, wavelet, level=None, axes=(-2, -1), transform='swt2',
     Notes
     -----
     This is sometimes referred to as an additive decomposition because the
-    inverse transform (``imra2``) is just the sum of the coefficient arrays.
+    inverse transform (``imra2``) is just the sum of the coefficient arrays
+    [1]_. The decomposition using ``transform='dwt'`` corresponds to section
+    2.2 while that using an undecimated transform (``transform='swt'``) is
+    described in section 3.2 and appendix A.
 
     This transform does not share the variance partition property of ``swt2``
     with `norm=True`. It does however, result in coefficients that are
@@ -169,6 +190,13 @@ def mra2(data, wavelet, level=None, axes=(-2, -1), transform='swt2',
     See Also
     --------
     ``imra2``, ``swt2``
+
+    References
+    ----------
+    .. [1] Donald B. Percival and Harold O. Mofjeld. Analysis of Subtidal
+        Coastal Sea Level Fluctuations Using Wavelets. Journal of the American
+        Statistical Association Vol. 92, No. 439 (Sep., 1997), pp. 868-880.
+        https://doi.org/10.2307/2965551
     """
     if transform == 'swt2':
         if mode != 'periodization':
@@ -240,6 +268,13 @@ def imra2(mra_coeffs):
     See Also
     --------
     ``mra2``
+
+    References
+    ----------
+    .. [1] Donald B. Percival and Harold O. Mofjeld. Analysis of Subtidal
+        Coastal Sea Level Fluctuations Using Wavelets. Journal of the American
+        Statistical Association Vol. 92, No. 439 (Sep., 1997), pp. 868-880.
+        https://doi.org/10.2307/2965551
     """
     rec = mra_coeffs[0]
     for j in range(1, len(mra_coeffs)):
@@ -277,10 +312,17 @@ def mran(data, wavelet, level=None, axes=None, transform='swtn',
     coeffs : list
         For more information, see the detailed description in `wavedecn`.
 
+    See Also
+    --------
+    ``imran``, ``swtn``
+
     Notes
     -----
     This is sometimes referred to as an additive decomposition because the
-    inverse transform (``imran``) is just the sum of the coefficient arrays.
+    inverse transform (``imran``) is just the sum of the coefficient arrays
+    [1]_. The decomposition using ``transform='dwt'`` corresponds to section
+    2.2 while that using an undecimated transform (``transform='swt'``) is
+    described in section 3.2 and appendix A.
 
     This transform does not share the variance partition property of ``swtn``
     with `norm=True`. It does however, result in coefficients that are
@@ -289,9 +331,12 @@ def mran(data, wavelet, level=None, axes=None, transform='swtn',
     The redundancy of this transform is ``(2**n - 1) * level + 1`` where ``n``
     corresponds to the number of axes transformed.
 
-    See Also
-    --------
-    ``imran``, ``swtn``
+    References
+    ----------
+    .. [1] Donald B. Percival and Harold O. Mofjeld. Analysis of Subtidal
+        Coastal Sea Level Fluctuations Using Wavelets. Journal of the American
+        Statistical Association Vol. 92, No. 439 (Sep., 1997), pp. 868-880.
+        https://doi.org/10.2307/2965551
     """
     axes, axes_shapes, ndim_transform = _prep_axes_wavedecn(data.shape, axes)
     wavelets = _wavelets_per_axis(wavelet, axes)
@@ -368,6 +413,13 @@ def imran(mra_coeffs):
     See Also
     --------
     ``mran``
+
+    References
+    ----------
+    .. [1] Donald B. Percival and Harold O. Mofjeld. Analysis of Subtidal
+        Coastal Sea Level Fluctuations Using Wavelets. Journal of the American
+        Statistical Association Vol. 92, No. 439 (Sep., 1997), pp. 868-880.
+        https://doi.org/10.2307/2965551
     """
     rec = mra_coeffs[0]
     for j in range(1, len(mra_coeffs)):
