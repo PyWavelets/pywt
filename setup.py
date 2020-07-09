@@ -438,8 +438,8 @@ def setup_package():
         cmdclass={'develop': develop_build_clib, 'test': PyTest},
         tests_require=['pytest'],
 
-        install_requires=["numpy>=1.13.3"],
-        setup_requires=["numpy>=1.13.3"],
+        install_requires=["numpy>=1.14.6"],
+        setup_requires=["numpy>=1.14.6"],
         python_requires=">=3.7",
     )
 
