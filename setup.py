@@ -56,8 +56,11 @@ def get_version_info():
     elif os.path.exists('pywt/version.py'):
         # must be a source distribution, use existing version file
         # load it as a separate module to not load pywt/__init__.py
-        import imp
-        version = imp.load_source('pywt.version', 'pywt/version.py')
+        import types
+        from importlib.machinery import SourceFileLoader
+        loader = SourceFileLoader('pywt.version', 'pywt/version.py')
+        version = types.ModuleType(loader.name)
+        loader.exec_module(version)
         GIT_REVISION = version.git_revision
     else:
         GIT_REVISION = "Unknown"
