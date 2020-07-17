@@ -56,8 +56,11 @@ def get_version_info():
     elif os.path.exists('pywt/version.py'):
         # must be a source distribution, use existing version file
         # load it as a separate module to not load pywt/__init__.py
-        import imp
-        version = imp.load_source('pywt.version', 'pywt/version.py')
+        import types
+        from importlib.machinery import SourceFileLoader
+        loader = SourceFileLoader('pywt.version', 'pywt/version.py')
+        version = types.ModuleType(loader.name)
+        loader.exec_module(version)
         GIT_REVISION = version.git_revision
     else:
         GIT_REVISION = "Unknown"
@@ -220,7 +223,11 @@ class develop_build_clib(develop):
         self.reinitialize_command('build_ext', inplace=1)
         self.run_command('build_ext')
 
-        self.install_site_py()  # ensure that target dir is site-safe
+        try:
+            self.install_site_py()  # ensure that target dir is site-safe
+        except AttributeError:
+            # setuptools 0.49 removed install_site_py
+            pass
 
         if setuptools.bootstrap_install_from:
             self.easy_install(setuptools.bootstrap_install_from)
