@@ -423,8 +423,6 @@ def setup_package():
             "Programming Language :: C",
             "Programming Language :: Python",
             "Programming Language :: Python :: 3",
-            "Programming Language :: Python :: 3.5",
-            "Programming Language :: Python :: 3.6",
             "Programming Language :: Python :: 3.7",
             "Programming Language :: Python :: 3.8",
             "Topic :: Software Development :: Libraries :: Python Modules"
@@ -440,9 +438,9 @@ def setup_package():
         cmdclass={'develop': develop_build_clib, 'test': PyTest},
         tests_require=['pytest'],
 
-        install_requires=["numpy>=1.13.3"],
-        setup_requires=["numpy>=1.13.3"],
-        python_requires=">=3.5",
+        install_requires=["numpy>=1.14.6"],
+        setup_requires=["numpy>=1.14.6"],
+        python_requires=">=3.7",
     )
 
     if "--force" in sys.argv:

@@ -17,7 +17,7 @@ env:
 matrix:
   include:
     - os: linux
-      python: 3.6
+      python: 3.7
       env:
         - NUMPYSPEC=numpy
         - MATPLOTLIBSPEC=matplotlib
@@ -25,7 +25,7 @@ matrix:
         - USE_WHEEL=1
     - arch: arm64
       os: linux
-      python: 3.6
+      python: 3.7
       env:
         - NUMPYSPEC=numpy
         - MATPLOTLIBSPEC=matplotlib
@@ -57,11 +57,11 @@ matrix:
         - CYTHONSPEC=cython
         - USE_SDIST=1
     - os: linux
-      python: 3.5
+      python: 3.7
       env:
-        - NUMPYSPEC="numpy==1.13.3"
+        - NUMPYSPEC="numpy==1.14.6"
         - MATPLOTLIBSPEC=matplotlib
-        - CYTHONSPEC="cython==0.23.5"
+        - CYTHONSPEC="cython==0.29.18"
         - REFGUIDE_CHECK=1  # run doctests only
     - os: osx
       osx_image: xcode7.3
@@ -70,7 +70,7 @@ matrix:
         - NUMPYSPEC=numpy
         - MATPLOTLIBSPEC=matplotlib
         - CYTHONSPEC=cython
-        - TRAVIS_PYTHON_VERSION=3.5
+        - TRAVIS_PYTHON_VERSION=3.7
 cache: pip
 
 before_install:
