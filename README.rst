@@ -45,7 +45,7 @@ The main features of PyWavelets are:
   * 1D, 2D and nD Multilevel DWT and IDWT
   * 1D and 2D Stationary Wavelet Transform (Undecimated Wavelet Transform)
   * 1D and 2D Wavelet Packet decomposition and reconstruction
-  * 1D Continuous Wavelet Tranfsorm
+  * 1D Continuous Wavelet Transform
   * Computing Approximations of wavelet and scaling functions
   * Over 100 `built-in wavelet filters`_ and support for custom wavelets
   * Single and double precision calculations
