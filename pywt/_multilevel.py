@@ -679,9 +679,11 @@ def coeffs_to_array(coeffs, padding=0, axes=None):
     ----------
 
     coeffs : array-like
-        dictionary of wavelet coefficients as returned by pywt.wavedecn
+        Dictionary of wavelet coefficients as returned by pywt.wavedecn
     padding : float or None, optional
-        If None, raise an error if the coefficients cannot be tightly packed.
+        The value to use for the background if the coefficients cannot be
+        tightly packed. If None, raise an error if the coefficients cannot be
+        tightly packed.
     axes : sequence of ints, optional
         Axes over which the DWT that created ``coeffs`` was performed.  The
         default value of None corresponds to all axes.
@@ -723,6 +725,14 @@ def coeffs_to_array(coeffs, padding=0, axes=None):
         |                               |                               |
         |                               |                               |
         +-------------------------------+-------------------------------+
+
+    If the transform was not performed with mode "periodization" or the signal
+    length was not a multiple of ``2**level``, coefficients at each subsequent
+    scale will not be exactly 1/2 the size of those at the previous level due
+    to additional coefficients retained to handle the boundary condition. In
+    these cases, the default setting of `padding=0` indicates to pad the
+    individual coefficient arrays with 0 as needed so that they can be stacked
+    into a single, contiguous array.
 
     Examples
     --------
