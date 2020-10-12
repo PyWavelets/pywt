@@ -15,6 +15,7 @@ env:
     - MATPLOTLIBSPEC=matplotlib
     - CYTHONSPEC=cython
 
+
 jobs:
   include:
     - os: linux
@@ -64,7 +65,7 @@ jobs:
         - CYTHONSPEC="cython==0.29.18"
         - REFGUIDE_CHECK=1  # run doctests only
     - os: osx
-      osx_image: xcode7.3
+      osx_image: xcode9.4
       language: objective-c
       env:
         - NUMPYSPEC=numpy
@@ -78,7 +79,7 @@ before_install:
   - df -h
   - ulimit -a
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      pip install travis-wait-improved;
+      pip3 install travis-wait-improved;
       source util/travis_osx_install.sh;
     fi
   - ccache -s
