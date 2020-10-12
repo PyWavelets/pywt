@@ -1,7 +1,8 @@
 # After changing this file, check it on:
 #   http://lint.travis-ci.org/
 language: python
-sudo: false
+os: linux
+dist: xenial
 arch:
     - amd64
     - arm64
@@ -14,7 +15,8 @@ env:
     - MATPLOTLIBSPEC=matplotlib
     - CYTHONSPEC=cython
 
-matrix:
+
+jobs:
   include:
     - os: linux
       python: 3.7
@@ -43,7 +45,6 @@ matrix:
       os: linux
       python: 3.7
       dist: bionic # travis-ci/travis-ci/issues/9815
-      sudo: true
       env:
         - NUMPYSPEC=numpy
         - MATPLOTLIBSPEC=matplotlib
@@ -64,20 +65,23 @@ matrix:
         - CYTHONSPEC="cython==0.29.18"
         - REFGUIDE_CHECK=1  # run doctests only
     - os: osx
-      osx_image: xcode7.3
+      osx_image: xcode9.4
       language: objective-c
       env:
         - NUMPYSPEC=numpy
         - MATPLOTLIBSPEC=matplotlib
         - CYTHONSPEC=cython
-        - TRAVIS_PYTHON_VERSION=3.7
+        - MB_PYTHON_VERSION=3.7
 cache: pip
 
 before_install:
   - uname -a
   - df -h
   - ulimit -a
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source util/travis_osx_install.sh; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+      pip3 install travis-wait-improved;
+      source util/travis_osx_install.sh;
+    fi
   - ccache -s
   - which python; python --version
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install libatlas-base-dev; fi
