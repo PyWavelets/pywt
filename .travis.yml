@@ -77,7 +77,10 @@ before_install:
   - uname -a
   - df -h
   - ulimit -a
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source util/travis_osx_install.sh; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+      pip3 install travis-wait-improved;
+      source util/travis_osx_install.sh;
+    fi
   - ccache -s
   - which python; python --version
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install libatlas-base-dev; fi

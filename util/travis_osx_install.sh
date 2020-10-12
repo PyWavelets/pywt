@@ -1,5 +1,5 @@
 #!/bin/bash
-brew update
+travis-wait-improved --timeout 30m brew update
 brew install ccache
 
 git clone --depth 1 --branch devel https://github.com/matthew-brett/multibuild ~/multibuild
