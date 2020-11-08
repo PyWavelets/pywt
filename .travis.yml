@@ -1,11 +1,8 @@
 # After changing this file, check it on:
 #   http://lint.travis-ci.org/
 language: python
-os: linux
 dist: xenial
-arch:
-    - amd64
-    - arm64
+
 env:
   global:
     # Use non-interactive backend
