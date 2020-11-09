@@ -1,11 +1,8 @@
 # After changing this file, check it on:
 #   http://lint.travis-ci.org/
 language: python
-os: linux
 dist: xenial
-arch:
-    - amd64
-    - arm64
+
 env:
   global:
     # Use non-interactive backend
@@ -57,6 +54,14 @@ jobs:
         - MATPLOTLIBSPEC=matplotlib
         - CYTHONSPEC=cython
         - USE_SDIST=1
+    - os: linux
+      python: 3.9
+      env:
+        - NUMPYSPEC=numpy
+        - MATPLOTLIBSPEC=matplotlib
+        - CYTHONSPEC=cython
+        - USE_SDIST=1
+        - USE_SCIPY=1
     - os: linux
       python: 3.7
       env:
