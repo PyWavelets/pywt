@@ -127,7 +127,7 @@ def test_continuous_wavelet_invalid_dtype():
     with pytest.raises(ValueError):
         pywt.ContinuousWavelet('gaus5', np.complex64)
     with pytest.raises(ValueError):
-        pywt.ContinuousWavelet('gaus5', np.int)
+        pywt.ContinuousWavelet('gaus5', np.int_)
 
 
 def test_cgau():
