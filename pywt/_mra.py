@@ -73,7 +73,7 @@ def mra(data, wavelet, level=None, axis=-1, transform='swt',
         kwargs = dict(wavelet=wavelet, norm=True)
         forward = partial(swt, level=level, trim_approx=True, **kwargs)
         if axis % data.ndim != data.ndim - 1:
-            raise ValueError("swt only supports axis=-1")
+            raise np.AxisError("swt only supports axis=-1")
         inverse = partial(iswt, **kwargs)
         is_swt = True
     elif transform == 'dwt':

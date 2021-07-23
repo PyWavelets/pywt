@@ -288,7 +288,7 @@ def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
     for key_length, (axis, wav, mode) in reversed(
             list(enumerate(zip(axes, wavelets, modes)))):
         if axis < 0 or axis >= ndim:
-            raise ValueError("Axis greater than data dimensions")
+            raise np.AxisError("Axis greater than data dimensions")
 
         new_coeffs = {}
         new_keys = [''.join(coef) for coef in product('ad', repeat=key_length)]
