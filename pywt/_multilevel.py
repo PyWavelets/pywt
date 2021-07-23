@@ -1194,7 +1194,7 @@ def unravel_coeffs(arr, coeff_slices, coeff_shapes, output_format='wavedecn'):
 def _check_fswavedecn_axes(data, axes):
     """Axes checks common to fswavedecn, fswaverecn."""
     if len(axes) != len(set(axes)):
-        raise ValueError("The axes passed to fswavedecn must be unique.")
+        raise np.AxisError("The axes passed to fswavedecn must be unique.")
     try:
         [data.shape[ax] for ax in axes]
     except IndexError:
