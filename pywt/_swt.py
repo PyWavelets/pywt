@@ -191,6 +191,8 @@ def iswt(coeffs, wavelet, norm=False):
         coeffs = coeffs[1:]
     else:
         cA = coeffs[0][0]
+    if cA.ndim != 1:
+        raise ValueError("iswt only supports 1D data")
 
     dt = _check_dtype(cA)
     output = np.array(cA, dtype=dt, copy=True)
