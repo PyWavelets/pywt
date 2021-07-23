@@ -121,7 +121,6 @@ def test_mra_1d_swt_axis(axis):
     'dtype', ['float32', 'float64', 'complex64', 'complex128']
 )
 def test_mra2_roundtrip(wavelet, transform, mode, dtype):
-    dtype = np.float64
     x = data.camera()[:32, :16].astype(dtype, copy=False)
     if x.dtype.kind == 'c':
         # fill some data for the imaginary channel
@@ -221,7 +220,6 @@ def test_mra2_2d_swt_axis(axes):
 )
 @pytest.mark.parametrize('ndim', [1, 2, 3])
 def test_mran_roundtrip(wavelet, transform, mode, dtype, ndim):
-    dtype = np.float64
     if ndim == 1:
         x = data.ecg()[:48].astype(dtype, copy=False)
     elif ndim == 2:
