@@ -2,11 +2,10 @@ from functools import partial, reduce
 
 import numpy as np
 
-from ._swt import swt, iswt, swt2, iswt2, swtn, iswtn
-from ._multilevel import (wavedec, waverec, wavedec2, waverec2, wavedecn,
-                          waverecn, _prep_axes_wavedecn)
-from ._utils import _wavelets_per_axis, _modes_per_axis
-
+from ._multilevel import (_prep_axes_wavedecn, wavedec, wavedec2, wavedecn,
+                          waverec, waverec2, waverecn)
+from ._swt import iswt, iswt2, iswtn, swt, swt2, swt_max_level, swtn
+from ._utils import _modes_per_axis, _wavelets_per_axis
 
 __all__ = ["mra", "mra2", "mran", "imra", "imra2", "imran"]
 
@@ -67,13 +66,16 @@ def mra(data, wavelet, level=None, axis=-1, transform='swt',
 
     """
     if transform == 'swt':
+        if data.ndim != 1:
+            raise ValueError(
+                "transform='swt' only supports 1D data. Use `mran` instead if "
+                "an axis-specific MRA is needed.")
         if mode != 'periodization':
             raise ValueError(
                 "transform swt only supports mode='periodization'")
         kwargs = dict(wavelet=wavelet, norm=True)
-        forward = partial(swt, level=level, trim_approx=True, **kwargs)
-        if axis % data.ndim != data.ndim - 1:
-            raise np.AxisError("swt only supports axis=-1")
+        forward = partial(swt, level=level, trim_approx=True, axis=axis,
+                          **kwargs)
         inverse = partial(iswt, **kwargs)
         is_swt = True
     elif transform == 'dwt':
@@ -199,11 +201,17 @@ def mra2(data, wavelet, level=None, axes=(-2, -1), transform='swt2',
         https://doi.org/10.2307/2965551
     """
     if transform == 'swt2':
+        if data.ndim != 2:
+            raise ValueError(
+                "transform='swt' only supports 2D data. Use `mran` instead if "
+                "an axes-specific MRA is needed.")
         if mode != 'periodization':
             raise ValueError(
                 "transform swt only supports mode='periodization'")
         if axes != (-2, -1):
-            raise ValueError("axes argument not supported for mode swt2")
+            raise np.AxisError("axes argument not supported for mode swt2")
+        if level is None:
+            level = min(swt_max_level(s) for s in data.shape)
         kwargs = dict(wavelet=wavelet, norm=True)
         forward = partial(swt2, level=level, trim_approx=True, **kwargs)
         inverse = partial(iswt2, **kwargs)
@@ -345,6 +353,8 @@ def mran(data, wavelet, level=None, axes=None, transform='swtn',
         if mode != 'periodization':
             raise ValueError(
                 "transform swt only supports mode='periodization'")
+        if level is None:
+            level = min(swt_max_level(s) for s in data.shape)
         kwargs = dict(wavelet=wavelets, axes=axes, norm=True)
         forward = partial(swtn, level=level, trim_approx=True, **kwargs)
         inverse = partial(iswtn, **kwargs)
