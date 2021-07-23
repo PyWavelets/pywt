@@ -243,7 +243,7 @@ def test_wavefun_bior13():
                              0.03125, -0.0625, -0.09375, -0.125, -0.15234375,
                              -0.12890625, -0.03515625, 0.00390625, 0.01367188,
                              0.01757813, 0.00195313, -0.00195313, 0., 0., 0.])
-    phi_r_expect = np.zeros(x.size, dtype=np.float)
+    phi_r_expect = np.zeros(x.size, dtype=np.float64)
     phi_r_expect[15:23] = 1
 
     psi_d_expect = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -253,7 +253,7 @@ def test_wavefun_bior13():
                              0.03125, 0.109375, 0.140625, 0.015625, -0.015625,
                              0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
 
-    psi_r_expect = np.zeros(x.size, dtype=np.float)
+    psi_r_expect = np.zeros(x.size, dtype=np.float64)
     psi_r_expect[7:15] = -0.125
     psi_r_expect[15:19] = 1
     psi_r_expect[19:23] = -1

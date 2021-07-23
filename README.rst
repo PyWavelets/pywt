@@ -45,7 +45,7 @@ The main features of PyWavelets are:
   * 1D, 2D and nD Multilevel DWT and IDWT
   * 1D and 2D Stationary Wavelet Transform (Undecimated Wavelet Transform)
   * 1D and 2D Wavelet Packet decomposition and reconstruction
-  * 1D Continuous Wavelet Tranfsorm
+  * 1D Continuous Wavelet Transform
   * Computing Approximations of wavelet and scaling functions
   * Over 100 `built-in wavelet filters`_ and support for custom wavelets
   * Single and double precision calculations
@@ -65,8 +65,8 @@ For more usage examples see the `demo`_ directory in the source package.
 Installation
 ------------
 
-PyWavelets supports `Python`_ >=3.5, and is only dependent on `NumPy`_
-(supported versions are currently ``>= 1.13.3``). To pass all of the tests,
+PyWavelets supports `Python`_ >=3.7, and is only dependent on `NumPy`_
+(supported versions are currently ``>= 1.14.6``). To pass all of the tests,
 `Matplotlib`_ is also required. `SciPy`_ is also an optional dependency. When
 present, FFT-based continuous wavelet transforms will use FFTs from SciPy
 rather than NumPy.

@@ -20,7 +20,7 @@ Installing Cython
 Use ``pip`` (http://pypi.python.org/pypi/pip) to install Cython_::
 
 
-    pip install Cython>=0.16
+    pip install Cython
 
 
 Installing numpy

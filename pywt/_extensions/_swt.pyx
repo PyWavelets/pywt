@@ -10,8 +10,10 @@ cimport numpy as np
 from .common cimport pywt_index_t
 from ._pywt cimport c_wavelet_from_object, cdata_t, Wavelet, _check_dtype
 
-
 include "config.pxi"
+
+np.import_array()
+
 
 def swt_max_level(size_t input_len):
     """

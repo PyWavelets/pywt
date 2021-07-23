@@ -286,7 +286,7 @@ def swt2(data, wavelet, level, start_level=0, axes=(-2, -1),
     -------
     coeffs : list
         Approximation and details coefficients (for ``start_level = m``).
-        If ``trim_approx`` is ``True``, approximation coefficients are
+        If ``trim_approx`` is ``False``, approximation coefficients are
         retained for all levels::
 
             [
@@ -305,7 +305,7 @@ def swt2(data, wavelet, level, start_level=0, axes=(-2, -1),
         where cA is approximation, cH is horizontal details, cV is
         vertical details, cD is diagonal details and m is ``start_level``.
 
-        If ``trim_approx`` is ``False``, approximation coefficients are only
+        If ``trim_approx`` is ``True``, approximation coefficients are only
         retained at the final level of decomposition. This matches the format
         used by ``pywt.wavedec2``::
 

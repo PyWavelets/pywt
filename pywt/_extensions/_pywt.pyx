@@ -677,7 +677,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
 
 cdef public class ContinuousWavelet [type ContinuousWaveletType, object ContinuousWaveletObject]:
     """
-    ContinuousWavelet(name) object describe properties of
+    ContinuousWavelet(name, dtype) object describe properties of
     a continuous wavelet identified by name.
 
     In order to use a built-in wavelet the parameter name must be
@@ -685,15 +685,16 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
 
     """
     #cdef readonly properties
-    def __cinit__(self, name=u"", dtype = None, **kwargs):
+    def __cinit__(self, name=u"", dtype=np.float64):
         cdef object family_code, family_number
 
         # builtin wavelet
         self.name = name.lower()
-        if (dtype is None):
-            self.dt = np.float64
-        else:
-            self.dt = dtype
+        self.dt = dtype
+        if np.dtype(self.dt) not in [np.float32, np.float64]:
+            raise ValueError(
+                "Only np.float32 and np.float64 dtype are supported for "
+                "ContinuousWavelet objects.")
         if len(self.name) >= 4 and self.name[:4] in ['cmor', 'shan', 'fbsp']:
             base_name = self.name[:4]
             if base_name == self.name:

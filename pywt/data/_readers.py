@@ -90,6 +90,19 @@ def camera():
     camera : ndarray
        convenient image to use for testing and demonstration
 
+    Notes
+    -----
+    No copyright restrictions. CC0 by the photographer (Lav Varshney).
+
+    .. versionchanged:: 0.18
+        This image was replaced due to copyright restrictions. For more
+        information, please see [1]_, where the same change was made in
+        scikit-image.
+
+    References
+    ----------
+    .. [1] https://github.com/scikit-image/scikit-image/issues/3927
+
     Examples
     --------
     >>> import pywt.data
