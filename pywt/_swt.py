@@ -152,7 +152,7 @@ def swt(data, wavelet, level=None, start_level=0, axis=-1,
     return ret
 
 
-def iswt(coeffs, wavelet, norm=False):
+def iswt(coeffs, wavelet, norm=False, axis=-1):
     """
     Multilevel 1D inverse discrete stationary wavelet transform.
 
@@ -184,10 +184,18 @@ def iswt(coeffs, wavelet, norm=False):
     array([ 1.,  2.,  3.,  4.,  5.,  6.,  7.,  8.])
     """
     # copy to avoid modification of input data
-
     # If swt was called with trim_approx=False, first element is a tuple
     trim_approx = not isinstance(coeffs[0], (tuple, list))
     cA = coeffs[0] if trim_approx else coeffs[0][0]
+    if cA.ndim > 1:
+        # convert to swtn coefficient format and call iswtn
+        if trim_approx:
+            coeffs_nd = [cA] + [{'d': d} for d in coeffs[1:]]
+        else:
+            coeffs_nd = [{'a': a, 'd': d} for a, d in coeffs]
+        return iswtn(coeffs_nd, wavelet, axes=(axis,), norm=norm)
+    elif axis != 0 and axis != -1:
+        raise np.AxisError("Axis greater than data dimensions")
     if not _have_c99_complex and np.iscomplexobj(cA):
         if trim_approx:
             coeffs_real = [c.real for c in coeffs]
@@ -369,7 +377,7 @@ def swt2(data, wavelet, level, start_level=0, axes=(-2, -1),
     return ret
 
 
-def iswt2(coeffs, wavelet, norm=False):
+def iswt2(coeffs, wavelet, norm=False, axes=(-2, -1)):
     """
     Multilevel 2D inverse discrete stationary wavelet transform.
 
@@ -423,6 +431,15 @@ def iswt2(coeffs, wavelet, norm=False):
     # If swt was called with trim_approx=False, first element is a tuple
     trim_approx = not isinstance(coeffs[0], (tuple, list))
     cA = coeffs[0] if trim_approx else coeffs[0][0]
+    if cA.ndim != 2 or axes != (-2, -1):
+        # convert to swtn coefficient format and call iswtn instead
+        if trim_approx:
+            coeffs_nd = [cA] + [{'da': h, 'ad': v, 'dd': d}
+                                for h, v, d in coeffs[1:]]
+        else:
+            coeffs_nd = [{'aa': a, 'da': h, 'ad': v, 'dd': d}
+                         for a, (h, v, d) in coeffs]
+        return iswtn(coeffs_nd, wavelet, axes=axes, norm=norm)
     if not _have_c99_complex and np.iscomplexobj(cA):
         if trim_approx:
             coeffs_real = [cA.real]
@@ -620,6 +637,8 @@ def swtn(data, wavelet, level, start_level=0, axes=None, trim_approx=False,
     if axes is None:
         axes = range(data.ndim)
     axes = [a + data.ndim if a < 0 else a for a in axes]
+    if any(a < 0 or a >= data.ndim for a in axes):
+        raise np.AxisError("Axis greater than data dimensions")
     if len(axes) != len(set(axes)):
         raise ValueError("The axes passed to swtn must be unique.")
     num_axes = len(axes)
