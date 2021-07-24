@@ -66,16 +66,11 @@ def mra(data, wavelet, level=None, axis=-1, transform='swt',
 
     """
     if transform == 'swt':
-        if data.ndim != 1:
-            raise ValueError(
-                "transform='swt' only supports 1D data. Use `mran` instead if "
-                "an axis-specific MRA is needed.")
         if mode != 'periodization':
             raise ValueError(
                 "transform swt only supports mode='periodization'")
-        kwargs = dict(wavelet=wavelet, norm=True)
-        forward = partial(swt, level=level, trim_approx=True, axis=axis,
-                          **kwargs)
+        kwargs = dict(wavelet=wavelet, axis=axis, norm=True)
+        forward = partial(swt, level=level, trim_approx=True, **kwargs)
         inverse = partial(iswt, **kwargs)
         is_swt = True
     elif transform == 'dwt':
@@ -201,18 +196,12 @@ def mra2(data, wavelet, level=None, axes=(-2, -1), transform='swt2',
         https://doi.org/10.2307/2965551
     """
     if transform == 'swt2':
-        if data.ndim != 2:
-            raise ValueError(
-                "transform='swt' only supports 2D data. Use `mran` instead if "
-                "an axes-specific MRA is needed.")
         if mode != 'periodization':
             raise ValueError(
                 "transform swt only supports mode='periodization'")
-        if axes != (-2, -1):
-            raise np.AxisError("axes argument not supported for mode swt2")
         if level is None:
             level = min(swt_max_level(s) for s in data.shape)
-        kwargs = dict(wavelet=wavelet, norm=True)
+        kwargs = dict(wavelet=wavelet, axes=axes, norm=True)
         forward = partial(swt2, level=level, trim_approx=True, **kwargs)
         inverse = partial(iswt2, **kwargs)
     elif transform == 'dwt2':

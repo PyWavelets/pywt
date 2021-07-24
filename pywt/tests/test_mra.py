@@ -68,43 +68,27 @@ def test_mra_warns_on_non_orthogonal(wavelet, transform):
 
 
 @pytest.mark.parametrize('axis', [0, -1, 1, 2, -3])
-def test_mra_2d_dwt_axis(axis):
-    dtype = np.float64
-    x = data.camera()[:64, :32].astype(dtype)
+@pytest.mark.parametrize('ndim', [1, 2, 3])
+@pytest.mark.parametrize('transform', ['dwt', 'swt'])
+@pytest.mark.parametrize('dtype', [np.float64, np.complex128])
+def test_mra_axis(transform, ndim, axis, dtype):
+    # Test transforms over a specific axis of 1D, 2D or 3D data
+    if ndim == 1:
+        x = data.ecg()[:64]
+    elif ndim == 2:
+        x = data.camera()[:64, :32]
+    elif ndim == 3:
+        x = data.camera()[:48, :8]
+        x = np.stack((x,) * 8, axis=-1)
+    x = x.astype(dtype, copy=False)
 
     # out of range axis
     if axis < -x.ndim or axis >= x.ndim:
         with pytest.raises(np.AxisError):
-            pywt.mra(x, 'db1', transform='dwt', axis=axis)
+            pywt.mra(x, 'db1', transform=transform, axis=axis)
         return
 
-    coeffs = pywt.mra(x, 'db1', transform='dwt', axis=axis)
-    y = pywt.imra(coeffs)
-    rtol = tol_single if x.real.dtype.kind == 'f' else tol_double
-    assert_allclose(x, y, rtol=rtol, atol=rtol)
-
-
-@pytest.mark.parametrize('axis', [0, -1, 1])
-def test_mra_1d_swt_only(axis):
-    # swt case only supports 1d data due to lack of axis-specific iswt
-    x = data.camera()[:64, :32]
-    with pytest.raises(ValueError):
-        pywt.mra(x, 'db1', transform='swt', axis=axis)
-    return
-
-
-@pytest.mark.parametrize('axis', [0, -1, 1, -2])
-def test_mra_1d_swt_axis(axis):
-    dtype = np.float64
-    x = data.ecg()[:64].astype(dtype, copy=False)
-
-    # out of range axis
-    if axis < -x.ndim or axis >= x.ndim:
-        with pytest.raises(np.AxisError):
-            pywt.mra(x, 'db1', transform='swt', axis=axis)
-        return
-
-    coeffs = pywt.mra(x, 'db1', transform='swt', axis=axis)
+    coeffs = pywt.mra(x, 'db1', transform=transform, axis=axis)
     y = pywt.imra(coeffs)
     rtol = tol_single if x.real.dtype.kind == 'f' else tol_double
     assert_allclose(x, y, rtol=rtol, atol=rtol)
@@ -164,45 +148,23 @@ def test_mra2_warns_on_non_orthogonal(wavelet, transform):
     assert_allclose(x, y, rtol=rtol, atol=rtol)
 
 
-@pytest.mark.parametrize('axes', [(0, 1), (-2, -1), (0, 2), (-3, 1),
-                                  (0, 4)])
-def test_mra2_2d_dwt_axes(axes):
-    dtype = np.float64
+@pytest.mark.parametrize('transform', ['dwt2', 'swt2'])
+@pytest.mark.parametrize('ndim', [2, 3])
+@pytest.mark.parametrize('axes', [(0, 1), (-2, -1), (0, 2), (-3, 1), (0, 4)])
+@pytest.mark.parametrize('dtype', [np.float64, np.complex128])
+def test_mra2_axes(transform, axes, ndim, dtype):
+    # Test transforms over various axes of 2D or 3D data.
     x = data.camera()[:32, :16].astype(dtype, copy=False)
-    x3d = np.stack((x,) * 8, axis=-1)
+    if ndim == 3:
+        x = np.stack((x,) * 8, axis=-1)
 
     # out of range axis
     if any([axis < -x.ndim or axis >= x.ndim for axis in axes]):
         with pytest.raises(np.AxisError):
-            pywt.mra2(x, 'db1', transform='dwt2', axes=axes)
+            pywt.mra2(x, 'db1', transform=transform, axes=axes)
         return
 
-    coeffs = pywt.mra2(x3d, 'db1', transform='dwt2', axes=axes)
-    y = pywt.imra2(coeffs)
-    rtol = tol_single if x3d.real.dtype.kind == 'f' else tol_double
-    assert_allclose(x3d, y, rtol=rtol, atol=rtol)
-
-
-def test_mra2_2d_swt_only():
-    # swt case only supports 1d data due to lack of axis-specific iswt
-    x3d = np.stack((data.camera()[:64, :32],) * 16, axis=-1)
-    with pytest.raises(ValueError):
-        pywt.mra2(x3d, 'db1', transform='swt2')
-    return
-
-
-@pytest.mark.parametrize('axes', [(0, 2), (0, 1), (-2, -1)])
-def test_mra2_2d_swt_axis(axes):
-    dtype = np.float64
-    x = data.camera()[:64, :32].astype(dtype, copy=False)
-
-    # out of range axis
-    if axes != (-2, -1):
-        with pytest.raises(np.AxisError):
-            pywt.mra2(x, 'db1', transform='swt2', axes=axes)
-        return
-
-    coeffs = pywt.mra2(x, 'db1', transform='swt2', axes=axes)
+    coeffs = pywt.mra2(x, 'db1', transform=transform, axes=axes)
     y = pywt.imra2(coeffs)
     rtol = tol_single if x.real.dtype.kind == 'f' else tol_double
     assert_allclose(x, y, rtol=rtol, atol=rtol)
@@ -274,9 +236,9 @@ def test_mran_warns_on_non_orthogonal(wavelet, transform):
     'axes', [(0, 1), (-2, -1), (0, 2), (-3, 1), (0, 4), (-3, -2, -1),
              (0, 2, 1), (0, 5, 1), (0,), (1,), (2,), (-2,),  (-3,), (-4,)])
 @pytest.mark.parametrize('transform', ['dwtn', 'swtn'])
-def test_mran_3d_data_axes(axes, transform):
-    # test with transforms over 1, 2 or 3 axes of 3d data
-    # cases with out of range axes are also tested
+def test_mran_axes(axes, transform):
+    # Test with transforms over 1, 2 or 3 axes of 3d data.
+    # Cases with out of range axes are also tested
     dtype = np.float64
     x = data.camera()[:32, :16].astype(dtype, copy=False)
     x3d = np.stack((x,) * 8, axis=-1)
