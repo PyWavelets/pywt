@@ -90,6 +90,10 @@ cpdef dwt_axis(np.ndarray data, Wavelet wavelet, MODE mode, unsigned int axis=0)
     cdef size_t[::1] input_shape, output_shape
     cdef int retval = -5
 
+
+    if data.shape[axis] == 1 and (mode == MODE.MODE_REFLECT or mode == MODE.MODE_ANTIREFLECT):
+        raise ValueError("Input data length must be greater than 1 for [anti]reflect mode along the transformed axis.")
+
     data = data.astype(_check_dtype(data), copy=False)
 
     input_shape = <size_t [:data.ndim]> <size_t *> data.shape
