@@ -180,6 +180,11 @@ def test_idwt_single_axis():
     assert_allclose(x[0], x0)
     assert_allclose(x[1], x1)
 
+def test_dwt_invalid_input():
+    x = np.arange(1)
+    assert_raises(ValueError, pywt.dwt, x, 'db2', 'reflect')
+    assert_raises(ValueError, pywt.dwt, x, 'haar', 'antireflect')
+
 
 def test_dwt_axis_arg():
     x = [[3, 7, 1, 1],
@@ -191,6 +196,9 @@ def test_dwt_axis_arg():
     assert_allclose(cA_, cA)
     assert_allclose(cD_, cD)
 
+def test_dwt_axis_invalid_input():  
+    x = np.ones((3,1))
+    assert_raises(ValueError, pywt.dwt, x, 'db2', 'reflect')
 
 def test_idwt_axis_arg():
     x = [[3, 7, 1, 1],
