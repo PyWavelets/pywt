@@ -8,7 +8,7 @@ on:
       - 'buildwheels*'
 env:
   CIBW_BUILD_VERBOSITY: 2
-  CIBW_BEFORE_BUILD: pip install numpy cython
+  CIBW_BEFORE_BUILD: pip install cython
   CIBW_TEST_REQUIRES: pytest
   CIBW_TEST_COMMAND: pytest --pyargs pywt
 
@@ -26,6 +26,10 @@ jobs:
         include:
           - os: ubuntu-18.04
             cibw_python: "cp39-*"
+            cibw_manylinux: manylinux2010
+        include:
+          - os: ubuntu-18.04
+            cibw_python: "cp310-*"
             cibw_manylinux: manylinux2010
     steps:
       - uses: actions/checkout@v2
@@ -81,11 +85,10 @@ jobs:
         run: |
           python -m cibuildwheel --output-dir dist
         env:
-          CIBW_BUILD: "cp3?-*"
+          CIBW_BUILD: "cp3?-* cp310-*"
           CIBW_SKIP: "cp35-* cp36-*"
           CIBW_MANYLINUX_X86_64_IMAGE: manylinux1
           CIBW_MANYLINUX_I686_IMAGE: manylinux1
-          # CIBW_BEFORE_BUILD: pip install certifi numpy==1.16
           CC: /usr/bin/clang
           CXX: /usr/bin/clang++
           # CPPFLAGS: "-Xpreprocessor -fopenmp"
@@ -123,11 +126,10 @@ jobs:
         run: |
           python -m cibuildwheel --output-dir dist
         env:
-          CIBW_BUILD: "cp3?-*"
+          CIBW_BUILD: "cp3?-* cp310-*"
           CIBW_SKIP: "cp35-* cp36-*"
           CIBW_MANYLINUX_X86_64_IMAGE: manylinux1
           CIBW_MANYLINUX_I686_IMAGE: manylinux1
-          # CIBW_BEFORE_BUILD: pip install certifi numpy==1.16
 
       - uses: actions/upload-artifact@v2
         with:
