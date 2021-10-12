@@ -86,6 +86,7 @@ jobs:
         env:
           CIBW_BUILD: "cp3?-*"  #  cp310-*
           CIBW_SKIP: "cp36-*"
+          CIBW_ARCHS_MACOS: x86_64 arm64 universal2
           CIBW_MANYLINUX_X86_64_IMAGE: manylinux1
           CIBW_MANYLINUX_I686_IMAGE: manylinux1
           CC: /usr/bin/clang
