@@ -85,7 +85,7 @@ jobs:
           python -m cibuildwheel --output-dir dist
         env:
           CIBW_BUILD: "cp3?-*"  #  cp310-*
-          CIBW_SKIP: "cp35-* cp36-*"
+          CIBW_SKIP: "cp36-*"
           CIBW_MANYLINUX_X86_64_IMAGE: manylinux1
           CIBW_MANYLINUX_I686_IMAGE: manylinux1
           CC: /usr/bin/clang
@@ -126,7 +126,7 @@ jobs:
           python -m cibuildwheel --output-dir dist
         env:
           CIBW_BUILD: "cp3?-*"  #  cp310-*
-          CIBW_SKIP: "cp35-* cp36-*"
+          CIBW_SKIP: "cp36-*"
           CIBW_MANYLINUX_X86_64_IMAGE: manylinux1
           CIBW_MANYLINUX_I686_IMAGE: manylinux1
 
