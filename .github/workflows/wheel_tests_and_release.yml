@@ -37,7 +37,7 @@ jobs:
       - uses: actions/setup-python@v2
         name: Install Python
         with:
-          python-version: '3.7'
+          python-version: '3.9'
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
         with:
@@ -75,7 +75,7 @@ jobs:
       - uses: actions/setup-python@v2
         name: Install Python
         with:
-          python-version: '3.7'
+          python-version: '3.9'
 
       - name: Install cibuildwheel
         run: |
@@ -116,7 +116,7 @@ jobs:
       - uses: actions/setup-python@v2
         name: Install Python
         with:
-          python-version: '3.7'
+          python-version: '3.9'
 
       - name: Install cibuildwheel
         run: |
@@ -148,7 +148,7 @@ jobs:
       - uses: actions/setup-python@v2
         name: Install Python
         with:
-          python-version: '3.7'
+          python-version: '3.9'
       
       - name: Install Twine
         run: |
