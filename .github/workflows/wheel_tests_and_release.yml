@@ -27,9 +27,6 @@ jobs:
           - os: ubuntu-18.04
             cibw_python: "cp39-*"
             cibw_manylinux: manylinux2010
-          - os: ubuntu-18.04
-            cibw_python: "cp310-*"
-            cibw_manylinux: manylinux2014
     steps:
       - uses: actions/checkout@v2
         with:
@@ -84,7 +81,7 @@ jobs:
         run: |
           python -m cibuildwheel --output-dir dist
         env:
-          CIBW_BUILD: "cp3?-*"  #  cp310-*
+          CIBW_BUILD: "cp3?-*"
           CIBW_SKIP: "cp36-*"
           CIBW_ARCHS_MACOS: x86_64 arm64 universal2
           CIBW_MANYLINUX_X86_64_IMAGE: manylinux1
@@ -126,7 +123,7 @@ jobs:
         run: |
           python -m cibuildwheel --output-dir dist
         env:
-          CIBW_BUILD: "cp3?-*"  #  cp310-*
+          CIBW_BUILD: "cp3?-*"
           CIBW_SKIP: "cp36-*"
           CIBW_MANYLINUX_X86_64_IMAGE: manylinux1
           CIBW_MANYLINUX_I686_IMAGE: manylinux1
