@@ -1,8 +1,6 @@
 name: Build Wheels and Release
 on:
   push:
-    branches:
-      - cibuildwheel
     tags:
       - 'v*'
       - 'buildwheels*'
