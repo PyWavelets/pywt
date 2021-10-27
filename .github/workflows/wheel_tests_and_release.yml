@@ -1,6 +1,8 @@
 name: Build Wheels and Release
 on:
   push:
+    branches:
+      - 'wheels_py310'
     tags:
       - 'v*'
       - 'buildwheels*'
