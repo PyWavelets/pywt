@@ -23,8 +23,8 @@ nrows = int(np.floor(np.sqrt(nsubplots)))
 ncols = int(np.ceil(nsubplots/nrows))
 for node in wp2.get_level(maxlevel, 'natural'):
     ax = fig.add_subplot(nrows, ncols, i)
-    ax.set_title("%s" % (node.pretty_path, ))
-    ax.imshow(np.sqrt(np.abs(node.data)), origin='image',
+    ax.set_title("%s" % (node.path_tuple, ))
+    ax.imshow(np.sqrt(np.abs(node.data)), origin='upper',
               interpolation="nearest", cmap=plt.cm.gray)
     ax.set_axis_off()
     i += 1
