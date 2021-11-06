@@ -51,7 +51,7 @@ jobs:
             OPTIONS_NAME: "pre"
 
     steps:
-      - name: Checkout scikit-image
+      - name: Checkout PyWavelets
         uses: actions/checkout@v1
 
       - name: Setup Python
@@ -172,7 +172,7 @@ jobs:
             OPTIONS_NAME: "osx-pre"
 
     steps:
-      - name: Checkout scikit-image
+      - name: Checkout PyWavelets
         uses: actions/checkout@v1
 
       - name: Setup Python
