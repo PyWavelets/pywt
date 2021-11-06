@@ -230,4 +230,4 @@ plot_html_show_source_link = False
 
 # Intersphinx to get Numpy and other targets
 intersphinx_mapping = {
-    'numpy': ('https://docs.scipy.org/doc/numpy/', None)}
+    'numpy': ('https://numpy.org/devdocs', None)}
