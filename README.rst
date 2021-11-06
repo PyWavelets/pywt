@@ -45,7 +45,7 @@ The main features of PyWavelets are:
   * 1D, 2D and nD Multilevel DWT and IDWT
   * 1D and 2D Stationary Wavelet Transform (Undecimated Wavelet Transform)
   * 1D and 2D Wavelet Packet decomposition and reconstruction
-  * 1D Continuous Wavelet Tranfsorm
+  * 1D Continuous Wavelet Transform
   * Computing Approximations of wavelet and scaling functions
   * Over 100 `built-in wavelet filters`_ and support for custom wavelets
   * Single and double precision calculations
@@ -65,9 +65,11 @@ For more usage examples see the `demo`_ directory in the source package.
 Installation
 ------------
 
-PyWavelets supports `Python`_ >=3.5, and is only dependent on `Numpy`_
-(supported versions are currently ``>= 1.13.3``). To pass all of the tests,
-`Matplotlib`_ is also required.
+PyWavelets supports `Python`_ >=3.7, and is only dependent on `NumPy`_
+(supported versions are currently ``>= 1.14.6``). To pass all of the tests,
+`Matplotlib`_ is also required. `SciPy`_ is also an optional dependency. When
+present, FFT-based continuous wavelet transforms will use FFTs from SciPy
+rather than NumPy.
 
 There are binary wheels for Intel Linux, Windows and macOS / OSX on PyPi.  If
 you are on one of these platforms, you should get a binary (precompiled)
@@ -116,11 +118,16 @@ All contributions including bug reports, bug fixes, new feature implementations
 and documentation improvements are welcome.  Moreover, developers with an
 interest in PyWavelets are very welcome to join the development team!
 
+As of 2019, PyWavelets development is supported in part by Tidelift.
+`Help support PyWavelets with the Tidelift Subscription <https://tidelift.com/subscription/pkg/pypi-pywavelets?utm_source=pypi-pywavelets&utm_medium=referral&utm_campaign=readme>`_
+
 
 Contact
 -------
 
 Use `GitHub Issues`_ or the `mailing list`_ to post your comments or questions.
+
+**Report a security vulnerability:** https://tidelift.com/security
 
 License
 -------
@@ -146,7 +153,8 @@ the link in the badge below to Zenodo:
 .. _Anaconda: https://www.continuum.io
 .. _GitHub: https://github.com/PyWavelets/pywt
 .. _GitHub Issues: https://github.com/PyWavelets/pywt/issues
-.. _Numpy: http://www.numpy.org
+.. _NumPy: https://www.numpy.org
+.. _SciPy: https://www.scipy.org
 .. _original developer: http://en.ig.ma
 .. _Python: http://python.org/
 .. _Python Package Index: http://pypi.python.org/pypi/PyWavelets/

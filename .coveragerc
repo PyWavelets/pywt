@@ -1,11 +1,12 @@
 [run]
 branch = True
-include = */pywt/*
 # Not sure what stringsource is
 omit =
     */version.py
     */pywt/tests/*
     */pywt/_doc_utils.py*
+    */pywt/_pytesttester.py*
+    */pywt/_pytest.py*
     */pywt/data/create_dat.py
     *.pxd
     stringsource

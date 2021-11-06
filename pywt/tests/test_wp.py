@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-from __future__ import division, print_function, absolute_import
+import os
+import pickle
 
 import numpy as np
 from numpy.testing import (assert_allclose, assert_, assert_raises,
@@ -231,3 +232,13 @@ def test_wavelet_packet_axis():
     # ValueError if axis is out of range
     assert_raises(ValueError, pywt.WaveletPacket, data=x, wavelet='db1',
                   axis=x.ndim)
+
+
+def test_wavelet_packet_pickle(tmpdir):
+    packet = pywt.WaveletPacket(np.arange(16), 'sym4')
+    filename = os.path.join(tmpdir, 'wp.pickle')
+    with open(filename, 'wb') as f:
+        pickle.dump(packet, f)
+    with open(filename, 'rb') as f:
+        packet2 = pickle.load(f)
+    assert isinstance(packet2, pywt.WaveletPacket)

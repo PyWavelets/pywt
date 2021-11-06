@@ -1,0 +1,34 @@
+==============================
+PyWavelets 0.5.1 Release Notes
+==============================
+
+PyWavelets 0.5.1 is a bug-fix release with no new features compared to 0.5.0
+
+
+Bugs Fixed
+==========
+
+In release 0.5.0 the wrong edge mode was used for the following three
+deprecated modes: ``ppd``, ``sp1``, and ``per``.  All deprecated edge mode
+names are now correctly converted to the corresponding new names.
+
+One-dimensional discrete wavelet transforms did not properly respect the
+``axis`` argument for complex-valued data.  Prior to this release, the last
+axis was always transformed for arrays with complex dtype.  This fix affects
+``dwt``, ``idwt``, ``wavedec``, ``waverec``.
+
+Authors
+=======
+
+* Gregory R. Lee
+
+Issues closed for v0.5.1
+------------------------
+
+- `#245 <https://github.com/PyWavelets/pywt/issues/245>`__: Keyword "per" for dwt extension mode
+
+Pull requests for v0.5.1
+------------------------
+
+- `#244 <https://github.com/PyWavelets/pywt/issues/244>`__: FIX: dwt, idwt with complex data now pass axis argument properly
+- `#246 <https://github.com/PyWavelets/pywt/issues/246>`__: fix bug in deprecated mode name conversion

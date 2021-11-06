@@ -14,7 +14,7 @@ Depending on your Python version, a different version of the Microsoft Visual
 C++ compiler will be required to build extensions. The same compiler that was
 used to build Python itself should be used.
 
-For Python 3.5, 3.6 and 3.7 it will be MSVC 2015.
+For Python 3.7 or 3.8 it will be MSVC 2015.
 
 The MSVC version should be printed when starting a Python REPL, and can be
 checked against the note below:

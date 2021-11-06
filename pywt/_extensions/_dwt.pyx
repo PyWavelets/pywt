@@ -9,6 +9,7 @@ import numpy as np
 
 include "config.pxi"
 
+np.import_array()
 
 cpdef dwt_max_level(size_t data_len, size_t filter_len):
     return common.dwt_max_level(data_len, filter_len)
@@ -29,6 +30,9 @@ cpdef dwt_single(cdata_t[::1] data, Wavelet wavelet, MODE mode):
     cdef size_t data_size = data.size
     if output_len < 1:
         raise RuntimeError("Invalid output length.")
+
+    if data_size == 1 and (mode == MODE.MODE_REFLECT or mode == MODE.MODE_ANTIREFLECT):
+        raise ValueError("Input data length must be greater than 1 for [anti]reflect mode.")
 
     if cdata_t is np.float64_t:
         # TODO: Don't think these have to be 0-initialized
@@ -85,6 +89,10 @@ cpdef dwt_axis(np.ndarray data, Wavelet wavelet, MODE mode, unsigned int axis=0)
     # Explicit input_shape necessary to prevent memory leak
     cdef size_t[::1] input_shape, output_shape
     cdef int retval = -5
+
+
+    if data.shape[axis] == 1 and (mode == MODE.MODE_REFLECT or mode == MODE.MODE_ANTIREFLECT):
+        raise ValueError("Input data length must be greater than 1 for [anti]reflect mode along the transformed axis.")
 
     data = data.astype(_check_dtype(data), copy=False)
 

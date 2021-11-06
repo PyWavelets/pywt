@@ -4,8 +4,10 @@ from itertools import product
 import numpy as np
 from matplotlib import pyplot as plt
 
+from ._dwt import pad
+
 __all__ = ['wavedec_keys', 'wavedec2_keys', 'draw_2d_wp_basis',
-           'draw_2d_fswavedecn_basis', 'pad', 'boundary_mode_subplot']
+           'draw_2d_fswavedecn_basis', 'boundary_mode_subplot']
 
 
 def wavedec_keys(level):
@@ -149,63 +151,6 @@ def draw_2d_fswavedecn_basis(shape, levels, fmt='k', plot_kwargs={}, ax=None,
     return fig, ax
 
 
-def pad(x, pad_widths, mode):
-    """Extend a 1D signal using a given boundary mode.
-
-    Like numpy.pad but supports all PyWavelets boundary modes.
-    """
-    if np.isscalar(pad_widths):
-        pad_widths = (pad_widths, pad_widths)
-
-    if x.ndim > 1:
-        raise ValueError("This padding function is only for 1D signals.")
-
-    if mode in ['symmetric', 'reflect']:
-        xp = np.pad(x, pad_widths, mode=mode)
-    elif mode in ['periodic', 'periodization']:
-        if mode == 'periodization' and x.size % 2 == 1:
-            raise ValueError("periodization expects an even length signal.")
-        xp = np.pad(x, pad_widths, mode='wrap')
-    elif mode == 'zeros':
-        xp = np.pad(x, pad_widths, mode='constant', constant_values=0)
-    elif mode == 'constant':
-        xp = np.pad(x, pad_widths, mode='edge')
-    elif mode == 'smooth':
-        xp = np.pad(x, pad_widths, mode='linear_ramp',
-                    end_values=(x[0] + pad_widths[0] * (x[0] - x[1]),
-                                x[-1] + pad_widths[1] * (x[-1] - x[-2])))
-    elif mode == 'antisymmetric':
-        # implement by flipping portions symmetric padding
-        npad_l, npad_r = pad_widths
-        xp = np.pad(x, pad_widths, mode='symmetric')
-        r_edge = npad_l + x.size - 1
-        l_edge = npad_l
-        # width of each reflected segment
-        seg_width = x.size
-        # flip reflected segments on the right of the original signal
-        n = 1
-        while r_edge <= xp.size:
-            segment_slice = slice(r_edge + 1,
-                                  min(r_edge + 1 + seg_width, xp.size))
-            if n % 2:
-                xp[segment_slice] *= -1
-            r_edge += seg_width
-            n += 1
-
-        # flip reflected segments on the left of the original signal
-        n = 1
-        while l_edge >= 0:
-            segment_slice = slice(max(0, l_edge - seg_width), l_edge)
-            if n % 2:
-                xp[segment_slice] *= -1
-            l_edge -= seg_width
-            n += 1
-    elif mode == 'antireflect':
-        npad_l, npad_r = pad_widths
-        xp = np.pad(x, pad_widths, mode='reflect', reflect_type='odd')
-    return xp
-
-
 def boundary_mode_subplot(x, mode, ax, symw=True):
     """Plot an illustration of the boundary mode in a subplot axis."""
 
@@ -236,7 +181,7 @@ def boundary_mode_subplot(x, mode, ax, symw=True):
         left -= 0.5
         step = len(x)
         rng = range(-2, 4)
-    if mode in ['smooth', 'constant', 'zeros']:
+    if mode in ['smooth', 'constant', 'zero']:
         rng = range(0, 2)
     for rep in rng:
         ax.plot((left + rep * step) * o2, [xp.min() - .5, xp.max() + .5], 'k-')

@@ -729,6 +729,10 @@ class WaveletPacket(Node):
 
         self._maxlevel = maxlevel
 
+    def __reduce__(self):
+        return (WaveletPacket,
+                (self.data, self.wavelet, self.mode, self.maxlevel))
+
     def reconstruct(self, update=True):
         """
         Reconstruct data value using coefficients from subnodes.
@@ -850,6 +854,10 @@ class WaveletPacket2D(Node2D):
         else:
             self.data_size = None
         self._maxlevel = maxlevel
+
+    def __reduce__(self):
+        return (WaveletPacket2D,
+                (self.data, self.wavelet, self.mode, self.maxlevel))
 
     def reconstruct(self, update=True):
         """

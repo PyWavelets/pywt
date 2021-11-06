@@ -1,64 +1,47 @@
 # After changing this file, check it on:
 #   http://lint.travis-ci.org/
 language: python
-sudo: false
+dist: xenial
+os: linux
 
 env:
   global:
     # Use non-interactive backend
     - MPLBACKEND: Agg
     - CYTHON_TRACE: 1
+    - NUMPYSPEC=numpy
+    - MATPLOTLIBSPEC=matplotlib
+    - CYTHONSPEC=cython
 
-matrix:
+jobs:
   include:
-    - os: linux
-      python: 3.6
-      env:
-        - NUMPYSPEC=numpy
-        - MATPLOTLIBSPEC=matplotlib
-        - CYTHONSPEC=cython
-        - USE_WHEEL=1
-    - os: linux
-      python: 3.7-dev
+    - arch: arm64
+      os: linux
+      python: 3.7
+      dist: bionic # travis-ci/travis-ci/issues/9815
       env:
         - NUMPYSPEC=numpy
         - MATPLOTLIBSPEC=matplotlib
         - CYTHONSPEC=cython
         - USE_SDIST=1
-    - os: linux
-      python: 3.5
-      env:
-        - NUMPYSPEC="numpy==1.13.3"
-        - MATPLOTLIBSPEC=matplotlib
-        - CYTHONSPEC="cython==0.23.5"
-        - REFGUIDE_CHECK=1  # run doctests only
-    - os: osx
-      osx_image: xcode7.3
-      language: objective-c
-      env:
-        - NUMPYSPEC=numpy
-        - MATPLOTLIBSPEC=matplotlib
-        - CYTHONSPEC=cython
-        - TRAVIS_PYTHON_VERSION=3.5
-
 cache: pip
 
 before_install:
   - uname -a
   - df -h
   - ulimit -a
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source util/travis_osx_install.sh; fi
   - ccache -s
   - which python; python --version
-  - pip install --upgrade pip
-  - pip install --upgrade wheel
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install libatlas-base-dev; fi
+  - pip install --upgrade pip wheel setuptools
   # Set numpy version first, other packages link against it
   - pip install $NUMPYSPEC
   - pip install $MATPLOTLIBSPEC
   - pip install $CYTHONSPEC
-  - pip install pytest pytest-cov coverage codecov futures
+  - pip install pytest pytest-cov coverage codecov
   - set -o pipefail
   - if [ "${USE_WHEEL}" == "1" ]; then pip install wheel; fi
+  - if [ "${USE_SCIPY}" == "1" ]; then pip install scipy; fi
   - |
     if [ "${REFGUIDE_CHECK}" == "1" ]; then
         pip install sphinx numpydoc
@@ -73,7 +56,9 @@ script:
         pip install PyWavelets*.whl -v
         pushd demo
         pytest --pyargs pywt
-        python ../pywt/tests/test_doc.py
+        if [[ "${TRAVIS_CPU_ARCH}" != "arm64" ]]; then
+        python ../pywt/tests/test_doc.py;
+        fi
         popd
     elif [ "${USE_SDIST}" == "1" ]; then
         python setup.py sdist
@@ -81,7 +66,9 @@ script:
         pushd dist
         pip install PyWavelets* -v
         pytest --pyargs pywt
-        python ../pywt/tests/test_doc.py
+        if [[ "${TRAVIS_CPU_ARCH}" != "arm64" ]]; then
+        python ../pywt/tests/test_doc.py;
+        fi
         popd
     elif [ "${REFGUIDE_CHECK}" == "1" ]; then
         pip install -e . -v
@@ -90,7 +77,8 @@ script:
         CFLAGS="--coverage" python setup.py build --build-lib build/lib/ --build-temp build/tmp/
         CFLAGS="--coverage" pip install -e . -v
         pushd demo
-        pytest --pyargs pywt --cov=pywt
+        pytest --pyargs pywt --cov=pywt --cov-config=../.coveragerc
+        cp .coverage ..
         popd
     fi
 

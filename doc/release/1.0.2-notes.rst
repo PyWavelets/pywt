@@ -1,0 +1,74 @@
+==============================
+PyWavelets 1.0.2 Release Notes
+==============================
+
+PyWavelets 1.0.2 is a bug-fix and maintenance release with no new features
+compared to 1.0.1.
+
+Bugs Fixed
+==========
+
+A bug in `iswtn` when using some combinations of user-specified axes was fixed.
+
+A potential error related to coefficient shape mismatch during WaveletPacket
+or WaveletPacket2D reconstruction was fixed.
+
+Other Changes
+=============
+
+A deprecated import of ``Iterable`` was fixed.
+
+The spelling of "Garrote" was fixed in the wavelet thresholding documentation.
+For backwards compatibility with 1.0.0, the incorrect ("garotte")
+spelling is also accepted for the ``mode`` parameter of ``pywt.threshold``.
+
+The spelling of "supported" was fixed in one of the ValueError messages that
+can be returned by ``pywt.cwt``.
+
+Cython language compatibility has been pinned to ``language_level = '2'``. This
+is in contrast to the `master` branch which is now using
+``language_level = '3'``. To support this, the minimum supported Cython version
+has been raised to 0.23.5.
+
+Authors
+=======
+
+Four authors contributed PRs for the 1.0.2 release.
+
+Thomas A. Caswell
+Corey Goldberg
+Gregory R. Lee
+Lokesh Ravindranathan
+
+Thanks also goes to Ralf Gommers as a reviewer of most of these.
+
+Issues closed for v1.0.2
+------------------------
+
+- `#447 <https://github.com/PyWavelets/pywt/issues/447>`__: Issue using pywt.WaveletPacket2D
+- `#449 <https://github.com/PyWavelets/pywt/issues/449>`__: Coefficients arrays must have the same dtype error in iswt function
+- `#460 <https://github.com/PyWavelets/pywt/issues/460>`__: iswtn error when using axes and excluded dim is desn't comply to the level
+
+Pull requests for v1.0.2
+------------------------
+
+- `#454 <https://github.com/PyWavelets/pywt/issues/454>`__: BLD: 1.0.x pin cython language level to '2'
+- `#455 <https://github.com/PyWavelets/pywt/issues/455>`__: backport of #448 (fix coefficient shape mismatch in WaveletPacket reconstruction)
+- `#456 <https://github.com/PyWavelets/pywt/issues/456>`__: MAINT: 1.0.x: Spelling correction
+- `#457 <https://github.com/PyWavelets/pywt/issues/457>`__: MAINT: 1.0.x Fix spelling of "Garrote"
+- `#458 <https://github.com/PyWavelets/pywt/issues/458>`__: MAINT: 1.0.x Fix deprecated import for Iterable
+- `#464 <https://github.com/PyWavelets/pywt/issues/464>`__: backport of #448 (fix coefficient shape mismatch in WaveletPacket reconstruction)
+- `#465 <https://github.com/PyWavelets/pywt/issues/465>`__: backport of gh-462 (iswtn axis fix)
+- `#469 <https://github.com/PyWavelets/pywt/issues/469>`__: MAINT 1.0.x backport #452 (bump minimum supported Cython version)
+
+The backports listed above correspond to the following PRs from the master branch
+
+- `#436 <https://github.com/PyWavelets/pywt/issues/436>`__: Fix deprecated import for Iterable
+- `#438 <https://github.com/PyWavelets/pywt/issues/438>`__: Fix spelling of "Garrote"
+- `#446 <https://github.com/PyWavelets/pywt/issues/446>`__: Spelling correction
+- `#448 <https://github.com/PyWavelets/pywt/issues/448>`__: Properly trim wavelet packet node coefficients during reconstruction
+- `#450 <https://github.com/PyWavelets/pywt/issues/450>`__: handle mixed dtype cofficients correctly across inverse transforms
+- `#452 <https://github.com/PyWavelets/pywt/issues/452>`__: bump minimum supported Cython version
+- `#462 <https://github.com/PyWavelets/pywt/issues/462>`__: fix bug in iswtn for data of arbitrary shape when using user-specified axes
+
+

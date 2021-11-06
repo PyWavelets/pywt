@@ -1,0 +1,35 @@
+==============================
+PyWavelets 1.2.0 Release Notes
+==============================
+
+.. contents::
+
+We are very pleased to announce the release of PyWavelets 1.2.
+
+PyWavelets now requires Python 3.7+.
+
+
+New features
+============
+
+
+Backwards incompatible changes
+==============================
+
+- The image returned by ``pywt.data.camera`` has been replaced by a similar,
+  CC0-licensed image because the original image was determined to only be
+  licensed for non-commercial use. Any users who still need the prior camera
+  image for non-commercial use can find it many places online by performing a
+  web search for "cameraman test image".
+
+Bugs Fixed
+==========
+
+
+Other changes
+=============
+
+- PyWavelets has dropped support for Python 3.5 and 3.6 in this release.
+
+Authors
+=======

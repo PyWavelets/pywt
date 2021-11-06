@@ -1,0 +1,263 @@
+# Workflow to build and test wheels
+name: Test
+
+on: [push, pull_request]
+
+jobs:
+
+  test_pywavelets_linux:
+    name: linux-cp${{ matrix.python-version }}-${{ matrix.OPTIONS_NAME }}
+    runs-on: ubuntu-20.04
+    env:
+      MPLBACKEND: Agg
+      CYTHON_TRACE: 1
+      CYTHONSPEC: cython
+      NUMPY_MIN: numpy==1.17.5
+      CYTHON_MIN: cython==0.29.18
+      SCIPY_MIN: scipy==1.2.3
+
+    strategy:
+      # Ensure that a wheel builder finishes even if another fails
+      fail-fast: false
+      matrix:
+        python-version: [3.7, 3.8, 3.9, '3.10']
+        MINIMUM_REQUIREMENTS: [0]
+        USE_SCIPY: [0]
+        USE_SDIST: [0]
+        USE_WHEEL: [0]
+        REFGUIDE_CHECK: [0]
+        PIP_FLAGS: [""]
+        OPTIONS_NAME: ["default"]
+        include:
+          - platform_id: manylinux_x86_64
+            python-version: 3.7
+            MINIMUM_REQUIREMENTS: 1
+            OPTIONS_NAME: "minimum-req"
+          - platform_id: manylinux_x86_64
+            python-version: 3.8
+            USE_SCIPY: 1
+            OPTIONS_NAME: "with-scipy"
+          - platform_id: manylinux_x86_64
+            python-version: 3.8
+            USE_SDIST: 1
+            OPTIONS_NAME: "install-from-sdist"
+          - platform_id: manylinux_x86_64
+            python-version: 3.8
+            USE_WHEEL: 1
+            OPTIONS_NAME: "install-from-wheel"
+          - platform_id: manylinux_x86_64
+            python-version: 3.9
+            PIP_FLAGS: "--pre"
+            OPTIONS_NAME: "pre"
+
+    steps:
+      - name: Checkout PyWavelets
+        uses: actions/checkout@v1
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version}}
+
+      - name: Build package
+        env:
+            VERSION: ${{ matrix.python-version }}
+            MINIMUM_REQUIREMENTS: ${{ matrix.MINIMUM_REQUIREMENTS }}
+            PIP_FLAGS: ${{ matrix.PIP_FLAGS }}
+            USE_WHEEL: ${{ matrix.USE_WHEEL }}
+            USE_SDIST: ${{ matrix.USE_SDIST }}
+            USE_SCIPY: ${{ matrix.USE_SCIPY }}
+            REFGUIDE_CHECK:  ${{ matrix.REFGUIDE_CHECK }}
+        run: |
+            uname -a
+            df -h
+            ulimit -a
+            # ccache -s
+            which python
+            python --version
+            # sudo apt-get install libatlas-base-dev
+            pip install --upgrade pip wheel setuptools
+            # Set numpy version first, other packages link against it
+            if [ "${MINIMUM_REQUIREMENTS}" == "1" ]; then
+                pip install ${CYTHON_MIN}
+                pip install ${NUMPY_MIN}
+                if [ "${USE_SCIPY}" == "1" ]; then pip install ${SCIPY_MIN}; fi
+            else
+                pip install cython
+                pip install numpy
+                if [ "${USE_SCIPY}" == "1" ]; then pip install scipy; fi
+            fi
+            pip install matplotlib
+            pip install pytest pytest-cov coverage codecov
+            set -o pipefail
+            if [ "${REFGUIDE_CHECK}" == "1" ]; then
+                pip install sphinx numpydoc
+            fi
+            if [ "${USE_WHEEL}" == "1" ]; then
+                pip install wheel;
+                # Need verbose output or TravisCI will terminate after 10 minutes
+                pip wheel . -v
+                pip install PyWavelets*.whl -v
+            elif [ "${USE_SDIST}" == "1" ]; then
+                python setup.py sdist
+            elif [ "${REFGUIDE_CHECK}" == "1" ]; then
+                pip install -e . -v
+            else
+                CFLAGS="--coverage" python setup.py build --build-lib build/lib/ --build-temp build/tmp/
+                CFLAGS="--coverage" pip install -e . -v
+            fi
+
+      - name: Run tests
+        env:
+            PIP_FLAGS: ${{ matrix.PIP_FLAGS }}
+            USE_WHEEL: ${{ matrix.USE_WHEEL }}
+            USE_SDIST: ${{ matrix.USE_SDIST }}
+            REFGUIDE_CHECK: ${{ matrix.REFGUIDE_CHECK }}
+        run: |
+            if [ "${USE_WHEEL}" == "1" ]; then
+                pushd demo
+                pytest --pyargs pywt
+                # if [[ "${TRAVIS_CPU_ARCH}" != "arm64" ]]; then
+                python ../pywt/tests/test_doc.py
+                # fi
+                popd
+            elif [ "${USE_SDIST}" == "1" ]; then
+                # Move out of source directory to avoid finding local pywt
+                pushd dist
+                pip install PyWavelets* -v
+                pytest --pyargs pywt
+                # if [[ "${TRAVIS_CPU_ARCH}" != "arm64" ]]; then
+                python ../pywt/tests/test_doc.py
+                # fi
+                popd
+            elif [ "${REFGUIDE_CHECK}" == "1" ]; then
+                python util/refguide_check.py --doctests
+            else
+                pushd demo
+                pytest --pyargs pywt --cov=pywt --cov-config=../.coveragerc
+                cp .coverage ..
+                popd
+            fi
+
+
+  test_pywavelets_macos:
+    name: macos-cp${{ matrix.python-version }}
+    runs-on: macos-latest
+    env:
+      MPLBACKEND: Agg
+      CYTHON_TRACE: 1
+      CYTHONSPEC: cython
+      NUMPY_MIN: numpy==1.17.5
+      CYTHON_MIN: cython==0.29.18
+      SCIPY_MIN: scipy==1.2.3
+
+    strategy:
+      # Ensure that a wheel builder finishes even if another fails
+      fail-fast: false
+      matrix:
+        python-version: [3.8, '3.10']
+        MINIMUM_REQUIREMENTS: [0]
+        USE_SCIPY: [0]
+        USE_SDIST: [0]
+        USE_WHEEL: [0]
+        REFGUIDE_CHECK: [0]
+        PIP_FLAGS: [""]
+        OPTIONS_NAME: ["default"]
+        include:
+          - python-version: 3.7
+            MINIMUM_REQUIREMENTS: 1
+            OPTIONS_NAME: "osx-minimum-req"
+          - python-version: 3.9
+            PIP_FLAGS: "--pre"
+            OPTIONS_NAME: "osx-pre"
+
+    steps:
+      - name: Checkout PyWavelets
+        uses: actions/checkout@v1
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version}}
+
+      - name: Build package
+        env:
+            VERSION: ${{ matrix.python-version }}
+            MINIMUM_REQUIREMENTS: ${{ matrix.MINIMUM_REQUIREMENTS }}
+            PIP_FLAGS: ${{ matrix.PIP_FLAGS }}
+            USE_WHEEL: ${{ matrix.USE_WHEEL }}
+            USE_SDIST: ${{ matrix.USE_SDIST }}
+            USE_SCIPY: ${{ matrix.USE_SCIPY }}
+            REFGUIDE_CHECK:  ${{ matrix.REFGUIDE_CHECK }}
+            CC: /usr/bin/clang
+            CXX: /usr/bin/clang++
+        run: |
+            uname -a
+            df -h
+            ulimit -a
+            # ccache -s
+            which python
+            python --version
+            # sudo apt-get install libatlas-base-dev
+            pip install --upgrade pip wheel setuptools
+            # Set numpy version first, other packages link against it
+            if [ "${MINIMUM_REQUIREMENTS}" == "1" ]; then
+                pip install ${CYTHON_MIN}
+                pip install ${NUMPY_MIN}
+                if [ "${USE_SCIPY}" == "1" ]; then pip install ${SCIPY_MIN}; fi
+            else
+                pip install cython
+                pip install numpy
+                if [ "${USE_SCIPY}" == "1" ]; then pip install scipy; fi
+            fi
+            pip install matplotlib
+            pip install pytest pytest-cov coverage codecov
+            set -o pipefail
+            if [ "${REFGUIDE_CHECK}" == "1" ]; then
+                pip install sphinx numpydoc
+            fi
+            if [ "${USE_WHEEL}" == "1" ]; then
+                pip install wheel;
+                # Need verbose output or TravisCI will terminate after 10 minutes
+                pip wheel . -v
+                pip install PyWavelets*.whl -v
+            elif [ "${USE_SDIST}" == "1" ]; then
+                python setup.py sdist
+            elif [ "${REFGUIDE_CHECK}" == "1" ]; then
+                pip install -e . -v
+            else
+                CFLAGS="--coverage" python setup.py build --build-lib build/lib/ --build-temp build/tmp/
+                CFLAGS="--coverage" pip install -e . -v
+            fi
+
+      - name: Run tests
+        env:
+            PIP_FLAGS: ${{ matrix.PIP_FLAGS }}
+            USE_WHEEL: ${{ matrix.USE_WHEEL }}
+            USE_SDIST: ${{ matrix.USE_SDIST }}
+            REFGUIDE_CHECK: ${{ matrix.REFGUIDE_CHECK }}
+        run: |
+            if [ "${USE_WHEEL}" == "1" ]; then
+                pushd demo
+                pytest --pyargs pywt
+                # if [[ "${TRAVIS_CPU_ARCH}" != "arm64" ]]; then
+                python ../pywt/tests/test_doc.py
+                # fi
+                popd
+            elif [ "${USE_SDIST}" == "1" ]; then
+                # Move out of source directory to avoid finding local pywt
+                pushd dist
+                pip install PyWavelets* -v
+                pytest --pyargs pywt
+                # if [[ "${TRAVIS_CPU_ARCH}" != "arm64" ]]; then
+                python ../pywt/tests/test_doc.py
+                # fi
+                popd
+            elif [ "${REFGUIDE_CHECK}" == "1" ]; then
+                python util/refguide_check.py --doctests
+            else
+                pushd demo
+                pytest --pyargs pywt --cov=pywt --cov-config=../.coveragerc
+                cp .coverage ..
+                popd
+            fi
