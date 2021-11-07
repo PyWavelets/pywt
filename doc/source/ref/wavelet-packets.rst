@@ -46,8 +46,8 @@ The below diagram illustrates the inheritance tree:
       - :class:`~pywt.WaveletPacketND` - ND decomposition tree root node
 
 
-BaseNode - a common interface of WaveletPacket, WaveletPacket2D and  WaveletPacketND
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+BaseNode - a common interface of WaveletPacket, WaveletPacket2D and WaveletPacketND
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. class:: BaseNode
            Node(BaseNode)
@@ -240,8 +240,8 @@ BaseNode - a common interface of WaveletPacket, WaveletPacket2D and  WaveletPack
                        :attr:`maximum level <BaseNode.maxlevel>`.
 
 
-WaveletPacket and WaveletPacket tree Node
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+WaveletPacket and Node
+~~~~~~~~~~~~~~~~~~~~~~
 
 .. class:: Node(BaseNode)
            WaveletPacket(Node)
@@ -311,8 +311,8 @@ WaveletPacket and WaveletPacket tree Node
                     from the reconstruction.
 
 
-WaveletPacket2D and WaveletPacket2D tree Node2D
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+WaveletPacket2D and Node2D
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. class:: Node2D(BaseNode)
            WaveletPacket2D(Node2D)
@@ -382,8 +382,8 @@ WaveletPacket2D and WaveletPacket2D tree Node2D
                     current node and its subnodes will be replaced with values
                     from the reconstruction.
 
-WaveletPacketND and WaveletPacketND tree NodeND
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+WaveletPacketND and NodeND
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. class:: NodeND(BaseNode)
            WaveletPacketND(NodeND)
