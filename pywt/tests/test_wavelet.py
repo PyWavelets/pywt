@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-from __future__ import division, print_function, absolute_import
-
+import os
+import pickle
 import numpy as np
 from numpy.testing import assert_allclose, assert_
 
@@ -264,3 +264,14 @@ def test_wavefun_bior13():
     assert_allclose(phi_r, phi_r_expect, rtol=1e-10, atol=1e-12)
     assert_allclose(psi_d, psi_d_expect, rtol=1e-10, atol=1e-12)
     assert_allclose(psi_r, psi_r_expect, rtol=1e-10, atol=1e-12)
+
+
+def test_wavelet_pickle(tmpdir):
+    wavelet = pywt.Wavelet('sym4')
+    filename = os.path.join(tmpdir, 'wav.pickle')
+    with open(filename, 'wb') as f:
+        pickle.dump(wavelet, f)
+    with open(filename, 'rb') as f:
+        wavelet2 = pickle.load(f)
+    assert isinstance(wavelet2, pywt.Wavelet)
+    assert wavelet2.name == wavelet.name

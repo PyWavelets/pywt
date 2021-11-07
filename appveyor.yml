@@ -17,6 +17,10 @@ environment:
       PYTHON: "C:\\Python39"
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PYTHON: "C:\\Python39-x64"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      PYTHON: "C:\\Python310"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      PYTHON: "C:\\Python310-x64"
 
 build: off
 
@@ -26,7 +30,7 @@ install:
   - "util\\appveyor\\build.cmd %PYTHON%\\python.exe -m pip install
      numpy --cache-dir c:\\tmp\\pip-cache"
   - "util\\appveyor\\build.cmd %PYTHON%\\python.exe -m pip install
-     Cython pytest coverage matplotlib futures --cache-dir c:\\tmp\\pip-cache"
+     Cython pytest coverage matplotlib --cache-dir c:\\tmp\\pip-cache"
 
 test_script:
   - "util\\appveyor\\build.cmd %PYTHON%\\python.exe -m pip install -e . -v"

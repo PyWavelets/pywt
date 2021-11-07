@@ -93,7 +93,7 @@ def wavedec(data, wavelet, mode='symmetric', level=None, axis=-1):
     try:
         axes_shape = data.shape[axis]
     except IndexError:
-        raise ValueError("Axis greater than data dimensions")
+        raise np.AxisError("Axis greater than data dimensions")
     level = _check_level(axes_shape, wavelet.dec_len, level)
 
     coeffs_list = []
@@ -170,7 +170,7 @@ def waverec(coeffs, wavelet, mode='symmetric', axis=-1):
                 elif a.shape[axis] != d.shape[axis]:
                     raise ValueError("coefficient shape mismatch")
             except IndexError:
-                raise ValueError("Axis greater than coefficient dimensions")
+                raise np.AxisError("Axis greater than coefficient dimensions")
         a = idwt(a, d, wavelet, mode, axis)
 
     return a
@@ -233,7 +233,7 @@ def wavedec2(data, wavelet, mode='symmetric', level=None, axes=(-2, -1)):
     try:
         axes_sizes = [data.shape[ax] for ax in axes]
     except IndexError:
-        raise ValueError("Axis greater than data dimensions")
+        raise np.AxisError("Axis greater than data dimensions")
 
     wavelets = _wavelets_per_axis(wavelet, axes)
     dec_lengths = [w.dec_len for w in wavelets]
@@ -352,7 +352,7 @@ def _prep_axes_wavedecn(shape, axes):
     try:
         axes_shapes = [shape[ax] for ax in axes]
     except IndexError:
-        raise ValueError("Axis greater than data dimensions")
+        raise np.AxisError("Axis greater than data dimensions")
     ndim_transform = len(axes)
     return axes, axes_shapes, ndim_transform
 
@@ -1194,11 +1194,11 @@ def unravel_coeffs(arr, coeff_slices, coeff_shapes, output_format='wavedecn'):
 def _check_fswavedecn_axes(data, axes):
     """Axes checks common to fswavedecn, fswaverecn."""
     if len(axes) != len(set(axes)):
-        raise ValueError("The axes passed to fswavedecn must be unique.")
+        raise np.AxisError("The axes passed to fswavedecn must be unique.")
     try:
         [data.shape[ax] for ax in axes]
     except IndexError:
-        raise ValueError("Axis greater than data dimensions")
+        raise np.AxisError("Axis greater than data dimensions")
 
 
 class FswavedecnResult(object):

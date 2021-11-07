@@ -176,7 +176,7 @@ def dwt(data, wavelet, mode='symmetric', axis=-1):
     if axis < 0:
         axis = axis + data.ndim
     if not 0 <= axis < data.ndim:
-        raise ValueError("Axis greater than data dimensions")
+        raise np.AxisError("Axis greater than data dimensions")
 
     if data.ndim == 1:
         cA, cD = dwt_single(data, wavelet, mode)
@@ -282,7 +282,7 @@ def idwt(cA, cD, wavelet, mode='symmetric', axis=-1):
     if axis < 0:
         axis = axis + ndim
     if not 0 <= axis < ndim:
-        raise ValueError("Axis greater than coefficient dimensions")
+        raise np.AxisError("Axis greater than coefficient dimensions")
 
     if ndim == 1:
         rec = idwt_single(cA, cD, wavelet, mode)

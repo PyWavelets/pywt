@@ -430,6 +430,9 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
             wavelet.free_discrete_wavelet(self.w)
             self.w = NULL
 
+    def __reduce__(self):
+        return (Wavelet, (self.name, self.filter_bank))
+
     def __len__(self):
         return self.w.dec_len
 
@@ -762,6 +765,9 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
         if self.w is not NULL:
             wavelet.free_continuous_wavelet(self.w)
             self.w = NULL
+
+    def __reduce__(self):
+        return (ContinuousWavelet, (self.name, self.dt))
 
     property family_number:
         "Wavelet family number"
