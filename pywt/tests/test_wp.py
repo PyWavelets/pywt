@@ -53,7 +53,7 @@ def test_acess_path():
     assert_raises(ValueError, lambda: wp['ac'].path)
 
 
-def test_access_node_atributes():
+def test_access_node_attributes():
     x = [1, 2, 3, 4, 5, 6, 7, 8]
     wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='symmetric')
 
@@ -64,6 +64,12 @@ def test_access_node_atributes():
     assert_(wp['ad'].level == 2)
     assert_(wp['ad'].maxlevel == 3)
     assert_(wp['ad'].mode == 'symmetric')
+
+    # tuple-based access is also supported
+    node = wp[('a', 'd')]
+    # can access a node's path as either a single string or in tuple form
+    assert_(node.path == 'ad')
+    assert_(node.path_tuple == ('a', 'd'))
 
 
 def test_collecting_nodes():
@@ -77,6 +83,8 @@ def test_collecting_nodes():
     # and in frequency order.
     assert_([node.path for node in wp.get_level(3, 'freq')] ==
             ['aaa', 'aad', 'add', 'ada', 'dda', 'ddd', 'dad', 'daa'])
+
+    assert_raises(ValueError, wp.get_level, 3, 'invalid_order')
 
 
 def test_reconstructing_data():
@@ -145,9 +153,10 @@ def test_removing_nodes():
 
 
 def test_wavelet_packet_dtypes():
+    rstate = np.random.RandomState(0)
     N = 32
     for dtype in [np.float32, np.float64, np.complex64, np.complex128]:
-        x = np.random.randn(N).astype(dtype)
+        x = rstate.randn(N).astype(dtype)
         if np.iscomplexobj(x):
             x = x + 1j*np.random.randn(N).astype(x.real.dtype)
         wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='symmetric')
@@ -196,6 +205,33 @@ def test_db3_roundtrip():
                             maxlevel=3)
     r = wp.reconstruct()
     assert_allclose(original, r, atol=1e-12, rtol=1e-12)
+
+
+def test_wavelet_packet_axis():
+    rstate = np.random.RandomState(0)
+    shape = (32, 16)
+    x = rstate.standard_normal(shape)
+    for axis in [0, 1, -1]:
+        wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='symmetric',
+                                axis=axis)
+
+        # partial decomposition
+        nodes = wp.get_level(2)
+        # size along the transformed axis has changed
+        for ax2 in range(x.ndim):
+            if ax2 == (axis % x.ndim):
+                nodes[0].data.shape[ax2] < x.shape[ax2]
+            else:
+                nodes[0].data.shape[ax2] == x.shape[ax2]
+
+        # recontsruction from coefficients should preserve dtype
+        r = wp.reconstruct(False)
+        assert_equal(r.dtype, x.dtype)
+        assert_allclose(r, x, atol=1e-12, rtol=1e-12)
+
+    # ValueError if axis is out of range
+    assert_raises(ValueError, pywt.WaveletPacket, data=x, wavelet='db1',
+                  axis=x.ndim)
 
 
 def test_wavelet_packet_pickle(tmpdir):
