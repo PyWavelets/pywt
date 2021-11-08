@@ -20,15 +20,16 @@ New features
 ============
 
 - There is a new series of multilevel stationary wavelet transforms (``mra``,
-``mra2`` and ``mran``) suited for multiresolution analysis of 1D, 2D or nD
-signals, respectively. This MRA analysis is also known as the additive wavelet decomposition because the corresponding inverse functions (``imra``, ``imra2``
-or ``imran``) reconstruct the original signal by simple addition of the
-components. These are a good alternative to the use of the existing SWT
-functions when it is important to have features aligned across wavelet scales
-(see the new demo in ``demo/mra_vs_swt.py``).
+  ``mra2`` and ``mran``) suited for multiresolution analysis of 1D, 2D or nD
+  signals, respectively. This MRA analysis is also known as the additive
+  wavelet decomposition because the corresponding inverse functions
+  (``imra``, ``imra2`` or ``imran``) reconstruct the original signal by
+  simple addition of the components. These are a good alternative to the use
+  of the existing SWT functions when it is important to have features aligned
+  across wavelet scales (see the new demo in ``demo/mra_vs_swt.py``).
 
 - There is now an n-dimensional implementation available for the wavelet packet
-transforms (see class `WaveletPacketND`).
+  transforms (see class `WaveletPacketND`).
 
 
 Backwards incompatible changes
