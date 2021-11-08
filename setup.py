@@ -426,6 +426,7 @@ def setup_package():
             "Programming Language :: Python :: 3.7",
             "Programming Language :: Python :: 3.8",
             "Programming Language :: Python :: 3.9",
+            "Programming Language :: Python :: 3.10",
             "Topic :: Software Development :: Libraries :: Python Modules"
         ],
         platforms=["Windows", "Linux", "Solaris", "Mac OS-X", "Unix"],
@@ -440,7 +441,6 @@ def setup_package():
         tests_require=['pytest'],
 
         install_requires=["numpy>=1.17.3"],
-        setup_requires=["numpy>=1.17.3"],
         python_requires=">=3.7",
     )
 
