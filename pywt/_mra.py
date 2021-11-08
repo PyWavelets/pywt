@@ -41,7 +41,7 @@ def mra(data, wavelet, level=None, axis=-1, transform='swt',
 
     See Also
     --------
-    ``imra``, ``swt``
+    imra, swt
 
     Notes
     -----
@@ -128,7 +128,7 @@ def imra(mra_coeffs):
 
     See Also
     --------
-    ``mra``
+    mra
 
     References
     ----------
@@ -186,7 +186,7 @@ def mra2(data, wavelet, level=None, axes=(-2, -1), transform='swt2',
 
     See Also
     --------
-    ``imra2``, ``swt2``
+    imra2, swt2
 
     References
     ----------
@@ -264,7 +264,7 @@ def imra2(mra_coeffs):
 
     See Also
     --------
-    ``mra2``
+    mra2
 
     References
     ----------
@@ -311,7 +311,7 @@ def mran(data, wavelet, level=None, axes=None, transform='swtn',
 
     See Also
     --------
-    ``imran``, ``swtn``
+    imran, swtn
 
     Notes
     -----
@@ -411,7 +411,7 @@ def imran(mra_coeffs):
 
     See Also
     --------
-    ``mran``
+    mran
 
     References
     ----------

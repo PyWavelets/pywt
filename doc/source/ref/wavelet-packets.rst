@@ -41,10 +41,6 @@ BaseNode - a common interface of WaveletPacket and WaveletPacket2D
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. class:: BaseNode
-           Node(BaseNode)
-           WaveletPacket(Node)
-           Node2D(BaseNode)
-           WaveletPacket2D(Node2D)
 
   .. note:: The BaseNode is a base class for :class:`Node` and :class:`Node2D`.
             It should not be used directly unless creating a new transformation
@@ -222,7 +218,6 @@ WaveletPacket and WaveletPacket tree Node
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. class:: Node(BaseNode)
-           WaveletPacket(Node)
 
   .. attribute:: node_name
 
@@ -276,7 +271,6 @@ WaveletPacket2D and WaveletPacket2D tree Node2D
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. class:: Node2D(BaseNode)
-           WaveletPacket2D(Node2D)
 
   .. attribute:: node_name
 
