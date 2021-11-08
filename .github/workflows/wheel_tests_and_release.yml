@@ -186,7 +186,6 @@ jobs:
       - name: Install Twine
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements/build.txt
           pip install twine
       
       - uses: actions/download-artifact@v2
