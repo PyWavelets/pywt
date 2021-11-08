@@ -8,7 +8,7 @@
 requires = [
     "wheel",
     "setuptools",
-    "Cython>=0.29.18",
+    "Cython>=0.29.24,<3.0",
 
     # NumPy dependencies - to update these, sync from
     # https://github.com/scipy/oldest-supported-numpy/, and then
