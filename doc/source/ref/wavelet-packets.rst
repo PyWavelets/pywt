@@ -83,7 +83,7 @@ BaseNode - a common interface of WaveletPacket, WaveletPacket2D and WaveletPacke
 
   .. attribute:: axes
 
-     :class: A tuple of ints containing the axes along which the wavelet packet
+     A tuple of ints containing the axes along which the wavelet packet
      transform is to be applied.
 
   .. attribute:: mode
@@ -378,7 +378,6 @@ WaveletPacketND and NodeND
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. class:: NodeND(BaseNode)
-           WaveletPacketND(NodeND)
 
   .. attribute:: node_name
 
