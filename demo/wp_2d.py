@@ -21,7 +21,7 @@ path = ['d', 'v', 'h', 'a']
 fig = plt.figure()
 for i, p2 in enumerate(path):
     ax = fig.add_subplot(2, 2, i + 1)
-    ax.imshow(np.sqrt(np.abs(wp2[p2].data)), origin='image',
+    ax.imshow(np.sqrt(np.abs(wp2[p2].data)), origin='upper',
               interpolation="nearest", cmap=plt.cm.gray)
     ax.set_title(p2)
 
@@ -31,7 +31,7 @@ for p1 in path:
     for i, p2 in enumerate(path):
         ax = fig.add_subplot(2, 2, i + 1)
         p1p2 = p1 + p2
-        ax.imshow(np.sqrt(np.abs(wp2[p1p2].data)), origin='image',
+        ax.imshow(np.sqrt(np.abs(wp2[p1p2].data)), origin='upper',
                   interpolation="nearest", cmap=plt.cm.gray)
         ax.set_title(p1p2)
 
@@ -42,7 +42,7 @@ for row in wp2.get_level(2, 'freq'):
         ax = fig.add_subplot(len(row), len(row), i)
         ax.set_title("%s=(%s row, %s col)" % (
                      (node.path,) + wp2.expand_2d_path(node.path)))
-        ax.imshow(np.sqrt(np.abs(node.data)), origin='image',
+        ax.imshow(np.sqrt(np.abs(node.data)), origin='upper',
                   interpolation="nearest", cmap=plt.cm.gray)
         i += 1
 
