@@ -1,4 +1,4 @@
-.. _ref-swt:
+.. _ref-mra:
 
 .. currentmodule:: pywt
 
@@ -27,17 +27,17 @@ Multilevel n-dimensional ``mran``
 .. autofunction:: mran
 
 Inverse Multilevel 1D ``imra``
-~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. autofunction:: imra
 
 Inverse Multilevel 2D ``imra2``
-~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. autofunction:: imra2
 
 Inverse Multilevel n-dimensional ``imran``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. autofunction:: imran
 

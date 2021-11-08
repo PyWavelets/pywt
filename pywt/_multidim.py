@@ -253,6 +253,9 @@ def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
     # drop the keys corresponding to value = None
     coeffs = dict((k, v) for k, v in coeffs.items() if v is not None)
 
+    # drop the keys corresponding to value = None
+    coeffs = dict((k, v) for k, v in coeffs.items() if v is not None)
+
     # Raise error for invalid key combinations
     coeffs = _fix_coeffs(coeffs)
 
