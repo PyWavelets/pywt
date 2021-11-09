@@ -33,29 +33,23 @@ Tag the release via::
 
 Then push the ``vX.X.X`` tag to the PyWavelets GitHub repo.
 
-Note that while Appveyor will build wheels for Windows, it is preferred to
-get those wheels from the step below.  Instructions for grabbing Appveyor
-wheels manually here for reference only: if the commit with
-``ISRELEASED=True`` is submitted as a PR, the wheels can be downloaded from
-Appveyor once it has run on the PR.  They can be found under the "Artifacts"
-tab in the Appveyor interface.
-
-
 Build Windows, OS X and Linux wheels and upload to PyPI
 -------------------------------------------------------
 
-Push a commit with the new tag and updates of dependency versions where needed
-to https://github.com/MacPython/pywavelets-wheels.  The wheels will be
-produced automatically and uploaded to http://wheels.scipy.org/.
-From there they can be uploaded to
-`PyPI <https://pypi.python.org/pypi/PyWavelets>`_ automatically with
-``wheel-uploader``.
+Pushing the vX.X.X tag to the repository will kick off automated build and
+deployment of the wheels to PyPI. The wheel builds proceed via GitHub Actions
+and their status can be checked by going to the Actions tab on GitHub.
 
-See the README on https://github.com/MacPython/pywavelets-wheels for more
-details.
+In the event that the automated deployment fails, the built wheels can be
+downloaded via the GitHub Actions artifacts and then uploaded manually using
+twine as described below.
 
 Create the source distribution
 ------------------------------
+
+The automated wheel build process should also automatically upload the sdist
+to PyPI. In the event that automated upload of the sdist fails, please proceed
+in generating and uploading it manually as described in this section.
 
 Remove untracked files and directories with ``git clean``.
 *Warning: this will delete files & directories that are not under version
@@ -76,8 +70,9 @@ Create the source distribution files via::
 Upload the release to PyPI
 --------------------------
 
-The binary Windows wheels downloaded from Appveyor (see above) should
-also be placed into the ``/dist`` subfolder along with the sdist archives.
+These instructions cover how to upload wheels and source distributions to PyPI
+in the event that the automated deployment fails. The binary Windows wheels downloaded from GitHub Actions (see above) should also be placed into the
+``/dist`` subfolder along with the sdist archives.
 
 The wheels and source distributions created above can all be securely uploaded
 to pypi.python.org using twine::
@@ -92,8 +87,11 @@ documentation.
 Update conda-forge
 ------------------
 
-Send a PR with the new version number and ``sha256`` hash of the source release
-to https://github.com/conda-forge/pywavelets-feedstock.
+The is an autotick bot run by conda-forge that is likely to autodetect the new
+PyPI release and autogenerate a PR for you that will update the PyWavelets
+feedstock for conda-forge. If this automated PR does not appear, you will need
+to send a PR with the new version number and ``sha256`` hash of the source
+release to https://github.com/conda-forge/pywavelets-feedstock.
 
 
 Create the release on GitHub
