@@ -1,0 +1,27 @@
+==============================
+PyWavelets 1.3.0 Release Notes
+==============================
+
+.. contents::
+
+We are very pleased to announce the release of PyWavelets 1.3.
+
+
+New features
+============
+
+
+Backwards incompatible changes
+==============================
+
+
+Bugs Fixed
+==========
+
+
+Other changes
+=============
+
+
+Authors
+=======
