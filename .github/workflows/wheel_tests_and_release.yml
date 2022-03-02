@@ -59,7 +59,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-18.04]
-        cibw_python: [ "cp38-*" , "cp39-*", "cp310-*"]
+        cibw_python: [ "cp37-*" , "cp38-*" , "cp39-*", "cp310-*"]
         cibw_manylinux: [ manylinux2014 ]
     steps:
       - uses: actions/checkout@v2
