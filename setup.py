@@ -14,8 +14,8 @@ from setuptools import setup, Extension
 from setuptools.command.test import test as TestCommand
 
 MAJOR = 1
-MINOR = 3
-MICRO = 0
+MINOR = 2
+MICRO = 1
 ISRELEASED = False
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 
