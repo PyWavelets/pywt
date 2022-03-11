@@ -9,25 +9,35 @@ env:
   # CIBW_BEFORE_BUILD: pip install cython
   CIBW_TEST_REQUIRES: pytest
   CIBW_TEST_COMMAND: pytest --pyargs pywt
+  CIBW_ENVIRONMENT: PIP_PREFER_BINARY=1
 
 
 jobs:
   build_linux_37_and_above_wheels:
-    name: Build python ${{ matrix.cibw_python }} wheels on ${{ matrix.os }}
+    name: Build python ${{ matrix.cibw_python }} ${{ matrix.cibw_arch }} wheels on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-18.04]
-        cibw_python: [ "cp37-*", "cp38-*" ]
-        cibw_manylinux: [ manylinux1 ]
+        cibw_python: [ "cp38-*", "cp39-*" ]
+        cibw_manylinux: [ manylinux2014 ]
+        cibw_arch: [ "x86_64", "i686" ]
         include:
+          # manylinux2010 for Python 3.7 cases
           - os: ubuntu-18.04
-            cibw_python: "cp39-*"
+            cibw_python: "cp37-*"
             cibw_manylinux: manylinux2010
+            cibw_arch: "x86_64"
+          - os: ubuntu-18.04
+            cibw_python: "cp37-*"
+            cibw_manylinux: manylinux2010
+            cibw_arch: "i686"
+          # no i686 NumPy 1.21.x wheel for Python 3.10
           - os: ubuntu-18.04
             cibw_python: "cp310-*"
             cibw_manylinux: manylinux2014
+            cibw_arch: "x86_64"
     steps:
       - uses: actions/checkout@v2
         with:
@@ -44,9 +54,10 @@ jobs:
           python -m cibuildwheel --output-dir dist
         env:
           CIBW_BUILD: ${{ matrix.cibw_python }}
-          CIBW_ARCHS_LINUX: x86_64 i686
+          CIBW_ARCHS_LINUX: ${{ matrix.cibw_arch }}
+          CIBW_SKIP: "*-musllinux_*"
           CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.cibw_manylinux }}
-          CIBW_MANYLINUX_I686_IMAGE: ${{ matrix.cibw_manylinux }}
+          CIBW_MANYLINUX_I686_IMAGE: "manylinux2010"
       - uses: actions/upload-artifact@v2
         with:
           name: wheels
@@ -59,7 +70,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-18.04]
-        cibw_python: [ "cp38-*" , "cp39-*", "cp310-*"]
+        cibw_python: [ "cp37-*" , "cp38-*" , "cp39-*", "cp310-*"]
         cibw_manylinux: [ manylinux2014 ]
     steps:
       - uses: actions/checkout@v2
@@ -84,7 +95,6 @@ jobs:
           CIBW_ARCHS_LINUX: aarch64
           CIBW_SKIP: "*-musllinux_*"
           CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.cibw_manylinux }}
-          CIBW_MANYLINUX_I686_IMAGE: ${{ matrix.cibw_manylinux }}
       - uses: actions/upload-artifact@v2
         with:
           name: wheels
