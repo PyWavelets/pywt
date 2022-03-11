@@ -213,7 +213,7 @@ jobs:
           # We prefer to release wheels before source because otherwise there is a
           # small window during which users who pip install pywt will require compilation.
           twine upload ${{ github.workspace }}/dist/*.whl
-          twine upload ${{ github.workspace }}/dist/pywt-${PYWT_VERSION:1}.tar.gz
+          twine upload ${{ github.workspace }}/dist/PyWavelets-${PYWT_VERSION:1}.tar.gz
         env:
           TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
           TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
