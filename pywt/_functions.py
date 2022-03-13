@@ -17,8 +17,8 @@ from numpy.fft import fft
 from ._extensions._pywt import DiscreteContinuousWavelet, Wavelet, ContinuousWavelet
 
 
-__all__ = ["integrate_wavelet", "central_frequency", "scale2frequency", "qmf",
-           "orthogonal_filter_bank",
+__all__ = ["integrate_wavelet", "evaluate_wavelet", "central_frequency", 
+           "scale2frequency", "qmf", "orthogonal_filter_bank",
            "intwave", "centrfrq", "scal2frq", "orthfilt"]
 
 
@@ -117,6 +117,57 @@ def integrate_wavelet(wavelet, precision=8):
         phi_d, psi_d, phi_r, psi_r, x = functions_approximations
         step = x[1] - x[0]
         return _integrate(psi_d, step), _integrate(psi_r, step), x
+
+
+def evaluate_wavelet(wavelet, precision=8):
+    """
+    Evaluate `psi` wavelet function between lower and upper bound.
+
+    Parameters
+    ----------
+    wavelet : Wavelet instance or str
+        Wavelet to evaluate.  If a string, should be the name of a wavelet.
+    precision : int, optional
+        Number of wavelet function points computed with Wavelet's 
+        wavefun(level=precision) method (default: 8).
+
+    Returns
+    -------
+    [psi, x] :
+        for orthogonal wavelets
+    [psi_d, psi_r, x] :
+        for other wavelets
+
+
+    Examples
+    --------
+    >>> from pywt import Wavelet, evaluate_wavelet
+    >>> wavelet1 = Wavelet('db2')
+    >>> [psi, x] = evaluate_wavelet(wavelet1, precision=5)
+    >>> wavelet2 = Wavelet('bior1.3')
+    >>> [psi_d, psi_r, x] = evaluate_wavelet(wavelet2, precision=5)
+
+    """
+
+    if type(wavelet) in (tuple, list):
+        psi, x = np.asarray(wavelet[0]), np.asarray(wavelet[1])
+        return psi, x
+    elif not isinstance(wavelet, (Wavelet, ContinuousWavelet)):
+        wavelet = DiscreteContinuousWavelet(wavelet)
+
+    functions_approximations = wavelet.wavefun(precision)
+
+    if len(functions_approximations) == 2:      # continuous wavelet
+        psi, x = functions_approximations
+        return psi, x
+
+    elif len(functions_approximations) == 3:    # orthogonal wavelet
+        phi, psi, x = functions_approximations
+        return psi, x
+
+    else:                                       # biorthogonal wavelet
+        phi_d, psi_d, phi_r, psi_r, x = functions_approximations
+        return psi_d, psi_r, x
 
 
 def central_frequency(wavelet, precision=8):
