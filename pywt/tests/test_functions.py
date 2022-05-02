@@ -26,6 +26,13 @@ def test_scal2frq_scale():
     result = pywt.scale2frequency(w, scale, precision=12)
     assert_almost_equal(result, expected, decimal=3)
 
+def test_frq2scal_freq():
+    freq = 2
+    w = pywt.Wavelet('db1')
+    expected = 1. / freq
+    result = pywt.frequency2scale(w, freq, precision=12)
+    assert_almost_equal(result, expected, decimal=3)
+
 
 def test_intwave_orthogonal():
     w = pywt.Wavelet('db1')

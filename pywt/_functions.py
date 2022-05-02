@@ -17,7 +17,8 @@ from numpy.fft import fft
 from ._extensions._pywt import DiscreteContinuousWavelet, Wavelet, ContinuousWavelet
 
 
-__all__ = ["integrate_wavelet", "central_frequency", "scale2frequency", "qmf",
+__all__ = ["integrate_wavelet", "central_frequency", 
+           "scale2frequency", "frequency2scale", "qmf",
            "orthogonal_filter_bank",
            "intwave", "centrfrq", "scal2frq", "orthfilt"]
 
@@ -179,6 +180,24 @@ def scale2frequency(wavelet, scale, precision=8):
     """
     return central_frequency(wavelet, precision=precision) / scale
 
+def frequency2scale(wavelet, freq, precision=8):
+    """
+
+    Parameters
+    ----------
+    wavelet : Wavelet instance or str
+        Wavelet to integrate.  If a string, should be the name of a wavelet.
+    freq : scalar
+    precision : int, optional
+        Precision that will be used for wavelet function approximation computed
+        with ``wavelet.wavefun(level=precision)``.  Default is 8.
+
+    Returns
+    -------
+    scale : scalar
+
+    """
+    return central_frequency(wavelet, precision=precision) / freq
 
 def qmf(filt):
     """
