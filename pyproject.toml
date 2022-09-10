@@ -7,7 +7,7 @@
 [build-system]
 requires = [
     "wheel",
-    "setuptools<60",
+    "setuptools<65",
     "Cython>=0.29.24,<3.0",
 
     # NumPy dependencies - to update these, sync from
