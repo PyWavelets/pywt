@@ -143,7 +143,7 @@ jobs:
       matrix:
         os: [windows-latest]
         cibw_arch: ["AMD64", "x86"]
-        cibw_python: ["cp38-*", "cp39-*", "cp310-*"]
+        cibw_python: ["cp38-*", "cp39-*", "cp310-*", "cp311-*"]
         # exclude:
         #   - os: windows-latest
         #     cibw_python: "cp310-*"
@@ -174,7 +174,6 @@ jobs:
         with:
           name: wheels
           path: ./dist/*.whl
-
 
   deploy:
     name: Release
