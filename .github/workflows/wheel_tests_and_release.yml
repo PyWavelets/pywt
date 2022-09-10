@@ -92,12 +92,14 @@ jobs:
           path: ./dist/*.whl
 
   build_macos_wheels:
-    name: Build wheels on ${{ matrix.os }}
+    name: Build python ${{ matrix.cibw_python }} ${{ matrix.cibw_arch }} wheels on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os: [macos-latest]
+        cibw_python: [ "cp38-*", "cp39-*", "cp310-*" , "cp311-*" ]
+        cibw_arch: [ "x86_64", "arm64", "universal2"]
     env:
       MACOSX_DEPLOYMENT_TARGET: "10.13"
     steps:
@@ -117,9 +119,8 @@ jobs:
         run: |
           python -m cibuildwheel --output-dir dist
         env:
-          CIBW_BUILD: "cp3?-* cp310-* cp311-*"
-          CIBW_SKIP: "cp36-*"
-          CIBW_ARCHS_MACOS: x86_64 arm64 universal2
+          CIBW_BUILD: ${{ matrix.cibw_python }}
+          CIBW_ARCHS_MACOS: ${{ matrix.cibw_arch }}
           CIBW_MANYLINUX_X86_64_IMAGE: manylinux1
           CIBW_MANYLINUX_I686_IMAGE: manylinux1
           CC: /usr/bin/clang
@@ -135,13 +136,18 @@ jobs:
           path: ./dist/*.whl
 
   build_windows_wheels:
-    name: Build wheels on ${{ matrix.os }}
+    name: Build ${{ matrix.cibw_python }} ${{ matrix.cibw_arch }} wheels on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os: [windows-latest]
-
+        cibw_arch: ["AMD64", "x86"]
+        cibw_python: ["cp38-*", "cp39-*", "cp310-*"]
+        # exclude:
+        #   - os: windows-latest
+        #     cibw_python: "cp310-*"
+        #     cibw_arch: x86
     steps:
       - uses: actions/checkout@v2
         with:
@@ -159,8 +165,8 @@ jobs:
         run: |
           python -m cibuildwheel --output-dir dist
         env:
-          CIBW_BUILD: "cp3?-* cp310-* cp311-*"
-          CIBW_SKIP: "cp36-*"
+          CIBW_BUILD: ${{ matrix.cibw_python }}
+          CIBW_ARCHS_WINDOWS: ${{ matrix.cibw_arch }}
           CIBW_MANYLINUX_X86_64_IMAGE: manylinux1
           CIBW_MANYLINUX_I686_IMAGE: manylinux1
 
