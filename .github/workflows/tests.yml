@@ -50,7 +50,7 @@ jobs:
             PIP_FLAGS: "--pre"
             OPTIONS_NAME: "pre"
           - platform_id: manylinux_x86_64
-            python-version: 3.11
+            python-version: '3.11-dev'
             PIP_FLAGS: "--pre"
             OPTIONS_NAME: "pre"
 
