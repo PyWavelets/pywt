@@ -98,7 +98,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [macos-latest]
-        cibw_python: [ "cp38-*", "cp39-*", "cp310-*" , "cp311-*" ]
+        cibw_python: [ "cp37-*", "cp38-*", "cp39-*", "cp310-*" , "cp311-*" ]
         cibw_arch: [ "x86_64", "arm64"]
     env:
       MACOSX_DEPLOYMENT_TARGET: "10.13"
@@ -143,7 +143,7 @@ jobs:
       matrix:
         os: [windows-latest]
         cibw_arch: ["AMD64", "x86"]
-        cibw_python: ["cp38-*", "cp39-*", "cp310-*", "cp311-*"]
+        cibw_python: ["cp37-*", "cp38-*", "cp39-*", "cp310-*", "cp311-*"]
         # exclude:
         #   - os: windows-latest
         #     cibw_python: "cp310-*"
