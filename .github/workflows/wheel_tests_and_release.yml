@@ -99,7 +99,7 @@ jobs:
       matrix:
         os: [macos-latest]
         cibw_python: [ "cp38-*", "cp39-*", "cp310-*" , "cp311-*" ]
-        cibw_arch: [ "x86_64", "arm64", "universal2"]
+        cibw_arch: [ "x86_64", "arm64"]
     env:
       MACOSX_DEPLOYMENT_TARGET: "10.13"
     steps:
