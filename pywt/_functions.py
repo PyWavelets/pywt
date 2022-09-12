@@ -162,13 +162,14 @@ def central_frequency(wavelet, precision=8):
 
 
 def scale2frequency(wavelet, scale, precision=8):
-    """
+    """Convert from CWT "scale" to normalized frequency.
 
     Parameters
     ----------
     wavelet : Wavelet instance or str
         Wavelet to integrate.  If a string, should be the name of a wavelet.
     scale : scalar
+        The scale of the CWT.
     precision : int, optional
         Precision that will be used for wavelet function approximation computed
         with ``wavelet.wavefun(level=precision)``.  Default is 8.
@@ -176,18 +177,23 @@ def scale2frequency(wavelet, scale, precision=8):
     Returns
     -------
     freq : scalar
+        Frequency normalized to the sampling frequency. In other words, for a
+        sampling interval of `dt` seconds, the normalized frequency of 1.0
+        corresponds to (`1/dt` Hz).
 
     """
     return central_frequency(wavelet, precision=precision) / scale
 
 def frequency2scale(wavelet, freq, precision=8):
-    """
+    """Convert from to normalized frequency to CWT "scale".
 
     Parameters
     ----------
     wavelet : Wavelet instance or str
         Wavelet to integrate.  If a string, should be the name of a wavelet.
     freq : scalar
+        Frequency, normalized so that the sampling frequency corresponds to a
+        value of 1.0.
     precision : int, optional
         Precision that will be used for wavelet function approximation computed
         with ``wavelet.wavefun(level=precision)``.  Default is 8.
