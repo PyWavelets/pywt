@@ -356,7 +356,7 @@ def upcoef(part, coeffs, wavelet, level=1, take=0):
         * 'a' - approximations reconstruction is performed
         * 'd' - details reconstruction is performed
     coeffs : array_like
-        Coefficients array to recontruct
+        Coefficients array to reconstruct
     wavelet : Wavelet object or name
         Wavelet to use
     level : int, optional

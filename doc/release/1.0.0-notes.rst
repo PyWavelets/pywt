@@ -51,11 +51,11 @@ data.
 
 More flexible specification of some continuous wavelets
 -------------------------------------------------------
-The continous wavelets ``"cmor"``, ``"shan"`` and ``"fbsp"`` now let the user
+The continuous wavelets ``"cmor"``, ``"shan"`` and ``"fbsp"`` now let the user
 specify attributes such as their center frequency and bandwidth that were
 previously fixed. See more on this in the section on deprecated features.
 
-Fully Separable Discrete Wavelet Transfrom
+Fully Separable Discrete Wavelet Transform
 ------------------------------------------
 A new variant of the multilevel n-dimensional DWT has been implemented. It is
 known as the fully separable wavelet transform (FSWT). The functions
@@ -95,7 +95,7 @@ without having to explicitly compute a transform.
 Deprecated features
 ===================
 
-The continous wavelets with names ``"cmor"``, ``"shan"`` and ``"fbsp"``
+The continuous wavelets with names ``"cmor"``, ``"shan"`` and ``"fbsp"``
 should now be modified to include formerly hard-coded attributes such as their
 center frequency and bandwidth. Use of the bare names "cmor". "shan" and
 "fbsp"  is now deprecated. For "cmor" (and "shan"), the form of the wavelet
@@ -235,7 +235,7 @@ A total of 53 pull requests were merged for this release.
 * `#303 <https://github.com/PyWavelets/pywt/pull/303>`__: DOC: better document how to handle omitted coefficients in multilevel...
 * `#309 <https://github.com/PyWavelets/pywt/pull/309>`__: Document how max levels are determined for multilevel DWT and...
 * `#310 <https://github.com/PyWavelets/pywt/pull/310>`__: parse CWT wavelet names for parameters
-* `#314 <https://github.com/PyWavelets/pywt/pull/314>`__: TST: Explicity align data records in test_byte_offset()
+* `#314 <https://github.com/PyWavelets/pywt/pull/314>`__: TST: Explicitly align data records in test_byte_offset()
 * `#317 <https://github.com/PyWavelets/pywt/pull/317>`__: TST: specify rtol and atol for assert_allclose calls in test_swt_decomposition
 * `#320 <https://github.com/PyWavelets/pywt/pull/320>`__: Suggest using default conda channel to install
 * `#321 <https://github.com/PyWavelets/pywt/pull/321>`__: BLD: add pyproject.toml file (PEP 518 support).
@@ -260,7 +260,7 @@ A total of 53 pull requests were merged for this release.
 * `#369 <https://github.com/PyWavelets/pywt/pull/369>`__: remove iswt2's restriction on non-square inputs
 * `#376 <https://github.com/PyWavelets/pywt/pull/376>`__: add common 1d synthetic signals
 * `#377 <https://github.com/PyWavelets/pywt/pull/377>`__: minor update to demo_signals
-* `#378 <https://github.com/PyWavelets/pywt/pull/378>`__: numpy: 1.15 multiindexing warning. targetted fix
+* `#378 <https://github.com/PyWavelets/pywt/pull/378>`__: numpy: 1.15 multiindexing warning. targeted fix
 * `#380 <https://github.com/PyWavelets/pywt/pull/380>`__: BLD: fix doc build on ReadTheDocs, need matplotlib for plots...
 * `#381 <https://github.com/PyWavelets/pywt/pull/381>`__: Fix corner case for small scales in CWT
 * `#382 <https://github.com/PyWavelets/pywt/pull/382>`__: avoid FutureWarnings related to multiindexing in Numpy1.15

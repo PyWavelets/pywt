@@ -10,7 +10,7 @@ Bugs Fixed
 
 The ``pywt.data.nino`` data reader is now compatible with numpy 1.12. (#273)
 
-The ``wp_scalogram.py`` demo is now compatibile with matplotlib 2.0. (#276)
+The ``wp_scalogram.py`` demo is now compatible with matplotlib 2.0. (#276)
 
 Fixed a sporadic segmentation fault affecting stationary wavelet transforms of
 multi-dimensional data. (#289)

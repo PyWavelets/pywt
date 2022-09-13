@@ -39,7 +39,7 @@ def demo_signal(name='Bumps', n=None):
     ----------
     name : {'Blocks', 'Bumps', 'HeaviSine', 'Doppler', ...}
         The type of test signal to generate (`name` is case-insensitive). If
-        `name` is set to `'list'`, a list of the avialable test functions is
+        `name` is set to `'list'`, a list of the available test functions is
         returned.
     n : int or None
         The length of the test signal. This should be provided for all test

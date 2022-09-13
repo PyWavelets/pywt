@@ -37,7 +37,7 @@ of the wavelet transform to sparsely represent natural images is a key
 property that makes it desirable in applications such as image compression and
 restoration.
 
-Fully Seperable Discrete Wavelet Transform
+Fully Separable Discrete Wavelet Transform
 ------------------------------------------
 An alternative decomposition results in first fully decomposing one axis of the
 data prior to moving onto each additional axis in turn. This is illustrated

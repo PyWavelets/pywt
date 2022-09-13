@@ -40,9 +40,9 @@ Highlights of this release include:
 New features
 ============
 
-1D Continous Wavelet Transforms
+1D Continuous Wavelet Transforms
 -------------------------------
-A wide range of continous wavelets are now available.  These include the
+A wide range of continuous wavelets are now available.  These include the
 following:
 
 - Gaussian wavelets (``gaus1``...``gaus8``)
@@ -174,12 +174,12 @@ This list of names is automatically generated, and may not be fully complete.
 Issues closed for v0.5.0
 ------------------------
 
-- `#48 <https://github.com/PyWavelets/pywt/issues/48>`__: Continous wavelet transform?
+- `#48 <https://github.com/PyWavelets/pywt/issues/48>`__: Continuous wavelet transform?
 - `#127 <https://github.com/PyWavelets/pywt/issues/127>`__: Reorganize _pywt
 - `#160 <https://github.com/PyWavelets/pywt/issues/160>`__: Appveyor failing on recent PRs
 - `#163 <https://github.com/PyWavelets/pywt/issues/163>`__: Set up coveralls
 - `#166 <https://github.com/PyWavelets/pywt/issues/166>`__: Wavelet coefficients to single array (and vice versa?)
-- `#177 <https://github.com/PyWavelets/pywt/issues/177>`__: Fail to install pywt due to the use of index_t which conflict with the defination in /usr/include/sys/types.h on smartos sysmte(open solaris like system)
+- `#177 <https://github.com/PyWavelets/pywt/issues/177>`__: Fail to install pywt due to the use of index_t which conflict with the definition in /usr/include/sys/types.h on smartos system(open solaris like system)
 - `#180 <https://github.com/PyWavelets/pywt/issues/180>`__: Memory leak
 - `#187 <https://github.com/PyWavelets/pywt/issues/187>`__: 'reflect' signal extension mode
 - `#189 <https://github.com/PyWavelets/pywt/issues/189>`__: bump minimum numpy version?
@@ -189,7 +189,7 @@ Issues closed for v0.5.0
 - `#209 <https://github.com/PyWavelets/pywt/issues/209>`__: broken doctests
 - `#210 <https://github.com/PyWavelets/pywt/issues/210>`__: Run doctests in CI setup
 - `#211 <https://github.com/PyWavelets/pywt/issues/211>`__: Typo in iswt documentation
-- `#217 <https://github.com/PyWavelets/pywt/issues/217>`__: `blank_discrete_wavelet` does not properly intiailize some properties
+- `#217 <https://github.com/PyWavelets/pywt/issues/217>`__: `blank_discrete_wavelet` does not properly initialize some properties
 - `#231 <https://github.com/PyWavelets/pywt/issues/231>`__: I can't compile pywt
 
 

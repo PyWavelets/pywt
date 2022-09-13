@@ -48,7 +48,7 @@ def test_accuracy_pymatbridge():
     mlab = Matlab()
 
     rstate = np.random.RandomState(1234)
-    # max RMSE (was 1.0e-10, is reduced to 5.0e-5 due to different coefficents)
+    # max RMSE (was 1.0e-10, is reduced to 5.0e-5 due to different coefficients)
     epsilon = 5.0e-5
     epsilon_pywt_coeffs = 1.0e-10
     mlab.start()
@@ -74,7 +74,7 @@ def test_accuracy_pymatbridge():
 def test_accuracy_precomputed():
     # Keep this specific random seed to match the precomputed Matlab result.
     rstate = np.random.RandomState(1234)
-    # max RMSE (was 1.0e-10, is reduced to 5.0e-5 due to different coefficents)
+    # max RMSE (was 1.0e-10, is reduced to 5.0e-5 due to different coefficients)
     epsilon = 5.0e-5
     epsilon_pywt_coeffs = 1.0e-10
     for wavelet in wavelets:

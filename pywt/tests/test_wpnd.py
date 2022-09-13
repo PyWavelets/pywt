@@ -28,7 +28,7 @@ def test_traversing_tree_nd():
     assert_allclose(wp['dd'].data, np.zeros((4, 4)), rtol=1e-12, atol=1e-14)
 
     assert_allclose(wp['aa'*2].data, np.array([[10., 26.]] * 2), rtol=1e-12)
-    # __getitem__ using a tuple acces instead
+    # __getitem__ using a tuple access instead
     assert_allclose(wp[('aa', 'aa')].data, np.array([[10., 26.]] * 2),
                     rtol=1e-12)
 

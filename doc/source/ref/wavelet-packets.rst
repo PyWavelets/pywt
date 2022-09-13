@@ -27,7 +27,7 @@ methods.
 Here 1D, 2D and ND refer to the number of axes of the data to be transformed.
 All wavelet packet objects can operate on general n-dimensional arrays, but the
 1D or 2D classes apply transforms along only 1 or 2 dimensions. The ND classes
-allow transforms over an arbtirary number of axes of n-dimensional data.
+allow transforms over an arbitrary number of axes of n-dimensional data.
 
 The below diagram illustrates the inheritance tree:
 
