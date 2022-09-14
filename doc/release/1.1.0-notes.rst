@@ -79,7 +79,7 @@ Bugs Fixed
 
 - For some boundary modes and data sizes, round-trip ``dwt``/``idwt`` can
   result in an output that has one additional coefficient. Prior to this
-  relese, this could cause a failure during ``WaveletPacket`` or
+  release, this could cause a failure during ``WaveletPacket`` or
   ``WaveletPacket2D`` reconstruction. These wavelet packet transforms have now
   been fixed and round-trip wavelet packet transforms always preserve the
   original data shape. (#448)
@@ -139,7 +139,7 @@ Pull requests for v1.1.0
 - `#442 <https://github.com/PyWavelets/pywt/pull/442>`__: document the numpy.pad equivalent of 'antireflect'
 - `#446 <https://github.com/PyWavelets/pywt/pull/446>`__: Spelling correction
 - `#448 <https://github.com/PyWavelets/pywt/pull/448>`__: Properly trim wavelet packet node coefficients during reconstruction
-- `#450 <https://github.com/PyWavelets/pywt/pull/450>`__: handle mixed dtype cofficients correctly across inverse transforms
+- `#450 <https://github.com/PyWavelets/pywt/pull/450>`__: handle mixed dtype coefficients correctly across inverse transforms
 - `#462 <https://github.com/PyWavelets/pywt/pull/462>`__: fix bug in iswtn for data of arbitrary shape when using user-specified...
 - `#463 <https://github.com/PyWavelets/pywt/pull/463>`__: TST: fix misc. doctest failures (test_doc.py)
 - `#471 <https://github.com/PyWavelets/pywt/pull/471>`__: user-friendly error messages about multilevel DWT format

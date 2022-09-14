@@ -14,7 +14,7 @@ its __setitem__ method) has been fixed.
 The order that the individual subband coefficients were stacked by the
 function ``pywt.ravel_coeffs`` is now guaranteed to be consistent across all
 supported Python versions. Explicit alphabetic ordering of subband coefficient
-names is used for consitent ordering regardless of Python version.
+names is used for consistent ordering regardless of Python version.
 
 Authors
 =======

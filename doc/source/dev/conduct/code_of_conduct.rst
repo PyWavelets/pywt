@@ -163,7 +163,7 @@ Endnotes
 --------
 
 We are thankful to the SciPy developers for creating the code of conduct we
-have adapated here.
+have adapted here.
 
 - `Scipy Code of Conduct <http://scipy.github.io/devdocs/dev/conduct/code_of_conduct.html>`_
 

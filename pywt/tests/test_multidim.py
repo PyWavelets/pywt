@@ -398,7 +398,7 @@ def test_dwt2_dimension_error():
 
 
 def test_per_axis_wavelets_and_modes():
-    # tests seperate wavelet and edge mode for each axis.
+    # tests separate wavelet and edge mode for each axis.
     rstate = np.random.RandomState(1234)
     data = rstate.randn(16, 16, 16)
 

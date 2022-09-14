@@ -388,7 +388,7 @@ class PyTest(TestCommand):
 
 
 def setup_package():
-    # Rewrite the version file everytime
+    # Rewrite the version file every time
     write_version_py()
 
     metadata = dict(

@@ -3,7 +3,7 @@
 Testing
 =======
 
-Continous integration with Travis-CI
+Continuous integration with Travis-CI
 ------------------------------------
 
 The project is using `Travis-CI <https://travis-ci.org/PyWavelets/pywt>`_ service

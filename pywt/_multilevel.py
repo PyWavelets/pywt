@@ -525,7 +525,7 @@ def waverecn(coeffs, wavelet, mode='symmetric', axes=None):
     if len(ds) > 0 and not all([isinstance(d, dict) for d in ds]):
         raise ValueError((
             "Unexpected detail coefficient type: {}. Detail coefficients "
-            "must be a dicionary of arrays as returned by wavedecn. If "
+            "must be a dictionary of arrays as returned by wavedecn. If "
             "you are using pywt.array_to_coeffs or pywt.unravel_coeffs, "
             "please specify output_format='wavedecn'").format(type(ds[0])))
 
@@ -771,7 +771,7 @@ def coeffs_to_array(coeffs, padding=0, axes=None):
     coeff_slices = []
     coeff_slices.append(a_slices)
 
-    # loop over the detail cofficients, adding them to coeff_arr
+    # loop over the detail coefficients, adding them to coeff_arr
     ds = coeffs[1:]
     for coeff_dict in ds:
         coeff_slices.append({})  # new dictionary for detail coefficients
@@ -1094,7 +1094,7 @@ def ravel_coeffs(coeffs, axes=None):
     coeff_slices.append(a_slice)
     coeff_shapes.append(coeffs[0].shape)
 
-    # loop over the detail cofficients, embedding them in coeff_arr
+    # loop over the detail coefficients, embedding them in coeff_arr
     ds = coeffs[1:]
     offset = a_size
     for coeff_dict in ds:

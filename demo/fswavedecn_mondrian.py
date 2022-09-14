@@ -58,7 +58,7 @@ coeffs_dwt = pywt.wavedecn(img, wavelet='db1', level=None)
 # convert coefficient dictionary to a single array
 coeff_array_dwt, _ = pywt.coeffs_to_array(coeffs_dwt)
 
-# perform fully seperable DWT
+# perform fully separable DWT
 fswavedecn_result = pywt.fswavedecn(img, wavelet='db1')
 
 nnz_dwt = np.sum(coeff_array_dwt != 0)

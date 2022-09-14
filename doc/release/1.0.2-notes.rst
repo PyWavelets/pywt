@@ -47,7 +47,7 @@ Issues closed for v1.0.2
 
 - `#447 <https://github.com/PyWavelets/pywt/issues/447>`__: Issue using pywt.WaveletPacket2D
 - `#449 <https://github.com/PyWavelets/pywt/issues/449>`__: Coefficients arrays must have the same dtype error in iswt function
-- `#460 <https://github.com/PyWavelets/pywt/issues/460>`__: iswtn error when using axes and excluded dim is desn't comply to the level
+- `#460 <https://github.com/PyWavelets/pywt/issues/460>`__: iswtn error when using axes and excluded dim is doesn't comply to the level
 
 Pull requests for v1.0.2
 ------------------------
@@ -67,7 +67,7 @@ The backports listed above correspond to the following PRs from the master branc
 - `#438 <https://github.com/PyWavelets/pywt/issues/438>`__: Fix spelling of "Garrote"
 - `#446 <https://github.com/PyWavelets/pywt/issues/446>`__: Spelling correction
 - `#448 <https://github.com/PyWavelets/pywt/issues/448>`__: Properly trim wavelet packet node coefficients during reconstruction
-- `#450 <https://github.com/PyWavelets/pywt/issues/450>`__: handle mixed dtype cofficients correctly across inverse transforms
+- `#450 <https://github.com/PyWavelets/pywt/issues/450>`__: handle mixed dtype coefficients correctly across inverse transforms
 - `#452 <https://github.com/PyWavelets/pywt/issues/452>`__: bump minimum supported Cython version
 - `#462 <https://github.com/PyWavelets/pywt/issues/462>`__: fix bug in iswtn for data of arbitrary shape when using user-specified axes
 
