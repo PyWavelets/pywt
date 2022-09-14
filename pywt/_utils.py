@@ -3,18 +3,10 @@
 # See COPYING for license details.
 import inspect
 import numpy as np
-import sys
 from collections.abc import Iterable
 
 from ._extensions._pywt import (Wavelet, ContinuousWavelet,
                                 DiscreteContinuousWavelet, Modes)
-
-
-# define string_types as in six for Python 2/3 compatibility
-if sys.version_info[0] == 3:
-    string_types = str,
-else:
-    string_types = basestring,
 
 
 def _as_wavelet(wavelet):
@@ -48,7 +40,7 @@ def _wavelets_per_axis(wavelet, axes):
 
     """
     axes = tuple(axes)
-    if isinstance(wavelet, string_types + (Wavelet, )):
+    if isinstance(wavelet, (str, Wavelet)):
         # same wavelet on all axes
         wavelets = [_as_wavelet(wavelet), ] * len(axes)
     elif isinstance(wavelet, Iterable):
@@ -84,7 +76,7 @@ def _modes_per_axis(modes, axes):
 
     """
     axes = tuple(axes)
-    if isinstance(modes, string_types + (int, )):
+    if isinstance(modes, (int, str)):
         # same wavelet on all axes
         modes = [Modes.from_object(modes), ] * len(axes)
     elif isinstance(modes, Iterable):

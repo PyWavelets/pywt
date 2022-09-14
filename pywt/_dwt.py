@@ -8,7 +8,7 @@ from ._extensions._dwt import (dwt_single, dwt_axis, idwt_single, idwt_axis,
                                upcoef as _upcoef, downcoef as _downcoef,
                                dwt_max_level as _dwt_max_level,
                                dwt_coeff_len as _dwt_coeff_len)
-from ._utils import string_types, _as_wavelet
+from ._utils import _as_wavelet
 
 
 __all__ = ["dwt", "idwt", "downcoef", "upcoef", "dwt_max_level",
@@ -61,7 +61,7 @@ def dwt_max_level(data_len, filter_len):
     """
     if isinstance(filter_len, Wavelet):
         filter_len = filter_len.dec_len
-    elif isinstance(filter_len, string_types):
+    elif isinstance(filter_len, str):
         if filter_len in wavelist(kind='discrete'):
             filter_len = Wavelet(filter_len).dec_len
         else:
