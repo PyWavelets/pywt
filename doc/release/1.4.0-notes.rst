@@ -48,3 +48,4 @@ Pull requests for v1.4
 * `#649 <https://github.com/PyWavelets/pywt/pull/649>`__: Update wheel building workflow to include Python 3.11
 * `#650 <https://github.com/PyWavelets/pywt/pull/650>`__: Upgrade GitHub Actions
 * `#651 <https://github.com/PyWavelets/pywt/pull/651>`__: Fix typos discovered by codespell
+* `#654 <https://github.com/PyWavelets/pywt/pull/654>`__: Remove string_types, which is a remnant of Python 2 support
