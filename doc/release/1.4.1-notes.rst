@@ -1,0 +1,7 @@
+==============================
+PyWavelets 1.4.1 Release Notes
+==============================
+
+.. contents::
+
+This patch release updates setup.py to use `python_requires>=3.8` and adds 3.11 to the trove classifiers.

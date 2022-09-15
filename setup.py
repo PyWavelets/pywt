@@ -15,7 +15,7 @@ from setuptools.command.test import test as TestCommand
 
 MAJOR = 1
 MINOR = 4
-MICRO = 0
+MICRO = 1
 ISRELEASED = True
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 
@@ -423,10 +423,10 @@ def setup_package():
             "Programming Language :: C",
             "Programming Language :: Python",
             "Programming Language :: Python :: 3",
-            "Programming Language :: Python :: 3.7",
             "Programming Language :: Python :: 3.8",
             "Programming Language :: Python :: 3.9",
             "Programming Language :: Python :: 3.10",
+            "Programming Language :: Python :: 3.11",
             "Topic :: Software Development :: Libraries :: Python Modules"
         ],
         platforms=["Windows", "Linux", "Solaris", "Mac OS-X", "Unix"],
@@ -441,7 +441,7 @@ def setup_package():
         tests_require=['pytest'],
 
         install_requires=["numpy>=1.17.3"],
-        python_requires=">=3.7",
+        python_requires=">=3.8",
     )
 
     if "--force" in sys.argv:
