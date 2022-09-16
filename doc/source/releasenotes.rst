@@ -18,3 +18,4 @@ Release Notes
    release.1.2.0
    release.1.3.0
    release.1.4.0
+   release.1.4.1

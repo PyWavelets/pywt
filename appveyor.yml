@@ -9,8 +9,6 @@ environment:
   # as of Nov 2020, the default image has Visual Studio 2015, but Python 3.9
   # is only available on the Visual Studio 2019 image.
   matrix:
-    - PYTHON: "C:\\Python37"
-    - PYTHON: "C:\\Python37-x64"
     - PYTHON: "C:\\Python38"
     - PYTHON: "C:\\Python38-x64"
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019

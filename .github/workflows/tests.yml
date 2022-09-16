@@ -20,7 +20,7 @@ jobs:
       # Ensure that a wheel builder finishes even if another fails
       fail-fast: false
       matrix:
-        python-version: [3.7, 3.8, 3.9, '3.10', '3.11-dev']
+        python-version: [3.8, 3.9, '3.10', '3.11-dev']
         MINIMUM_REQUIREMENTS: [0]
         USE_SCIPY: [0]
         USE_SDIST: [0]
@@ -30,7 +30,7 @@ jobs:
         OPTIONS_NAME: ["default"]
         include:
           - platform_id: manylinux_x86_64
-            python-version: 3.7
+            python-version: 3.8
             MINIMUM_REQUIREMENTS: 1
             OPTIONS_NAME: "minimum-req"
           - platform_id: manylinux_x86_64
@@ -168,7 +168,7 @@ jobs:
         PIP_FLAGS: [""]
         OPTIONS_NAME: ["default"]
         include:
-          - python-version: 3.7
+          - python-version: 3.8
             MINIMUM_REQUIREMENTS: 1
             OPTIONS_NAME: "osx-minimum-req"
           - python-version: 3.9
