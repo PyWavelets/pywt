@@ -1,0 +1,22 @@
+==============================
+PyWavelets 1.5.0 Release Notes
+==============================
+
+.. contents::
+
+We are very pleased to announce the release of PyWavelets 1.5. 
+
+Authors
+=======
+
+
+Reviewers
+=========
+
+
+Issues closed  for v1.5
+-----------------------
+
+
+Pull requests for v1.5
+----------------------
