@@ -774,7 +774,7 @@ class WaveletPacket(Node):
         decomposed) and `decompose` is set to False, only existing nodes
         will be returned.
 
-        Frequency order (``order="freq"``) is also known as as sequency order
+        Frequency order (``order="freq"``) is also known as sequency order
         and "natural" order is sometimes referred to as Paley order. A detailed
         discussion of these orderings is also given in [1]_, [2]_.
 
