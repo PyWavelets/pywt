@@ -134,7 +134,7 @@ def waverec(coeffs, wavelet, mode='symmetric', axis=-1):
 
     Specifically, to ignore detail coefficients at level 2, one could do::
 
-        coeffs[-2] == np.zeros_like(coeffs[-2])
+        coeffs[-2] = np.zeros_like(coeffs[-2])
 
     Examples
     --------
