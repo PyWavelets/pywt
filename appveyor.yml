@@ -6,11 +6,11 @@
 # http://python-packaging-user-guide.readthedocs.org/en/latest/appveyor/
 
 environment:
-  # as of Nov 2020, the default image has Visual Studio 2015, but Python 3.9
-  # is only available on the Visual Studio 2019 image.
   matrix:
-    - PYTHON: "C:\\Python38"
-    - PYTHON: "C:\\Python38-x64"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      PYTHON: "C:\\Python38"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      PYTHON: "C:\\Python38-x64"
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PYTHON: "C:\\Python39"
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
@@ -27,16 +27,16 @@ install:
   - "util\\appveyor\\build.cmd %PYTHON%\\python.exe -m pip install
      numpy --cache-dir c:\\tmp\\pip-cache"
   - "util\\appveyor\\build.cmd %PYTHON%\\python.exe -m pip install
-     Cython pytest coverage matplotlib --cache-dir c:\\tmp\\pip-cache"
+     Cython pytest matplotlib --cache-dir c:\\tmp\\pip-cache"
 
 test_script:
-  - "util\\appveyor\\build.cmd %PYTHON%\\python.exe -m pip install . -v"
+  - "util\\appveyor\\build.cmd %PYTHON%\\python.exe -m pip install . -v --config-settings=setup-args=--vsenv"
   - "cd demo"
   - "%PYTHON%\\Scripts\\pytest --pyargs pywt"
   - "cd .."
 
 after_test:
-  - "util\\appveyor\\build.cmd %PYTHON%\\python.exe -m build --wheel"
+  - "util\\appveyor\\build.cmd %PYTHON%\\python.exe -m build --wheel -Csetup-args=--vsenv"
 
 artifacts:
   # Archive the generated wheel package in the ci.appveyor.com build report.
