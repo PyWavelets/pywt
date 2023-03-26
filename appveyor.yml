@@ -30,7 +30,7 @@ install:
      Cython pytest coverage matplotlib --cache-dir c:\\tmp\\pip-cache"
 
 test_script:
-  - "util\\appveyor\\build.cmd %PYTHON%\\python.exe -m pip install -e . -v"
+  - "util\\appveyor\\build.cmd %PYTHON%\\python.exe -m pip install . -v"
   - "cd demo"
   - "%PYTHON%\\Scripts\\pytest --pyargs pywt"
   - "cd .."
