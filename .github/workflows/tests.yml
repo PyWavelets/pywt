@@ -1,7 +1,15 @@
 # Workflow to build and test wheels
 name: Test
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+      - v1.**
+  pull_request:
+    branches:
+      - master
+      - v1.**
 
 jobs:
 
@@ -20,7 +28,7 @@ jobs:
       # Ensure that a wheel builder finishes even if another fails
       fail-fast: false
       matrix:
-        python-version: [3.8, 3.9, '3.10', '3.11-dev']
+        python-version: [3.8, 3.9, '3.10', '3.11']
         MINIMUM_REQUIREMENTS: [0]
         USE_SCIPY: [0]
         USE_SDIST: [0]
@@ -91,21 +99,20 @@ jobs:
                 pip install numpy
                 if [ "${USE_SCIPY}" == "1" ]; then pip install scipy; fi
             fi
-            pip install matplotlib
-            pip install pytest pytest-cov coverage codecov
+            pip install matplotlib pytest pytest-cov coverage codecov
             set -o pipefail
             if [ "${REFGUIDE_CHECK}" == "1" ]; then
                 pip install sphinx numpydoc
             fi
             if [ "${USE_WHEEL}" == "1" ]; then
-                pip install wheel;
                 # Need verbose output or TravisCI will terminate after 10 minutes
                 pip wheel . -v
-                pip install pywavelets*.whl -v
+                pip install pywavelets*.whl
             elif [ "${USE_SDIST}" == "1" ]; then
                 python -m build --sdist
+                pip install dist/pyw*.tar.gz -v
             elif [ "${REFGUIDE_CHECK}" == "1" ]; then
-                pip install -e . -v
+                pip install . -v
             else
                 CFLAGS="--coverage" pip install -e . -v
             fi
@@ -117,30 +124,22 @@ jobs:
             USE_SDIST: ${{ matrix.USE_SDIST }}
             REFGUIDE_CHECK: ${{ matrix.REFGUIDE_CHECK }}
         run: |
+            set -o pipefail
+            # Move out of source directory to avoid finding local pywt
+            pushd demo
             if [ "${USE_WHEEL}" == "1" ]; then
-                pushd demo
                 pytest --pyargs pywt
-                # if [[ "${TRAVIS_CPU_ARCH}" != "arm64" ]]; then
                 python ../pywt/tests/test_doc.py
-                # fi
-                popd
             elif [ "${USE_SDIST}" == "1" ]; then
-                # Move out of source directory to avoid finding local pywt
-                pushd dist
-                pip install pywavelets* -v
                 pytest --pyargs pywt
-                # if [[ "${TRAVIS_CPU_ARCH}" != "arm64" ]]; then
                 python ../pywt/tests/test_doc.py
-                # fi
-                popd
             elif [ "${REFGUIDE_CHECK}" == "1" ]; then
                 python util/refguide_check.py --doctests
             else
-                pushd demo
                 pytest --pyargs pywt --cov=pywt --cov-config=../.coveragerc
                 cp .coverage ..
-                popd
             fi
+            popd
 
 
   test_pywavelets_macos:
