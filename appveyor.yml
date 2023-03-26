@@ -1,42 +1,37 @@
-# AppVeyor.com is a Continuous Integration service to build and run tests under
-# Windows
 # https://ci.appveyor.com/project/PyWavelets/pywt
+image: Visual Studio 2019
 
-# This file is built on the template here:
-# http://python-packaging-user-guide.readthedocs.org/en/latest/appveyor/
+# Ensure we don't default to MSBuild
+build: off
 
 environment:
   matrix:
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-      PYTHON: "C:\\Python38"
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-      PYTHON: "C:\\Python38-x64"
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-      PYTHON: "C:\\Python39"
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-      PYTHON: "C:\\Python39-x64"
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-      PYTHON: "C:\\Python310"
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-      PYTHON: "C:\\Python310-x64"
+    - arch: x86
+      PYTHON_ROOT: "C:\\Python38"
+    - arch: x64
+      PYTHON_ROOT: "C:\\Python39-x64"
+    - arch: x86
+      PYTHON_ROOT: "C:\\Python310"
+    - arch: x64
+      PYTHON_ROOT: "C:\\Python311-x64"
 
-build: off
-
+# From https://mesonbuild.com/Continuous-Integration.html#appveyor-for-windows
 install:
-  - "util\\appveyor\\build.cmd %PYTHON%\\python.exe -m pip install --upgrade pip build"
-  - "util\\appveyor\\build.cmd %PYTHON%\\python.exe -m pip install
-     numpy --cache-dir c:\\tmp\\pip-cache"
-  - "util\\appveyor\\build.cmd %PYTHON%\\python.exe -m pip install
-     Cython pytest matplotlib --cache-dir c:\\tmp\\pip-cache"
+  # Add necessary paths to PATH variable
+  - cmd: set PATH=%cd%;%PYTHON_ROOT%;%PYTHON_ROOT%\Scripts;%PATH%
+  - "python.exe -m pip install --upgrade pip build"
+  - "python.exe -m pip install numpy --cache-dir c:\\tmp\\pip-cache"
+  - "python.exe -m pip install Cython pytest matplotlib --cache-dir c:\\tmp\\pip-cache"
 
 test_script:
-  - "util\\appveyor\\build.cmd %PYTHON%\\python.exe -m pip install . -v --config-settings=setup-args=--vsenv"
+  - cmd: call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" %arch%
+  - "python.exe -m pip install . -v --config-settings=setup-args=--vsenv"
   - "cd demo"
-  - "%PYTHON%\\Scripts\\pytest --pyargs pywt"
+  - "python.exe -m pytest --pyargs pywt"
   - "cd .."
 
 after_test:
-  - "util\\appveyor\\build.cmd %PYTHON%\\python.exe -m build --wheel -Csetup-args=--vsenv"
+  - "python.exe -m build --wheel -Csetup-args=--vsenv"
 
 artifacts:
   # Archive the generated wheel package in the ci.appveyor.com build report.
