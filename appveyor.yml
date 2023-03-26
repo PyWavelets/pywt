@@ -23,8 +23,7 @@ environment:
 build: off
 
 install:
-  - "util\\appveyor\\build.cmd %PYTHON%\\python.exe -m pip install --upgrade pip"
-  - "util\\appveyor\\build.cmd %PYTHON%\\python.exe -m pip install --upgrade wheel"
+  - "util\\appveyor\\build.cmd %PYTHON%\\python.exe -m pip install --upgrade pip build"
   - "util\\appveyor\\build.cmd %PYTHON%\\python.exe -m pip install
      numpy --cache-dir c:\\tmp\\pip-cache"
   - "util\\appveyor\\build.cmd %PYTHON%\\python.exe -m pip install
@@ -37,7 +36,7 @@ test_script:
   - "cd .."
 
 after_test:
-  - "util\\appveyor\\build.cmd %PYTHON%\\python.exe setup.py bdist_wheel"
+  - "util\\appveyor\\build.cmd %PYTHON%\\python.exe -m build --wheel"
 
 artifacts:
   # Archive the generated wheel package in the ci.appveyor.com build report.

@@ -80,7 +80,7 @@ jobs:
             which python
             python --version
             # sudo apt-get install libatlas-base-dev
-            pip install --upgrade pip wheel setuptools
+            pip install --upgrade pip build
             # Set numpy version first, other packages link against it
             if [ "${MINIMUM_REQUIREMENTS}" == "1" ]; then
                 pip install ${CYTHON_MIN}
@@ -101,13 +101,12 @@ jobs:
                 pip install wheel;
                 # Need verbose output or TravisCI will terminate after 10 minutes
                 pip wheel . -v
-                pip install PyWavelets*.whl -v
+                pip install pywavelets*.whl -v
             elif [ "${USE_SDIST}" == "1" ]; then
-                python setup.py sdist
+                python -m build --sdist
             elif [ "${REFGUIDE_CHECK}" == "1" ]; then
                 pip install -e . -v
             else
-                CFLAGS="--coverage" python setup.py build --build-lib build/lib/ --build-temp build/tmp/
                 CFLAGS="--coverage" pip install -e . -v
             fi
 
@@ -128,7 +127,7 @@ jobs:
             elif [ "${USE_SDIST}" == "1" ]; then
                 # Move out of source directory to avoid finding local pywt
                 pushd dist
-                pip install PyWavelets* -v
+                pip install pywavelets* -v
                 pytest --pyargs pywt
                 # if [[ "${TRAVIS_CPU_ARCH}" != "arm64" ]]; then
                 python ../pywt/tests/test_doc.py
@@ -203,7 +202,7 @@ jobs:
             which python
             python --version
             # sudo apt-get install libatlas-base-dev
-            pip install --upgrade pip wheel setuptools
+            pip install --upgrade pip build
             # Set numpy version first, other packages link against it
             if [ "${MINIMUM_REQUIREMENTS}" == "1" ]; then
                 pip install ${CYTHON_MIN}
@@ -224,13 +223,12 @@ jobs:
                 pip install wheel;
                 # Need verbose output or TravisCI will terminate after 10 minutes
                 pip wheel . -v
-                pip install PyWavelets*.whl -v
+                pip install pywavelets*.whl -v
             elif [ "${USE_SDIST}" == "1" ]; then
-                python setup.py sdist
+                python -m build --sdist
             elif [ "${REFGUIDE_CHECK}" == "1" ]; then
                 pip install -e . -v
             else
-                CFLAGS="--coverage" python setup.py build --build-lib build/lib/ --build-temp build/tmp/
                 CFLAGS="--coverage" pip install -e . -v
             fi
 
@@ -251,7 +249,7 @@ jobs:
             elif [ "${USE_SDIST}" == "1" ]; then
                 # Move out of source directory to avoid finding local pywt
                 pushd dist
-                pip install PyWavelets* -v
+                pip install pywavelets* -v
                 pytest --pyargs pywt
                 # if [[ "${TRAVIS_CPU_ARCH}" != "arm64" ]]; then
                 python ../pywt/tests/test_doc.py
