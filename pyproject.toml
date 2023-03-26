@@ -2,13 +2,13 @@
 # have an upper bound equal to the most recent already-released version
 # of the dependency. This to prevent that a future backwards-incompatible
 # release will break the source build of a PyWavelets release.
-
+# Do accept micro (bug-fix) releases.
 
 [build-system]
+build-backend = "mesonpy"
 requires = [
-    "wheel",
-    "setuptools<65",
-    "Cython>=0.29.24,<3.0",
+    "meson-python",
+    "Cython>=0.29.18",
 
     # NumPy dependencies - to update these, sync from
     # https://github.com/scipy/oldest-supported-numpy/, and then
@@ -45,3 +45,42 @@ requires = [
     "numpy; python_version>='3.12'",
     "numpy; python_version>='3.8' and platform_python_implementation=='PyPy'",
 ]
+
+[project]
+name = "PyWavelets"
+# TODO: add `license-files` once PEP 639 is accepted (see meson-python#88)
+#       at that point, no longer include them in `py3.install_sources()`
+license = {file = "LICENSE"}
+maintainers = [
+    {name = "The PyWavelets Developers", email = "pywavelets@googlegroups.com"}
+]
+description = "PyWavelets, wavelet transform module"
+requires-python = ">=3.8"
+dependencies = [
+    # TODO: update to "pin-compatible" once possible, see
+    # https://github.com/FFY00/meson-python/issues/29
+    "numpy>=1.21.6",
+]
+readme = "README.rst"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: C",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+dynamic = ['version']
+
+[project.urls]
+homepage = "https://github.com/PyWavelets/pywt"
+source = "https://github.com/PyWavelets/pywt"
+documentation = "https://pywavelets.readthedocs.io/"
