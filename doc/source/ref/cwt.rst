@@ -148,7 +148,7 @@ filter.. For scales 1 and 2 it can be seen that aliasing due to violation of
 the Nyquist limit occurs.
 
 Converting frequency to scale for ``cwt``
--------------------------------
+-----------------------------------------
 
 To convert frequency to scale for use in the wavelet transform the function
 :func:`pywt.frequency2scale` can be used. This is the complement of the
@@ -164,9 +164,9 @@ of frequency directly.
     >>> dt = 0.01  # 100 Hz sampling
     >>> fs = 1 / dt
     >>> frequencies = np.array([100, 50, 33.33333333, 25]) / fs # normalize
-    >>> scale = tfrequency2scale('cmor1.5-1.0', frequencies)
+    >>> scale = pywt.frequency2scale('cmor1.5-1.0', frequencies)
     >>> scale
-    array([1., 2., 3., 4.])
+    array([ 1.,  2.,  3.,  4.])
 
 
 .. plot:: pyplots/cwt_scaling_demo.py
