@@ -8,9 +8,6 @@
 
 #pragma once
 
-#include <stdlib.h>
-#include <memory.h>
-
 #ifdef HAVE_C99_COMPLEX
     /* For templating, we need typedefs without spaces for complex types. */
     typedef float _Complex float_complex;
@@ -38,6 +35,9 @@
 #else
     typedef int pywt_index_t;
 #endif
+
+#include <stdlib.h>
+#include <memory.h>
 
 /* standard c memory management */
 #define wtmalloc(size)      malloc(size)
