@@ -25,7 +25,7 @@ The lists of issues closed and PRs merged can be generated via
 Tag the release
 ---------------
 
-Change ``ISRELEASED`` to ``True`` in ``setup.py`` and commit.
+Change ``ISRELEASED`` to ``True`` in ``util/version_utils.py`` and commit.
 
 Tag the release via::
 
@@ -62,9 +62,9 @@ Then run without ``-n``::
 
     git clean -xfd
 
-Create the source distribution files via::
+Create the source distribution file via::
 
-    python setup.py sdist --formats=gztar,zip
+    python -m build --sdist
 
 
 Upload the release to PyPI
@@ -114,7 +114,8 @@ Send release announcements to:
 Prepare for continued development
 ---------------------------------
 
-Increment the version number in setup.py and change ISRELEASED to False.
+Increment the version number in ``util/version_utils.py`` and change
+``ISRELEASED`` to False.
 
 Prepare new release note files for the upcoming release::
 

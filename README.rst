@@ -90,7 +90,7 @@ package name.
 
 If you want or need to install from source, you will need a working C compiler
 (any common one will work) and a recent version of `Cython`_.  Navigate to the
-PyWavelets source code directory (containing ``setup.py``) and type::
+PyWavelets source code directory (containing ``pyproject.toml``) and type::
 
     pip install .
 
