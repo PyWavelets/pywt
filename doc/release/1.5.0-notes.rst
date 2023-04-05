@@ -4,7 +4,13 @@ PyWavelets 1.5.0 Release Notes
 
 .. contents::
 
-We are very pleased to announce the release of PyWavelets 1.5. 
+We are very pleased to announce the release of PyWavelets 1.5.
+
+PyWavelets now uses Meson as its build system, and meson-python
+as the build backend. This requires no changes from users, a
+``pip install pywavelets`` will now use ``meson-python`` under
+the hood.
+
 
 Authors
 =======
