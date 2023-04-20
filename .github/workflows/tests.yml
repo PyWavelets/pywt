@@ -94,7 +94,7 @@ jobs:
                 pip install numpy
                 if [ "${USE_SCIPY}" == "1" ]; then pip install scipy; fi
             fi
-            pip install matplotlib pytest pytest-cov coverage codecov
+            pip install matplotlib pytest
 
             set -o pipefail
             if [ "${USE_WHEEL}" == "1" ]; then
@@ -108,7 +108,7 @@ jobs:
                 pip install sphinx numpydoc
                 pip install . -v
             else
-                CFLAGS="--coverage" pip install . -v
+                pip install . -v
             fi
 
       - name: Run tests
@@ -130,8 +130,7 @@ jobs:
             elif [ "${REFGUIDE_CHECK}" == "1" ]; then
                 python util/refguide_check.py --doctests
             else
-                pytest --pyargs pywt --cov=pywt --cov-config=../.coveragerc
-                cp .coverage ..
+                pytest --pyargs pywt
             fi
             popd
 
@@ -202,7 +201,7 @@ jobs:
                 pip install cython numpy
                 if [ "${USE_SCIPY}" == "1" ]; then pip install scipy; fi
             fi
-            pip install matplotlib pytest pytest-cov coverage codecov
+            pip install matplotlib pytest
 
             set -o pipefail
             if [ "${USE_WHEEL}" == "1" ]; then

@@ -155,46 +155,20 @@ jobs:
         run: |
           python -m pip install cibuildwheel
 
-      - name: Build x86-64 (64-bit) Windows wheels for CPython
-        if: matrix.cibw_arch == 'AMD64'
-        # From https://github.com/actions/virtual-environments/issues/294#issuecomment-588090582,
-        # with additional -arch=amd64 flag to vsdevcmd.bat. Fix synced from scikit-image.
-        run: |
-          function Invoke-VSDevEnvironment {
-            $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
-              $installationPath = & $vswhere -prerelease -legacy -latest -property installationPath
-              $Command = Join-Path $installationPath "Common7\Tools\vsdevcmd.bat"
-            & "${env:COMSPEC}" /s /c "`"$Command`" -arch=amd64 -no_logo && set" | Foreach-Object {
-                  if ($_ -match '^([^=]+)=(.*)') {
-                      [System.Environment]::SetEnvironmentVariable($matches[1], $matches[2])
-                  }
-              }
-          }
-          Invoke-VSDevEnvironment
-          Get-Command rc.exe | Format-Table -AutoSize
-
-          python -m cibuildwheel --output-dir dist
-        env:
-          CIBW_BUILD: ${{ matrix.cibw_python }}
-          CIBW_ARCHS_WINDOWS: ${{ matrix.cibw_arch }}
-
-      - name: Build x86 (32-bit) Windows wheels for CPython
+      - name: Setup MSVC (32-bit)
         if: matrix.cibw_arch == 'x86'
-        # Same as above, but without `-arch=amd64` target arch selection argument
-        run: |
-          function Invoke-VSDevEnvironment {
-            $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
-              $installationPath = & $vswhere -prerelease -legacy -latest -property installationPath
-              $Command = Join-Path $installationPath "Common7\Tools\vsdevcmd.bat"
-            & "${env:COMSPEC}" /s /c "`"$Command`" -no_logo && set" | Foreach-Object {
-                  if ($_ -match '^([^=]+)=(.*)') {
-                      [System.Environment]::SetEnvironmentVariable($matches[1], $matches[2])
-                  }
-              }
-          }
-          Invoke-VSDevEnvironment
-          Get-Command rc.exe | Format-Table -AutoSize
+        uses: bus1/cabuild/action/msdevshell@e22aba57d6e74891d059d66501b6b5aed8123c4d  # v1
+        with:
+          architecture: x86
 
+      - name: Setup MSVC (64-bit)
+        if: matrix.cibw_arch == 'AMD64'
+        uses: bus1/cabuild/action/msdevshell@e22aba57d6e74891d059d66501b6b5aed8123c4d  # v1
+        with:
+          architecture: x64
+
+      - name: Build Windows wheels for CPython
+        run: |
           python -m cibuildwheel --output-dir dist
         env:
           CIBW_BUILD: ${{ matrix.cibw_python }}
@@ -214,6 +188,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+
       - uses: actions/setup-python@v4
         name: Install Python
         with:
