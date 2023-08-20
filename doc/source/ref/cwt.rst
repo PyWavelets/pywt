@@ -6,13 +6,133 @@
 Continuous Wavelet Transform (CWT)
 ==================================
 
-This section describes functions used to perform single continuous wavelet
-transforms.
+This section focuses on the one-dimensional Continuous Wavelet Transform. It 
+introduces the main function ``cwt`` alongside several helper function, and
+also gives an overview over the available wavelets for this transfom.
 
-Single level - ``cwt``
+
+Introduction
+------------
+
+In simple terms, the Continuous Wavelet Transform is an analysis tool similar
+to the Fourier Transform, in that it takes a time-domain signal and returns
+the signal's components in the frequency domain. However, in contrast to the 
+Fourier Transform, the Continuous Wavelet Transform returns a two-dimensional 
+result, providing information in the frequency- as well as in time-domain. 
+Therefore, it is useful for periodic signals which change over time, such as 
+audio, seismic signals and many others (see below for examples).
+
+For more background and an in-depth guide to the application of the Continuous
+Wavelet Transform, including topics such as statistical significance, the
+following well-known article is highly recommended:
+
+`C. Torrence and G. Compo: "A Practial Guide to Wavelet Analysis", Bulletin of the American Meteorological Society, vol. 79, no. 1, pp. 61-78, January 1998 <https://paos.colorado.edu/research/wavelets/bams_79_01_0061.pdf>`_
+
+
+The ``cwt`` Function
 ----------------------
 
+This is the main function, which calculates the Continuous Wavelet Transform
+of a one-dimensional signal.
+
 .. autofunction:: cwt
+
+A comprehensive example of the CWT
+----------------------------------
+
+Here is a simple end-to-end example of how to calculate the CWT of a simple
+signal, and how to plot it using ``matplotlib``.
+
+First, we generate an artificial signal to be analyzed. We are
+using the sum of two sine functions with increasing frequency, known as "chirp".
+For reference, we also generate a plot of the signal and the two time-dependent
+frequency components it contains.
+
+We then apply the Continuous Wavelet Transform
+using a complex Morlet wavlet with a given center frequency and bandwidth
+(namely ``cmor1.5-1.0``). We then plot the so-called "scaleogram", which is the
+2D plot of the signal strength vs. time and frequency.
+
+.. plot:: pyplots/plot_cwt_scaleogram.py
+
+The Continuous Wavelet Transform can resolve the two frequency components clearly,
+which is an obvious advantage over the Fourier Transform in this case. The scales
+(widths) are given on a logarithmic scale in the example. The scales determine the
+frequency resolution of the scaleogram. However, it is not straightforward to 
+convert them to frequencies, but luckily, ``cwt`` calculates the correct frequencies
+for us. There are also helper functions, that perform this conversion in both ways.
+For more information, see :ref:`Choosing scales` and :ref:`Converting frequency`.
+
+Also note, that the raw output of ``cwt`` is complex if a complex wavelet is used.
+For visualization, it is therefore necessary to use the absolute value.
+
+
+Wavelet bandwidth and center frequencies
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example shows how the Complex Morlet Wavelet can be configured for optimum
+results using the ``center_frequency`` and ``bandwidth_frequency`` parameters,
+which can simply be appended to the wavelet's string identifier ``cmor`` for
+convenience. It also demonstrates the importance of choosing appropriate values
+for the wavelet's center frequency and bandwidth. The right values will depend
+on the signal being analyzed. As shown below, bad values may lead to poor
+resolution or artifacts.
+
+.. .. plot:: pyplots/cwt_wavelet_frequency_bandwidth_demo.py
+.. Sphinx seems to take a long time to generate this plot, even though the
+.. corresponding script is relatively fast when run on its own.
+.. Using pre-built images instead
+
+.. sourcecode:: python
+
+    import numpy as np
+    import pywt
+    import matplotlib.pyplot as plt
+
+    # plot complex morlet wavelets with different center frequencies and bandwidths
+    wavelets = [f"cmor{x:.1f}-{y:.1f}" for x in [0.5, 1.5, 2.5] for y in [0.5, 1.0, 1.5]]
+    fig, axs = plt.subplots(3, 3, figsize=(10, 10), sharex=True, sharey=True)
+    for ax, wavelet in zip(axs.flatten(), wavelets):
+        [psi, x] = pywt.ContinuousWavelet(wavelet).wavefun(10)
+        ax.plot(x, np.real(psi), label="real")
+        ax.plot(x, np.imag(psi), label="imag")
+        ax.set_title(wavelet)
+        ax.set_xlim([-5, 5])
+        ax.set_ylim([-0.8, 1])
+    ax.legend()
+    plt.suptitle("Complex Morlet Wavelets with different center frequencies and bandwidths")
+    plt.show()
+
+.. image:: ../pyplots/morlet_bandwith_center_freqs.png
+
+.. sourcecode:: python
+
+    # using same chirp signal as before
+
+    def plot_wavelet(time, data, wavelet, title, ax):
+        widths = np.geomspace(1, 1024, num=200)
+        cwtmatr, freqs = pywt.cwt(
+            data, widths, wavelet, sampling_period=np.diff(time).mean()
+        )
+        cwtmatr = np.abs(cwtmatr[:-1, :-1])
+        pcm = ax.pcolormesh(time, freqs, cwtmatr)
+        ax.set_yscale("log")
+        ax.set_xlabel("Time (s)")
+        ax.set_ylabel("Frequency (Hz)")
+        ax.set_title(title)
+        plt.colorbar(pcm, ax=ax)
+        return ax
+
+    # perform CWT with different wavelets on same signal and plot results
+    wavelets = [f"cmor{x:.1f}-{y:.1f}" for x in [0.5, 1.5, 2.5] for y in [0.5, 1.0, 1.5]]
+    fig, axs = plt.subplots(3, 3, figsize=(10, 10), sharex=True)
+    for ax, wavelet in zip(axs.flatten(), wavelets):
+        plot_wavelet(time, chirp, wavelet, wavelet, ax)
+    plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+    plt.suptitle("Scaleograms of the same signal with different wavelets")
+    plt.show()
+
+.. image:: ../pyplots/transforms_vs_center_and_bandwidth.png
 
 
 Continuous Wavelet Families
@@ -24,6 +144,12 @@ wavelet names compatible with ``cwt`` can be obtained by:
 .. sourcecode:: python
 
     wavlist = pywt.wavelist(kind='continuous')
+
+Here is an overview of all available wavelets for `cwt`. Note, that they can be
+customized by passing paramters such as ``center_frequency`` and ``bandwidth_frequency``
+(see :ref:`ContinuousWavelet` for details).
+
+.. plot:: pyplots/plot_wavelets.py
 
 
 Mexican Hat Wavelet
@@ -72,7 +198,7 @@ where :math:`C` is an order-dependent normalization constant.
 Complex Gaussian Derivative Wavelets
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 The complex Gaussian wavelets (``"cgauP"`` where P is an integer between 1 and
-8) correspond to the Pth order derivatives of the function:
+1) correspond to the Pth order derivatives of the function:
 
 .. math::
     \psi(t) = C \exp^{-\mathrm{j} t}\exp^{-t^2}
@@ -103,6 +229,8 @@ point B, C) correspond to the following wavelets:
 where :math:`M` is the spline order, :math:`B` is the bandwidth and :math:`C` is
 the center frequency.
 
+
+.. _Choosing scales:
 
 Choosing the scales for ``cwt``
 -------------------------------
@@ -146,6 +274,8 @@ the figure shows the discrete filters used in the convolution at various
 scales. The right column are the corresponding Fourier power spectra of each
 filter.. For scales 1 and 2 it can be seen that aliasing due to violation of
 the Nyquist limit occurs.
+
+.. _Converting frequency:
 
 Converting frequency to scale for ``cwt``
 -----------------------------------------
