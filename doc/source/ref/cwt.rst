@@ -198,7 +198,7 @@ where :math:`C` is an order-dependent normalization constant.
 Complex Gaussian Derivative Wavelets
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 The complex Gaussian wavelets (``"cgauP"`` where P is an integer between 1 and
-1) correspond to the Pth order derivatives of the function:
+8) correspond to the Pth order derivatives of the function:
 
 .. math::
     \psi(t) = C \exp^{-\mathrm{j} t}\exp^{-t^2}
