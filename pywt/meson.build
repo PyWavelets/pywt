@@ -56,7 +56,6 @@ _c99_config = configure_file(
 
 install_subdir('data', install_dir: py.get_install_dir() / 'pywt')
 install_subdir('tests', install_dir:  py.get_install_dir() / 'pywt')
-install_subdir('tests/data', install_dir: py.get_install_dir() / 'pywt/tests')
 
 # Copy needed for Cython code in _extensions
 __init__py = fs.copyfile('__init__.py')
