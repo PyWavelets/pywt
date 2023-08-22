@@ -21,7 +21,7 @@ install:
   - cmd: set PATH=%cd%;%PYTHON_ROOT%;%PYTHON_ROOT%\Scripts;%PATH%
   - "python.exe -m pip install --upgrade pip build"
   - "python.exe -m pip install numpy --cache-dir c:\\tmp\\pip-cache"
-  - "python.exe -m pip install Cython pytest matplotlib --cache-dir c:\\tmp\\pip-cache"
+  - "python.exe -m pip install --only-binary :all: Cython pytest matplotlib --cache-dir c:\\tmp\\pip-cache"
 
 test_script:
   - cmd: call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" %arch%
@@ -29,9 +29,6 @@ test_script:
   - "cd demo"
   - "python.exe -m pytest --pyargs pywt"
   - "cd .."
-
-after_test:
-  - "python.exe -m build --wheel -Csetup-args=--vsenv"
 
 artifacts:
   # Archive the generated wheel package in the ci.appveyor.com build report.
