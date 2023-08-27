@@ -78,61 +78,9 @@ for the wavelet's center frequency and bandwidth. The right values will depend
 on the signal being analyzed. As shown below, bad values may lead to poor
 resolution or artifacts.
 
-.. .. plot:: pyplots/cwt_wavelet_frequency_bandwidth_demo.py
+.. plot:: pyplots/cwt_wavelet_frequency_bandwidth_demo.py
 .. Sphinx seems to take a long time to generate this plot, even though the
 .. corresponding script is relatively fast when run on its own.
-.. Using pre-built images instead
-
-.. sourcecode:: python
-
-    import numpy as np
-    import pywt
-    import matplotlib.pyplot as plt
-
-    # plot complex morlet wavelets with different center frequencies and bandwidths
-    wavelets = [f"cmor{x:.1f}-{y:.1f}" for x in [0.5, 1.5, 2.5] for y in [0.5, 1.0, 1.5]]
-    fig, axs = plt.subplots(3, 3, figsize=(10, 10), sharex=True, sharey=True)
-    for ax, wavelet in zip(axs.flatten(), wavelets):
-        [psi, x] = pywt.ContinuousWavelet(wavelet).wavefun(10)
-        ax.plot(x, np.real(psi), label="real")
-        ax.plot(x, np.imag(psi), label="imag")
-        ax.set_title(wavelet)
-        ax.set_xlim([-5, 5])
-        ax.set_ylim([-0.8, 1])
-    ax.legend()
-    plt.suptitle("Complex Morlet Wavelets with different center frequencies and bandwidths")
-    plt.show()
-
-.. image:: ../pyplots/morlet_bandwith_center_freqs.png
-
-.. sourcecode:: python
-
-    # using same chirp signal as before
-
-    def plot_wavelet(time, data, wavelet, title, ax):
-        widths = np.geomspace(1, 1024, num=200)
-        cwtmatr, freqs = pywt.cwt(
-            data, widths, wavelet, sampling_period=np.diff(time).mean()
-        )
-        cwtmatr = np.abs(cwtmatr[:-1, :-1])
-        pcm = ax.pcolormesh(time, freqs, cwtmatr)
-        ax.set_yscale("log")
-        ax.set_xlabel("Time (s)")
-        ax.set_ylabel("Frequency (Hz)")
-        ax.set_title(title)
-        plt.colorbar(pcm, ax=ax)
-        return ax
-
-    # perform CWT with different wavelets on same signal and plot results
-    wavelets = [f"cmor{x:.1f}-{y:.1f}" for x in [0.5, 1.5, 2.5] for y in [0.5, 1.0, 1.5]]
-    fig, axs = plt.subplots(3, 3, figsize=(10, 10), sharex=True)
-    for ax, wavelet in zip(axs.flatten(), wavelets):
-        plot_wavelet(time, chirp, wavelet, wavelet, ax)
-    plt.tight_layout(rect=[0, 0.03, 1, 0.95])
-    plt.suptitle("Scaleograms of the same signal with different wavelets")
-    plt.show()
-
-.. image:: ../pyplots/transforms_vs_center_and_bandwidth.png
 
 
 Continuous Wavelet Families

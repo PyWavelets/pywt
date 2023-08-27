@@ -29,7 +29,7 @@ def make_chirp(t, t0, a):
 
 
 def plot_wavelet(time, data, wavelet, title, ax):
-    widths = np.geomspace(1, 1024, num=200)
+    widths = np.geomspace(1, 1024, num=75)
     cwtmatr, freqs = pywt.cwt(
         data, widths, wavelet, sampling_period=np.diff(time).mean()
     )
@@ -44,7 +44,7 @@ def plot_wavelet(time, data, wavelet, title, ax):
 
 
 # generate signal
-time = np.linspace(0, 1, 2000)
+time = np.linspace(0, 1, 1000)
 chirp1, frequency1 = make_chirp(time, 0.2, 9)
 chirp2, frequency2 = make_chirp(time, 0.1, 5)
 chirp = chirp1 + 0.6 * chirp2
