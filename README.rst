@@ -1,17 +1,17 @@
 +---------------+-----------------+
 | Service       | Master branch   |
 +===============+=================+
-| Travis        | |travis_ci|     |
+| GitHub        | |ghactions_ci|  |
 +---------------+-----------------+
 | Appveyor      | |appveyor_ci|   |
 +---------------+-----------------+
 | Read the Docs | |read_the_docs| |
 +---------------+-----------------+
 
-.. |travis_ci| image:: https://api.travis-ci.org/PyWavelets/pywt.svg?branch=master
-   :align: middle
-   :target: https://travis-ci.org/PyWavelets/pywt
-   :alt: TravisCI Status
+
+.. |ghactions_ci| image:: https://github.com/PyWavelets/pywt/actions/workflows/tests.yml/badge.svg?branch=master
+   :alt: Build Status
+   :target: https://github.com/PyWavelets/pywt/actions/workflows/tests.yml?query=branch%3Amaster
 
 .. |appveyor_ci| image:: https://ci.appveyor.com/api/projects/status/github/PyWavelets/pywt
    :align: middle
