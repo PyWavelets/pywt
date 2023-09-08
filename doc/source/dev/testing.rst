@@ -3,18 +3,16 @@
 Testing
 =======
 
-Continuous integration with Travis-CI
-------------------------------------
+Continuous integration with GitHub Actions
+------------------------------------------
 
-The project is using `Travis-CI <https://travis-ci.org/PyWavelets/pywt>`_ service
-for continuous integration and testing.
+The project is using GitHub Actions for continuous integration and testing.
 
 Current build status is:
 
-.. image::
-    https://secure.travis-ci.org/PyWavelets/pywt.png?branch=master
+.. image:: https://github.com/PyWavelets/pywt/actions/workflows/tests.yml/badge.svg?branch=master
     :alt: Build Status
-    :target: https://secure.travis-ci.org/PyWavelets/pywt
+    :target: https://github.com/PyWavelets/pywt/actions/workflows/tests.yml?query=branch%3Amaster
 
 If you are submitting a patch or pull request please make sure it
 does not break the build.
