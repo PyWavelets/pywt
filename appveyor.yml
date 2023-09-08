@@ -6,8 +6,6 @@ build: off
 
 environment:
   matrix:
-    - arch: x86
-      PYTHON_ROOT: "C:\\Python38"
     - arch: x64
       PYTHON_ROOT: "C:\\Python39-x64"
     - arch: x86
