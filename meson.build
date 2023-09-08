@@ -3,7 +3,7 @@ project(
   'c', 'cython',
   version: '1.5.0.dev0',
   license: 'MIT',
-  meson_version: '>= 1.0.1',
+  meson_version: '>= 1.1.0',
   default_options: [
     'buildtype=debugoptimized',
     'b_ndebug=if-release',
