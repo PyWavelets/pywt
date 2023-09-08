@@ -19,9 +19,9 @@ jobs:
       MPLBACKEND: Agg
       CYTHON_TRACE: 1
       CYTHONSPEC: cython
-      NUMPY_MIN: numpy==1.20.3
-      CYTHON_MIN: cython==0.29.18
-      SCIPY_MIN: scipy==1.2.3
+      NUMPY_MIN: numpy==1.22.4
+      CYTHON_MIN: cython==0.29.35
+      SCIPY_MIN: scipy==1.8.0
 
     strategy:
       # Ensure that a wheel builder finishes even if another fails
@@ -142,9 +142,9 @@ jobs:
       MPLBACKEND: Agg
       CYTHON_TRACE: 1
       CYTHONSPEC: cython
-      NUMPY_MIN: numpy==1.20.3
-      CYTHON_MIN: cython==0.29.18
-      SCIPY_MIN: scipy==1.2.3
+      NUMPY_MIN: numpy==1.22.4
+      CYTHON_MIN: cython==0.29.35
+      SCIPY_MIN: scipy==1.8.0
 
     strategy:
       # Ensure that a wheel builder finishes even if another fails
