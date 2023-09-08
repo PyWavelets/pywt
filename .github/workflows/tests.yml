@@ -27,7 +27,7 @@ jobs:
       # Ensure that a wheel builder finishes even if another fails
       fail-fast: false
       matrix:
-        python-version: [3.9, '3.10', '3.11']
+        python-version: [3.9, '3.10', '3.11', '3.12-dev']
         MINIMUM_REQUIREMENTS: [0]
         USE_SCIPY: [0]
         USE_SDIST: [0]
@@ -54,6 +54,10 @@ jobs:
             OPTIONS_NAME: "install-from-wheel"
           - platform_id: manylinux_x86_64
             python-version: '3.11'
+            PIP_FLAGS: "--pre"
+            OPTIONS_NAME: "pre-releases"
+          - platform_id: manylinux_x86_64
+            python-version: '3.12-dev'
             PIP_FLAGS: "--pre"
             OPTIONS_NAME: "pre-releases"
 
@@ -150,7 +154,7 @@ jobs:
       # Ensure that a wheel builder finishes even if another fails
       fail-fast: false
       matrix:
-        python-version: [3.9, '3.11']
+        python-version: [3.9, '3.11', '3.12-dev']
         MINIMUM_REQUIREMENTS: [0]
         USE_SCIPY: [0]
         USE_SDIST: [0]
@@ -163,6 +167,9 @@ jobs:
             MINIMUM_REQUIREMENTS: 1
             OPTIONS_NAME: "osx-minimum-req"
           - python-version: '3.11'
+            PIP_FLAGS: "--pre"
+            OPTIONS_NAME: "pre-releases"
+          - python-version: '3.12-dev'
             PIP_FLAGS: "--pre"
             OPTIONS_NAME: "pre-releases"
 
