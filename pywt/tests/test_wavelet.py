@@ -171,8 +171,8 @@ def test_custom_wavelet():
                                 filter_bank=filter_bank)
 
     # check expected default wavelet properties
-    assert_(~haar_custom2.orthogonal)
-    assert_(~haar_custom2.biorthogonal)
+    assert_(not haar_custom2.orthogonal)
+    assert_(not haar_custom2.biorthogonal)
     assert_(haar_custom2.symmetry == 'unknown')
     assert_(haar_custom2.family_name == '')
     assert_(haar_custom2.short_family_name == '')
