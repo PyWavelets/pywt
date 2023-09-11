@@ -10,9 +10,9 @@ The project is using GitHub Actions for continuous integration and testing.
 
 Current build status is:
 
-.. image:: https://github.com/PyWavelets/pywt/actions/workflows/tests.yml/badge.svg?branch=master
+.. image:: https://github.com/PyWavelets/pywt/actions/workflows/tests.yml/badge.svg?branch=main
     :alt: Build Status
-    :target: https://github.com/PyWavelets/pywt/actions/workflows/tests.yml?query=branch%3Amaster
+    :target: https://github.com/PyWavelets/pywt/actions/workflows/tests.yml?query=branch%3Amain
 
 If you are submitting a patch or pull request please make sure it
 does not break the build.

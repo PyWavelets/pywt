@@ -3,12 +3,12 @@ name: Test Pyodide build
 on:
   push:
     branches:
-      # Runs on every merge to master to upload .dev0 wheels to anaconda.org
-      - master
+      # Runs on every merge to main to upload .dev0 wheels to anaconda.org
+      - main
       - v1.**
   pull_request:
     branches:
-      - master
+      - main
       - v1.**
   # Make it possible to upload wheels manually if needed
   workflow_dispatch:
@@ -75,7 +75,7 @@ jobs:
         # https://anaconda.org/scientific-python-nightly-wheels/pywavelets
         # WARNING: this job will overwrite existing wheels.
       - name: Push to Anaconda PyPI index
-        if: (github.repository == 'PyWavelets/pywt') && (github.event_name == 'push' && github.ref == 'refs/heads/master') || (github.event_name == 'workflow_dispatch' && github.event.inputs.push_wheels == 'true') || (github.event_name == 'schedule')
+        if: (github.repository == 'PyWavelets/pywt') && (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'workflow_dispatch' && github.event.inputs.push_wheels == 'true') || (github.event_name == 'schedule')
         uses: scientific-python/upload-nightly-action@b67d7fcc0396e1128a474d1ab2b48aa94680f9fc # v0.5.0
         with:
           artifacts_path: dist/

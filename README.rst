@@ -9,9 +9,9 @@
 +---------------+-----------------+
 
 
-.. |ghactions_ci| image:: https://github.com/PyWavelets/pywt/actions/workflows/tests.yml/badge.svg?branch=master
+.. |ghactions_ci| image:: https://github.com/PyWavelets/pywt/actions/workflows/tests.yml/badge.svg?branch=main
    :alt: Build Status
-   :target: https://github.com/PyWavelets/pywt/actions/workflows/tests.yml?query=branch%3Amaster
+   :target: https://github.com/PyWavelets/pywt/actions/workflows/tests.yml?query=branch%3Amain
 
 .. |appveyor_ci| image:: https://ci.appveyor.com/api/projects/status/github/PyWavelets/pywt
    :align: middle
@@ -149,7 +149,7 @@ the link in the badge below to Zenodo:
 
 .. _built-in wavelet filters: http://wavelets.pybytes.com/
 .. _Cython: http://cython.org/
-.. _demo: https://github.com/PyWavelets/pywt/tree/master/demo
+.. _demo: https://github.com/PyWavelets/pywt/tree/main/demo
 .. _Anaconda: https://www.continuum.io
 .. _GitHub: https://github.com/PyWavelets/pywt
 .. _GitHub Issues: https://github.com/PyWavelets/pywt/issues
