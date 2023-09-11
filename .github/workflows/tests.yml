@@ -60,6 +60,9 @@ jobs:
             python-version: '3.12-dev'
             PIP_FLAGS: "--pre"
             OPTIONS_NAME: "pre-releases"
+        exclude:
+          - python-version: '3.12-dev'
+            PIP_FLAGS: [""]
 
     steps:
       - name: Checkout PyWavelets
@@ -94,11 +97,11 @@ jobs:
                 pip install ${NUMPY_MIN}
                 if [ "${USE_SCIPY}" == "1" ]; then pip install ${SCIPY_MIN}; fi
             else
-                pip install cython
-                pip install numpy
-                if [ "${USE_SCIPY}" == "1" ]; then pip install scipy; fi
+                pip install ${PIP_FLAGS} cython
+                pip install ${PIP_FLAGS} numpy
+                if [ "${USE_SCIPY}" == "1" ]; then pip install ${PIP_FLAGS} scipy; fi
             fi
-            pip install matplotlib pytest
+            pip install ${PIP_FLAGS} matplotlib pytest
 
             set -o pipefail
             if [ "${USE_WHEEL}" == "1" ]; then
@@ -117,7 +120,6 @@ jobs:
 
       - name: Run tests
         env:
-            PIP_FLAGS: ${{ matrix.PIP_FLAGS }}
             USE_WHEEL: ${{ matrix.USE_WHEEL }}
             USE_SDIST: ${{ matrix.USE_SDIST }}
             REFGUIDE_CHECK: ${{ matrix.REFGUIDE_CHECK }}
@@ -172,6 +174,9 @@ jobs:
           - python-version: '3.12-dev'
             PIP_FLAGS: "--pre"
             OPTIONS_NAME: "pre-releases"
+        exclude:
+          - python-version: '3.12-dev'
+            PIP_FLAGS: [""]
 
     steps:
       - name: Checkout PyWavelets
@@ -205,10 +210,10 @@ jobs:
                 pip install ${CYTHON_MIN} ${NUMPY_MIN}
                 if [ "${USE_SCIPY}" == "1" ]; then pip install ${SCIPY_MIN}; fi
             else
-                pip install cython numpy
-                if [ "${USE_SCIPY}" == "1" ]; then pip install scipy; fi
+                pip install ${PIP_FLAGS} cython numpy
+                if [ "${USE_SCIPY}" == "1" ]; then pip install ${PIP_FLAGS} scipy; fi
             fi
-            pip install matplotlib pytest
+            pip install ${PIP_FLAGS} matplotlib pytest
 
             set -o pipefail
             if [ "${USE_WHEEL}" == "1" ]; then
