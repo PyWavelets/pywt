@@ -62,3 +62,18 @@ dynamic = ['version']
 homepage = "https://github.com/PyWavelets/pywt"
 source = "https://github.com/PyWavelets/pywt"
 documentation = "https://pywavelets.readthedocs.io/"
+
+[tool.spin]
+package = "pywt"
+
+[tool.spin.commands]
+"Build" = [
+  "spin.cmds.meson.build",
+  "spin.cmds.meson.test",
+  "spin.cmds.build.sdist"
+]
+Environments = [
+    'spin.cmds.meson.run',
+    'spin.cmds.meson.ipython',
+    'spin.cmds.meson.python',
+]
