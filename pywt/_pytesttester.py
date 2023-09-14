@@ -35,7 +35,7 @@ __all__ = ['PytestTester']
 def _show_pywt_info():
     import pywt
     from pywt._c99_config import _have_c99_complex
-    print("PyWavelets version %s" % pywt.__version__)
+    print(f"PyWavelets version {pywt.__version__}")
     if _have_c99_complex:
         print("Compiled with C99 complex support.")
     else:
@@ -146,7 +146,7 @@ class PytestTester(object):
             pytest_args += ["-m", label]
 
         if durations >= 0:
-            pytest_args += ["--durations=%s" % durations]
+            pytest_args += [f"--durations={durations}"]
 
         if tests is None:
             tests = [self.module_name]

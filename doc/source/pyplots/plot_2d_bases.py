@@ -19,16 +19,16 @@ else:
 # plot a 5-level standard DWT basis
 draw_2d_wp_basis(shape, wavedec2_keys(max_lev), ax=axes[0],
                  label_levels=label_levels)
-axes[0].set_title('wavedec2 ({} level)'.format(max_lev))
+axes[0].set_title(f'wavedec2 ({max_lev} level)')
 
 # plot for the fully separable case
 draw_2d_fswavedecn_basis(shape, max_lev, ax=axes[1], label_levels=label_levels)
-axes[1].set_title('fswavedecn ({} level)'.format(max_lev))
+axes[1].set_title(f'fswavedecn ({max_lev} level)')
 
 # get all keys corresponding to a full wavelet packet decomposition
 wp_keys = list(product(['a', 'd', 'h', 'v'], repeat=max_lev))
 draw_2d_wp_basis(shape, wp_keys, ax=axes[2])
-axes[2].set_title('wavelet packet\n(full: {} level)'.format(max_lev))
+axes[2].set_title(f'wavelet packet\n(full: {max_lev} level)')
 
 # plot an example of a custom wavelet packet basis
 keys = ['aaaa', 'aaad', 'aaah', 'aaav', 'aad', 'aah', 'aava', 'aavd',

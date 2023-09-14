@@ -165,7 +165,7 @@ def threshold(data, value, mode='soft', substitute=0):
         return thresholding_options[mode](data, value, substitute)
     except KeyError:
         # Make sure error is always identical by sorting keys
-        keys = ("'{0}'".format(key) for key in
+        keys = (f"'{key}'" for key in
                 sorted(thresholding_options.keys()))
         raise ValueError("The mode parameter only takes values from: {0}."
                          .format(', '.join(keys)))

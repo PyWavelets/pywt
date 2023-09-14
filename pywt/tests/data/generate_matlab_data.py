@@ -58,8 +58,7 @@ try:
                     mlab_code = ("[ma, md] = dwt(data, Lo_D, Hi_D, "
                                  "'mode', '%s');" % mmode)
                 else:
-                    mlab_code = ("[ma, md] = dwt(data, wavelet, "
-                                 "'mode', '%s');" % mmode)
+                    mlab_code = f"[ma, md] = dwt(data, wavelet, 'mode', '{mmode}');"
                 res = mlab.run_code(mlab_code)
                 if not res['success']:
                     raise RuntimeError(
@@ -76,8 +75,7 @@ try:
                 # Matlab result
                 mlab.set_variable('Lo_D', w.dec_lo)
                 mlab.set_variable('Hi_D', w.dec_hi)
-                mlab_code = ("[ma, md] = dwt(data, Lo_D, Hi_D, "
-                             "'mode', '%s');" % mmode)
+                mlab_code = f"[ma, md] = dwt(data, Lo_D, Hi_D, 'mode', '{mmode}');"
                 res = mlab.run_code(mlab_code)
                 if not res['success']:
                     raise RuntimeError(

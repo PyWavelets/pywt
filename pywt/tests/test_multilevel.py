@@ -125,7 +125,7 @@ def test_multilevel_dtypes_1d():
     for dt_in, dt_out in zip(dtypes_in, dtypes_out):
         # wavedec, waverec
         x = np.ones(8, dtype=dt_in)
-        errmsg = "wrong dtype returned for {0} input".format(dt_in)
+        errmsg = f"wrong dtype returned for {dt_in} input"
 
         coeffs = pywt.wavedec(x, wavelet, level=2)
         for c in coeffs:
@@ -166,7 +166,7 @@ def test_multilevel_dtypes_2d():
     for dt_in, dt_out in zip(dtypes_in, dtypes_out):
         # wavedec2, waverec2
         x = np.ones((8, 8), dtype=dt_in)
-        errmsg = "wrong dtype returned for {0} input".format(dt_in)
+        errmsg = f"wrong dtype returned for {dt_in} input"
         cA, coeffsD2, coeffsD1 = pywt.wavedec2(x, wavelet, level=2)
         assert_(cA.dtype == dt_out, "wavedec2: " + errmsg)
         for c in coeffsD1:
@@ -357,7 +357,7 @@ def test_multilevel_dtypes_nd():
     for dt_in, dt_out in zip(dtypes_in, dtypes_out):
         # wavedecn, waverecn
         x = np.ones((8, 8), dtype=dt_in)
-        errmsg = "wrong dtype returned for {0} input".format(dt_in)
+        errmsg = f"wrong dtype returned for {dt_in} input"
         cA, coeffsD2, coeffsD1 = pywt.wavedecn(x, wavelet, level=2)
         assert_(cA.dtype == dt_out, "wavedecn: " + errmsg)
         for key, c in coeffsD1.items():

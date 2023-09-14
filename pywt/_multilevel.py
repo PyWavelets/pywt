@@ -790,7 +790,7 @@ def coeffs_to_array(coeffs, padding=0, axes=None):
                     slice_array[ax_i] = slice(a_shape[ax_i],
                                               a_shape[ax_i] + d.shape[ax_i])
                 else:
-                    raise ValueError("unexpected letter: {}".format(let))
+                    raise ValueError(f"unexpected letter: {let}")
             slice_array = tuple(slice_array)
             coeff_arr[slice_array] = d
             coeff_slices[-1][key] = slice_array
@@ -882,7 +882,7 @@ def array_to_coeffs(arr, coeff_slices, output_format='wavedecn'):
                 d[k] = arr[v]
         else:
             raise ValueError(
-                "Unrecognized output format: {}".format(output_format))
+                f"Unrecognized output format: {output_format}")
         coeffs.append(d)
     return coeffs
 
@@ -1186,7 +1186,7 @@ def unravel_coeffs(arr, coeff_slices, coeff_shapes, output_format='wavedecn'):
                 d[k] = arr[v].reshape(shape_dict[k])
         else:
             raise ValueError(
-                "Unrecognized output format: {}".format(output_format))
+                f"Unrecognized output format: {output_format}")
         coeffs.append(d)
     return coeffs
 

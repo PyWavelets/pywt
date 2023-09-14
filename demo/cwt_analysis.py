@@ -22,7 +22,7 @@ f, ax = plt.subplots(figsize=(15, 10))
 ax.contourf(time, np.log2(period), np.log2(power), np.log2(levels),
             extend='both')
 
-ax.set_title('%s Wavelet Power Spectrum (%s)' % ('Nino1+2', wavelet))
+ax.set_title(f'Nino1+2 Wavelet Power Spectrum ({wavelet})')
 ax.set_ylabel('Period (years)')
 Yticks = 2 ** np.arange(np.ceil(np.log2(period.min())),
                         np.ceil(np.log2(period.max())))

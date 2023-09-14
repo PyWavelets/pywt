@@ -22,7 +22,7 @@ for level in range(0, max_lev + 1):
     # plot subband boundaries of a standard DWT basis
     draw_2d_wp_basis(shape, wavedec2_keys(level), ax=axes[0, level],
                      label_levels=label_levels)
-    axes[0, level].set_title('{} level\ndecomposition'.format(level))
+    axes[0, level].set_title(f'{level} level\ndecomposition')
 
     # compute the 2D DWT
     c = pywt.wavedec2(x, 'db2', mode='periodization', level=level)
@@ -33,7 +33,7 @@ for level in range(0, max_lev + 1):
     # show the normalized coefficients
     arr, slices = pywt.coeffs_to_array(c)
     axes[1, level].imshow(arr, cmap=plt.cm.gray)
-    axes[1, level].set_title('Coefficients\n({} level)'.format(level))
+    axes[1, level].set_title(f'Coefficients\n({level} level)')
     axes[1, level].set_axis_off()
 
 plt.tight_layout()

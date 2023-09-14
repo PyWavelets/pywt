@@ -169,6 +169,5 @@ def _check_accuracy_psi(w, psi, wavelet, epsilon):
     err = psi_pywt.flatten() - psi.flatten()
     rms = np.real(np.sqrt(np.mean(np.conj(err) * err)))
 
-    msg = ('[RMS > EPSILON] for  Wavelet: %s, '
-           'rms=%.3g' % (wavelet, rms))
+    msg = f'[RMS > EPSILON] for  Wavelet: {wavelet}, rms={rms:.3g}'
     assert_(rms < epsilon, msg=msg)

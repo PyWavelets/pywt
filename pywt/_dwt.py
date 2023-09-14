@@ -337,7 +337,7 @@ def downcoef(part, data, wavelet, mode='symmetric', level=1):
     if data.ndim > 1:
         raise ValueError("downcoef only supports 1d data.")
     if part not in 'ad':
-        raise ValueError("Argument 1 must be 'a' or 'd', not '%s'." % part)
+        raise ValueError(f"Argument 1 must be 'a' or 'd', not '{part}'.")
     mode = Modes.from_object(mode)
     wavelet = _as_wavelet(wavelet)
     return np.asarray(_downcoef(part == 'a', data, wavelet, mode, level))
@@ -397,7 +397,7 @@ def upcoef(part, coeffs, wavelet, level=1, take=0):
         raise ValueError("upcoef only supports 1d coeffs.")
     wavelet = _as_wavelet(wavelet)
     if part not in 'ad':
-        raise ValueError("Argument 1 must be 'a' or 'd', not '%s'." % part)
+        raise ValueError(f"Argument 1 must be 'a' or 'd', not '{part}'.")
     return np.asarray(_upcoef(part == 'a', coeffs, wavelet, level, take))
 
 
@@ -512,6 +512,5 @@ def pad(x, pad_widths, mode):
         xp = np.pad(x, pad_widths, mode='reflect', reflect_type='odd')
     else:
         raise ValueError(
-            ("unsupported mode: {}. The supported modes are {}").format(
-                mode, Modes.modes))
+            f"unsupported mode: {mode}. The supported modes are {Modes.modes}")
     return xp

@@ -221,12 +221,12 @@ def check_items(all_dict, names, deprecated, others, module_name, dots=True):
         return [(None, True, output)]
     else:
         if len(only_all) > 0:
-            output += "ERROR: objects in %s.__all__ but not in refguide::\n\n" % module_name
+            output += f"ERROR: objects in {module_name}.__all__ but not in refguide::\n\n"
             for name in sorted(only_all):
                 output += "    " + name + "\n"
 
         if len(only_ref) > 0:
-            output += "ERROR: objects in refguide but not in %s.__all__::\n\n" % module_name
+            output += f"ERROR: objects in refguide but not in {module_name}.__all__::\n\n"
             for name in sorted(only_ref):
                 output += "    " + name + "\n"
 
@@ -244,7 +244,7 @@ def validate_rst_syntax(text, name, dots=True):
     if text is None:
         if dots:
             output_dot('E')
-        return False, "ERROR: %s: no documentation" % (name,)
+        return False, f"ERROR: {name}: no documentation"
 
     ok_unknown_items = set([
         'mod', 'currentmodule', 'autosummary', 'data',
@@ -338,7 +338,7 @@ def check_rest(module, names, dots=True):
         obj = getattr(module, name, None)
 
         if obj is None:
-            results.append((full_name, False, "%s has no docstring" % (full_name,)))
+            results.append((full_name, False, f"{full_name} has no docstring"))
             continue
         elif isinstance(obj, skip_types):
             continue
@@ -770,7 +770,7 @@ def main(argv):
     success = True
     results = []
 
-    print("Running checks for %d modules:" % (len(modules),))
+    print(f"Running checks for {len(modules)} modules:")
 
     if args.doctests or not args.skip_examples:
         init_matplotlib()
@@ -805,7 +805,7 @@ def main(argv):
     if not args.skip_examples:
         examples_path = os.path.join(
             os.getcwd(), 'doc', 'source', 'regression', '*.rst')
-        print('\nChecking examples files at %s:' % examples_path)
+        print(f'\nChecking examples files at {examples_path}:')
         for filename in sorted(glob.glob(examples_path)):
             if dots:
                 sys.stderr.write('\n')

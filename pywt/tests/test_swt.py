@@ -167,7 +167,7 @@ def test_swt_iswt_integration():
 def test_swt_dtypes():
     wavelet = pywt.Wavelet('haar')
     for dt_in, dt_out in zip(dtypes_in, dtypes_out):
-        errmsg = "wrong dtype returned for {0} input".format(dt_in)
+        errmsg = f"wrong dtype returned for {dt_in} input"
 
         # swt
         x = np.ones(8, dtype=dt_in)

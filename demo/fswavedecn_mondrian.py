@@ -64,8 +64,8 @@ fswavedecn_result = pywt.fswavedecn(img, wavelet='db1')
 nnz_dwt = np.sum(coeff_array_dwt != 0)
 nnz_fswavedecn = np.sum(fswavedecn_result.coeffs != 0)
 
-print("Number of nonzero wavedecn coefficients = {}".format(np.sum(nnz_dwt)))
-print("Number of nonzero fswavedecn coefficients = {}".format(np.sum(nnz_fswavedecn)))
+print(f"Number of nonzero wavedecn coefficients = {np.sum(nnz_dwt)}")
+print(f"Number of nonzero fswavedecn coefficients = {np.sum(nnz_fswavedecn)}")
 
 img = mondrian()
 fig, axes = plt.subplots(1, 3)
@@ -73,9 +73,9 @@ imshow_kwargs = dict(cmap=plt.cm.gray, interpolation='nearest')
 axes[0].imshow(img, **imshow_kwargs)
 axes[0].set_title('Anisotropic Image')
 axes[1].imshow(coeff_array_dwt != 0, **imshow_kwargs)
-axes[1].set_title('Nonzero DWT\ncoefficients\n(N={})'.format(nnz_dwt))
+axes[1].set_title(f'Nonzero DWT\ncoefficients\n(N={nnz_dwt})')
 axes[2].imshow(fswavedecn_result.coeffs != 0, **imshow_kwargs)
-axes[2].set_title('Nonzero FSWT\ncoefficients\n(N={})'.format(nnz_fswavedecn))
+axes[2].set_title(f'Nonzero FSWT\ncoefficients\n(N={nnz_fswavedecn})')
 for ax in axes:
     ax.set_axis_off()
 

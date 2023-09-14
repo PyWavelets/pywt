@@ -787,7 +787,7 @@ class WaveletPacket(Node):
               DOI:10.1017/CBO9780511841040
         """
         if order not in ["natural", "freq"]:
-            raise ValueError("Invalid order: {}".format(order))
+            raise ValueError(f"Invalid order: {order}")
         if level > self.maxlevel:
             raise ValueError("The level cannot be greater than the maximum"
                              " decomposition level value (%d)" % self.maxlevel)
@@ -808,7 +808,7 @@ class WaveletPacket(Node):
             graycode_order = get_graycode_order(level)
             return [result[path] for path in graycode_order if path in result]
         else:
-            raise ValueError("Invalid order name - %s." % order)
+            raise ValueError(f"Invalid order name - {order}.")
 
 
 class WaveletPacket2D(Node2D):
@@ -911,7 +911,7 @@ class WaveletPacket2D(Node2D):
               DOI:10.1017/CBO9780511841040
         """
         if order not in ["natural", "freq"]:
-            raise ValueError("Invalid order: {}".format(order))
+            raise ValueError(f"Invalid order: {order}")
         if level > self.maxlevel:
             raise ValueError("The level cannot be greater than the maximum"
                              " decomposition level value (%d)" % self.maxlevel)

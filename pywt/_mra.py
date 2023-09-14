@@ -79,7 +79,7 @@ def mra(data, wavelet, level=None, axis=-1, transform='swt',
         inverse = partial(waverec, **kwargs)
         is_swt = False
     else:
-        raise ValueError("unrecognized transform: {}".format(transform))
+        raise ValueError(f"unrecognized transform: {transform}")
 
     wav_coeffs = forward(data)
 
@@ -209,7 +209,7 @@ def mra2(data, wavelet, level=None, axes=(-2, -1), transform='swt2',
         forward = partial(wavedec2, level=level, **kwargs)
         inverse = partial(waverec2, **kwargs)
     else:
-        raise ValueError("unrecognized transform: {}".format(transform))
+        raise ValueError(f"unrecognized transform: {transform}")
 
     wav_coeffs = forward(data)
 
@@ -353,7 +353,7 @@ def mran(data, wavelet, level=None, axes=None, transform='swtn',
         forward = partial(wavedecn, level=level, **kwargs)
         inverse = partial(waverecn, **kwargs)
     else:
-        raise ValueError("unrecognized transform: {}".format(transform))
+        raise ValueError(f"unrecognized transform: {transform}")
 
     wav_coeffs = forward(data)
 

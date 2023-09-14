@@ -179,7 +179,7 @@ def main():
                       options.mode, options.base_gain, options.texture_gain)
 
     if options.timeit:
-        print("%.3fs" % (clock() - t))
+        print(f"{clock() - t:.3f}s")
 
     im.save(options.output)
 
