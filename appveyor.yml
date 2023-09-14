@@ -21,7 +21,7 @@ install:
   - "py -m pip install --only-binary :all: Cython pytest matplotlib --cache-dir c:\\tmp\\pip-cache"
 
 test_script:
-  - cmd: call "C:\Program Files (x86)\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat" %arch%
+  - cmd: call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat" %arch%
   - "py -m pip install . -v --config-settings=setup-args=--vsenv"
   - "cd demo"
   - "py -m pytest --pyargs pywt"
