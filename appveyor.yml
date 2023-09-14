@@ -15,7 +15,7 @@ environment:
 
 # From https://mesonbuild.com/Continuous-Integration.html#appveyor-for-windows
 install:
-  - "py -VV"
+  - "py -VV"  # Also, `py --list`
   - "py -m pip install --upgrade pip build"
   - "py -m pip install numpy --cache-dir c:\\tmp\\pip-cache"
   - "py -m pip install --only-binary :all: Cython pytest matplotlib --cache-dir c:\\tmp\\pip-cache"
