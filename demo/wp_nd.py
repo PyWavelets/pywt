@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 # Note: This demo is a repeat of wp_2d, but using WaveletPacketND instead
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
-from pywt import WaveletPacketND
 import pywt.data
-
+from pywt import WaveletPacketND
 
 arr = pywt.data.aero()
 

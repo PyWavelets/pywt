@@ -13,7 +13,6 @@ Example (to create aero.dat):
 Requires Scipy and PIL.
 """
 
-from __future__ import print_function
 
 import sys
 

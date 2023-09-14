@@ -24,10 +24,9 @@ In practice, tests run from the PyWavelets repo are run in develop mode. That
 includes the standard ``python runtests.py`` invocation.
 
 """
-from __future__ import division, absolute_import, print_function
 
-import sys
 import os
+import sys
 
 __all__ = ['PytestTester']
 
@@ -42,7 +41,7 @@ def _show_pywt_info():
         print("Compiled without C99 complex support.")
 
 
-class PytestTester(object):
+class PytestTester:
     """
     Pytest test runner.
 

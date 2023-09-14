@@ -8,7 +8,6 @@ The thresholding helper module implements the most popular signal thresholding
 functions.
 """
 
-from __future__ import division, print_function, absolute_import
 import numpy as np
 
 __all__ = ['threshold', 'threshold_firm']
@@ -167,7 +166,7 @@ def threshold(data, value, mode='soft', substitute=0):
         # Make sure error is always identical by sorting keys
         keys = (f"'{key}'" for key in
                 sorted(thresholding_options.keys()))
-        raise ValueError("The mode parameter only takes values from: {0}."
+        raise ValueError("The mode parameter only takes values from: {}."
                          .format(', '.join(keys)))
 
 

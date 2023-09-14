@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 import os
 import pickle
+
 import numpy as np
-from numpy.testing import assert_allclose, assert_
+from numpy.testing import assert_, assert_allclose
 
 import pywt
 
@@ -152,7 +153,7 @@ def check_coefficients(wavelet):
     assert_(res < epsilon, msg=msg)
 
 
-class _CustomHaarFilterBank(object):
+class _CustomHaarFilterBank:
     @property
     def filter_bank(self):
         val = np.sqrt(2) / 2

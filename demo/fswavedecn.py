@@ -1,5 +1,6 @@
 import numpy as np
 from matplotlib import pyplot as plt
+
 import pywt
 
 img = pywt.data.camera().astype(float)

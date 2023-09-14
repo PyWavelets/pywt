@@ -182,6 +182,6 @@ def boundary_mode_subplot(x, mode, ax, symw=True):
         step = len(x)
         rng = range(-2, 4)
     if mode in ['smooth', 'constant', 'zero']:
-        rng = range(0, 2)
+        rng = range(2)
     for rep in rng:
         ax.plot((left + rep * step) * o2, [xp.min() - .5, xp.max() + .5], 'k-')

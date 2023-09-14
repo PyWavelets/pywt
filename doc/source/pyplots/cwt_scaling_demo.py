@@ -1,6 +1,7 @@
-import numpy as np
-import pywt
 import matplotlib.pyplot as plt
+import numpy as np
+
+import pywt
 
 wav = pywt.ContinuousWavelet('cmor1.5-1.0')
 
@@ -23,7 +24,7 @@ for n, scale in enumerate(scales):
     j = np.floor(
         np.arange(scale * width + 1) / (scale * step))
     if np.max(j) >= np.size(int_psi):
-        j = np.delete(j, np.where((j >= np.size(int_psi)))[0])
+        j = np.delete(j, np.where(j >= np.size(int_psi))[0])
     j = j.astype(np.int_)
 
     # normalize int_psi for easier plotting

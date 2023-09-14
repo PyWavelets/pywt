@@ -1,12 +1,18 @@
 #!/usr/bin/env python
 import os
-from itertools import product
 import pickle
+from itertools import product
 
-from numpy.testing import (assert_allclose, assert_warns, assert_almost_equal,
-                           assert_raises, assert_equal)
-import pytest
 import numpy as np
+import pytest
+from numpy.testing import (
+    assert_allclose,
+    assert_almost_equal,
+    assert_equal,
+    assert_raises,
+    assert_warns,
+)
+
 import pywt
 
 

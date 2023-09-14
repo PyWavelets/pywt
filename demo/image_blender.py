@@ -40,13 +40,14 @@ detail coefficients:
 import optparse
 import os
 import sys
+
 if os.name == 'nt':
     from time import clock  # noqa
 else:
     from time import time as clock  # noqa
 
-from PIL import Image  # PIL
 import numpy  # http://www.scipy.org
+from PIL import Image  # PIL
 
 import pywt
 

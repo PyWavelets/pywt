@@ -1,5 +1,6 @@
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+
 import pywt
 
 s = np.linspace(-4, 4, 1000)

@@ -100,4 +100,3 @@ Pull requests for v1.2
 * `#609 <https://github.com/PyWavelets/pywt/pull/609>`__: MAINT: fix \`origin='image'\` calls that Matplotlib no longer...
 * `#610 <https://github.com/PyWavelets/pywt/pull/610>`__: Update GitHub Actions workflow to build Python 3.10 wheels
 * `#611 <https://github.com/PyWavelets/pywt/pull/611>`__: MAINT: fix doc build issues
-

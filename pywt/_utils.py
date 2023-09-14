@@ -2,11 +2,16 @@
 #                    <https://github.com/PyWavelets/pywt>
 # See COPYING for license details.
 import inspect
-import numpy as np
 from collections.abc import Iterable
 
-from ._extensions._pywt import (Wavelet, ContinuousWavelet,
-                                DiscreteContinuousWavelet, Modes)
+import numpy as np
+
+from ._extensions._pywt import (
+    ContinuousWavelet,
+    DiscreteContinuousWavelet,
+    Modes,
+    Wavelet,
+)
 
 
 def _as_wavelet(wavelet):
@@ -49,9 +54,9 @@ def _wavelets_per_axis(wavelet, axes):
             wavelets = [_as_wavelet(wavelet[0]), ] * len(axes)
         else:
             if len(wavelet) != len(axes):
-                raise ValueError((
+                raise ValueError(
                     "The number of wavelets must match the number of axes "
-                    "to be transformed."))
+                    "to be transformed.")
             wavelets = [_as_wavelet(w) for w in wavelet]
     else:
         raise ValueError("wavelet must be a str, Wavelet or iterable")
@@ -85,8 +90,8 @@ def _modes_per_axis(modes, axes):
         else:
             # (potentially) unique wavelet per axis (e.g. for dual-tree DWT)
             if len(modes) != len(axes):
-                raise ValueError(("The number of modes must match the number "
-                                  "of axes to be transformed."))
+                raise ValueError("The number of modes must match the number "
+                                  "of axes to be transformed.")
         modes = [Modes.from_object(mode) for mode in modes]
     else:
         raise ValueError("modes must be a str, Mode enum or iterable")

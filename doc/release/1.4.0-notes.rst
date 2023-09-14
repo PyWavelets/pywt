@@ -12,7 +12,7 @@ There is one new utility function, `pywt.frequency2scale`, that can be used to
 determine CWT scale factors corresponding to a given (normalized) frequency.
 It is the inverse of the existing `pywt.scale2frequency`.
 
-A detailed change log is provided below. 
+A detailed change log is provided below.
 
 Authors
 =======

@@ -1,8 +1,9 @@
 import numpy as np
+
 import pywt
 
 
-class CwtTimeSuiteBase(object):
+class CwtTimeSuiteBase:
     """
     Set-up for CWT timing.
     """

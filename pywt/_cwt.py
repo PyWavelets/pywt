@@ -1,9 +1,12 @@
-from math import floor, ceil
+from math import ceil, floor
 
-from ._extensions._pywt import (DiscreteContinuousWavelet, ContinuousWavelet,
-                                Wavelet, _check_dtype)
+from ._extensions._pywt import (
+    ContinuousWavelet,
+    DiscreteContinuousWavelet,
+    Wavelet,
+    _check_dtype,
+)
 from ._functions import integrate_wavelet, scale2frequency
-
 
 __all__ = ["cwt"]
 
@@ -134,7 +137,7 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1):
     if method == 'fft':
         size_scale0 = -1
         fft_data = None
-    elif not method == 'conv':
+    elif method != "conv":
         raise ValueError("method must be 'conv' or 'fft'")
 
     if data.ndim > 1:

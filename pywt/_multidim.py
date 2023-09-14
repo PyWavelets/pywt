@@ -7,7 +7,6 @@
 2D and nD Discrete Wavelet Transforms and Inverse Discrete Wavelet Transforms.
 """
 
-from __future__ import division, print_function, absolute_import
 
 from itertools import product
 
@@ -15,8 +14,7 @@ import numpy as np
 
 from ._c99_config import _have_c99_complex
 from ._extensions._dwt import dwt_axis, idwt_axis
-from ._utils import _wavelets_per_axis, _modes_per_axis
-
+from ._utils import _modes_per_axis, _wavelets_per_axis
 
 __all__ = ['dwt2', 'idwt2', 'dwtn', 'idwtn']
 
@@ -167,7 +165,7 @@ def dwtn(data, wavelet, mode='symmetric', axes=None):
     if not _have_c99_complex and np.iscomplexobj(data):
         real = dwtn(data.real, wavelet, mode, axes)
         imag = dwtn(data.imag, wavelet, mode, axes)
-        return dict((k, real[k] + 1j * imag[k]) for k in real.keys())
+        return {k: real[k] + 1j * imag[k] for k in real}
 
     if data.dtype == np.dtype('object'):
         raise TypeError("Input must be a numeric array-like")
@@ -197,26 +195,25 @@ def _fix_coeffs(coeffs):
     if missing_keys:
         raise ValueError(
             "The following detail coefficients were set to None:\n"
-            "{0}\n"
+            f"{missing_keys}\n"
             "For multilevel transforms, rather than setting\n"
             "\tcoeffs[key] = None\n"
             "use\n"
-            "\tcoeffs[key] = np.zeros_like(coeffs[key])\n".format(
-                missing_keys))
+            "\tcoeffs[key] = np.zeros_like(coeffs[key])\n")
 
     invalid_keys = [k for k, v in coeffs.items() if
                     not set(k) <= set('ad')]
     if invalid_keys:
         raise ValueError(
             "The following invalid keys were found in the detail "
-            "coefficient dictionary: {}.".format(invalid_keys))
+            f"coefficient dictionary: {invalid_keys}.")
 
-    key_lengths = [len(k) for k in coeffs.keys()]
+    key_lengths = [len(k) for k in coeffs]
     if len(np.unique(key_lengths)) > 1:
         raise ValueError(
             "All detail coefficient names must have equal length.")
 
-    return dict((k, np.asarray(v)) for k, v in coeffs.items())
+    return {k: np.asarray(v) for k, v in coeffs.items()}
 
 
 def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
@@ -251,23 +248,23 @@ def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
     """
 
     # drop the keys corresponding to value = None
-    coeffs = dict((k, v) for k, v in coeffs.items() if v is not None)
+    coeffs = {k: v for k, v in coeffs.items() if v is not None}
 
     # drop the keys corresponding to value = None
-    coeffs = dict((k, v) for k, v in coeffs.items() if v is not None)
+    coeffs = {k: v for k, v in coeffs.items() if v is not None}
 
     # Raise error for invalid key combinations
     coeffs = _fix_coeffs(coeffs)
 
     if (not _have_c99_complex and
             any(np.iscomplexobj(v) for v in coeffs.values())):
-        real_coeffs = dict((k, v.real) for k, v in coeffs.items())
-        imag_coeffs = dict((k, v.imag) for k, v in coeffs.items())
+        real_coeffs = {k: v.real for k, v in coeffs.items()}
+        imag_coeffs = {k: v.imag for k, v in coeffs.items()}
         return (idwtn(real_coeffs, wavelet, mode, axes) +
                 1j * idwtn(imag_coeffs, wavelet, mode, axes))
 
     # key length matches the number of axes transformed
-    ndim_transform = max(len(key) for key in coeffs.keys())
+    ndim_transform = max(len(key) for key in coeffs)
 
     try:
         coeff_shapes = (v.shape for k, v in coeffs.items()

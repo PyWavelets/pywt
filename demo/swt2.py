@@ -1,11 +1,9 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 import matplotlib.pyplot as plt
 
 import pywt
 import pywt.data
-
 
 arr = pywt.data.aero()
 

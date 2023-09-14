@@ -20,9 +20,9 @@ anistropic images:
 """
 
 import numpy as np
-import pywt
-
 from matplotlib import pyplot as plt
+
+import pywt
 
 
 def mondrian(shape=(256, 256), nx=5, ny=8, seed=4):
@@ -69,7 +69,7 @@ print(f"Number of nonzero fswavedecn coefficients = {np.sum(nnz_fswavedecn)}")
 
 img = mondrian()
 fig, axes = plt.subplots(1, 3)
-imshow_kwargs = dict(cmap=plt.cm.gray, interpolation='nearest')
+imshow_kwargs = {'cmap': plt.cm.gray, 'interpolation': 'nearest'}
 axes[0].imshow(img, **imshow_kwargs)
 axes[0].set_title('Anisotropic Image')
 axes[1].imshow(coeff_array_dwt != 0, **imshow_kwargs)

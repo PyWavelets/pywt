@@ -1,8 +1,14 @@
 from itertools import product
+
 import numpy as np
 from matplotlib import pyplot as plt
-from pywt._doc_utils import (wavedec_keys, wavedec2_keys, draw_2d_wp_basis,
-                             draw_2d_fswavedecn_basis)
+
+from pywt._doc_utils import (
+    draw_2d_fswavedecn_basis,
+    draw_2d_wp_basis,
+    wavedec2_keys,
+    wavedec_keys,
+)
 
 shape = (512, 512)
 

@@ -1,15 +1,24 @@
 #!/usr/bin/env python
 
-from __future__ import division, print_function, absolute_import
 
 import warnings
 from itertools import combinations
+
 import numpy as np
 import pytest
-from numpy.testing import (assert_almost_equal, assert_allclose, assert_,
-                           assert_equal, assert_raises, assert_raises_regex,
-                           assert_array_equal, assert_warns)
+from numpy.testing import (
+    assert_,
+    assert_allclose,
+    assert_almost_equal,
+    assert_array_equal,
+    assert_equal,
+    assert_raises,
+    assert_raises_regex,
+    assert_warns,
+)
+
 import pywt
+
 # Check that float32, float64, complex64, complex128 are preserved.
 # Other real types get converted to float64.
 # complex256 gets converted to complex128
@@ -415,7 +424,7 @@ def test_coeffs_to_array():
     assert_raises(ValueError, pywt.coeffs_to_array, [a_coeffs, None])
 
     # use an invalid key name in the coef dictionary
-    coeffs = [np.array([0]), dict(d=np.array([0]), c=np.array([0]))]
+    coeffs = [np.array([0]), {'d': np.array([0]), 'c': np.array([0])}]
     assert_raises(ValueError, pywt.coeffs_to_array, coeffs)
 
 

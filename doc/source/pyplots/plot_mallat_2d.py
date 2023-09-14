@@ -1,7 +1,8 @@
 import numpy as np
-import pywt
 from matplotlib import pyplot as plt
-from pywt._doc_utils import wavedec2_keys, draw_2d_wp_basis
+
+import pywt
+from pywt._doc_utils import draw_2d_wp_basis, wavedec2_keys
 
 x = pywt.data.camera().astype(np.float32)
 shape = x.shape
@@ -10,7 +11,7 @@ max_lev = 3       # how many levels of decomposition to draw
 label_levels = 3  # how many levels to explicitly label on the plots
 
 fig, axes = plt.subplots(2, 4, figsize=[14, 8])
-for level in range(0, max_lev + 1):
+for level in range(max_lev + 1):
     if level == 0:
         # show the original image before decomposition
         axes[0, 0].set_axis_off()

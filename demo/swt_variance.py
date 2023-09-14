@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
 import pywt
 import pywt.data
@@ -51,7 +51,7 @@ level = np.arange(1, len(detail_variances) + 1)
 
 # create a plot of the variance as a function of level
 plt.figure(figsize=(8, 6))
-fontdict = dict(fontsize=16, fontweight='bold')
+fontdict = {'fontsize': 16, 'fontweight': 'bold'}
 plt.plot(level, detail_variances[::-1], 'k.')
 plt.xlabel("Decomposition level", fontdict=fontdict)
 plt.ylabel("Variance", fontdict=fontdict)

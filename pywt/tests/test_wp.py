@@ -4,8 +4,7 @@ import os
 import pickle
 
 import numpy as np
-from numpy.testing import (assert_allclose, assert_, assert_raises,
-                           assert_equal)
+from numpy.testing import assert_, assert_allclose, assert_equal, assert_raises
 
 import pywt
 

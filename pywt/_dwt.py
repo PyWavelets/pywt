@@ -3,13 +3,13 @@ from numbers import Number
 import numpy as np
 
 from ._c99_config import _have_c99_complex
-from ._extensions._pywt import Wavelet, Modes, _check_dtype, wavelist
-from ._extensions._dwt import (dwt_single, dwt_axis, idwt_single, idwt_axis,
-                               upcoef as _upcoef, downcoef as _downcoef,
-                               dwt_max_level as _dwt_max_level,
-                               dwt_coeff_len as _dwt_coeff_len)
+from ._extensions._dwt import downcoef as _downcoef
+from ._extensions._dwt import dwt_axis, dwt_single, idwt_axis, idwt_single
+from ._extensions._dwt import dwt_coeff_len as _dwt_coeff_len
+from ._extensions._dwt import dwt_max_level as _dwt_max_level
+from ._extensions._dwt import upcoef as _upcoef
+from ._extensions._pywt import Modes, Wavelet, _check_dtype, wavelist
 from ._utils import _as_wavelet
-
 
 __all__ = ["dwt", "idwt", "downcoef", "upcoef", "dwt_max_level",
            "dwt_coeff_len", "pad"]
@@ -66,9 +66,9 @@ def dwt_max_level(data_len, filter_len):
             filter_len = Wavelet(filter_len).dec_len
         else:
             raise ValueError(
-                ("'{}', is not a recognized discrete wavelet.  A list of "
+                f"'{filter_len}', is not a recognized discrete wavelet.  A list of "
                  "supported wavelet names can be obtained via "
-                 "pywt.wavelist(kind='discrete')").format(filter_len))
+                 "pywt.wavelist(kind='discrete')")
     elif not (isinstance(filter_len, Number) and filter_len % 1 == 0):
         raise ValueError(
             "filter_len must be an integer, discrete Wavelet object, or the "

@@ -5,18 +5,18 @@
 
 """1D and 2D Wavelet packet transform module."""
 
-from __future__ import division, print_function, absolute_import
 
 __all__ = ["BaseNode", "Node", "WaveletPacket", "Node2D", "WaveletPacket2D",
            "NodeND", "WaveletPacketND"]
 
-from itertools import product
 from collections import OrderedDict
+from itertools import product
+
 import numpy as np
 
+from ._dwt import dwt, dwt_max_level, idwt
 from ._extensions._pywt import Wavelet, _check_dtype
-from ._dwt import dwt, idwt, dwt_max_level
-from ._multidim import dwt2, idwt2, dwtn, idwtn
+from ._multidim import dwt2, dwtn, idwt2, idwtn
 
 
 def get_graycode_order(level, x='a', y='d'):
@@ -27,7 +27,7 @@ def get_graycode_order(level, x='a', y='d'):
     return graycode_order
 
 
-class BaseNode(object):
+class BaseNode:
     """
     BaseNode for wavelet packet 1D and 2D tree nodes.
 
@@ -109,8 +109,7 @@ class BaseNode(object):
 
     def _validate_node_name(self, part):
         if part not in self.PARTS:
-            raise ValueError("Subnode name must be in [%s], not '%s'." %
-                             (', '.join("'%s'" % p for p in self.PARTS), part))
+            raise ValueError("Subnode name must be in [{}], not '{}'.".format(', '.join("'%s'" % p for p in self.PARTS), part))
 
     @property
     def path_tuple(self):
@@ -332,10 +331,7 @@ class BaseNode(object):
 
     @property
     def has_any_subnode(self):
-        for part in self.PARTS:
-            if self._get_node(part) is not None:  # and not .is_empty
-                return True
-        return False
+        return any(self._get_node(part) is not None for part in self.PARTS)
 
     def get_leaf_nodes(self, decompose=False):
         """
@@ -584,7 +580,7 @@ class NodeND(BaseNode):
 
     """
     def __init__(self, parent, data, node_name, ndim, ndim_transform):
-        super(NodeND, self).__init__(parent=parent, data=data,
+        super().__init__(parent=parent, data=data,
                                      node_name=node_name)
         self.PART_LEN = ndim_transform
         self.PARTS = OrderedDict()
@@ -612,8 +608,7 @@ class NodeND(BaseNode):
     def _validate_node_name(self, part):
         if part not in self.PARTS:
             raise ValueError(
-                "Subnode name must be in [%s], not '%s'." %
-                (', '.join("'%s'" % p for p in list(self.PARTS.keys())), part))
+                "Subnode name must be in [{}], not '{}'.".format(', '.join("'%s'" % p for p in list(self.PARTS.keys())), part))
 
     def _create_subnode(self, part, data=None, overwrite=True):
         return self._create_subnode_base(node_cls=NodeND, part=part, data=data,
@@ -655,19 +650,19 @@ class NodeND(BaseNode):
         dwt2 : for 2D Discrete Wavelet Transform output coefficients.
         """
         if self.is_empty:
-            coefs = {key: None for key in self.PARTS.keys()}
+            coefs = {key: None for key in self.PARTS}
         else:
             coefs = dwtn(self.data, self.wavelet, self.mode, axes=self.axes)
 
         for key, data in coefs.items():
             self._create_subnode(key, data)
-        return (self._get_node(key) for key in self.PARTS.keys())
+        return (self._get_node(key) for key in self.PARTS)
 
     def _reconstruct(self, update):
-        coeffs = {key: None for key in self.PARTS.keys()}
+        coeffs = {key: None for key in self.PARTS}
 
         nnodes = 0
-        for key in self.PARTS.keys():
+        for key in self.PARTS:
             node = self._get_node(key)
             if node is not None:
                 nnodes += 1
@@ -707,7 +702,7 @@ class WaveletPacket(Node):
     """
     def __init__(self, data, wavelet, mode='symmetric', maxlevel=None,
                  axis=-1):
-        super(WaveletPacket, self).__init__(None, data, "")
+        super().__init__(None, data, "")
 
         if not isinstance(wavelet, Wavelet):
             wavelet = Wavelet(wavelet)
@@ -744,7 +739,7 @@ class WaveletPacket(Node):
             reconstruction values, also in subnodes.
         """
         if self.has_any_subnode:
-            data = super(WaveletPacket, self).reconstruct(update)
+            data = super().reconstruct(update)
             if self.data_size is not None and (data.shape != self.data_size):
                 data = data[[slice(sz) for sz in self.data_size]]
             if update:
@@ -804,7 +799,7 @@ class WaveletPacket(Node):
         if order == "natural":
             return result
         elif order == "freq":
-            result = dict((node.path, node) for node in result)
+            result = {node.path: node for node in result}
             graycode_order = get_graycode_order(level)
             return [result[path] for path in graycode_order if path in result]
         else:
@@ -833,7 +828,7 @@ class WaveletPacket2D(Node2D):
     """
     def __init__(self, data, wavelet, mode='smooth', maxlevel=None,
                  axes=(-2, -1)):
-        super(WaveletPacket2D, self).__init__(None, data, "")
+        super().__init__(None, data, "")
 
         if not isinstance(wavelet, Wavelet):
             wavelet = Wavelet(wavelet)
@@ -870,7 +865,7 @@ class WaveletPacket2D(Node2D):
             and its subnodes will be replaced with values from reconstruction.
         """
         if self.has_any_subnode:
-            data = super(WaveletPacket2D, self).reconstruct(update)
+            data = super().reconstruct(update)
             if self.data_size is not None and (data.shape != self.data_size):
                 data = data[[slice(sz) for sz in self.data_size]]
             if update:
@@ -987,7 +982,7 @@ class WaveletPacketND(NodeND):
         else:
             ndim = len(axes)
 
-        super(WaveletPacketND, self).__init__(None, data, "", ndim,
+        super().__init__(None, data, "", ndim,
                                               ndim_transform)
         if not isinstance(wavelet, Wavelet):
             wavelet = Wavelet(wavelet)
@@ -1018,7 +1013,7 @@ class WaveletPacketND(NodeND):
             and its subnodes will be replaced with values from reconstruction.
         """
         if self.has_any_subnode:
-            data = super(WaveletPacketND, self).reconstruct(update)
+            data = super().reconstruct(update)
             if self.data_size is not None and (data.shape != self.data_size):
                 data = data[[slice(sz) for sz in self.data_size]]
             if update:
