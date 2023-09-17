@@ -21,7 +21,7 @@ repos:
         args: [--prose-wrap=preserve]
 
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: 36c161038ec6d1447949edd5c0060436cb483c9b # frozen: v0.0.289
+    rev: 6fcbf19c7cf351a8dc3517a0fed3ebfa05610de2 # frozen: v0.0.290
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
