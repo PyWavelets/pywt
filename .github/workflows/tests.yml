@@ -60,9 +60,6 @@ jobs:
             python-version: '3.12'
             PIP_FLAGS: "--pre"
             OPTIONS_NAME: "pre-releases"
-        exclude:
-          - python-version: '3.12'
-            PIP_FLAGS: [""]
 
     steps:
       - name: Checkout PyWavelets
@@ -175,9 +172,6 @@ jobs:
           - python-version: '3.12'
             PIP_FLAGS: "--pre"
             OPTIONS_NAME: "pre-releases"
-        exclude:
-          - python-version: '3.12'
-            PIP_FLAGS: [""]
 
     steps:
       - name: Checkout PyWavelets
