@@ -20,15 +20,17 @@ requires = [
     # default numpy requirements
     "numpy==1.22.4; python_version<='3.10' and platform_python_implementation != 'PyPy'",
     "numpy==1.23.3; python_version=='3.11' and platform_python_implementation != 'PyPy'",
+    "numpy==1.26.0; python_version=='3.12' and platform_python_implementation != 'PyPy'",
     # For Python versions which aren't yet officially supported, we specify an
     # unpinned NumPy which allows source distributions to be used and allows
     # wheels to be used as soon as they become available.
-    "numpy>=1.26.0b1; python_version>='3.12'",
+    "numpy; python_version>='3.13'",
     "numpy; python_version>='3.9' and platform_python_implementation=='PyPy'",
 ]
 
 [project]
 name = "PyWavelets"
+version = "1.5.0.dev0"
 # TODO: add `license-files` once PEP 639 is accepted (see meson-python#88)
 #       at that point, no longer include them in `py3.install_sources()`
 license = {file = "LICENSE"}
@@ -40,7 +42,7 @@ requires-python = ">=3.9"
 dependencies = [
     # TODO: update to "pin-compatible" once possible, see
     # https://github.com/FFY00/meson-python/issues/29
-    "numpy>=1.22.4",
+    "numpy>=1.22.4,<2.0",
 ]
 readme = "README.rst"
 classifiers = [
@@ -59,7 +61,6 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Topic :: Software Development :: Libraries :: Python Modules"
 ]
-dynamic = ['version']
 
 [project.urls]
 homepage = "https://github.com/PyWavelets/pywt"
