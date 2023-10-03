@@ -1,15 +1,15 @@
 name: pip_install_on_py3_12
 on:
   push:
-    branches: [main, master]
+    branches: [master]
   pull_request:
-    branches: [main, master]
+    branches: [master]
 jobs:
   pip_install_on_py3_12:
     strategy:
       fail-fast: false
       matrix:
-        module: ["PyWavelets", "scikit-image", "scikit-fuzzy"]
+        module: ["PyWavelets", "git+https://github.com/PyWavelets/pywt.git", "scikit-fuzzy", "scikit-image"]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
