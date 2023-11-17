@@ -11,7 +11,7 @@ environment:
     - arch: x86
       PY_PYTHON: 3.10-32
     - arch: x64
-      PY_PYTHON: 3.11
+      PY_PYTHON: 3.12
 
 # From https://mesonbuild.com/Continuous-Integration.html#appveyor-for-windows
 install:
