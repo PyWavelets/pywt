@@ -3,18 +3,16 @@
 Testing
 =======
 
-Continous integration with Travis-CI
-------------------------------------
+Continuous integration with GitHub Actions
+------------------------------------------
 
-The project is using `Travis-CI <https://travis-ci.org/PyWavelets/pywt>`_ service
-for continuous integration and testing.
+The project is using GitHub Actions for continuous integration and testing.
 
 Current build status is:
 
-.. image::
-    https://secure.travis-ci.org/PyWavelets/pywt.png?branch=master
+.. image:: https://github.com/PyWavelets/pywt/actions/workflows/tests.yml/badge.svg?branch=master
     :alt: Build Status
-    :target: https://secure.travis-ci.org/PyWavelets/pywt
+    :target: https://github.com/PyWavelets/pywt/actions/workflows/tests.yml?query=branch%3Amaster
 
 If you are submitting a patch or pull request please make sure it
 does not break the build.
@@ -45,9 +43,9 @@ Running tests with Tox
 ----------------------
 
 There's also a config file for running tests with `Tox`_ (``pip install tox``).
-To for example run tests for Python 3.5 and 3.6 use::
+To for example run tests for Python 3.9 and 3.10 use::
 
-  tox -e py35,py36
+  tox -e py39,py310
 
 For more information see the `Tox`_ documentation.
 

@@ -1,5 +1,5 @@
 """
-Demo: Parallel processing accross images
+Demo: Parallel processing across images
 
 Multithreading can be used to run transforms on a set of images in parallel.
 This will give a net performance benefit if the images to be transformed are

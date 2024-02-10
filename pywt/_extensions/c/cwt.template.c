@@ -18,6 +18,7 @@
 #define _USE_MATH_DEFINES
 #include "math.h"
 
+
 TYPE CAT(TYPE, _pow)(const TYPE x, const TYPE y)
 {
     if (sizeof(TYPE) == sizeof(double))

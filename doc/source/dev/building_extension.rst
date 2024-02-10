@@ -14,12 +14,11 @@ repository or use the upstream repository to get the source code::
 Activate your Python virtual environment, go to the cloned source directory
 and type the following commands to build and install the package::
 
-    python setup.py build
-    python setup.py install
+    pip install .
 
 To verify the installation run the following command::
 
-    python setup.py test
+    pytest .
 
 To build docs::
 

@@ -90,6 +90,19 @@ def camera():
     camera : ndarray
        convenient image to use for testing and demonstration
 
+    Notes
+    -----
+    No copyright restrictions. CC0 by the photographer (Lav Varshney).
+
+    .. versionchanged:: 0.18
+        This image was replaced due to copyright restrictions. For more
+        information, please see [1]_, where the same change was made in
+        scikit-image.
+
+    References
+    ----------
+    .. [1] https://github.com/scikit-image/scikit-image/issues/3927
+
     Examples
     --------
     >>> import pywt.data
@@ -142,7 +155,7 @@ def ecg():
 def nino():
     """
     This data contains the averaged monthly sea surface temperature in degrees
-    Celcius of the Pacific Ocean, between 0-10 degrees South and 90-80 degrees West, from 1950 to 2016.
+    Celsius of the Pacific Ocean, between 0-10 degrees South and 90-80 degrees West, from 1950 to 2016.
     This dataset is in the public domain and was obtained from NOAA.
     National Oceanic and Atmospheric Administration's National Weather Service
     ERSSTv4 dataset, nino 3, http://www.cpc.ncep.noaa.gov/data/indices/
@@ -170,12 +183,12 @@ def nino():
     [<matplotlib.lines.Line2D object at ...>]
     >>> plt.show() # doctest: +SKIP
     """
-    fname = os.path.join(os.path.dirname(__file__), 'sst_nino3.npz')
-    sst_csv = np.load(fname)['sst_csv']
+    fname = os.path.join(os.path.dirname(__file__), 'sst_nino3.npy')
+    sst_csv = np.load(fname)
     # sst_csv = pd.read_csv("http://www.cpc.ncep.noaa.gov/data/indices/ersst4.nino.mth.81-10.ascii", sep=' ', skipinitialspace=True)
     # take only full years
     n = int(np.floor(sst_csv.shape[0]/12.)*12.)
-    # Building the mean of three mounth
+    # Building the mean of three months
     # the 4. column is nino 3
     sst = np.mean(np.reshape(np.array(sst_csv)[:n, 4], (n//3, -1)), axis=1)
     sst = (sst - np.mean(sst)) / np.std(sst, ddof=1)

@@ -1,6 +1,5 @@
 [run]
 branch = True
-include = */pywt/*
 # Not sure what stringsource is
 omit =
     */version.py

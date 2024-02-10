@@ -93,7 +93,7 @@ def wavedec(data, wavelet, mode='symmetric', level=None, axis=-1):
     try:
         axes_shape = data.shape[axis]
     except IndexError:
-        raise ValueError("Axis greater than data dimensions")
+        raise np.AxisError("Axis greater than data dimensions")
     level = _check_level(axes_shape, wavelet.dec_len, level)
 
     coeffs_list = []
@@ -134,7 +134,7 @@ def waverec(coeffs, wavelet, mode='symmetric', axis=-1):
 
     Specifically, to ignore detail coefficients at level 2, one could do::
 
-        coeffs[-2] == np.zeros_like(coeffs[-2])
+        coeffs[-2] = np.zeros_like(coeffs[-2])
 
     Examples
     --------
@@ -170,7 +170,7 @@ def waverec(coeffs, wavelet, mode='symmetric', axis=-1):
                 elif a.shape[axis] != d.shape[axis]:
                     raise ValueError("coefficient shape mismatch")
             except IndexError:
-                raise ValueError("Axis greater than coefficient dimensions")
+                raise np.AxisError("Axis greater than coefficient dimensions")
         a = idwt(a, d, wavelet, mode, axis)
 
     return a
@@ -233,7 +233,7 @@ def wavedec2(data, wavelet, mode='symmetric', level=None, axes=(-2, -1)):
     try:
         axes_sizes = [data.shape[ax] for ax in axes]
     except IndexError:
-        raise ValueError("Axis greater than data dimensions")
+        raise np.AxisError("Axis greater than data dimensions")
 
     wavelets = _wavelets_per_axis(wavelet, axes)
     dec_lengths = [w.dec_len for w in wavelets]
@@ -352,7 +352,7 @@ def _prep_axes_wavedecn(shape, axes):
     try:
         axes_shapes = [shape[ax] for ax in axes]
     except IndexError:
-        raise ValueError("Axis greater than data dimensions")
+        raise np.AxisError("Axis greater than data dimensions")
     ndim_transform = len(axes)
     return axes, axes_shapes, ndim_transform
 
@@ -525,7 +525,7 @@ def waverecn(coeffs, wavelet, mode='symmetric', axes=None):
     if len(ds) > 0 and not all([isinstance(d, dict) for d in ds]):
         raise ValueError((
             "Unexpected detail coefficient type: {}. Detail coefficients "
-            "must be a dicionary of arrays as returned by wavedecn. If "
+            "must be a dictionary of arrays as returned by wavedecn. If "
             "you are using pywt.array_to_coeffs or pywt.unravel_coeffs, "
             "please specify output_format='wavedecn'").format(type(ds[0])))
 
@@ -679,9 +679,11 @@ def coeffs_to_array(coeffs, padding=0, axes=None):
     ----------
 
     coeffs : array-like
-        dictionary of wavelet coefficients as returned by pywt.wavedecn
+        Dictionary of wavelet coefficients as returned by pywt.wavedecn
     padding : float or None, optional
-        If None, raise an error if the coefficients cannot be tightly packed.
+        The value to use for the background if the coefficients cannot be
+        tightly packed. If None, raise an error if the coefficients cannot be
+        tightly packed.
     axes : sequence of ints, optional
         Axes over which the DWT that created ``coeffs`` was performed.  The
         default value of None corresponds to all axes.
@@ -724,6 +726,14 @@ def coeffs_to_array(coeffs, padding=0, axes=None):
         |                               |                               |
         +-------------------------------+-------------------------------+
 
+    If the transform was not performed with mode "periodization" or the signal
+    length was not a multiple of ``2**level``, coefficients at each subsequent
+    scale will not be exactly 1/2 the size of those at the previous level due
+    to additional coefficients retained to handle the boundary condition. In
+    these cases, the default setting of `padding=0` indicates to pad the
+    individual coefficient arrays with 0 as needed so that they can be stacked
+    into a single, contiguous array.
+
     Examples
     --------
     >>> import pywt
@@ -761,7 +771,7 @@ def coeffs_to_array(coeffs, padding=0, axes=None):
     coeff_slices = []
     coeff_slices.append(a_slices)
 
-    # loop over the detail cofficients, adding them to coeff_arr
+    # loop over the detail coefficients, adding them to coeff_arr
     ds = coeffs[1:]
     for coeff_dict in ds:
         coeff_slices.append({})  # new dictionary for detail coefficients
@@ -1084,7 +1094,7 @@ def ravel_coeffs(coeffs, axes=None):
     coeff_slices.append(a_slice)
     coeff_shapes.append(coeffs[0].shape)
 
-    # loop over the detail cofficients, embedding them in coeff_arr
+    # loop over the detail coefficients, embedding them in coeff_arr
     ds = coeffs[1:]
     offset = a_size
     for coeff_dict in ds:
@@ -1184,11 +1194,11 @@ def unravel_coeffs(arr, coeff_slices, coeff_shapes, output_format='wavedecn'):
 def _check_fswavedecn_axes(data, axes):
     """Axes checks common to fswavedecn, fswaverecn."""
     if len(axes) != len(set(axes)):
-        raise ValueError("The axes passed to fswavedecn must be unique.")
+        raise np.AxisError("The axes passed to fswavedecn must be unique.")
     try:
         [data.shape[ax] for ax in axes]
     except IndexError:
-        raise ValueError("Axis greater than data dimensions")
+        raise np.AxisError("Axis greater than data dimensions")
 
 
 class FswavedecnResult(object):

@@ -32,12 +32,12 @@ def mondrian(shape=(256, 256), nx=5, ny=8, seed=4):
     rstate = np.random.RandomState(seed)
     min_dx = 0
     while(min_dx < 3):
-        xp = np.sort(np.round(rstate.rand(nx-1)*shape[0]).astype(np.int))
+        xp = np.sort(np.round(rstate.rand(nx-1)*shape[0]).astype(np.int64))
         xp = np.concatenate(((0, ), xp, (shape[0], )))
         min_dx = np.min(np.diff(xp))
     min_dy = 0
     while(min_dy < 3):
-        yp = np.sort(np.round(rstate.rand(ny-1)*shape[1]).astype(np.int))
+        yp = np.sort(np.round(rstate.rand(ny-1)*shape[1]).astype(np.int64))
         yp = np.concatenate(((0, ), yp, (shape[1], )))
         min_dy = np.min(np.diff(yp))
     img = np.zeros(shape)
@@ -58,7 +58,7 @@ coeffs_dwt = pywt.wavedecn(img, wavelet='db1', level=None)
 # convert coefficient dictionary to a single array
 coeff_array_dwt, _ = pywt.coeffs_to_array(coeffs_dwt)
 
-# perform fully seperable DWT
+# perform fully separable DWT
 fswavedecn_result = pywt.fswavedecn(img, wavelet='db1')
 
 nnz_dwt = np.sum(coeff_array_dwt != 0)

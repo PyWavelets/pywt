@@ -14,12 +14,12 @@ Single level ``idwt``
 
 
 Multilevel reconstruction using ``waverec``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------------------------
 
 .. autofunction:: waverec
 
 
 Direct reconstruction with ``upcoef``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------------------
 
 .. autofunction:: upcoef

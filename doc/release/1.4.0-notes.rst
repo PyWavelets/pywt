@@ -1,0 +1,51 @@
+==============================
+PyWavelets 1.4.0 Release Notes
+==============================
+
+.. contents::
+
+We are very pleased to announce the release of PyWavelets 1.4. This release
+is a minor update to 1.3.0. It adds wheels for Python 3.11 and drops support
+for Python 3.7.
+
+There is one new utility function, `pywt.frequency2scale`, that can be used to
+determine CWT scale factors corresponding to a given (normalized) frequency.
+It is the inverse of the existing `pywt.scale2frequency`.
+
+A detailed change log is provided below. 
+
+Authors
+=======
+
+* Christian Clauss +
+* Gregory R. Lee
+* Orion Poplawski +
+* Trevor Clark +
+
+Reviewers
+=========
+
+* Gregory R. Lee
+* Ralf Gommers
+
+A total of 5 people contributed to this release.
+People with a "+" by their names contributed a patch for the first time.
+
+
+Issues closed  for v1.4
+-----------------------
+
+* `#640 <https://github.com/PyWavelets/pywt/issues/640>`__: test_accuracy_precomputed_cwt fails on aarch64
+
+Pull requests for v1.4
+----------------------
+
+* `#629 <https://github.com/PyWavelets/pywt/pull/629>`__: Fix twine-based uploads to PyPI
+* `#635 <https://github.com/PyWavelets/pywt/pull/635>`__: added a frequency2scale function as the dual to scale2frequency
+* `#641 <https://github.com/PyWavelets/pywt/pull/641>`__: test_cwt_batch can have small differences on some arches (resolves #640)
+* `#647 <https://github.com/PyWavelets/pywt/pull/647>`__: provide setuptools upper bound for robustness against future changes
+* `#648 <https://github.com/PyWavelets/pywt/pull/648>`__: Run GitHub actions test cases using Python 3.11
+* `#649 <https://github.com/PyWavelets/pywt/pull/649>`__: Update wheel building workflow to include Python 3.11
+* `#650 <https://github.com/PyWavelets/pywt/pull/650>`__: Upgrade GitHub Actions
+* `#651 <https://github.com/PyWavelets/pywt/pull/651>`__: Fix typos discovered by codespell
+* `#654 <https://github.com/PyWavelets/pywt/pull/654>`__: Remove string_types, which is a remnant of Python 2 support

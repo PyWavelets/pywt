@@ -285,18 +285,17 @@ def test_swt2_axes():
     assert_allclose(cV1, cH2, atol=atol)
     assert_allclose(cD1, cD2, atol=atol)
 
+    # reverify iswt2 restores the original data
+    r1 = pywt.iswt2([cA1, (cH1, cV1, cD1)], current_wavelet)
+    assert_allclose(X, r1, atol=atol)
+    r2 = pywt.iswt2([cA2, (cH2, cV2, cD2)], current_wavelet, axes=(1, 0))
+    assert_allclose(X, r2, atol=atol)
+
     # duplicate axes not allowed
     assert_raises(ValueError, pywt.swt2, X, current_wavelet, 1,
                   axes=(0, 0))
     # too few axes
     assert_raises(ValueError, pywt.swt2, X, current_wavelet, 1, axes=(0, ))
-
-
-def test_iswt2_2d_only():
-    # iswt2 is not currently compatible with data that is not 2D
-    x_3d = np.ones((4, 4, 4))
-    c = pywt.swt2(x_3d, 'haar', level=1)
-    assert_raises(ValueError, pywt.iswt2, c, 'haar')
 
 
 def test_swtn_axes():
@@ -420,7 +419,7 @@ def test_swtn_iswtn_unique_shape_per_axis():
 
 
 def test_per_axis_wavelets():
-    # tests seperate wavelet for each axis.
+    # tests separate wavelet for each axis.
     rstate = np.random.RandomState(1234)
     data = rstate.randn(16, 16, 16)
     level = 3

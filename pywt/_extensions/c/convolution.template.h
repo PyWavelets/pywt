@@ -70,7 +70,7 @@ int CAT(TYPE, _downsampling_convolution_periodization)(
  * filter   - filter data
  * F        - filter data length
  * output   - output data
- * O        - output lenght (currently not used)
+ * O        - output length (currently not used)
  * mode     - signal extension mode
  */
 

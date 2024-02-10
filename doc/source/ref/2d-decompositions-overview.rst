@@ -16,7 +16,7 @@ The most common approach to the multilevel discrete wavelet transform involves
 further decomposition of only the approximation subband at each subsequent
 level. This is also sometimes referred to as the Mallat decomposition
 [Mall89]_. In 2D, the discrete wavelet transform produces four sets of
-coefficients corresponding to the four possible compinations of the wavelet
+coefficients corresponding to the four possible combinations of the wavelet
 decomposition filters over the two separate axes. (In n-dimensions, there
 are ``2**n`` sets of coefficients). For subsequent levels of decomposition,
 only the approximation coefficients (the lowpass subband) are further
@@ -27,7 +27,7 @@ In PyWavelets, this decomposition is implemented for n-dimensional data by
 versions of these routines also exist. It is illustrated in the figure below.
 The top row indicates the coefficient names as used by :func:`~pywt.wavedec2`
 after each level of decomposition. The bottom row shows wavelet coefficients
-for the camerman image (with each subband independently normalized for easier
+for the cameraman image (with each subband independently normalized for easier
 visualization).
 
 .. plot:: pyplots/plot_mallat_2d.py
@@ -37,7 +37,7 @@ of the wavelet transform to sparsely represent natural images is a key
 property that makes it desirable in applications such as image compression and
 restoration.
 
-Fully Seperable Discrete Wavelet Transform
+Fully Separable Discrete Wavelet Transform
 ------------------------------------------
 An alternative decomposition results in first fully decomposing one axis of the
 data prior to moving onto each additional axis in turn. This is illustrated

@@ -3,6 +3,7 @@ from __future__ import division, print_function, absolute_import
 import doctest
 import glob
 import os
+import sys
 import unittest
 
 try:
@@ -22,4 +23,4 @@ suite = doctest.DocFileSuite(*files, module_relative=False, encoding="utf-8")
 
 
 if __name__ == "__main__":
-    unittest.TextTestRunner().run(suite)
+    sys.exit(int(not unittest.TextTestRunner().run(suite).wasSuccessful()))

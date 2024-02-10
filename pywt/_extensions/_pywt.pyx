@@ -430,6 +430,9 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
             wavelet.free_discrete_wavelet(self.w)
             self.w = NULL
 
+    def __reduce__(self):
+        return (Wavelet, (self.name, self.filter_bank))
+
     def __len__(self):
         return self.w.dec_len
 
@@ -677,7 +680,7 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
 
 cdef public class ContinuousWavelet [type ContinuousWaveletType, object ContinuousWaveletObject]:
     """
-    ContinuousWavelet(name) object describe properties of
+    ContinuousWavelet(name, dtype) object describe properties of
     a continuous wavelet identified by name.
 
     In order to use a built-in wavelet the parameter name must be
@@ -685,15 +688,16 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
 
     """
     #cdef readonly properties
-    def __cinit__(self, name=u"", dtype = None, **kwargs):
+    def __cinit__(self, name=u"", dtype=np.float64):
         cdef object family_code, family_number
 
         # builtin wavelet
         self.name = name.lower()
-        if (dtype is None):
-            self.dt = np.float64
-        else:
-            self.dt = dtype
+        self.dt = dtype
+        if np.dtype(self.dt) not in [np.float32, np.float64]:
+            raise ValueError(
+                "Only np.float32 and np.float64 dtype are supported for "
+                "ContinuousWavelet objects.")
         if len(self.name) >= 4 and self.name[:4] in ['cmor', 'shan', 'fbsp']:
             base_name = self.name[:4]
             if base_name == self.name:
@@ -761,6 +765,9 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
         if self.w is not NULL:
             wavelet.free_continuous_wavelet(self.w)
             self.w = NULL
+
+    def __reduce__(self):
+        return (ContinuousWavelet, (self.name, self.dt))
 
     property family_number:
         "Wavelet family number"

@@ -78,7 +78,7 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1):
         and wavelet. The first axis of ``coefs`` corresponds to the scales.
         The remaining axes match the shape of ``data``.
     frequencies : array_like
-        If the unit of sampling period are seconds and given, than frequencies
+        If the unit of sampling period are seconds and given, then frequencies
         are in hertz. Otherwise, a sampling period of 1 is assumed.
 
     Notes
@@ -118,7 +118,7 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1):
     if np.isscalar(scales):
         scales = np.array([scales])
     if not np.isscalar(axis):
-        raise ValueError("axis must be a scalar.")
+        raise np.AxisError("axis must be a scalar.")
 
     dt_out = dt_cplx if wavelet.complex_cwt else dt
     out = np.empty((np.size(scales),) + data.shape, dtype=dt_out)

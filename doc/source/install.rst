@@ -31,16 +31,13 @@ The latest release, is available for download from `PyPI`_ or on the
 `Releases Page`_.
 
 If you want or need to install from source, you will need a working C compiler
-(any common one will work) and a recent version of `Cython`_.  Navigate to the
-PyWavelets source code directory (containing ``setup.py``) and type::
+(any common one will work) installed on your system.  Navigate to the
+PyWavelets source code directory (containing ``pyproject.toml.py``) and type::
 
     pip install .
 
-The requirements needed to build from source are:
-
- - Python_ 2.7 or >=3.4
- - NumPy_ >= 1.13.3
- - Cython_ >= 0.23.5  (if installing from git, not from a PyPI source release)
+For the requirements needed to build from source are (Python, NumPy and Cython
+minimum versions in particular), see ``pyproject.toml``.
 
 To run all the tests for PyWavelets, you will also need to install the
 Matplotlib_ package. If SciPy_ is available, FFT-based continuous wavelet

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-from __future__ import division, print_function, absolute_import
+import os
+import pickle
 
 import numpy as np
 from numpy.testing import (assert_allclose, assert_, assert_raises,
@@ -33,7 +34,7 @@ def test_traversing_tree_2d():
     assert_raises(ValueError, lambda: wp['f'])
 
 
-def test_accessing_node_atributes_2d():
+def test_accessing_node_attributes_2d():
     x = np.array([[1, 2, 3, 4, 5, 6, 7, 8]] * 8, dtype=np.float64)
     wp = pywt.WaveletPacket2D(data=x, wavelet='db1', mode='symmetric')
 
@@ -44,9 +45,16 @@ def test_accessing_node_atributes_2d():
 
     assert_allclose(wp['av'].parent.data, np.array([[3., 7., 11., 15.]] * 4),
                     rtol=1e-12)
+    # can also index via a tuple instead of concatenated strings
     assert_(wp['av'].level == 2)
     assert_(wp['av'].maxlevel == 3)
     assert_(wp['av'].mode == 'symmetric')
+
+    # tuple-based access is also supported
+    node = wp[('a', 'v')]
+    # can access a node's path as either a single string or in tuple form
+    assert_(node.path == 'av')
+    assert_(node.path_tuple == ('a', 'v'))
 
 
 def test_collecting_nodes_2d():
@@ -80,6 +88,23 @@ def test_collecting_nodes_2d():
                       'dva', 'dvh', 'dvv', 'dvd', 'dda', 'ddh', 'ddv', 'ddd']
 
     assert_(paths == expected_paths)
+
+    # test 2D frequency ordering at the first level
+    fnodes = wp.get_level(1, order='freq')
+    assert_(fnodes[0][0].path == 'a')
+    assert_(fnodes[0][1].path == 'v')
+    assert_(fnodes[1][0].path == 'h')
+    assert_(fnodes[1][1].path == 'd')
+
+    # test 2D frequency ordering at the second level
+    fnodes = wp.get_level(2, order='freq')
+    assert_([n.path for n in fnodes[0]] == ['aa', 'av', 'vv', 'va'])
+    assert_([n.path for n in fnodes[1]] == ['ah', 'ad', 'vd', 'vh'])
+    assert_([n.path for n in fnodes[2]] == ['hh', 'hd', 'dd', 'dh'])
+    assert_([n.path for n in fnodes[3]] == ['ha', 'hv', 'dv', 'da'])
+
+    # invalid node collection order
+    assert_raises(ValueError, wp.get_level, 2, 'invalid_order')
 
 
 def test_data_reconstruction_2d():
@@ -123,6 +148,8 @@ def test_data_reconstruction_delete_nodes_2d():
     assert_allclose(new_wp.reconstruct(update=False), x, rtol=1e-12)
 
     del(new_wp['va'])
+    # TypeError on accessing deleted node
+    assert_raises(TypeError, lambda: new_wp['va'])
     new_wp['va'] = wp['va'].data
     assert_(new_wp.data is None)
 
@@ -155,7 +182,7 @@ def test_wavelet_packet_dtypes():
         # no unnecessary copy made
         assert_(wp.data is x)
 
-        # assiging to a node should not change supported dtypes
+        # assigning to a node should not change supported dtypes
         wp['d'] = wp['d'].data
         assert_equal(wp['d'].data.dtype, x.dtype)
 
@@ -175,3 +202,44 @@ def test_2d_roundtrip():
                               maxlevel=3)
     r = wp.reconstruct()
     assert_allclose(original, r, atol=1e-12, rtol=1e-12)
+
+
+def test_wavelet_packet_axes():
+    rstate = np.random.RandomState(0)
+    shape = (32, 16)
+    x = rstate.standard_normal(shape)
+    for axes in [(0, 1), (1, 0), (-2, 1)]:
+        wp = pywt.WaveletPacket2D(data=x, wavelet='db1', mode='symmetric',
+                                  axes=axes)
+
+        # partial decomposition
+        nodes = wp.get_level(2)
+        # size along the transformed axes has changed
+        for ax2 in range(x.ndim):
+            if ax2 in tuple(np.asarray(axes) % x.ndim):
+                nodes[0].data.shape[ax2] < x.shape[ax2]
+            else:
+                nodes[0].data.shape[ax2] == x.shape[ax2]
+
+        # recontsruction from coefficients should preserve dtype
+        r = wp.reconstruct(False)
+        assert_equal(r.dtype, x.dtype)
+        assert_allclose(r, x, atol=1e-12, rtol=1e-12)
+
+    # must have two non-duplicate axes
+    assert_raises(ValueError, pywt.WaveletPacket2D, data=x, wavelet='db1',
+                  axes=(0, 0))
+    assert_raises(ValueError, pywt.WaveletPacket2D, data=x, wavelet='db1',
+                  axes=(0, ))
+    assert_raises(ValueError, pywt.WaveletPacket2D, data=x, wavelet='db1',
+                  axes=(0, 1, 2))
+
+
+def test_wavelet_packet2d_pickle(tmpdir):
+    packet = pywt.WaveletPacket2D(np.arange(256).reshape(16, 16), 'sym4')
+    filename = os.path.join(tmpdir, 'wp2d.pickle')
+    with open(filename, 'wb') as f:
+        pickle.dump(packet, f)
+    with open(filename, 'rb') as f:
+        packet2 = pickle.load(f)
+    assert isinstance(packet2, pywt.WaveletPacket2D)

@@ -1,6 +1,7 @@
 numpy
+meson-python
 cython
 pytest
-wheel
 numpydoc
 matplotlib
+docutils<0.18

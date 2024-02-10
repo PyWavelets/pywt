@@ -43,7 +43,7 @@ def test_accuracy_pymatbridge_cwt():
     Matlab = pytest.importorskip("pymatbridge.Matlab")
     mlab = Matlab()
     rstate = np.random.RandomState(1234)
-    # max RMSE (was 1.0e-10, is reduced to 5.0e-5 due to different coefficents)
+    # max RMSE (was 1.0e-10, is reduced to 5.0e-5 due to different coefficients)
     epsilon = 1e-15
     epsilon_psi = 1e-15
     mlab.start()

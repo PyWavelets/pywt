@@ -11,6 +11,7 @@ on Windows and Linux.
 .. toctree::
    :maxdepth: 2
 
+   conduct/code_of_conduct
    preparing_windows_build_environment
    preparing_linux_build_environment
    installing_build_dependencies

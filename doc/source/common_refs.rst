@@ -16,5 +16,6 @@
 .. _Matplotlib: http://matplotlib.org
 .. _guidelines for pull requests: https://github.com/PyWavelets/pywt/tree/master/CONTRIBUTING.rst
 .. _community guidelines: https://github.com/PyWavelets/pywt/tree/master/community_guidelines.rst
+.. _code of conduct: https://github.com/PyWavelets/pywt/tree/master/doc/source/dev/conduct/community_guidelines.rst
 .. _StackOverflow: https://stackoverflow.com
 .. _wavelets.pybytes.com: http://wavelets.pybytes.com/

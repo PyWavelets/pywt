@@ -1,0 +1,103 @@
+==============================
+PyWavelets 1.2.0 Release Notes
+==============================
+
+.. contents::
+
+We are very pleased to announce the release of PyWavelets 1.2.
+
+This release has new discrete wavelet transforms features incleading a series
+of multiresolution analysis functions (details below).
+
+PyWavelets has dropped support for Python 3.5 and 3.6 and now supports
+Python 3.7-3.10.
+
+We also now provide aarch64 linux wheels as well as universal2 and arm64
+wheels that are compatible with Apple's M1 processors.
+
+
+New features
+============
+
+- There is a new series of multilevel stationary wavelet transforms (``mra``,
+  ``mra2`` and ``mran``) suited for multiresolution analysis of 1D, 2D or nD
+  signals, respectively. This MRA analysis is also known as the additive
+  wavelet decomposition because the corresponding inverse functions
+  (``imra``, ``imra2`` or ``imran``) reconstruct the original signal by
+  simple addition of the components. These are a good alternative to the use
+  of the existing SWT functions when it is important to have features aligned
+  across wavelet scales (see the new demo in ``demo/mra_vs_swt.py``).
+
+- There is now an n-dimensional implementation available for the wavelet packet
+  transforms (see class `WaveletPacketND`).
+
+
+Backwards incompatible changes
+==============================
+
+- The image returned by ``pywt.data.camera`` has been replaced by a similar,
+  CC0-licensed image because the original image was determined to only be
+  licensed for non-commercial use. Any users who still need the prior camera
+  image for non-commercial use can find it many places online by performing a
+  web search for "cameraman test image".
+
+Bugs Fixed
+==========
+
+- Add input length check in `dwt_single` for reflect modes.
+- Demos were updated for compatibility with recent Matplotlib versions.
+- Removed deprecated import from ``imp``.
+
+Other changes
+=============
+
+- PyWavelets has dropped support for Python 3.5 and 3.6 in this release.
+
+Authors
+=======
+
+* ElConno +
+* Ralf Gommers
+* Gregory R. Lee
+* Jakub Mandula +
+* nperraud +
+* ossdev07 +
+
+A total of 6 people contributed to this release.
+People with a "+" by their names contributed a patch for the first time.
+This list of names is automatically generated, and may not be fully complete.
+
+
+Issues closed for v1.2
+----------------------
+
+* `#235 <https://github.com/PyWavelets/pywt/issues/235>`__: Build issue: cython not recognized
+* `#545 <https://github.com/PyWavelets/pywt/issues/545>`__: Request: add __reduce__ method for WaveletPacket object
+* `#554 <https://github.com/PyWavelets/pywt/issues/554>`__: imp is deprecated
+
+
+Pull requests for v1.2
+----------------------
+
+* `#393 <https://github.com/PyWavelets/pywt/pull/393>`__: Wavelet packets: extend to nD and support subsets of the axes
+* `#525 <https://github.com/PyWavelets/pywt/pull/525>`__: WIP: test against Python 3.8
+* `#527 <https://github.com/PyWavelets/pywt/pull/527>`__: Multiresolution Analysis
+* `#540 <https://github.com/PyWavelets/pywt/pull/540>`__: remove unused distutils import from __init__.py
+* `#546 <https://github.com/PyWavelets/pywt/pull/546>`__: ENH: make Wavelet, WaveletPacket, WaveletPacket2D and ContinuousWavelet...
+* `#547 <https://github.com/PyWavelets/pywt/pull/547>`__: ContinuousWavelet: add tests for dtype and remove unused \*\*kwargs
+* `#552 <https://github.com/PyWavelets/pywt/pull/552>`__: Cython 3.0 compatibility: explicitly call import_array()
+* `#559 <https://github.com/PyWavelets/pywt/pull/559>`__: MAINT: bump minimum Python version to 3.7
+* `#567 <https://github.com/PyWavelets/pywt/pull/567>`__: Documentation about trim_approx in swt2 is wrong
+* `#571 <https://github.com/PyWavelets/pywt/pull/571>`__: improve documentation of padding in coeffs_to_array
+* `#572 <https://github.com/PyWavelets/pywt/pull/572>`__: Replace camera image with a CC0-licensed equivalent
+* `#573 <https://github.com/PyWavelets/pywt/pull/573>`__: switch from terrify to multibuild for OS X setup on Travis
+* `#578 <https://github.com/PyWavelets/pywt/pull/578>`__: Add Python 3.9 to CI and classifiers
+* `#584 <https://github.com/PyWavelets/pywt/pull/584>`__: MAINT: remove use of deprecated np.int/float aliases
+* `#598 <https://github.com/PyWavelets/pywt/pull/598>`__: Add input length check in dwt_single for reflect modes
+* `#601 <https://github.com/PyWavelets/pywt/pull/601>`__: Add wheel building and deployment via GitHub Actions and cibuildwheel
+* `#604 <https://github.com/PyWavelets/pywt/pull/604>`__: MAINT: update pyproject.toml and setup.py for Python 3.10
+* `#608 <https://github.com/PyWavelets/pywt/pull/608>`__: BLD: update Cython build dependency to recent release and <3.0
+* `#609 <https://github.com/PyWavelets/pywt/pull/609>`__: MAINT: fix \`origin='image'\` calls that Matplotlib no longer...
+* `#610 <https://github.com/PyWavelets/pywt/pull/610>`__: Update GitHub Actions workflow to build Python 3.10 wheels
+* `#611 <https://github.com/PyWavelets/pywt/pull/611>`__: MAINT: fix doc build issues
+

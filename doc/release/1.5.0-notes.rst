@@ -1,0 +1,52 @@
+==============================
+PyWavelets 1.5.0 Release Notes
+==============================
+
+.. contents::
+
+We are very pleased to announce the release of PyWavelets 1.5.0. This release
+is a minor update to 1.4.x. It adds support for Python 3.12 and drops support
+for Python 3.8. It also adds support for Cython 3.0.
+
+PyWavelets now uses Meson as its build system, and meson-python
+as the build backend. This requires no changes from users, a
+``pip install pywavelets`` will now use ``meson-python`` under
+the hood.
+
+
+Authors
+=======
+
+* Christian Clauss
+* Ralf Gommers
+* Gregory R. Lee
+* Jarrod Millman +
+* Evans Doe Ocansey +
+* Ahmet Can Solak +
+* Stefan van der Walt +
+
+A total of 7 people contributed to this release.
+People with a "+" by their names contributed a patch for the first time.
+This list of names is automatically generated, and may not be fully complete.
+
+
+Issues closed  for v1.5
+-----------------------
+
+* `#621 <https://github.com/PyWavelets/pywt/issues/621>`__: distutils was deprecated in Python 3.10
+
+
+Pull requests for v1.5
+----------------------
+
+* `#667 <https://github.com/PyWavelets/pywt/pull/667>`__: BLD: switch to using Meson as the build system for PyWavelets
+* `#669 <https://github.com/PyWavelets/pywt/pull/669>`__: DOC: update docs for setup.py removal, and fix ReadTheDocs build
+* `#679 <https://github.com/PyWavelets/pywt/pull/679>`__: MAINT: fix warnings emitted by loading npy/npz data files
+* `#680 <https://github.com/PyWavelets/pywt/pull/680>`__: CI: limit contourpy to <1.1, to avoid building win32 from source
+* `#681 <https://github.com/PyWavelets/pywt/pull/681>`__: Update dependencies per SPEC 0
+* `#682 <https://github.com/PyWavelets/pywt/pull/682>`__: Remove old travis references
+* `#683 <https://github.com/PyWavelets/pywt/pull/683>`__: Test on Python 3.12
+* `#685 <https://github.com/PyWavelets/pywt/pull/685>`__: Add spin as developer UI to meson
+* `#688 <https://github.com/PyWavelets/pywt/pull/688>`__: AppVeyor: Upgrade to Visual Studio 2022 and use python-launcher
+* `#690 <https://github.com/PyWavelets/pywt/pull/690>`__: Build Python 3.12 wheels
+* `#691 <https://github.com/PyWavelets/pywt/pull/691>`__: Test on final releases on Python 3.12

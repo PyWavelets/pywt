@@ -1,6 +1,7 @@
 #!/usr/bin/env python
-from __future__ import division, print_function, absolute_import
+import os
 from itertools import product
+import pickle
 
 from numpy.testing import (assert_allclose, assert_warns, assert_almost_equal,
                            assert_raises, assert_equal)
@@ -113,6 +114,21 @@ def test_gaus():
         assert_allclose(np.real(PSI), np.real(psi))
         assert_allclose(np.imag(PSI), np.imag(psi))
         assert_allclose(X, x)
+
+
+@pytest.mark.parametrize('dtype', [np.float32, np.float64])
+def test_continuous_wavelet_dtype(dtype):
+    wavelet = pywt.ContinuousWavelet('cmor1.5-1.0', dtype)
+    int_psi, x = pywt.integrate_wavelet(wavelet)
+    assert int_psi.real.dtype == dtype
+    assert x.dtype == dtype
+
+
+def test_continuous_wavelet_invalid_dtype():
+    with pytest.raises(ValueError):
+        pywt.ContinuousWavelet('gaus5', np.complex64)
+    with pytest.raises(ValueError):
+        pywt.ContinuousWavelet('gaus5', np.int_)
 
 
 def test_cgau():
@@ -404,7 +420,8 @@ def test_cwt_batch(axis, method):
     assert_equal(cfs.shape[1 + axis], sst.shape[axis])
 
     # batch result on stacked input is the same as stacked 1d result
-    assert_equal(cfs, np.stack((cfs1,) * n_batch, axis=batch_axis + 1))
+    assert_almost_equal(cfs, np.stack((cfs1,) * n_batch, axis=batch_axis + 1),
+                        decimal=12)
 
 
 def test_cwt_small_scales():
@@ -432,3 +449,14 @@ def test_cwt_method_fft():
     # compare with the fft based convolution
     cfs_fft, _ = pywt.cwt(data, scales, wavelet, method='fft')
     assert_allclose(cfs_conv, cfs_fft, rtol=0, atol=1e-13)
+
+
+def test_continuous_wavelet_pickle(tmpdir):
+    wavelet = pywt.ContinuousWavelet('cmor1.5-1.0')
+    filename = os.path.join(tmpdir, 'cwav.pickle')
+    with open(filename, 'wb') as f:
+        pickle.dump(wavelet, f)
+    with open(filename, 'rb') as f:
+        wavelet2 = pickle.load(f)
+    assert isinstance(wavelet2, pywt.ContinuousWavelet)
+    assert wavelet2.name == wavelet.name

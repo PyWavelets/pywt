@@ -1,0 +1,43 @@
+==============================
+PyWavelets 1.3.0 Release Notes
+==============================
+
+.. contents::
+
+We are very pleased to announce the release of PyWavelets 1.3. This release
+is functionally the same as 1.2.0, but we have updated the set of binary wheels
+provided. Specifically we have added `aarch64` wheels for Python 3.7 that were
+missing in 1.2.0 and have updated the versions of `manylinux` used for the
+linux wheels in a manner consistent with NumPy and SciPy. We have also dropped
+`musllinux` wheels which were present for some architectures in 1.2.0. We may
+add them again in the future if they are adopted by NumPy and there is a
+demand for this architecture.
+
+Authors
+=======
+
+* Gregory R. Lee
+* Naoto Ishikawa +
+
+Reviewers
+=========
+
+* Ralf Gommers
+
+A total of 3 people contributed to this release.
+People with a "+" by their names contributed a patch for the first time.
+
+
+Issues closed  for v1.3
+-----------------------
+
+* `#625 <https://github.com/PyWavelets/pywt/issues/625>`__: No aarch64 wheels for python3.7
+
+
+Pull requests for v1.3
+----------------------
+
+* `#613 <https://github.com/PyWavelets/pywt/pull/613>`__: DOC: Update the developer docs on how to make a release
+* `#614 <https://github.com/PyWavelets/pywt/pull/614>`__: MAINT: Fix bugs in automated wheel deployment
+* `#620 <https://github.com/PyWavelets/pywt/pull/620>`__: DOC: Fix level of headers
+* `#627 <https://github.com/PyWavelets/pywt/pull/627>`__: Add aarch64 wheels for Python 3.7 and fix manylinux versions
