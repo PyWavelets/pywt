@@ -8,9 +8,11 @@ from __future__ import division, print_function, absolute_import
 import warnings
 import numpy as np
 from functools import partial
-from numpy.testing import assert_array_equal, assert_allclose
-from pywt._pytest import uses_futures, futures, max_workers
 
+import pytest
+from numpy.testing import assert_array_equal, assert_allclose
+
+from pywt._pytest import IS_WASM, futures, max_workers
 import pywt
 
 
@@ -32,7 +34,7 @@ def _assert_all_coeffs_equal(coefs1, coefs2):
     return True
 
 
-@uses_futures
+@pytest.mark.skipif(IS_WASM, reason="no futures support in Pyodide")
 def test_concurrent_swt():
     # tests error-free concurrent operation (see gh-288)
     # swt on 1D data calls the Cython swt
@@ -53,7 +55,7 @@ def test_concurrent_swt():
         _assert_all_coeffs_equal(expected_result, results[-1])
 
 
-@uses_futures
+@pytest.mark.skipif(IS_WASM, reason="no futures support in Pyodide")
 def test_concurrent_wavedec():
     # wavedec on 1D data calls the Cython dwt_single
     # other cases call dwt_axis
@@ -70,7 +72,7 @@ def test_concurrent_wavedec():
         _assert_all_coeffs_equal(expected_result, results[-1])
 
 
-@uses_futures
+@pytest.mark.skipif(IS_WASM, reason="no futures support in Pyodide")
 def test_concurrent_dwt():
     # dwt on 1D data calls the Cython dwt_single
     # other cases call dwt_axis
@@ -87,7 +89,7 @@ def test_concurrent_dwt():
         _assert_all_coeffs_equal([expected_result, ], [results[-1], ])
 
 
-@uses_futures
+@pytest.mark.skipif(IS_WASM, reason="no futures support in Pyodide")
 def test_concurrent_cwt():
     atol = rtol = 1e-14
     time, sst = pywt.data.nino()

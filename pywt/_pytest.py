@@ -24,6 +24,7 @@ try:
     futures_available = True
 # Check if running on Emscripten/WASM, and skip tests that require concurrency.
 # Relevant issue: https://github.com/pyodide/pyodide/issues/237
+# FIXME: you can't do `except a_bool`
 except (sys.platform == "emscripten") or (platform.machine() in ["wasm32", "wasm64"]):
     futures_available = False
     futures = None
@@ -32,6 +33,9 @@ except ImportError:
     futures_available = False
     futures = None
     max_workers = 1
+
+
+IS_WASM = (sys.platform == "emscripten") or (platform.machine() in ["wasm32", "wasm64"])
 
 
 # check if pymatbridge + MATLAB tests should be run
@@ -63,7 +67,8 @@ if use_precomputed:
     matlab_result_dict_dwt = np.load(matlab_data_file_dwt)
 
 uses_futures = pytest.mark.skipif(
-    not futures_available, reason='futures not available')
+    True, reason='futures not available')
+    #not futures_available, reason='futures not available')
 uses_matlab = pytest.mark.skipif(
     matlab_missing, reason='pymatbridge and/or Matlab not available')
 uses_pymatbridge = pytest.mark.skipif(
