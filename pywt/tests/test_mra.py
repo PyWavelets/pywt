@@ -6,6 +6,7 @@ from numpy.testing import assert_allclose
 
 import pywt
 from pywt import data
+from pywt._pytest import uses_futures
 
 # tolerances used in accuracy comparisons
 tol_single = 1e-6
@@ -17,6 +18,7 @@ atol = 1e-7
 # 1d mra tests
 ####
 
+@uses_futures
 @pytest.mark.parametrize('wavelet', ['db2', 'sym4', 'coif5'])
 @pytest.mark.parametrize('transform', ['dwt', 'swt'])
 @pytest.mark.parametrize('mode', pywt.Modes.modes)
