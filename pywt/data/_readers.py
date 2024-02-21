@@ -37,7 +37,9 @@ def ascent():
 
     """
     fname = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ascent.npz')
-    ascent = np.load(fname)['data']
+    with open(fname, 'rb') as f:
+        ascent = np.load(f)['data']
+
     return ascent
 
 
@@ -72,7 +74,9 @@ def aero():
 
     """
     fname = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'aero.npz')
-    aero = np.load(fname)['data']
+    with open(fname, 'rb') as f:
+        aero = np.load(f)['data']
+
     return aero
 
 
@@ -118,7 +122,9 @@ def camera():
 
     """
     fname = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'camera.npz')
-    camera = np.load(fname)['data']
+    with open(fname, 'rb') as f:
+        camera = np.load(f)['data']
+
     return camera
 
 
@@ -148,7 +154,9 @@ def ecg():
     >>> plt.show() # doctest: +SKIP
     """
     fname = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ecg.npy')
-    ecg = np.load(fname)
+    with open(fname, 'rb') as f:
+        ecg = np.load(f)
+
     return ecg
 
 
@@ -184,7 +192,9 @@ def nino():
     >>> plt.show() # doctest: +SKIP
     """
     fname = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'sst_nino3.npy')
-    sst_csv = np.load(fname)
+    with open(fname, 'rb') as f:
+        sst_csv = np.load(f)
+
     # sst_csv = pd.read_csv("http://www.cpc.ncep.noaa.gov/data/indices/ersst4.nino.mth.81-10.ascii", sep=' ', skipinitialspace=True)
     # take only full years
     n = int(np.floor(sst_csv.shape[0]/12.)*12.)
