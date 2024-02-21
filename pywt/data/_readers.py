@@ -1,3 +1,4 @@
+import importlib
 import os
 
 import numpy as np
@@ -36,8 +37,8 @@ def ascent():
     >>> plt.show() # doctest: +SKIP
 
     """
-    fname = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ascent.npz')
-    with open(fname, 'rb') as f:
+    _datadir = importlib.resources.files('pywt.data')
+    with importlib.resources.as_file(_datadir.joinpath('ascent.npz')) as f:
         ascent = np.load(f)['data']
 
     return ascent
@@ -73,8 +74,8 @@ def aero():
     >>> plt.show() # doctest: +SKIP
 
     """
-    fname = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'aero.npz')
-    with open(fname, 'rb') as f:
+    _datadir = importlib.resources.files('pywt.data')
+    with importlib.resources.as_file(_datadir.joinpath('aero.npz')) as f:
         aero = np.load(f)['data']
 
     return aero
@@ -121,8 +122,8 @@ def camera():
     >>> plt.show() # doctest: +SKIP
 
     """
-    fname = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'camera.npz')
-    with open(fname, 'rb') as f:
+    _datadir = importlib.resources.files('pywt.data')
+    with importlib.resources.as_file(_datadir.joinpath('camera.npz')) as f:
         camera = np.load(f)['data']
 
     return camera
@@ -153,8 +154,8 @@ def ecg():
     [<matplotlib.lines.Line2D object at ...>]
     >>> plt.show() # doctest: +SKIP
     """
-    fname = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ecg.npy')
-    with open(fname, 'rb') as f:
+    _datadir = importlib.resources.files('pywt.data')
+    with importlib.resources.as_file(_datadir.joinpath('ecg.npy')) as f:
         ecg = np.load(f)
 
     return ecg
@@ -191,8 +192,8 @@ def nino():
     [<matplotlib.lines.Line2D object at ...>]
     >>> plt.show() # doctest: +SKIP
     """
-    fname = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'sst_nino3.npy')
-    with open(fname, 'rb') as f:
+    _datadir = importlib.resources.files('pywt.data')
+    with importlib.resources.as_file(_datadir.joinpath('sst_nino3.npy')) as f:
         sst_csv = np.load(f)
 
     # sst_csv = pd.read_csv("http://www.cpc.ncep.noaa.gov/data/indices/ersst4.nino.mth.81-10.ascii", sep=' ', skipinitialspace=True)
