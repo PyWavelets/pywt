@@ -1,9 +1,11 @@
+import functools
 import importlib
 import os
 
 import numpy as np
 
 
+@functools.cache
 def ascent():
     """
     Get an 8-bit grayscale bit-depth, 512 x 512 derived image for
@@ -44,6 +46,7 @@ def ascent():
     return ascent
 
 
+@functools.cache
 def aero():
     """
     Get an 8-bit grayscale bit-depth, 512 x 512 derived image for
@@ -81,6 +84,7 @@ def aero():
     return aero
 
 
+@functools.cache
 def camera():
     """
     Get an 8-bit grayscale bit-depth, 512 x 512 derived image for
@@ -129,6 +133,7 @@ def camera():
     return camera
 
 
+@functools.cache
 def ecg():
     """
     Get 1024 points of an ECG timeseries.
@@ -161,6 +166,7 @@ def ecg():
     return ecg
 
 
+@functools.cache
 def nino():
     """
     This data contains the averaged monthly sea surface temperature in degrees
