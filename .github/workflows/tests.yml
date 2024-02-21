@@ -1,4 +1,4 @@
-name: Linux and macOS tests
+name: Tests
 
 on:
   push:
@@ -9,18 +9,26 @@ on:
       - main
       - v1.**
 
+concurrency:
+  # avoid duplicate runs on both pushes and PRs
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Coloured output for GitHub Actions
+  FORCE_COLOR: 3
+  # Some common environment variables for both GNU/Linux and macOS jobs
+  MPLBACKEND: Agg
+  CYTHON_TRACE: 1
+  CYTHONSPEC: cython
+  NUMPY_MIN: numpy==1.23.0
+  CYTHON_MIN: cython==3.0.4
+  SCIPY_MIN: scipy==1.9.0
+
 jobs:
   test_pywavelets_linux:
     name: linux-cp${{ matrix.python-version }}-${{ matrix.OPTIONS_NAME }}
     runs-on: ubuntu-latest
-    env:
-      MPLBACKEND: Agg
-      CYTHON_TRACE: 1
-      CYTHONSPEC: cython
-      NUMPY_MIN: numpy==1.23.0
-      CYTHON_MIN: cython==3.0.4
-      SCIPY_MIN: scipy==1.9.0
-
     strategy:
       # Ensure that a wheel builder finishes even if another fails
       fail-fast: false
@@ -49,7 +57,9 @@ jobs:
             python-version: "3.12"
             PIP_FLAGS: "--pre"
             OPTIONS_NAME: "pre-releases"
-
+          - platform_id: manylinux_x86_64
+            python-version: "3.12"
+            OPTIONS_NAME: "editable-install"
     steps:
       - name: Checkout PyWavelets
         uses: actions/checkout@v4
@@ -68,6 +78,7 @@ jobs:
           USE_SDIST: ${{ matrix.USE_SDIST }}
           USE_SCIPY: ${{ matrix.USE_SCIPY }}
           REFGUIDE_CHECK: ${{ matrix.REFGUIDE_CHECK }}
+          OPTIONS_NAME: ${{ matrix.OPTIONS_NAME }}
         run: |
           uname -a
           df -h
@@ -100,10 +111,16 @@ jobs:
                 pip install . -v
             fi
 
+          if [ "${OPTIONS_NAME}" == "editable-install" ]; then
+              pip install meson-python>=0.16.0 matplotlib pytest ninja
+              pip install -e . --no-build-isolation
+          fi
+
       - name: Run tests
         env:
           USE_SDIST: ${{ matrix.USE_SDIST }}
           REFGUIDE_CHECK: ${{ matrix.REFGUIDE_CHECK }}
+          OPTIONS_NAME: ${{ matrix.OPTIONS_NAME }}
         run: |
           set -o pipefail
           # Move out of source directory to avoid finding local pywt
@@ -125,14 +142,6 @@ jobs:
   test_pywavelets_macos:
     name: macos-cp${{ matrix.python-version }}-${{ matrix.OPTIONS_NAME }}
     runs-on: macos-latest
-    env:
-      MPLBACKEND: Agg
-      CYTHON_TRACE: 1
-      CYTHONSPEC: cython
-      NUMPY_MIN: numpy==1.23.0
-      CYTHON_MIN: cython==3.0.4
-      SCIPY_MIN: scipy==1.9.0
-
     strategy:
       # Ensure that a wheel builder finishes even if another fails
       fail-fast: false
