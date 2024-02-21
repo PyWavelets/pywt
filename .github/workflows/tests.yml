@@ -96,7 +96,7 @@ jobs:
             elif [ "${OPTIONS_NAME}" == "editable-install" ]; then
                 echo "Testing an editable install of pywt"
                 pip install numpy==1.26.0 cython meson-python matplotlib pytest
-                pip install -e .
+                pip install -e . --no-build-isolation
             else
                 pip install ${PIP_FLAGS} cython
                 pip install ${PIP_FLAGS} numpy
