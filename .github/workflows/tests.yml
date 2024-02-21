@@ -73,6 +73,7 @@ jobs:
             USE_SDIST: ${{ matrix.USE_SDIST }}
             USE_SCIPY: ${{ matrix.USE_SCIPY }}
             REFGUIDE_CHECK:  ${{ matrix.REFGUIDE_CHECK }}
+            OPTIONS_NAME: ${{ matrix.OPTIONS_NAME }}
         run: |
             uname -a
             df -h
@@ -87,6 +88,9 @@ jobs:
                 pip install ${CYTHON_MIN}
                 pip install ${NUMPY_MIN}
                 if [ "${USE_SCIPY}" == "1" ]; then pip install ${SCIPY_MIN}; fi
+            elif [ "${OPTIONS_NAME}" == "editable-install" ]; then
+                pip install numpy==1.26.0 cython meson-python matplotlib pytest
+                pip install -e .
             else
                 pip install ${PIP_FLAGS} cython
                 pip install ${PIP_FLAGS} numpy
@@ -109,6 +113,7 @@ jobs:
         env:
             USE_SDIST: ${{ matrix.USE_SDIST }}
             REFGUIDE_CHECK: ${{ matrix.REFGUIDE_CHECK }}
+            OPTIONS_NAME: ${{ matrix.OPTIONS_NAME }}
         run: |
             set -o pipefail
             # Move out of source directory to avoid finding local pywt
@@ -118,6 +123,11 @@ jobs:
                 python ../pywt/tests/test_doc.py
             elif [ "${REFGUIDE_CHECK}" == "1" ]; then
                 python util/refguide_check.py --doctests
+            elif [ "${OPTIONS_NAME}" == "editable-install" ]; then
+                # pytest --pyargs pywt invocation currently does not work
+                # with editable installations
+                # see https://github.com/PyWavelets/pywt/issues/700
+                pytest ../pywt
             else
                 pytest --pyargs pywt
             fi
