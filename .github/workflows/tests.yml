@@ -1,5 +1,9 @@
 name: Test
 
+env:
+  FORCE_COLOR: 3
+
+# TODO: undo these when PR is ready
 on:
   push:
     branches:
