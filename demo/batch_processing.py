@@ -24,8 +24,7 @@ try:
     from concurrent import futures
 except ImportError:
     raise ImportError(
-        "This demo requires concurrent.futures.  It can be installed for "
-        "for python 2.x via:  pip install futures")
+        "This demo requires concurrent.futures. If you are on WebAssembly, this is not available.")
 
 import numpy as np
 from numpy.testing import assert_array_equal
