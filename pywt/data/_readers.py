@@ -36,7 +36,8 @@ def ascent():
     >>> plt.show() # doctest: +SKIP
 
     """
-    fname = os.path.join(os.path.dirname(__file__), 'ascent.npz')
+    fname = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'ascent.npz')
+    fname = os.path.abspath(fname)
     ascent = np.load(fname)['data']
     return ascent
 
@@ -72,6 +73,7 @@ def aero():
 
     """
     fname = os.path.join(os.path.dirname(__file__), 'aero.npz')
+    fname = os.path.abspath(fname)
     aero = np.load(fname)['data']
     return aero
 
@@ -118,6 +120,7 @@ def camera():
 
     """
     fname = os.path.join(os.path.dirname(__file__), 'camera.npz')
+    fname = os.path.abspath(fname)
     camera = np.load(fname)['data']
     return camera
 
@@ -148,6 +151,7 @@ def ecg():
     >>> plt.show() # doctest: +SKIP
     """
     fname = os.path.join(os.path.dirname(__file__), 'ecg.npy')
+    fname = os.path.abspath(fname)
     ecg = np.load(fname)
     return ecg
 
@@ -184,6 +188,7 @@ def nino():
     >>> plt.show() # doctest: +SKIP
     """
     fname = os.path.join(os.path.dirname(__file__), 'sst_nino3.npy')
+    fname = os.path.abspath(fname)
     sst_csv = np.load(fname)
     # sst_csv = pd.read_csv("http://www.cpc.ncep.noaa.gov/data/indices/ersst4.nino.mth.81-10.ascii", sep=' ', skipinitialspace=True)
     # take only full years
