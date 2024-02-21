@@ -1,7 +1,6 @@
 """common test-related code."""
 import os
 import sys
-import platform
 import multiprocessing
 import numpy as np
 import pytest
@@ -24,7 +23,7 @@ try:
     futures_available = True
 # Check if running on Emscripten/WASM, and skip tests that require concurrency.
 # Relevant issue: https://github.com/pyodide/pyodide/issues/237
-except ImportError or (platform.machine() in ["wasm32", "wasm64"]):
+except ImportError or (sys.platform == "emscripten"):
     futures_available = False
     futures = None
 
@@ -58,7 +57,7 @@ if use_precomputed:
     matlab_result_dict_dwt = np.load(matlab_data_file_dwt)
 
 uses_futures = pytest.mark.skipif(
-    not futures_available, reason='futures not available, possibly running on Emscripten/WASM.')
+    not futures_available, reason='futures not available')
 uses_matlab = pytest.mark.skipif(
     matlab_missing, reason='pymatbridge and/or Matlab not available')
 uses_pymatbridge = pytest.mark.skipif(
