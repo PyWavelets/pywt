@@ -1,6 +1,7 @@
 """common test-related code."""
 import os
 import sys
+import platform
 import multiprocessing
 import numpy as np
 import pytest
@@ -23,9 +24,14 @@ try:
     futures_available = True
 # Check if running on Emscripten/WASM, and skip tests that require concurrency.
 # Relevant issue: https://github.com/pyodide/pyodide/issues/237
-except ImportError or (sys.platform == "emscripten"):
+except (sys.platform == "emscripten") or (platform.machine() in ["wasm32", "wasm64"]):
     futures_available = False
     futures = None
+    max_workers = 1
+except ImportError:
+    futures_available = False
+    futures = None
+    max_workers = 1
 
 
 # check if pymatbridge + MATLAB tests should be run
