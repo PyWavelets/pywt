@@ -51,6 +51,9 @@ jobs:
             python-version: '3.12'
             PIP_FLAGS: "--pre"
             OPTIONS_NAME: "pre-releases"
+          - platform_id: manylinux_x86_64
+            python-version: '3.12'
+            OPTIONS_NAME: "editable-install"
 
     steps:
       - name: Checkout PyWavelets
