@@ -22,19 +22,13 @@ try:
     from concurrent import futures
     max_workers = multiprocessing.cpu_count()
     futures_available = True
-# Check if running on Emscripten/WASM, and skip tests that require concurrency.
-# Relevant issue: https://github.com/pyodide/pyodide/issues/237
-# FIXME: you can't do `except a_bool`
-except (sys.platform == "emscripten") or (platform.machine() in ["wasm32", "wasm64"]):
-    futures_available = False
-    futures = None
-    max_workers = 1
 except ImportError:
     futures_available = False
     futures = None
     max_workers = 1
 
-
+# Check if running on Emscripten/WASM, and skip tests that require concurrency.
+# Relevant issue: https://github.com/pyodide/pyodide/issues/237
 IS_WASM = (sys.platform == "emscripten") or (platform.machine() in ["wasm32", "wasm64"])
 
 
@@ -68,7 +62,7 @@ if use_precomputed:
 
 uses_futures = pytest.mark.skipif(
     True, reason='futures not available')
-    #not futures_available, reason='futures not available')
+    # not futures_available, reason='futures not available')
 uses_matlab = pytest.mark.skipif(
     matlab_missing, reason='pymatbridge and/or Matlab not available')
 uses_pymatbridge = pytest.mark.skipif(
