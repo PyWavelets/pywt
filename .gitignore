@@ -2,6 +2,8 @@ __pycache__
 *.py[co]
 *.pyd
 *.so
+.DS_Store
+.pytest_cache/
 
 # Packages
 *.egg
@@ -31,6 +33,12 @@ pywt/_extensions/config.pxi
 cythonize.dat
 pywt/version.py
 build.log
+
+# Virtual environments
+.env/
+env/
+venv/
+.venv/
 
 # asv files
 asv/env

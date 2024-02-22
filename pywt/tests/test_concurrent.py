@@ -8,9 +8,11 @@ from __future__ import division, print_function, absolute_import
 import warnings
 import numpy as np
 from functools import partial
-from numpy.testing import assert_array_equal, assert_allclose
-from pywt._pytest import uses_futures, futures, max_workers
 
+import pytest
+from numpy.testing import assert_array_equal, assert_allclose
+
+from pywt._pytest import uses_futures, futures, max_workers
 import pywt
 
 

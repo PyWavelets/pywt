@@ -1,8 +1,14 @@
+import functools
+import importlib.resources
 import os
 
 import numpy as np
 
 
+_DATADIR = importlib.resources.files('pywt.data')
+
+
+@functools.cache
 def ascent():
     """
     Get an 8-bit grayscale bit-depth, 512 x 512 derived image for
@@ -36,11 +42,13 @@ def ascent():
     >>> plt.show() # doctest: +SKIP
 
     """
-    fname = os.path.join(os.path.dirname(__file__), 'ascent.npz')
-    ascent = np.load(fname)['data']
+    with importlib.resources.as_file(_DATADIR.joinpath('ascent.npz')) as f:
+        ascent = np.load(f)['data']
+
     return ascent
 
 
+@functools.cache
 def aero():
     """
     Get an 8-bit grayscale bit-depth, 512 x 512 derived image for
@@ -71,11 +79,13 @@ def aero():
     >>> plt.show() # doctest: +SKIP
 
     """
-    fname = os.path.join(os.path.dirname(__file__), 'aero.npz')
-    aero = np.load(fname)['data']
+    with importlib.resources.as_file(_DATADIR.joinpath('aero.npz')) as f:
+        aero = np.load(f)['data']
+
     return aero
 
 
+@functools.cache
 def camera():
     """
     Get an 8-bit grayscale bit-depth, 512 x 512 derived image for
@@ -117,11 +127,13 @@ def camera():
     >>> plt.show() # doctest: +SKIP
 
     """
-    fname = os.path.join(os.path.dirname(__file__), 'camera.npz')
-    camera = np.load(fname)['data']
+    with importlib.resources.as_file(_DATADIR.joinpath('camera.npz')) as f:
+        camera = np.load(f)['data']
+
     return camera
 
 
+@functools.cache
 def ecg():
     """
     Get 1024 points of an ECG timeseries.
@@ -147,11 +159,13 @@ def ecg():
     [<matplotlib.lines.Line2D object at ...>]
     >>> plt.show() # doctest: +SKIP
     """
-    fname = os.path.join(os.path.dirname(__file__), 'ecg.npy')
-    ecg = np.load(fname)
+    with importlib.resources.as_file(_DATADIR.joinpath('ecg.npz')) as f:
+        ecg = np.load(f)['data']
+
     return ecg
 
 
+@functools.cache
 def nino():
     """
     This data contains the averaged monthly sea surface temperature in degrees
@@ -183,8 +197,9 @@ def nino():
     [<matplotlib.lines.Line2D object at ...>]
     >>> plt.show() # doctest: +SKIP
     """
-    fname = os.path.join(os.path.dirname(__file__), 'sst_nino3.npy')
-    sst_csv = np.load(fname)
+    with importlib.resources.as_file(_DATADIR.joinpath('sst_nino3.npz')) as f:
+        sst_csv = np.load(f)['data']
+
     # sst_csv = pd.read_csv("http://www.cpc.ncep.noaa.gov/data/indices/ersst4.nino.mth.81-10.ascii", sep=' ', skipinitialspace=True)
     # take only full years
     n = int(np.floor(sst_csv.shape[0]/12.)*12.)
