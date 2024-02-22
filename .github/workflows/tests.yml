@@ -11,17 +11,15 @@ env:
   CYTHON_MIN: cython==0.29.35
   SCIPY_MIN: scipy==1.8.0
 
-# TODO: undo these when PR is ready
 on:
   push:
-    # branches:
-    #   - master
-    #   - v1.**
+    branches:
+      - master
+      - v1.**
   pull_request:
-    # branches:
-    #   - master
-    #   - v1.**
-  workflow_dispatch:
+    branches:
+      - master
+      - v1.**
 
 jobs:
 
