@@ -19,6 +19,7 @@ env:
 
 jobs:
   build_wasm_emscripten:
+    name: Build PyWavelets for Pyodide
     runs-on: ubuntu-latest
     # Uncomment the following line to test changes on a fork
     # if: github.repository == 'PyWavelets/pywt'
