@@ -160,8 +160,8 @@ def ecg():
     >>> plt.show() # doctest: +SKIP
     """
     _datadir = importlib.resources.files('pywt.data')
-    with importlib.resources.as_file(_datadir.joinpath('ecg.npy')) as f:
-        ecg = np.load(f)
+    with importlib.resources.as_file(_datadir.joinpath('ecg.npz')) as f:
+        ecg = np.load(f)['data']
 
     return ecg
 
@@ -199,8 +199,8 @@ def nino():
     >>> plt.show() # doctest: +SKIP
     """
     _datadir = importlib.resources.files('pywt.data')
-    with importlib.resources.as_file(_datadir.joinpath('sst_nino3.npy')) as f:
-        sst_csv = np.load(f)
+    with importlib.resources.as_file(_datadir.joinpath('sst_nino3.npz')) as f:
+        sst_csv = np.load(f)['data']
 
     # sst_csv = pd.read_csv("http://www.cpc.ncep.noaa.gov/data/indices/ersst4.nino.mth.81-10.ascii", sep=' ', skipinitialspace=True)
     # take only full years
