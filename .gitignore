@@ -3,6 +3,7 @@ __pycache__
 *.pyd
 *.so
 .DS_Store
+.pytest_cache/
 
 # Packages
 *.egg
