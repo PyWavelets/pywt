@@ -93,8 +93,8 @@ jobs:
                 if [ "${USE_SCIPY}" == "1" ]; then pip install ${SCIPY_MIN}; fi
             elif [ "${OPTIONS_NAME}" == "editable-install" ]; then
                 echo "Testing an editable install of pywt"
-                pip install numpy==1.26.0 cython meson-python ninja matplotlib pytest
-                # should we do apt-get install ninja instead and use a system ninja instead?
+                sudo apt-get install ninja-build
+                pip install numpy==1.26.0 cython meson-python matplotlib pytest
                 pip install -e . --no-build-isolation
             else
                 pip install ${PIP_FLAGS} cython
