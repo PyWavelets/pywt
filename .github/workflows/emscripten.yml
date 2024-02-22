@@ -1,18 +1,14 @@
 name: Test Pyodide build for PyWavelets
 
-# TODO: uncomment after testing
 on:
   push:
-    # branches:
-    #   - master
-    #   - v1.**
+    branches:
+      - master
+      - v1.**
   pull_request:
-    # branches:
-      # - master
-      # - v1.**
-  workflow_dispatch:
-  schedule:
-    - cron: '0 3 * * *'
+    branches:
+      - master
+      - v1.**
 
 env:
   FORCE_COLOR: 3
