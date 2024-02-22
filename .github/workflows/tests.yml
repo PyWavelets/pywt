@@ -1,5 +1,16 @@
 name: Test
 
+env:
+  # Coloured output for GitHub Actions
+  FORCE_COLOR: 3
+  # Some common environment variables, required for both GNU/Linux and macOS jobs
+  MPLBACKEND: Agg
+  CYTHON_TRACE: 1
+  CYTHONSPEC: cython
+  NUMPY_MIN: numpy==1.22.4
+  CYTHON_MIN: cython==0.29.35
+  SCIPY_MIN: scipy==1.8.0
+
 on:
   push:
     branches:
@@ -15,19 +26,11 @@ jobs:
   test_pywavelets_linux:
     name: linux-cp${{ matrix.python-version }}-${{ matrix.OPTIONS_NAME }}
     runs-on: ubuntu-latest
-    env:
-      MPLBACKEND: Agg
-      CYTHON_TRACE: 1
-      CYTHONSPEC: cython
-      NUMPY_MIN: numpy==1.22.4
-      CYTHON_MIN: cython==0.29.35
-      SCIPY_MIN: scipy==1.8.0
-
     strategy:
       # Ensure that a wheel builder finishes even if another fails
       fail-fast: false
       matrix:
-        python-version: [3.9, '3.10', '3.11', '3.12']
+        python-version: ['3.9', '3.10', '3.11', '3.12']
         MINIMUM_REQUIREMENTS: [0]
         USE_SCIPY: [0]
         USE_SDIST: [0]
@@ -36,21 +39,24 @@ jobs:
         OPTIONS_NAME: ["default"]
         include:
           - platform_id: manylinux_x86_64
-            python-version: 3.9
+            python-version: '3.9'
             MINIMUM_REQUIREMENTS: 1
             OPTIONS_NAME: "minimum-req"
           - platform_id: manylinux_x86_64
-            python-version: 3.9
+            python-version: '3.9'
             USE_SCIPY: 1
             OPTIONS_NAME: "with-scipy"
           - platform_id: manylinux_x86_64
-            python-version: 3.9
+            python-version: '3.9'
             USE_SDIST: 1
             OPTIONS_NAME: "install-from-sdist"
           - platform_id: manylinux_x86_64
             python-version: '3.12'
             PIP_FLAGS: "--pre"
             OPTIONS_NAME: "pre-releases"
+          - platform_id: manylinux_x86_64
+            python-version: '3.12'
+            OPTIONS_NAME: "editable-install"
 
     steps:
       - name: Checkout PyWavelets
@@ -70,6 +76,7 @@ jobs:
             USE_SDIST: ${{ matrix.USE_SDIST }}
             USE_SCIPY: ${{ matrix.USE_SCIPY }}
             REFGUIDE_CHECK:  ${{ matrix.REFGUIDE_CHECK }}
+            OPTIONS_NAME: ${{ matrix.OPTIONS_NAME }}
         run: |
             uname -a
             df -h
@@ -84,6 +91,11 @@ jobs:
                 pip install ${CYTHON_MIN}
                 pip install ${NUMPY_MIN}
                 if [ "${USE_SCIPY}" == "1" ]; then pip install ${SCIPY_MIN}; fi
+            elif [ "${OPTIONS_NAME}" == "editable-install" ]; then
+                echo "Testing an editable install of pywt"
+                sudo apt-get install ninja-build
+                pip install numpy==1.26.0 cython meson-python matplotlib pytest
+                pip install -e . --no-build-isolation
             else
                 pip install ${PIP_FLAGS} cython
                 pip install ${PIP_FLAGS} numpy
@@ -106,6 +118,7 @@ jobs:
         env:
             USE_SDIST: ${{ matrix.USE_SDIST }}
             REFGUIDE_CHECK: ${{ matrix.REFGUIDE_CHECK }}
+            OPTIONS_NAME: ${{ matrix.OPTIONS_NAME }}
         run: |
             set -o pipefail
             # Move out of source directory to avoid finding local pywt
@@ -115,6 +128,11 @@ jobs:
                 python ../pywt/tests/test_doc.py
             elif [ "${REFGUIDE_CHECK}" == "1" ]; then
                 python util/refguide_check.py --doctests
+            elif [ "${OPTIONS_NAME}" == "editable-install" ]; then
+                # pytest --pyargs pywt invocation currently does not work
+                # with editable installations
+                # see https://github.com/PyWavelets/pywt/issues/700
+                pytest ../pywt
             else
                 pytest --pyargs pywt
             fi
@@ -124,14 +142,6 @@ jobs:
   test_pywavelets_macos:
     name: macos-cp${{ matrix.python-version }}-${{ matrix.OPTIONS_NAME }}
     runs-on: macos-latest
-    env:
-      MPLBACKEND: Agg
-      CYTHON_TRACE: 1
-      CYTHONSPEC: cython
-      NUMPY_MIN: numpy==1.22.4
-      CYTHON_MIN: cython==0.29.35
-      SCIPY_MIN: scipy==1.8.0
-
     strategy:
       # Ensure that a wheel builder finishes even if another fails
       fail-fast: false
