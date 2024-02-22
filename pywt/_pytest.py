@@ -61,7 +61,8 @@ if use_precomputed:
     matlab_result_dict_dwt = np.load(matlab_data_file_dwt)
 
 uses_futures = pytest.mark.skipif(
-    not futures_available or IS_WASM, reason='futures not available')
+    not futures_available or IS_WASM,
+    reason='futures is not available, or running via Pyodide/WASM.')
     # not futures_available, reason='futures not available')
 uses_matlab = pytest.mark.skipif(
     matlab_missing, reason='pymatbridge and/or Matlab not available')
