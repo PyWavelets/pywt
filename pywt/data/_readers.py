@@ -1,8 +1,11 @@
 import functools
-import importlib
+import importlib.resources
 import os
 
 import numpy as np
+
+
+_DATADIR = importlib.resources.files('pywt.data')
 
 
 @functools.cache
@@ -39,8 +42,7 @@ def ascent():
     >>> plt.show() # doctest: +SKIP
 
     """
-    _datadir = importlib.resources.files('pywt.data')
-    with importlib.resources.as_file(_datadir.joinpath('ascent.npz')) as f:
+    with importlib.resources.as_file(_DATADIR.joinpath('ascent.npz')) as f:
         ascent = np.load(f)['data']
 
     return ascent
@@ -77,8 +79,7 @@ def aero():
     >>> plt.show() # doctest: +SKIP
 
     """
-    _datadir = importlib.resources.files('pywt.data')
-    with importlib.resources.as_file(_datadir.joinpath('aero.npz')) as f:
+    with importlib.resources.as_file(_DATADIR.joinpath('aero.npz')) as f:
         aero = np.load(f)['data']
 
     return aero
@@ -126,8 +127,7 @@ def camera():
     >>> plt.show() # doctest: +SKIP
 
     """
-    _datadir = importlib.resources.files('pywt.data')
-    with importlib.resources.as_file(_datadir.joinpath('camera.npz')) as f:
+    with importlib.resources.as_file(_DATADIR.joinpath('camera.npz')) as f:
         camera = np.load(f)['data']
 
     return camera
@@ -159,8 +159,7 @@ def ecg():
     [<matplotlib.lines.Line2D object at ...>]
     >>> plt.show() # doctest: +SKIP
     """
-    _datadir = importlib.resources.files('pywt.data')
-    with importlib.resources.as_file(_datadir.joinpath('ecg.npz')) as f:
+    with importlib.resources.as_file(_DATADIR.joinpath('ecg.npz')) as f:
         ecg = np.load(f)['data']
 
     return ecg
@@ -198,8 +197,7 @@ def nino():
     [<matplotlib.lines.Line2D object at ...>]
     >>> plt.show() # doctest: +SKIP
     """
-    _datadir = importlib.resources.files('pywt.data')
-    with importlib.resources.as_file(_datadir.joinpath('sst_nino3.npz')) as f:
+    with importlib.resources.as_file(_DATADIR.joinpath('sst_nino3.npz')) as f:
         sst_csv = np.load(f)['data']
 
     # sst_csv = pd.read_csv("http://www.cpc.ncep.noaa.gov/data/indices/ersst4.nino.mth.81-10.ascii", sep=' ', skipinitialspace=True)
