@@ -1,7 +1,15 @@
 name: Test
 
 env:
+  # Coloured output for GitHub Actions
   FORCE_COLOR: 3
+  # Some common environment variables, required for both GNU/Linux and macOS jobs
+  MPLBACKEND: Agg
+  CYTHON_TRACE: 1
+  CYTHONSPEC: cython
+  NUMPY_MIN: numpy==1.22.4
+  CYTHON_MIN: cython==0.29.35
+  SCIPY_MIN: scipy==1.8.0
 
 # TODO: undo these when PR is ready
 on:
@@ -20,14 +28,6 @@ jobs:
   test_pywavelets_linux:
     name: linux-cp${{ matrix.python-version }}-${{ matrix.OPTIONS_NAME }}
     runs-on: ubuntu-latest
-    env:
-      MPLBACKEND: Agg
-      CYTHON_TRACE: 1
-      CYTHONSPEC: cython
-      NUMPY_MIN: numpy==1.22.4
-      CYTHON_MIN: cython==0.29.35
-      SCIPY_MIN: scipy==1.8.0
-
     strategy:
       # Ensure that a wheel builder finishes even if another fails
       fail-fast: false
@@ -144,14 +144,6 @@ jobs:
   test_pywavelets_macos:
     name: macos-cp${{ matrix.python-version }}-${{ matrix.OPTIONS_NAME }}
     runs-on: macos-latest
-    env:
-      MPLBACKEND: Agg
-      CYTHON_TRACE: 1
-      CYTHONSPEC: cython
-      NUMPY_MIN: numpy==1.22.4
-      CYTHON_MIN: cython==0.29.35
-      SCIPY_MIN: scipy==1.8.0
-
     strategy:
       # Ensure that a wheel builder finishes even if another fails
       fail-fast: false
