@@ -147,9 +147,9 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1):
         # reshape to (n_batch, data.shape[-1])
         data_shape_pre = data.shape
         data = data.reshape((-1, data.shape[-1]))
-	
-	if 0 in scales:
-		raise ValueError("scales range cannot include zero")
+
+    if 0 in scales:
+        raise ValueError("scales range cannot include zero")
 
     for i, scale in enumerate(scales):
         step = x[1] - x[0]
