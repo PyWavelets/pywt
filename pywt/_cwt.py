@@ -118,8 +118,8 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1):
     dt_cplx = np.result_type(dt, np.complex64)
     if not isinstance(wavelet, (ContinuousWavelet, Wavelet)):
         wavelet = DiscreteContinuousWavelet(wavelet)
-    if np.isscalar(scales):
-        scales = np.array([scales])
+
+    scales = np.array([scales])
     if not np.isscalar(axis):
         raise np.AxisError("axis must be a scalar.")
 
@@ -148,8 +148,8 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1):
         data_shape_pre = data.shape
         data = data.reshape((-1, data.shape[-1]))
 
-    if 0 in scales:
-        raise ValueError("scales range cannot include zero")
+    if np.any(scales <= 0):
+        raise ValueError("scales range cannot include values less than 1")
 
     for i, scale in enumerate(scales):
         step = x[1] - x[0]

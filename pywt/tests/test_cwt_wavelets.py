@@ -448,6 +448,13 @@ def test_cwt_zero_scale():
     # scale that includes 0 throws ValueError to prevent IndexError
     assert_raises(ValueError, pywt.cwt, data, scales=scales, wavelet='morl')
 
+def test_cwt_negative_scale():
+    data = np.zeros(32)
+    scales = np.asarray([-1, -2, -3])
+
+    # scale that includes negative values throws ValueError to prevent IndexError
+    assert_raises(ValueError, pywt.cwt, data, scales=scales, wavelet='morl')
+
 
 def test_cwt_method_fft():
     rstate = np.random.RandomState(1)
