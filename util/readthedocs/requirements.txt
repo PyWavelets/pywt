@@ -1,7 +1,10 @@
-numpy
-meson-python
 cython
-pytest
-numpydoc
-matplotlib
 docutils<0.18
+pydata-sphinx-theme
+pytest
+matplotlib
+meson-python
+numpy
+numpydoc
+sphinx-togglebutton
+sphinx-copybutton
