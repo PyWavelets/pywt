@@ -41,7 +41,7 @@ New features
 ============
 
 1D Continuous Wavelet Transforms
--------------------------------
+--------------------------------
 A wide range of continuous wavelets are now available.  These include the
 following:
 
