@@ -6,5 +6,6 @@ matplotlib
 meson-python
 numpy
 numpydoc
+sphinx
 sphinx-togglebutton
 sphinx-copybutton
