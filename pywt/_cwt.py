@@ -119,7 +119,7 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1):
     if not isinstance(wavelet, (ContinuousWavelet, Wavelet)):
         wavelet = DiscreteContinuousWavelet(wavelet)
 
-    scales = np.array([scales])
+    scales = np.asarray(scales)
     if not np.isscalar(axis):
         raise np.AxisError("axis must be a scalar.")
 
