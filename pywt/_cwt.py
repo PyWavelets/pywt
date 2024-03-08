@@ -120,6 +120,9 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1):
         wavelet = DiscreteContinuousWavelet(wavelet)
 
     scales = np.atleast_1d(scales)
+    if np.any(scales <= 0):
+        raise ValueError("`scales` must only include positive values")
+
     if not np.isscalar(axis):
         raise np.AxisError("axis must be a scalar.")
 
@@ -147,9 +150,6 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1):
         # reshape to (n_batch, data.shape[-1])
         data_shape_pre = data.shape
         data = data.reshape((-1, data.shape[-1]))
-
-    if np.any(scales <= 0):
-        raise ValueError("scales range cannot include values less than 1")
 
     for i, scale in enumerate(scales):
         step = x[1] - x[0]
