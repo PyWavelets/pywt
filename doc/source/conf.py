@@ -128,6 +128,7 @@ html_theme_options = {
 "navbar_end": ["navbar-icon-links", "theme-switcher"],
 "navbar_persistent": ["search-button"],
 "primary_sidebar_end": ["indices.html", "sidebar-ethical-ads.html"],
+"navigation_with_keys": False,
 "show_nav_level": 2,
 "navigation_depth": 2,
 "show_toc_level": 2,
