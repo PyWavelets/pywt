@@ -6,7 +6,7 @@
 Continuous Wavelet Transform (CWT)
 ==================================
 
-This section focuses on the one-dimensional Continuous Wavelet Transform. It 
+This section focuses on the one-dimensional Continuous Wavelet Transform. It
 introduces the main function ``cwt`` alongside several helper function, and
 also gives an overview over the available wavelets for this transfom.
 
@@ -16,10 +16,10 @@ Introduction
 
 In simple terms, the Continuous Wavelet Transform is an analysis tool similar
 to the Fourier Transform, in that it takes a time-domain signal and returns
-the signal's components in the frequency domain. However, in contrast to the 
-Fourier Transform, the Continuous Wavelet Transform returns a two-dimensional 
-result, providing information in the frequency- as well as in time-domain. 
-Therefore, it is useful for periodic signals which change over time, such as 
+the signal's components in the frequency domain. However, in contrast to the
+Fourier Transform, the Continuous Wavelet Transform returns a two-dimensional
+result, providing information in the frequency- as well as in time-domain.
+Therefore, it is useful for periodic signals which change over time, such as
 audio, seismic signals and many others (see below for examples).
 
 For more background and an in-depth guide to the application of the Continuous
@@ -58,7 +58,7 @@ using a complex Morlet wavlet with a given center frequency and bandwidth
 The Continuous Wavelet Transform can resolve the two frequency components clearly,
 which is an obvious advantage over the Fourier Transform in this case. The scales
 (widths) are given on a logarithmic scale in the example. The scales determine the
-frequency resolution of the scaleogram. However, it is not straightforward to 
+frequency resolution of the scaleogram. However, it is not straightforward to
 convert them to frequencies, but luckily, ``cwt`` calculates the correct frequencies
 for us. There are also helper functions, that perform this conversion in both ways.
 For more information, see :ref:`Choosing scales` and :ref:`Converting frequency`.
