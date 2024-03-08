@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 
-from __future__ import division, print_function, absolute_import
 
 import numpy as np
-from numpy.testing import assert_allclose, assert_, assert_raises
+from numpy.testing import assert_, assert_allclose, assert_raises
 
 import pywt
 

@@ -1,12 +1,13 @@
-import numpy as np
-import pywt
 import matplotlib.pyplot as plt
+import numpy as np
+
+import pywt
 
 wav = pywt.ContinuousWavelet('cmor1.5-1.0')
 
 # print the range over which the wavelet will be evaluated
-print("Continuous wavelet will be evaluated over the range [{}, {}]".format(
-    wav.lower_bound, wav.upper_bound))
+print("Continuous wavelet will be evaluated over the range "
+      f"[{wav.lower_bound}, {wav.upper_bound}]")
 
 width = wav.upper_bound - wav.lower_bound
 
@@ -23,7 +24,7 @@ for n, scale in enumerate(scales):
     j = np.floor(
         np.arange(scale * width + 1) / (scale * step))
     if np.max(j) >= np.size(int_psi):
-        j = np.delete(j, np.where((j >= np.size(int_psi)))[0])
+        j = np.delete(j, np.where(j >= np.size(int_psi))[0])
     j = j.astype(np.int_)
 
     # normalize int_psi for easier plotting
@@ -40,7 +41,7 @@ for n, scale in enumerate(scales):
     axes[n, 0].plot(t, filt.real, t, filt.imag)
     axes[n, 0].set_xlim([-max_len//2, max_len//2])
     axes[n, 0].set_ylim([-1, 1])
-    axes[n, 0].text(50, 0.35, 'scale = {}'.format(scale))
+    axes[n, 0].text(50, 0.35, f'scale = {scale}')
 
     f = np.linspace(-np.pi, np.pi, max_len)
     filt_fft = np.fft.fftshift(np.fft.fft(filt, n=max_len))
@@ -51,7 +52,7 @@ for n, scale in enumerate(scales):
     axes[n, 1].set_xticks([-np.pi, 0, np.pi])
     axes[n, 1].set_xticklabels([r'$-\pi$', '0', r'$\pi$'])
     axes[n, 1].grid(True, axis='x')
-    axes[n, 1].text(np.pi/2, 0.5, 'scale = {}'.format(scale))
+    axes[n, 1].text(np.pi/2, 0.5, f'scale = {scale}')
 
 axes[n, 0].set_xlabel('time (samples)')
 axes[n, 1].set_xlabel('frequency (radians)')

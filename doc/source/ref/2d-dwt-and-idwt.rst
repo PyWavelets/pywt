@@ -77,4 +77,3 @@ horizontal as follows::
            |
            |
     axis 0 v
-

@@ -11,6 +11,7 @@ of a discrete wavelet transform.
 """
 import numpy as np
 from matplotlib import pyplot as plt
+
 from pywt._doc_utils import boundary_mode_subplot
 
 # synthetic test signal

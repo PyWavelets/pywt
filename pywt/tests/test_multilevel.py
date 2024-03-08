@@ -1,15 +1,24 @@
 #!/usr/bin/env python
 
-from __future__ import division, print_function, absolute_import
 
 import warnings
 from itertools import combinations
+
 import numpy as np
 import pytest
-from numpy.testing import (assert_almost_equal, assert_allclose, assert_,
-                           assert_equal, assert_raises, assert_raises_regex,
-                           assert_array_equal, assert_warns)
+from numpy.testing import (
+    assert_,
+    assert_allclose,
+    assert_almost_equal,
+    assert_array_equal,
+    assert_equal,
+    assert_raises,
+    assert_raises_regex,
+    assert_warns,
+)
+
 import pywt
+
 # Check that float32, float64, complex64, complex128 are preserved.
 # Other real types get converted to float64.
 # complex256 gets converted to complex128
@@ -125,7 +134,7 @@ def test_multilevel_dtypes_1d():
     for dt_in, dt_out in zip(dtypes_in, dtypes_out):
         # wavedec, waverec
         x = np.ones(8, dtype=dt_in)
-        errmsg = "wrong dtype returned for {0} input".format(dt_in)
+        errmsg = f"wrong dtype returned for {dt_in} input"
 
         coeffs = pywt.wavedec(x, wavelet, level=2)
         for c in coeffs:
@@ -166,7 +175,7 @@ def test_multilevel_dtypes_2d():
     for dt_in, dt_out in zip(dtypes_in, dtypes_out):
         # wavedec2, waverec2
         x = np.ones((8, 8), dtype=dt_in)
-        errmsg = "wrong dtype returned for {0} input".format(dt_in)
+        errmsg = f"wrong dtype returned for {dt_in} input"
         cA, coeffsD2, coeffsD1 = pywt.wavedec2(x, wavelet, level=2)
         assert_(cA.dtype == dt_out, "wavedec2: " + errmsg)
         for c in coeffsD1:
@@ -357,7 +366,7 @@ def test_multilevel_dtypes_nd():
     for dt_in, dt_out in zip(dtypes_in, dtypes_out):
         # wavedecn, waverecn
         x = np.ones((8, 8), dtype=dt_in)
-        errmsg = "wrong dtype returned for {0} input".format(dt_in)
+        errmsg = f"wrong dtype returned for {dt_in} input"
         cA, coeffsD2, coeffsD1 = pywt.wavedecn(x, wavelet, level=2)
         assert_(cA.dtype == dt_out, "wavedecn: " + errmsg)
         for key, c in coeffsD1.items():
@@ -415,7 +424,7 @@ def test_coeffs_to_array():
     assert_raises(ValueError, pywt.coeffs_to_array, [a_coeffs, None])
 
     # use an invalid key name in the coef dictionary
-    coeffs = [np.array([0]), dict(d=np.array([0]), c=np.array([0]))]
+    coeffs = [np.array([0]), {'d': np.array([0]), 'c': np.array([0])}]
     assert_raises(ValueError, pywt.coeffs_to_array, coeffs)
 
 

@@ -1,12 +1,18 @@
 #!/usr/bin/env python
 import os
-from itertools import product
 import pickle
+from itertools import product
 
-from numpy.testing import (assert_allclose, assert_warns, assert_almost_equal,
-                           assert_raises, assert_equal)
-import pytest
 import numpy as np
+import pytest
+from numpy.testing import (
+    assert_allclose,
+    assert_almost_equal,
+    assert_equal,
+    assert_raises,
+    assert_warns,
+)
+
 import pywt
 
 
@@ -153,7 +159,7 @@ def test_shan():
     Fc = 1.5
 
     [psi, x] = ref_shan(LB, UB, N, Fb, Fc)
-    w = pywt.ContinuousWavelet("shan{}-{}".format(Fb, Fc))
+    w = pywt.ContinuousWavelet(f"shan{Fb}-{Fc}")
     assert_almost_equal(w.center_frequency, Fc)
     assert_almost_equal(w.bandwidth_frequency, Fb)
     w.upper_bound = UB
@@ -171,7 +177,7 @@ def test_shan():
     Fc = 1
 
     [psi, x] = ref_shan(LB, UB, N, Fb, Fc)
-    w = pywt.ContinuousWavelet("shan{}-{}".format(Fb, Fc))
+    w = pywt.ContinuousWavelet(f"shan{Fb}-{Fc}")
     assert_almost_equal(w.center_frequency, Fc)
     assert_almost_equal(w.bandwidth_frequency, Fb)
     w.upper_bound = UB
@@ -191,7 +197,7 @@ def test_cmor():
     Fc = 1.5
 
     [psi, x] = ref_cmor(LB, UB, N, Fb, Fc)
-    w = pywt.ContinuousWavelet("cmor{}-{}".format(Fb, Fc))
+    w = pywt.ContinuousWavelet(f"cmor{Fb}-{Fc}")
     assert_almost_equal(w.center_frequency, Fc)
     assert_almost_equal(w.bandwidth_frequency, Fb)
     w.upper_bound = UB
@@ -209,7 +215,7 @@ def test_cmor():
     Fc = 1
 
     [psi, x] = ref_cmor(LB, UB, N, Fb, Fc)
-    w = pywt.ContinuousWavelet("cmor{}-{}".format(Fb, Fc))
+    w = pywt.ContinuousWavelet(f"cmor{Fb}-{Fc}")
     assert_almost_equal(w.center_frequency, Fc)
     assert_almost_equal(w.bandwidth_frequency, Fb)
     w.upper_bound = UB
@@ -231,7 +237,7 @@ def test_fbsp():
 
     [psi, x] = ref_fbsp(LB, UB, N, M, Fb, Fc)
 
-    w = pywt.ContinuousWavelet("fbsp{}-{}-{}".format(M, Fb, Fc))
+    w = pywt.ContinuousWavelet(f"fbsp{M}-{Fb}-{Fc}")
     assert_almost_equal(w.center_frequency, Fc)
     assert_almost_equal(w.bandwidth_frequency, Fb)
     w.fbsp_order = M
@@ -251,7 +257,7 @@ def test_fbsp():
     Fc = 1
 
     [psi, x] = ref_fbsp(LB, UB, N, M, Fb, Fc)
-    w = pywt.ContinuousWavelet("fbsp{}-{}-{}".format(M, Fb, Fc))
+    w = pywt.ContinuousWavelet(f"fbsp{M}-{Fb}-{Fc}")
     assert_almost_equal(w.center_frequency, Fc)
     assert_almost_equal(w.bandwidth_frequency, Fb)
     w.fbsp_order = M
@@ -271,7 +277,7 @@ def test_fbsp():
     Fc = 1.2
 
     [psi, x] = ref_fbsp(LB, UB, N, M, Fb, Fc)
-    w = pywt.ContinuousWavelet("fbsp{}-{}-{}".format(M, Fb, Fc))
+    w = pywt.ContinuousWavelet(f"fbsp{M}-{Fb}-{Fc}")
     assert_almost_equal(w.center_frequency, Fc)
     assert_almost_equal(w.bandwidth_frequency, Fb)
     w.fbsp_order = M
@@ -434,6 +440,20 @@ def test_cwt_small_scales():
 
     # extremely short scale factors raise a ValueError
     assert_raises(ValueError, pywt.cwt, data, scales=0.01, wavelet='mexh')
+
+def test_cwt_zero_scale():
+    data = np.zeros(32)
+    scales = np.arange(0, 4)
+
+    # scale that includes 0 throws ValueError to prevent IndexError
+    assert_raises(ValueError, pywt.cwt, data, scales=scales, wavelet='morl')
+
+def test_cwt_negative_scale():
+    data = np.zeros(32)
+    scales = np.asarray([-1, -2, -3])
+
+    # scale that includes negative values throws ValueError to prevent IndexError
+    assert_raises(ValueError, pywt.cwt, data, scales=scales, wavelet='morl')
 
 
 def test_cwt_method_fft():

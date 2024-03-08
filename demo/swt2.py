@@ -1,11 +1,9 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 import matplotlib.pyplot as plt
 
 import pywt
 import pywt.data
-
 
 arr = pywt.data.aero()
 
@@ -21,7 +19,7 @@ for LL, (LH, HL, HH) in pywt.swt2(arr, 'bior1.3', level=3, start_level=0):
         ax.imshow(a, origin='upper', interpolation="nearest", cmap=plt.cm.gray)
         ax.set_title(titles[i], fontsize=12)
 
-    fig.suptitle("SWT2 coefficients, level %s" % level, fontsize=14)
+    fig.suptitle(f"SWT2 coefficients, level {level}", fontsize=14)
     level += 1
 
 

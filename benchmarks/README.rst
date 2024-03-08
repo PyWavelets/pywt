@@ -79,4 +79,3 @@ Some things to consider:
 - Preparing arrays etc. should generally be put in the ``setup`` method rather
   than the ``time_`` methods, to avoid counting preparation time together with
   the time of the benchmarked operation.
-

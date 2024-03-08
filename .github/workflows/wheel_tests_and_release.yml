@@ -2,15 +2,14 @@ name: Build Wheels and Release
 on:
   push:
     tags:
-      - 'v*'
-      - 'buildwheels*'
+      - "v*"
+      - "buildwheels*"
 env:
   CIBW_BUILD_VERBOSITY: 2
   # CIBW_BEFORE_BUILD: pip install cython
   CIBW_TEST_REQUIRES: pytest
   CIBW_TEST_COMMAND: pytest --pyargs pywt
   CIBW_ENVIRONMENT: PIP_PREFER_BINARY=1
-
 
 jobs:
   build_linux_x86_64_wheels:
@@ -19,18 +18,18 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-18.04]
-        cibw_python: [ "cp38-*", "cp39-*", "cp310-*", "cp311-*"]
-        cibw_manylinux: [ manylinux2014 ]
-        cibw_arch: [ "x86_64"]
+        os: [ubuntu-latest]
+        cibw_python: ["cp39-*", "cp310-*", "cp311-*", "cp312-*"]
+        cibw_manylinux: [manylinux2014]
+        cibw_arch: ["x86_64"]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - uses: actions/setup-python@v4
         name: Install Python
         with:
-          python-version: '3.9'
+          python-version: "3.9"
       - name: Install cibuildwheel
         run: |
           python -m pip install cibuildwheel
@@ -54,9 +53,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-18.04]
-        cibw_python: [ "cp38-*" , "cp39-*", "cp310-*", "cp311-*"]
-        cibw_manylinux: [ manylinux2014 ]
+        os: [ubuntu-latest]
+        cibw_python: ["cp39-*", "cp310-*", "cp311-*", "cp312-*"]
+        cibw_manylinux: [manylinux2014]
     steps:
       - uses: actions/checkout@v3
         with:
@@ -64,9 +63,9 @@ jobs:
       - uses: actions/setup-python@v4
         name: Install Python
         with:
-          python-version: '3.9'
+          python-version: "3.9"
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v3
         with:
           platforms: arm64
       - name: Install cibuildwheel
@@ -92,17 +91,17 @@ jobs:
       fail-fast: false
       matrix:
         os: [macos-latest]
-        cibw_python: [ "cp38-*", "cp39-*", "cp310-*" , "cp311-*" ]
-        cibw_arch: [ "x86_64", "arm64"]
+        cibw_python: ["cp39-*", "cp310-*", "cp311-*", "cp312-*"]
+        cibw_arch: ["x86_64", "arm64"]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - uses: actions/setup-python@v4
         name: Install Python
         with:
-          python-version: '3.9'
+          python-version: "3.9"
 
       - name: Install cibuildwheel
         run: |
@@ -140,16 +139,16 @@ jobs:
       matrix:
         os: [windows-latest]
         cibw_arch: ["AMD64", "x86"]
-        cibw_python: ["cp38-*", "cp39-*", "cp310-*", "cp311-*"]
+        cibw_python: ["cp39-*", "cp310-*", "cp311-*", "cp312-*"]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - uses: actions/setup-python@v4
         name: Install Python
         with:
-          python-version: '3.9'
+          python-version: "3.9"
 
       - name: Install cibuildwheel
         run: |
@@ -157,13 +156,13 @@ jobs:
 
       - name: Setup MSVC (32-bit)
         if: matrix.cibw_arch == 'x86'
-        uses: bus1/cabuild/action/msdevshell@e22aba57d6e74891d059d66501b6b5aed8123c4d  # v1
+        uses: bus1/cabuild/action/msdevshell@e22aba57d6e74891d059d66501b6b5aed8123c4d # v1
         with:
           architecture: x86
 
       - name: Setup MSVC (64-bit)
         if: matrix.cibw_arch == 'AMD64'
-        uses: bus1/cabuild/action/msdevshell@e22aba57d6e74891d059d66501b6b5aed8123c4d  # v1
+        uses: bus1/cabuild/action/msdevshell@e22aba57d6e74891d059d66501b6b5aed8123c4d # v1
         with:
           architecture: x64
 
@@ -181,31 +180,36 @@ jobs:
 
   deploy:
     name: Release
-    needs: [build_linux_x86_64_wheels, build_linux_aarch64_wheels, build_macos_wheels, build_windows_wheels]
+    needs:
+      [
+        build_linux_x86_64_wheels,
+        build_linux_aarch64_wheels,
+        build_macos_wheels,
+        build_windows_wheels,
+      ]
     if: github.repository_owner == 'PyWavelets' && startsWith(github.ref, 'refs/tags/v') && always()
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - uses: actions/setup-python@v4
         name: Install Python
         with:
-          python-version: '3.9'
-      
+          python-version: "3.9"
+
       - name: Install Twine
         run: |
           python -m pip install --upgrade pip
           pip install twine
-          pip install "cython<3" numpy
-      
+          pip install cython numpy build
       - uses: actions/download-artifact@v3
         id: download
         with:
           name: wheels
           path: ./dist
-    
+
       - name: Publish the source distribution on PyPI
         run: |
           PYWT_VERSION=$(git describe --tags)

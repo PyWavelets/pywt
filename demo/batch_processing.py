@@ -24,8 +24,7 @@ try:
     from concurrent import futures
 except ImportError:
     raise ImportError(
-        "This demo requires concurrent.futures.  It can be installed for "
-        "for python 2.x via:  pip install futures")
+        "This demo requires concurrent.futures. If you are on WebAssembly, this is not available.")
 
 import numpy as np
 from numpy.testing import assert_array_equal
@@ -71,7 +70,7 @@ def concurrent_transforms(func, imgs, max_workers=None):
     return results
 
 
-print("Processing {} images of shape {}".format(len(imgs), imgs[0].shape))
+print(f"Processing {len(imgs)} images of shape {imgs[0].shape}")
 
 # Sequential computation via a list comprehension
 tstart = time.time()
@@ -79,7 +78,7 @@ for n in range(nrepeat):
     results = [wavedecn_func(img) for img in imgs]
 t = (time.time()-tstart)/nrepeat
 print("\nSequential Case")
-print("\tElapsed time: {:0.2f} ms".format(1000*t))
+print(f"\tElapsed time: {1000 * t:0.2f} ms")
 
 
 # Concurrent computation via concurrent.futures
@@ -89,9 +88,9 @@ for n in range(nrepeat):
                                                max_workers=max_workers)
 t2 = (time.time()-tstart)/nrepeat
 print("\nMultithreaded Case")
-print("\tNumber of concurrent workers: {}".format(max_workers))
-print("\tElapsed time: {:0.2f} ms".format(1000*t2))
-print("\nRelative speedup with concurrent = {}".format(t/t2))
+print(f"\tNumber of concurrent workers: {max_workers}")
+print(f"\tElapsed time: {1000 * t2:0.2f} ms")
+print(f"\nRelative speedup with concurrent = {t / t2}")
 
 # check a couple of the coefficient arrays to verify matching results for
 # sequential and multithreaded computation

@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 import os
 import pickle
+
 import numpy as np
-from numpy.testing import assert_allclose, assert_
+from numpy.testing import assert_, assert_allclose
 
 import pywt
 
@@ -70,32 +71,32 @@ def check_coefficients_orthogonal(wavelet):
 
     # Lowpass filter coefficients sum to sqrt2
     res = np.sum(w.dec_lo)-np.sqrt(2)
-    msg = ('[RMS_REC > EPSILON] for Wavelet: %s, rms=%.3g' % (wavelet, res))
+    msg = f'[RMS_REC > EPSILON] for Wavelet: {wavelet}, rms={res:.3g}'
     assert_(res < epsilon, msg=msg)
     # sum even coef = sum odd coef = 1 / sqrt(2)
     res = np.sum(w.dec_lo[::2])-1./np.sqrt(2)
-    msg = ('[RMS_REC > EPSILON] for Wavelet: %s, rms=%.3g' % (wavelet, res))
+    msg = f'[RMS_REC > EPSILON] for Wavelet: {wavelet}, rms={res:.3g}'
     assert_(res < epsilon, msg=msg)
 
     res = np.sum(w.dec_lo[1::2])-1./np.sqrt(2)
-    msg = ('[RMS_REC > EPSILON] for Wavelet: %s, rms=%.3g' % (wavelet, res))
+    msg = f'[RMS_REC > EPSILON] for Wavelet: {wavelet}, rms={res:.3g}'
     assert_(res < epsilon, msg=msg)
     # Highpass filter coefficients sum to zero
     res = np.sum(w.dec_hi)
-    msg = ('[RMS_REC > EPSILON] for Wavelet: %s, rms=%.3g' % (wavelet, res))
+    msg = f'[RMS_REC > EPSILON] for Wavelet: {wavelet}, rms={res:.3g}'
     assert_(res < epsilon, msg=msg)
     # Scaling function integrates to unity
 
     res = np.sum(phi) - 2**level
-    msg = ('[RMS_REC > EPSILON] for Wavelet: %s, rms=%.3g' % (wavelet, res))
+    msg = f'[RMS_REC > EPSILON] for Wavelet: {wavelet}, rms={res:.3g}'
     assert_(res < epsilon, msg=msg)
     # Wavelet function is orthogonal to the scaling function at the same scale
     res = np.sum(phi*psi)
-    msg = ('[RMS_REC > EPSILON] for Wavelet: %s, rms=%.3g' % (wavelet, res))
+    msg = f'[RMS_REC > EPSILON] for Wavelet: {wavelet}, rms={res:.3g}'
     assert_(res < epsilon, msg=msg)
     # The lowpass and highpass filter coefficients are orthogonal
     res = np.sum(np.array(w.dec_lo)*np.array(w.dec_hi))
-    msg = ('[RMS_REC > EPSILON] for Wavelet: %s, rms=%.3g' % (wavelet, res))
+    msg = f'[RMS_REC > EPSILON] for Wavelet: {wavelet}, rms={res:.3g}'
     assert_(res < epsilon, msg=msg)
 
 
@@ -108,25 +109,25 @@ def check_coefficients_biorthogonal(wavelet):
 
     # Lowpass filter coefficients sum to sqrt2
     res = np.sum(w.dec_lo)-np.sqrt(2)
-    msg = ('[RMS_REC > EPSILON] for Wavelet: %s, rms=%.3g' % (wavelet, res))
+    msg = f'[RMS_REC > EPSILON] for Wavelet: {wavelet}, rms={res:.3g}'
     assert_(res < epsilon, msg=msg)
     # sum even coef = sum odd coef = 1 / sqrt(2)
     res = np.sum(w.dec_lo[::2])-1./np.sqrt(2)
-    msg = ('[RMS_REC > EPSILON] for Wavelet: %s, rms=%.3g' % (wavelet, res))
+    msg = f'[RMS_REC > EPSILON] for Wavelet: {wavelet}, rms={res:.3g}'
     assert_(res < epsilon, msg=msg)
     res = np.sum(w.dec_lo[1::2])-1./np.sqrt(2)
-    msg = ('[RMS_REC > EPSILON] for Wavelet: %s, rms=%.3g' % (wavelet, res))
+    msg = f'[RMS_REC > EPSILON] for Wavelet: {wavelet}, rms={res:.3g}'
     assert_(res < epsilon, msg=msg)
     # Highpass filter coefficients sum to zero
     res = np.sum(w.dec_hi)
-    msg = ('[RMS_REC > EPSILON] for Wavelet: %s, rms=%.3g' % (wavelet, res))
+    msg = f'[RMS_REC > EPSILON] for Wavelet: {wavelet}, rms={res:.3g}'
     assert_(res < epsilon, msg=msg)
     # Scaling function integrates to unity
     res = np.sum(phi_d) - 2**level
-    msg = ('[RMS_REC > EPSILON] for Wavelet: %s, rms=%.3g' % (wavelet, res))
+    msg = f'[RMS_REC > EPSILON] for Wavelet: {wavelet}, rms={res:.3g}'
     assert_(res < epsilon, msg=msg)
     res = np.sum(phi_r) - 2**level
-    msg = ('[RMS_REC > EPSILON] for Wavelet: %s, rms=%.3g' % (wavelet, res))
+    msg = f'[RMS_REC > EPSILON] for Wavelet: {wavelet}, rms={res:.3g}'
     assert_(res < epsilon, msg=msg)
 
 
@@ -136,23 +137,23 @@ def check_coefficients(wavelet):
     w = pywt.Wavelet(wavelet)
     # Lowpass filter coefficients sum to sqrt2
     res = np.sum(w.dec_lo)-np.sqrt(2)
-    msg = ('[RMS_REC > EPSILON] for Wavelet: %s, rms=%.3g' % (wavelet, res))
+    msg = f'[RMS_REC > EPSILON] for Wavelet: {wavelet}, rms={res:.3g}'
     assert_(res < epsilon, msg=msg)
     # sum even coef = sum odd coef = 1 / sqrt(2)
     res = np.sum(w.dec_lo[::2])-1./np.sqrt(2)
-    msg = ('[RMS_REC > EPSILON] for Wavelet: %s, rms=%.3g' % (wavelet, res))
+    msg = f'[RMS_REC > EPSILON] for Wavelet: {wavelet}, rms={res:.3g}'
     assert_(res < epsilon, msg=msg)
 
     res = np.sum(w.dec_lo[1::2])-1./np.sqrt(2)
-    msg = ('[RMS_REC > EPSILON] for Wavelet: %s, rms=%.3g' % (wavelet, res))
+    msg = f'[RMS_REC > EPSILON] for Wavelet: {wavelet}, rms={res:.3g}'
     assert_(res < epsilon, msg=msg)
     # Highpass filter coefficients sum to zero
     res = np.sum(w.dec_hi)
-    msg = ('[RMS_REC > EPSILON] for Wavelet: %s, rms=%.3g' % (wavelet, res))
+    msg = f'[RMS_REC > EPSILON] for Wavelet: {wavelet}, rms={res:.3g}'
     assert_(res < epsilon, msg=msg)
 
 
-class _CustomHaarFilterBank(object):
+class _CustomHaarFilterBank:
     @property
     def filter_bank(self):
         val = np.sqrt(2) / 2
@@ -171,8 +172,8 @@ def test_custom_wavelet():
                                 filter_bank=filter_bank)
 
     # check expected default wavelet properties
-    assert_(~haar_custom2.orthogonal)
-    assert_(~haar_custom2.biorthogonal)
+    assert_(not haar_custom2.orthogonal)
+    assert_(not haar_custom2.biorthogonal)
     assert_(haar_custom2.symmetry == 'unknown')
     assert_(haar_custom2.family_name == '')
     assert_(haar_custom2.short_family_name == '')

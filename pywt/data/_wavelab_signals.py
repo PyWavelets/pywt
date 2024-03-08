@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-from __future__ import division
 
 import numpy as np
 
@@ -80,10 +78,10 @@ def demo_signal(name='Bumps', n=None):
     name = name.lower()
     if name in n_hard_coded and n is not None:
         raise ValueError(
-            "Parameter n must be set to None when name is {}".format(name))
+            f"Parameter n must be set to None when name is {name}")
     elif n is None and name not in n_hard_coded:
         raise ValueError(
-            "Parameter n must be provided when name is {}".format(name))
+            f"Parameter n must be provided when name is {name}")
 
     if name == 'blocks':
         t0s = [.1, .13, .15, .23, .25, .4, .44, .65, .76, .78, .81]
@@ -254,6 +252,5 @@ def demo_signal(name='Bumps', n=None):
         f = np.real(np.fft.ifft(f))
     else:
         raise ValueError(
-            "unknown name: {}.  name must be one of: {}".format(
-                name, _implemented_signals))
+            f"unknown name: {name}.  name must be one of: {_implemented_signals}")
     return f

@@ -1,0 +1,60 @@
+name: Test Pyodide build for PyWavelets
+
+on:
+  push:
+    branches:
+      - master
+      - v1.**
+  pull_request:
+    branches:
+      - master
+      - v1.**
+
+env:
+  FORCE_COLOR: 3
+
+jobs:
+  build_wasm_emscripten:
+    name: Build PyWavelets for Pyodide
+    runs-on: ubuntu-latest
+    # Uncomment the following line to test changes on a fork
+    # if: github.repository == 'PyWavelets/pywt'
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        id: setup-python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.11.2"
+
+      - name: Install prerequisites
+        run: |
+          python -m pip install pyodide-build "pydantic<2"
+          echo EMSCRIPTEN_VERSION=$(pyodide config get emscripten_version) >> $GITHUB_ENV
+
+      - name: Set up Emscripten toolchain
+        uses: mymindstorm/setup-emscripten@v14
+        with:
+          version: ${{ env.EMSCRIPTEN_VERSION }}
+          actions-cache-folder: emsdk-cache
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4.0.2
+        with:
+          node-version: "18"
+
+      - name: Build PyWavelets
+        run: |
+          pyodide build
+
+      - name: Install and test wheel
+        run: |
+          pyodide venv .venv-pyodide
+          source .venv-pyodide/bin/activate
+          pip install dist/*.whl
+          pushd demo
+          pip install matplotlib pytest
+          python -c "import pywt; print(pywt.__version__)"
+          pytest --pyargs pywt

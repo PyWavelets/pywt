@@ -1,9 +1,7 @@
-from __future__ import division, print_function, absolute_import
 import numpy as np
-from numpy.testing import assert_allclose, assert_raises, assert_, assert_equal
+from numpy.testing import assert_, assert_allclose, assert_equal, assert_raises
 
 import pywt
-
 
 float_dtypes = [np.float32, np.float64, np.complex64, np.complex128]
 real_dtypes = [np.float32, np.float64]

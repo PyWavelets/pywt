@@ -1,17 +1,17 @@
 +---------------+-----------------+
 | Service       | Master branch   |
 +===============+=================+
-| Travis        | |travis_ci|     |
+| GitHub        | |ghactions_ci|  |
 +---------------+-----------------+
 | Appveyor      | |appveyor_ci|   |
 +---------------+-----------------+
 | Read the Docs | |read_the_docs| |
 +---------------+-----------------+
 
-.. |travis_ci| image:: https://api.travis-ci.org/PyWavelets/pywt.svg?branch=master
-   :align: middle
-   :target: https://travis-ci.org/PyWavelets/pywt
-   :alt: TravisCI Status
+
+.. |ghactions_ci| image:: https://github.com/PyWavelets/pywt/actions/workflows/tests.yml/badge.svg?branch=master
+   :alt: Build Status
+   :target: https://github.com/PyWavelets/pywt/actions/workflows/tests.yml?query=branch%3Amaster
 
 .. |appveyor_ci| image:: https://ci.appveyor.com/api/projects/status/github/PyWavelets/pywt
    :align: middle
@@ -65,7 +65,7 @@ For more usage examples see the `demo`_ directory in the source package.
 Installation
 ------------
 
-PyWavelets supports `Python`_ >=3.7, and is only dependent on `NumPy`_
+PyWavelets supports `Python`_ >=3.9, and is only dependent on `NumPy`_
 (supported versions are currently ``>= 1.14.6``). To pass all of the tests,
 `Matplotlib`_ is also required. `SciPy`_ is also an optional dependency. When
 present, FFT-based continuous wavelet transforms will use FFTs from SciPy

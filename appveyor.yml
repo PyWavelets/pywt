@@ -1,33 +1,30 @@
 # https://ci.appveyor.com/project/PyWavelets/pywt
-image: Visual Studio 2019
+image: Visual Studio 2022
 
 # Ensure we don't default to MSBuild
 build: off
 
 environment:
   matrix:
-    - arch: x86
-      PYTHON_ROOT: "C:\\Python38"
     - arch: x64
-      PYTHON_ROOT: "C:\\Python39-x64"
+      PY_PYTHON: 3.9
     - arch: x86
-      PYTHON_ROOT: "C:\\Python310"
+      PY_PYTHON: 3.10-32
     - arch: x64
-      PYTHON_ROOT: "C:\\Python311-x64"
+      PY_PYTHON: 3.12
 
 # From https://mesonbuild.com/Continuous-Integration.html#appveyor-for-windows
 install:
-  # Add necessary paths to PATH variable
-  - cmd: set PATH=%cd%;%PYTHON_ROOT%;%PYTHON_ROOT%\Scripts;%PATH%
-  - "python.exe -m pip install --upgrade pip build"
-  - "python.exe -m pip install numpy --cache-dir c:\\tmp\\pip-cache"
-  - "python.exe -m pip install --only-binary :all: Cython pytest matplotlib --cache-dir c:\\tmp\\pip-cache"
+  - "py -VV" # Also, `py --list`
+  - "py -m pip install --upgrade pip build"
+  - "py -m pip install numpy --cache-dir c:\\tmp\\pip-cache"
+  - "py -m pip install --only-binary :all: Cython pytest matplotlib --cache-dir c:\\tmp\\pip-cache"
 
 test_script:
-  - cmd: call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" %arch%
-  - "python.exe -m pip install . -v --config-settings=setup-args=--vsenv"
+  - cmd: call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat" %arch%
+  - "py -m pip install . -v --config-settings=setup-args=--vsenv"
   - "cd demo"
-  - "python.exe -m pytest --pyargs pywt"
+  - "py -m pytest --pyargs pywt"
   - "cd .."
 
 artifacts:
@@ -35,6 +32,6 @@ artifacts:
   - path: dist\*
 
 cache:
-  # Cache can be manuall cleared like this:
+  # Cache can be manually cleared like this:
   # https://github.com/appveyor/ci/issues/207
   - "c:\\tmp\\pip-cache"

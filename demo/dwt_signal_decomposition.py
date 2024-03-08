@@ -1,12 +1,10 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
 import pywt
 import pywt.data
-
 
 ecg = pywt.data.ecg()
 
@@ -14,7 +12,7 @@ data1 = np.concatenate((np.arange(1, 400),
                         np.arange(398, 600),
                         np.arange(601, 1024)))
 x = np.linspace(0.082, 2.128, num=1024)[::-1]
-data2 = np.sin(40 * np.log(x)) * np.sign((np.log(x)))
+data2 = np.sin(40 * np.log(x)) * np.sign(np.log(x))
 
 mode = pywt.Modes.smooth
 

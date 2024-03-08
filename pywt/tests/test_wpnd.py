@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 
-from __future__ import division, print_function, absolute_import
 
-from itertools import product
-from functools import reduce
 import operator
+from functools import reduce
+from itertools import product
+
 import numpy as np
-from numpy.testing import (assert_allclose, assert_, assert_raises,
-                           assert_equal)
+from numpy.testing import assert_, assert_allclose, assert_equal, assert_raises
 
 import pywt
 

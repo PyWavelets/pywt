@@ -1,14 +1,12 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 import os
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
-from pywt import WaveletPacket
 import pywt.data
-
+from pywt import WaveletPacket
 
 ecg = pywt.data.ecg()
 

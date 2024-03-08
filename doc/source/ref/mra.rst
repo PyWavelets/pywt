@@ -40,4 +40,3 @@ Inverse Multilevel n-dimensional ``imran``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. autofunction:: imran
-

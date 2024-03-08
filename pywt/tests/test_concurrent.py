@@ -3,15 +3,16 @@ Tests used to verify running PyWavelets transforms in parallel via
 concurrent.futures.ThreadPoolExecutor does not raise errors.
 """
 
-from __future__ import division, print_function, absolute_import
 
 import warnings
-import numpy as np
 from functools import partial
-from numpy.testing import assert_array_equal, assert_allclose
-from pywt._pytest import uses_futures, futures, max_workers
+
+import numpy as np
+import pytest
+from numpy.testing import assert_allclose, assert_array_equal
 
 import pywt
+from pywt._pytest import futures, max_workers, uses_futures
 
 
 def _assert_all_coeffs_equal(coefs1, coefs2):

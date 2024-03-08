@@ -11,7 +11,6 @@ on:
       - v1.**
 
 jobs:
-
   test_pywavelets_linux:
     name: linux-cp${{ matrix.python-version }}-${{ matrix.OPTIONS_NAME }}
     runs-on: ubuntu-latest
@@ -19,89 +18,80 @@ jobs:
       MPLBACKEND: Agg
       CYTHON_TRACE: 1
       CYTHONSPEC: cython
-      NUMPY_MIN: numpy==1.20.3
-      CYTHON_MIN: cython==0.29.18
-      SCIPY_MIN: scipy==1.2.3
+      NUMPY_MIN: numpy==1.22.4
+      CYTHON_MIN: cython==0.29.35
+      SCIPY_MIN: scipy==1.8.0
 
     strategy:
       # Ensure that a wheel builder finishes even if another fails
       fail-fast: false
       matrix:
-        python-version: [3.8, 3.9, '3.10', '3.11']
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
         MINIMUM_REQUIREMENTS: [0]
         USE_SCIPY: [0]
         USE_SDIST: [0]
-        USE_WHEEL: [0]
         REFGUIDE_CHECK: [0]
         PIP_FLAGS: [""]
         OPTIONS_NAME: ["default"]
         include:
           - platform_id: manylinux_x86_64
-            python-version: 3.8
+            python-version: "3.9"
             MINIMUM_REQUIREMENTS: 1
             OPTIONS_NAME: "minimum-req"
           - platform_id: manylinux_x86_64
-            python-version: 3.8
+            python-version: "3.9"
             USE_SCIPY: 1
             OPTIONS_NAME: "with-scipy"
           - platform_id: manylinux_x86_64
-            python-version: 3.8
+            python-version: "3.9"
             USE_SDIST: 1
             OPTIONS_NAME: "install-from-sdist"
           - platform_id: manylinux_x86_64
-            python-version: 3.8
-            USE_WHEEL: 1
-            OPTIONS_NAME: "install-from-wheel"
-          - platform_id: manylinux_x86_64
-            python-version: '3.11'
+            python-version: "3.12"
             PIP_FLAGS: "--pre"
             OPTIONS_NAME: "pre-releases"
 
     steps:
       - name: Checkout PyWavelets
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version}}
+          allow-prereleases: true
 
       - name: Build package
         env:
-            VERSION: ${{ matrix.python-version }}
-            MINIMUM_REQUIREMENTS: ${{ matrix.MINIMUM_REQUIREMENTS }}
-            PIP_FLAGS: ${{ matrix.PIP_FLAGS }}
-            USE_WHEEL: ${{ matrix.USE_WHEEL }}
-            USE_SDIST: ${{ matrix.USE_SDIST }}
-            USE_SCIPY: ${{ matrix.USE_SCIPY }}
-            REFGUIDE_CHECK:  ${{ matrix.REFGUIDE_CHECK }}
+          VERSION: ${{ matrix.python-version }}
+          MINIMUM_REQUIREMENTS: ${{ matrix.MINIMUM_REQUIREMENTS }}
+          PIP_FLAGS: ${{ matrix.PIP_FLAGS }}
+          USE_SDIST: ${{ matrix.USE_SDIST }}
+          USE_SCIPY: ${{ matrix.USE_SCIPY }}
+          REFGUIDE_CHECK: ${{ matrix.REFGUIDE_CHECK }}
         run: |
-            uname -a
-            df -h
-            ulimit -a
-            # ccache -s
-            which python
-            python --version
-            # sudo apt-get install libatlas-base-dev
-            pip install --upgrade pip build
-            # Set numpy version first, other packages link against it
-            if [ "${MINIMUM_REQUIREMENTS}" == "1" ]; then
-                pip install ${CYTHON_MIN}
-                pip install ${NUMPY_MIN}
-                if [ "${USE_SCIPY}" == "1" ]; then pip install ${SCIPY_MIN}; fi
-            else
-                pip install cython
-                pip install numpy
-                if [ "${USE_SCIPY}" == "1" ]; then pip install scipy; fi
-            fi
-            pip install matplotlib pytest
+          uname -a
+          df -h
+          ulimit -a
+          # ccache -s
+          which python
+          python --version
+          # sudo apt-get install libatlas-base-dev
+          pip install --upgrade pip build
+          # Set numpy version first, other packages link against it
+          if [ "${MINIMUM_REQUIREMENTS}" == "1" ]; then
+              pip install ${CYTHON_MIN}
+              pip install ${NUMPY_MIN}
+              if [ "${USE_SCIPY}" == "1" ]; then pip install ${SCIPY_MIN}; fi
+          else
+              pip install ${PIP_FLAGS} cython
+              pip install ${PIP_FLAGS} numpy
+              if [ "${USE_SCIPY}" == "1" ]; then pip install ${PIP_FLAGS} scipy; fi
+          fi
+          pip install ${PIP_FLAGS} matplotlib pytest
 
             set -o pipefail
-            if [ "${USE_WHEEL}" == "1" ]; then
-                # Need verbose output or TravisCI will terminate after 10 minutes
-                pip wheel . -v
-                pip install pywavelets*.whl
-            elif [ "${USE_SDIST}" == "1" ]; then
+            if [ "${USE_SDIST}" == "1" ]; then
                 python -m build --sdist
                 pip install dist/pyw*.tar.gz -v
             elif [ "${REFGUIDE_CHECK}" == "1" ]; then
@@ -113,27 +103,25 @@ jobs:
 
       - name: Run tests
         env:
-            PIP_FLAGS: ${{ matrix.PIP_FLAGS }}
-            USE_WHEEL: ${{ matrix.USE_WHEEL }}
-            USE_SDIST: ${{ matrix.USE_SDIST }}
-            REFGUIDE_CHECK: ${{ matrix.REFGUIDE_CHECK }}
+          USE_SDIST: ${{ matrix.USE_SDIST }}
+          REFGUIDE_CHECK: ${{ matrix.REFGUIDE_CHECK }}
         run: |
-            set -o pipefail
-            # Move out of source directory to avoid finding local pywt
-            pushd demo
-            if [ "${USE_WHEEL}" == "1" ]; then
-                pytest --pyargs pywt
-                python ../pywt/tests/test_doc.py
-            elif [ "${USE_SDIST}" == "1" ]; then
-                pytest --pyargs pywt
-                python ../pywt/tests/test_doc.py
-            elif [ "${REFGUIDE_CHECK}" == "1" ]; then
-                python util/refguide_check.py --doctests
-            else
-                pytest --pyargs pywt
-            fi
-            popd
-
+          set -o pipefail
+          # Move out of source directory to avoid finding local pywt
+          pushd demo
+          if [ "${USE_SDIST}" == "1" ]; then
+              pytest --pyargs pywt
+              python ../pywt/tests/test_doc.py
+          elif [ "${REFGUIDE_CHECK}" == "1" ]; then
+              # Run doctests and check if the refguide contains entries from __all__
+              python util/refguide_check.py --doctests
+              # Run Sphinx HTML docs builder, converting warnings to errors
+              pip install -r util/readthedocs/requirements.txt
+              sphinx-build -b html -W --keep-going -d _build/doctrees . doc/source doc/build
+          else
+              pytest --pyargs pywt
+          fi
+          popd
 
   test_pywavelets_macos:
     name: macos-cp${{ matrix.python-version }}-${{ matrix.OPTIONS_NAME }}
@@ -142,72 +130,68 @@ jobs:
       MPLBACKEND: Agg
       CYTHON_TRACE: 1
       CYTHONSPEC: cython
-      NUMPY_MIN: numpy==1.20.3
-      CYTHON_MIN: cython==0.29.18
-      SCIPY_MIN: scipy==1.2.3
+      NUMPY_MIN: numpy==1.22.4
+      CYTHON_MIN: cython==0.29.35
+      SCIPY_MIN: scipy==1.8.0
 
     strategy:
       # Ensure that a wheel builder finishes even if another fails
       fail-fast: false
       matrix:
-        python-version: [3.8, '3.11']
+        python-version: ["3.9", "3.12"]
         MINIMUM_REQUIREMENTS: [0]
         USE_SCIPY: [0]
         USE_SDIST: [0]
-        USE_WHEEL: [0]
         REFGUIDE_CHECK: [0]
         PIP_FLAGS: [""]
         OPTIONS_NAME: ["default"]
         include:
-          - python-version: '3.8'
+          - python-version: "3.9"
             MINIMUM_REQUIREMENTS: 1
             OPTIONS_NAME: "osx-minimum-req"
-          - python-version: '3.10'
+          - python-version: "3.12"
             PIP_FLAGS: "--pre"
             OPTIONS_NAME: "pre-releases"
 
     steps:
       - name: Checkout PyWavelets
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version}}
+          allow-prereleases: true
 
       - name: Build package
         env:
-            VERSION: ${{ matrix.python-version }}
-            MINIMUM_REQUIREMENTS: ${{ matrix.MINIMUM_REQUIREMENTS }}
-            PIP_FLAGS: ${{ matrix.PIP_FLAGS }}
-            USE_WHEEL: ${{ matrix.USE_WHEEL }}
-            USE_SDIST: ${{ matrix.USE_SDIST }}
-            USE_SCIPY: ${{ matrix.USE_SCIPY }}
-            REFGUIDE_CHECK:  ${{ matrix.REFGUIDE_CHECK }}
-            CC: /usr/bin/clang
-            CXX: /usr/bin/clang++
+          VERSION: ${{ matrix.python-version }}
+          MINIMUM_REQUIREMENTS: ${{ matrix.MINIMUM_REQUIREMENTS }}
+          PIP_FLAGS: ${{ matrix.PIP_FLAGS }}
+          USE_SDIST: ${{ matrix.USE_SDIST }}
+          USE_SCIPY: ${{ matrix.USE_SCIPY }}
+          REFGUIDE_CHECK: ${{ matrix.REFGUIDE_CHECK }}
+          CC: /usr/bin/clang
+          CXX: /usr/bin/clang++
         run: |
-            uname -a
-            df -h
-            ulimit -a
-            which python
-            python --version
-            pip install --upgrade pip build
-            # Set numpy version first, other packages link against it
-            if [ "${MINIMUM_REQUIREMENTS}" == "1" ]; then
-                pip install ${CYTHON_MIN} ${NUMPY_MIN}
-                if [ "${USE_SCIPY}" == "1" ]; then pip install ${SCIPY_MIN}; fi
-            else
-                pip install cython numpy
-                if [ "${USE_SCIPY}" == "1" ]; then pip install scipy; fi
-            fi
-            pip install matplotlib pytest
+          uname -a
+          df -h
+          ulimit -a
+          which python
+          python --version
+          pip install --upgrade pip build
+          # Set numpy version first, other packages link against it
+          if [ "${MINIMUM_REQUIREMENTS}" == "1" ]; then
+              pip install ${CYTHON_MIN} ${NUMPY_MIN}
+              if [ "${USE_SCIPY}" == "1" ]; then pip install ${SCIPY_MIN}; fi
+          else
+              pip install ${PIP_FLAGS} cython numpy
+              if [ "${USE_SCIPY}" == "1" ]; then pip install ${PIP_FLAGS} scipy; fi
+          fi
+          pip install ${PIP_FLAGS} matplotlib pytest
 
             set -o pipefail
-            if [ "${USE_WHEEL}" == "1" ]; then
-                pip wheel . -v
-                pip install pywavelets*.whl -v
-            elif [ "${USE_SDIST}" == "1" ]; then
+            if [ "${USE_SDIST}" == "1" ]; then
                 python -m build --sdist
                 pip install pywavelets* -v
             elif [ "${REFGUIDE_CHECK}" == "1" ]; then
@@ -219,22 +203,18 @@ jobs:
 
       - name: Run tests
         env:
-            PIP_FLAGS: ${{ matrix.PIP_FLAGS }}
-            USE_WHEEL: ${{ matrix.USE_WHEEL }}
-            USE_SDIST: ${{ matrix.USE_SDIST }}
-            REFGUIDE_CHECK: ${{ matrix.REFGUIDE_CHECK }}
+          PIP_FLAGS: ${{ matrix.PIP_FLAGS }}
+          USE_SDIST: ${{ matrix.USE_SDIST }}
+          REFGUIDE_CHECK: ${{ matrix.REFGUIDE_CHECK }}
         run: |
-            # Move out of source directory to avoid finding local pywt
-            pushd demo
-            if [ "${USE_WHEEL}" == "1" ]; then
-                pytest --pyargs pywt
-                python ../pywt/tests/test_doc.py
-            elif [ "${USE_SDIST}" == "1" ]; then
-                pytest --pyargs pywt
-                python ../pywt/tests/test_doc.py
-            elif [ "${REFGUIDE_CHECK}" == "1" ]; then
-                python util/refguide_check.py --doctests
-            else
-                pytest --pyargs pywt
-            fi
-            popd
+          # Move out of source directory to avoid finding local pywt
+          pushd demo
+          if [ "${USE_SDIST}" == "1" ]; then
+              pytest --pyargs pywt
+              python ../pywt/tests/test_doc.py
+          elif [ "${REFGUIDE_CHECK}" == "1" ]; then
+              python util/refguide_check.py --doctests
+          else
+              pytest --pyargs pywt
+          fi
+          popd

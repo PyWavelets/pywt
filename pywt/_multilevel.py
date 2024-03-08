@@ -8,19 +8,19 @@ Multilevel 1D and 2D Discrete Wavelet Transform
 and Inverse Discrete Wavelet Transform.
 """
 
-from __future__ import division, print_function, absolute_import
 
 import numbers
 import warnings
-from itertools import product
 from copy import copy
+from itertools import product
+
 import numpy as np
 
-from ._extensions._pywt import Wavelet, Modes
+from ._dwt import dwt, dwt_coeff_len, idwt
 from ._extensions._dwt import dwt_max_level
-from ._dwt import dwt, idwt, dwt_coeff_len
-from ._multidim import dwt2, idwt2, dwtn, idwtn, _fix_coeffs
-from ._utils import _as_wavelet, _wavelets_per_axis, _modes_per_axis
+from ._extensions._pywt import Modes, Wavelet
+from ._multidim import _fix_coeffs, dwt2, dwtn, idwt2, idwtn
+from ._utils import _as_wavelet, _modes_per_axis, _wavelets_per_axis
 
 __all__ = ['wavedec', 'waverec', 'wavedec2', 'waverec2', 'wavedecn',
            'waverecn', 'coeffs_to_array', 'array_to_coeffs', 'ravel_coeffs',
@@ -41,8 +41,8 @@ def _check_level(sizes, dec_lens, level):
             "Level value of %d is too low . Minimum level is 0." % level)
     elif level > max_level:
         warnings.warn(
-            ("Level value of {} is too high: all coefficients will experience "
-             "boundary effects.").format(level))
+            f"Level value of {level} is too high: all coefficients will experience "
+             "boundary effects.")
     return level
 
 
@@ -158,11 +158,11 @@ def waverec(coeffs, wavelet, mode='symmetric', axis=-1):
 
     for d in ds:
         if d is not None and not isinstance(d, np.ndarray):
-            raise ValueError((
-                "Unexpected detail coefficient type: {}. Detail coefficients "
+            raise ValueError(
+                f"Unexpected detail coefficient type: {type(d)}. Detail coefficients "
                 "must be arrays as returned by wavedec. If you are using "
                 "pywt.array_to_coeffs or pywt.unravel_coeffs, please specify "
-                "output_format='wavedec'").format(type(d)))
+                "output_format='wavedec'")
         if (a is not None) and (d is not None):
             try:
                 if a.shape[axis] == d.shape[axis] + 1:
@@ -315,11 +315,11 @@ def waverec2(coeffs, wavelet, mode='symmetric', axes=(-2, -1)):
 
     for d in ds:
         if not isinstance(d, (list, tuple)) or len(d) != 3:
-            raise ValueError((
-                "Unexpected detail coefficient type: {}. Detail coefficients "
+            raise ValueError(
+                f"Unexpected detail coefficient type: {type(d)}. Detail coefficients "
                 "must be a 3-tuple of arrays as returned by wavedec2. If you "
                 "are using pywt.array_to_coeffs or pywt.unravel_coeffs, "
-                "please specify output_format='wavedec2'").format(type(d)))
+                "please specify output_format='wavedec2'")
         d = tuple(np.asarray(coeff) if coeff is not None else None
                   for coeff in d)
         d_shapes = (coeff.shape for coeff in d if coeff is not None)
@@ -522,12 +522,12 @@ def waverecn(coeffs, wavelet, mode='symmetric', axes=None):
     a, ds = coeffs[0], coeffs[1:]
 
     # this dictionary check must be prior to the call to _fix_coeffs
-    if len(ds) > 0 and not all([isinstance(d, dict) for d in ds]):
-        raise ValueError((
-            "Unexpected detail coefficient type: {}. Detail coefficients "
+    if len(ds) > 0 and not all(isinstance(d, dict) for d in ds):
+        raise ValueError(
+            f"Unexpected detail coefficient type: {type(ds[0])}. Detail coefficients "
             "must be a dictionary of arrays as returned by wavedecn. If "
             "you are using pywt.array_to_coeffs or pywt.unravel_coeffs, "
-            "please specify output_format='wavedecn'").format(type(ds[0])))
+            "please specify output_format='wavedecn'")
 
     # Raise error for invalid key combinations
     ds = list(map(_fix_coeffs, ds))
@@ -588,7 +588,7 @@ def _coeffs_wavedec_to_wavedecn(coeffs):
             continue
         if coeffs[n].ndim != 1:
             raise ValueError("expected a 1D coefficient array")
-        coeffs[n] = dict(d=coeffs[n])
+        coeffs[n] = {'d': coeffs[n]}
     return coeffs
 
 
@@ -605,7 +605,7 @@ def _coeffs_wavedec2_to_wavedecn(coeffs):
             raise ValueError(
                 "Expected numpy arrays of detail coefficients. Setting "
                 "coefficients to None is not supported.")
-        coeffs[n] = dict(ad=ad, da=da, dd=dd)
+        coeffs[n] = {'ad': ad, 'da': da, 'dd': dd}
     return coeffs
 
 
@@ -779,7 +779,7 @@ def coeffs_to_array(coeffs, padding=0, axes=None):
             raise ValueError("coeffs_to_array does not support missing "
                              "coefficients.")
         d_shape = coeff_dict['d' * ndim_transform].shape
-        for key in coeff_dict.keys():
+        for key in coeff_dict:
             d = coeff_dict[key]
             slice_array = [slice(None), ] * ndim
             for i, let in enumerate(key):
@@ -790,7 +790,7 @@ def coeffs_to_array(coeffs, padding=0, axes=None):
                     slice_array[ax_i] = slice(a_shape[ax_i],
                                               a_shape[ax_i] + d.shape[ax_i])
                 else:
-                    raise ValueError("unexpected letter: {}".format(let))
+                    raise ValueError(f"unexpected letter: {let}")
             slice_array = tuple(slice_array)
             coeff_arr[slice_array] = d
             coeff_slices[-1][key] = slice_array
@@ -882,7 +882,7 @@ def array_to_coeffs(arr, coeff_slices, output_format='wavedecn'):
                 d[k] = arr[v]
         else:
             raise ValueError(
-                "Unrecognized output format: {}".format(output_format))
+                f"Unrecognized output format: {output_format}")
         coeffs.append(d)
     return coeffs
 
@@ -1186,7 +1186,7 @@ def unravel_coeffs(arr, coeff_slices, coeff_shapes, output_format='wavedecn'):
                 d[k] = arr[v].reshape(shape_dict[k])
         else:
             raise ValueError(
-                "Unrecognized output format: {}".format(output_format))
+                f"Unrecognized output format: {output_format}")
         coeffs.append(d)
     return coeffs
 
@@ -1201,7 +1201,7 @@ def _check_fswavedecn_axes(data, axes):
         raise np.AxisError("Axis greater than data dimensions")
 
 
-class FswavedecnResult(object):
+class FswavedecnResult:
     """Object representing fully separable wavelet transform coefficients.
 
     Parameters
@@ -1362,7 +1362,7 @@ class FswavedecnResult(object):
                 "x does not match the shape of the requested coefficient")
         if x.dtype != current_dtype:
             warnings.warn("dtype mismatch:  converting the provided array to"
-                          "dtype {}".format(current_dtype))
+                          f"dtype {current_dtype}")
         self._coeffs[sl] = x
 
     def detail_keys(self):

@@ -1,6 +1,7 @@
 import os
+
 import numpy as np
-from numpy.testing import assert_allclose, assert_raises, assert_
+from numpy.testing import assert_, assert_allclose, assert_raises
 
 import pywt.data
 
