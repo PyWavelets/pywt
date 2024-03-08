@@ -6,8 +6,8 @@ import pywt
 wav = pywt.ContinuousWavelet('cmor1.5-1.0')
 
 # print the range over which the wavelet will be evaluated
-print("Continuous wavelet will be evaluated over the range [{}, {}]".format(
-    wav.lower_bound, wav.upper_bound))
+print("Continuous wavelet will be evaluated over the range "
+      f"[{wav.lower_bound}, {wav.upper_bound}]")
 
 width = wav.upper_bound - wav.lower_bound
 

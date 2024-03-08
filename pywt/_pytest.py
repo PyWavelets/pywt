@@ -1,7 +1,7 @@
 """common test-related code."""
 import multiprocessing
-import platform
 import os
+import platform
 import sys
 
 import numpy as np

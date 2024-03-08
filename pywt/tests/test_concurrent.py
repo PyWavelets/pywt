@@ -4,14 +4,13 @@ concurrent.futures.ThreadPoolExecutor does not raise errors.
 """
 
 
-from functools import partial
 import warnings
+from functools import partial
 
 import numpy as np
-from numpy.testing import assert_allclose, assert_array_equal
 import pytest
+from numpy.testing import assert_allclose, assert_array_equal
 
-from pywt._pytest import uses_futures, futures, max_workers
 import pywt
 from pywt._pytest import futures, max_workers, uses_futures
 

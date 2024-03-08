@@ -4,7 +4,6 @@ import os
 
 import numpy as np
 
-
 _DATADIR = importlib.resources.files('pywt.data')
 
 

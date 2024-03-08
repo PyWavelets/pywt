@@ -41,7 +41,7 @@ keys = ['aaaa', 'aaad', 'aaah', 'aaav', 'aad', 'aah', 'aava', 'aavd',
         'aavh', 'aavv', 'ad', 'ah', 'ava', 'avd', 'avh', 'avv', 'd', 'h',
         'vaa', 'vad', 'vah', 'vav', 'vd', 'vh', 'vv']
 draw_2d_wp_basis(shape, keys, ax=axes[3], label_levels=label_levels)
-axes[3].set_title('wavelet packet\n(custom)'.format(max_lev))
+axes[3].set_title('wavelet packet\n(custom)')
 
 plt.tight_layout()
 plt.show()

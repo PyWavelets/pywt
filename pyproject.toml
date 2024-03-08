@@ -68,7 +68,7 @@ documentation = "https://pywavelets.readthedocs.io/"
 [tool.ruff]
 line-length = 88
 target-version = 'py39'
-select = [
+lint.select = [
     'I',
     'UP',
     'C4',
@@ -79,7 +79,6 @@ select = [
     'SIM101',
     'SIM109',
     'SIM110',
-    'SIM111',
     'SIM118',
     'SIM2',
 ]
