@@ -1,7 +1,7 @@
-import numpy as np
-import pywt
 import matplotlib.pyplot as plt
+import numpy as np
 
+import pywt
 
 # plot complex morlet wavelets with different center frequencies and bandwidths
 wavelets = [f"cmor{x:.1f}-{y:.1f}" for x in [0.5, 1.5, 2.5] for y in [0.5, 1.0, 1.5]]

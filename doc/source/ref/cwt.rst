@@ -26,7 +26,7 @@ For more background and an in-depth guide to the application of the Continuous
 Wavelet Transform, including topics such as statistical significance, the
 following well-known article is highly recommended:
 
-`C. Torrence and G. Compo: "A Practial Guide to Wavelet Analysis", Bulletin of the American Meteorological Society, vol. 79, no. 1, pp. 61-78, January 1998 <https://paos.colorado.edu/research/wavelets/bams_79_01_0061.pdf>`_
+`C. Torrence and G. Compo: "A Practical Guide to Wavelet Analysis", Bulletin of the American Meteorological Society, vol. 79, no. 1, pp. 61-78, January 1998 <https://paos.colorado.edu/research/wavelets/bams_79_01_0061.pdf>`_
 
 
 The ``cwt`` Function
@@ -93,8 +93,8 @@ wavelet names compatible with ``cwt`` can be obtained by:
 
     wavlist = pywt.wavelist(kind='continuous')
 
-Here is an overview of all available wavelets for `cwt`. Note, that they can be
-customized by passing paramters such as ``center_frequency`` and ``bandwidth_frequency``
+Here is an overview of all available wavelets for ``cwt``. Note, that they can be
+customized by passing parameters such as ``center_frequency`` and ``bandwidth_frequency``
 (see :ref:`ContinuousWavelet` for details).
 
 .. plot:: pyplots/plot_wavelets.py

@@ -1,6 +1,7 @@
-import numpy as np
-import pywt
 import matplotlib.pyplot as plt
+import numpy as np
+
+import pywt
 
 
 def gaussian(x, x0, sigma):
@@ -51,7 +52,7 @@ axs[0].set_title("Continuous Wavelet Transform (Scaleogram)")
 fig.colorbar(pcm, ax=axs[0])
 
 # plot fourier transform for comparison
-from scipy.fft import rfft, rfftfreq
+from numpy.fft import rfft, rfftfreq
 
 yf = rfft(chirp)
 xf = rfftfreq(len(chirp), sampling_period)
