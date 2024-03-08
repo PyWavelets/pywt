@@ -118,8 +118,11 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1):
     dt_cplx = np.result_type(dt, np.complex64)
     if not isinstance(wavelet, (ContinuousWavelet, Wavelet)):
         wavelet = DiscreteContinuousWavelet(wavelet)
-    if np.isscalar(scales):
-        scales = np.array([scales])
+
+    scales = np.atleast_1d(scales)
+    if np.any(scales <= 0):
+        raise ValueError("`scales` must only include positive values")
+
     if not np.isscalar(axis):
         raise np.AxisError("axis must be a scalar.")
 

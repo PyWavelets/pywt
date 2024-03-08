@@ -441,6 +441,20 @@ def test_cwt_small_scales():
     # extremely short scale factors raise a ValueError
     assert_raises(ValueError, pywt.cwt, data, scales=0.01, wavelet='mexh')
 
+def test_cwt_zero_scale():
+    data = np.zeros(32)
+    scales = np.arange(0, 4)
+
+    # scale that includes 0 throws ValueError to prevent IndexError
+    assert_raises(ValueError, pywt.cwt, data, scales=scales, wavelet='morl')
+
+def test_cwt_negative_scale():
+    data = np.zeros(32)
+    scales = np.asarray([-1, -2, -3])
+
+    # scale that includes negative values throws ValueError to prevent IndexError
+    assert_raises(ValueError, pywt.cwt, data, scales=scales, wavelet='morl')
+
 
 def test_cwt_method_fft():
     rstate = np.random.RandomState(1)
