@@ -257,6 +257,8 @@ from plain Python lists of filter coefficients and a *filter bank-like* object.
     >>> myOtherWavelet = pywt.Wavelet(name="myHaarWavelet", filter_bank=filter_bank)
 
 
+.. _ContinuousWavelet:
+
 ``ContinuousWavelet`` object
 ----------------------------
 
