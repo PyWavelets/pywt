@@ -22,70 +22,70 @@ inaccurate computations of the :ref:`DWT <ref-dwt>` at the signal's ends.
 PyWavelets provides several methods of signal extrapolation that can be used to
 minimize this negative effect:
 
-  .. _`Modes.zero`:
+.. _`Modes.zero`:
 
-  * ``zero`` - **zero-padding** - signal is extended by adding zero samples::
+* ``zero`` - **zero-padding** - signal is extended by adding zero samples::
 
-      ... 0  0 | x1 x2 ... xn | 0  0 ...
+    ... 0  0 | x1 x2 ... xn | 0  0 ...
 
-  .. _`Modes.constant`:
+.. _`Modes.constant`:
 
-  * ``constant`` - **constant-padding** - border values are replicated::
+* ``constant`` - **constant-padding** - border values are replicated::
 
-      ... x1 x1 | x1 x2 ... xn | xn xn ...
+    ... x1 x1 | x1 x2 ... xn | xn xn ...
 
-  .. _`Modes.symmetric`:
+.. _`Modes.symmetric`:
 
-  * ``symmetric`` - **symmetric-padding** - signal is extended by *mirroring*
-    samples. This mode is also known as half-sample symmetric.::
+* ``symmetric`` - **symmetric-padding** - signal is extended by *mirroring*
+  samples. This mode is also known as half-sample symmetric.::
 
-      ... x2 x1 | x1 x2 ... xn | xn xn-1 ...
+    ... x2 x1 | x1 x2 ... xn | xn xn-1 ...
 
-  .. _`Modes.reflect`:
+.. _`Modes.reflect`:
 
-  * ``reflect`` - **reflect-padding** - signal is extended by *reflecting*
-    samples. This mode is also known as whole-sample symmetric.::
+* ``reflect`` - **reflect-padding** - signal is extended by *reflecting*
+  samples. This mode is also known as whole-sample symmetric.::
 
-      ... x3 x2 | x1 x2 ... xn | xn-1 xn-2 ...
+    ... x3 x2 | x1 x2 ... xn | xn-1 xn-2 ...
 
-  .. _`Modes.periodic`:
-  .. _`periodic-padding`:
+.. _`Modes.periodic`:
+.. _`periodic-padding`:
 
-  * ``periodic`` - **periodic-padding** - signal is treated as a periodic one::
+* ``periodic`` - **periodic-padding** - signal is treated as a periodic one::
 
-      ... xn-1 xn | x1 x2 ... xn | x1 x2 ...
+    ... xn-1 xn | x1 x2 ... xn | x1 x2 ...
 
-  .. _`Modes.smooth`:
+.. _`Modes.smooth`:
 
-  * ``smooth`` - **smooth-padding** - signal is extended according to the first
-    derivatives calculated on the edges (straight line)
+* ``smooth`` - **smooth-padding** - signal is extended according to the first
+  derivatives calculated on the edges (straight line)
 
-  .. _`Modes.antisymmetric`:
+.. _`Modes.antisymmetric`:
 
-  * ``antisymmetric`` - **anti-symmetric padding** - signal is extended by
-    *mirroring* and negating samples. This mode is also known as half-sample
-    anti-symmetric::
+* ``antisymmetric`` - **anti-symmetric padding** - signal is extended by
+  *mirroring* and negating samples. This mode is also known as half-sample
+  anti-symmetric::
 
-      ... -x2 -x1 | x1 x2 ... xn | -xn -xn-1 ...
+    ... -x2 -x1 | x1 x2 ... xn | -xn -xn-1 ...
 
-  .. _`Modes.antireflect`:
+.. _`Modes.antireflect`:
 
-  * ``antireflect`` - **anti-symmetric-reflect padding** - signal is extended by
-    *reflecting* anti-symmetrically about the edge samples. This mode is also
-    known as whole-sample anti-symmetric::
+* ``antireflect`` - **anti-symmetric-reflect padding** - signal is extended by
+  *reflecting* anti-symmetrically about the edge samples. This mode is also
+  known as whole-sample anti-symmetric::
 
-      ... (2*x1 - x3) (2*x1 - x2) | x1 x2 ... xn | (2*xn - xn-1) (2*xn - xn-2) ...
+    ... (2*x1 - x3) (2*x1 - x2) | x1 x2 ... xn | (2*xn - xn-1) (2*xn - xn-2) ...
 
 :ref:`DWT <ref-dwt>` performed for these extension modes is slightly redundant, but ensures
 perfect reconstruction. To receive the smallest possible number of coefficients,
 computations can be performed with the `periodization`_ mode:
 
-  .. _`periodization`:
-  .. _`Modes.periodization`:
+.. _`periodization`:
+.. _`Modes.periodization`:
 
-  * ``periodization`` - **periodization** - is like `periodic-padding`_ but gives the
-    smallest possible number of decomposition coefficients. :ref:`IDWT <ref-idwt>` must be
-    performed with the same mode.
+* ``periodization`` - **periodization** - is like `periodic-padding`_ but gives the
+  smallest possible number of decomposition coefficients. :ref:`IDWT <ref-idwt>` must be
+  performed with the same mode.
 
   **Example:**
 

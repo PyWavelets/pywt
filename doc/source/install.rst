@@ -43,7 +43,7 @@ To run all the tests for PyWavelets, you will also need to install the
 Matplotlib_ package. If SciPy_ is available, FFT-based continuous wavelet
 transforms will use the FFT implementation from SciPy instead of NumPy.
 
-.. seealso::  :ref:`Development guide <dev-index>` section contains more
+.. seealso::  The :ref:`Development guide <dev-index>` section contains more
               information on building and installing from source code.
 
 .. include:: common_refs.rst

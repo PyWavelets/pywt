@@ -11,12 +11,13 @@
 # serve to show the default.
 
 import datetime
-import re
+import importlib.metadata
 
 import jinja2.filters
 import numpy as np
 
 # FIXME: doctests need the str/repr formatting used in Numpy < 1.14.
+# Should this be removed or updated?
 try:
     np.set_printoptions(legacy='1.13')
 except TypeError:
@@ -32,11 +33,20 @@ except TypeError:
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.doctest', 'sphinx.ext.autodoc', 'sphinx.ext.todo',
-              'sphinx.ext.extlinks', 'sphinx.ext.mathjax',
-              'sphinx.ext.autosummary', 'numpydoc',
-              'sphinx.ext.intersphinx',
-              'matplotlib.sphinxext.plot_directive']
+extensions = [
+    'matplotlib.sphinxext.plot_directive',
+    'numpydoc',
+    'sphinx.ext.autodoc',
+    'sphinx.ext.autosummary',
+    'sphinx.ext.doctest',
+    'sphinx.ext.extlinks',
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.mathjax',
+    'sphinx.ext.todo',
+    'sphinx_copybutton',
+    'sphinx_togglebutton',
+
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -45,7 +55,7 @@ templates_path = ['_templates']
 source_suffix = '.rst'
 
 # The encoding of source files.
-#source_encoding = 'utf-8'
+source_encoding = 'utf-8'
 
 # The master toctree document.
 master_doc = 'index'
@@ -60,10 +70,9 @@ copyright = f'2006-{datetime.date.today().year}, The PyWavelets Developers'
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
-import pywt
 
-version = re.sub(r'\.dev0+.*$', r'.dev', pywt.__version__)
-release = pywt.__version__
+version = importlib.metadata.version('pywavelets')
+release = version
 
 print(f"PyWavelets (VERSION {version})")
 
@@ -108,26 +117,74 @@ modindex_common_prefix = ['pywt.']
 
 # The theme to use for HTML and HTML Help pages.  Major themes that come with
 # Sphinx are currently 'default' and 'sphinxdoc'.
-html_theme = 'nature'
+html_theme = 'pydata_sphinx_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
-# further.  For a list of options available for each theme, see the
-# documentation.
-#html_theme_options = {}
+# further. For a list of options available for each theme, see the documentation
+# at https://pydata-sphinx-theme.readthedocs.io/en/stable/user_guide/index.html
+html_theme_options = {
+"navbar_start": ["navbar-logo"],
+"navbar_center": ["navbar-nav"],
+"navbar_end": ["navbar-icon-links", "theme-switcher"],
+"navbar_persistent": ["search-button"],
+"primary_sidebar_end": ["indices.html", "sidebar-ethical-ads.html"],
+"navigation_with_keys": False,
+"show_nav_level": 2,
+"navigation_depth": 2,
+"show_toc_level": 2,
+"use_edit_page_button": True,
+"github_url": "https://github.com/PyWavelets/pywt",
+"secondary_sidebar_items": {
+    "**": ["page-toc", "sourcelink", "edit-this-page"],
+    "index": ["page-toc"],
+},
+"show_prev_next": True,
+"footer_start": ["copyright", "sphinx-version"],
+"footer_end": ["theme-version"],
+"pygment_light_style": "a11y-high-contrast-light",
+"pygment_dark_style": "a11y-high-contrast-dark",
+"icon_links": [
+        {
+            "name": "Discussion group on Google Groups",
+            "url": "https://groups.google.com/group/pywavelets",
+            # Icon class (if "type": "fontawesome"), or path to local image (if "type": "local")
+            "icon": "fa-regular fa-comments",
+            # The type of image to be used (see below for details)
+            "type": "fontawesome",
+        },
+        {
+            "name": "Explore PyWavelets",
+            "url": "http://wavelets.pybytes.com/",
+            "icon": "fa-solid fa-wave-square",
+            "type": "fontawesome",
+        }
+   ],
+"icon_links_label": "Quick Links",
+}
+
+# Contexts to extract GitHub links for edit buttons and theme switcher
+html_context = {
+    "github_url": "https://github.com", # or your GitHub Enterprise site
+    "github_user": "PyWavelets",
+    "github_repo": "pywt",
+    "github_version": "master",
+    "doc_path": "doc/source",
+    "default_mode": "light",
+}
 
 # Add any paths that contain custom themes here, relative to this directory.
-#html_theme_path = []
+# html_theme_path = []
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
 html_title = 'PyWavelets Documentation'
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
-#html_short_title = None
+# html_short_title = None
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
-#html_logo = None
+# html_logo = None
 
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
@@ -145,26 +202,26 @@ html_last_updated_fmt = '%b %d, %Y'
 
 # If true, SmartyPants will be used to convert quotes and dashes to
 # typographically correct entities.
-#html_use_smartypants = True
+# html_use_smartypants = True
 
 # Custom sidebar templates, maps document names to template names.
 #html_sidebars = {}
 html_sidebars = {
-   '**': ['localtoc.html', "relations.html", 'quicklinks.html', 'searchbox.html', 'editdocument.html'],
+    "**": ["sidebar-nav-bs",]
 }
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
-#html_additional_pages = {}
+# html_additional_pages = {}
 
 # If false, no module index is generated.
-#html_use_modindex = True
+# html_use_modindex = True
 
 # If false, no index is generated.
-#html_use_index = True
+# html_use_index = True
 
 # If true, the index is split into individual pages for each letter.
-#html_split_index = False
+# html_split_index = False
 
 # If true, links to the reST sources are added to the pages.
 html_show_sourcelink = False
@@ -175,7 +232,7 @@ html_show_sourcelink = False
 html_use_opensearch = 'http://pywavelets.readthedocs.org'
 
 # If nonempty, this is the file name suffix for HTML files (e.g. ".xhtml").
-#html_file_suffix = ''
+# html_file_suffix = ''
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'PyWaveletsdoc'
@@ -184,10 +241,10 @@ htmlhelp_basename = 'PyWaveletsdoc'
 # -- Options for LaTeX output --------------------------------------------------
 
 # The paper size ('letter' or 'a4').
-#latex_paper_size = 'letter'
+# latex_paper_size = 'letter'
 
 # The font size ('10pt', '11pt' or '12pt').
-#latex_font_size = '10pt'
+# latex_font_size = '10pt'
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
@@ -198,20 +255,20 @@ latex_documents = [
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.
-#latex_logo = None
+# latex_logo = None
 
 # For "manual" documents, if this is true, then toplevel headings are parts,
 # not chapters.
-#latex_use_parts = False
+# latex_use_parts = False
 
 # Additional stuff for the LaTeX preamble.
-#latex_preamble = ''
+# latex_preamble = ''
 
 # Documents to append as an appendix to all manuals.
-#latex_appendices = []
+# latex_appendices = []
 
 # If false, no module index is generated.
-#latex_use_modindex = True
+# latex_use_modindex = True
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -230,4 +287,6 @@ plot_html_show_source_link = False
 
 # Intersphinx to get Numpy and other targets
 intersphinx_mapping = {
-    'numpy': ('https://numpy.org/devdocs', None)}
+    'numpy': ('https://numpy.org/devdocs', None),
+    'scipy': ('https://docs.scipy.org/doc/scipy/reference', None),
+    }
