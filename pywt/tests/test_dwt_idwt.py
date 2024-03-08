@@ -1,9 +1,8 @@
 #!/usr/bin/env python
-from __future__ import division, print_function, absolute_import
 
 import numpy as np
-from numpy.testing import (assert_allclose, assert_, assert_raises,
-                           assert_array_equal)
+from numpy.testing import assert_, assert_allclose, assert_array_equal, assert_raises
+
 import pywt
 
 # Check that float32, float64, complex64, complex128 are preserved.
@@ -60,7 +59,7 @@ def test_dwt_idwt_dtypes():
     wavelet = pywt.Wavelet('haar')
     for dt_in, dt_out in zip(dtypes_in, dtypes_out):
         x = np.ones(4, dtype=dt_in)
-        errmsg = "wrong dtype returned for {0} input".format(dt_in)
+        errmsg = f"wrong dtype returned for {dt_in} input"
 
         cA, cD = pywt.dwt(x, wavelet)
         assert_(cA.dtype == cD.dtype == dt_out, "dwt: " + errmsg)
@@ -196,7 +195,7 @@ def test_dwt_axis_arg():
     assert_allclose(cA_, cA)
     assert_allclose(cD_, cD)
 
-def test_dwt_axis_invalid_input():  
+def test_dwt_axis_invalid_input():
     x = np.ones((3,1))
     assert_raises(ValueError, pywt.dwt, x, 'db2', 'reflect')
 

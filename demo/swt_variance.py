@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
 import pywt
 import pywt.data
@@ -17,12 +17,11 @@ coeffs = pywt.swt(ecg, wavelet='sym4', trim_approx=True, norm=True)
 ca = coeffs[0]
 details = coeffs[1:]
 
-print("Variance of the ecg signal = {}".format(np.var(ecg, ddof=1)))
+print(f"Variance of the ecg signal = {np.var(ecg, ddof=1)}")
 
 variances = [np.var(c, ddof=1) for c in coeffs]
 detail_variances = variances[1:]
-print("Sum of variance across all SWT coefficients = {}".format(
-    np.sum(variances)))
+print(f"Sum of variance across all SWT coefficients = {np.sum(variances)}")
 
 # Create a plot using the same y axis limits for all coefficient arrays to
 # illustrate the preservation of amplitude scale across levels when norm=True.
@@ -52,7 +51,7 @@ level = np.arange(1, len(detail_variances) + 1)
 
 # create a plot of the variance as a function of level
 plt.figure(figsize=(8, 6))
-fontdict = dict(fontsize=16, fontweight='bold')
+fontdict = {'fontsize': 16, 'fontweight': 'bold'}
 plt.plot(level, detail_variances[::-1], 'k.')
 plt.xlabel("Decomposition level", fontdict=fontdict)
 plt.ylabel("Variance", fontdict=fontdict)

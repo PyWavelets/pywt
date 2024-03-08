@@ -22,24 +22,24 @@ docstrings is valid python::
     $ python refguide_check.py --check_docs optimize
 
 """
-from __future__ import print_function
 
-import sys
+import copy
+import doctest
+import glob
+import inspect
+import io
 import os
 import re
-import copy
-import inspect
-import warnings
-import doctest
-import tempfile
-import io
-import docutils.core
-from docutils.parsers.rst import directives
 import shutil
-import glob
-from doctest import NORMALIZE_WHITESPACE, ELLIPSIS, IGNORE_EXCEPTION_DETAIL
+import sys
+import tempfile
+import warnings
 from argparse import ArgumentParser
+from doctest import ELLIPSIS, IGNORE_EXCEPTION_DETAIL, NORMALIZE_WHITESPACE
+
+import docutils.core
 import numpy as np
+from docutils.parsers.rst import directives
 
 # FIXME: doctests need the str/repr formatting used in Numpy < 1.14.
 try:
@@ -50,6 +50,7 @@ except TypeError:
 # sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'doc',
 #                 'sphinxext'))
 from numpydoc.docscrape_sphinx import get_doc_object
+
 # Remove sphinx directives that don't run without Sphinx environment
 directives._directives.pop('versionadded', None)
 directives._directives.pop('versionchanged', None)
@@ -68,7 +69,7 @@ OTHER_MODULE_DOCS = {}
 
 # these names are known to fail doctesting and we like to keep it that way
 # e.g. sometimes pseudocode is acceptable etc
-DOCTEST_SKIPLIST = set([])
+DOCTEST_SKIPLIST = set()
 
 # these names are not required to be present in ALL despite being in
 # autosummary:: listing
@@ -221,12 +222,12 @@ def check_items(all_dict, names, deprecated, others, module_name, dots=True):
         return [(None, True, output)]
     else:
         if len(only_all) > 0:
-            output += "ERROR: objects in %s.__all__ but not in refguide::\n\n" % module_name
+            output += f"ERROR: objects in {module_name}.__all__ but not in refguide::\n\n"
             for name in sorted(only_all):
                 output += "    " + name + "\n"
 
         if len(only_ref) > 0:
-            output += "ERROR: objects in refguide but not in %s.__all__::\n\n" % module_name
+            output += f"ERROR: objects in refguide but not in {module_name}.__all__::\n\n"
             for name in sorted(only_ref):
                 output += "    " + name + "\n"
 
@@ -244,14 +245,14 @@ def validate_rst_syntax(text, name, dots=True):
     if text is None:
         if dots:
             output_dot('E')
-        return False, "ERROR: %s: no documentation" % (name,)
+        return False, f"ERROR: {name}: no documentation"
 
-    ok_unknown_items = set([
+    ok_unknown_items = {
         'mod', 'currentmodule', 'autosummary', 'data',
         'obj', 'versionadded', 'versionchanged', 'module', 'class',
         'ref', 'func', 'toctree', 'moduleauthor',
         'sectionauthor', 'codeauthor', 'eq',
-    ])
+    }
 
     # Run through docutils
     error_stream = io.StringIO()
@@ -263,16 +264,16 @@ def validate_rst_syntax(text, name, dots=True):
 
     docutils.core.publish_doctree(
         text, token,
-        settings_overrides = dict(halt_level=5,
-                                  traceback=True,
-                                  default_reference_context='title-reference',
-                                  default_role='emphasis',
-                                  link_base='',
-                                  resolve_name=resolve,
-                                  stylesheet_path='',
-                                  raw_enabled=0,
-                                  file_insertion_enabled=0,
-                                  warning_stream=error_stream))
+        settings_overrides = {'halt_level': 5,
+                                  'traceback': True,
+                                  'default_reference_context': 'title-reference',
+                                  'default_role': 'emphasis',
+                                  'link_base': '',
+                                  'resolve_name': resolve,
+                                  'stylesheet_path': '',
+                                  'raw_enabled': 0,
+                                  'file_insertion_enabled': 0,
+                                  'warning_stream': error_stream})
 
     # Print errors, disregarding unimportant ones
     error_msg = error_stream.getvalue()
@@ -338,7 +339,7 @@ def check_rest(module, names, dots=True):
         obj = getattr(module, name, None)
 
         if obj is None:
-            results.append((full_name, False, "%s has no docstring" % (full_name,)))
+            results.append((full_name, False, f"{full_name} has no docstring"))
             continue
         elif isinstance(obj, skip_types):
             continue
@@ -357,8 +358,8 @@ def check_rest(module, names, dots=True):
 
         m = re.search("([\x00-\x09\x0b-\x1f])", text)
         if m:
-            msg = ("Docstring contains a non-printable character %r! "
-                   "Maybe forgot r\"\"\"?" % (m.group(1),))
+            msg = (f"Docstring contains a non-printable character {m.group(1)!r}! "
+                   "Maybe forgot r\"\"\"?")
             results.append((full_name, False, msg))
             continue
 
@@ -542,7 +543,7 @@ def _run_doctests(tests, full_name, verbose, doctest_warnings):
     def out(msg):
         output.append(msg)
 
-    class MyStderr(object):
+    class MyStderr:
         """Redirect stderr to the current stdout"""
         def write(self, msg):
             if doctest_warnings:
@@ -677,10 +678,10 @@ def check_doctests_testfile(fname, verbose, ns=None,
     full_name = fname
     text = open(fname).read()
 
-    PSEUDOCODE = set(['some_function', 'some_module', 'import example',
+    PSEUDOCODE = {'some_function', 'some_module', 'import example',
                       'ctypes.CDLL',     # likely need compiling, skip it
                       'integrate.nquad(func,'  # ctypes integrate tutotial
-    ])
+    }
 
     # split the text into "blocks" and try to detect and omit pseudocode blocks.
     parser = doctest.DocTestParser()
@@ -770,7 +771,7 @@ def main(argv):
     success = True
     results = []
 
-    print("Running checks for %d modules:" % (len(modules),))
+    print(f"Running checks for {len(modules)} modules:")
 
     if args.doctests or not args.skip_examples:
         init_matplotlib()
@@ -805,7 +806,7 @@ def main(argv):
     if not args.skip_examples:
         examples_path = os.path.join(
             os.getcwd(), 'doc', 'source', 'regression', '*.rst')
-        print('\nChecking examples files at %s:' % examples_path)
+        print(f'\nChecking examples files at {examples_path}:')
         for filename in sorted(glob.glob(examples_path)):
             if dots:
                 sys.stderr.write('\n')

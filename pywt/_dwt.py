@@ -3,13 +3,13 @@ from numbers import Number
 import numpy as np
 
 from ._c99_config import _have_c99_complex
-from ._extensions._pywt import Wavelet, Modes, _check_dtype, wavelist
-from ._extensions._dwt import (dwt_single, dwt_axis, idwt_single, idwt_axis,
-                               upcoef as _upcoef, downcoef as _downcoef,
-                               dwt_max_level as _dwt_max_level,
-                               dwt_coeff_len as _dwt_coeff_len)
+from ._extensions._dwt import downcoef as _downcoef
+from ._extensions._dwt import dwt_axis, dwt_single, idwt_axis, idwt_single
+from ._extensions._dwt import dwt_coeff_len as _dwt_coeff_len
+from ._extensions._dwt import dwt_max_level as _dwt_max_level
+from ._extensions._dwt import upcoef as _upcoef
+from ._extensions._pywt import Modes, Wavelet, _check_dtype, wavelist
 from ._utils import _as_wavelet
-
 
 __all__ = ["dwt", "idwt", "downcoef", "upcoef", "dwt_max_level",
            "dwt_coeff_len", "pad"]
@@ -66,9 +66,9 @@ def dwt_max_level(data_len, filter_len):
             filter_len = Wavelet(filter_len).dec_len
         else:
             raise ValueError(
-                ("'{}', is not a recognized discrete wavelet.  A list of "
+                f"'{filter_len}', is not a recognized discrete wavelet.  A list of "
                  "supported wavelet names can be obtained via "
-                 "pywt.wavelist(kind='discrete')").format(filter_len))
+                 "pywt.wavelist(kind='discrete')")
     elif not (isinstance(filter_len, Number) and filter_len % 1 == 0):
         raise ValueError(
             "filter_len must be an integer, discrete Wavelet object, or the "
@@ -337,7 +337,7 @@ def downcoef(part, data, wavelet, mode='symmetric', level=1):
     if data.ndim > 1:
         raise ValueError("downcoef only supports 1d data.")
     if part not in 'ad':
-        raise ValueError("Argument 1 must be 'a' or 'd', not '%s'." % part)
+        raise ValueError(f"Argument 1 must be 'a' or 'd', not '{part}'.")
     mode = Modes.from_object(mode)
     wavelet = _as_wavelet(wavelet)
     return np.asarray(_downcoef(part == 'a', data, wavelet, mode, level))
@@ -397,7 +397,7 @@ def upcoef(part, coeffs, wavelet, level=1, take=0):
         raise ValueError("upcoef only supports 1d coeffs.")
     wavelet = _as_wavelet(wavelet)
     if part not in 'ad':
-        raise ValueError("Argument 1 must be 'a' or 'd', not '%s'." % part)
+        raise ValueError(f"Argument 1 must be 'a' or 'd', not '{part}'.")
     return np.asarray(_upcoef(part == 'a', coeffs, wavelet, level, take))
 
 
@@ -512,6 +512,5 @@ def pad(x, pad_widths, mode):
         xp = np.pad(x, pad_widths, mode='reflect', reflect_type='odd')
     else:
         raise ValueError(
-            ("unsupported mode: {}. The supported modes are {}").format(
-                mode, Modes.modes))
+            f"unsupported mode: {mode}. The supported modes are {Modes.modes}")
     return xp

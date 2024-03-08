@@ -1,11 +1,9 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
 import pywt
-
 
 x = np.linspace(0, 1, num=512)
 data = np.sin(250 * np.pi * x**2)

@@ -7,17 +7,15 @@
 Other wavelet related functions.
 """
 
-from __future__ import division, print_function, absolute_import
 
 import warnings
 
 import numpy as np
 from numpy.fft import fft
 
-from ._extensions._pywt import DiscreteContinuousWavelet, Wavelet, ContinuousWavelet
+from ._extensions._pywt import ContinuousWavelet, DiscreteContinuousWavelet, Wavelet
 
-
-__all__ = ["integrate_wavelet", "central_frequency", 
+__all__ = ["integrate_wavelet", "central_frequency",
            "scale2frequency", "frequency2scale", "qmf",
            "orthogonal_filter_bank",
            "intwave", "centrfrq", "scal2frq", "orthfilt"]

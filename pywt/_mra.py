@@ -2,8 +2,15 @@ from functools import partial, reduce
 
 import numpy as np
 
-from ._multilevel import (_prep_axes_wavedecn, wavedec, wavedec2, wavedecn,
-                          waverec, waverec2, waverecn)
+from ._multilevel import (
+    _prep_axes_wavedecn,
+    wavedec,
+    wavedec2,
+    wavedecn,
+    waverec,
+    waverec2,
+    waverecn,
+)
 from ._swt import iswt, iswt2, iswtn, swt, swt2, swt_max_level, swtn
 from ._utils import _modes_per_axis, _wavelets_per_axis
 
@@ -69,17 +76,17 @@ def mra(data, wavelet, level=None, axis=-1, transform='swt',
         if mode != 'periodization':
             raise ValueError(
                 "transform swt only supports mode='periodization'")
-        kwargs = dict(wavelet=wavelet, axis=axis, norm=True)
+        kwargs = {"wavelet": wavelet, "axis": axis, "norm": True}
         forward = partial(swt, level=level, trim_approx=True, **kwargs)
         inverse = partial(iswt, **kwargs)
         is_swt = True
     elif transform == 'dwt':
-        kwargs = dict(wavelet=wavelet, mode=mode, axis=axis)
+        kwargs = {"wavelet": wavelet, "mode": mode, "axis": axis}
         forward = partial(wavedec, level=level, **kwargs)
         inverse = partial(waverec, **kwargs)
         is_swt = False
     else:
-        raise ValueError("unrecognized transform: {}".format(transform))
+        raise ValueError(f"unrecognized transform: {transform}")
 
     wav_coeffs = forward(data)
 
@@ -201,15 +208,15 @@ def mra2(data, wavelet, level=None, axes=(-2, -1), transform='swt2',
                 "transform swt only supports mode='periodization'")
         if level is None:
             level = min(swt_max_level(s) for s in data.shape)
-        kwargs = dict(wavelet=wavelet, axes=axes, norm=True)
+        kwargs = {"wavelet": wavelet, "axes": axes, "norm": True}
         forward = partial(swt2, level=level, trim_approx=True, **kwargs)
         inverse = partial(iswt2, **kwargs)
     elif transform == 'dwt2':
-        kwargs = dict(wavelet=wavelet, mode=mode, axes=axes)
+        kwargs = {"wavelet": wavelet, "mode": mode, "axes": axes}
         forward = partial(wavedec2, level=level, **kwargs)
         inverse = partial(waverec2, **kwargs)
     else:
-        raise ValueError("unrecognized transform: {}".format(transform))
+        raise ValueError(f"unrecognized transform: {transform}")
 
     wav_coeffs = forward(data)
 
@@ -344,16 +351,16 @@ def mran(data, wavelet, level=None, axes=None, transform='swtn',
                 "transform swt only supports mode='periodization'")
         if level is None:
             level = min(swt_max_level(s) for s in data.shape)
-        kwargs = dict(wavelet=wavelets, axes=axes, norm=True)
+        kwargs = {"wavelet": wavelets, "axes": axes, "norm": True}
         forward = partial(swtn, level=level, trim_approx=True, **kwargs)
         inverse = partial(iswtn, **kwargs)
     elif transform == 'dwtn':
         modes = _modes_per_axis(mode, axes)
-        kwargs = dict(wavelet=wavelets, mode=modes, axes=axes)
+        kwargs = {"wavelet": wavelets, "mode": modes, "axes": axes}
         forward = partial(wavedecn, level=level, **kwargs)
         inverse = partial(waverecn, **kwargs)
     else:
-        raise ValueError("unrecognized transform: {}".format(transform))
+        raise ValueError(f"unrecognized transform: {transform}")
 
     wav_coeffs = forward(data)
 

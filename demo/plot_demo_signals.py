@@ -1,11 +1,9 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """Plot the  set of 1D demo signals available in `pywt.data.demo_signal`."""
 
-import numpy as np
-
 import matplotlib.pyplot as plt
+import numpy as np
 
 import pywt
 

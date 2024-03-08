@@ -1,11 +1,11 @@
 """common test-related code."""
-import os
-import sys
-import platform
 import multiprocessing
+import os
+import platform
+import sys
+
 import numpy as np
 import pytest
-
 
 __all__ = ['uses_matlab',   # skip if pymatbridge and Matlab unavailable
            'uses_futures',  # skip if futures unavailable

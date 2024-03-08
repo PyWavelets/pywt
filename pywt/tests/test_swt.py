@@ -1,14 +1,20 @@
 #!/usr/bin/env python
 
-from __future__ import division, print_function, absolute_import
 
 import warnings
 from copy import deepcopy
 from itertools import combinations, permutations
+
 import numpy as np
 import pytest
-from numpy.testing import (assert_allclose, assert_, assert_equal,
-                           assert_raises, assert_array_equal, assert_warns)
+from numpy.testing import (
+    assert_,
+    assert_allclose,
+    assert_array_equal,
+    assert_equal,
+    assert_raises,
+    assert_warns,
+)
 
 import pywt
 from pywt._extensions._swt import swt_axis
@@ -167,7 +173,7 @@ def test_swt_iswt_integration():
 def test_swt_dtypes():
     wavelet = pywt.Wavelet('haar')
     for dt_in, dt_out in zip(dtypes_in, dtypes_out):
-        errmsg = "wrong dtype returned for {0} input".format(dt_in)
+        errmsg = f"wrong dtype returned for {dt_in} input"
 
         # swt
         x = np.ones(8, dtype=dt_in)

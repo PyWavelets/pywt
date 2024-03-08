@@ -70,5 +70,3 @@ The backports listed above correspond to the following PRs from the master branc
 - `#450 <https://github.com/PyWavelets/pywt/issues/450>`__: handle mixed dtype coefficients correctly across inverse transforms
 - `#452 <https://github.com/PyWavelets/pywt/issues/452>`__: bump minimum supported Cython version
 - `#462 <https://github.com/PyWavelets/pywt/issues/462>`__: fix bug in iswtn for data of arbitrary shape when using user-specified axes
-
-

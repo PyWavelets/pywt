@@ -1,4 +1,5 @@
 import numpy as np
+
 import pywt
 
 try:
@@ -8,7 +9,7 @@ except AttributeError:
     Modes = pywt.MODES
 
 
-class DwtTimeSuiteBase(object):
+class DwtTimeSuiteBase:
     """
     Set-up for (I)DWT timing.
     """
@@ -28,14 +29,14 @@ class DwtTimeSuite(DwtTimeSuiteBase):
 
 class IdwtTimeSuite(DwtTimeSuiteBase):
     def setup(self, n, wavelet, mode):
-        super(IdwtTimeSuite, self).setup(n, wavelet, mode)
+        super().setup(n, wavelet, mode)
         self.cA, self.cD = pywt.dwt(self.data, wavelet, mode)
 
     def time_idwt(self, n, wavelet, mode):
         pywt.idwt(self.cA, self.cD, wavelet, mode)
 
 
-class Dwt2TimeSuiteBase(object):
+class Dwt2TimeSuiteBase:
     """
     Set-up for (I)DWT2 timing.
     """
@@ -54,14 +55,14 @@ class Dwt2TimeSuite(Dwt2TimeSuiteBase):
 
 class Idwt2TimeSuite(Dwt2TimeSuiteBase):
     def setup(self, n, wavelet):
-        super(Idwt2TimeSuite, self).setup(n, wavelet)
+        super().setup(n, wavelet)
         self.data = pywt.dwt2(self.data, wavelet)
 
     def time_idwt2(self, n, wavelet):
         pywt.idwt2(self.data, wavelet)
 
 
-class DwtnTimeSuiteBase(object):
+class DwtnTimeSuiteBase:
     """
     Set-up for (I)DWTN timing.
     """
@@ -81,7 +82,7 @@ class DwtnTimeSuite(DwtnTimeSuiteBase):
 
 class IdwtnTimeSuite(DwtnTimeSuiteBase):
     def setup(self, D, n, wavelet):
-        super(IdwtnTimeSuite, self).setup(D, n, wavelet)
+        super().setup(D, n, wavelet)
         self.data = pywt.dwtn(self.data, wavelet)
 
     def time_idwtn(self, D, n, wavelet):
@@ -93,7 +94,7 @@ Multilevel DWT benchmarks
 """
 
 
-class WavedecTimeSuiteBase(object):
+class WavedecTimeSuiteBase:
     """
     Set-up for wavedec, waverec timing.
     """
@@ -113,14 +114,14 @@ class WavedecTimeSuite(WavedecTimeSuiteBase):
 
 class WaverecTimeSuite(WavedecTimeSuiteBase):
     def setup(self, n, wavelet, dtype):
-        super(WaverecTimeSuite, self).setup(n, wavelet, dtype)
+        super().setup(n, wavelet, dtype)
         self.data = pywt.wavedec(self.data, wavelet)
 
     def time_waverec(self, n, wavelet, dtype):
         pywt.waverec(self.data, wavelet)
 
 
-class Wavedec2TimeSuiteBase(object):
+class Wavedec2TimeSuiteBase:
     """
     Set-up for wavedec2, waverec2 timing.
     """
@@ -140,14 +141,14 @@ class Wavedec2TimeSuite(Wavedec2TimeSuiteBase):
 
 class Waverec2TimeSuite(Wavedec2TimeSuiteBase):
     def setup(self, n, wavelet, dtype):
-        super(Waverec2TimeSuite, self).setup(n, wavelet, dtype)
+        super().setup(n, wavelet, dtype)
         self.data = pywt.wavedec2(self.data, wavelet)
 
     def time_waverec2(self, n, wavelet, dtype):
         pywt.waverec2(self.data, wavelet)
 
 
-class WavedecnTimeSuiteBase(object):
+class WavedecnTimeSuiteBase:
     """
     Set-up for wavedecn, waverecn timing.
     """
@@ -176,7 +177,7 @@ class WaverecnTimeSuite(WavedecnTimeSuiteBase):
             from pywt import waverecn
         except ImportError:
             raise NotImplementedError("waverecn not available")
-        super(WaverecnTimeSuite, self).setup(D, n, wavelet, dtype)
+        super().setup(D, n, wavelet, dtype)
         self.data = pywt.wavedecn(self.data, wavelet)
 
     def time_waverecn(self, D, n, wavelet, dtype):

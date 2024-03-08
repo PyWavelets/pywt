@@ -173,4 +173,3 @@ The SciPy code of conduct was in turn inspired by the following documents:
 - `The Contributor Covenant <https://www.contributor-covenant.org/version/1/4/code-of-conduct/>`_
 - `Jupyter Code of Conduct <https://github.com/jupyter/governance/tree/master/conduct>`_
 - `Open Source Guides - Code of Conduct <https://opensource.guide/code-of-conduct/>`_
-

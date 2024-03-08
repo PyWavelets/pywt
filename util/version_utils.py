@@ -1,7 +1,6 @@
+import argparse
 import os
 import subprocess
-import argparse
-
 
 MAJOR = 1
 MINOR = 6
