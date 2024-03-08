@@ -93,7 +93,6 @@ computations can be performed with the `periodization`_ mode:
 
     >>> import pywt
     >>> print(pywt.Modes.modes)
-
     ['zero', 'constant', 'symmetric', 'periodic', 'smooth', 'periodization', 'reflect', 'antisymmetric', 'antireflect']
 
 The following figure illustrates how a short signal (red) gets extended (black)
