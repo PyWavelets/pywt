@@ -16,12 +16,12 @@ ca = coeffs[0]
 details = coeffs[1:]
 
 # Plot all coefficient subbands and the original
-gridspec_kw = dict(hspace=0.1, wspace=0.1)
-fontdict = dict(verticalalignment='center', horizontalalignment='center',
-                color='k')
+gridspec_kw = {'hspace': 0.1, 'wspace': 0.1}
+fontdict = {'verticalalignment': 'center', 'horizontalalignment': 'center',
+                'color': 'k'}
 fig, axes = plt.subplots(len(details) + 1, 3, figsize=[5, 8], sharex=True,
                          sharey=True, gridspec_kw=gridspec_kw)
-imshow_kw = dict(interpolation='nearest', cmap=plt.cm.gray)
+imshow_kw = {'interpolation': 'nearest', 'cmap': plt.cm.gray}
 for i, x in enumerate(details):
     axes[i][0].imshow(details[-i - 1]['ad'], **imshow_kw)
 

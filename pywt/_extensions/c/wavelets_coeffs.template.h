@@ -25,7 +25,7 @@
  * ftp://phase.etl.go.jp/pub/phase/wavelet/index.html
  *
  * Compiled and verified by Olli Niemitalo.
- * 
+ *
  * Coefficients for Coiflets wavelets 1-17
  * -----------------------------------------
  * Computed by Kazuo Hatano, Aichi Institute of Technology.
@@ -1696,7 +1696,7 @@ static const TYPE CAT(sym20_, TYPE)[40] = {
 
  // The coif wavelets have to be multiplied by sqrt(2)
  static const TYPE CAT(sqrt2_, TYPE) = 1.4142135623730951454746218587388284504413604736328125;
- 
+
 static const TYPE CAT(coif1_, TYPE)[6] = {
 -5.142972847076845595317549230122688830344559947132656813651045e-02,
  2.389297284707684559531754923012268883034455994713265681365104e-01,

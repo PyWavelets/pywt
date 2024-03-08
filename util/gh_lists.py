@@ -1,21 +1,18 @@
 #!/usr/bin/env python3
-# -*- encoding:utf-8 -*-
 """
 gh_lists.py MILESTONE
 
 Functions for Github API requests.
 """
+import argparse
+import collections
+import datetime
+import json
 import os
 import re
 import sys
-import json
-import collections
-import argparse
-import datetime
 import time
-
-from urllib.request import urlopen, Request, HTTPError
-
+from urllib.request import HTTPError, Request, urlopen
 
 Issue = collections.namedtuple('Issue', ('id', 'title', 'url'))
 
@@ -31,14 +28,14 @@ def main():
         milestones = get_milestones(getter, args.project)
         if args.milestone not in milestones:
             msg = "Milestone {0} not available. Available milestones: {1}"
-            msg = msg.format(args.milestone, u", ".join(sorted(milestones)))
+            msg = msg.format(args.milestone, ", ".join(sorted(milestones)))
             p.error(msg)
         issues = get_issues(getter, args.project, args.milestone)
         issues.sort()
     finally:
         getter.save()
 
-    prs = [x for x in issues if u'/pull/' in x.url]
+    prs = [x for x in issues if '/pull/' in x.url]
     issues = [x for x in issues if x not in prs]
 
     def print_list(title, items):
@@ -48,36 +45,36 @@ def main():
         print()
 
         for issue in items:
-            msg = u"* `#{0} <{1}>`__: {2}"
+            msg = "* `#{0} <{1}>`__: {2}"
             # sanitize whitespace, `, and *
-            title = re.sub(u"\\s+", u" ", issue.title.strip())
-            title = title.replace(u'`', u'\\`').replace(u'*', u'\\*')
+            title = re.sub("\\s+", " ", issue.title.strip())
+            title = title.replace('`', '\\`').replace('*', '\\*')
             if len(title) > 60:
-                remainder = re.sub(u"\\s.*$", u"...", title[60:])
+                remainder = re.sub("\\s.*$", "...", title[60:])
                 if len(remainder) > 20:
-                    remainder = title[:80] + u"..."
+                    remainder = title[:80] + "..."
                 else:
                     title = title[:60] + remainder
             msg = msg.format(issue.id, issue.url, title)
             print(msg)
         print()
 
-    msg = u"Issues closed for {0}".format(args.milestone)
+    msg = f"Issues closed for {args.milestone}"
     print_list(msg, issues)
 
-    msg = u"Pull requests for {0}".format(args.milestone)
+    msg = f"Pull requests for {args.milestone}"
     print_list(msg, prs)
 
     return 0
 
 
 def get_milestones(getter, project):
-    url = "https://api.github.com/repos/{project}/milestones".format(project=project)
+    url = f"https://api.github.com/repos/{project}/milestones"
     data = getter.get(url)
 
     milestones = {}
     for ms in data:
-        milestones[ms[u'title']] = ms[u'number']
+        milestones[ms['title']] = ms['number']
     return milestones
 
 
@@ -92,9 +89,9 @@ def get_issues(getter, project, milestone):
 
     issues = []
     for issue_data in data:
-        issues.append(Issue(issue_data[u'number'],
-                            issue_data[u'title'],
-                            issue_data[u'html_url']))
+        issues.append(Issue(issue_data['number'],
+                            issue_data['title'],
+                            issue_data['html_url']))
     return issues
 
 
@@ -104,9 +101,9 @@ class CachedGet:
 
         self.filename = filename
         if os.path.isfile(filename):
-            print("[gh_lists] using {0} as cache (remove it if you want fresh data)".format(filename),
+            print(f"[gh_lists] using {filename} as cache (remove it if you want fresh data)",
                   file=sys.stderr)
-            with open(filename, 'r', encoding='utf-8') as f:
+            with open(filename, encoding='utf-8') as f:
                 self.cache = json.load(f)
         else:
             self.cache = {}
@@ -153,7 +150,7 @@ class GithubGet:
               file=sys.stderr, flush=True)
         print("Access token: ", file=sys.stderr, end='', flush=True)
         token = input()
-        self.headers['Authorization'] = 'token {0}'.format(token.strip())
+        self.headers['Authorization'] = f'token {token.strip()}'
 
     def urlopen(self, url, auth=None):
         assert url.startswith('https://')
@@ -175,7 +172,7 @@ class GithubGet:
                 s = self.ratelimit_reset + 5 - time.time()
                 if s <= 0:
                     break
-                print("[gh_lists] rate limit exceeded: waiting until {0} ({1} s remaining)".format(
+                print("[gh_lists] rate limit exceeded: waiting until {} ({} s remaining)".format(
                          datetime.datetime.fromtimestamp(self.ratelimit_reset).strftime('%Y-%m-%d %H:%M:%S'),
                          int(s)),
                       file=sys.stderr, flush=True)

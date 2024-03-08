@@ -122,4 +122,3 @@ cpdef cwt_psi_single(data_t[::1] data, ContinuousWavelet wavelet, size_t output_
             with nogil:
                 c_wt.float_cmor(&data[0], <float *>psi_r.data, <float *>psi_i.data, data_size, bandwidth_frequency, center_frequency)
             return (psi_r, psi_i)
-

@@ -1,9 +1,9 @@
 import sys
 
-import pywt
-from pyqtgraph.Qt import QtGui
 import pyqtgraph as pg
+from pyqtgraph.Qt import QtGui
 
+import pywt
 
 families = ['db', 'sym', 'coif', 'bior', 'rbio']
 

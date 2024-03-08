@@ -1,9 +1,9 @@
 """ This script was used to generate dwt_matlabR2012a_result.npz by storing
 the outputs from Matlab R2012a. """
 
-from __future__ import division, print_function, absolute_import
 
 import numpy as np
+
 import pywt
 
 try:
@@ -17,7 +17,7 @@ except ImportError:
     _matlab_missing = True
 
 if _matlab_missing:
-    raise EnvironmentError("Can't generate matlab data files without MATLAB")
+    raise OSError("Can't generate matlab data files without MATLAB")
 
 size_set = 'reduced'
 
@@ -58,8 +58,7 @@ try:
                     mlab_code = ("[ma, md] = dwt(data, Lo_D, Hi_D, "
                                  "'mode', '%s');" % mmode)
                 else:
-                    mlab_code = ("[ma, md] = dwt(data, wavelet, "
-                                 "'mode', '%s');" % mmode)
+                    mlab_code = f"[ma, md] = dwt(data, wavelet, 'mode', '{mmode}');"
                 res = mlab.run_code(mlab_code)
                 if not res['success']:
                     raise RuntimeError(
@@ -76,8 +75,7 @@ try:
                 # Matlab result
                 mlab.set_variable('Lo_D', w.dec_lo)
                 mlab.set_variable('Hi_D', w.dec_hi)
-                mlab_code = ("[ma, md] = dwt(data, Lo_D, Hi_D, "
-                             "'mode', '%s');" % mmode)
+                mlab_code = f"[ma, md] = dwt(data, Lo_D, Hi_D, 'mode', '{mmode}');"
                 res = mlab.run_code(mlab_code)
                 if not res['success']:
                     raise RuntimeError(

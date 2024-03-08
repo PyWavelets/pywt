@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 # Plot scaling and wavelet functions for db, sym, coif, bior and rbio families
 
@@ -8,7 +7,6 @@ import itertools
 import matplotlib.pyplot as plt
 
 import pywt
-
 
 plot_data = [('db', (4, 3)),
              ('sym', (4, 3)),

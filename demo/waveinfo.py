@@ -1,12 +1,11 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 import sys
 
 import matplotlib.pyplot as plt
 import numpy as np
-import pywt
 
+import pywt
 
 usage = """
 Usage:

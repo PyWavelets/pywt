@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # PyWavelets documentation build configuration file, created by
 # sphinx-quickstart on Sun Mar 14 10:46:18 2010.
@@ -14,6 +13,7 @@
 import datetime
 import importlib.metadata
 
+import jinja2.filters
 import numpy as np
 
 # FIXME: doctests need the str/repr formatting used in Numpy < 1.14.
@@ -62,7 +62,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'PyWavelets'
-copyright = '2006-%s, The PyWavelets Developers' % datetime.date.today().year
+copyright = f'2006-{datetime.date.today().year}, The PyWavelets Developers'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

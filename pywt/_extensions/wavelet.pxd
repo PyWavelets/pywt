@@ -75,6 +75,3 @@ cdef extern from "c/wavelets.h":
     cdef ContinuousWavelet* continuous_wavelet(WAVELET_NAME name, int type)
     cdef ContinuousWavelet* blank_continuous_wavelet()
     cdef void free_continuous_wavelet(ContinuousWavelet* wavelet)
-
-
-

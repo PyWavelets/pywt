@@ -65,6 +65,24 @@ homepage = "https://github.com/PyWavelets/pywt"
 source = "https://github.com/PyWavelets/pywt"
 documentation = "https://pywavelets.readthedocs.io/"
 
+[tool.ruff]
+line-length = 88
+target-version = 'py39'
+lint.select = [
+    'I',
+    'UP',
+    'C4',
+    'E713',
+    'PIE',
+    'PGH003',
+    'PLR0402',
+    'SIM101',
+    'SIM109',
+    'SIM110',
+    'SIM118',
+    'SIM2',
+]
+
 [tool.spin]
 package = "pywt"
 

@@ -1,8 +1,9 @@
 import numpy as np
+
 import pywt
 
 
-class SwtTimeSuiteBase(object):
+class SwtTimeSuiteBase:
     """
     Set-up for (I)SWT timing.
     """
@@ -25,14 +26,14 @@ class IswtTimeSuite(SwtTimeSuiteBase):
             from pywt import iswt
         except ImportError:
             raise NotImplementedError("iswt not available")
-        super(IswtTimeSuite, self).setup(n, wavelet)
+        super().setup(n, wavelet)
         self.coeffs = pywt.swt(self.data, wavelet)
 
     def time_iswt(self, n, wavelet):
         pywt.iswt(self.coeffs, wavelet)
 
 
-class Swt2TimeSuiteBase(object):
+class Swt2TimeSuiteBase:
     """
     Set-up for (I)SWT2 timing.
     """
@@ -60,14 +61,14 @@ class Iswt2TimeSuite(Swt2TimeSuiteBase):
             from pywt import iswt2
         except ImportError:
             raise NotImplementedError("iswt2 not available")
-        super(Iswt2TimeSuite, self).setup(n, wavelet)
+        super().setup(n, wavelet)
         self.data = pywt.swt2(self.data, wavelet, self.level)
 
     def time_iswt2(self, n, wavelet):
         pywt.iswt2(self.data, wavelet)
 
 
-class SwtnTimeSuiteBase(object):
+class SwtnTimeSuiteBase:
     """
     Set-up for (I)SWTN timing.
     """
@@ -97,7 +98,7 @@ class IswtnTimeSuite(SwtnTimeSuiteBase):
             from pywt import iswtn
         except ImportError:
             raise NotImplementedError("iswtn not available")
-        super(IswtnTimeSuite, self).setup(D, n, wavelet, dtype)
+        super().setup(D, n, wavelet, dtype)
         self.data = pywt.swtn(self.data, wavelet, self.level)
 
     def time_iswtn(self, D, n, wavelet, dtype):

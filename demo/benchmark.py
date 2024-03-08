@@ -1,15 +1,13 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 import gc
 import sys
 import time
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
 import pywt
-
 
 if sys.platform == 'win32':
     clock = time.clock

@@ -1,7 +1,7 @@
 import warnings
 
 import numpy as np
-from numpy.testing import assert_warns, assert_array_equal
+from numpy.testing import assert_array_equal, assert_warns
 
 import pywt
 

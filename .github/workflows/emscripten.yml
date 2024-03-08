@@ -27,7 +27,7 @@ jobs:
         id: setup-python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.11.2'
+          python-version: "3.11.2"
 
       - name: Install prerequisites
         run: |
@@ -43,7 +43,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4.0.2
         with:
-          node-version: '18'
+          node-version: "18"
 
       - name: Build PyWavelets
         run: |

@@ -1,12 +1,10 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
-from pywt import WaveletPacket2D
 import pywt.data
-
+from pywt import WaveletPacket2D
 
 arr = pywt.data.aero()
 

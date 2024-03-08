@@ -3,16 +3,20 @@ Test used to verify PyWavelets Continuous Wavelet Transform computation
 accuracy against MathWorks Wavelet Toolbox.
 """
 
-from __future__ import division, print_function, absolute_import
 
 import warnings
+
 import numpy as np
 import pytest
 from numpy.testing import assert_
 
 import pywt
-from pywt._pytest import (uses_pymatbridge, uses_precomputed, size_set,
-                          matlab_result_dict_cwt)
+from pywt._pytest import (
+    matlab_result_dict_cwt,
+    size_set,
+    uses_precomputed,
+    uses_pymatbridge,
+)
 
 families = ('gaus', 'mexh', 'morl', 'cgau', 'shan', 'fbsp', 'cmor')
 wavelets = sum([pywt.wavelist(name) for name in families], [])
@@ -126,7 +130,7 @@ def _load_matlab_result(data, wavelet, scales):
     if (coefs_key not in matlab_result_dict_cwt):
         raise KeyError(
             "Precompted Matlab result not found for wavelet: "
-            "{0}, mode: {1}, size: {2}".format(wavelet, scales, N))
+            f"{wavelet}, mode: {scales}, size: {N}")
     coefs = matlab_result_dict_cwt[coefs_key]
     return coefs
 
@@ -169,6 +173,5 @@ def _check_accuracy_psi(w, psi, wavelet, epsilon):
     err = psi_pywt.flatten() - psi.flatten()
     rms = np.real(np.sqrt(np.mean(np.conj(err) * err)))
 
-    msg = ('[RMS > EPSILON] for  Wavelet: %s, '
-           'rms=%.3g' % (wavelet, rms))
+    msg = f'[RMS > EPSILON] for  Wavelet: {wavelet}, rms={rms:.3g}'
     assert_(rms < epsilon, msg=msg)

@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 
-from __future__ import division, print_function, absolute_import
+
+from itertools import combinations
 
 import numpy as np
-from itertools import combinations
-from numpy.testing import assert_allclose, assert_, assert_raises, assert_equal
+from numpy.testing import assert_, assert_allclose, assert_equal, assert_raises
 
 import pywt
+
 # Check that float32, float64, complex64, complex128 are preserved.
 # Other real types get converted to float64.
 # complex256 gets converted to complex128
@@ -27,7 +28,7 @@ def test_dwtn_input():
     # Array-like must be accepted
     pywt.dwtn([1, 2, 3, 4], 'haar')
     # Others must not
-    data = dict()
+    data = {}
     assert_raises(TypeError, pywt.dwtn, data, 'haar')
     # Must be at least 1D
     assert_raises(ValueError, pywt.dwtn, 2, 'haar')
@@ -83,7 +84,7 @@ def test_stride():
             strided = np.ones((3, 12), dtype=data.dtype)
             strided[::-1, ::2] = data
             strided_dwtn = pywt.dwtn(strided[::-1, ::2], wavelet)
-            for key in expected.keys():
+            for key in expected:
                 assert_allclose(strided_dwtn[key], expected[key])
 
 
@@ -102,7 +103,7 @@ def test_byte_offset():
                                                     align=True))
             padded[:] = data
             padded_dwtn = pywt.dwtn(padded['data'], wavelet)
-            for key in expected.keys():
+            for key in expected:
                 assert_allclose(padded_dwtn[key], expected[key])
 
 
@@ -188,7 +189,7 @@ def test_idwtn_missing():
 
 
 def test_idwtn_all_coeffs_None():
-    coefs = dict(aa=None, da=None, ad=None, dd=None)
+    coefs = {'aa': None, 'da': None, 'ad': None, 'dd': None}
     assert_raises(ValueError, pywt.idwtn, coefs, 'haar')
 
 
@@ -237,7 +238,7 @@ def test_dwt2_idwt2_dtypes():
     wavelet = pywt.Wavelet('haar')
     for dt_in, dt_out in zip(dtypes_in, dtypes_out):
         x = np.ones((4, 4), dtype=dt_in)
-        errmsg = "wrong dtype returned for {0} input".format(dt_in)
+        errmsg = f"wrong dtype returned for {dt_in} input"
 
         cA, (cH, cV, cD) = pywt.dwt2(x, wavelet)
         assert_(cA.dtype == cH.dtype == cV.dtype == cD.dtype,
@@ -253,15 +254,15 @@ def test_dwtn_axes():
                      [1, 4, 2, 8]])
     data = data + 1j*data  # test with complex data
     coefs = pywt.dwtn(data, 'haar', axes=(1,))
-    expected_a = list(map(lambda x: pywt.dwt(x, 'haar')[0], data))
+    expected_a = [pywt.dwt(x, 'haar')[0] for x in data]
     assert_equal(coefs['a'], expected_a)
-    expected_d = list(map(lambda x: pywt.dwt(x, 'haar')[1], data))
+    expected_d = [pywt.dwt(x, 'haar')[1] for x in data]
     assert_equal(coefs['d'], expected_d)
 
     coefs = pywt.dwtn(data, 'haar', axes=(1, 1))
-    expected_aa = list(map(lambda x: pywt.dwt(x, 'haar')[0], expected_a))
+    expected_aa = [pywt.dwt(x, 'haar')[0] for x in expected_a]
     assert_equal(coefs['aa'], expected_aa)
-    expected_ad = list(map(lambda x: pywt.dwt(x, 'haar')[1], expected_a))
+    expected_ad = [pywt.dwt(x, 'haar')[1] for x in expected_a]
     assert_equal(coefs['ad'], expected_ad)
 
 
@@ -352,7 +353,7 @@ def test_dwtn_idwtn_dtypes():
     wavelet = pywt.Wavelet('haar')
     for dt_in, dt_out in zip(dtypes_in, dtypes_out):
         x = np.ones((4, 4), dtype=dt_in)
-        errmsg = "wrong dtype returned for {0} input".format(dt_in)
+        errmsg = f"wrong dtype returned for {dt_in} input"
 
         coeffs = pywt.dwtn(x, wavelet)
         for k, v in coeffs.items():

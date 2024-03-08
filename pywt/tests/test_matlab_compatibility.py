@@ -3,15 +3,14 @@ Test used to verify PyWavelets Discrete Wavelet Transform computation
 accuracy against MathWorks Wavelet Toolbox.
 """
 
-from __future__ import division, print_function, absolute_import
 
 import numpy as np
 import pytest
 from numpy.testing import assert_
 
 import pywt
-from pywt._pytest import (uses_pymatbridge, uses_precomputed, size_set)
 from pywt._pytest import matlab_result_dict_dwt as matlab_result_dict
+from pywt._pytest import size_set, uses_precomputed, uses_pymatbridge
 
 # list of mode names in pywt and matlab
 modes = [('zero', 'zpd'),
@@ -98,9 +97,9 @@ def _compute_matlab_result(data, wavelet, mmode, mlab):
         w = pywt.Wavelet(wavelet)
         mlab.set_variable('Lo_D', w.dec_lo)
         mlab.set_variable('Hi_D', w.dec_hi)
-        mlab_code = ("[ma, md] = dwt(data, Lo_D, Hi_D, 'mode', '%s');" % mmode)
+        mlab_code = f"[ma, md] = dwt(data, Lo_D, Hi_D, 'mode', '{mmode}');"
     else:
-        mlab_code = "[ma, md] = dwt(data, wavelet, 'mode', '%s');" % mmode
+        mlab_code = f"[ma, md] = dwt(data, wavelet, 'mode', '{mmode}');"
     res = mlab.run_code(mlab_code)
     if not res['success']:
         raise RuntimeError("Matlab failed to execute the provided code. "
@@ -121,7 +120,7 @@ def _load_matlab_result(data, wavelet, mmode):
             (md_key not in matlab_result_dict):
         raise KeyError(
             "Precompted Matlab result not found for wavelet: "
-            "{0}, mode: {1}, size: {2}".format(wavelet, mmode, N))
+            f"{wavelet}, mode: {mmode}, size: {N}")
     ma = matlab_result_dict[ma_key]
     md = matlab_result_dict[md_key]
     return ma, md
@@ -137,7 +136,7 @@ def _load_matlab_result_pywt_coeffs(data, wavelet, mmode):
             (md_key not in matlab_result_dict):
         raise KeyError(
             "Precompted Matlab result not found for wavelet: "
-            "{0}, mode: {1}, size: {2}".format(wavelet, mmode, N))
+            f"{wavelet}, mode: {mmode}, size: {N}")
     ma = matlab_result_dict[ma_key]
     md = matlab_result_dict[md_key]
     return ma, md

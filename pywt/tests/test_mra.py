@@ -159,7 +159,7 @@ def test_mra2_axes(transform, axes, ndim, dtype):
         x = np.stack((x,) * 8, axis=-1)
 
     # out of range axis
-    if any([axis < -x.ndim or axis >= x.ndim for axis in axes]):
+    if any(axis < -x.ndim or axis >= x.ndim for axis in axes):
         with pytest.raises(np.AxisError):
             pywt.mra2(x, 'db1', transform=transform, axes=axes)
         return
@@ -244,7 +244,7 @@ def test_mran_axes(axes, transform):
     x3d = np.stack((x,) * 8, axis=-1)
 
     # out of range axis
-    if any([axis < -x.ndim or axis >= x.ndim for axis in axes]):
+    if any(axis < -x.ndim or axis >= x.ndim for axis in axes):
         with pytest.raises(np.AxisError):
             pywt.mran(x, 'db1', transform='dwtn', axes=axes)
         return

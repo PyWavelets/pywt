@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 # Note: This demo is a repeat of wp_2d, but using WaveletPacketND instead
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
-from pywt import WaveletPacketND
 import pywt.data
-
+from pywt import WaveletPacketND
 
 arr = pywt.data.aero()
 
@@ -23,7 +22,7 @@ nrows = int(np.floor(np.sqrt(nsubplots)))
 ncols = int(np.ceil(nsubplots/nrows))
 for node in wp2.get_level(maxlevel, 'natural'):
     ax = fig.add_subplot(nrows, ncols, i)
-    ax.set_title("%s" % (node.path_tuple, ))
+    ax.set_title(f"{node.path_tuple}")
     ax.imshow(np.sqrt(np.abs(node.data)), origin='upper',
               interpolation="nearest", cmap=plt.cm.gray)
     ax.set_axis_off()
