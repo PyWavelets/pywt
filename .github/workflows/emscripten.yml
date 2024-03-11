@@ -19,8 +19,8 @@ on:
         default: "false"
   # Upload wheels to Anaconda on a schedule
   schedule:
-    # Run at 0300 hours on days 3 and 28 of the month
-    - cron: "0 3 3,28 * *"
+    # Run at 0300 hours on days 3 and 17 of the month
+    - cron: "0 3 3,17 * *"
 
 env:
   FORCE_COLOR: 3
