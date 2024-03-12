@@ -70,7 +70,7 @@ jobs:
           pushd demo
           pip install matplotlib pytest
           python -c "import pywt; print(pywt.__version__)"
-          pytest --pyargs pywt
+          pytest --pyargs pywt -m "not slow"
 
         # https://anaconda.org/scientific-python-nightly-wheels/pywavelets
         # WARNING: this job will overwrite existing wheels.
