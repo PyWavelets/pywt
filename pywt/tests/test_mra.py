@@ -174,6 +174,7 @@ def test_mra2_axes(transform, axes, ndim, dtype):
 # nd mra tests
 ####
 
+@pytest.mark.slow
 @pytest.mark.parametrize('wavelet', ['sym2', ])
 @pytest.mark.parametrize('transform', ['dwtn', 'swtn'])
 @pytest.mark.parametrize('mode', pywt.Modes.modes)

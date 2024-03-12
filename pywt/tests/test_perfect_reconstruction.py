@@ -6,11 +6,13 @@ Verify DWT perfect reconstruction.
 
 
 import numpy as np
+import pytest
 from numpy.testing import assert_
 
 import pywt
 
 
+@pytest.mark.slow
 def test_perfect_reconstruction():
     families = ('db', 'sym', 'coif', 'bior', 'rbio')
     wavelets = sum([pywt.wavelist(name) for name in families], [])
