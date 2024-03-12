@@ -35,7 +35,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        cibw_python: ["cp39-*", "cp310-*", "cp311-*", "cp312-*"]
+        cibw_python: ["cp39", "cp310", "cp311", "cp312"]
         cibw_manylinux: [manylinux2014]
         cibw_arch: ["x86_64"]
     steps:
@@ -51,7 +51,7 @@ jobs:
         with:
           output-dir: dist
         env:
-          CIBW_BUILD: ${{ matrix.cibw_python }}
+          CIBW_BUILD: ${{ matrix.cibw_python }}-*
           CIBW_ARCHS_LINUX: ${{ matrix.cibw_arch }}
           CIBW_SKIP: "*-musllinux_*"
           CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.cibw_manylinux }}
@@ -69,7 +69,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        cibw_python: ["cp39-*", "cp310-*", "cp311-*", "cp312-*"]
+        cibw_python: ["cp39", "cp310", "cp311", "cp312"]
         cibw_manylinux: [manylinux2014]
         cibw_arch: ["aarch64"]
     steps:
@@ -89,7 +89,7 @@ jobs:
         with:
           output-dir: dist
         env:
-          CIBW_BUILD: ${{ matrix.cibw_python }}
+          CIBW_BUILD: ${{ matrix.cibw_python }}-*
           CIBW_ARCHS_LINUX: ${{ matrix.cibw_arch }}
           CIBW_SKIP: "*-musllinux_*"
           CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.cibw_manylinux }}
@@ -105,7 +105,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [macos-latest]
-        cibw_python: ["cp39-*", "cp310-*", "cp311-*", "cp312-*"]
+        cibw_python: ["cp39", "cp310", "cp311", "cp312"]
         cibw_arch: ["x86_64", "arm64"]
     steps:
       - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
@@ -122,7 +122,7 @@ jobs:
         with:
           output-dir: dist
         env:
-          CIBW_BUILD: ${{ matrix.cibw_python }}
+          CIBW_BUILD: ${{ matrix.cibw_python }}-*
           CIBW_ARCHS_MACOS: ${{ matrix.cibw_arch }}
 
       - uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4.3.1
@@ -139,7 +139,7 @@ jobs:
       matrix:
         os: [windows-latest]
         cibw_arch: ["AMD64", "x86"]
-        cibw_python: ["cp39-*", "cp310-*", "cp311-*", "cp312-*"]
+        cibw_python: ["cp39", "cp310", "cp311", "cp312"]
     steps:
       - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
         with:
@@ -167,7 +167,7 @@ jobs:
         with:
           output-dir: dist
         env:
-          CIBW_BUILD: ${{ matrix.cibw_python }}
+          CIBW_BUILD: ${{ matrix.cibw_python }}-*
           CIBW_ARCHS_WINDOWS: ${{ matrix.cibw_arch }}
 
       - uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4.3.1
