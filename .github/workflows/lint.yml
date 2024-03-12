@@ -1,6 +1,13 @@
-name: style
+name: Style checks
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - v1.**
+  pull_request:
+    branches:
+      - master
+      - v1.**
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}

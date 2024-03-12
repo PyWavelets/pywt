@@ -1,8 +1,9 @@
-name: Test Pyodide build for PyWavelets
+name: Test Pyodide build
 
 on:
   push:
     branches:
+      # Runs on every merge to master to upload .dev0 wheels to anaconda.org
       - master
       - v1.**
   pull_request:
@@ -17,7 +18,7 @@ on:
           'Push wheels to Anaconda if "true". Default is "false". Warning: this will overwrite existing wheels.'
         required: false
         default: "false"
-  # Upload wheels to Anaconda on a schedule
+  # Upload wheels to anaconda.org on a schedule
   schedule:
     # Run at 0300 hours on days 3 and 17 of the month
     - cron: "0 3 3,17 * *"

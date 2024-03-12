@@ -1,9 +1,8 @@
-name: Test
+name: Linux and macOS tests
 
 on:
   push:
     branches:
-      - master
       - v1.**
   pull_request:
     branches:
