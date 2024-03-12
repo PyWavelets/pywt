@@ -8,12 +8,12 @@ on:
       # Runs on every merge to master to upload .dev0 wheels to anaconda.org
       - master
       - v1.**
-  # Make it possible to upload wheels manually if needed
+  # Make it possible to upload wheels manually if needed (for anaconda.org only, not PyPI)
   workflow_dispatch:
     inputs:
       push_wheels:
         description: >
-          'Push wheels to Anaconda if "true". Default is "false". Warning: this will overwrite existing wheels.'
+          Push wheels to Anaconda if "true". Default is "false". Warning: this will overwrite existing wheels.
         required: false
         default: "false"
   # Upload wheels to anaconda.org on a schedule
@@ -22,7 +22,6 @@ on:
     - cron: "0 3 3,17 * *"
 env:
   CIBW_BUILD_VERBOSITY: 2
-  # CIBW_BEFORE_BUILD: pip install cython
   CIBW_TEST_REQUIRES: pytest
   CIBW_TEST_COMMAND: pytest --pyargs pywt -m "not slow"
   CIBW_ENVIRONMENT: PIP_PREFER_BINARY=1
@@ -36,7 +35,6 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         cibw_python: ["cp39", "cp310", "cp311", "cp312"]
-        cibw_manylinux: [manylinux2014]
         cibw_arch: ["x86_64"]
     steps:
       - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
@@ -53,12 +51,12 @@ jobs:
         env:
           CIBW_BUILD: ${{ matrix.cibw_python }}-*
           CIBW_ARCHS_LINUX: ${{ matrix.cibw_arch }}
-          CIBW_SKIP: "*-musllinux_*"
-          CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.cibw_manylinux }}
-          CIBW_MANYLINUX_I686_IMAGE: "manylinux2010"
+          CIBW_MANYLINUX_X86_64_IMAGE: manylinux2014
+          CIBW_MANYLINUX_I686_IMAGE: manylinux2014
+          CIBW_MUSLLINUX_X86_64_IMAGE: musllinux_1_1
       - uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4.3.1
         with:
-          name: wheels_linux_${{ matrix.cibw_arch }}_${{ matrix.cibw_python }}_manylinux2014
+          name: wheels_linux_${{ matrix.cibw_arch }}_${{ matrix.cibw_python }}
           path: ./dist/*.whl
           if-no-files-found: error
 
@@ -70,7 +68,6 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         cibw_python: ["cp39", "cp310", "cp311", "cp312"]
-        cibw_manylinux: [manylinux2014]
         cibw_arch: ["aarch64"]
     steps:
       - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
@@ -91,11 +88,11 @@ jobs:
         env:
           CIBW_BUILD: ${{ matrix.cibw_python }}-*
           CIBW_ARCHS_LINUX: ${{ matrix.cibw_arch }}
-          CIBW_SKIP: "*-musllinux_*"
-          CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.cibw_manylinux }}
+          CIBW_MANYLINUX_AARCH64_IMAGE: manylinux2014
+          CIBW_MUSLLINUX_AARCH64_IMAGE: musllinux_1_1
       - uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4.3.1
         with:
-          name: wheels_linux_${{ matrix.cibw_arch }}_${{ matrix.cibw_python }}_manylinux2014
+          name: wheels_linux_${{ matrix.cibw_arch }}_${{ matrix.cibw_python }}
           path: ./dist/*.whl
 
   build_macos_wheels:
@@ -120,7 +117,7 @@ jobs:
       - uses: actions/setup-python@v5
         name: Install Python
         with:
-          python-version: "3.9"
+          python-version: "3.12"
 
       - name: Build wheels for CPython (macOS) (x86_64)
         if: matrix.cibw_arch == 'x86_64' && matrix.os == 'macos-latest'
