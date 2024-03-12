@@ -4,6 +4,22 @@ on:
     tags:
       - "v*"
       - "buildwheels*"
+    branches:
+      # Runs on every merge to master to upload .dev0 wheels to anaconda.org
+      - master
+      - v1.**
+  # Make it possible to upload wheels manually if needed
+  workflow_dispatch:
+    inputs:
+      push_wheels:
+        description: >
+          'Push wheels to Anaconda if "true". Default is "false". Warning: this will overwrite existing wheels.'
+        required: false
+        default: "false"
+  # Upload wheels to anaconda.org on a schedule
+  schedule:
+    # Run at 0300 hours on days 3 and 17 of the month
+    - cron: "0 3 3,17 * *"
 env:
   CIBW_BUILD_VERBOSITY: 2
   # CIBW_BEFORE_BUILD: pip install cython
@@ -19,33 +35,32 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        cibw_python: ["cp39-*", "cp310-*", "cp311-*", "cp312-*"]
+        cibw_python: ["cp39", "cp310", "cp311", "cp312"]
         cibw_manylinux: [manylinux2014]
         cibw_arch: ["x86_64"]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
         with:
           fetch-depth: 0
       - uses: actions/setup-python@v5
         name: Install Python
         with:
           python-version: "3.9"
-      - name: Install cibuildwheel
-        run: |
-          python -m pip install cibuildwheel
       - name: Build the wheel
-        run: |
-          python -m cibuildwheel --output-dir dist
+        uses: pypa/cibuildwheel@8d945475ac4b1aac4ae08b2fd27db9917158b6ce # 2.17.0
+        with:
+          output-dir: dist
         env:
-          CIBW_BUILD: ${{ matrix.cibw_python }}
+          CIBW_BUILD: ${{ matrix.cibw_python }}-*
           CIBW_ARCHS_LINUX: ${{ matrix.cibw_arch }}
           CIBW_SKIP: "*-musllinux_*"
           CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.cibw_manylinux }}
           CIBW_MANYLINUX_I686_IMAGE: "manylinux2010"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4.3.1
         with:
-          name: wheels
+          name: wheels_linux_${{ matrix.cibw_arch }}_${{ matrix.cibw_python }}_manylinux2014
           path: ./dist/*.whl
+          if-no-files-found: error
 
   build_linux_aarch64_wheels:
     name: Build python ${{ matrix.cibw_python }} aarch64 wheels on ${{ matrix.os }}
@@ -54,10 +69,11 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        cibw_python: ["cp39-*", "cp310-*", "cp311-*", "cp312-*"]
+        cibw_python: ["cp39", "cp310", "cp311", "cp312"]
         cibw_manylinux: [manylinux2014]
+        cibw_arch: ["aarch64"]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
         with:
           fetch-depth: 0
       - uses: actions/setup-python@v5
@@ -68,20 +84,18 @@ jobs:
         uses: docker/setup-qemu-action@v3
         with:
           platforms: arm64
-      - name: Install cibuildwheel
-        run: |
-          python -m pip install cibuildwheel
       - name: Build the wheel
-        run: |
-          python -m cibuildwheel --output-dir dist
+        uses: pypa/cibuildwheel@8d945475ac4b1aac4ae08b2fd27db9917158b6ce # 2.17.0
+        with:
+          output-dir: dist
         env:
-          CIBW_BUILD: ${{ matrix.cibw_python }}
-          CIBW_ARCHS_LINUX: aarch64
+          CIBW_BUILD: ${{ matrix.cibw_python }}-*
+          CIBW_ARCHS_LINUX: ${{ matrix.cibw_arch }}
           CIBW_SKIP: "*-musllinux_*"
           CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.cibw_manylinux }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4.3.1
         with:
-          name: wheels
+          name: wheels_linux_${{ matrix.cibw_arch }}_${{ matrix.cibw_python }}_manylinux2014
           path: ./dist/*.whl
 
   build_macos_wheels:
@@ -91,10 +105,10 @@ jobs:
       fail-fast: false
       matrix:
         os: [macos-latest]
-        cibw_python: ["cp39-*", "cp310-*", "cp311-*", "cp312-*"]
+        cibw_python: ["cp39", "cp310", "cp311", "cp312"]
         cibw_arch: ["x86_64", "arm64"]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
         with:
           fetch-depth: 0
 
@@ -103,33 +117,19 @@ jobs:
         with:
           python-version: "3.9"
 
-      - name: Install cibuildwheel
-        run: |
-          python -m pip install cibuildwheel
-
-      - name: Build wheels for CPython (MacOS)
-        run: |
-          # We need to set both MACOS_DEPLOYMENT_TARGET and MACOSX_DEPLOYMENT_TARGET
-          # until there is a new release with this commit:
-          # https://github.com/mesonbuild/meson-python/pull/309 (should be in 0.13.0)
-          if [[ "$CIBW_ARCHS_MACOS" == arm64 ]]; then
-              export MACOSX_DEPLOYMENT_TARGET=11.0
-              export MACOS_DEPLOYMENT_TARGET=11.0
-          else
-              export MACOSX_DEPLOYMENT_TARGET=10.13
-              export MACOS_DEPLOYMENT_TARGET=10.13
-          fi
-          echo MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET}
-
-          python -m cibuildwheel --output-dir dist
+      - name: Build wheels for CPython (macOS)
+        uses: pypa/cibuildwheel@8d945475ac4b1aac4ae08b2fd27db9917158b6ce # 2.17.0
+        with:
+          output-dir: dist
         env:
-          CIBW_BUILD: ${{ matrix.cibw_python }}
+          CIBW_BUILD: ${{ matrix.cibw_python }}-*
           CIBW_ARCHS_MACOS: ${{ matrix.cibw_arch }}
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4.3.1
         with:
-          name: wheels
+          name: wheels_macos_${{ matrix.cibw_arch }}_${{ matrix.cibw_python }}
           path: ./dist/*.whl
+          if-no-files-found: error
 
   build_windows_wheels:
     name: Build ${{ matrix.cibw_python }} ${{ matrix.cibw_arch }} wheels on ${{ matrix.os }}
@@ -139,9 +139,9 @@ jobs:
       matrix:
         os: [windows-latest]
         cibw_arch: ["AMD64", "x86"]
-        cibw_python: ["cp39-*", "cp310-*", "cp311-*", "cp312-*"]
+        cibw_python: ["cp39", "cp310", "cp311", "cp312"]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
         with:
           fetch-depth: 0
 
@@ -149,10 +149,6 @@ jobs:
         name: Install Python
         with:
           python-version: "3.9"
-
-      - name: Install cibuildwheel
-        run: |
-          python -m pip install cibuildwheel
 
       - name: Setup MSVC (32-bit)
         if: matrix.cibw_arch == 'x86'
@@ -167,19 +163,21 @@ jobs:
           architecture: x64
 
       - name: Build Windows wheels for CPython
-        run: |
-          python -m cibuildwheel --output-dir dist
+        uses: pypa/cibuildwheel@8d945475ac4b1aac4ae08b2fd27db9917158b6ce # 2.17.0
+        with:
+          output-dir: dist
         env:
-          CIBW_BUILD: ${{ matrix.cibw_python }}
+          CIBW_BUILD: ${{ matrix.cibw_python }}-*
           CIBW_ARCHS_WINDOWS: ${{ matrix.cibw_arch }}
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4.3.1
         with:
-          name: wheels
+          name: wheels_windows_${{ matrix.cibw_arch }}_${{ matrix.cibw_python }}
           path: ./dist/*.whl
+          if-no-files-found: error
 
-  deploy:
-    name: Release
+  deploy_pypi:
+    name: Release (PyPI)
     needs:
       [
         build_linux_x86_64_wheels,
@@ -187,10 +185,11 @@ jobs:
         build_macos_wheels,
         build_windows_wheels,
       ]
-    if: github.repository_owner == 'PyWavelets' && startsWith(github.ref, 'refs/tags/v') && always()
+    # Run only on tags pushed to the repository
+    if: github.repository == 'PyWavelets/pywt' && startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
         with:
           fetch-depth: 0
 
@@ -204,11 +203,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install twine
           pip install cython numpy build
-      - uses: actions/download-artifact@v4
+
+      - uses: actions/download-artifact@c850b930e6ba138125429b7e5c93fc707a7f8427 # v4.1.4
         id: download
         with:
-          name: wheels
+          pattern: "wheels_*"
           path: ./dist
+          merge-multiple: true
 
       - name: Publish the source distribution on PyPI
         run: |
@@ -224,7 +225,41 @@ jobs:
           TWINE_PASSWORD: ${{ secrets.TWINE_TOKEN }}
 
       - name: Github release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@d99959edae48b5ffffd7b00da66dcdb0a33a52ee # v2.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
+
+  deploy_anaconda:
+    name: Release (Anaconda)
+    needs:
+      [
+        build_linux_x86_64_wheels,
+        build_linux_aarch64_wheels,
+        build_macos_wheels,
+        build_windows_wheels,
+      ]
+    # Run only on pushes to the master branch, on schedule, or when triggered manually
+    if: >-
+      github.repository == 'PyWavelets/pywt' &&
+      (github.event_name == 'push' && github.ref == 'refs/heads/master') ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.push_wheels == 'true') ||
+      (github.event_name == 'schedule')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
+        with:
+          fetch-depth: 0
+
+      - uses: actions/download-artifact@c850b930e6ba138125429b7e5c93fc707a7f8427 # v4.1.4
+        id: download
+        with:
+          pattern: "*_wheels"
+          path: dist/
+          merge-multiple: true
+
+      - name: Push to Anaconda PyPI index
+        uses: scientific-python/upload-nightly-action@b67d7fcc0396e1128a474d1ab2b48aa94680f9fc # v0.5.0
+        with:
+          artifacts_path: dist/
+          anaconda_nightly_upload_token: ${{ secrets.ANACONDA_ORG_UPLOAD_TOKEN }}
