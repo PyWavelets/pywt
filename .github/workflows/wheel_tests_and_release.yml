@@ -29,7 +29,7 @@ env:
 
 jobs:
   build_linux_x86_64_wheels:
-    name: Build python ${{ matrix.cibw_python }} ${{ matrix.cibw_arch }} wheels on ${{ matrix.os }}
+    name: Build ${{ matrix.cibw_python }} ${{ matrix.cibw_arch }} ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -63,7 +63,7 @@ jobs:
           if-no-files-found: error
 
   build_linux_aarch64_wheels:
-    name: Build python ${{ matrix.cibw_python }} aarch64 wheels on ${{ matrix.os }}
+    name: Build ${{ matrix.cibw_python }} ${{ matrix.cibw_arch }} ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -99,14 +99,19 @@ jobs:
           path: ./dist/*.whl
 
   build_macos_wheels:
-    name: Build python ${{ matrix.cibw_python }} ${{ matrix.cibw_arch }} wheels on ${{ matrix.os }}
+    name: Build ${{ matrix.cibw_python }} ${{ matrix.cibw_arch }} ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest]
+        os: [macos-latest, macos-14]
         cibw_python: ["cp39", "cp310", "cp311", "cp312"]
         cibw_arch: ["x86_64", "arm64"]
+        exclude:
+          - os: macos-14
+            cibw_arch: "x86_64"
+          - os: macos-latest
+            cibw_arch: "arm64"
     steps:
       - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
         with:
@@ -117,7 +122,17 @@ jobs:
         with:
           python-version: "3.9"
 
-      - name: Build wheels for CPython (macOS)
+      - name: Build wheels for CPython (macOS) (x86_64)
+        if: matrix.cibw_arch == 'x86_64' && matrix.os == 'macos-latest'
+        uses: pypa/cibuildwheel@8d945475ac4b1aac4ae08b2fd27db9917158b6ce # 2.17.0
+        with:
+          output-dir: dist
+        env:
+          CIBW_BUILD: ${{ matrix.cibw_python }}-*
+          CIBW_ARCHS_MACOS: ${{ matrix.cibw_arch }}
+
+      - name: Build wheels for CPython (macOS) (arm64)
+        if: matrix.cibw_arch == 'arm64' && matrix.os == 'macos-14'
         uses: pypa/cibuildwheel@8d945475ac4b1aac4ae08b2fd27db9917158b6ce # 2.17.0
         with:
           output-dir: dist
@@ -132,7 +147,7 @@ jobs:
           if-no-files-found: error
 
   build_windows_wheels:
-    name: Build ${{ matrix.cibw_python }} ${{ matrix.cibw_arch }} wheels on ${{ matrix.os }}
+    name: Build ${{ matrix.cibw_python }} ${{ matrix.cibw_arch }} ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
