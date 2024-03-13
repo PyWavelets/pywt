@@ -51,6 +51,9 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules"
 ]
 
+[project.optional-dependencies]
+optional = ["scipy>=1.9"]
+
 [project.urls]
 homepage = "https://github.com/PyWavelets/pywt"
 source = "https://github.com/PyWavelets/pywt"

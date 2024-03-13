@@ -19,7 +19,7 @@ jobs:
       CYTHONSPEC: cython
       NUMPY_MIN: numpy==1.23.0
       CYTHON_MIN: cython==0.29.35
-      SCIPY_MIN: scipy==1.8.0
+      SCIPY_MIN: scipy==1.9.0
 
     strategy:
       # Ensure that a wheel builder finishes even if another fails
@@ -131,7 +131,7 @@ jobs:
       CYTHONSPEC: cython
       NUMPY_MIN: numpy==1.23.0
       CYTHON_MIN: cython==0.29.35
-      SCIPY_MIN: scipy==1.8.0
+      SCIPY_MIN: scipy==1.9.0
 
     strategy:
       # Ensure that a wheel builder finishes even if another fails
