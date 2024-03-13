@@ -17,7 +17,7 @@ jobs:
       MPLBACKEND: Agg
       CYTHON_TRACE: 1
       CYTHONSPEC: cython
-      NUMPY_MIN: numpy==1.22.4
+      NUMPY_MIN: numpy==1.23.0
       CYTHON_MIN: cython==0.29.35
       SCIPY_MIN: scipy==1.8.0
 
@@ -129,7 +129,7 @@ jobs:
       MPLBACKEND: Agg
       CYTHON_TRACE: 1
       CYTHONSPEC: cython
-      NUMPY_MIN: numpy==1.22.4
+      NUMPY_MIN: numpy==1.23.0
       CYTHON_MIN: cython==0.29.35
       SCIPY_MIN: scipy==1.8.0
 
