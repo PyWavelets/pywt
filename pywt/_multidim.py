@@ -14,7 +14,7 @@ import numpy as np
 
 from ._c99_config import _have_c99_complex
 from ._extensions._dwt import dwt_axis, idwt_axis
-from ._utils import _modes_per_axis, _wavelets_per_axis
+from ._utils import AxisError, _modes_per_axis, _wavelets_per_axis
 
 __all__ = ['dwt2', 'idwt2', 'dwtn', 'idwtn']
 
@@ -288,7 +288,7 @@ def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
     for key_length, (axis, wav, mode) in reversed(
             list(enumerate(zip(axes, wavelets, modes)))):
         if axis < 0 or axis >= ndim:
-            raise np.AxisError("Axis greater than data dimensions")
+            raise AxisError("Axis greater than data dimensions")
 
         new_coeffs = {}
         new_keys = [''.join(coef) for coef in product('ad', repeat=key_length)]

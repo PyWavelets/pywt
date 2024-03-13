@@ -7,6 +7,7 @@ from ._extensions._pywt import (
     _check_dtype,
 )
 from ._functions import integrate_wavelet, scale2frequency
+from ._utils import AxisError
 
 __all__ = ["cwt"]
 
@@ -124,7 +125,7 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1):
         raise ValueError("`scales` must only include positive values")
 
     if not np.isscalar(axis):
-        raise np.AxisError("axis must be a scalar.")
+        raise AxisError("axis must be a scalar.")
 
     dt_out = dt_cplx if wavelet.complex_cwt else dt
     out = np.empty((np.size(scales),) + data.shape, dtype=dt_out)
