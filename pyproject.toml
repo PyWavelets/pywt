@@ -32,7 +32,7 @@ maintainers = [
     {name = "The PyWavelets Developers", email = "pywavelets@googlegroups.com"}
 ]
 description = "PyWavelets, wavelet transform module"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = ["numpy>=1.22.4,<3"]
 readme = "README.rst"
 classifiers = [
@@ -45,7 +45,6 @@ classifiers = [
     "Programming Language :: C",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -59,7 +58,7 @@ documentation = "https://pywavelets.readthedocs.io/"
 
 [tool.ruff]
 line-length = 88
-target-version = 'py39'
+target-version = 'py310'
 lint.select = [
     'I',
     'UP',

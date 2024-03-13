@@ -34,7 +34,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        cibw_python: ["cp39", "cp310", "cp311", "cp312"]
+        cibw_python: ["cp310", "cp311", "cp312"]
         cibw_arch: ["x86_64"]
     steps:
       - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
@@ -43,7 +43,7 @@ jobs:
       - uses: actions/setup-python@v5
         name: Install Python
         with:
-          python-version: "3.9"
+          python-version: "3.10"
       - name: Build the wheel
         uses: pypa/cibuildwheel@8d945475ac4b1aac4ae08b2fd27db9917158b6ce # 2.17.0
         with:
@@ -66,7 +66,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        cibw_python: ["cp39", "cp310", "cp311", "cp312"]
+        cibw_python: ["cp310", "cp311", "cp312"]
         cibw_arch: ["aarch64"]
     steps:
       - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
@@ -75,7 +75,7 @@ jobs:
       - uses: actions/setup-python@v5
         name: Install Python
         with:
-          python-version: "3.9"
+          python-version: "3.10"
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
         with:
@@ -102,7 +102,7 @@ jobs:
       matrix:
         # macos-13 is the last runner that supports Intel (x86_64) architecture
         os: [macos-13, macos-14]
-        cibw_python: ["cp39", "cp310", "cp311", "cp312"]
+        cibw_python: ["cp310", "cp311", "cp312"]
         cibw_arch: ["x86_64", "arm64"]
         exclude:
           - os: macos-14
@@ -151,7 +151,7 @@ jobs:
       matrix:
         os: [windows-latest]
         cibw_arch: ["AMD64", "x86"]
-        cibw_python: ["cp39", "cp310", "cp311", "cp312"]
+        cibw_python: ["cp310", "cp311", "cp312"]
     steps:
       - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
         with:
@@ -160,7 +160,7 @@ jobs:
       - uses: actions/setup-python@v5
         name: Install Python
         with:
-          python-version: "3.9"
+          python-version: "3.10"
 
       - name: Setup MSVC (32-bit)
         if: matrix.cibw_arch == 'x86'
@@ -208,7 +208,7 @@ jobs:
       - uses: actions/setup-python@v5
         name: Install Python
         with:
-          python-version: "3.9"
+          python-version: "3.10"
 
       - name: Install Twine
         run: |
