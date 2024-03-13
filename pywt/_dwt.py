@@ -9,7 +9,7 @@ from ._extensions._dwt import dwt_coeff_len as _dwt_coeff_len
 from ._extensions._dwt import dwt_max_level as _dwt_max_level
 from ._extensions._dwt import upcoef as _upcoef
 from ._extensions._pywt import Modes, Wavelet, _check_dtype, wavelist
-from ._utils import _as_wavelet
+from ._utils import AxisError, _as_wavelet
 
 __all__ = ["dwt", "idwt", "downcoef", "upcoef", "dwt_max_level",
            "dwt_coeff_len", "pad"]
@@ -176,7 +176,7 @@ def dwt(data, wavelet, mode='symmetric', axis=-1):
     if axis < 0:
         axis = axis + data.ndim
     if not 0 <= axis < data.ndim:
-        raise np.AxisError("Axis greater than data dimensions")
+        raise AxisError("Axis greater than data dimensions")
 
     if data.ndim == 1:
         cA, cD = dwt_single(data, wavelet, mode)
@@ -282,7 +282,7 @@ def idwt(cA, cD, wavelet, mode='symmetric', axis=-1):
     if axis < 0:
         axis = axis + ndim
     if not 0 <= axis < ndim:
-        raise np.AxisError("Axis greater than coefficient dimensions")
+        raise AxisError("Axis greater than coefficient dimensions")
 
     if ndim == 1:
         rec = idwt_single(cA, cD, wavelet, mode)

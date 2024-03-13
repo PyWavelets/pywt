@@ -6,6 +6,7 @@ from numpy.testing import assert_allclose
 
 import pywt
 from pywt import data
+from pywt._utils import AxisError
 
 # tolerances used in accuracy comparisons
 tol_single = 1e-6
@@ -84,7 +85,7 @@ def test_mra_axis(transform, ndim, axis, dtype):
 
     # out of range axis
     if axis < -x.ndim or axis >= x.ndim:
-        with pytest.raises(np.AxisError):
+        with pytest.raises(AxisError):
             pywt.mra(x, 'db1', transform=transform, axis=axis)
         return
 
@@ -160,7 +161,7 @@ def test_mra2_axes(transform, axes, ndim, dtype):
 
     # out of range axis
     if any(axis < -x.ndim or axis >= x.ndim for axis in axes):
-        with pytest.raises(np.AxisError):
+        with pytest.raises(AxisError):
             pywt.mra2(x, 'db1', transform=transform, axes=axes)
         return
 
@@ -246,7 +247,7 @@ def test_mran_axes(axes, transform):
 
     # out of range axis
     if any(axis < -x.ndim or axis >= x.ndim for axis in axes):
-        with pytest.raises(np.AxisError):
+        with pytest.raises(AxisError):
             pywt.mran(x, 'db1', transform='dwtn', axes=axes)
         return
 

@@ -13,6 +13,12 @@ from ._extensions._pywt import (
     Wavelet,
 )
 
+AxisError: type[Exception]
+if np.lib.NumpyVersion(np.__version__) >= '1.25.0':
+    from numpy.exceptions import AxisError
+else:
+    from numpy import AxisError
+
 
 def _as_wavelet(wavelet):
     """Convert wavelet name to a Wavelet object."""

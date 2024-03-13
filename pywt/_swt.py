@@ -10,7 +10,7 @@ from ._extensions._swt import swt as _swt
 from ._extensions._swt import swt_axis as _swt_axis
 from ._extensions._swt import swt_max_level
 from ._multidim import idwt2, idwtn
-from ._utils import _as_wavelet, _wavelets_per_axis
+from ._utils import AxisError, _as_wavelet, _wavelets_per_axis
 
 __all__ = ["swt", "swt_max_level", 'iswt', 'swt2', 'iswt2', 'swtn', 'iswtn']
 
@@ -141,7 +141,7 @@ def swt(data, wavelet, level=None, start_level=0, axis=-1,
     if axis < 0:
         axis = axis + data.ndim
     if not 0 <= axis < data.ndim:
-        raise np.AxisError("Axis greater than data dimensions")
+        raise AxisError("Axis greater than data dimensions")
 
     if level is None:
         level = swt_max_level(data.shape[axis])
@@ -196,7 +196,7 @@ def iswt(coeffs, wavelet, norm=False, axis=-1):
             coeffs_nd = [{'a': a, 'd': d} for a, d in coeffs]
         return iswtn(coeffs_nd, wavelet, axes=(axis,), norm=norm)
     elif axis != 0 and axis != -1:
-        raise np.AxisError("Axis greater than data dimensions")
+        raise AxisError("Axis greater than data dimensions")
     if not _have_c99_complex and np.iscomplexobj(cA):
         if trim_approx:
             coeffs_real = [c.real for c in coeffs]
@@ -639,7 +639,7 @@ def swtn(data, wavelet, level, start_level=0, axes=None, trim_approx=False,
         axes = range(data.ndim)
     axes = [a + data.ndim if a < 0 else a for a in axes]
     if any(a < 0 or a >= data.ndim for a in axes):
-        raise np.AxisError("Axis greater than data dimensions")
+        raise AxisError("Axis greater than data dimensions")
     if len(axes) != len(set(axes)):
         raise ValueError("The axes passed to swtn must be unique.")
     num_axes = len(axes)
