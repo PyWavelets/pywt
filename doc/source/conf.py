@@ -57,9 +57,6 @@ source_suffix = '.rst'
 # The encoding of source files.
 source_encoding = 'utf-8'
 
-# The master toctree document.
-master_doc = 'index'
-
 # General information about the project.
 project = 'PyWavelets'
 copyright = f'2006-{datetime.date.today().year}, The PyWavelets Developers'
@@ -167,7 +164,7 @@ html_context = {
     "github_url": "https://github.com", # or your GitHub Enterprise site
     "github_user": "PyWavelets",
     "github_repo": "pywt",
-    "github_version": "master",
+    "github_version": "main",
     "doc_path": "doc/source",
     "default_mode": "light",
 }

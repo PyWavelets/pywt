@@ -14,9 +14,9 @@
     //"repo": "https://github.com/PyWavelets/pywt.git",
     "repo": "..",
 
-    // List of branches to benchmark. If not provided, defaults to "master"
+    // List of branches to benchmark. If not provided, defaults to "main"
     // (for git) or "tip" (for mercurial).
-    "branches": ["master"], // for git
+    "branches": ["main"], // for git
     // "branches": ["tip"],    // for mercurial
 
     // The DVCS being used.  If not set, it will be automatically

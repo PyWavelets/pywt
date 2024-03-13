@@ -15,7 +15,7 @@ When submitting a pull request, we ask you check the following:
    some further changes.
 
 2. The contributed code will be **licensed under PyWavelets's license**,
-   (the MIT license, https://github.com/PyWavelets/pywt/blob/master/LICENSE).
+   (the MIT license, https://github.com/PyWavelets/pywt/blob/main/LICENSE).
    If you did not write the code yourself, you ensure the existing
    license is compatible and include the license information in the
    contributed files, or obtain a permission from the original
@@ -63,4 +63,4 @@ Coding guidelines
 
 .. _pyflakes: http://pypi.python.org/pypi/pyflakes
 
-.. _testing guidelines: https://github.com/numpy/numpy/blob/master/doc/TESTS.rst.txt
+.. _testing guidelines: https://github.com/numpy/numpy/blob/main/doc/TESTS.rst.txt

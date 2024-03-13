@@ -5,8 +5,8 @@ on:
       - "v*"
       - "buildwheels*"
     branches:
-      # Runs on every merge to master to upload .dev0 wheels to anaconda.org
-      - master
+      # Runs on every merge to main to upload .dev0 wheels to anaconda.org
+      - main
       - v1.**
   # Make it possible to upload wheels manually if needed (for anaconda.org only, not PyPI)
   workflow_dispatch:
@@ -251,10 +251,10 @@ jobs:
         build_macos_wheels,
         build_windows_wheels,
       ]
-    # Run only on pushes to the master branch, on schedule, or when triggered manually
+    # Run only on pushes to the main branch, on schedule, or when triggered manually
     if: >-
       github.repository == 'PyWavelets/pywt' &&
-      (github.event_name == 'push' && github.ref == 'refs/heads/master') ||
+      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
       (github.event_name == 'workflow_dispatch' && github.event.inputs.push_wheels == 'true') ||
       (github.event_name == 'schedule')
     runs-on: ubuntu-latest
