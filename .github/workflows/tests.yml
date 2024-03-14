@@ -18,7 +18,7 @@ jobs:
       CYTHON_TRACE: 1
       CYTHONSPEC: cython
       NUMPY_MIN: numpy==1.23.0
-      CYTHON_MIN: cython==0.29.35
+      CYTHON_MIN: cython==3.0.4
       SCIPY_MIN: scipy==1.9.0
 
     strategy:
@@ -130,7 +130,7 @@ jobs:
       CYTHON_TRACE: 1
       CYTHONSPEC: cython
       NUMPY_MIN: numpy==1.23.0
-      CYTHON_MIN: cython==0.29.35
+      CYTHON_MIN: cython==3.0.4
       SCIPY_MIN: scipy==1.9.0
 
     strategy:

@@ -21,6 +21,8 @@ except ImportError:
     fftmodule = np.fft
 
     # provide a fallback so scipy is an optional requirement
+    # note: numpy.fft in numpy 2.0 is as fast as scipy.fft, so could be used
+    # unconditionally once the minimum supported numpy version is >=2.0
     def next_fast_len(n):
         """Round up size to the nearest power of two.
 
