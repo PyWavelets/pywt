@@ -34,6 +34,7 @@ except TypeError:
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
+    'jupyterlite_sphinx',
     'matplotlib.sphinxext.plot_directive',
     'numpydoc',
     'sphinx.ext.autodoc',
@@ -287,3 +288,8 @@ intersphinx_mapping = {
     'numpy': ('https://numpy.org/devdocs', None),
     'scipy': ('https://docs.scipy.org/doc/scipy/reference', None),
     }
+
+# -- Options for JupyterLite -------------------------------------------------
+
+global_enable_try_examples = True
+try_examples_global_button_text = "Try it in your browser!"
