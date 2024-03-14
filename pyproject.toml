@@ -29,8 +29,8 @@ maintainers = [
     {name = "The PyWavelets Developers", email = "pywavelets@googlegroups.com"}
 ]
 description = "PyWavelets, wavelet transform module"
-requires-python = ">=3.9"
-dependencies = ["numpy>=1.22.4,<3"]
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.23,<3"]
 readme = "README.rst"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -42,12 +42,14 @@ classifiers = [
     "Programming Language :: C",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Topic :: Software Development :: Libraries :: Python Modules"
 ]
+
+[project.optional-dependencies]
+optional = ["scipy>=1.9"]
 
 [project.urls]
 homepage = "https://github.com/PyWavelets/pywt"
@@ -56,21 +58,24 @@ documentation = "https://pywavelets.readthedocs.io/"
 
 [tool.ruff]
 line-length = 88
-target-version = 'py39'
-lint.select = [
-    'I',
-    'UP',
-    'C4',
-    'E713',
-    'NPY201',
-    'PIE',
-    'PGH003',
-    'PLR0402',
-    'SIM101',
-    'SIM109',
-    'SIM110',
-    'SIM118',
-    'SIM2',
+target-version = 'py310'
+select = [
+    "I",
+    "UP",
+    "C4",
+    "E713",
+    "NPY201",
+    "PIE",
+    "PGH003",
+    "PLR0402",
+    "SIM101",
+    "SIM109",
+    "SIM110",
+    "SIM118",
+    "SIM2",
+]
+ignore = [
+     "UP038", # https://github.com/astral-sh/ruff/issues/7871
 ]
 
 [tool.spin]

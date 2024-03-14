@@ -49,11 +49,11 @@ Running tests with Tox
 ----------------------
 
 There's also a config file for running tests with `Tox`_ (``pip install tox``).
-For example, to run tests for Python 3.9 and 3.10, use
+For example, to run tests for Python 3.10, Python 3.11, and 3.12, use
 
 .. code-block:: bash
 
-    tox -e py39,py310
+    tox -e py310,py311,py312
 
 For more information see the `Tox`_ documentation.
 

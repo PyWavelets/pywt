@@ -15,27 +15,23 @@ __all__ = ["cwt"]
 import numpy as np
 
 try:
-    # Prefer scipy.fft (new in SciPy 1.4)
-    import scipy.fft
+    import scipy
     fftmodule = scipy.fft
     next_fast_len = fftmodule.next_fast_len
 except ImportError:
-    try:
-        import scipy.fftpack
-        fftmodule = scipy.fftpack
-        next_fast_len = fftmodule.next_fast_len
-    except ImportError:
-        fftmodule = np.fft
+    fftmodule = np.fft
 
-        # provide a fallback so scipy is an optional requirement
-        def next_fast_len(n):
-            """Round up size to the nearest power of two.
+    # provide a fallback so scipy is an optional requirement
+    # note: numpy.fft in numpy 2.0 is as fast as scipy.fft, so could be used
+    # unconditionally once the minimum supported numpy version is >=2.0
+    def next_fast_len(n):
+        """Round up size to the nearest power of two.
 
-            Given a number of samples `n`, returns the next power of two
-            following this number to take advantage of FFT speedup.
-            This fallback is less efficient than `scipy.fftpack.next_fast_len`
-            """
-            return 2**ceil(np.log2(n))
+        Given a number of samples `n`, returns the next power of two
+        following this number to take advantage of FFT speedup.
+        This fallback is less efficient than `scipy.fftpack.next_fast_len`
+        """
+        return 2**ceil(np.log2(n))
 
 
 def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1):

@@ -65,8 +65,8 @@ For more usage examples see the `demo`_ directory in the source package.
 Installation
 ------------
 
-PyWavelets supports `Python`_ >=3.9, and is only dependent on `NumPy`_
-(supported versions are currently ``>= 1.14.6``). To pass all of the tests,
+PyWavelets supports `Python`_ >=3.10, and is only dependent on `NumPy`_
+(supported versions are currently ``>= 1.23.0``). To pass all of the tests,
 `Matplotlib`_ is also required. `SciPy`_ is also an optional dependency. When
 present, FFT-based continuous wavelet transforms will use FFTs from SciPy
 rather than NumPy.
