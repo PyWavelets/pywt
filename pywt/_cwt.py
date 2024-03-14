@@ -149,12 +149,13 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1):
         data = data.reshape((-1, data.shape[-1]))
 
     for i, scale in enumerate(scales):
-        step = x[1] - x[0]
-        j = np.arange(scale * (x[-1] - x[0]) + 1) / (scale * step)
-        j = j.astype(int)  # floor
-        if j[-1] >= int_psi.size:
-            j = np.extract(j < int_psi.size, j)
-        int_psi_scale = int_psi[j][::-1]
+        # Determine scale-dependent sampling instants
+        step = 1.0 / scale
+        xs = np.arange(x[0], x[-1]+0.01*step, step)
+        if xs[-1] > x[-1]:
+            xs = xs[:-1]
+        # Approximate values by linear interpolation
+        int_psi_scale = np.interp(xs, x, int_psi)[::-1]
 
         if method == 'conv':
             if data.ndim == 1:
