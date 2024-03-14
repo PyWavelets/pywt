@@ -1,0 +1,66 @@
+==============================
+PyWavelets 1.6.0 Release Notes
+==============================
+
+We are very pleased to announce the release of PyWavelets 1.6.0. This release
+is a minor update to 1.6.x. It adds support for NumPy 2.0, which also keeping
+compatibility with NumPy 1.22-1.26. It requires Cython 3.0; support for 0.29.x
+is dropped.
+
+Other noteworthy improvements:
+
+- Improved documentation for ``pywt.cwt``
+- The documentation was migrated to the PyData Sphinx Theme and the content
+  organization improved
+- Releases on PyPI now include wheels for ``musllinux`` (x86-64 and aarch64)
+- The test suite is now passing and tested in CI with Emscripten/Pyodide
+- Nightly builds will be available at
+  https://anaconda.org/scientific-python-nightly-wheels/PyWavelets/ going
+  forward
+
+
+Authors
+=======
+
+* Christian Clauss
+* Ralf Gommers
+* Agriya Khetarpal +
+* Jarrod Millman
+* Cora Schneck +
+* Daniel Stephan +
+
+A total of 6 people contributed to this release.
+People with a "+" by their names contributed a patch for the first time.
+This list of names is automatically generated, and may not be fully complete.
+
+
+Issues closed for v1.6.0
+------------------------
+
+* `#623 <https://github.com/PyWavelets/pywt/issues/623>`__: pywavelets fails to install on Alpine Linux v3.15 ARM
+* `#676 <https://github.com/PyWavelets/pywt/issues/676>`__: Enhanced documentation for CWT
+* `#712 <https://github.com/PyWavelets/pywt/issues/712>`__: Upload dev builds for all supported platforms to anaconda.org
+* `#718 <https://github.com/PyWavelets/pywt/issues/718>`__: Publish musllinux wheels again, and natively compile macOS arm64...
+
+
+Pull requests for v1.6.0
+------------------------
+
+* `#678 <https://github.com/PyWavelets/pywt/pull/678>`__: Additional documentation for cwt (issue #676)
+* `#684 <https://github.com/PyWavelets/pywt/pull/684>`__: Rename master branch to main
+* `#687 <https://github.com/PyWavelets/pywt/pull/687>`__: Add linter
+* `#701 <https://github.com/PyWavelets/pywt/pull/701>`__: Build and test PyWavelets Pyodide wheels in CI
+* `#703 <https://github.com/PyWavelets/pywt/pull/703>`__: MAINT: add input validation to \`scales\` argument to \`cwt\`
+* `#704 <https://github.com/PyWavelets/pywt/pull/704>`__: DOC: Migrate to \`pydata-sphinx-theme\`
+* `#708 <https://github.com/PyWavelets/pywt/pull/708>`__: Keep GitHub Actions up to date with GitHub's Dependabot
+* `#709 <https://github.com/PyWavelets/pywt/pull/709>`__: mymindstorm/setup-emscripten --> mymindstorm/setup-emsdk
+* `#711 <https://github.com/PyWavelets/pywt/pull/711>`__: CI: tweaks to CI job triggers and names
+* `#713 <https://github.com/PyWavelets/pywt/pull/713>`__: Bump the github-actions group with 5 updates
+* `#714 <https://github.com/PyWavelets/pywt/pull/714>`__: Upload dev wheels to Anaconda.org + revamp wheels publishing...
+* `#715 <https://github.com/PyWavelets/pywt/pull/715>`__: BLD: update build and runtime dependencies for numpy 2.0
+* `#716 <https://github.com/PyWavelets/pywt/pull/716>`__: TST/CI: mark some tests as slow and avoid running them in wheel...
+* `#717 <https://github.com/PyWavelets/pywt/pull/717>`__: CI: fix patterns for artifact downloads in Anaconda nightly wheels...
+* `#719 <https://github.com/PyWavelets/pywt/pull/719>`__: CI: Build \`musllinux\` aarch64 and x86_64 wheels, and native...
+* `#720 <https://github.com/PyWavelets/pywt/pull/720>`__: BLD: avoid warnings from including deprecated NumPy API
+* `#721 <https://github.com/PyWavelets/pywt/pull/721>`__: Bump the github-actions group with 1 update
+* `#723 <https://github.com/PyWavelets/pywt/pull/723>`__: MAINT: use \`numpy-config\` and fix support for numpy 2.0

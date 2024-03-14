@@ -20,3 +20,4 @@ Release Notes
    release.1.4.0
    release.1.4.1
    release.1.5.0
+   release.1.6.0
