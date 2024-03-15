@@ -293,3 +293,12 @@ intersphinx_mapping = {
 
 global_enable_try_examples = True
 try_examples_global_button_text = "Try it in your browser!"
+try_examples_global_warning_text = (
+"""These interactive examples with JupyterLite are experimental and
+may not always work as expected. The execution of cells containing import
+statements can result in high bandwidth usage and may take a long time to
+load. They may not be in sync with the latest PyWavelets release.
+
+Shall you encounter any issues, please feel free to report them on the
+[PyWavelets issue tracker](https://github.com/PyWavelets/pywt/issues)."""
+)
