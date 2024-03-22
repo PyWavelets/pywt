@@ -87,9 +87,9 @@ computations can be performed with the `periodization`_ mode:
   smallest possible number of decomposition coefficients. :ref:`IDWT <ref-idwt>` must be
   performed with the same mode.
 
-  **Example:**
+**Example:**
 
-  .. sourcecode:: python
+.. try_examples::
 
     >>> import pywt
     >>> print(pywt.Modes.modes)
@@ -104,7 +104,7 @@ signal to an even length prior to using periodic boundary conditions.
 Notice that you can use any of the following ways of passing wavelet and mode
 parameters:
 
-.. sourcecode:: python
+.. try_examples::
 
   >>> import pywt
   >>> (a, d) = pywt.dwt([1,2,3,4,5,6], 'db2', 'smooth')
@@ -142,8 +142,8 @@ Padding using PyWavelets Signal Extension Modes - ``pad``
 
 .. autofunction:: pad
 
-Pywavelets provides a function, :func:`pad`, that operate like
-:func:`numpy.pad`, but supporting the PyWavelets signal extension modes
+Pywavelets provides a function, :func:`pad`, that operates like
+:func:`numpy.pad`, but supports the PyWavelets signal extension modes
 discussed above. For efficiency, the DWT routines in PyWavelets do not
 expclitly create padded signals using this function. It can be used to manually
 prepad signals to reduce boundary effects in functions such as :func:`cwt` and

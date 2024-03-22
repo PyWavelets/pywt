@@ -89,9 +89,10 @@ Continuous Wavelet Families
 A variety of continuous wavelets have been implemented. A list of the available
 wavelet names compatible with ``cwt`` can be obtained by:
 
-.. sourcecode:: python
+.. try_examples::
 
-    wavlist = pywt.wavelist(kind='continuous')
+    >>> import pywt
+    >>> wavelist = pywt.wavelist(kind='continuous')
 
 Here is an overview of all available wavelets for ``cwt``. Note, that they can be
 customized by passing parameters such as ``center_frequency`` and ``bandwidth_frequency``
@@ -205,7 +206,7 @@ sampled at 100 Hz, a center frequency of 1.0 corresponds to ~100 Hz at
 ``scale = 1``. This is above the Nyquist rate of 50 Hz, so for this
 particular wavelet, one would analyze a signal using ``scales >= 2``.
 
-.. sourcecode:: python
+.. try_examples::
 
     >>> import numpy as np
     >>> import pywt
@@ -235,7 +236,7 @@ the input frequency in this function is normalized by 1/dt, or the sampling
 frequency fs. This function is useful for specifying the transform as a function
 of frequency directly.
 
-.. sourcecode:: python
+.. try_examples::
 
     >>> import numpy as np
     >>> import pywt
