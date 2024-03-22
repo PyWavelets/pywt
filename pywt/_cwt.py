@@ -96,7 +96,7 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1):
     >>> coef, freqs=pywt.cwt(y,np.arange(1,129),'gaus1')
     >>> plt.matshow(coef) # doctest: +SKIP
     >>> plt.show() # doctest: +SKIP
-    ----------
+
     >>> import pywt
     >>> import numpy as np
     >>> import matplotlib.pyplot as plt

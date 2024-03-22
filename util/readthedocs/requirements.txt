@@ -1,5 +1,7 @@
 cython
 docutils<0.18
+jupyterlite-sphinx
+jupyterlite-pyodide-kernel
 pydata-sphinx-theme
 pytest
 matplotlib

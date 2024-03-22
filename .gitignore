@@ -10,6 +10,7 @@ __pycache__
 *.egg-info
 dist
 build
+_build
 .installed.cfg
 
 # Installer logs
@@ -18,6 +19,11 @@ pip-log.txt
 # Unit test / coverage reports
 .coverage
 .tox
+
+# Sphinx documentation
+doc/_build/
+doc/build/
+.jupyterlite.doit.db
 
 # Editors
 .idea
