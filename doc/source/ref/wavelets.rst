@@ -49,6 +49,7 @@ Custom discrete wavelets are also supported through the
   **Example:**
 
   .. try_examples::
+    :button_text: Try it in your browser!
 
     >>> import pywt
     >>> wavelet = pywt.Wavelet('db1')
@@ -129,6 +130,7 @@ Custom discrete wavelets are also supported through the
   **Example:**
 
   .. try_examples::
+    :button_text: Try it in your browser!
 
     >>> def format_array(arr):
     ...     return "[%s]" % ", ".join(["%.14f" % x for x in arr])
@@ -172,6 +174,7 @@ Approximating wavelet and scaling functions - ``Wavelet.wavefun()``
   **Example:**
 
   .. try_examples::
+    :button_text: Try it in your browser!
 
     >>> import pywt
     >>> wavelet = pywt.Wavelet('db2')
@@ -187,6 +190,7 @@ Approximating wavelet and scaling functions - ``Wavelet.wavefun()``
   **Example:**
 
   .. try_examples::
+    :button_text: Try it in your browser!
 
     >>> import pywt
     >>> wavelet = pywt.Wavelet('bior3.5')
@@ -240,6 +244,7 @@ from plain Python lists of filter coefficients and a *filter bank-like* object.
   **Example:**
 
   .. try_examples::
+    :button_text: Try it in your browser!
 
     >>> import pywt, math
     >>> c = math.sqrt(2)/2
@@ -274,6 +279,7 @@ from plain Python lists of filter coefficients and a *filter bank-like* object.
   **Example:**
 
   .. try_examples::
+    :button_text: Try it in your browser!
 
     >>> import pywt
     >>> wavelet = pywt.ContinuousWavelet('gaus1')
@@ -329,6 +335,7 @@ from plain Python lists of filter coefficients and a *filter bank-like* object.
   **Example:**
 
   .. try_examples::
+    :button_text: Try it in your browser!
 
     >>> import pywt
     >>> wavelet = pywt.ContinuousWavelet('gaus1')
@@ -359,6 +366,7 @@ Approximating wavelet functions - ``ContinuousWavelet.wavefun()``
   **Example:**
 
   .. try_examples::
+    :button_text: Try it in your browser!
 
     >>> import pywt
     >>> wavelet = pywt.ContinuousWavelet('gaus1')
@@ -376,6 +384,7 @@ Approximating wavelet functions - ``ContinuousWavelet.wavefun()``
   **Example:**
 
   .. try_examples::
+    :button_text: Try it in your browser!
 
     >>> import pywt
     >>> wavelet = pywt.DiscreteContinuousWavelet('db1')
