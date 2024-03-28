@@ -63,6 +63,16 @@ def demo_signal(name='Bumps', n=None):
     test signals are provided with permission of Dr. Donoho to encourage
     reproducible research.
 
+    Examples
+    --------
+    >>> import pywt
+    >>> camera = pywt.data.camera()
+    >>> doppler = pywt.data.demo_signal('doppler', 1024)
+    >>> available_signals = pywt.data.demo_signal('list')
+    >>> print(available_signals)
+
+
+
     """
     if name.lower() == 'list':
         return _implemented_signals

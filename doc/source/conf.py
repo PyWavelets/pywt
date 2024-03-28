@@ -34,6 +34,7 @@ except TypeError:
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
+    'jupyterlite_sphinx',
     'matplotlib.sphinxext.plot_directive',
     'numpydoc',
     'sphinx.ext.autodoc',
@@ -193,6 +194,12 @@ html_favicon = '_static/favicon.ico'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
+# CSS files to include in the build. The file path should be relative to the
+# _static directory.
+html_css_files = [
+    "pywavelets.css",
+]
+
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
 html_last_updated_fmt = '%b %d, %Y'
@@ -282,8 +289,22 @@ plot_html_show_source_link = False
 
 # -- Options for intersphinx extension ---------------------------------------
 
-# Intersphinx to get Numpy and other targets
+# Intersphinx to get NumPy, SciPy, and other targets
 intersphinx_mapping = {
     'numpy': ('https://numpy.org/devdocs', None),
-    'scipy': ('https://docs.scipy.org/doc/scipy/reference', None),
+    'scipy': ('https://docs.scipy.org/doc/scipy/', None),
     }
+
+# -- Options for JupyterLite -------------------------------------------------
+
+global_enable_try_examples = True
+try_examples_global_button_text = "Try it in your browser!"
+try_examples_global_warning_text = (
+"""These interactive examples with JupyterLite are experimental and
+may not always work as expected. The execution of cells containing import
+statements can result in high bandwidth usage and may take a long time to
+load. They may not be in sync with the latest PyWavelets release.
+
+Shall you encounter any issues, please feel free to report them on the
+[PyWavelets issue tracker](https://github.com/PyWavelets/pywt/issues)."""
+)
