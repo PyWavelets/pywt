@@ -90,7 +90,6 @@ A variety of continuous wavelets have been implemented. A list of the available
 wavelet names compatible with ``cwt`` can be obtained by:
 
 .. try_examples::
-  :button_text: Try it in your browser!
 
   >>> import pywt
   >>> wavelist = pywt.wavelist(kind='continuous')
@@ -208,7 +207,6 @@ sampled at 100 Hz, a center frequency of 1.0 corresponds to ~100 Hz at
 particular wavelet, one would analyze a signal using ``scales >= 2``.
 
 .. try_examples::
-  :button_text: Try it in your browser!
 
   >>> import numpy as np
   >>> import pywt
@@ -239,7 +237,6 @@ frequency fs. This function is useful for specifying the transform as a function
 of frequency directly.
 
 .. try_examples::
-  :button_text: Try it in your browser!
 
   >>> import numpy as np
   >>> import pywt

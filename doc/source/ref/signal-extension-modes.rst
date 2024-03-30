@@ -90,7 +90,6 @@ computations can be performed with the `periodization`_ mode:
 **Example:**
 
 .. try_examples::
-  :button_text: Try it in your browser!
 
   >>> import pywt
   >>> print(pywt.Modes.modes)
@@ -106,7 +105,6 @@ Notice that you can use any of the following ways of passing wavelet and mode
 parameters:
 
 .. try_examples::
-  :button_text: Try it in your browser!
 
   >>> import pywt
   >>> (a, d) = pywt.dwt([1,2,3,4,5,6], 'db2', 'smooth')
