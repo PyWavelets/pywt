@@ -111,4 +111,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: doc/build/html
+          external_repository: agriyakhetarpal/pywt
           publish_branch: gh-pages
+          user_name: "agriyakhetarpal"
+          user_email: "74401230+agriyakhetarpal@users.noreply.github.com"
