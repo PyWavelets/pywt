@@ -92,9 +92,9 @@ computations can be performed with the `periodization`_ mode:
 .. try_examples::
   :button_text: Try it in your browser!
 
-    >>> import pywt
-    >>> print(pywt.Modes.modes)
-    ['zero', 'constant', 'symmetric', 'periodic', 'smooth', 'periodization', 'reflect', 'antisymmetric', 'antireflect']
+  >>> import pywt
+  >>> print(pywt.Modes.modes)
+  ['zero', 'constant', 'symmetric', 'periodic', 'smooth', 'periodization', 'reflect', 'antisymmetric', 'antireflect']
 
 The following figure illustrates how a short signal (red) gets extended (black)
 outside of its original extent. Note that periodization first extends the
