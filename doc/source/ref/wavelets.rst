@@ -241,25 +241,25 @@ The Wavelet object created in this way is a standard :class:`Wavelet` instance.
 The following example illustrates the way of creating custom Wavelet objects
 from plain Python lists of filter coefficients and a *filter bank-like* object.
 
-  **Example:**
+**Example:**
 
-  .. try_examples::
-    :button_text: Try it in your browser!
+.. try_examples::
+  :button_text: Try it in your browser!
 
-    >>> import pywt, math
-    >>> c = math.sqrt(2)/2
-    >>> dec_lo, dec_hi, rec_lo, rec_hi = [c, c], [-c, c], [c, c], [c, -c]
-    >>> filter_bank = [dec_lo, dec_hi, rec_lo, rec_hi]
-    >>> myWavelet = pywt.Wavelet(name="myHaarWavelet", filter_bank=filter_bank)
-    >>>
-    >>> class HaarFilterBank(object):
-    ...     @property
-    ...     def filter_bank(self):
-    ...         c = math.sqrt(2)/2
-    ...         dec_lo, dec_hi, rec_lo, rec_hi = [c, c], [-c, c], [c, c], [c, -c]
-    ...         return [dec_lo, dec_hi, rec_lo, rec_hi]
-    >>> filter_bank = HaarFilterBank()
-    >>> myOtherWavelet = pywt.Wavelet(name="myHaarWavelet", filter_bank=filter_bank)
+  >>> import pywt, math
+  >>> c = math.sqrt(2)/2
+  >>> dec_lo, dec_hi, rec_lo, rec_hi = [c, c], [-c, c], [c, c], [c, -c]
+  >>> filter_bank = [dec_lo, dec_hi, rec_lo, rec_hi]
+  >>> myWavelet = pywt.Wavelet(name="myHaarWavelet", filter_bank=filter_bank)
+  >>>
+  >>> class HaarFilterBank(object):
+  ...     @property
+  ...     def filter_bank(self):
+  ...         c = math.sqrt(2)/2
+  ...         dec_lo, dec_hi, rec_lo, rec_hi = [c, c], [-c, c], [c, c], [c, -c]
+  ...         return [dec_lo, dec_hi, rec_lo, rec_hi]
+  >>> filter_bank = HaarFilterBank()
+  >>> myOtherWavelet = pywt.Wavelet(name="myHaarWavelet", filter_bank=filter_bank)
 
 
 .. _ContinuousWavelet:

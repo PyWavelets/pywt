@@ -92,8 +92,8 @@ wavelet names compatible with ``cwt`` can be obtained by:
 .. try_examples::
   :button_text: Try it in your browser!
 
-    >>> import pywt
-    >>> wavelist = pywt.wavelist(kind='continuous')
+  >>> import pywt
+  >>> wavelist = pywt.wavelist(kind='continuous')
 
 Here is an overview of all available wavelets for ``cwt``. Note, that they can be
 customized by passing parameters such as ``center_frequency`` and ``bandwidth_frequency``
@@ -210,12 +210,12 @@ particular wavelet, one would analyze a signal using ``scales >= 2``.
 .. try_examples::
   :button_text: Try it in your browser!
 
-    >>> import numpy as np
-    >>> import pywt
-    >>> dt = 0.01  # 100 Hz sampling
-    >>> frequencies = pywt.scale2frequency('cmor1.5-1.0', [1, 2, 3, 4]) / dt
-    >>> frequencies
-    array([ 100.        ,   50.        ,   33.33333333,   25.        ])
+  >>> import numpy as np
+  >>> import pywt
+  >>> dt = 0.01  # 100 Hz sampling
+  >>> frequencies = pywt.scale2frequency('cmor1.5-1.0', [1, 2, 3, 4]) / dt
+  >>> frequencies
+  array([ 100.        ,   50.        ,   33.33333333,   25.        ])
 
 The CWT in PyWavelets is applied to discrete data by convolution with samples
 of the integral of the wavelet. If ``scale`` is too low, this will result in
@@ -241,14 +241,14 @@ of frequency directly.
 .. try_examples::
   :button_text: Try it in your browser!
 
-    >>> import numpy as np
-    >>> import pywt
-    >>> dt = 0.01  # 100 Hz sampling
-    >>> fs = 1 / dt
-    >>> frequencies = np.array([100, 50, 33.33333333, 25]) / fs # normalize
-    >>> scale = pywt.frequency2scale('cmor1.5-1.0', frequencies)
-    >>> scale
-    array([ 1.,  2.,  3.,  4.])
+  >>> import numpy as np
+  >>> import pywt
+  >>> dt = 0.01  # 100 Hz sampling
+  >>> fs = 1 / dt
+  >>> frequencies = np.array([100, 50, 33.33333333, 25]) / fs # normalize
+  >>> scale = pywt.frequency2scale('cmor1.5-1.0', frequencies)
+  >>> scale
+  array([ 1.,  2.,  3.,  4.])
 
 
 .. plot:: pyplots/cwt_scaling_demo.py
