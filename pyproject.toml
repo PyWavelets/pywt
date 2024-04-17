@@ -7,7 +7,7 @@
 [build-system]
 build-backend = "mesonpy"
 requires = [
-    "meson-python>=0.15.0",
+    "meson-python>=0.16.0",
     "Cython>=3.0.4",
 
     # numpy requirement for wheel builds for distribution on PyPI - building
