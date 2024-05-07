@@ -6,6 +6,7 @@ pydata-sphinx-theme
 pytest
 matplotlib
 meson-python
+myst-nb
 numpy
 numpydoc
 sphinx>=7
