@@ -2,6 +2,7 @@ cython
 docutils
 jupyterlite-sphinx>=0.14.0
 jupyterlite-pyodide-kernel
+jupytext
 pydata-sphinx-theme
 pytest
 matplotlib
