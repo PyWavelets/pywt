@@ -16,6 +16,10 @@ kernelspec:
 ```{eval-rst}
 .. currentmodule:: pywt
 
+.. notebooklite:: modes.ipynb
+   :width: 100%
+   :height: 600px
+   :prompt: Try classic Notebook!
 ```
 
 # Signal Extension Modes

@@ -15,6 +15,11 @@ kernelspec:
 
 ```{eval-rst}
 .. currentmodule:: pywt
+
+.. notebooklite:: multilevel.ipynb
+   :width: 100%
+   :height: 600px
+   :prompt: Try classic Notebook!
 ```
 
 # Multilevel DWT, IDWT and SWT

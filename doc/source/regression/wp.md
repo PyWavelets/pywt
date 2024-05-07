@@ -15,6 +15,11 @@ kernelspec:
 
 ```{eval-rst}
 .. currentmodule:: pywt
+
+.. notebooklite:: wp.ipynb
+   :width: 100%
+   :height: 600px
+   :prompt: Try classic Notebook!
 ```
 
 <!-- not sure if this is needed anymore? -->

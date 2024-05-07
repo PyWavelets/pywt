@@ -18,6 +18,11 @@ mystnb:
 
 ```{eval-rst}
 .. currentmodule:: pywt
+
+.. notebooklite:: dwt-idwt.ipynb
+   :width: 100%
+   :height: 600px
+   :prompt: Try classic Notebook!
 ```
 
 # DWT and IDWT

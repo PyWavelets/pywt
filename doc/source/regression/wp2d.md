@@ -15,6 +15,11 @@ kernelspec:
 
 ```{eval-rst}
 .. currentmodule:: pywt
+
+.. notebooklite:: wp2d.ipynb
+   :width: 100%
+   :height: 600px
+   :prompt: Try classic Notebook!
 ```
 
 # 2D Wavelet Packets
