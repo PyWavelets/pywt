@@ -24,6 +24,7 @@ pip-log.txt
 doc/_build/
 doc/build/
 .jupyterlite.doit.db
+/doc/jupyter_execute/
 
 # Editors
 .idea
