@@ -38,6 +38,7 @@ except TypeError:
 extensions = [
     'jupyterlite_sphinx',
     'matplotlib.sphinxext.plot_directive',
+    'myst_nb',
     'numpydoc',
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
@@ -48,7 +49,6 @@ extensions = [
     'sphinx.ext.todo',
     'sphinx_copybutton',
     'sphinx_togglebutton',
-
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -310,3 +310,24 @@ load. They may not be in sync with the latest PyWavelets release.
 Shall you encounter any issues, please feel free to report them on the
 [PyWavelets issue tracker](https://github.com/PyWavelets/pywt/issues)."""
 )
+
+# -- Options for MyST-NB and Markdown-based content --------------------------
+
+nb_execution_mode = 'auto'
+nb_execution_timeout = 60
+nb_execution_allow_errors = False
+
+nb_render_markdown_format = "myst"
+render_markdown_format = "myst"
+
+nb_remove_code_source = False
+nb_remove_code_outputs = False
+
+myst_enable_extensions = [
+    'amsmath',
+    'colon_fence',
+    'dollarmath',
+]
+
+# nb_execution_allow_errors = True
+# nb_execution_show_tb = True
