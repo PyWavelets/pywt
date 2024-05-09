@@ -91,6 +91,7 @@ function:
 # for documentation tests -->
 <!-- though the doctests might not be needed anymore because MyST is testing -->
 <!-- these by executing the notebooks? -->
+
 ```{code-cell}
 int(pywt.dwt_coeff_len(data_len=len(x), filter_len=w.dec_len, mode='symmetric'))
 ```
@@ -143,9 +144,8 @@ print(pywt.idwt(cA, cD, 'sym3', 'periodization'))
 ### Passing `None` instead of coefficients data to {func}`idwt`
 
 Now, we showcase some tips & tricks. Passing `None` as one of the coefficient
-arrays parameters is similar to passing a *zero-filled* array. The results are
+arrays parameters is similar to passing a _zero-filled_ array. The results are
 simply the same:
-
 
 ```{code-cell}
 print(pywt.idwt([1,2,0,1], None, 'db2', 'symmetric'))

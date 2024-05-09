@@ -41,17 +41,18 @@ The results are:
 ```{code-cell}
 numpy.all(numpy.isnan(cA))
 ```
-<!-- True -->
 
+<!-- True -->
 
 ```{code-cell}
 numpy.all(numpy.isnan(cD))
 ```
-<!-- True -->
 
+<!-- True -->
 
 ```{code-cell}
 rec = pywt.idwt(cA, cD, wavelet, mode)
 numpy.all(numpy.isnan(rec))
 ```
+
 <!-- True -->

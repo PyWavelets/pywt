@@ -27,6 +27,7 @@ kernelspec:
 ## Import pywt
 
 <!-- TODO: check if needed anymore -->
+
 ```{code-cell}
 from __future__ import print_function
 import pywt
@@ -159,6 +160,7 @@ print(wp['aaaa'].data)
 ```
 
 <!-- not sure what "Ups" means in the next sentence -->
+
 Ups, we have reached the maximum level of decomposition for the `'aaaa'` path,
 which, by the way, was:
 
@@ -186,41 +188,33 @@ just like with {class}`Node` and {class}`WaveletPacket` for the 1D case.).
 print(wp['av'].data)
 ```
 
-
 ```{code-cell}
 print(wp['av'].path)
 ```
-
 
 ```{code-cell}
 print(wp['av'].node_name)
 ```
 
-
 ```{code-cell}
 print(wp['av'].parent.path)
 ```
-
 
 ```{code-cell}
 print(wp['av'].parent.data)
 ```
 
-
 ```{code-cell}
 print(wp['av'].level)
 ```
-
 
 ```{code-cell}
 print(wp['av'].maxlevel)
 ```
 
-
 ```{code-cell}
 print(wp['av'].mode)
 ```
-
 
 ### Collecting nodes
 
@@ -246,7 +240,6 @@ len(wp.get_level(1))
 ```{code-cell}
 print([node.path for node in wp.get_level(1)])
 ```
-
 
 - 2nd level of decomposition:
 
@@ -314,7 +307,7 @@ Note: just remember to not assign to the `node.data parameter directly (TODO).
 
 And reconstruct the data from the `a`, `d`, `vh`, `vv`, `vd` and `h`
 packets (Note that `va` node was not set and the WP tree is "not complete"
-\- the `va` branch will be treated as *zero-array*):
+\- the `va` branch will be treated as _zero-array_):
 
 ```{code-cell}
 print(new_wp.reconstruct(update=False))
@@ -371,7 +364,7 @@ print([n.path for n in new_wp.get_leaf_nodes()])
 ```
 
 Passing the `decompose = True` parameter to the method will force the WP
-object to do a full decomposition up to the *maximum level* of decomposition:
+object to do a full decomposition up to the _maximum level_ of decomposition:
 
 ```{code-cell}
 paths = [n.path for n in new_wp.get_leaf_nodes(decompose=True)]

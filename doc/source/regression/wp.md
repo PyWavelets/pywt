@@ -23,6 +23,7 @@ kernelspec:
 ```
 
 <!-- not sure if this is needed anymore? -->
+
 ```{code-cell}
 ---
 tags: [hide-input]
@@ -50,7 +51,6 @@ def format_array(a):
     a = numpy.where(numpy.abs(a) < 1e-5, 0, a)
     return numpy.array2string(a, precision=5, separator=' ', suppress_small=True)
 ```
-
 
 ## Create Wavelet Packet structure
 
@@ -115,7 +115,6 @@ print(wp['a'].data)
 print(wp['a'].path)
 ```
 
-
 - 2nd level:
 
 ```{code-cell}
@@ -125,7 +124,6 @@ print(wp['aa'].data)
 ```{code-cell}
 print(wp['aa'].path)
 ```
-
 
 - 3rd level:
 
@@ -225,7 +223,6 @@ print([node.path for node in wp.get_level(3, 'freq')])
 Note that {meth}`WaveletPacket.get_level` also performs automatic decomposition
 until it reaches the specified `level`.
 
-
 ## Reconstructing data from Wavelet Packets
 
 ```{code-cell}
@@ -283,7 +280,6 @@ print([n.path for n in new_wp.get_leaf_nodes(False)])
 ```{code-cell}
 print([n.path for n in new_wp.get_leaf_nodes(True)])
 ```
-
 
 ## Removing nodes from Wavelet Packet tree
 
@@ -366,7 +362,7 @@ print(wp.a)
 **Remember that you should not rely on the attribute access.**
 
 2. At the first attempt to access the node, it is computed via the decomposition
-of its parent node (which is the `wp` object itself).
+   of its parent node (which is the `wp` object itself).
 
 ```{code-cell}
 print(wp['a'])

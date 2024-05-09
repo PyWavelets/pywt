@@ -94,8 +94,6 @@ cA2
 cD2
 ```
 
-
-
 ```{code-cell}
 [(cA2, cD2)] = pywt.swt(cA1, db1, level=1, start_level=1)
 ```

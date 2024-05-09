@@ -27,7 +27,7 @@ kernelspec:
 ## Wavelet families and builtin Wavelets names
 
 {class}`Wavelet` objects are really a handy carriers of a bunch of DWT-specific
-data like *quadrature mirror filters* and some general properties associated
+data like _quadrature mirror filters_ and some general properties associated
 with them.
 
 At first let's go through the methods of creating a {class}`Wavelet` object.
@@ -108,6 +108,7 @@ print(w.family_name)
 
 <!-- # int() is for normalizing longs and ints for doctest -->
 <!-- TODO: FIXME: note: might not be needed anymore -->
+
 ```{code-cell}
 int(w.dec_len)
 ```
@@ -122,11 +123,9 @@ int(w.rec_len)
 w.orthogonal
 ```
 
-
 ```{code-cell}
 w.biorthogonal
 ```
-
 
 3. Symmetry ({attr}`~Wavelet.symmetry`):
 
@@ -134,9 +133,8 @@ w.biorthogonal
 print(w.symmetry)
 ```
 
-
 4. Number of vanishing moments for the scaling function `phi` ({attr}`~Wavelet.vanishing_moments_phi`)
-and the wavelet function `psi` ({attr}`~Wavelet.vanishing_moments_psi`), associated with the filters:
+   and the wavelet function `psi` ({attr}`~Wavelet.vanishing_moments_psi`), associated with the filters:
 
 ```{code-cell}
  w.vanishing_moments_phi
@@ -150,7 +148,7 @@ Now when we know a bit about the builtin Wavelets, let's see how to create
 {ref}`custom Wavelets <custom-wavelets>` objects. These can be done in two ways:
 
 1. Passing the filter bank object that implements the `filter_bank` attribute. The
-attribute must return four filters coefficients.
+   attribute must return four filters coefficients.
 
 ```{code-cell}
 class MyHaarFilterBank(object):
