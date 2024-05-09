@@ -25,6 +25,7 @@ doc/_build/
 doc/build/
 .jupyterlite.doit.db
 /doc/jupyter_execute/
+doc/source/regression/*.ipynb
 
 # Editors
 .idea
