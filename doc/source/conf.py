@@ -12,6 +12,7 @@
 
 import datetime
 import importlib.metadata
+from pathlib import Path
 
 import jinja2.filters
 import numpy as np
@@ -25,6 +26,29 @@ try:
 except TypeError:
     pass
 
+from sphinx.application import Sphinx
+
+HERE = Path(__file__).parent
+
+
+def convert_md_to_ipynb(app: Sphinx, *args, **kwargs):
+    import subprocess
+    import sys
+    print("Converting Markdown files to IPyNB...")
+    subprocess.check_call(
+        [
+            sys.executable,
+            "-m",
+            "jupytext",
+            "--to",
+            "ipynb",
+            f"{HERE / 'regression' / '*.md'}",
+        ]
+    )
+
+
+def setup(app):
+    app.connect("builder-inited", convert_md_to_ipynb)
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -55,7 +79,11 @@ extensions = [
 templates_path = ['_templates']
 
 # The suffix of source filenames.
-source_suffix = '.rst'
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.md': 'myst-nb',
+    'ipynb': None,  # do not parse IPyNB files
+}
 
 # The encoding of source files.
 source_encoding = 'utf-8'
@@ -278,7 +306,10 @@ latex_documents = [
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['substitutions.rst', ]
+exclude_patterns = [
+    'substitutions.rst',
+    'regression/*.ipynb'  # exclude IPyNB files from the build
+]
 
 # numpydoc_show_class_members = False
 numpydoc_class_members_toctree = False
@@ -298,6 +329,8 @@ intersphinx_mapping = {
     }
 
 # -- Options for JupyterLite -------------------------------------------------
+
+jupyterlite_silence = False
 
 global_enable_try_examples = True
 try_examples_global_button_text = "Try it in your browser!"
