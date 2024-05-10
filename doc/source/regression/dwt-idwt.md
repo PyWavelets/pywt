@@ -19,10 +19,22 @@ mystnb:
 ```{eval-rst}
 .. currentmodule:: pywt
 
-.. notebooklite:: dwt-idwt.ipynb
-   :width: 100%
-   :height: 600px
-   :prompt: Try classic Notebook!
+.. dropdown:: 🧑‍🔬 This notebook can be executed online. Click this section to try it out! ✨
+    :color: success
+
+    .. notebooklite:: dwt-idwt.ipynb
+      :width: 100%
+      :height: 600px
+      :prompt: Open notebook
+
+.. dropdown:: Download this notebook
+    :color: info
+    :open:
+
+    Please use the following links to download this notebook in various formats:
+
+    1. :download:`Download IPyNB (IPython Notebook) <dwt-idwt.ipynb>`
+    2. :download:`Download Markdown Notebook (Jupytext) <dwt-idwt.md>`
 ```
 
 # DWT and IDWT
