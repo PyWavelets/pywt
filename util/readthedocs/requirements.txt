@@ -11,5 +11,6 @@ myst-nb
 numpy
 numpydoc
 sphinx>=7
-sphinx-togglebutton
 sphinx-copybutton
+sphinx-design
+sphinx-togglebutton
