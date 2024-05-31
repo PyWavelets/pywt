@@ -331,8 +331,6 @@ intersphinx_mapping = {
 
 # -- Options for JupyterLite -------------------------------------------------
 
-jupyterlite_silence = False
-
 global_enable_try_examples = True
 try_examples_global_button_text = "Try it in your browser!"
 try_examples_global_warning_text = (
