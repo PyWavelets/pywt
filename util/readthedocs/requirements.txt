@@ -8,6 +8,7 @@ pytest
 matplotlib
 meson-python
 myst-nb
+nbformat
 numpy
 numpydoc
 sphinx>=7
