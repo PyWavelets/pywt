@@ -11,7 +11,7 @@ kernelspec:
   name: python3
 ---
 
-(reg-modes)=
++++ {"ignore-when-converting": "true"}
 
 ```{eval-rst}
 .. currentmodule:: pywt
@@ -33,6 +33,8 @@ kernelspec:
     1. :download:`Download IPyNB (IPython Notebook) <modes.ipynb>`
     2. :download:`Download Markdown Notebook (Jupytext) <modes.md>`
 ```
+
++++
 
 # Signal Extension Modes
 

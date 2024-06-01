@@ -11,7 +11,7 @@ kernelspec:
   name: python3
 ---
 
-(reg-wp)=
++++ {"ignore-when-converting": "true"}
 
 ```{eval-rst}
 .. currentmodule:: pywt
@@ -33,6 +33,8 @@ kernelspec:
     1. :download:`Download IPyNB (IPython Notebook) <wp.ipynb>`
     2. :download:`Download Markdown Notebook (Jupytext) <wp.md>`
 ```
+
++++
 
 <!-- not sure if this is needed anymore? -->
 

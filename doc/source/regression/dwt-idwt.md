@@ -14,7 +14,7 @@ mystnb:
   execution_show_tb: true
 ---
 
-(reg-dwt-idwt)=
++++ {"ignore-when-converting": "true"}
 
 ```{eval-rst}
 .. currentmodule:: pywt
@@ -36,6 +36,8 @@ mystnb:
     1. :download:`Download IPyNB (IPython Notebook) <dwt-idwt.ipynb>`
     2. :download:`Download Markdown Notebook (Jupytext) <dwt-idwt.md>`
 ```
+
++++
 
 # DWT and IDWT
 

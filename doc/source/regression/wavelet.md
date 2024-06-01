@@ -11,7 +11,7 @@ kernelspec:
   name: python3
 ---
 
-(reg-wavelet)=
++++ {"ignore-when-converting": "true"}
 
 ```{eval-rst}
 .. currentmodule:: pywt
@@ -33,6 +33,8 @@ kernelspec:
     1. :download:`Download IPyNB (IPython Notebook) <wavelet.ipynb>`
     2. :download:`Download Markdown Notebook (Jupytext) <wavelet.md>`
 ```
+
++++
 
 # The Wavelet object
 
