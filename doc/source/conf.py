@@ -47,8 +47,22 @@ def convert_md_to_ipynb(app: Sphinx, *args, **kwargs):
     )
 
 
+def cleanup_ipynb(app: Sphinx, *args, **kwargs):
+    import nbformat
+
+    for path in (HERE / "regression").glob("*.ipynb"):
+        with open(path) as f:
+            nb = nbformat.read(f, as_version=4)
+            nb.cells = [cell for cell in nb.cells if "true" not in cell.metadata.get("ignore-when-converting", [])]
+
+        with open(path, "w") as f:
+            nbformat.write(nb, f)
+            print(f"Cleaned up {path}")
+
+
 def setup(app):
     app.connect("builder-inited", convert_md_to_ipynb)
+    app.connect("builder-inited", cleanup_ipynb)
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
