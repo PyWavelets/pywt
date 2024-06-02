@@ -105,7 +105,7 @@ jobs:
                 python -m build --sdist
                 pip install dist/pyw*.tar.gz -v
             elif [ "${REFGUIDE_CHECK}" == "1" ]; then
-                pip install sphinx numpydoc
+                pip install sphinx numpydoc scipy-doctest
                 pip install . -v
             else
                 pip install . -v
@@ -130,7 +130,11 @@ jobs:
               python ../pywt/tests/test_doc.py
           elif [ "${REFGUIDE_CHECK}" == "1" ]; then
               # Run doctests and check if the refguide contains entries from __all__
-              python util/refguide_check.py --doctests
+              python util/refguide_check.py
+              # doctests docstrings
+              pytest --doctest-modules --pyargs pywt -v  --doctest-collect=api
+              # doctest *rst tutorials
+              pytest --doctest-glob=*rst doc/source/regression/ -v
               # Run Sphinx HTML docs builder, converting warnings to errors
               pip install -r util/readthedocs/requirements.txt
               sphinx-build -b html -W --keep-going -d _build/doctrees . doc/source doc/build
@@ -203,7 +207,7 @@ jobs:
                 python -m build --sdist
                 pip install pywavelets* -v
             elif [ "${REFGUIDE_CHECK}" == "1" ]; then
-                pip install sphinx numpydoc
+                pip install sphinx numpydoc scipy-doctest
                 pip install . -v
             else
                 pip install . -v
@@ -221,7 +225,11 @@ jobs:
               pytest --pyargs pywt
               python ../pywt/tests/test_doc.py
           elif [ "${REFGUIDE_CHECK}" == "1" ]; then
-              python util/refguide_check.py --doctests
+              python util/refguide_check.py
+              # doctests docstrings
+              pytest --doctest-modules --pyargs pywt -v  --doctest-collect=api
+              # doctest *rst tutorials
+              pytest --doctest-glob=*rst doc/source/regression/ -v
           else
               pytest --pyargs pywt
           fi
