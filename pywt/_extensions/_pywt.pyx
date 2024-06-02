@@ -85,7 +85,7 @@ class _Modes(object):
     --------
     >>> import pywt
     >>> pywt.Modes.modes
-        ['zero', 'constant', 'symmetric', 'reflect', 'periodic', 'smooth', 'periodization', 'antisymmetric', 'antireflect']
+         ['zero', 'constant', 'symmetric', 'periodic', 'smooth', 'periodization', 'reflect', 'antisymmetric', 'antireflect']
     >>> # The different ways of passing wavelet and mode parameters
     >>> (a, d) = pywt.dwt([1,2,3,4,5,6], 'db2', 'smooth')
     >>> (a, d) = pywt.dwt([1,2,3,4,5,6], pywt.Wavelet('db2'), pywt.Modes.smooth)
@@ -909,14 +909,13 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
         >>> wavelet.upper_bound = ub
         >>> wavelet.lower_bound = lb
         >>> [psi,xval] = wavelet.wavefun(length=n)
-        >>> plt.plot(xval,psi) # doctest: +ELLIPSIS
-        [<matplotlib.lines.Line2D object at ...>]
-        >>> plt.title("Gaussian Wavelet of order 8") # doctest: +ELLIPSIS
-        <matplotlib.text.Text object at ...>
-        >>> plt.show() # doctest: +SKIP
+        >>> plt.plot(xval,psi)
+        >>> plt.title("Gaussian Wavelet of order 8")
+        >>> plt.show()
 
-        >>> import pywt
+        >>> import numpy as np
         >>> import matplotlib.pyplot as plt
+        >>> import pywt
         >>> lb = -5
         >>> ub = 5
         >>> n = 1000
@@ -924,19 +923,12 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
         >>> wavelet.upper_bound = ub
         >>> wavelet.lower_bound = lb
         >>> [psi,xval] = wavelet.wavefun(length=n)
-        >>> plt.subplot(211) # doctest: +ELLIPSIS
-        <matplotlib.axes._subplots.AxesSubplot object at ...>
-        >>> plt.plot(xval,np.real(psi)) # doctest: +ELLIPSIS
-        [<matplotlib.lines.Line2D object at ...>]
-        >>> plt.title("Real part") # doctest: +ELLIPSIS
-        <matplotlib.text.Text object at ...>
-        >>> plt.subplot(212) # doctest: +ELLIPSIS
-        <matplotlib.axes._subplots.AxesSubplot object at ...>
-        >>> plt.plot(xval,np.imag(psi)) # doctest: +ELLIPSIS
-        [<matplotlib.lines.Line2D object at ...>]
-        >>> plt.title("Imaginary part") # doctest: +ELLIPSIS
-        <matplotlib.text.Text object at ...>
-        >>> plt.show() # doctest: +SKIP
+        >>> fix, (ax1, ax2) = plt.subplots(2, 1)
+        >>> ax1.plot(xval,np.real(psi))
+        >>> ax1.set_title("Real part")
+        >>> ax2.plot(xval,np.imag(psi))
+        >>> ax2.set_title("Imaginary part")
+        >>> plt.show()
 
         """
         cdef pywt_index_t output_length "output_length"

@@ -94,8 +94,8 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1):
     >>> x = np.arange(512)
     >>> y = np.sin(2*np.pi*x/32)
     >>> coef, freqs=pywt.cwt(y,np.arange(1,129),'gaus1')
-    >>> plt.matshow(coef) # doctest: +SKIP
-    >>> plt.show() # doctest: +SKIP
+    >>> plt.matshow(coef)
+    >>> plt.show()
 
     >>> import pywt
     >>> import numpy as np
@@ -105,8 +105,8 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1):
     >>> widths = np.arange(1, 31)
     >>> cwtmatr, freqs = pywt.cwt(sig, widths, 'mexh')
     >>> plt.imshow(cwtmatr, extent=[-1, 1, 1, 31], cmap='PRGn', aspect='auto',
-    ...            vmax=abs(cwtmatr).max(), vmin=-abs(cwtmatr).max())  # doctest: +SKIP
-    >>> plt.show() # doctest: +SKIP
+    ...            vmax=abs(cwtmatr).max(), vmin=-abs(cwtmatr).max())
+    >>> plt.show()
     """
 
     # accept array_like input; make a copy to ensure a contiguous array
