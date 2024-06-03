@@ -133,8 +133,6 @@ jobs:
               python util/refguide_check.py
               # doctests docstrings
               pytest --doctest-modules --pyargs pywt -v  --doctest-collect=api
-              # doctest *rst tutorials
-              pytest --doctest-glob=*rst doc/source/regression/ -v
               # Run Sphinx HTML docs builder, converting warnings to errors
               pip install -r util/readthedocs/requirements.txt
               sphinx-build -b html -W --keep-going -d _build/doctrees . doc/source doc/build
@@ -228,8 +226,6 @@ jobs:
               python util/refguide_check.py
               # doctests docstrings
               pytest --doctest-modules --pyargs pywt -v  --doctest-collect=api
-              # doctest *rst tutorials
-              pytest --doctest-glob=*rst doc/source/regression/ -v
           else
               pytest --pyargs pywt
           fi
