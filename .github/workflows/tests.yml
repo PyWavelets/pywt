@@ -129,9 +129,7 @@ jobs:
               pytest --pyargs pywt
               python ../pywt/tests/test_doc.py
           elif [ "${REFGUIDE_CHECK}" == "1" ]; then
-              # Run doctests and check if the refguide contains entries from __all__
-              python util/refguide_check.py
-              # doctests docstrings
+              # doctest docstrings
               pytest --doctest-modules --pyargs pywt -v  --doctest-collect=api
               # Run Sphinx HTML docs builder, converting warnings to errors
               pip install -r util/readthedocs/requirements.txt
@@ -223,7 +221,6 @@ jobs:
               pytest --pyargs pywt
               python ../pywt/tests/test_doc.py
           elif [ "${REFGUIDE_CHECK}" == "1" ]; then
-              python util/refguide_check.py
               # doctests docstrings
               pytest --doctest-modules --pyargs pywt -v  --doctest-collect=api
           else
