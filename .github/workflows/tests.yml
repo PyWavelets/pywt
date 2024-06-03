@@ -37,7 +37,7 @@ jobs:
         MINIMUM_REQUIREMENTS: [0]
         USE_SCIPY: [0]
         USE_SDIST: [0]
-        REFGUIDE_CHECK: [0]
+        REFGUIDE_CHECK: [1]
         PIP_FLAGS: [""]
         OPTIONS_NAME: ["default"]
         include:
