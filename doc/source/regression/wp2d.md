@@ -40,10 +40,7 @@ kernelspec:
 
 ## Import pywt
 
-<!-- TODO: check if needed anymore -->
-
 ```{code-cell}
-from __future__ import print_function
 import pywt
 import numpy
 ```

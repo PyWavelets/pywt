@@ -120,15 +120,12 @@ print(w.family_name)
 
 2. Decomposition ({attr}`~Wavelet.dec_len`) and reconstruction ({attr}`~.Wavelet.rec_len`) filter lengths:
 
-<!-- # int() is for normalizing longs and ints for doctest -->
-<!-- TODO: FIXME: note: might not be needed anymore -->
-
 ```{code-cell}
-int(w.dec_len)
+w.dec_len
 ```
 
 ```{code-cell}
-int(w.rec_len)
+w.rec_len
 ```
 
 3. Orthogonality ({attr}`~Wavelet.orthogonal`) and biorthogonality ({attr}`~Wavelet.biorthogonal`):

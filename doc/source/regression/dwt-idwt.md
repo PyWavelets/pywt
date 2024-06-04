@@ -101,17 +101,12 @@ data length but also on the :class:Wavelet type (particularly on its
 To find out what the size of the output data will be, use the {func}`dwt_coeff_len`
 function:
 
-<!-- # int() is for normalizing Python integers and long integers
-# for documentation tests -->
-<!-- though the doctests might not be needed anymore because MyST is testing -->
-<!-- these by executing the notebooks? -->
-
 ```{code-cell}
-int(pywt.dwt_coeff_len(data_len=len(x), filter_len=w.dec_len, mode='symmetric'))
+pywt.dwt_coeff_len(data_len=len(x), filter_len=w.dec_len, mode='symmetric')
 ```
 
 ```{code-cell}
-int(pywt.dwt_coeff_len(len(x), w, 'symmetric'))
+pywt.dwt_coeff_len(len(x), w, 'symmetric')
 ```
 
 and the length of the output is:

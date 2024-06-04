@@ -36,15 +36,6 @@ kernelspec:
 
 +++
 
-<!-- not sure if this is needed anymore? -->
-
-```{code-cell}
----
-tags: [hide-input]
----
-from __future__ import print_function
-```
-
 # Wavelet Packets
 
 ## `import pywt` and construct a helper function
