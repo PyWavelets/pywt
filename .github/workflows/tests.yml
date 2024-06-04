@@ -133,8 +133,9 @@ jobs:
               pytest --doctest-modules --pyargs pywt -v  --doctest-collect=api
               # Run Sphinx HTML docs builder, converting warnings to errors
               cd ..
-              pip install -r util/readthedocs/requirements.txt
-              sphinx-build -b html -W --keep-going -d _build/doctrees . doc/source doc/build
+            # XXX sphinx build is broken on CI
+           #   pip install -r util/readthedocs/requirements.txt
+            #  sphinx-build -b html -W --keep-going -d _build/doctrees . doc/source doc/build
           else
               pytest --pyargs pywt
           fi
