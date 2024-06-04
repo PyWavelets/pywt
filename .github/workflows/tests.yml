@@ -132,7 +132,7 @@ jobs:
               # doctest docstrings
               pytest --doctest-modules --pyargs pywt -v  --doctest-collect=api
               # Run Sphinx HTML docs builder, converting warnings to errors
-              pip install -r util/readthedocs/requirements.txt
+              pip install -r ../util/readthedocs/requirements.txt
               sphinx-build -b html -W --keep-going -d _build/doctrees . doc/source doc/build
           else
               pytest --pyargs pywt
