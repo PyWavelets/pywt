@@ -40,6 +40,6 @@ or::
 Installing a regular release from PyPi
 --------------------------------------
 
-A regular release can be installed with pip or easy_install::
+A regular release can be installed with pip::
 
     pip install PyWavelets
