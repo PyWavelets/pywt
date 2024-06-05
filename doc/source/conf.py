@@ -32,7 +32,10 @@ from sphinx.application import Sphinx
 HERE = Path(__file__).parent
 
 
-def convert_md_to_ipynb(app: Sphinx, *args, **kwargs):
+def preprocess_notebooks(app: Sphinx, *args, **kwargs):
+    """Preprocess Markdown notebooks to convert them to IPyNB format
+    and remove cells tagged with 'ignore-when-converting' metadata."""
+
     import subprocess
     import sys
     print("Converting Markdown files to IPyNB...")
@@ -47,8 +50,6 @@ def convert_md_to_ipynb(app: Sphinx, *args, **kwargs):
         ]
     )
 
-
-def cleanup_ipynb(app: Sphinx, *args, **kwargs):
     import nbformat
 
     for path in (HERE / "regression").glob("*.ipynb"):
@@ -62,8 +63,7 @@ def cleanup_ipynb(app: Sphinx, *args, **kwargs):
 
 
 def setup(app):
-    app.connect("builder-inited", convert_md_to_ipynb)
-    app.connect("builder-inited", cleanup_ipynb)
+    app.connect("builder-inited", preprocess_notebooks)
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
