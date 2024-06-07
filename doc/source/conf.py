@@ -36,21 +36,18 @@ def preprocess_notebooks(app: Sphinx, *args, **kwargs):
     """Preprocess Markdown notebooks to convert them to IPyNB format
     and remove cells tagged with 'ignore-when-converting' metadata."""
 
-    import subprocess
-    import sys
-    print("Converting Markdown files to IPyNB...")
-    subprocess.check_call(
-        [
-            sys.executable,
-            "-m",
-            "jupytext",
-            "--to",
-            "ipynb",
-            f"{HERE / 'regression' / '*.md'}",
-        ]
-    )
-
+    import jupytext
     import nbformat
+
+    print("Converting Markdown files to IPyNB...")
+    for path in (HERE / "regression").glob("*.md"):
+        nb = jupytext.read(str(path))
+        nb.cells = [cell for cell in nb.cells if "true" not in cell.metadata.get("ignore-when-converting", [])]
+        ipynb_path = path.with_suffix(".ipynb")
+        with open(ipynb_path, "w") as f:
+            nbformat.write(nb, f)
+            print(f"Converted {path} to {ipynb_path}")
+
 
     for path in (HERE / "regression").glob("*.ipynb"):
         with open(path) as f:
