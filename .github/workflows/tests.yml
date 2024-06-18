@@ -155,7 +155,7 @@ jobs:
         OPTIONS_NAME: ["default"]
         include:
           - platform_id: manylinux_x86_64
-            python-version: "3.10"
+            python-version: "3.13"
             USE_SCIPY: 1
             OPTIONS_NAME: "with-scipy"
             PIP_FLAGS: "--pre -i https://pypi.anaconda.org/scientific-python-nightly-wheels/simple"
@@ -191,7 +191,7 @@ jobs:
           pip install ${PIP_FLAGS} cython
           pip install ${PIP_FLAGS} numpy
           if [ "${USE_SCIPY}" == "1" ]; then pip install ${PIP_FLAGS} scipy; fi
-          pip install matplotlib pytest meson-python ninja
+          pip install pytest meson-python ninja
           pip install . -v --no-build-isolation
 
       - name: Run tests
