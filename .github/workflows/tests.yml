@@ -140,25 +140,12 @@ jobs:
           popd
 
   test_pywavelets_linux_free_threaded:
-    name: linux-cp${{ matrix.python-version }}t-${{ matrix.OPTIONS_NAME }}
+    name: linux-cp313t-with-scipy
     runs-on: ubuntu-latest
     strategy:
       # Ensure that a wheel builder finishes even if another fails
       fail-fast: false
-      matrix:
-        python-version: ["3.13t"]
-        MINIMUM_REQUIREMENTS: [0]
-        USE_SCIPY: [0]
-        USE_SDIST: [0]
-        REFGUIDE_CHECK: [0]
-        PIP_FLAGS: [""]
-        OPTIONS_NAME: ["default"]
-        include:
-          - platform_id: manylinux_x86_64
-            python-version: "3.13"
-            USE_SCIPY: 1
-            OPTIONS_NAME: "with-scipy"
-            PIP_FLAGS: "--pre -i https://pypi.anaconda.org/scientific-python-nightly-wheels/simple"
+
     steps:
       - name: Checkout PyWavelets
         uses: actions/checkout@v4
@@ -170,27 +157,12 @@ jobs:
           nogil: true
 
       - name: Build package
-        env:
-          VERSION: ${{ matrix.python-version }}
-          MINIMUM_REQUIREMENTS: ${{ matrix.MINIMUM_REQUIREMENTS }}
-          PIP_FLAGS: ${{ matrix.PIP_FLAGS }}
-          USE_SDIST: ${{ matrix.USE_SDIST }}
-          USE_SCIPY: ${{ matrix.USE_SCIPY }}
-          REFGUIDE_CHECK: ${{ matrix.REFGUIDE_CHECK }}
-          OPTIONS_NAME: ${{ matrix.OPTIONS_NAME }}
         run: |
-          uname -a
-          df -h
-          ulimit -a
-          # ccache -s
           which python
           python --version
-          # sudo apt-get install libatlas-base-dev
           pip install --upgrade --pre pip build
           # Set numpy version first, other packages link against it
-          pip install ${PIP_FLAGS} cython
-          pip install ${PIP_FLAGS} numpy
-          if [ "${USE_SCIPY}" == "1" ]; then pip install ${PIP_FLAGS} scipy; fi
+          pip install --pre -i https://pypi.anaconda.org/scientific-python-nightly-wheels/simple cython numpy scipy
           pip install pytest meson-python ninja
           pip install . -v --no-build-isolation
 
