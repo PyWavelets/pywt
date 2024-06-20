@@ -168,9 +168,6 @@ jobs:
 
       - name: Run tests
         env:
-          USE_SDIST: ${{ matrix.USE_SDIST }}
-          REFGUIDE_CHECK: ${{ matrix.REFGUIDE_CHECK }}
-          OPTIONS_NAME: ${{ matrix.OPTIONS_NAME }}
           PYTHON_GIL: 0
         run: |
           set -o pipefail
