@@ -165,6 +165,7 @@ cpdef swt_axis(np.ndarray data, Wavelet wavelet, size_t level,
     cdef common.ArrayInfo data_info, output_info
     cdef np.ndarray cD, cA
     cdef size_t[::1] output_shape
+    cdef signed long[::1] strides_view
     cdef size_t end_level = start_level + level
     cdef int retval = -5
     cdef size_t i
@@ -201,8 +202,10 @@ cpdef swt_axis(np.ndarray data, Wavelet wavelet, size_t level,
         cA = np.empty(output_shape, dtype=data.dtype)
         cD = np.empty(output_shape, dtype=data.dtype)
         # strides won't match data_info.strides if data is not C-contiguous
-        output_info.strides = <pywt_index_t *> cA.strides
-        output_info.shape = <size_t *> cA.shape
+        strides_view = <signed long [:data.ndim]> <signed long *> cA.strides
+        strides_view = strides_view.copy()
+        output_info.strides = <pywt_index_t *> &strides_view[0]
+        output_info.shape = <size_t *> &output_shape[0]
         if data.dtype == np.float64:
             with nogil:
                 retval = c_wt.double_downcoef_axis(

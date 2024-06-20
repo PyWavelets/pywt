@@ -75,12 +75,12 @@ if have_c99_complex
   c_args += ['-DHAVE_C99_COMPLEX', '-DCYTHON_CCOMPLEX=1']
 endif
 
-libc_wt = static_library('c_wt',
-  sources,
-  c_args : c_args,
-  include_directories : 'c',
-  dependencies : py_dep,
-)
+cython_args = ['-3', '--fast-fail', '--output-file', '@OUTPUT@', '--include-dir', '@BUILD_ROOT@', '@INPUT@']
+
+cython_gen = generator(cython,
+  arguments : cython_args,
+  output : '@BASENAME@.c',
+  depends : _cython_tree)
 
 pyx_files = [
   ['_cwt', fs.copyfile('_cwt.pyx')],
@@ -92,12 +92,11 @@ pyx_files = [
 cy_deps = declare_dependency(sources: [__init__py, _cython_tree])#, config_pxi])
 foreach pyx_file: pyx_files
   py.extension_module(pyx_file[0],
-    pyx_file[1],
+    [cython_gen.process(pyx_file[1])] + sources,
     c_args : c_args,
     include_directories : 'c',
-    dependencies : [np_dep, cy_deps],
-    link_with : libc_wt,
+    dependencies : [np_dep, cy_deps, py_dep],
     install: true,
-    subdir: 'pywt/_extensions',
+    subdir: 'pywt/_extensions'
   )
 endforeach
