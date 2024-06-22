@@ -225,6 +225,7 @@ jobs:
           elif [ "${REFGUIDE_CHECK}" == "1" ]; then
               # doctests docstrings
               pytest --doctest-modules --pyargs pywt -v  --doctest-collect=api
+              pytest --doctest-modules --pyargs pywt.data -v
           else
               pytest --pyargs pywt
           fi

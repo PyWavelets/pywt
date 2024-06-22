@@ -70,8 +70,9 @@ def demo_signal(name='Bumps', n=None):
     >>> doppler = pywt.data.demo_signal('doppler', 1024)
     >>> available_signals = pywt.data.demo_signal('list')
     >>> print(available_signals)
-
-
+    ['Blocks', 'Bumps', 'HeaviSine', 'Doppler', 'Ramp', 'HiSine', 'LoSine', 'LinChirp',
+     'TwoChirp', 'QuadChirp', 'MishMash', 'WernerSorrows', 'HypChirps', 'LinChirps',
+     'Chirps', 'Gabor', 'sineoneoverx', 'Piece-Regular', 'Piece-Polynomial', 'Riemann']
 
     """
     if name.lower() == 'list':
