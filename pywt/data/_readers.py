@@ -36,7 +36,7 @@ def ascent():
 
     >>> import matplotlib.pyplot as plt
     >>> plt.gray()
-    >>> plt.imshow(ascent
+    >>> plt.imshow(ascent)
     <matplotlib.image.AxesImage object at ...>
     >>> plt.show()
 
