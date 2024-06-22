@@ -85,7 +85,7 @@ class _Modes(object):
     --------
     >>> import pywt
     >>> pywt.Modes.modes
-         ['zero', 'constant', 'symmetric', 'periodic', 'smooth', 'periodization', 'reflect', 'antisymmetric', 'antireflect']
+        ['zero', 'constant', 'symmetric', 'periodic', 'smooth', 'periodization', 'reflect', 'antisymmetric', 'antireflect']
     >>> # The different ways of passing wavelet and mode parameters
     >>> (a, d) = pywt.dwt([1,2,3,4,5,6], 'db2', 'smooth')
     >>> (a, d) = pywt.dwt([1,2,3,4,5,6], pywt.Wavelet('db2'), pywt.Modes.smooth)
