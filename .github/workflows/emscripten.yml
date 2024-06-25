@@ -29,52 +29,23 @@ env:
 jobs:
   build_wasm_emscripten:
     name: Build PyWavelets for Pyodide
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     # Comment out the following line to test changes on a fork
     if: github.repository == 'PyWavelets/pywt'
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Set up Python 3.11
-        id: setup-python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11.2"
-
-      - name: Install prerequisites
-        run: |
-          python -m pip install pyodide-build
-          echo EMSCRIPTEN_VERSION=$(pyodide config get emscripten_version) >> $GITHUB_ENV
-
-      - name: Set up Emscripten toolchain
-        uses: mymindstorm/setup-emsdk@v14
-        with:
-          version: ${{ env.EMSCRIPTEN_VERSION }}
-          actions-cache-folder: emsdk-cache
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4.0.2
-        with:
-          node-version: "18"
-
-      - name: Build PyWavelets
-        run: |
-          pyodide build
-
-      - name: Install and test wheel
-        run: |
-          pyodide venv .venv-pyodide
-          source .venv-pyodide/bin/activate
-          pip install dist/*.whl
-          pushd demo
-          pip install matplotlib pytest
-          python -c "import pywt; print(pywt.__version__)"
-          pytest -p no:cacheprovider --pyargs pywt -m "not slow"
+      - name: Build and test PyWavelets
+        uses: pypa/cibuildwheel@v2.19.1
+        env:
+          CIBW_PLATFORM: pyodide
+          CIBW_TEST_REQUIRES: pytest matplotlib
+          CIBW_TEST_COMMAND: python -c "import pywt; pywt.test(extra_argv=['-m', 'not slow'])"
 
         # https://anaconda.org/scientific-python-nightly-wheels/pywavelets
         # WARNING: this job will overwrite existing wheels.
-      - name: Push to Anaconda PyPI index
+      - name: Push wheels to Anaconda PyPI index
         if: >-
           (github.repository == 'PyWavelets/pywt') &&
           (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
@@ -82,5 +53,5 @@ jobs:
           (github.event_name == 'schedule')
         uses: scientific-python/upload-nightly-action@b67d7fcc0396e1128a474d1ab2b48aa94680f9fc # v0.5.0
         with:
-          artifacts_path: dist/
+          artifacts_path: wheelhouse/
           anaconda_nightly_upload_token: ${{ secrets.ANACONDA_ORG_UPLOAD_TOKEN }}
