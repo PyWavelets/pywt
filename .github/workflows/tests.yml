@@ -160,7 +160,7 @@ jobs:
         run: |
           which python
           python --version
-          pip install --upgrade --pre pip build
+          pip install --upgrade pip build
           # Set numpy version first, other packages link against it
           pip install --pre -i https://pypi.anaconda.org/scientific-python-nightly-wheels/simple cython numpy scipy
           pip install pytest meson-python ninja
@@ -170,11 +170,9 @@ jobs:
         env:
           PYTHON_GIL: 0
         run: |
-          set -o pipefail
           # Move out of source directory to avoid finding local pywt
-          pushd demo
+          cd demo
           pytest --pyargs pywt
-          popd
 
   test_pywavelets_macos:
     name: macos-cp${{ matrix.python-version }}-${{ matrix.OPTIONS_NAME }}
