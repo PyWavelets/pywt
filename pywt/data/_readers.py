@@ -36,9 +36,9 @@ def ascent():
 
     >>> import matplotlib.pyplot as plt
     >>> plt.gray()
-    >>> plt.imshow(ascent) # doctest: +ELLIPSIS
+    >>> plt.imshow(ascent)
     <matplotlib.image.AxesImage object at ...>
-    >>> plt.show() # doctest: +SKIP
+    >>> plt.show()
 
     """
     with importlib.resources.as_file(_DATADIR.joinpath('ascent.npz')) as f:
@@ -73,9 +73,9 @@ def aero():
 
     >>> import matplotlib.pyplot as plt
     >>> plt.gray()
-    >>> plt.imshow(aero) # doctest: +ELLIPSIS
+    >>> plt.imshow(aero)
     <matplotlib.image.AxesImage object at ...>
-    >>> plt.show() # doctest: +SKIP
+    >>> plt.show()
 
     """
     with importlib.resources.as_file(_DATADIR.joinpath('aero.npz')) as f:
@@ -121,9 +121,9 @@ def camera():
 
     >>> import matplotlib.pyplot as plt
     >>> plt.gray()
-    >>> plt.imshow(camera) # doctest: +ELLIPSIS
+    >>> plt.imshow(camera)
     <matplotlib.image.AxesImage object at ...>
-    >>> plt.show() # doctest: +SKIP
+    >>> plt.show()
 
     """
     with importlib.resources.as_file(_DATADIR.joinpath('camera.npz')) as f:
@@ -154,9 +154,9 @@ def ecg():
     True
 
     >>> import matplotlib.pyplot as plt
-    >>> plt.plot(ecg) # doctest: +ELLIPSIS
+    >>> plt.plot(ecg)
     [<matplotlib.lines.Line2D object at ...>]
-    >>> plt.show() # doctest: +SKIP
+    >>> plt.show()
     """
     with importlib.resources.as_file(_DATADIR.joinpath('ecg.npz')) as f:
         ecg = np.load(f)['data']
@@ -192,9 +192,9 @@ def nino():
     True
 
     >>> import matplotlib.pyplot as plt
-    >>> plt.plot(time,sst) # doctest: +ELLIPSIS
+    >>> plt.plot(time,sst)
     [<matplotlib.lines.Line2D object at ...>]
-    >>> plt.show() # doctest: +SKIP
+    >>> plt.show()
     """
     with importlib.resources.as_file(_DATADIR.joinpath('sst_nino3.npz')) as f:
         sst_csv = np.load(f)['data']

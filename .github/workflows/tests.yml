@@ -37,7 +37,7 @@ jobs:
         MINIMUM_REQUIREMENTS: [0]
         USE_SCIPY: [0]
         USE_SDIST: [0]
-        REFGUIDE_CHECK: [0]
+        REFGUIDE_CHECK: [1]
         PIP_FLAGS: [""]
         OPTIONS_NAME: ["default"]
         include:
@@ -105,7 +105,7 @@ jobs:
                 python -m build --sdist
                 pip install dist/pyw*.tar.gz -v
             elif [ "${REFGUIDE_CHECK}" == "1" ]; then
-                pip install sphinx numpydoc
+                pip install sphinx numpydoc scipy-doctest
                 pip install . -v
             else
                 pip install . -v
@@ -129,11 +129,13 @@ jobs:
               pytest --pyargs pywt
               python ../pywt/tests/test_doc.py
           elif [ "${REFGUIDE_CHECK}" == "1" ]; then
-              # Run doctests and check if the refguide contains entries from __all__
-              python util/refguide_check.py --doctests
+              # doctest docstrings
+              pytest --doctest-modules --pyargs pywt -v  --doctest-collect=api
               # Run Sphinx HTML docs builder, converting warnings to errors
-              pip install -r util/readthedocs/requirements.txt
-              sphinx-build -b html -W --keep-going -d _build/doctrees . doc/source doc/build
+              cd ..
+            # XXX sphinx build is broken on CI
+           #   pip install -r util/readthedocs/requirements.txt
+            #  sphinx-build -b html -W --keep-going -d _build/doctrees . doc/source doc/build
           else
               pytest --pyargs pywt
           fi
@@ -203,7 +205,7 @@ jobs:
                 python -m build --sdist
                 pip install pywavelets* -v
             elif [ "${REFGUIDE_CHECK}" == "1" ]; then
-                pip install sphinx numpydoc
+                pip install sphinx numpydoc scipy-doctest
                 pip install . -v
             else
                 pip install . -v
@@ -221,7 +223,9 @@ jobs:
               pytest --pyargs pywt
               python ../pywt/tests/test_doc.py
           elif [ "${REFGUIDE_CHECK}" == "1" ]; then
-              python util/refguide_check.py --doctests
+              # doctests docstrings
+              pytest --doctest-modules --pyargs pywt -v  --doctest-collect=api
+              pytest --doctest-modules --pyargs pywt.data -v
           else
               pytest --pyargs pywt
           fi
