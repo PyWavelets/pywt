@@ -87,7 +87,8 @@ cython_args = ['-3', '--fast-fail', '--output-file', '@OUTPUT@', '--include-dir'
 cython_gen = generator(cython,
   arguments : cython_args,
   output : '@BASENAME@.c',
-  depends : _cython_tree)
+  depends : _cython_tree
+)
 
 pyx_files = [
   ['_cwt', fs.copyfile('_cwt.pyx')],
@@ -102,9 +103,9 @@ foreach pyx_file: pyx_files
     [cython_gen.process(pyx_file[1])],
     c_args : c_args,
     include_directories : 'c',
-    dependencies : [np_dep, cy_deps, py_dep],
+    dependencies : [np_dep, cy_deps],
     link_with : libc_wt,
     install: true,
-    subdir: 'pywt/_extensions'
+    subdir: 'pywt/_extensions',
   )
 endforeach
