@@ -83,6 +83,7 @@ jobs:
                      pip install --pre -i $PYPI_URL cython numpy scipy &&\
                      pip install pytest meson-python ninja"
           echo "CIBW_BEFORE_BUILD=$CIBW_DEPS" >> "$GITHUB_ENV"
+          echo "CIBW_BEFORE_TEST=$CIBW_DEPS" >> "$GITHUB_ENV"
           echo "CIBW_ENVIRONMENT= $CIBW_ENVIRONMENT PYTHON_GIL=0" >> "$GITHUB_ENV"
 
       - name: Build the wheel
