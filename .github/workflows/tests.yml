@@ -161,7 +161,7 @@ jobs:
           which python
           python --version
           pip install --upgrade pip build
-          # Set numpy version first, other packages link against it
+          # We need nightly wheels for free-threaded support and latest fixes
           pip install --pre -i https://pypi.anaconda.org/scientific-python-nightly-wheels/simple cython numpy scipy
           pip install pytest meson-python ninja
           pip install . -v --no-build-isolation
