@@ -201,11 +201,16 @@ cpdef swt_axis(np.ndarray data, Wavelet wavelet, size_t level,
     for i in range(start_level+1, end_level+1):
         cA = np.empty(output_shape, dtype=data.dtype)
         cD = np.empty(output_shape, dtype=data.dtype)
+
         # strides won't match data_info.strides if data is not C-contiguous
+        # We need an explicit copy of `cA.strides` here because cA is
+        # zero-initialized for complex dtypes further down in this same for-loop;
+        # the pointer to `cA.strides` would then be dangling (see gh-753).
         strides_view = <np.npy_intp [:data.ndim]> <np.npy_intp *> cA.strides
         strides_view = strides_view.copy()
         output_info.strides = <pywt_index_t *> &strides_view[0]
         output_info.shape = <size_t *> &output_shape[0]
+
         if data.dtype == np.float64:
             with nogil:
                 retval = c_wt.double_downcoef_axis(
