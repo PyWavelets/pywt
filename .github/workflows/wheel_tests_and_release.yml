@@ -84,7 +84,7 @@ jobs:
                      pip install pytest meson-python ninja"
           echo "CIBW_BEFORE_BUILD=$CIBW_DEPS" >> "$GITHUB_ENV"
           echo "CIBW_BEFORE_TEST=$CIBW_DEPS" >> "$GITHUB_ENV"
-          echo "CIBW_ENVIRONMENT= $CIBW_ENVIRONMENT PYTHON_GIL=0" >> "$GITHUB_ENV"
+          echo "CIBW_TEST_COMMAND=PYTHON_GIL=0 $CIBW_TEST_COMMAND" >> "$GITHUB_ENV"
 
       - name: Build the wheel
         uses: pypa/cibuildwheel@a8d190a111314a07eb5116036c4b3fb26a4e3162 # v2.19.0
