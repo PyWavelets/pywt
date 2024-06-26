@@ -96,7 +96,7 @@ jobs:
           CIBW_PRERELEASE_PYTHONS: True
           CIBW_FREE_THREADED_SUPPORT: True
           CIBW_MANYLINUX_X86_64_IMAGE: manylinux2014
-          CIBW_MUSLLINUX_X86_64_IMAGE: musllinux_1_1
+          CIBW_MUSLLINUX_X86_64_IMAGE: musllinux_1_2
           CIBW_BUILD_FRONTEND: "pip; args: --no-build-isolation"
       - uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
         with:
