@@ -141,6 +141,41 @@ jobs:
           fi
           popd
 
+  test_pywavelets_linux_free_threaded:
+    name: linux-cp313t-with-scipy
+    runs-on: ubuntu-latest
+    strategy:
+      # Ensure that a wheel builder finishes even if another fails
+      fail-fast: false
+
+    steps:
+      - name: Checkout PyWavelets
+        uses: actions/checkout@v4
+
+      # TODO: replace with setup-python when there is support
+      - uses: deadsnakes/action@6c8b9b82fe0b4344f4b98f2775fcc395df45e494 # v3.1.0
+        with:
+          python-version: "3.13-dev"
+          nogil: true
+
+      - name: Build package
+        run: |
+          which python
+          python --version
+          pip install --upgrade pip build
+          # We need nightly wheels for free-threaded support and latest fixes
+          pip install --pre -i https://pypi.anaconda.org/scientific-python-nightly-wheels/simple cython numpy scipy
+          pip install pytest meson-python ninja
+          pip install . -v --no-build-isolation
+
+      - name: Run tests
+        env:
+          PYTHON_GIL: 0
+        run: |
+          # Move out of source directory to avoid finding local pywt
+          cd demo
+          pytest --pyargs pywt
+
   test_pywavelets_macos:
     name: macos-cp${{ matrix.python-version }}-${{ matrix.OPTIONS_NAME }}
     runs-on: macos-latest
