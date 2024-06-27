@@ -1,0 +1,101 @@
+name: Build free-threaded wheels
+on:
+  push:
+    tags:
+      - "v*"
+      - "buildwheels*"
+    branches:
+      # Runs on every merge to main to upload .dev0 wheels to anaconda.org
+      - main
+      - v1.**
+  # Make it possible to upload wheels manually if needed (for anaconda.org only, not PyPI)
+  workflow_dispatch:
+    inputs:
+      push_wheels:
+        description: >
+          Push wheels to Anaconda if "true". Default is "false". Warning: this will overwrite existing wheels.
+        required: false
+        default: "false"
+  # Upload wheels to anaconda.org on a schedule
+  schedule:
+    # Run at 0300 hours on days 3 and 17 of the month
+    - cron: "0 3 3,17 * *"
+env:
+  CIBW_BUILD_VERBOSITY: 2
+  CIBW_TEST_REQUIRES: pytest
+  CIBW_TEST_COMMAND: pytest --pyargs pywt -m "not slow"
+  CIBW_ENVIRONMENT: PIP_PREFER_BINARY=1
+
+jobs:
+  build_linux_x86_64_free_threaded_wheels:
+    name: Build ${{ matrix.cibw_python }} ${{ matrix.cibw_arch }} ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        cibw_python: ["cp313t"]
+        cibw_arch: ["x86_64"]
+    steps:
+      - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        name: Install Python
+        with:
+          python-version: "3.10"
+      - name: Setup environment variables
+        run: |
+          PYPI_URL="https://pypi.anaconda.org/scientific-python-nightly-wheels/simple"
+          CIBW_DEPS="pip install --upgrade pip build &&\
+                     pip install --pre -i $PYPI_URL cython numpy scipy &&\
+                     pip install pytest meson-python ninja"
+          echo "CIBW_BEFORE_BUILD=$CIBW_DEPS" >> "$GITHUB_ENV"
+          echo "CIBW_BEFORE_TEST=$CIBW_DEPS" >> "$GITHUB_ENV"
+          echo "CIBW_TEST_COMMAND=PYTHON_GIL=0 $CIBW_TEST_COMMAND" >> "$GITHUB_ENV"
+
+      - name: Build the wheel
+        uses: pypa/cibuildwheel@a8d190a111314a07eb5116036c4b3fb26a4e3162 # v2.19.0
+        with:
+          output-dir: dist
+        env:
+          CIBW_BUILD: ${{ matrix.cibw_python }}-*
+          CIBW_ARCHS_LINUX: ${{ matrix.cibw_arch }}
+          CIBW_PRERELEASE_PYTHONS: True
+          CIBW_FREE_THREADED_SUPPORT: True
+          CIBW_MANYLINUX_X86_64_IMAGE: manylinux2014
+          CIBW_MUSLLINUX_X86_64_IMAGE: musllinux_1_2
+          CIBW_BUILD_FRONTEND: "pip; args: --no-build-isolation"
+      - uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
+        with:
+          name: wheels_linux_${{ matrix.cibw_arch }}_${{ matrix.cibw_python }}
+          path: ./dist/*.whl
+          if-no-files-found: error
+
+  deploy_anaconda:
+    name: Release (Anaconda)
+    needs: [build_linux_x86_64_free_threaded_wheels]
+    # Run only on pushes to the main branch, on schedule, or when triggered manually
+    if: >-
+      github.repository == 'PyWavelets/pywt' &&
+      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.push_wheels == 'true') ||
+      (github.event_name == 'schedule')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
+        with:
+          fetch-depth: 0
+
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        id: download
+        with:
+          pattern: "wheels_*"
+          path: dist/
+          merge-multiple: true
+
+      - name: Push to Anaconda PyPI index
+        uses: scientific-python/upload-nightly-action@b67d7fcc0396e1128a474d1ab2b48aa94680f9fc # v0.5.0
+        with:
+          artifacts_path: dist/
+          anaconda_nightly_upload_token: ${{ secrets.ANACONDA_ORG_UPLOAD_TOKEN }}
