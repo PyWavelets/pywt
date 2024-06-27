@@ -59,51 +59,6 @@ jobs:
           path: ./dist/*.whl
           if-no-files-found: error
 
-  build_linux_x86_64_free_threaded_wheels:
-    name: Build ${{ matrix.cibw_python }} ${{ matrix.cibw_arch }} ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest]
-        cibw_python: ["cp313t"]
-        cibw_arch: ["x86_64"]
-    steps:
-      - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-python@v5
-        name: Install Python
-        with:
-          python-version: "3.10"
-      - name: Setup environment variables
-        run: |
-          PYPI_URL="https://pypi.anaconda.org/scientific-python-nightly-wheels/simple"
-          CIBW_DEPS="pip install --upgrade pip build &&\
-                     pip install --pre -i $PYPI_URL cython numpy scipy &&\
-                     pip install pytest meson-python ninja"
-          echo "CIBW_BEFORE_BUILD=$CIBW_DEPS" >> "$GITHUB_ENV"
-          echo "CIBW_BEFORE_TEST=$CIBW_DEPS" >> "$GITHUB_ENV"
-          echo "CIBW_TEST_COMMAND=PYTHON_GIL=0 $CIBW_TEST_COMMAND" >> "$GITHUB_ENV"
-
-      - name: Build the wheel
-        uses: pypa/cibuildwheel@a8d190a111314a07eb5116036c4b3fb26a4e3162 # v2.19.0
-        with:
-          output-dir: dist
-        env:
-          CIBW_BUILD: ${{ matrix.cibw_python }}-*
-          CIBW_ARCHS_LINUX: ${{ matrix.cibw_arch }}
-          CIBW_PRERELEASE_PYTHONS: True
-          CIBW_FREE_THREADED_SUPPORT: True
-          CIBW_MANYLINUX_X86_64_IMAGE: manylinux2014
-          CIBW_MUSLLINUX_X86_64_IMAGE: musllinux_1_2
-          CIBW_BUILD_FRONTEND: "pip; args: --no-build-isolation"
-      - uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
-        with:
-          name: wheels_linux_${{ matrix.cibw_arch }}_${{ matrix.cibw_python }}
-          path: ./dist/*.whl
-          if-no-files-found: error
-
   build_linux_aarch64_wheels:
     name: Build ${{ matrix.cibw_python }} ${{ matrix.cibw_arch }} ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
@@ -238,7 +193,6 @@ jobs:
     needs:
       [
         build_linux_x86_64_wheels,
-        build_linux_x86_64_free_threaded_wheels,
         build_linux_aarch64_wheels,
         build_macos_wheels,
         build_windows_wheels,
