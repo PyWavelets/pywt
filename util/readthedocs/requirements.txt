@@ -1,6 +1,6 @@
 cython
 docutils
-jupyterlite-sphinx>=0.16.0
+jupyterlite-sphinx>=0.16.1
 jupyterlite-pyodide-kernel
 jupytext
 pydata-sphinx-theme
