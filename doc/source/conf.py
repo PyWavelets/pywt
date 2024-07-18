@@ -170,8 +170,8 @@ html_theme_options = {
 "show_prev_next": True,
 "footer_start": ["copyright", "sphinx-version"],
 "footer_end": ["theme-version"],
-"pygment_light_style": "a11y-high-contrast-light",
-"pygment_dark_style": "a11y-high-contrast-dark",
+"pygments_light_style": "a11y-high-contrast-light",
+"pygments_dark_style": "a11y-high-contrast-dark",
 "icon_links": [
         {
             "name": "Discussion group on Google Groups",
