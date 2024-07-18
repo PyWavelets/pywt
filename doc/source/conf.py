@@ -33,8 +33,7 @@ HERE = Path(__file__).parent
 
 
 def preprocess_notebooks(app: Sphinx, *args, **kwargs):
-    """Preprocess Markdown notebooks to convert them to IPyNB format
-    and remove cells tagged with 'ignore-when-converting' metadata."""
+    """Preprocess Markdown notebooks to convert them to IPyNB format."""
 
     import jupytext
     import nbformat
@@ -42,25 +41,14 @@ def preprocess_notebooks(app: Sphinx, *args, **kwargs):
     print("Converting Markdown files to IPyNB...")
     for path in (HERE / "regression").glob("*.md"):
         nb = jupytext.read(str(path))
-        nb.cells = [cell for cell in nb.cells if "true" not in cell.metadata.get("ignore-when-converting", [])]
         ipynb_path = path.with_suffix(".ipynb")
         with open(ipynb_path, "w") as f:
             nbformat.write(nb, f)
             print(f"Converted {path} to {ipynb_path}")
 
 
-    for path in (HERE / "regression").glob("*.ipynb"):
-        with open(path) as f:
-            nb = nbformat.read(f, as_version=4)
-            nb.cells = [cell for cell in nb.cells if "true" not in cell.metadata.get("ignore-when-converting", [])]
-
-        with open(path, "w") as f:
-            nbformat.write(nb, f)
-            print(f"Cleaned up {path}")
-
-
 def setup(app):
-    app.connect("builder-inited", preprocess_notebooks)
+    app.connect("config-inited", preprocess_notebooks)
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
