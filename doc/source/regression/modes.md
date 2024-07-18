@@ -11,7 +11,7 @@ kernelspec:
   name: python3
 ---
 
-+++ {"ignore-when-converting": "true"}
++++ {"tags": ["jupyterlite_sphinx_strip"]}
 
 ```{eval-rst}
 .. currentmodule:: pywt

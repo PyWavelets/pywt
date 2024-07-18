@@ -14,7 +14,7 @@ mystnb:
   execution_show_tb: true
 ---
 
-+++ {"ignore-when-converting": "true"}
++++ {"tags": ["jupyterlite_sphinx_strip"]}
 
 ```{eval-rst}
 .. currentmodule:: pywt
