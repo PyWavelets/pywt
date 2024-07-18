@@ -343,6 +343,9 @@ Shall you encounter any issues, please feel free to report them on the
 [PyWavelets issue tracker](https://github.com/PyWavelets/pywt/issues)."""
 )
 
+jupyterlite_silence = False  # temporarily enable to debug
+strip_tagged_cells = True
+
 # -- Options for MyST-NB and Markdown-based content --------------------------
 
 os.environ["PYDEVD_DISABLE_FILE_VALIDATION"] = "1"
