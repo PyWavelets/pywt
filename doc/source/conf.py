@@ -366,5 +366,3 @@ myst_enable_extensions = [
     'dollarmath',
 ]
 
-# nb_execution_allow_errors = True
-# nb_execution_show_tb = True
