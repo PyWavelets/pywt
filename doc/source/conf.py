@@ -343,7 +343,7 @@ Shall you encounter any issues, please feel free to report them on the
 [PyWavelets issue tracker](https://github.com/PyWavelets/pywt/issues)."""
 )
 
-jupyterlite_silence = True 
+jupyterlite_silence = True
 strip_tagged_cells = True
 
 # -- Options for MyST-NB and Markdown-based content --------------------------
