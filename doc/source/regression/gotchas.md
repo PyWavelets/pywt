@@ -39,8 +39,8 @@ kernelspec:
 # Gotchas
 
 PyWavelets utilizes `NumPy` under the hood. That's why handling the data
-containing `None` values can be surprising. `None` values are converted to
-'not a number' (`numpy.NaN`) values:
+that contains `None` values can be surprising. `None` values are converted to
+'not a number' (`numpy.nan`) values:
 
 ```{code-cell}
 import numpy, pywt

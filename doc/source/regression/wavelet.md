@@ -40,12 +40,12 @@ kernelspec:
 
 ## Wavelet families and builtin Wavelets names
 
-{class}`Wavelet` objects are really a handy carriers of a bunch of DWT-specific
+`pywt.Wavelet` objects are really handy carriers of a bunch of DWT-specific
 data like _quadrature mirror filters_ and some general properties associated
 with them.
 
-At first let's go through the methods of creating a {class}`Wavelet` object.
-The easiest and the most convenient way is to use builtin named Wavelets.
+At first let's go through the methods of creating a `Wavelet` object.
+The easiest and the most convenient way is to use built-in named Wavelets.
 
 These wavelets are organized into groups called wavelet families. The most
 commonly used families are:
@@ -63,12 +63,12 @@ for family in pywt.families():
     print("%s family: " % family + ', '.join(pywt.wavelist(family)))
 ```
 
-To get the full list of builtin wavelets' names, just use the {func}`wavelist`
+To get the full list of built-in wavelets' names, just use the `pywt.wavelist` function
 without any arguments.
 
 ## Creating Wavelet objects
 
-Now, since we know all the names, let's finally create a {class}`Wavelet` object:
+Now that we know all the names, let's finally create a `Wavelet` object:
 
 ```{code-cell}
 w = pywt.Wavelet('db3')
@@ -78,10 +78,10 @@ and, that's it!
 
 ## Wavelet properties
 
-But what can we do with {class}`Wavelet` objects? Well, they carry some
+But what can we do with `Wavelet` objects? Well, they carry some
 interesting pieces of information.
 
-First, let's try printing a {class}`Wavelet` object that we used earlier.
+First, let's try printing a `Wavelet` object that we used earlier.
 This shows a brief information about its name, its family name and some
 properties like orthogonality and symmetry.
 
@@ -90,10 +90,10 @@ print(w)
 ```
 
 But the most important bits of information are the wavelet filters coefficients,
-which are used in {ref}`Discrete Wavelet Transform <ref-dwt>`. These coefficients
-can be obtained via the {attr}`~Wavelet.dec_lo`, {attr}`Wavelet.dec_hi`,
-{attr}`~Wavelet.rec_lo` and {attr}`~Wavelet.rec_hi` attributes, which
-correspond to lowpass & highpass decomposition filters and lowpass &
+which are used in Discrete Wavelet Transform. These coefficients
+can be obtained via the `Wavelet.dec_lo`, `Wavelet.dec_hi`, `Wavelet.rec_lo`,
+and the `~Wavelet.rec_hi` attributes, which
+correspond to lowpass & highpass decomposition filters, and lowpass &
 highpass reconstruction filters respectively:
 
 ```{code-cell}
@@ -101,7 +101,7 @@ def print_array(arr):
     print("[%s]" % ", ".join(["%.14f" % x for x in arr]))
 ```
 
-Another way to get the filters data is to use the {attr}`~Wavelet.filter_bank`
+Another way to get the filters data is to use the `Wavelet.filter_bank`
 attribute, which returns all four filters in a tuple:
 
 ```{code-cell}
@@ -110,7 +110,7 @@ w.filter_bank == (w.dec_lo, w.dec_hi, w.rec_lo, w.rec_hi)
 
 Other properties of a `Wavelet` object are:
 
-1. Wavelet {attr}`~Wavelet.name`, {attr}`~Wavelet.short_family_name` and {attr}`~Wavelet.family_name`:
+1. `Wavelet.name`, `Wavelet.short_family_name`, and `Wavelet.family_name`:
 
 ```{code-cell}
 print(w.name)
@@ -118,7 +118,7 @@ print(w.short_family_name)
 print(w.family_name)
 ```
 
-2. Decomposition ({attr}`~Wavelet.dec_len`) and reconstruction ({attr}`~.Wavelet.rec_len`) filter lengths:
+2. Decomposition (`Wavelet.dec_len`) and reconstruction (`Wavelet.rec_len`) filter lengths:
 
 ```{code-cell}
 w.dec_len
@@ -128,7 +128,7 @@ w.dec_len
 w.rec_len
 ```
 
-3. Orthogonality ({attr}`~Wavelet.orthogonal`) and biorthogonality ({attr}`~Wavelet.biorthogonal`):
+3. Orthogonality (`Wavelet.orthogonal`) and biorthogonality (`Wavelet.biorthogonal`):
 
 ```{code-cell}
 w.orthogonal
@@ -138,14 +138,14 @@ w.orthogonal
 w.biorthogonal
 ```
 
-3. Symmetry ({attr}`~Wavelet.symmetry`):
+3. Symmetry (`Wavelet.symmetry`):
 
 ```{code-cell}
 print(w.symmetry)
 ```
 
-4. Number of vanishing moments for the scaling function `phi` ({attr}`~Wavelet.vanishing_moments_phi`)
-   and the wavelet function `psi` ({attr}`~Wavelet.vanishing_moments_psi`), associated with the filters:
+4. Number of vanishing moments for the scaling function `phi` (`Wavelet.vanishing_moments_phi`)
+   and the wavelet function `psi` (`Wavelet.vanishing_moments_psi`), associated with the filters:
 
 ```{code-cell}
  w.vanishing_moments_phi
@@ -156,7 +156,7 @@ w.vanishing_moments_psi
 ```
 
 Now when we know a bit about the builtin Wavelets, let's see how to create
-{ref}`custom Wavelets <custom-wavelets>` objects. These can be done in two ways:
+custom `Wavelets` objects. These can be done in two ways:
 
 1. Passing the filter bank object that implements the `filter_bank` attribute. The
    attribute must return four filters coefficients.
@@ -189,7 +189,7 @@ my_filter_bank = (
 my_wavelet = pywt.Wavelet('My Haar Wavelet', filter_bank=my_filter_bank)
 ```
 
-Note that such custom wavelets **will not** have all the properties set
+Note that such custom `Wavelets` objects **will not** have all the properties set
 to correct values and some of them could be missing:
 
 ```{code-cell}
@@ -212,10 +212,10 @@ print(my_wavelet)
 ## And now... the `wavefun`!
 
 We all know that the fun with wavelets is in wavelet functions.
-Now, what would be this package without a tool to compute wavelet
+Now, what would this package be without a tool to compute wavelet
 and scaling functions approximations?
 
-This is the purpose of the {meth}`~Wavelet.wavefun` method, which is used to
+This is the purpose of the `Wavelet.wavefun` method, which is used to
 approximate scaling function (`phi`) and wavelet function (`psi`) at the
 given level of refinement, based on the filters coefficients.
 
@@ -234,8 +234,8 @@ w.orthogonal
 
 For biorthogonal (non-orthogonal) wavelets, different scaling and wavelet
 functions are used for decomposition and reconstruction, and thus, five
-elements are returned: decomposition scaling & wavelet functions
-approximations, reconstruction scaling & wavelet functions approximations,
+elements are returned: decomposition scaling and wavelet functions
+approximations, reconstruction scaling and wavelet functions approximations,
 and the xgrid.
 
 ```{code-cell}
@@ -248,7 +248,7 @@ w.orthogonal
 ```
 
 :::{seealso}
-You can find live examples of the usage of {meth}`~Wavelet.wavefun` and
+You can find live examples of the usage of `Wavelet.wavefun` and
 images of all the built-in wavelets on the
 [Wavelet Properties Browser](http://wavelets.pybytes.com) page.
 

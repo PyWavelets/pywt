@@ -43,8 +43,8 @@ mystnb:
 
 ## Discrete Wavelet Transform
 
-Let's do a {func}`Discrete Wavelet Transform <dwt>` of a sample data `x`
-using the `db2` wavelet. It's simple..
+Let's do a Discrete Wavelet Transform of some sample data `x`
+using the `db2` wavelet. It's simple:
 
 ```{code-cell}
 import pywt
@@ -65,8 +65,7 @@ cD
 
 ## Inverse Discrete Wavelet Transform
 
-Now let's do an opposite operation
-\- {func}`Inverse Discrete Wavelet Transform <idwt>`:
+Now, let's do the opposite operation: an Inverse Discrete Wavelet Transform:
 
 ```{code-cell}
 pywt.idwt(cA, cD, 'db2')
@@ -76,10 +75,10 @@ Voilà! That's it!
 
 ## More examples
 
-Now let's experiment with the {func}`dwt` some more. For example let's pass a
-{class}`Wavelet` object instead of the wavelet name and specify signal
-extension mode (the default is {ref}`symmetric <Modes.symmetric>`) for the
-border effect handling:
+Now, let's experiment with `dwt` some more. For example, let's pass a
+`Wavelet` object instead of the wavelet name and specify the signal
+extension mode (the default is `Modes.symmetric`) for the border effect
+handling:
 
 ```{code-cell}
 w = pywt.Wavelet('sym3')
@@ -94,11 +93,11 @@ print(cA)
 print(cD)
 ```
 
-Note that the output coefficients arrays length depends not only on the input
-data length but also on the :class:Wavelet type (particularly on its
-{attr}`filters length <~Wavelet.dec_len>` that are used in the transformation).
+Note that the output coefficients arrays' length depends not only on the
+input data length but also on the `Wavelet` type (particularly on its
+filters length `Wavelet.dec_len` that are used in the transformation).
 
-To find out what the size of the output data will be, use the {func}`dwt_coeff_len`
+To find out what the size of the output data will be, use the `dwt_coeff_len`
 function:
 
 ```{code-cell}
@@ -119,23 +118,20 @@ Looks fine. (And if you expected that the output length would be a half of the
 input data length, well, that's the trade-off that allows for the perfect
 reconstruction...).
 
-The third argument of the {func}`dwt_coeff_len` is the already mentioned signal
-extension mode (please refer to the PyWavelets' documentation for the
-{ref}`modes <modes>` description). Currently, there are six
-{ref}`extension modes <Modes>` available:
+The third argument of the `dwt_coeff_len` function is the already mentioned signal
+extension mode (please refer to the PyWavelets' documentation for the `modes`
+description). Currently, there are six extension modes available under `Modes`:
 
 ```{code-cell}
 pywt.Modes.modes
 ```
 
-As you see in the above example, the {ref}`periodization <Modes.periodization>`
-(periodization) mode is slightly different from the others. It's aim when
-doing the {func}`DWT <dwt>` transform is to output coefficients arrays that
-are half of the length of the input data.
+As you see in the above example, the periodization (`Modes.periodization`) mode
+is slightly different from the others. Its aim when doing the `pywt.dwt` transform
+is to output coefficients arrays that are half of the length of the input data.
 
 Knowing that, you should never mix the periodization mode with other modes when
-doing {func}`DWT <dwt>` and {func}`IDWT <idwt>`. Otherwise, it will produce
-**invalid results**:
+doing `dwt` and `idwt`. Otherwise, it will produce **invalid results**:
 
 ```{code-cell}
 x = [3, 7, 1, 1, -2, 5, 4, 6]
@@ -150,9 +146,9 @@ print(pywt.idwt(cA, cD, 'sym3', 'periodization'))
 
 ## Tips & tricks
 
-### Passing `None` instead of coefficients data to {func}`idwt`
+### Passing `None` instead of coefficients data to `pywt.idwt()`
 
-Now, we showcase some tips & tricks. Passing `None` as one of the coefficient
+Now, we showcase some tips and tricks. Passing `None` as one of the coefficient
 arrays parameters is similar to passing a _zero-filled_ array. The results are
 simply the same:
 
@@ -181,9 +177,9 @@ tags: [raises-exception]
 print(pywt.idwt(None, None, 'db2', 'symmetric'))
 ```
 
-### Coefficients data size in {attr}`idwt`
+### Coefficients data size in `pywt.idwt`
 
-When doing the {func}`IDWT <idwt>` transform, usually the coefficient arrays
+When doing the `idwt` transform, usually the coefficient arrays
 must have the same size.
 
 ```{code-cell}
@@ -193,11 +189,11 @@ tags: [raises-exception]
 print(pywt.idwt([1, 2, 3, 4, 5], [1, 2, 3, 4], 'db2', 'symmetric'))
 ```
 
-Not every coefficient array can be used in {func}`IDWT <idwt>`. In the
-following example the {func}`idwt` will fail because the input arrays are
-invalid - they couldn't be created as a result of {func}`DWT <dwt>`, because
-the minimal output length for dwt using `db4` wavelet and the {ref}`symmetric
-<Modes.symmetric>` mode is `4`, not `3`:
+Not every coefficient array can be used in `idwt`. In the
+following example the `idwt` will fail because the input arrays are
+invalid - they couldn't be created as a result of `dwt`, because
+the minimal output length for dwt using `db4` wavelet and the `Modes.symmetric`
+mode is `4`, not `3`:
 
 ```{code-cell}
 ---

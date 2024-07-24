@@ -38,7 +38,7 @@ kernelspec:
 
 # Signal Extension Modes
 
-Let's import {mod}`pywt`, first:
+Let's import `pywt`, first:
 
 ```{code-cell}
 import pywt
@@ -57,13 +57,13 @@ def format_array(a):
     return numpy.array2string(a, precision=5, separator=' ', suppress_small=True)
 ```
 
-A list of available signal extension {ref}`modes <Modes>` is as follows:
+A list of available signal extension modes (`Modes`) is provided as follows:
 
 ```{code-cell}
 pywt.Modes.modes
 ```
 
-Therefore, an invalid mode name should rise a {exc}`ValueError`:
+Therefore, an invalid mode name should raise a `ValueError`:
 
 ```{code-cell}
 ---
@@ -72,7 +72,7 @@ tags: [raises-exception]
 pywt.dwt([1,2,3,4], 'db2', 'invalid')
 ```
 
-You can also refer to modes via {ref}`Modes <Modes>` class attributes:
+You can also refer to modes via the attributes of the `Modes` class:
 
 ```{code-cell}
 x = [1, 2, 1, 5, -1, 8, 4, 6]
@@ -82,7 +82,7 @@ for mode_name in ['zero', 'constant', 'symmetric', 'reflect', 'periodic', 'smoot
     print("Mode: %d (%s)" % (mode, mode_name))
 ```
 
-The default mode is {ref}`symmetric <Modes.symmetric>`:
+The default mode is symmetric, i.e., `Modes.symmetric`:
 
 ```{code-cell}
 cA, cD = pywt.dwt(x, 'db2')

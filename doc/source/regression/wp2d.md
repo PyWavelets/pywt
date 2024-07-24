@@ -54,20 +54,20 @@ x = numpy.array([[1, 2, 3, 4, 5, 6, 7, 8]] * 8, 'd')
 print(x)
 ```
 
-Now create a {class}`2D Wavelet Packet <WaveletPacket2D>` object:
+Now create a 2D Wavelet Packet `pywt.WaveletPacket2D` object:
 
 ```{code-cell}
 wp = pywt.WaveletPacket2D(data=x, wavelet='db1', mode='symmetric')
 ```
 
 The input `data` and decomposition coefficients are stored in the
-{attr}`WaveletPacket2D.data` attribute:
+`WaveletPacket2D.data` attribute:
 
 ```{code-cell}
 print(wp.data)
 ```
 
-{class}`Nodes <Node2D>` are identified by paths. For the root node the path is
+Nodes (the `Node2D>` class) are identified by paths. For the root node, the path is
 `''` and the decomposition level is `0`.
 
 ```{code-cell}
@@ -78,7 +78,7 @@ print(repr(wp.path))
 print(wp.level)
 ```
 
-The {attr}`WaveletPacket2D.maxlevel`, if not given in the constructor, is
+`WaveletPacket2D.maxlevel`, if not given in the constructor, is
 automatically computed based on the data size:
 
 ```{code-cell}
@@ -87,10 +87,10 @@ print(wp.maxlevel)
 
 ## Traversing WP tree
 
-Wavelet Packet {class}`nodes <Node2D>` are arranged in a tree. Each node in a WP
-tree is uniquely identified and addressed by a {attr}`~Node2D.path` string.
+Wavelet Packet nodes (`Node2D`) are arranged in a tree. Each node in a WP
+tree is uniquely identified and addressed by a `Node2D.path` string.
 
-In the 1D {class}`WaveletPacket` case nodes were accessed using `'a'`
+In the 1D `WaveletPacket` case nodes were accessed using `'a'`
 (approximation) and `'d'` (details) path names (each node has two 1D
 children).
 
@@ -103,7 +103,7 @@ to address the WP2D structure:
 - `v` - HL, high-low coefficients
 - `d` - HH, high-high coefficients
 
-In other words, subnode naming corresponds to the {func}`dwt2` function output
+In other words, subnode naming corresponds to the `dwt2` function output
 naming convention (as wavelet packet transform is based on the dwt2 transform):
 
 ```
@@ -121,7 +121,7 @@ naming convention (as wavelet packet transform is based on the dwt2 transform):
 ```
 
 Knowing what the nodes names are, we can now access them using the indexing
-operator `obj[x]` ({meth}`WaveletPacket2D.__getitem__`):
+operator `obj[x]` (`WaveletPacket2D.__getitem__`):
 
 ```{code-cell}
 print(wp['a'].data)
@@ -145,8 +145,8 @@ Similarly, a subnode of a subnode can be accessed by:
 print(wp['aa'].data)
 ```
 
-Indexing base {class}`WaveletPacket2D` (as well as 1D {class}`WaveletPacket`)
-using compound path is just the same as indexing the WP subnode:
+Indexing base 2D (`WaveletPacket2D`) (as well as 1D `WaveletPacket`)
+using compound paths is just the same as indexing the WP subnode:
 
 ```{code-cell}
 node = wp['a']
@@ -170,9 +170,7 @@ tags: [raises-exception]
 print(wp['aaaa'].data)
 ```
 
-<!-- not sure what "Ups" means in the next sentence -->
-
-Ups, we have reached the maximum level of decomposition for the `'aaaa'` path,
+Oops, we have reached the maximum level of decomposition for the `'aaaa'` path,
 which, by the way, was:
 
 ```{code-cell}
@@ -190,10 +188,9 @@ print(wp['f'])
 
 ### Accessing Node2D's attributes
 
-{class}`WaveletPacket2D` is a tree data structure, which evaluates to a set
-of {class}`Node2D` objects. {class}`WaveletPacket2D` is just a special subclass
-of the {class}`Node2D` class (which in turn inherits from a {class}`BaseNode`,
-just like with {class}`Node` and {class}`WaveletPacket` for the 1D case.).
+`WaveletPacket2D` is a tree data structure, which evaluates to a set
+of `Node2D` objects. `WaveletPacket2D` is just a special the `Node2D` class (which in turn inherits from a `BaseNode` class
+just like with `Node` and `WaveletPacket` for the 1D case).
 
 ```{code-cell}
 print(wp['av'].data)
@@ -230,7 +227,7 @@ print(wp['av'].mode)
 ### Collecting nodes
 
 We can get all nodes on the particular level using the
-{meth}`WaveletPacket2D.get_level` method:
+`WaveletPacket2D.get_level` method:
 
 - 0 level - the root `wp` node:
 
@@ -282,7 +279,7 @@ for i, path in enumerate(paths):
         print(path, end=' ')
 ```
 
-Note that {meth}`WaveletPacket2D.get_level` performs automatic decomposition
+Note that `WaveletPacket2D.get_level` performs automatic decomposition
 until it reaches the given level.
 
 ## Reconstructing data from Wavelet Packets
@@ -307,8 +304,8 @@ new_wp['d'] = [[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0],
               [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]]
 ```
 
-For convenience, {attr}`Node2D.data` gets automatically extracted from the
-base {class}`Node2D` object:
+For convenience, `Node2D.data` gets automatically extracted from the
+base `Node2D` object:
 
 ```{code-cell}
 new_wp['h'] = wp['h'] # all zeros
@@ -348,14 +345,14 @@ Just restore the node before the next examples:
 new_wp['va'] = wp['va'].data
 ```
 
-If the `update` param in the {meth}`WaveletPacket2D.reconstruct` method is set
-to `False`, the node's {attr}`Node2D.data` attribute will not be updated.
+If the `update` param in the `WaveletPacket2D.reconstruct` method is set
+to `False`, the node's `Node2D.data` attribute will not be updated.
 
 ```{code-cell}
 print(new_wp.data)
 ```
 
-Otherwise, the {attr}`WaveletPacket2D.data` attribute will be set to the
+Otherwise, the `WaveletPacket2D.data` attribute will be set to the
 reconstructed value.
 
 ```{code-cell}
@@ -367,7 +364,7 @@ print(new_wp.data)
 ```
 
 Since we have an interesting WP structure built, it is a good occasion to
-present the {meth}`WaveletPacket2D.get_leaf_nodes` method, which collects
+present the `WaveletPacket2D.get_leaf_nodes()` method, which collects
 non-zero leaf nodes from the WP tree:
 
 ```{code-cell}
@@ -396,7 +393,7 @@ for i, path in enumerate(paths):
 ## Lazy evaluation
 
 :::{note}
-This section is for the demonstration of PyWavelets' internals purposes
+This section is for the demonstration of PyWavelets' internals' purposes
 only. Do not rely on the attribute access to nodes as presented in
 this example.
 :::
@@ -406,7 +403,7 @@ x = numpy.array([[1, 2, 3, 4, 5, 6, 7, 8]] * 8)
 wp = pywt.WaveletPacket2D(data=x, wavelet='db1', mode='symmetric')
 ```
 
-1. At first, the wp's attribute `a` is `None`
+1. At first, the `wp`'s attribute `a` is `None`
 
 ```{code-cell}
 print(wp.a)

@@ -59,23 +59,23 @@ def format_array(a):
 
 ## Create Wavelet Packet structure
 
-Okay, let's create a sample {class}`WaveletPacket` object:
+Okay, let's create a sample instance of the `WaveletPacket` class:
 
 ```{code-cell}
 x = [1, 2, 3, 4, 5, 6, 7, 8]
 wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='symmetric')
 ```
 
-The input `data` and decomposition coefficients are stored in the
-{attr}`WaveletPacket.data` attribute:
+The input data and decomposition coefficients are stored in the
+`WaveletPacket.data` attribute:
 
 ```{code-cell}
 print(wp.data)
 [1, 2, 3, 4, 5, 6, 7, 8]
 ```
 
-{class}`Nodes <Node>` are identified by {attr}`paths <~Node.path>`. For the root
-node the path is `''` and the decomposition level is `0`.
+Nodes `Node` are identified by their paths, i.e., `Node.path`. For the root
+node, the path is `''` and the decomposition level is `0`.
 
 ```{code-cell}
 # Should return blank
@@ -86,14 +86,14 @@ print(repr(wp.path))
 print(wp.level)
 ```
 
-The `maxlevel`, if not given as param in the constructor, is automatically
-computed:
+The `maxlevel` attribute, if not given as param in the constructor, is
+automatically computed:
 
 ```{code-cell}
 print(wp['ad'].maxlevel)
 ```
 
-## Traversing WP tree
+## Traversing the WP tree
 
 ### Accessing subnodes
 
@@ -140,8 +140,7 @@ print(wp['aaa'].data)
 print(wp['aaa'].path)
 ```
 
-Ups, we have reached the maximum level of decomposition and got an
-{exc}`IndexError`:
+Oops, we have reached the maximum level of decomposition and received an `IndexError`:
 
 ```{code-cell}
 ---
@@ -159,19 +158,20 @@ tags: [raises-exception]
 print(wp['ac'])
 ```
 
-which just yielded a {exc}`ValueError`.
+which just yielded a `ValueError`.
 
-### Accessing Node's attributes
+### Accessing `Node`'s attributes
 
-{class}`WaveletPacket` object is a tree data structure, which evaluates to a set
-of {class}`Node` objects. {class}`WaveletPacket` is just a special subclass
-of the {class}`Node` class (which in turn inherits from the {class}`BaseNode`).
+The `WaveletPacket` object is a tree data structure, which evaluates to a set
+of `Node` objects. `WaveletPacket` is just a special subclass
+of the `Node` class (which in turn inherits from the `BaseNode` class).
 
-Tree nodes can be accessed using the `obj[x]` ({meth}`Node.__getitem__`)
+Tree nodes can be accessed using the `obj[x]` (`Node.__getitem__`)
 operator.
-Each tree node has a set of attributes: {attr}`~Node.data`, {attr}`~Node.path`,
-{attr}`~Node.node_name`, {attr}`~Node.parent`, {attr}`~Node.level`,
-{attr}`~Node.maxlevel` and {attr}`~Node.mode`.
+
+Each tree node has a set of attributes: `Node.data`, `Node.path`,
+`Node.node_name`, `Node.parent`, `Node.level`,
+`Node.maxlevel` and `Node.mode`.
 
 ```{code-cell}
 x = [1, 2, 3, 4, 5, 6, 7, 8]
@@ -225,7 +225,7 @@ or sorted based on the band frequency (`freq`):
 print([node.path for node in wp.get_level(3, 'freq')])
 ```
 
-Note that {meth}`WaveletPacket.get_level` also performs automatic decomposition
+Note that `WaveletPacket.get_level` also performs automatic decomposition
 until it reaches the specified `level`.
 
 ## Reconstructing data from Wavelet Packets
@@ -235,7 +235,7 @@ x = [1, 2, 3, 4, 5, 6, 7, 8]
 wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='symmetric')
 ```
 
-Now, let's create a new {class}`Wavelet Packet <WaveletPacket>` and set its nodes
+Now, let's create a new instance of the `WaveletPacket` class and set its nodes
 with some data.
 
 ```{code-cell}
@@ -247,8 +247,7 @@ new_wp['aa'] = wp['aa'].data
 new_wp['ad'] = [-2., -2.]
 ```
 
-For convenience, {attr}`Node.data` gets automatically extracted from the
-{class}`Node` object:
+For convenience, `Node.data` gets automatically extracted from the `Node` object:
 
 ```{code-cell}
 new_wp['d'] = wp['d']
@@ -261,13 +260,13 @@ print(new_wp.reconstruct(update=False))
 ```
 
 If the `update` param in the reconstruct method is set to `False`, the
-node's {attr}`~Node.data` will not be updated.
+node's `Node.data` will not be updated.
 
 ```{code-cell}
 print(new_wp.data)
 ```
 
-Otherwise, the {attr}`~Node.data` attribute will be set to the reconstructed
+Otherwise, the `Node.data` attribute will be set to the reconstructed
 value.
 
 ```{code-cell}
@@ -308,7 +307,7 @@ node = wp['ad']
 print(node)
 ```
 
-To remove a node from the WP tree, use Python's `del obj[x]` ({class}`Node.__delitem__`):
+To remove a node from the WP tree, use Python's `del obj[x]` (`Node.__delitem__`):
 
 ```{code-cell}
 del wp['ad']
