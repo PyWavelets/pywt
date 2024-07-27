@@ -12,6 +12,8 @@
 
 import datetime
 import importlib.metadata
+import os
+from pathlib import Path
 
 import jinja2.filters
 import numpy as np
@@ -23,6 +25,28 @@ try:
 except TypeError:
     pass
 
+from sphinx.application import Sphinx
+
+HERE = Path(__file__).parent
+
+
+def preprocess_notebooks(app: Sphinx, *args, **kwargs):
+    """Preprocess Markdown notebooks to convert them to IPyNB format."""
+
+    import jupytext
+    import nbformat
+
+    print("Converting Markdown files to IPyNB...")
+    for path in (HERE / "regression").glob("*.md"):
+        nb = jupytext.read(str(path))
+        ipynb_path = path.with_suffix(".ipynb")
+        with open(ipynb_path, "w") as f:
+            nbformat.write(nb, f)
+            print(f"Converted {path} to {ipynb_path}")
+
+
+def setup(app):
+    app.connect("config-inited", preprocess_notebooks)
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -36,6 +60,7 @@ except TypeError:
 extensions = [
     'jupyterlite_sphinx',
     'matplotlib.sphinxext.plot_directive',
+    'myst_nb',
     'numpydoc',
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
@@ -45,15 +70,19 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.todo',
     'sphinx_copybutton',
+    'sphinx_design',
     'sphinx_togglebutton',
-
 ]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
 # The suffix of source filenames.
-source_suffix = '.rst'
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.md': 'myst-nb',
+    'ipynb': None,  # do not parse IPyNB files
+}
 
 # The encoding of source files.
 source_encoding = 'utf-8'
@@ -139,8 +168,8 @@ html_theme_options = {
 "show_prev_next": True,
 "footer_start": ["copyright", "sphinx-version"],
 "footer_end": ["theme-version"],
-"pygment_light_style": "a11y-high-contrast-light",
-"pygment_dark_style": "a11y-high-contrast-dark",
+"pygments_light_style": "a11y-high-contrast-light",
+"pygments_dark_style": "a11y-high-contrast-dark",
 "icon_links": [
         {
             "name": "Discussion group on Google Groups",
@@ -276,7 +305,10 @@ latex_documents = [
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['substitutions.rst', ]
+exclude_patterns = [
+    'substitutions.rst',
+    'regression/*.ipynb'  # exclude IPyNB files from the build
+]
 
 # numpydoc_show_class_members = False
 numpydoc_class_members_toctree = False
@@ -308,3 +340,26 @@ load. They may not be in sync with the latest PyWavelets release.
 Shall you encounter any issues, please feel free to report them on the
 [PyWavelets issue tracker](https://github.com/PyWavelets/pywt/issues)."""
 )
+
+jupyterlite_silence = True
+strip_tagged_cells = True
+
+# -- Options for MyST-NB and Markdown-based content --------------------------
+
+os.environ["PYDEVD_DISABLE_FILE_VALIDATION"] = "1"
+
+nb_execution_mode = 'auto'
+nb_execution_timeout = 60
+nb_execution_allow_errors = False
+
+nb_render_markdown_format = "myst"
+render_markdown_format = "myst"
+
+nb_remove_code_source = False
+nb_remove_code_outputs = False
+
+myst_enable_extensions = [
+    'amsmath',
+    'colon_fence',
+    'dollarmath',
+]
