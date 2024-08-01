@@ -45,7 +45,7 @@ jobs:
         with:
           python-version: "3.10"
       - name: Build the wheel
-        uses: pypa/cibuildwheel@147de6f4f7bba00e694321b7cf3a519441a444fa # 2.18.1
+        uses: pypa/cibuildwheel@7e5a838a63ac8128d71ab2dfd99e4634dd1bca09 # v2.19.2
         with:
           output-dir: dist
         env:
@@ -81,7 +81,7 @@ jobs:
         with:
           platforms: arm64
       - name: Build the wheel
-        uses: pypa/cibuildwheel@147de6f4f7bba00e694321b7cf3a519441a444fa # 2.18.1
+        uses: pypa/cibuildwheel@7e5a838a63ac8128d71ab2dfd99e4634dd1bca09 # v2.19.2
         with:
           output-dir: dist
         env:
@@ -121,7 +121,7 @@ jobs:
 
       - name: Build wheels for CPython (macOS) (x86_64)
         if: matrix.cibw_arch == 'x86_64'
-        uses: pypa/cibuildwheel@147de6f4f7bba00e694321b7cf3a519441a444fa # 2.18.1
+        uses: pypa/cibuildwheel@7e5a838a63ac8128d71ab2dfd99e4634dd1bca09 # v2.19.2
         with:
           output-dir: dist
         env:
@@ -130,7 +130,7 @@ jobs:
 
       - name: Build wheels for CPython (macOS) (arm64)
         if: matrix.cibw_arch == 'arm64'
-        uses: pypa/cibuildwheel@147de6f4f7bba00e694321b7cf3a519441a444fa # 2.18.1
+        uses: pypa/cibuildwheel@7e5a838a63ac8128d71ab2dfd99e4634dd1bca09 # v2.19.2
         with:
           output-dir: dist
         env:
@@ -175,7 +175,7 @@ jobs:
           architecture: x64
 
       - name: Build Windows wheels for CPython
-        uses: pypa/cibuildwheel@147de6f4f7bba00e694321b7cf3a519441a444fa # 2.18.1
+        uses: pypa/cibuildwheel@7e5a838a63ac8128d71ab2dfd99e4634dd1bca09 # v2.19.2
         with:
           output-dir: dist
         env:
