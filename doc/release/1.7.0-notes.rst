@@ -1,0 +1,62 @@
+==============================
+PyWavelets 1.7.0 Release Notes
+==============================
+
+We are very pleased to announce the release of PyWavelets 1.7.0. This release
+is a minor update to 1.6.x. It adds support for Python 3.13, including for
+free-threaded CPython. The supported NumPy and Cython versions are unchanged
+from 1.6.x.
+
+Note that building from source with free-threaded CPython requires a recent
+development version of Cython (>=3.1.0a0).
+
+Other noteworthy improvements:
+
+- Most examples in the documentation are now interactive, powered by
+  JupyterLite and Pyodide.
+- The ``musllinux`` wheels were upgraded from ``musllinux_1_1`` to
+  ``musllinux_1_2`` (for both x86-64 and aarch64).
+
+
+Authors
+=======
+
+* Evgeni Burovski +
+* Ralf Gommers
+* Agriya Khetarpal
+* Jarrod Millman
+* Edgar Andrés Margffoy Tuay +
+
+A total of 5 people contributed to this release.
+People with a "+" by their names contributed a patch for the first time.
+This list of names is automatically generated, and may not be fully complete.
+
+
+Issues closed for v1.7.0
+------------------------
+
+* `#742 <https://github.com/PyWavelets/pywt/issues/742>`__: Start building WASM wheels against newer Pyodide (version 0.26.0)
+
+
+Pull requests for v1.7.0
+------------------------
+
+* `#702 <https://github.com/PyWavelets/pywt/pull/702>`__: BLD: Test editable installations for PyWavelets in CI
+* `#722 <https://github.com/PyWavelets/pywt/pull/722>`__: Drop support for older dependencies (see SPEC 0)
+* `#726 <https://github.com/PyWavelets/pywt/pull/726>`__: MAINT: set version to 1.7.0.dev0
+* `#734 <https://github.com/PyWavelets/pywt/pull/734>`__: DOC: Fix incorrect indentations for a few interactive examples
+* `#737 <https://github.com/PyWavelets/pywt/pull/737>`__: DOC, DEP: Remove custom \`:button_text\` directive option, bump...
+* `#739 <https://github.com/PyWavelets/pywt/pull/739>`__: DEP: Remove \`docutils\` upper-pin, bump \`sphinx\`
+* `#743 <https://github.com/PyWavelets/pywt/pull/743>`__: FIX, CI: Temporarily disable \`pytest\`'s caching in Pyodide...
+* `#744 <https://github.com/PyWavelets/pywt/pull/744>`__: CI, BLD: Use \`cibuildwheel\` to build and test Pyodide/WASM...
+* `#745 <https://github.com/PyWavelets/pywt/pull/745>`__: Bump the github-actions group with 2 updates
+* `#747 <https://github.com/PyWavelets/pywt/pull/747>`__: Use \`scipy-doctest\` instead of \`refguide-check\`
+* `#748 <https://github.com/PyWavelets/pywt/pull/748>`__: DOC: easy_install is no longer a thing
+* `#753 <https://github.com/PyWavelets/pywt/pull/753>`__: CI: Add CI to test on free-threaded Python
+* `#756 <https://github.com/PyWavelets/pywt/pull/756>`__: CI: Add CI to release nightly wheels against free-threaded Python...
+* `#757 <https://github.com/PyWavelets/pywt/pull/757>`__: CI: add macOS nightly wheels for free-threaded CPython
+* `#759 <https://github.com/PyWavelets/pywt/pull/759>`__: Bump softprops/action-gh-release from 2.0.5 to 2.0.6 in the github-actions...
+* `#761 <https://github.com/PyWavelets/pywt/pull/761>`__: BLD: mark extension modules as compatible to run without the...
+* `#762 <https://github.com/PyWavelets/pywt/pull/762>`__: BLD: fix a few install tags for generated .py files
+* `#763 <https://github.com/PyWavelets/pywt/pull/763>`__: Bump the github-actions group with 4 updates
+* `#764 <https://github.com/PyWavelets/pywt/pull/764>`__: BLD/CI: support Python 3.13 (cp313/cp313t) in pyproject.toml...
