@@ -67,7 +67,7 @@ jobs:
           CIBW_MANYLINUX_X86_64_IMAGE: manylinux2014
           CIBW_MUSLLINUX_X86_64_IMAGE: musllinux_1_2
           CIBW_FREE_THREADED_SUPPORT: True
-      - uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b # v4.3.4
+      - uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
         with:
           name: wheels_linux_${{ matrix.cibw_arch }}_${{ matrix.cibw_python }}
           path: ./dist/*.whl
@@ -112,7 +112,7 @@ jobs:
           CIBW_ARCHS_LINUX: ${{ matrix.cibw_arch }}
           CIBW_MANYLINUX_AARCH64_IMAGE: manylinux2014
           CIBW_MUSLLINUX_AARCH64_IMAGE: musllinux_1_2
-      - uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b # v4.3.4
+      - uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
         with:
           name: wheels_linux_${{ matrix.cibw_arch }}_${{ matrix.cibw_python }}
           path: ./dist/*.whl
@@ -176,7 +176,7 @@ jobs:
           CIBW_ARCHS_MACOS: ${{ matrix.cibw_arch }}
           CIBW_FREE_THREADED_SUPPORT: True
 
-      - uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b # v4.3.4
+      - uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
         with:
           name: wheels_macos_${{ matrix.cibw_arch }}_${{ matrix.cibw_python }}
           path: ./dist/*.whl
@@ -221,7 +221,7 @@ jobs:
           CIBW_BUILD: ${{ matrix.cibw_python }}-*
           CIBW_ARCHS_WINDOWS: ${{ matrix.cibw_arch }}
 
-      - uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b # v4.3.4
+      - uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
         with:
           name: wheels_windows_${{ matrix.cibw_arch }}_${{ matrix.cibw_python }}
           path: ./dist/*.whl
