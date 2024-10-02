@@ -34,7 +34,8 @@ except ImportError:
         return 2**ceil(np.log2(n))
 
 
-def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1):
+def cwt(data, scales, wavelet, sampling_period=1., method='conv', 
+        precision=12, axis=-1):
     """
     cwt(data, scales, wavelet)
 
@@ -67,6 +68,11 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1):
         The ``fft`` method is ``O(N * log2(N))`` with
         ``N = len(scale) + len(data) - 1``. It is well suited for large size
         signals but slightly slower than ``conv`` on small ones.
+    precision: int, optional
+        Length of wavelet (2 ** precision) used to compute the CWT. Greater
+        will increase resolution, especially for higher scales, but will
+        compute a bit slower. Too low will distort coefficients and their
+        norms, with a zipper-like effect; recommended >= 12.
     axis: int, optional
         Axis over which to compute the CWT. If not given, the last axis is
         used.
@@ -125,7 +131,7 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1):
 
     dt_out = dt_cplx if wavelet.complex_cwt else dt
     out = np.empty((np.size(scales),) + data.shape, dtype=dt_out)
-    precision = 10
+
     int_psi, x = integrate_wavelet(wavelet, precision=precision)
     int_psi = np.conj(int_psi) if wavelet.complex_cwt else int_psi
 
