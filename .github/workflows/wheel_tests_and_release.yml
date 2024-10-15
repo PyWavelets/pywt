@@ -46,7 +46,7 @@ jobs:
           python-version: "3.10"
 
       - name: Install build deps; set CIBW environment variables
-        if: ${{ matrix.cibw_python }} == "cp313" || ${{ matrix.cibw_python }} == "cp313t"
+        if: ${{ matrix.cibw_python }} == "cp313t"
         run: |
           PYPI_URL="https://pypi.anaconda.org/scientific-python-nightly-wheels/simple"
           CIBW_DEPS="pip install --upgrade pip build &&\
@@ -146,7 +146,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install build deps; set CIBW environment variables
-        if: ${{ matrix.cibw_python }} == "cp313" || ${{ matrix.cibw_python }} == "cp313t"
+        if: ${{ matrix.cibw_python }} == "cp313t"
         run: |
           PYPI_URL="https://pypi.anaconda.org/scientific-python-nightly-wheels/simple"
           CIBW_DEPS="pip install --upgrade pip build &&\
