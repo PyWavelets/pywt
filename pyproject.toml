@@ -23,9 +23,11 @@ requires = [
 [project]
 name = "PyWavelets"
 version = "1.9.0.dev0"
-# TODO: add `license-files` once PEP 639 is accepted (see meson-python#88)
-#       at that point, no longer include them in `py3.install_sources()`
-license = {file = "LICENSE"}
+license = "MIT and BSD-3-Clause"
+license-files = [
+    "LICENSE",
+    "licenses_bundled/LICENSE_*",
+]
 maintainers = [
     {name = "The PyWavelets Developers", email = "pywavelets@googlegroups.com"}
 ]
@@ -38,7 +40,6 @@ classifiers = [
     "Intended Audience :: Developers",
     "Intended Audience :: Education",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: C",
     "Programming Language :: Python",
