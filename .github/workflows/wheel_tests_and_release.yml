@@ -49,9 +49,8 @@ jobs:
         if: ${{ matrix.cibw_python }} == "cp313t"
         run: |
           PYPI_URL="https://pypi.anaconda.org/scientific-python-nightly-wheels/simple"
-          CIBW_DEPS="pip install --upgrade pip build &&\
-                     pip install --pre -i $PYPI_URL cython numpy scipy &&\
-                     pip install pytest meson-python ninja"
+          CIBW_DEPS="pip install --pre -i $PYPI_URL cython scipy &&\
+                     pip install numpy pytest meson-python ninja"
           NO_BUILD_ISOLATION="pip; args: --no-build-isolation"
           echo "CIBW_BEFORE_BUILD=$CIBW_DEPS" >> "$GITHUB_ENV"
           echo "CIBW_BEFORE_TEST=$CIBW_DEPS" >> "$GITHUB_ENV"
@@ -94,14 +93,6 @@ jobs:
         uses: docker/setup-qemu-action@v3
         with:
           platforms: arm64
-
-      - name: Install test dep; set CIBW environment variables
-        # Can be removed once numpy 2.1.0 is released
-        if: ${{ matrix.cibw_python }} == "cp313"
-        run: |
-          PYPI_URL="https://pypi.anaconda.org/scientific-python-nightly-wheels/simple"
-          CIBW_DEPS="pip install --pre -i $PYPI_URL numpy"
-          echo "CIBW_BEFORE_TEST=$CIBW_DEPS" >> "$GITHUB_ENV"
 
       - name: Build the wheel
         uses: pypa/cibuildwheel@7940a4c0e76eb2030e473a5f864f291f63ee879b # v2.21.3
@@ -149,9 +140,8 @@ jobs:
         if: ${{ matrix.cibw_python }} == "cp313t"
         run: |
           PYPI_URL="https://pypi.anaconda.org/scientific-python-nightly-wheels/simple"
-          CIBW_DEPS="pip install --upgrade pip build &&\
-                     pip install --pre -i $PYPI_URL cython numpy scipy &&\
-                     pip install pytest meson-python ninja"
+          CIBW_DEPS="pip install --pre -i $PYPI_URL cython scipy &&\
+                     pip install numpy pytest meson-python ninja"
           NO_BUILD_ISOLATION="pip; args: --no-build-isolation"
           echo "CIBW_BEFORE_BUILD=$CIBW_DEPS" >> "$GITHUB_ENV"
           echo "CIBW_BEFORE_TEST=$CIBW_DEPS" >> "$GITHUB_ENV"
@@ -218,8 +208,7 @@ jobs:
         shell: bash -el {0}
         run: |
           PYPI_URL="https://pypi.anaconda.org/scientific-python-nightly-wheels/simple"
-          CIBW_DEPS="pip install --upgrade pip build &&\
-                     pip install --pre -i $PYPI_URL cython numpy &&\
+          CIBW_DEPS="pip install --pre -i $PYPI_URL cython numpy &&\
                      pip install pytest meson-python ninja"
           NO_BUILD_ISOLATION="pip; args: --no-build-isolation"
           echo "CIBW_BEFORE_BUILD=$CIBW_DEPS" >> "$GITHUB_ENV"
