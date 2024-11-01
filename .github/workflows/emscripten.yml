@@ -37,7 +37,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build and test PyWavelets
-        uses: pypa/cibuildwheel@d4a2945fcc8d13f20a1b99d461b8e844d5fc6e23 # v2.21.1
+        uses: pypa/cibuildwheel@7940a4c0e76eb2030e473a5f864f291f63ee879b # v2.21.3
         env:
           CIBW_PLATFORM: pyodide
           CIBW_TEST_REQUIRES: pytest matplotlib
