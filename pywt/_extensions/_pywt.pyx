@@ -714,7 +714,7 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
                     msg = (
                         "Wavelets from the family {0}, without parameters "
                         "specified in the name are deprecated. The name "
-                        "should follow the format {0}B-C, where B and C are floats"
+                        "should follow the format {0}B-C, where B and C are floats "
                         "representing the bandwidth frequency and center "
                         "frequency, respectively (example, for backward "
                         "compatibility: {0} = {0}0.5-1.0)."
@@ -723,7 +723,7 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
                     msg = (
                         "Wavelets from the family {0}, without parameters "
                         "specified in the name are deprecated. The name "
-                        "should follow the format {0}B-C, where B and C are floats"
+                        "should follow the format {0}B-C, where B and C are floats "
                         "representing the bandwidth frequency and center "
                         "frequency, respectively (example, for backward "
                         "compatibility: {0} = {0}1.0-0.5)."
