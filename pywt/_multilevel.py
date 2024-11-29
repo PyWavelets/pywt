@@ -402,7 +402,7 @@ def wavedecn(data, wavelet, mode='symmetric', level=None, axes=None):
     >>> # Levels:
     >>> len(coeffs)-1
     2
-    >>> waverecn(coeffs, 'db1')  # doctest: +NORMALIZE_WHITESPACE
+    >>> waverecn(coeffs, 'db1')
     array([[[ 1.,  1.,  1.,  1.],
             [ 1.,  1.,  1.,  1.],
             [ 1.,  1.,  1.,  1.],
@@ -496,7 +496,7 @@ def waverecn(coeffs, wavelet, mode='symmetric', axes=None):
     >>> # Levels:
     >>> len(coeffs)-1
     2
-    >>> waverecn(coeffs, 'db1')  # doctest: +NORMALIZE_WHITESPACE
+    >>> waverecn(coeffs, 'db1')
     array([[[ 1.,  1.,  1.,  1.],
             [ 1.,  1.,  1.,  1.],
             [ 1.,  1.,  1.,  1.],
@@ -1415,6 +1415,7 @@ def fswavedecn(data, wavelet, mode='symmetric', levels=None, axes=None):
 
     Examples
     --------
+    >>> import numpy as np
     >>> from pywt import fswavedecn
     >>> fs_result = fswavedecn(np.ones((32, 32)), 'sym2', levels=(1, 3))
     >>> print(fs_result.detail_keys())

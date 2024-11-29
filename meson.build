@@ -1,13 +1,13 @@
 project(
   'PyWavelets',
   'c', 'cython',
-  version: '1.7.0.dev0',
+  version: '1.8.0.dev0',
   license: 'MIT',
   meson_version: '>= 1.1.0',
   default_options: [
     'buildtype=debugoptimized',
     'b_ndebug=if-release',
-    'c_std=c99',
+    'c_std=c17',
   ],
 )
 

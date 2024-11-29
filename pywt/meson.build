@@ -30,6 +30,7 @@ generate_version = custom_target(
   input: '../util/version_utils.py',
   command: [py, '@INPUT@', '--source-root', '@SOURCE_ROOT@'],
   install_dir: py.get_install_dir() / 'pywt',
+  install_tag: 'python-runtime',
 )
 
 cc = meson.get_compiler('c')
@@ -51,7 +52,8 @@ _c99_config = configure_file(
   output: '_c99_config.py',
   configuration: cdata,
   install: true,
-  install_dir: py.get_install_dir() / 'pywt'
+  install_dir: py.get_install_dir() / 'pywt',
+  install_tag: 'python-runtime',
 )
 
 install_subdir('data', install_dir: py.get_install_dir() / 'pywt')
