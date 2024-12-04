@@ -42,7 +42,7 @@ ax2.specgram(data, NFFT=64, noverlap=32, Fs=512, cmap=cmap,
              interpolation='bilinear')
 ax2.set_title("Spectrogram of signal")
 ax3 = fig2.add_subplot(212)
-ax3.imshow(values, origin='lower', extent=[0, 1, 0,  len(values)], 
+ax3.imshow(values, origin='lower', extent=[0, 1, 0,  len(values)],
            interpolation='nearest', aspect='auto')
 ax3.set_yticks(np.arange(0.5, len(labels) + 0.5), labels)
 ax3.set_title("Wavelet packet coefficients")
