@@ -94,3 +94,4 @@ Environments = [
     'spin.cmds.meson.ipython',
     'spin.cmds.meson.python',
 ]
+Documentation = ["spin.cmds.meson.docs"]

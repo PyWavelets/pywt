@@ -16,6 +16,8 @@ import importlib.metadata
 import jinja2.filters
 import numpy as np
 
+import pywt
+
 # FIXME: doctests need the str/repr formatting used in Numpy < 1.14.
 # Should this be removed or updated?
 try:
@@ -69,7 +71,7 @@ copyright = f'2006-{datetime.date.today().year}, The PyWavelets Developers'
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
 
-version = importlib.metadata.version('pywavelets')
+version = pywt.__version__
 release = version
 
 print(f"PyWavelets (VERSION {version})")
