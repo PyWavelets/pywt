@@ -705,17 +705,28 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
                     msg = (
                         "Wavelets of family {0}, without parameters "
                         "specified in the name are deprecated.  The name "
-                        "should take the form {0}M-B-C where M is the spline "
+                        "should follow the format {0}M-B-C where M is the spline "
                         "order and B, C are floats representing the bandwidth "
                         "frequency and center frequency, respectively "
-                        "(example: {0}1-1.5-1.0).").format(base_name)
+                        "(example, for backward compatibility: "
+                        "{0} = {0}2-1.0-0.5).").format(base_name)
+                elif base_name == 'shan':
+                    msg = (
+                        "Wavelets from the family {0}, without parameters "
+                        "specified in the name are deprecated. The name "
+                        "should follow the format {0}B-C, where B and C are floats "
+                        "representing the bandwidth frequency and center "
+                        "frequency, respectively (example, for backward "
+                        "compatibility: {0} = {0}0.5-1.0)."
+                        ).format(base_name)
                 else:
                     msg = (
                         "Wavelets from the family {0}, without parameters "
                         "specified in the name are deprecated. The name "
-                        "should takethe form {0}B-C where B and C are floats "
+                        "should follow the format {0}B-C, where B and C are floats "
                         "representing the bandwidth frequency and center "
-                        "frequency, respectively (example: {0}1.5-1.0)."
+                        "frequency, respectively (example, for backward "
+                        "compatibility: {0} = {0}1.0-0.5)."
                         ).format(base_name)
                 warnings.warn(msg, FutureWarning)
         else:
