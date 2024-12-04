@@ -22,7 +22,7 @@ requires = [
 
 [project]
 name = "PyWavelets"
-version = "1.8.0.dev0"
+version = "1.9.0.dev0"
 # TODO: add `license-files` once PEP 639 is accepted (see meson-python#88)
 #       at that point, no longer include them in `py3.install_sources()`
 license = {file = "LICENSE"}
@@ -94,3 +94,4 @@ Environments = [
     'spin.cmds.meson.ipython',
     'spin.cmds.meson.python',
 ]
+Documentation = ["spin.cmds.meson.docs"]

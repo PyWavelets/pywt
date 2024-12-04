@@ -1,0 +1,39 @@
+==============================
+PyWavelets 1.8.0 Release Notes
+==============================
+
+We are very pleased to announce the release of PyWavelets 1.8.0. This release
+is a minor update to 1.7.x. It adds support for free-threaded Python 3.13 on
+Windows. The supported Python, NumPy and Cython versions are unchanged from
+1.7.x.
+
+Note that building from source with free-threaded CPython requires a recent
+development version of Cython (>=3.1.0a0).
+
+
+Authors
+=======
+
+* Ralf Gommers
+* Marco Meyer-Conde +
+* Omer Sayli +
+
+A total of 3 people contributed to this release.
+People with a "+" by their names contributed a patch for the first time.
+
+
+Issues closed for v1.8.0
+------------------------
+
+* `#780 <https://github.com/PyWavelets/pywt/issues/780>`__: Pip install PyWavelets does not work with GIL disabled version...
+
+
+Pull requests for v1.8.0
+------------------------
+
+* `#766 <https://github.com/PyWavelets/pywt/pull/766>`__: Bump actions/upload-artifact from 4.3.4 to 4.4.0 in the github-actions...
+* `#769 <https://github.com/PyWavelets/pywt/pull/769>`__: DOC: improve figures in \`demo/wp_scalogram.py\`
+* `#771 <https://github.com/PyWavelets/pywt/pull/771>`__: CI: build free-threaded Windows wheels
+* `#775 <https://github.com/PyWavelets/pywt/pull/775>`__: CI: fix Windows wheels, clean up cp313/cp313t build config
+* `#778 <https://github.com/PyWavelets/pywt/pull/778>`__: DOC: highlighted deprecations with backward compatibility information
+* `#779 <https://github.com/PyWavelets/pywt/pull/779>`__: Bump the github-actions group with 2 updates
