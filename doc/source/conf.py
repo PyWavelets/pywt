@@ -11,11 +11,10 @@
 # serve to show the default.
 
 import datetime
-import importlib.metadata
 import os
+import re
 from pathlib import Path
 
-import jinja2.filters
 import numpy as np
 
 import pywt
@@ -40,6 +39,8 @@ def preprocess_notebooks(app: Sphinx, *args, **kwargs):
 
     print("Converting Markdown files to IPyNB...")
     for path in (HERE / "regression").glob("*.md"):
+        if path.match("regression/header.md"):
+            continue
         nb = jupytext.read(str(path))
         ipynb_path = path.with_suffix(".ipynb")
         with open(ipynb_path, "w") as f:
@@ -47,8 +48,47 @@ def preprocess_notebooks(app: Sphinx, *args, **kwargs):
             print(f"Converted {path} to {ipynb_path}")
 
 
+# Should match {{ parent_docname }} or {{parent_docname}}
+parent_docname_substitution_re = re.compile(r"{{\s*parent_docname\s*}}")
+
+def sub_parent_docname_in_header(
+    app: Sphinx, relative_path: Path, parent_docname: str, content: list[str]
+):
+    """Fill in the name of the document in the header.
+
+    When regression/header.md is read via the include directive, replace
+    {{ parent_docname }} with the name of the parent document that included
+    header.md.
+
+    Note: parent_docname does not include the file extension.
+
+    Here is a simplified example of how this works.
+
+    Contents of header.md:
+
+        {download}`Download {{ parent_docname }}.md <{{ parent_docname }}.md>`
+
+    Contents of foobar.md:
+
+        ```{include} header.md
+        ```
+
+    After this function and others are run...
+
+    Contents of foobar.md:
+
+        {download}`Download foobar.md <foobar.md>`
+    """
+    if not relative_path.match("regression/header.md"):
+        return
+
+    for i, value in enumerate(content):
+        content[i] = re.sub(parent_docname_substitution_re, parent_docname, value)
+
+
 def setup(app):
     app.connect("config-inited", preprocess_notebooks)
+    app.connect("include-read", sub_parent_docname_in_header)
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -309,6 +349,7 @@ latex_documents = [
 # directories to ignore when looking for source files.
 exclude_patterns = [
     'substitutions.rst',
+    'regression/header.md',
     'regression/*.ipynb'  # exclude IPyNB files from the build
 ]
 
