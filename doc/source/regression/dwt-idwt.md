@@ -154,10 +154,21 @@ Remember that only one argument at a time can be `None`:
 
 ```{code-cell}
 ---
-tags: [raises-exception]
+tags: [raises-exception, remove-output]
 ---
 print(pywt.idwt(None, None, 'db2', 'symmetric'))
 ```
+
++++ {"tags": ["jupyterlite_sphinx_strip"]}
+
+```{code-block} python
+:class: pywt-handcoded-cell-output
+Traceback (most recent call last):
+...
+ValueError: At least one coefficient parameter must be specified.
+```
+
++++
 
 ### Coefficients data size in `pywt.idwt`
 
@@ -166,10 +177,21 @@ must have the same size.
 
 ```{code-cell}
 ---
-tags: [raises-exception]
+tags: [raises-exception, remove-output]
 ---
 print(pywt.idwt([1, 2, 3, 4, 5], [1, 2, 3, 4], 'db2', 'symmetric'))
 ```
+
++++ {"tags": ["jupyterlite_sphinx_strip"]}
+
+```{code-block} python
+:class: pywt-handcoded-cell-output
+Traceback (most recent call last):
+...
+ValueError: Coefficients arrays must have the same size.
+```
+
++++
 
 Not every coefficient array can be used in `idwt`. In the
 following example the `idwt` will fail because the input arrays are
@@ -179,10 +201,21 @@ mode is `4`, not `3`:
 
 ```{code-cell}
 ---
-tags: [raises-exception]
+tags: [raises-exception, remove-output]
 ---
 pywt.idwt([1,2,4], [4,1,3], 'db4', 'symmetric')
 ```
+
++++ {"tags": ["jupyterlite_sphinx_strip"]}
+
+```{code-block} python
+:class: pywt-handcoded-cell-output
+Traceback (most recent call last):
+...
+ValueError: Invalid coefficient arrays length for specified wavelet. Wavelet and mode must be the same as used for decomposition.
+```
+
++++
 
 ```{code-cell}
 int(pywt.dwt_coeff_len(1, pywt.Wavelet('db4').dec_len, 'symmetric'))

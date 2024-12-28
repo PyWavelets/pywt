@@ -126,19 +126,42 @@ Oops, we have reached the maximum level of decomposition and received an `IndexE
 
 ```{code-cell}
 ---
-tags: [raises-exception]
+tags: [raises-exception, remove-output]
 ---
 print(wp['aaaa'].data)
 ```
+
++++ {"tags": ["jupyterlite_sphinx_strip"]}
+
+```{code-block} python
+:class: pywt-handcoded-cell-output
+Traceback (most recent call last):
+...
+IndexError: Path length is out of range.
+```
+
++++
+
 
 Now, try an invalid path:
 
 ```{code-cell}
 ---
-tags: [raises-exception]
+tags: [raises-exception, remove-output]
 ---
 print(wp['ac'])
 ```
+
++++ {"tags": ["jupyterlite_sphinx_strip"]}
+
+```{code-block} python
+:class: pywt-handcoded-cell-output
+Traceback (most recent call last):
+...
+ValueError: Subnode name must be in ['a', 'd'], not 'c'.
+```
+
++++
 
 which just yielded a `ValueError`.
 

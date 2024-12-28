@@ -17,42 +17,41 @@ div.cell div.cell_input {
 /*
 Undo border radius on code cells (this styling actually comes from Sphinx, not MyST-NB)
 */
-
-div.cell pre {
-  border-radius: 0;
-}
-div.cell div.highlight {
+div.cell pre,
+div.cell div.highlight,
+div.pywt-handcoded-cell-output,
+div.pywt-handcoded-cell-output pre,
+div.pywt-handcoded-cell-output div.highlight {
   border-radius: 0;
 }
 
 /*
 Add border to output container, remove background color.
 */
-div.cell div.cell_output div.output {
+div.cell div.cell_output,
+div.pywt-handcoded-cell-output {
   background-color: var(--pst-color-background);
   border-radius: 0;
   border-color: var(--pst-color-border-muted);
+  border-style: solid;
+  border-width: 1px;
   border-top-style: double;
   border-top-width: medium;
 }
-
-/*
-By default, all code cells have a muted background.
-This removes that background.
-
-By adding a border above and removing the background color here,
-we create outputs that look outlined.
-*/
-div.cell div.cell_output pre {
+div.cell div.cell_output div.output,
+div.cell div.cell_output pre,
+div.pywt-handcoded-cell-output pre {
   background-color: transparent;
+  border: none;
 }
 
 /*
 Remove extra whitespace
 */
-div.cell div.cell_output {
-  margin-top: 0;
-}
+div.cell div.cell_output,
 div.cell div.cell_output > :first-child {
   margin-top: 0;
+}
+div.pywt-handcoded-cell-output {
+  margin-top: -1em;
 }

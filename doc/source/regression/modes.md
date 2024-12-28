@@ -49,9 +49,16 @@ Therefore, an invalid mode name should raise a `ValueError`:
 
 ```{code-cell}
 ---
-tags: [raises-exception]
+tags: [raises-exception, remove-output]
 ---
 pywt.dwt([1,2,3,4], 'db2', 'invalid')
+```
+
+```{code-block} python
+:class: pywt-handcoded-cell-output
+Traceback (most recent call last):
+...
+ValueError: Unknown mode name 'invalid'.
 ```
 
 You can also refer to modes via the attributes of the `Modes` class:

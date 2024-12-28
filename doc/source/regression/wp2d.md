@@ -147,10 +147,21 @@ print(wp['aaa'].data)
 
 ```{code-cell}
 ---
-tags: [raises-exception]
+tags: [raises-exception, remove-output]
 ---
 print(wp['aaaa'].data)
 ```
+
++++ {"tags": ["jupyterlite_sphinx_strip"]}
+
+```{code-block} python
+:class: pywt-handcoded-cell-output
+Traceback (most recent call last):
+...
+IndexError: Path length is out of range.
+```
+
++++
 
 Oops, we have reached the maximum level of decomposition for the `'aaaa'` path,
 which, by the way, was:
@@ -163,10 +174,21 @@ Now, try an invalid path:
 
 ```{code-cell}
 ---
-tags: [raises-exception]
+tags: [raises-exception, remove-output]
 ---
 print(wp['f'])
 ```
+
++++ {"tags": ["jupyterlite_sphinx_strip"]}
+
+```{code-block} python
+:class: pywt-handcoded-cell-output
+Traceback (most recent call last):
+...
+ValueError: Subnode name must be in ['a', 'h', 'v', 'd'], not 'f'.
+```
+
++++
 
 ### Accessing Node2D's attributes
 
