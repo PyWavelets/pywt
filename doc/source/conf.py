@@ -42,6 +42,13 @@ def preprocess_notebooks(app: Sphinx, *args, **kwargs):
         if path.match("regression/header.md"):
             continue
         nb = jupytext.read(str(path))
+
+        # In .md to .ipynd conversion, do not include any cells that have the
+        # jupyterlite_sphinx_strip tag
+        nb.cells = [
+            cell for cell in nb.cells if "jupyterlite_sphinx_strip" not in cell.metadata.get("tags", [])
+        ]
+
         ipynb_path = path.with_suffix(".ipynb")
         with open(ipynb_path, "w") as f:
             nbformat.write(nb, f)
