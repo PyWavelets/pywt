@@ -39,7 +39,7 @@ def preprocess_notebooks(app: Sphinx, *args, **kwargs):
 
     print("Converting Markdown files to IPyNB...")
     for path in (HERE / "regression").glob("*.md"):
-        if path.match("regression/header.md"):
+        if any(path.match(pattern) for pattern in exclude_patterns):
             continue
         nb = jupytext.read(str(path))
 
@@ -358,6 +358,7 @@ latex_documents = [
 exclude_patterns = [
     'substitutions.rst',
     'regression/header.md',
+    'regression/README.md',
     'regression/*.ipynb'  # exclude IPyNB files from the build
 ]
 
