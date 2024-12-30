@@ -9,9 +9,6 @@ kernelspec:
   display_name: Python 3 (ipykernel)
   language: python
   name: python3
-mystnb:
-  execution_allow_errors: true
-  execution_show_tb: true
 ---
 
 +++ {"tags": ["jupyterlite_sphinx_strip"]}

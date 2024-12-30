@@ -400,13 +400,12 @@ strip_tagged_cells = True
 
 os.environ["PYDEVD_DISABLE_FILE_VALIDATION"] = "1"
 
+# https://myst-nb.readthedocs.io/en/latest/configuration.html
 nb_execution_mode = 'auto'
 nb_execution_timeout = 60
 nb_execution_allow_errors = False
-
+nb_execution_raise_on_error = True
 nb_render_markdown_format = "myst"
-render_markdown_format = "myst"
-
 nb_remove_code_source = False
 nb_remove_code_outputs = False
 
