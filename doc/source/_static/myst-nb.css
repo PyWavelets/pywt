@@ -46,12 +46,15 @@ div.pywt-handcoded-cell-output pre {
 }
 
 /*
-Remove extra whitespace
+Bring output up against input (remove extra whitespace)
 */
 div.cell div.cell_output,
 div.cell div.cell_output > :first-child {
   margin-top: 0;
 }
-div.pywt-handcoded-cell-output {
-  margin-top: -1em;
+div.cell:has(+ div.pywt-handcoded-cell-output) {
+  margin-bottom: 0;
+}
+div.cell + div.pywt-handcoded-cell-output {
+  margin-top: 0;
 }
