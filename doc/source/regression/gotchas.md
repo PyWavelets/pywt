@@ -16,8 +16,6 @@ kernelspec:
 ```{include} header.md
 ```
 
-+++
-
 # Gotchas
 
 PyWavelets utilizes `NumPy` under the hood. That's why handling the data

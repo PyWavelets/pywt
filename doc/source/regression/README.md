@@ -52,5 +52,3 @@ Example markdown:
     ...
     ZeroDivisionError: division by zero
     ```
-
-    +++

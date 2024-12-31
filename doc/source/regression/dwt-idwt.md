@@ -16,13 +16,11 @@ kernelspec:
 ```{include} header.md
 ```
 
-+++
-
 # DWT and IDWT
 
 ## Discrete Wavelet Transform
 
-Let's do a Discrete Wavelet Transform of some sample data `x`
+Let's do a [Discrete Wavelet Transform](ref-dwt) of some sample data `x`
 using the `db2` wavelet. It's simple:
 
 ```{code-cell}
@@ -44,7 +42,7 @@ cD
 
 ## Inverse Discrete Wavelet Transform
 
-Now, let's do the opposite operation: an Inverse Discrete Wavelet Transform:
+Now let's do the opposite operation, an [Inverse Discrete Wavelet Transform](ref-idwt):
 
 ```{code-cell}
 pywt.idwt(cA, cD, 'db2')
@@ -54,7 +52,7 @@ Voilà! That's it!
 
 ## More examples
 
-Now, let's experiment with `dwt` some more. For example, let's pass a
+Now let's experiment with `dwt()` some more. For example, let's pass a
 `Wavelet` object instead of the wavelet name and specify the signal
 extension mode (the default is `Modes.symmetric`) for the border effect
 handling:
@@ -76,7 +74,7 @@ Note that the output coefficients arrays' length depends not only on the
 input data length but also on the `Wavelet` type (particularly on its
 filters length `Wavelet.dec_len` that are used in the transformation).
 
-To find out what the size of the output data will be, use the `dwt_coeff_len`
+To find out what the size of the output data will be, use the `dwt_coeff_len()`
 function:
 
 ```{code-cell}
@@ -97,7 +95,7 @@ Looks fine. (And if you expected that the output length would be a half of the
 input data length, well, that's the trade-off that allows for the perfect
 reconstruction...).
 
-The third argument of the `dwt_coeff_len` function is the already mentioned signal
+The third argument of the `dwt_coeff_len()` function is the already mentioned signal
 extension mode (please refer to the PyWavelets' documentation for the `modes`
 description). Currently, there are six extension modes available under `Modes`:
 
@@ -165,8 +163,6 @@ Traceback (most recent call last):
 ValueError: At least one coefficient parameter must be specified.
 ```
 
-+++
-
 ### Coefficients data size in `pywt.idwt`
 
 When doing the `idwt` transform, usually the coefficient arrays
@@ -187,8 +183,6 @@ Traceback (most recent call last):
 ...
 ValueError: Coefficients arrays must have the same size.
 ```
-
-+++
 
 Not every coefficient array can be used in `idwt`. In the
 following example the `idwt` will fail because the input arrays are
@@ -211,8 +205,6 @@ Traceback (most recent call last):
 ...
 ValueError: Invalid coefficient arrays length for specified wavelet. Wavelet and mode must be the same as used for decomposition.
 ```
-
-+++
 
 ```{code-cell}
 int(pywt.dwt_coeff_len(1, pywt.Wavelet('db4').dec_len, 'symmetric'))

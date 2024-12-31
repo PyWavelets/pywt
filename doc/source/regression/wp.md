@@ -16,8 +16,6 @@ kernelspec:
 ```{include} header.md
 ```
 
-+++
-
 # Wavelet Packets
 
 ## `import pywt` and construct a helper function
@@ -26,7 +24,7 @@ kernelspec:
 import pywt
 ```
 
-This helper function that can format arrays in a consistent manner across
+This helper function can format arrays in a consistent manner across
 different systems. Please note that this function is just for the purpose of
 this example and is not part of the PyWavelets library, and it is not necessary
 or required to use it in your own code:
@@ -53,14 +51,12 @@ The input data and decomposition coefficients are stored in the
 
 ```{code-cell}
 print(wp.data)
-[1, 2, 3, 4, 5, 6, 7, 8]
 ```
 
-Nodes `Node` are identified by their paths, i.e., `Node.path`. For the root
+Nodes are identified by their paths, i.e., `Node.path`. For the root
 node, the path is `''` and the decomposition level is `0`.
 
 ```{code-cell}
-# Should return blank
 print(repr(wp.path))
 ```
 
@@ -90,9 +86,9 @@ First check what is the maximum level of decomposition:
 print(wp.maxlevel)
 ```
 
-and try accessing subnodes of the WP tree:
+and try accessing subnodes of the WP tree.
 
-- 1st level:
+1st level:
 
 ```{code-cell}
 print(wp['a'].data)
@@ -102,7 +98,7 @@ print(wp['a'].data)
 print(wp['a'].path)
 ```
 
-- 2nd level:
+2nd level:
 
 ```{code-cell}
 print(wp['aa'].data)
@@ -112,7 +108,7 @@ print(wp['aa'].data)
 print(wp['aa'].path)
 ```
 
-- 3rd level:
+3rd level:
 
 ```{code-cell}
 print(wp['aaa'].data)
@@ -140,9 +136,6 @@ Traceback (most recent call last):
 IndexError: Path length is out of range.
 ```
 
-+++
-
-
 Now, try an invalid path:
 
 ```{code-cell}
@@ -161,8 +154,6 @@ Traceback (most recent call last):
 ValueError: Subnode name must be in ['a', 'd'], not 'c'.
 ```
 
-+++
-
 which just yielded a `ValueError`.
 
 ### Accessing `Node`'s attributes
@@ -174,9 +165,9 @@ of the `Node` class (which in turn inherits from the `BaseNode` class).
 Tree nodes can be accessed using the `obj[x]` (`Node.__getitem__`)
 operator.
 
-Each tree node has a set of attributes: `Node.data`, `Node.path`,
-`Node.node_name`, `Node.parent`, `Node.level`,
-`Node.maxlevel` and `Node.mode`.
+Each tree node has a set of attributes: `data`, `path`,
+`node_name`, `parent`, `level`,
+`maxlevel` and `mode`.
 
 ```{code-cell}
 x = [1, 2, 3, 4, 5, 6, 7, 8]
@@ -230,7 +221,7 @@ or sorted based on the band frequency (`freq`):
 print([node.path for node in wp.get_level(3, 'freq')])
 ```
 
-Note that `WaveletPacket.get_level` also performs automatic decomposition
+Note that `WaveletPacket.get_level()` also performs automatic decomposition
 until it reaches the specified `level`.
 
 ## Reconstructing data from Wavelet Packets
@@ -240,7 +231,7 @@ x = [1, 2, 3, 4, 5, 6, 7, 8]
 wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='symmetric')
 ```
 
-Now, let's create a new instance of the `WaveletPacket` class and set its nodes
+Now create a new instance of the `WaveletPacket` class and set its nodes
 with some data.
 
 ```{code-cell}
@@ -362,7 +353,7 @@ x = [1, 2, 3, 4, 5, 6, 7, 8]
 wp = pywt.WaveletPacket(data=x, wavelet='db1', mode='symmetric')
 ```
 
-1. At first the wp's attribute `a` is `None`:
+At first the wp's attribute `a` is `None`:
 
 ```{code-cell}
 print(wp.a)
@@ -370,14 +361,14 @@ print(wp.a)
 
 **Remember that you should not rely on the attribute access.**
 
-2. At the first attempt to access the node, it is computed via the decomposition
-   of its parent node (which is the `wp` object itself).
+At the first attempt to access the node, it is computed via the decomposition
+of its parent node (which is the `wp` object itself).
 
 ```{code-cell}
 print(wp['a'])
 ```
 
-3. Now, `wp.a` is set to the newly created node:
+Now `wp.a` is set to the newly created node:
 
 ```{code-cell}
 print(wp.a)

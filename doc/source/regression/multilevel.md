@@ -16,8 +16,6 @@ kernelspec:
 ```{include} header.md
 ```
 
-+++
-
 # Multilevel DWT, IDWT and SWT
 
 ## Multilevel DWT decomposition

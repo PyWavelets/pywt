@@ -16,8 +16,6 @@ kernelspec:
 ```{include} header.md
 ```
 
-+++
-
 # 2D Wavelet Packets
 
 ## Import pywt
@@ -36,7 +34,7 @@ x = numpy.array([[1, 2, 3, 4, 5, 6, 7, 8]] * 8, 'd')
 print(x)
 ```
 
-Now create a 2D Wavelet Packet `pywt.WaveletPacket2D` object:
+Now create a 2D [Wavelet Packet](ref-wp) object:
 
 ```{code-cell}
 wp = pywt.WaveletPacket2D(data=x, wavelet='db1', mode='symmetric')
@@ -49,7 +47,7 @@ The input `data` and decomposition coefficients are stored in the
 print(wp.data)
 ```
 
-Nodes (the `Node2D>` class) are identified by paths. For the root node, the path is
+Nodes (the `Node2D` class) are identified by paths. For the root node, the path is
 `''` and the decomposition level is `0`.
 
 ```{code-cell}
@@ -161,8 +159,6 @@ Traceback (most recent call last):
 IndexError: Path length is out of range.
 ```
 
-+++
-
 Oops, we have reached the maximum level of decomposition for the `'aaaa'` path,
 which, by the way, was:
 
@@ -187,8 +183,6 @@ Traceback (most recent call last):
 ...
 ValueError: Subnode name must be in ['a', 'h', 'v', 'd'], not 'f'.
 ```
-
-+++
 
 ### Accessing Node2D's attributes
 
@@ -233,7 +227,7 @@ print(wp['av'].mode)
 We can get all nodes on the particular level using the
 `WaveletPacket2D.get_level` method:
 
-- 0 level - the root `wp` node:
+0 level - the root `wp` node:
 
 ```{code-cell}
 len(wp.get_level(0))
@@ -253,7 +247,7 @@ len(wp.get_level(1))
 print([node.path for node in wp.get_level(1)])
 ```
 
-- 2nd level of decomposition:
+2nd level of decomposition:
 
 ```{code-cell}
 len(wp.get_level(2))
@@ -268,7 +262,7 @@ for i, path in enumerate(paths):
         print(path, end=' ')
 ```
 
-- 3rd level of decomposition:
+3rd level of decomposition:
 
 ```{code-cell}
 print(len(wp.get_level(3)))
@@ -407,7 +401,7 @@ x = numpy.array([[1, 2, 3, 4, 5, 6, 7, 8]] * 8)
 wp = pywt.WaveletPacket2D(data=x, wavelet='db1', mode='symmetric')
 ```
 
-1. At first, the `wp`'s attribute `a` is `None`
+At first, the `wp`'s attribute `a` is `None`
 
 ```{code-cell}
 print(wp.a)
@@ -415,14 +409,14 @@ print(wp.a)
 
 **Remember that you should not rely on the attribute access.**
 
-2. During the first attempt to access the node it is computed
-   via decomposition of its parent node (the wp object itself).
+During the first attempt to access the node it is computed
+via decomposition of its parent node (the wp object itself).
 
 ```{code-cell}
 print(wp['a'])
 ```
 
-3. Now the `a` is set to the newly created node:
+Now the `a` is set to the newly created node:
 
 ```{code-cell}
 print(wp.a)
