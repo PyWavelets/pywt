@@ -18,7 +18,8 @@ div.cell div.cell_input::before {
 }
 
 div.cell div.cell_input {
-  border-left-color: var(--pst-color-border);
+  background-color: inherit;
+  border-color: var(--pst-color-border);
 }
 
 div.cell div.cell_output::before,
@@ -40,6 +41,8 @@ div.cell div.cell_output {
 
 div.cell div.cell_output div.output,
 div.pywt-handcoded-cell-output {
+  background-color: inherit;
+
   border-color: var(--pst-color-surface);
 
   border-radius: var(--mystnb-source-border-radius);
