@@ -4,7 +4,7 @@
 This page can also be run or downloaded as a Jupyter notebook.
 
 - Run in a new tab using JupyterLite[^what-is-lite]:
-  ```{jupyterlite} {{ parent_docname }}.ipynb
+  ```{notebooklite} {{ parent_docname }}.ipynb
   :new_tab: True
   ```
 - Download:
