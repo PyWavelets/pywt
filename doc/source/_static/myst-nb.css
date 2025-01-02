@@ -15,13 +15,15 @@ div.cell div.cell_input::before {
   border-top-left-radius: var(--mystnb-source-border-radius);
   border-top-right-radius: var(--mystnb-source-border-radius);
 
-  /* align with code below, this is the same padding applied <pre> by PyData Sphinx Theme */
+  /* Left-align with the code below.
+     This is the same padding applied <pre> by PyData Sphinx Theme */
   padding-left: 1rem;
 }
 
 div.cell div.cell_input {
   background-color: inherit;
   border-color: var(--pst-color-border);
+  border-left-width: 0.2rem;
 }
 
 div.cell div.cell_output::before,
@@ -35,12 +37,17 @@ div.pywt-handcoded-cell-output::before {
   border-top-left-radius: var(--mystnb-source-border-radius);
   border-top-right-radius: var(--mystnb-source-border-radius);
 
-  /* align with code below, this is the same padding applied <pre> by PyData Sphinx Theme */
+  /* Left-align with the code below.
+     This is the same padding applied <pre> by PyData Sphinx Theme */
   padding-left: 1rem;
 }
 
 div.cell div.cell_output {
   border-radius: 0;
+
+  /* Left-align the text in the output with the text in the input.
+     This value equals the border-left-width of the input cell */
+  margin-left: 0.2rem;
 }
 
 div.cell div.cell_output div.output,
