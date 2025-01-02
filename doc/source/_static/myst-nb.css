@@ -8,13 +8,15 @@ Sphinx Theme or Sphinx. And in some cases they do not override existing styling
 but add new styling. */
 
 div.cell div.cell_input::before {
-  content: "\00A0In:";
-  font-weight: 600;
+  content: "In";
 
   background-color: var(--pst-color-background);
 
   border-top-left-radius: var(--mystnb-source-border-radius);
   border-top-right-radius: var(--mystnb-source-border-radius);
+
+  /* align with code below, this is the same padding applied <pre> by PyData Sphinx Theme */
+  padding-left: 1rem;
 }
 
 div.cell div.cell_input {
@@ -24,8 +26,7 @@ div.cell div.cell_input {
 
 div.cell div.cell_output::before,
 div.pywt-handcoded-cell-output::before {
-  content: "\00A0Out:";
-  font-weight: 600;
+  content: "Out";
 
   display: block;
 
@@ -33,6 +34,9 @@ div.pywt-handcoded-cell-output::before {
   border-bottom: none;
   border-top-left-radius: var(--mystnb-source-border-radius);
   border-top-right-radius: var(--mystnb-source-border-radius);
+
+  /* align with code below, this is the same padding applied <pre> by PyData Sphinx Theme */
+  padding-left: 1rem;
 }
 
 div.cell div.cell_output {
