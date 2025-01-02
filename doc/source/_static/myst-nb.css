@@ -21,6 +21,7 @@ but add new styling. */
 
 .cell .cell_input::before {
   content: "In";
+  font-weight: var(--pst-font-weight-caption);
 
   /* Left-aligns the text in this box and the one that follows it */
   padding-left: var(--pywt-code-block-padding);
@@ -48,6 +49,8 @@ div.cell div.cell_input {
 .pywt-handcoded-cell-output::before {
   content: "Out";
   display: block;
+  font-weight: var(--pst-font-weight-caption);
+  border-bottom: var(--mystnb-source-border-width) solid var(--pst-color-border);
 
   /* Left-aligns the text in this box and the one that follows it */
   padding-left: var(--pywt-code-block-padding);
