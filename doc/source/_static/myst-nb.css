@@ -7,75 +7,73 @@ In some cases these rules override MyST-NB. In some cases they override PyData
 Sphinx Theme or Sphinx. And in some cases they do not override existing styling
 but add new styling. */
 
-div.cell div.cell_input::before {
-  content: "In";
+/* Set up a few variables for this stylesheet */
+.cell,
+.pywt-handcoded-cell-output {
+  --pywt-cell-input-border-left-width: .2rem;
 
-  background-color: var(--pst-color-background);
+  /* This matches the padding applied to <pre> elements by PyData Sphinx Theme */
+  --pywt-code-block-padding: 1rem;
 
-  border-top-left-radius: var(--mystnb-source-border-radius);
-  border-top-right-radius: var(--mystnb-source-border-radius);
-
-  /* Left-align with the code below.
-     This is the same padding applied <pre> by PyData Sphinx Theme */
-  padding-left: 1rem;
+  /* override mystnb */
+  --mystnb-source-border-radius: .25rem; /* match PyData Sphinx Theme */
 }
 
+.cell .cell_input::before {
+  content: "In";
+
+  /* Left-aligns the text in this box and the one that follows it */
+  padding-left: var(--pywt-code-block-padding);
+}
+
+/* Cannot use `.cell .cell_input` selector because the stylesheet from MyST-NB
+   uses `div.cell div.cell_input` and we want to override those rules */
 div.cell div.cell_input {
   background-color: inherit;
   border-color: var(--pst-color-border);
-  border-left-width: 0.2rem;
+  border-left-width: var(--pywt-cell-input-border-left-width);
+  background-clip: padding-box;
+  overflow: hidden;
 }
 
-div.cell div.cell_output::before,
-div.pywt-handcoded-cell-output::before {
-  content: "Out";
+.cell .cell_output,
+.pywt-handcoded-cell-output {
+  border: var(--mystnb-source-border-width) solid var(--pst-color-surface);
+  border-radius: var(--mystnb-source-border-radius);
+  background-clip: padding-box;
+  overflow: hidden;
+}
 
+.cell .cell_output::before,
+.pywt-handcoded-cell-output::before {
+  content: "Out";
   display: block;
 
-  border: thin solid var(--pst-color-surface);
-  border-bottom: none;
-  border-top-left-radius: var(--mystnb-source-border-radius);
-  border-top-right-radius: var(--mystnb-source-border-radius);
-
-  /* Left-align with the code below.
-     This is the same padding applied <pre> by PyData Sphinx Theme */
-  padding-left: 1rem;
+  /* Left-aligns the text in this box and the one that follows it */
+  padding-left: var(--pywt-code-block-padding);
 }
 
-div.cell div.cell_output {
-  border-radius: 0;
-
-  /* Left-align the text in the output with the text in the input.
-     This value equals the border-left-width of the input cell */
-  margin-left: 0.2rem;
-}
-
-div.cell div.cell_output div.output,
-div.pywt-handcoded-cell-output {
+.cell .cell_output .output {
   background-color: inherit;
-
-  border-color: var(--pst-color-surface);
-
-  border-radius: var(--mystnb-source-border-radius);
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-
+  border: none;
   margin-top: 0;
 }
 
-div.cell div[class*=highlight-],
-div.cell div.highlight,
+.cell .cell_output,
+/* must prefix the following selector with `div.` to override Sphinx margin rule on div[class*=highlight-] */
 div.pywt-handcoded-cell-output {
-  border-radius: var(--mystnb-source-border-radius);
+  /* Left-align the text in the output with the text in the input */
+  margin-left: calc(var(--pywt-cell-input-border-left-width) - var(--mystnb-source-border-width));
 }
 
-div.cell div.cell_input pre,
-div.cell div.cell_output pre {
-  border-radius: var(--mystnb-source-border-radius);
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
+.cell .cell_output .output,
+.cell .cell_input pre,
+.cell .cell_output pre,
+.pywt-handcoded-cell-output .highlight,
+.pywt-handcoded-cell-output pre {
+  border-radius: 0;
 }
 
-div.pywt-handcoded-cell-output pre {
-  border: none;
+.pywt-handcoded-cell-output pre {
+  border: none; /* MyST-NB sets border to none for <pre> tags inside div.cell */
 }
