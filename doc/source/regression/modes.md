@@ -13,32 +13,12 @@ kernelspec:
 
 +++ {"tags": ["jupyterlite_sphinx_strip"]}
 
-```{eval-rst}
-.. currentmodule:: pywt
-
-.. dropdown:: 🧑‍🔬 This notebook can be executed online. Click this section to try it out! ✨
-    :color: success
-
-    .. notebooklite:: modes.ipynb
-      :width: 100%
-      :height: 600px
-      :prompt: Open notebook
-
-.. dropdown:: Download this notebook
-    :color: info
-    :open:
-
-    Please use the following links to download this notebook in various formats:
-
-    1. :download:`Download IPyNB (IPython Notebook) <modes.ipynb>`
-    2. :download:`Download Markdown Notebook (Jupytext) <modes.md>`
+```{include} header.md
 ```
-
-+++
 
 # Signal Extension Modes
 
-Let's import `pywt`, first:
+Import `pywt` first:
 
 ```{code-cell}
 import pywt
@@ -57,19 +37,26 @@ def format_array(a):
     return numpy.array2string(a, precision=5, separator=' ', suppress_small=True)
 ```
 
-A list of available signal extension modes (`Modes`) is provided as follows:
+A list of available signal extension [modes](Modes):
 
 ```{code-cell}
 pywt.Modes.modes
 ```
 
-Therefore, an invalid mode name should raise a `ValueError`:
+An invalid mode name should raise a `ValueError`:
 
 ```{code-cell}
 ---
-tags: [raises-exception]
+tags: [raises-exception, remove-output]
 ---
 pywt.dwt([1,2,3,4], 'db2', 'invalid')
+```
+
+```{code-block} python
+:class: pywt-handcoded-cell-output
+Traceback (most recent call last):
+...
+ValueError: Unknown mode name 'invalid'.
 ```
 
 You can also refer to modes via the attributes of the `Modes` class:
@@ -82,7 +69,7 @@ for mode_name in ['zero', 'constant', 'symmetric', 'reflect', 'periodic', 'smoot
     print("Mode: %d (%s)" % (mode, mode_name))
 ```
 
-The default mode is symmetric, i.e., `Modes.symmetric`:
+The default mode is [symmetric](Modes.symmetric):
 
 ```{code-cell}
 cA, cD = pywt.dwt(x, 'db2')
@@ -97,13 +84,10 @@ cD
 pywt.idwt(cA, cD, 'db2')
 ```
 
-And using a keyword argument:
+Specify the mode using a keyword argument:
 
 ```{code-cell}
 cA, cD = pywt.dwt(x, 'db2', mode='symmetric')
-```
-
-```{code-cell}
 cA
 ```
 

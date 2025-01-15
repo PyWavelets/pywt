@@ -13,28 +13,8 @@ kernelspec:
 
 +++ {"tags": ["jupyterlite_sphinx_strip"]}
 
-```{eval-rst}
-.. currentmodule:: pywt
-
-.. dropdown:: 🧑‍🔬 This notebook can be executed online. Click this section to try it out! ✨
-    :color: success
-
-    .. notebooklite:: wavelet.ipynb
-      :width: 100%
-      :height: 600px
-      :prompt: Open notebook
-
-.. dropdown:: Download this notebook
-    :color: info
-    :open:
-
-    Please use the following links to download this notebook in various formats:
-
-    1. :download:`Download IPyNB (IPython Notebook) <wavelet.ipynb>`
-    2. :download:`Download Markdown Notebook (Jupytext) <wavelet.md>`
+```{include} header.md
 ```
-
-+++
 
 # The Wavelet object
 
@@ -91,8 +71,8 @@ print(w)
 
 But the most important bits of information are the wavelet filters coefficients,
 which are used in Discrete Wavelet Transform. These coefficients
-can be obtained via the `Wavelet.dec_lo`, `Wavelet.dec_hi`, `Wavelet.rec_lo`,
-and the `~Wavelet.rec_hi` attributes, which
+can be obtained via the `Wavelet.dec_lo`, `dec_hi`, `rec_lo`,
+and the `rec_hi` attributes, which
 correspond to lowpass & highpass decomposition filters, and lowpass &
 highpass reconstruction filters respectively:
 
@@ -101,7 +81,7 @@ def print_array(arr):
     print("[%s]" % ", ".join(["%.14f" % x for x in arr]))
 ```
 
-Another way to get the filters data is to use the `Wavelet.filter_bank`
+Another way to get the filters data is to use the `filter_bank`
 attribute, which returns all four filters in a tuple:
 
 ```{code-cell}
@@ -110,7 +90,7 @@ w.filter_bank == (w.dec_lo, w.dec_hi, w.rec_lo, w.rec_hi)
 
 Other properties of a `Wavelet` object are:
 
-1. `Wavelet.name`, `Wavelet.short_family_name`, and `Wavelet.family_name`:
+`name`, `short_family_name`, and `family_name`:
 
 ```{code-cell}
 print(w.name)
@@ -118,7 +98,7 @@ print(w.short_family_name)
 print(w.family_name)
 ```
 
-2. Decomposition (`Wavelet.dec_len`) and reconstruction (`Wavelet.rec_len`) filter lengths:
+Decomposition (`dec_len`) and reconstruction (`rec_len`) filter lengths:
 
 ```{code-cell}
 w.dec_len
@@ -128,7 +108,7 @@ w.dec_len
 w.rec_len
 ```
 
-3. Orthogonality (`Wavelet.orthogonal`) and biorthogonality (`Wavelet.biorthogonal`):
+Orthogonality (`orthogonal`) and biorthogonality (`biorthogonal`):
 
 ```{code-cell}
 w.orthogonal
@@ -138,14 +118,14 @@ w.orthogonal
 w.biorthogonal
 ```
 
-3. Symmetry (`Wavelet.symmetry`):
+Symmetry (`symmetry`):
 
 ```{code-cell}
 print(w.symmetry)
 ```
 
-4. Number of vanishing moments for the scaling function `phi` (`Wavelet.vanishing_moments_phi`)
-   and the wavelet function `psi` (`Wavelet.vanishing_moments_psi`), associated with the filters:
+Number of vanishing moments for the scaling function `phi` (`vanishing_moments_phi`)
+and the wavelet function `psi` (`vanishing_moments_psi`), associated with the filters:
 
 ```{code-cell}
  w.vanishing_moments_phi
@@ -156,7 +136,7 @@ w.vanishing_moments_psi
 ```
 
 Now when we know a bit about the builtin Wavelets, let's see how to create
-custom `Wavelets` objects. These can be done in two ways:
+[custom wavelets](custom-wavelets). These can be created in two ways:
 
 1. Passing the filter bank object that implements the `filter_bank` attribute. The
    attribute must return four filters coefficients.
@@ -170,11 +150,7 @@ class MyHaarFilterBank(object):
           [sqrt(2)/2, sqrt(2)/2], [-sqrt(2)/2, sqrt(2)/2],
           [sqrt(2)/2, sqrt(2)/2], [sqrt(2)/2, -sqrt(2)/2]
         )
-```
 
-and let's put this in action:
-
-```{code-cell}
 my_wavelet = pywt.Wavelet('My Haar Wavelet', filter_bank=MyHaarFilterBank())
 ```
 
@@ -189,7 +165,7 @@ my_filter_bank = (
 my_wavelet = pywt.Wavelet('My Haar Wavelet', filter_bank=my_filter_bank)
 ```
 
-Note that such custom `Wavelets` objects **will not** have all the properties set
+Note that such custom wavelets **will not** have all the properties set
 to correct values and some of them could be missing:
 
 ```{code-cell}
@@ -215,7 +191,7 @@ We all know that the fun with wavelets is in wavelet functions.
 Now, what would this package be without a tool to compute wavelet
 and scaling functions approximations?
 
-This is the purpose of the `Wavelet.wavefun` method, which is used to
+This is the purpose of the `wavefun()` method, which is used to
 approximate scaling function (`phi`) and wavelet function (`psi`) at the
 given level of refinement, based on the filters coefficients.
 
@@ -248,7 +224,7 @@ w.orthogonal
 ```
 
 :::{seealso}
-You can find live examples of the usage of `Wavelet.wavefun` and
+You can find live examples of the usage of `wavefun()` and
 images of all the built-in wavelets on the
 [Wavelet Properties Browser](http://wavelets.pybytes.com) page.
 

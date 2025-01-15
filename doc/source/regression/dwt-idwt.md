@@ -9,41 +9,18 @@ kernelspec:
   display_name: Python 3 (ipykernel)
   language: python
   name: python3
-mystnb:
-  execution_allow_errors: true
-  execution_show_tb: true
 ---
 
 +++ {"tags": ["jupyterlite_sphinx_strip"]}
 
-```{eval-rst}
-.. currentmodule:: pywt
-
-.. dropdown:: 🧑‍🔬 This notebook can be executed online. Click this section to try it out! ✨
-    :color: success
-
-    .. notebooklite:: dwt-idwt.ipynb
-      :width: 100%
-      :height: 600px
-      :prompt: Open notebook
-
-.. dropdown:: Download this notebook
-    :color: info
-    :open:
-
-    Please use the following links to download this notebook in various formats:
-
-    1. :download:`Download IPyNB (IPython Notebook) <dwt-idwt.ipynb>`
-    2. :download:`Download Markdown Notebook (Jupytext) <dwt-idwt.md>`
+```{include} header.md
 ```
-
-+++
 
 # DWT and IDWT
 
 ## Discrete Wavelet Transform
 
-Let's do a Discrete Wavelet Transform of some sample data `x`
+Let's do a [Discrete Wavelet Transform](ref-dwt) of some sample data `x`
 using the `db2` wavelet. It's simple:
 
 ```{code-cell}
@@ -65,7 +42,7 @@ cD
 
 ## Inverse Discrete Wavelet Transform
 
-Now, let's do the opposite operation: an Inverse Discrete Wavelet Transform:
+Now let's do the opposite operation, an [Inverse Discrete Wavelet Transform](ref-idwt):
 
 ```{code-cell}
 pywt.idwt(cA, cD, 'db2')
@@ -75,7 +52,7 @@ Voilà! That's it!
 
 ## More examples
 
-Now, let's experiment with `dwt` some more. For example, let's pass a
+Now let's experiment with `dwt()` some more. For example, let's pass a
 `Wavelet` object instead of the wavelet name and specify the signal
 extension mode (the default is `Modes.symmetric`) for the border effect
 handling:
@@ -97,7 +74,7 @@ Note that the output coefficients arrays' length depends not only on the
 input data length but also on the `Wavelet` type (particularly on its
 filters length `Wavelet.dec_len` that are used in the transformation).
 
-To find out what the size of the output data will be, use the `dwt_coeff_len`
+To find out what the size of the output data will be, use the `dwt_coeff_len()`
 function:
 
 ```{code-cell}
@@ -118,7 +95,7 @@ Looks fine. (And if you expected that the output length would be a half of the
 input data length, well, that's the trade-off that allows for the perfect
 reconstruction...).
 
-The third argument of the `dwt_coeff_len` function is the already mentioned signal
+The third argument of the `dwt_coeff_len()` function is the already mentioned signal
 extension mode (please refer to the PyWavelets' documentation for the `modes`
 description). Currently, there are six extension modes available under `Modes`:
 
@@ -172,9 +149,18 @@ Remember that only one argument at a time can be `None`:
 
 ```{code-cell}
 ---
-tags: [raises-exception]
+tags: [raises-exception, remove-output]
 ---
 print(pywt.idwt(None, None, 'db2', 'symmetric'))
+```
+
++++ {"tags": ["jupyterlite_sphinx_strip"]}
+
+```{code-block} python
+:class: pywt-handcoded-cell-output
+Traceback (most recent call last):
+...
+ValueError: At least one coefficient parameter must be specified.
 ```
 
 ### Coefficients data size in `pywt.idwt`
@@ -184,9 +170,18 @@ must have the same size.
 
 ```{code-cell}
 ---
-tags: [raises-exception]
+tags: [raises-exception, remove-output]
 ---
 print(pywt.idwt([1, 2, 3, 4, 5], [1, 2, 3, 4], 'db2', 'symmetric'))
+```
+
++++ {"tags": ["jupyterlite_sphinx_strip"]}
+
+```{code-block} python
+:class: pywt-handcoded-cell-output
+Traceback (most recent call last):
+...
+ValueError: Coefficients arrays must have the same size.
 ```
 
 Not every coefficient array can be used in `idwt`. In the
@@ -197,9 +192,18 @@ mode is `4`, not `3`:
 
 ```{code-cell}
 ---
-tags: [raises-exception]
+tags: [raises-exception, remove-output]
 ---
 pywt.idwt([1,2,4], [4,1,3], 'db4', 'symmetric')
+```
+
++++ {"tags": ["jupyterlite_sphinx_strip"]}
+
+```{code-block} python
+:class: pywt-handcoded-cell-output
+Traceback (most recent call last):
+...
+ValueError: Invalid coefficient arrays length for specified wavelet. Wavelet and mode must be the same as used for decomposition.
 ```
 
 ```{code-cell}
