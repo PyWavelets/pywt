@@ -14,6 +14,7 @@ kernelspec:
 +++ {"tags": ["jupyterlite_sphinx_strip"]}
 
 ```{include} header.md
+
 ```
 
 # 2D Wavelet Packets
