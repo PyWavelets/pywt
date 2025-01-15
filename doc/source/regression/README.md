@@ -33,9 +33,9 @@ output appears in the .ipynb notebook.
 To recap:
 
 - We use the `remove-output` tag to remove the **generated** code cell output
-during .md to .html conversion (this conversion is done by MyST-NB).
+  during .md to .html conversion (this conversion is done by MyST-NB).
 - We use the `jupyterlite_sphinx_strip` tag to remove the **handcoded** output
-during .md to .ipynb conversion (this conversion is done by Jupytext).
+  during .md to .ipynb conversion (this conversion is done by Jupytext).
 
 Example markdown:
 
