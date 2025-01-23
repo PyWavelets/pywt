@@ -20,10 +20,6 @@ To verify the installation run the following command::
 
     pytest .
 
-To build docs::
-
-    cd doc
-    make html
 
 Installing a development version
 --------------------------------
