@@ -17,6 +17,7 @@ on Windows and Linux.
    installing_build_dependencies
    building_extension
    testing
+   how_to_build_the_docs
    how_to_release
 
 Something not working?
