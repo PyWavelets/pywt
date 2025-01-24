@@ -12,7 +12,7 @@ JupyterLab. For this reason, each example page in this folder includes a header 
 that adds a blurb to the top of each page about how the page can be
 run or downloaded as a Jupyter notebook.
 
-There a few shortcomings to this approach of generating the code cell outputs in
+There are a few shortcomings to this approach of generating the code cell outputs in
 the documentation pages at build time rather than hand editing them into the
 document source file. One is that we can no longer compare the generated outputs
 with the expected outputs as we used to do with doctest. Another is that we
