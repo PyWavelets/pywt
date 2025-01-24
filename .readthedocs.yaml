@@ -9,3 +9,6 @@ python:
     - requirements: util/readthedocs/requirements.txt
     - method: pip
       path: .
+
+sphinx:
+  configuration: doc/source/conf.py

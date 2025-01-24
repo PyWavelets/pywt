@@ -43,6 +43,8 @@ Coding guidelines
     provided in tutorial format and/or in module docstrings.  A guide on how to
     write documentation is given in the `numpydoc docstring guide`_.
 
+    Looking for `how to build the docs`_?
+
 3. Code style
     Uniformity of style in which code is written is important to others trying
     to understand the code.  PyWavelets follows the standard Python guidelines
@@ -64,3 +66,5 @@ Coding guidelines
 .. _pyflakes: http://pypi.python.org/pypi/pyflakes
 
 .. _testing guidelines: https://github.com/numpy/numpy/blob/main/doc/TESTS.rst.txt
+
+.. _how to build the docs: ./doc/source/dev/how_to_build_the_docs.rst
