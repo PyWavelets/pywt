@@ -1,13 +1,21 @@
 cython
 docutils
-jupyterlite-sphinx>=0.14.0
-jupyterlite-pyodide-kernel
+# Pyodide kernel 0.5.1 comes with Pyodide 0.27.1 and PyWavelets 1.7.0
+# see https://pyodide.org/en/stable/usage/packages-in-pyodide.html
+# and https://jupyterlite-pyodide-kernel.readthedocs.io/en/stable/#with-pyodide
+# for information on updating
+jupyterlite-pyodide-kernel==0.5.1
+jupyterlite-sphinx>=0.18.0
+jupytext
 pydata-sphinx-theme
 pytest
 matplotlib
 meson-python
+myst-nb
+nbformat
 numpy
 numpydoc
 sphinx>=7
-sphinx-togglebutton
 sphinx-copybutton
+sphinx-design
+sphinx-togglebutton

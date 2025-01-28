@@ -4,7 +4,7 @@
 # See COPYING for license details.
 
 __doc__ = """Cython wrapper for low-level C wavelet transform implementation."""
-__all__ = ['MODES', 'Modes', 'DiscreteContinuousWavelet', 'Wavelet',
+__all__ = ['Modes', 'DiscreteContinuousWavelet', 'Wavelet',
            'ContinuousWavelet', 'wavelist', 'families']
 
 

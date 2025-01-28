@@ -11,9 +11,10 @@
 # serve to show the default.
 
 import datetime
-import importlib.metadata
+import os
+import re
+from pathlib import Path
 
-import jinja2.filters
 import numpy as np
 
 import pywt
@@ -25,6 +26,76 @@ try:
 except TypeError:
     pass
 
+from sphinx.application import Sphinx
+
+HERE = Path(__file__).parent
+
+
+def preprocess_notebooks(app: Sphinx, *args, **kwargs):
+    """Preprocess Markdown notebooks to convert them to IPyNB format."""
+
+    import jupytext
+    import nbformat
+
+    print("Converting Markdown files to IPyNB...")
+    for path in (HERE / "regression").glob("*.md"):
+        if any(path.match(pattern) for pattern in exclude_patterns):
+            continue
+        nb = jupytext.read(str(path))
+
+        # In .md to .ipynb conversion, do not include any cells that have the
+        # jupyterlite_sphinx_strip tag
+        nb.cells = [
+            cell for cell in nb.cells if "jupyterlite_sphinx_strip" not in cell.metadata.get("tags", [])
+        ]
+
+        ipynb_path = path.with_suffix(".ipynb")
+        with open(ipynb_path, "w") as f:
+            nbformat.write(nb, f)
+            print(f"Converted {path} to {ipynb_path}")
+
+
+# Should match {{ parent_docname }} or {{parent_docname}}
+parent_docname_substitution_re = re.compile(r"{{\s*parent_docname\s*}}")
+
+def sub_parent_docname_in_header(
+    app: Sphinx, relative_path: Path, parent_docname: str, content: list[str]
+):
+    """Fill in the name of the document in the header.
+
+    When regression/header.md is read via the include directive, replace
+    {{ parent_docname }} with the name of the parent document that included
+    header.md.
+
+    Note: parent_docname does not include the file extension.
+
+    Here is a simplified example of how this works.
+
+    Contents of header.md:
+
+        {download}`Download {{ parent_docname }}.md <{{ parent_docname }}.md>`
+
+    Contents of foobar.md:
+
+        ```{include} header.md
+        ```
+
+    After this function and others are run...
+
+    Contents of foobar.md:
+
+        {download}`Download foobar.md <foobar.md>`
+    """
+    if not relative_path.match("regression/header.md"):
+        return
+
+    for i, value in enumerate(content):
+        content[i] = re.sub(parent_docname_substitution_re, parent_docname, value)
+
+
+def setup(app):
+    app.connect("config-inited", preprocess_notebooks)
+    app.connect("include-read", sub_parent_docname_in_header)
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -38,6 +109,7 @@ except TypeError:
 extensions = [
     'jupyterlite_sphinx',
     'matplotlib.sphinxext.plot_directive',
+    'myst_nb',
     'numpydoc',
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
@@ -47,15 +119,19 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.todo',
     'sphinx_copybutton',
+    'sphinx_design',
     'sphinx_togglebutton',
-
 ]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
 # The suffix of source filenames.
-source_suffix = '.rst'
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.md': 'myst-nb',
+    'ipynb': None,  # do not parse IPyNB files
+}
 
 # The encoding of source files.
 source_encoding = 'utf-8'
@@ -141,8 +217,8 @@ html_theme_options = {
 "show_prev_next": True,
 "footer_start": ["copyright", "sphinx-version"],
 "footer_end": ["theme-version"],
-"pygment_light_style": "a11y-high-contrast-light",
-"pygment_dark_style": "a11y-high-contrast-dark",
+"pygments_light_style": "a11y-high-contrast-light",
+"pygments_dark_style": "a11y-high-contrast-dark",
 "icon_links": [
         {
             "name": "Discussion group on Google Groups",
@@ -200,6 +276,7 @@ html_static_path = ['_static']
 # _static directory.
 html_css_files = [
     "pywavelets.css",
+    "myst-nb.css"
 ]
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
@@ -278,7 +355,12 @@ latex_documents = [
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['substitutions.rst', ]
+exclude_patterns = [
+    'substitutions.rst',
+    'regression/header.md',
+    'regression/README.md',
+    'regression/*.ipynb'  # exclude IPyNB files from the build
+]
 
 # numpydoc_show_class_members = False
 numpydoc_class_members_toctree = False
@@ -310,3 +392,25 @@ load. They may not be in sync with the latest PyWavelets release.
 Shall you encounter any issues, please feel free to report them on the
 [PyWavelets issue tracker](https://github.com/PyWavelets/pywt/issues)."""
 )
+
+jupyterlite_silence = True
+strip_tagged_cells = True
+
+# -- Options for MyST-NB and Markdown-based content --------------------------
+
+os.environ["PYDEVD_DISABLE_FILE_VALIDATION"] = "1"
+
+# https://myst-nb.readthedocs.io/en/latest/configuration.html
+nb_execution_mode = 'auto'
+nb_execution_timeout = 60
+nb_execution_allow_errors = False
+nb_execution_raise_on_error = True
+nb_render_markdown_format = "myst"
+nb_remove_code_source = False
+nb_remove_code_outputs = False
+
+myst_enable_extensions = [
+    'amsmath',
+    'colon_fence',
+    'dollarmath',
+]

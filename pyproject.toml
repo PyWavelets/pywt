@@ -61,7 +61,7 @@ documentation = "https://pywavelets.readthedocs.io/"
 [tool.ruff]
 line-length = 88
 target-version = 'py310'
-select = [
+lint.select = [
     "I",
     "UP",
     "C4",
@@ -76,7 +76,7 @@ select = [
     "SIM118",
     "SIM2",
 ]
-ignore = [
+lint.ignore = [
      "UP038", # https://github.com/astral-sh/ruff/issues/7871
 ]
 

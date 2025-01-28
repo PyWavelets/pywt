@@ -1,27 +1,37 @@
 /* Custom CSS rules for the interactive documentation button */
 
 .try_examples_button {
-    color: white;
-    background-color: #0054a6;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 10px;
-    margin-bottom: 5px;
-    box-shadow: 0 2px 5px rgba(108,108,108,0.2);
-    font-weight: bold;
-    font-size: small;
+  color: white;
+  background-color: #0054a6;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 10px;
+  margin-bottom: 5px;
+  box-shadow: 0 2px 5px rgba(108,108,108,0.2);
+  font-weight: bold;
+  font-size: small;
 }
 
 .try_examples_button:hover {
-background-color: #0066cc;
-transform: scale(1.02);
-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-cursor: pointer;
+  background-color: #0066cc;
+  transform: scale(1.02);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
 }
 
 .try_examples_button_container {
-    display: flex;
-    justify-content: flex-start;
-    gap: 10px;
-    margin-bottom: 20px;
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+/*
+Admonitions on this site are styled with some top margin. This makes sense when
+the admonition appears within the flow of the article. But when it is the very
+first child of an article, its top margin gets added to the article's top
+padding, resulting in too much whitespace.
+*/
+.admonition.pywt-margin-top-0 {
+  margin-top: 0;
 }
