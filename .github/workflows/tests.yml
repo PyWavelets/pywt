@@ -34,7 +34,7 @@ jobs:
       fail-fast: false
       matrix:
         runs-on: [ubuntu-latest, ubuntu-22.04-arm]
-        python-version: ["3.10", "3.11", "3.12"]
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
         MINIMUM_REQUIREMENTS: [0]
         USE_SCIPY: [0]
         USE_SDIST: [0]
@@ -55,11 +55,11 @@ jobs:
             USE_SDIST: 1
             OPTIONS_NAME: "install-from-sdist"
           - runs-on: ubuntu-latest
-            python-version: "3.12"
+            python-version: "3.13"
             PIP_FLAGS: "--pre"
             OPTIONS_NAME: "pre-releases"
           - runs-on: ubuntu-latest
-            python-version: "3.12"
+            python-version: "3.13"
             OPTIONS_NAME: "editable-install"
     steps:
       - name: Checkout PyWavelets
