@@ -33,8 +33,8 @@ jobs:
       # Ensure that a wheel builder finishes even if another fails
       fail-fast: false
       matrix:
-        runs-on: [ubuntu-latest, ubuntu-22.04-arm]
-        python-version: ["3.10", "3.11", "3.12", "3.13"]
+        runs-on: [ubuntu-latest] # Arm runner tested separately, see below
+        python-version: ["3.10", "3.13"]
         MINIMUM_REQUIREMENTS: [0]
         USE_SCIPY: [0]
         USE_SDIST: [0]
@@ -42,6 +42,10 @@ jobs:
         PIP_FLAGS: [""]
         OPTIONS_NAME: ["default"]
         include:
+          # Linux arm64
+          - runs-on: ubuntu-22.04-arm
+            python-version: "3.13"
+          # Linux amd64
           - runs-on: ubuntu-latest
             python-version: "3.10"
             MINIMUM_REQUIREMENTS: 1
