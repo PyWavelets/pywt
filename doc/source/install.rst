@@ -40,8 +40,7 @@ For the requirements needed to build from source are (Python, NumPy and Cython
 minimum versions in particular), see ``pyproject.toml``.
 
 To run all the tests for PyWavelets, you will also need to install the
-Matplotlib_ package. If SciPy_ is available, FFT-based continuous wavelet
-transforms will use the FFT implementation from SciPy instead of NumPy.
+Matplotlib_ package.
 
 .. seealso::  The :ref:`Development guide <dev-index>` section contains more
               information on building and installing from source code.
