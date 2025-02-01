@@ -8,11 +8,10 @@
 
 #pragma once
 
-#ifdef HAVE_C99_COMPLEX
-    /* For templating, we need typedefs without spaces for complex types. */
-    typedef float _Complex float_complex;
-    typedef double _Complex double_complex;
-#endif
+/* For templating, we need typedefs without spaces for complex types. */
+/* FIXME: needs more portable complex types here */
+typedef float _Complex float_complex;
+typedef double _Complex double_complex;
 
 /* ##### Typedefs ##### */
 
