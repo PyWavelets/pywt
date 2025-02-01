@@ -49,7 +49,7 @@ jobs:
         if: ${{ matrix.cibw_python }} == "cp313t"
         run: |
           PYPI_URL="https://pypi.anaconda.org/scientific-python-nightly-wheels/simple"
-          CIBW_DEPS="pip install --pre -i $PYPI_URL cython scipy &&\
+          CIBW_DEPS="pip install --pre -i $PYPI_URL cython &&\
                      pip install numpy pytest meson-python ninja"
           NO_BUILD_ISOLATION="pip; args: --no-build-isolation"
           echo "CIBW_BEFORE_BUILD=$CIBW_DEPS" >> "$GITHUB_ENV"
@@ -136,7 +136,7 @@ jobs:
         if: ${{ matrix.cibw_python }} == "cp313t"
         run: |
           PYPI_URL="https://pypi.anaconda.org/scientific-python-nightly-wheels/simple"
-          CIBW_DEPS="pip install --pre -i $PYPI_URL cython scipy &&\
+          CIBW_DEPS="pip install --pre -i $PYPI_URL cython &&\
                      pip install numpy pytest meson-python ninja"
           NO_BUILD_ISOLATION="pip; args: --no-build-isolation"
           echo "CIBW_BEFORE_BUILD=$CIBW_DEPS" >> "$GITHUB_ENV"

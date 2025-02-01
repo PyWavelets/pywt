@@ -147,7 +147,7 @@ jobs:
           popd
 
   test_pywavelets_linux_free_threaded:
-    name: linux-cp313t-with-scipy
+    name: linux-cp313t-free-threaded
     runs-on: ubuntu-latest
     strategy:
       # Ensure that a wheel builder finishes even if another fails
@@ -169,7 +169,7 @@ jobs:
           python --version
           pip install --upgrade pip build
           # We need nightly wheels for free-threaded support and latest fixes
-          pip install --pre -i https://pypi.anaconda.org/scientific-python-nightly-wheels/simple cython numpy scipy
+          pip install --pre -i https://pypi.anaconda.org/scientific-python-nightly-wheels/simple cython numpy
           pip install pytest meson-python ninja
           pip install . -v --no-build-isolation
 
