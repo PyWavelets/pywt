@@ -14,8 +14,6 @@ __all__ = ["cwt"]
 
 import numpy as np
 
-fftmodule = np.fft
-
 
 def next_fast_len(n):
     """Round up size to the nearest power of two.
@@ -169,10 +167,10 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1):
             )
             if size_scale != size_scale0:
                 # Must recompute fft_data when the padding size changes.
-                fft_data = fftmodule.fft(data, size_scale, axis=-1)
+                fft_data = np.fft.fft(data, size_scale, axis=-1)
             size_scale0 = size_scale
-            fft_wav = fftmodule.fft(int_psi_scale, size_scale, axis=-1)
-            conv = fftmodule.ifft(fft_wav * fft_data, axis=-1)
+            fft_wav = np.fft.fft(int_psi_scale, size_scale, axis=-1)
+            conv = np.fft.ifft(fft_wav * fft_data, axis=-1)
             conv = conv[..., :data.shape[-1] + int_psi_scale.size - 1]
 
         coef = - np.sqrt(scale) * np.diff(conv, axis=-1)
