@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""Helper script for creating image .dat files by numpy.save
+"""Helper script for creating image .dat files by numpy.save.
 
 Usage:
 
@@ -10,7 +10,7 @@ Example (to create aero.dat):
 
     python create_dat.py aero.png aero.dat
 
-Requires Scipy and PIL.
+Requires SciPy and PIL, which need to be installed separately.
 """
 
 
