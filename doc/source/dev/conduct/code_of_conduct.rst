@@ -165,7 +165,7 @@ Endnotes
 We are thankful to the SciPy developers for creating the code of conduct we
 have adapted here.
 
-- `Scipy Code of Conduct <http://scipy.github.io/devdocs/dev/conduct/code_of_conduct.html>`_
+- `SciPy Code of Conduct <http://scipy.github.io/devdocs/dev/conduct/code_of_conduct.html>`_
 
 The SciPy code of conduct was in turn inspired by the following documents:
 
