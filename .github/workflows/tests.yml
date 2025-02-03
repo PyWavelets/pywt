@@ -23,7 +23,6 @@ env:
   CYTHONSPEC: cython
   NUMPY_MIN: numpy==1.23.0
   CYTHON_MIN: cython==3.0.4
-  SCIPY_MIN: scipy==1.9.0
 
 jobs:
   test_pywavelets_linux:
@@ -36,7 +35,6 @@ jobs:
         runs-on: [ubuntu-latest] # Arm runner tested separately, see below
         python-version: ["3.10", "3.13"]
         MINIMUM_REQUIREMENTS: [0]
-        USE_SCIPY: [0]
         USE_SDIST: [0]
         REFGUIDE_CHECK: [1]
         PIP_FLAGS: [""]
@@ -52,8 +50,6 @@ jobs:
             OPTIONS_NAME: "minimum-req"
           - runs-on: ubuntu-latest
             python-version: "3.10"
-            USE_SCIPY: 1
-            OPTIONS_NAME: "with-scipy"
           - runs-on: ubuntu-latest
             python-version: "3.10"
             USE_SDIST: 1
@@ -81,7 +77,6 @@ jobs:
           MINIMUM_REQUIREMENTS: ${{ matrix.MINIMUM_REQUIREMENTS }}
           PIP_FLAGS: ${{ matrix.PIP_FLAGS }}
           USE_SDIST: ${{ matrix.USE_SDIST }}
-          USE_SCIPY: ${{ matrix.USE_SCIPY }}
           REFGUIDE_CHECK: ${{ matrix.REFGUIDE_CHECK }}
           OPTIONS_NAME: ${{ matrix.OPTIONS_NAME }}
         run: |
@@ -97,11 +92,9 @@ jobs:
           if [ "${MINIMUM_REQUIREMENTS}" == "1" ]; then
               pip install ${CYTHON_MIN}
               pip install ${NUMPY_MIN}
-              if [ "${USE_SCIPY}" == "1" ]; then pip install ${SCIPY_MIN}; fi
           else
               pip install ${PIP_FLAGS} cython
               pip install ${PIP_FLAGS} numpy
-              if [ "${USE_SCIPY}" == "1" ]; then pip install ${PIP_FLAGS} scipy; fi
           fi
           pip install ${PIP_FLAGS} matplotlib pytest
 
@@ -147,7 +140,7 @@ jobs:
           popd
 
   test_pywavelets_linux_free_threaded:
-    name: linux-cp313t-with-scipy
+    name: linux-cp313t-default
     runs-on: ubuntu-latest
     strategy:
       # Ensure that a wheel builder finishes even if another fails
@@ -169,7 +162,7 @@ jobs:
           python --version
           pip install --upgrade pip build
           # We need nightly wheels for free-threaded support and latest fixes
-          pip install --pre -i https://pypi.anaconda.org/scientific-python-nightly-wheels/simple cython numpy scipy
+          pip install --pre -i https://pypi.anaconda.org/scientific-python-nightly-wheels/simple cython numpy
           pip install pytest meson-python ninja
           pip install . -v --no-build-isolation
 
@@ -190,7 +183,6 @@ jobs:
       matrix:
         python-version: ["3.10", "3.13"]
         MINIMUM_REQUIREMENTS: [0]
-        USE_SCIPY: [0]
         USE_SDIST: [0]
         REFGUIDE_CHECK: [0]
         PIP_FLAGS: [""]
@@ -219,7 +211,6 @@ jobs:
           MINIMUM_REQUIREMENTS: ${{ matrix.MINIMUM_REQUIREMENTS }}
           PIP_FLAGS: ${{ matrix.PIP_FLAGS }}
           USE_SDIST: ${{ matrix.USE_SDIST }}
-          USE_SCIPY: ${{ matrix.USE_SCIPY }}
           REFGUIDE_CHECK: ${{ matrix.REFGUIDE_CHECK }}
           CC: /usr/bin/clang
           CXX: /usr/bin/clang++
@@ -233,10 +224,8 @@ jobs:
           # Set numpy version first, other packages link against it
           if [ "${MINIMUM_REQUIREMENTS}" == "1" ]; then
               pip install ${CYTHON_MIN} ${NUMPY_MIN}
-              if [ "${USE_SCIPY}" == "1" ]; then pip install ${SCIPY_MIN}; fi
           else
               pip install ${PIP_FLAGS} cython numpy
-              if [ "${USE_SCIPY}" == "1" ]; then pip install ${PIP_FLAGS} scipy; fi
           fi
           pip install ${PIP_FLAGS} matplotlib pytest
 

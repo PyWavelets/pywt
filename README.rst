@@ -67,9 +67,7 @@ Installation
 
 PyWavelets supports `Python`_ >=3.10, and is only dependent on `NumPy`_
 (supported versions are currently ``>= 1.23.0``). To pass all of the tests,
-`Matplotlib`_ is also required. `SciPy`_ is also an optional dependency. When
-present, FFT-based continuous wavelet transforms will use FFTs from SciPy
-rather than NumPy.
+`Matplotlib`_ is also required.
 
 There are binary wheels for Intel Linux, Windows and macOS / OSX on PyPi.  If
 you are on one of these platforms, you should get a binary (precompiled)
