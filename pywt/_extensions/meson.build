@@ -42,13 +42,6 @@ print(incdir)
   np_dep = declare_dependency(include_directories: inc_np, compile_args: numpy_nodepr_api)
 endif
 
-config_pxi = configure_file(
-  input: 'config.pxi.in',
-  output: 'config.pxi',
-  configuration: cdata,
-  install: false
-)
-
 sources = [
   'c/common.c',
   'c/convolution.c',
@@ -70,10 +63,7 @@ _cython_tree = [
 ]
 
 # avoid compiler warnings:  tell Cython to use C99 complex types
-c_args = ['-DPY_EXTENSION']
-if have_c99_complex
-  c_args += ['-DHAVE_C99_COMPLEX', '-DCYTHON_CCOMPLEX=1']
-endif
+c_args = ['-DPY_EXTENSION', '-DCYTHON_CCOMPLEX=1']
 
 libc_wt = static_library('c_wt',
   sources,
