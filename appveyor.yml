@@ -7,11 +7,11 @@ build: off
 environment:
   matrix:
     - arch: x64
-      PY_PYTHON: 3.10
+      PY_PYTHON: 3.11
     - arch: x86
-      PY_PYTHON: 3.10-32
+      PY_PYTHON: 3.11-32
     - arch: x64
-      PY_PYTHON: 3.12
+      PY_PYTHON: 3.13
 
 # From https://mesonbuild.com/Continuous-Integration.html#appveyor-for-windows
 install:

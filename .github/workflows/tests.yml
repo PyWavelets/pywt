@@ -21,7 +21,7 @@ env:
   MPLBACKEND: Agg
   CYTHON_TRACE: 1
   CYTHONSPEC: cython
-  NUMPY_MIN: numpy==1.23.0
+  NUMPY_MIN: numpy==1.25.0
   CYTHON_MIN: cython==3.0.4
 
 jobs:
@@ -33,7 +33,7 @@ jobs:
       fail-fast: false
       matrix:
         runs-on: [ubuntu-latest] # Arm runner tested separately, see below
-        python-version: ["3.10", "3.13"]
+        python-version: ["3.11", "3.13"]
         MINIMUM_REQUIREMENTS: [0]
         USE_SDIST: [0]
         REFGUIDE_CHECK: [1]
@@ -45,13 +45,13 @@ jobs:
             python-version: "3.13"
           # Linux amd64
           - runs-on: ubuntu-latest
-            python-version: "3.10"
+            python-version: "3.11"
             MINIMUM_REQUIREMENTS: 1
             OPTIONS_NAME: "minimum-req"
           - runs-on: ubuntu-latest
-            python-version: "3.10"
+            python-version: "3.11"
           - runs-on: ubuntu-latest
-            python-version: "3.10"
+            python-version: "3.11"
             USE_SDIST: 1
             OPTIONS_NAME: "install-from-sdist"
           - runs-on: ubuntu-latest
@@ -181,14 +181,14 @@ jobs:
       # Ensure that a wheel builder finishes even if another fails
       fail-fast: false
       matrix:
-        python-version: ["3.10", "3.13"]
+        python-version: ["3.11", "3.13"]
         MINIMUM_REQUIREMENTS: [0]
         USE_SDIST: [0]
         REFGUIDE_CHECK: [0]
         PIP_FLAGS: [""]
         OPTIONS_NAME: ["default"]
         include:
-          - python-version: "3.10"
+          - python-version: "3.11"
             MINIMUM_REQUIREMENTS: 1
             OPTIONS_NAME: "osx-minimum-req"
           - python-version: "3.13"
