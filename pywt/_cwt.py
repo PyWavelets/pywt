@@ -62,7 +62,8 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1, preci
         used.
     precision : int, optional
         Parameter used to control the wavelet precision (useful towards lower frequency regions)
-        
+
+
     Returns
     -------
     coefs : array_like
