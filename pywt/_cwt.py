@@ -24,7 +24,7 @@ def next_fast_len(n):
     return 2**ceil(np.log2(n))
 
 
-def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1, precision=24):
+def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1, precision=10):
     """
     cwt(data, scales, wavelet)
 
