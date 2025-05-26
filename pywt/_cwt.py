@@ -14,17 +14,27 @@ __all__ = ["cwt"]
 
 import numpy as np
 
+try:
+    import scipy
+    fftmodule = scipy.fft
+    next_fast_len = fftmodule.next_fast_len
+except ImportError:
+    fftmodule = np.fft
 
-def next_fast_len(n):
-    """Round up size to the nearest power of two.
+    # provide a fallback so scipy is an optional requirement
+    # note: numpy.fft in numpy 2.0 is as fast as scipy.fft, so could be used
+    # unconditionally once the minimum supported numpy version is >=2.0
+    def next_fast_len(n):
+        """Round up size to the nearest power of two.
 
-    Given a number of samples `n`, returns the next power of two
-    following this number to take advantage of FFT speedup.
-    """
-    return 2**ceil(np.log2(n))
+        Given a number of samples `n`, returns the next power of two
+        following this number to take advantage of FFT speedup.
+        This fallback is less efficient than `scipy.fftpack.next_fast_len`
+        """
+        return 2**ceil(np.log2(n))
 
 
-def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1):
+def cwt(data, scales, wavelet, hop_size=1, sampling_period=1., method='conv', axis=-1):
     """
     cwt(data, scales, wavelet)
 
@@ -114,7 +124,12 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1):
         raise AxisError("axis must be a scalar.")
 
     dt_out = dt_cplx if wavelet.complex_cwt else dt
-    out = np.empty((np.size(scales),) + data.shape, dtype=dt_out)
+
+    # out length of transform when applying down sampling
+    downsampled_length = len(data) // hop_size
+    data_sampled = np.empty((1, downsampled_length))
+    out = np.empty((np.size(scales), downsampled_length), dtype=dt_out)
+    
     precision = 10
     int_psi, x = integrate_wavelet(wavelet, precision=precision)
     int_psi = np.conj(int_psi) if wavelet.complex_cwt else int_psi
@@ -167,17 +182,22 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1):
             )
             if size_scale != size_scale0:
                 # Must recompute fft_data when the padding size changes.
-                fft_data = np.fft.fft(data, size_scale, axis=-1)
+                fft_data = fftmodule.fft(data, size_scale, axis=-1)
             size_scale0 = size_scale
-            fft_wav = np.fft.fft(int_psi_scale, size_scale, axis=-1)
-            conv = np.fft.ifft(fft_wav * fft_data, axis=-1)
+            fft_wav = fftmodule.fft(int_psi_scale, size_scale, axis=-1)
+            conv = fftmodule.ifft(fft_wav * fft_data, axis=-1)
             conv = conv[..., :data.shape[-1] + int_psi_scale.size - 1]
 
-        coef = - np.sqrt(scale) * np.diff(conv, axis=-1)
+        coef_temp = - np.sqrt(scale) * np.diff(conv, axis=-1)
+        
+        # Apply time downsampling
+        coef = coef_temp[::hop_size]  # Selecting every `hop_size`-th sample 
+        
         if out.dtype.kind != 'c':
             coef = coef.real
+            
         # transform axis is always -1 due to the data reshape above
-        d = (coef.shape[-1] - data.shape[-1]) / 2.
+        d = (coef.shape[-1] - data_sampled.shape[-1]) / 2.
         if d > 0:
             coef = coef[..., floor(d):-ceil(d)]
         elif d < 0:
@@ -185,7 +205,7 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1):
                 f"Selected scale of {scale} too small.")
         if data.ndim > 1:
             # restore original data shape and axis position
-            coef = coef.reshape(data_shape_pre)
+            coef = coef.reshape(data_sampled)
             coef = coef.swapaxes(axis, -1)
         out[i, ...] = coef
 
