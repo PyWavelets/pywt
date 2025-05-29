@@ -253,8 +253,8 @@ jobs:
               python ../pywt/tests/test_doc.py
           elif [ "${REFGUIDE_CHECK}" == "1" ]; then
               # doctests docstrings
-              pytest --doctest-modules --pyargs pywt -v  --doctest-collect=api
-              pytest --doctest-modules --pyargs pywt.data -v
+              pytest --doctest-modules --doctest-only-doctests=true --pyargs pywt -v  --doctest-collect=api
+              pytest --doctest-modules --doctest-only-doctests=true --pyargs pywt.data -v
           else
               pytest --pyargs pywt
           fi
