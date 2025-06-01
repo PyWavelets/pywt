@@ -124,7 +124,7 @@ def cwt(data, scales, wavelet, hop_size=1, sampling_period=1., method='conv', ax
     dt_out = dt_cplx if wavelet.complex_cwt else dt
 
     # out length of transform when applying down sampling
-    downsampled_length = len(data) // hop_size
+    downsampled_length = int(len(data) // hop_size)
     data_sampled = np.empty((1, downsampled_length))
     out = np.empty((np.size(scales), downsampled_length), dtype=dt_out)
     
