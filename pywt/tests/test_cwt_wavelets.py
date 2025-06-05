@@ -379,9 +379,10 @@ def test_cwt_complex(dtype, tol, method):
     dt = time[1] - time[0]
     wavelet = 'cmor1.5-1.0'
     scales = np.arange(1, 32)
+    hop_size = 1
 
     # real-valued tranfsorm as a reference
-    [cfs, f] = pywt.cwt(sst, scales, wavelet, dt, method=method)
+    [cfs, f] = pywt.cwt(sst, scales, wavelet, hop_size, dt, method=method)
 
     # verify same precision
     assert_equal(cfs.real.dtype, sst.dtype)
@@ -389,7 +390,7 @@ def test_cwt_complex(dtype, tol, method):
     # complex-valued transform equals sum of the transforms of the real
     # and imaginary components
     sst_complex = sst + 1j*sst
-    [cfs_complex, f] = pywt.cwt(sst_complex, scales, wavelet, dt,
+    [cfs_complex, f] = pywt.cwt(sst_complex, scales, wavelet, hop_size, dt,
                                 method=method)
     assert_allclose(cfs + 1j*cfs, cfs_complex, atol=tol, rtol=tol)
     # verify dtype is preserved
@@ -409,10 +410,10 @@ def test_cwt_batch(axis, method):
     scales = np.arange(1, 32)
 
     # non-batch transform as reference
-    [cfs1, f] = pywt.cwt(sst1, scales, wavelet, dt, method=method, axis=axis)
+    [cfs1, f] = pywt.cwt(sst1, scales, wavelet, hop_size, dt, method=method, axis=axis)
 
     shape_in = sst.shape
-    [cfs, f] = pywt.cwt(sst, scales, wavelet, dt, method=method, axis=axis)
+    [cfs, f] = pywt.cwt(sst, scales, wavelet, hop_size, dt, method=method, axis=axis)
 
     # shape of input is not modified
     assert_equal(shape_in, sst.shape)
