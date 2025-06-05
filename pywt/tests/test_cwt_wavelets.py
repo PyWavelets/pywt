@@ -408,6 +408,7 @@ def test_cwt_batch(axis, method):
     dt = time[1] - time[0]
     wavelet = 'cmor1.5-1.0'
     scales = np.arange(1, 32)
+    hop_size = 1
 
     # non-batch transform as reference
     [cfs1, f] = pywt.cwt(sst1, scales, wavelet, hop_size, dt, method=method, axis=axis)
