@@ -120,6 +120,9 @@ def cwt(data, scales, wavelet, hop_size=1, sampling_period=1., method='conv', ax
 
     if not np.isscalar(axis):
         raise AxisError("axis must be a scalar.")
+    # Ensure hop_size is a positive integer
+    if not isinstance(hop_size, int) or hop_size <= 0:
+        raise ValueError(f"Invalid hop_size: {hop_size}. It must be a positive integer.")
 
     dt_out = dt_cplx if wavelet.complex_cwt else dt
 
