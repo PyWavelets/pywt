@@ -127,9 +127,11 @@ def cwt(data, scales, wavelet, hop_size=1, sampling_period=1., method='conv', ax
     dt_out = dt_cplx if wavelet.complex_cwt else dt
 
     # out length of transform when applying down sampling
-    downsampled_length = int(len(data) // hop_size)
-    data_sampled = np.empty((data.shape[0], downsampled_length))
-    out = np.empty((np.size(scales), downsampled_length), dtype=dt_out)
+    # hop_size is only applied for 1D data
+    if data.ndim == 1:
+        downsampled_length = int(len(data) // hop_size)
+        data_sampled = np.empty((data.shape[0], downsampled_length))
+        out = np.empty((np.size(scales), downsampled_length), dtype=dt_out)
     
     precision = 10
     int_psi, x = integrate_wavelet(wavelet, precision=precision)
@@ -149,12 +151,12 @@ def cwt(data, scales, wavelet, hop_size=1, sampling_period=1., method='conv', ax
     if data.ndim > 1:
         # move axis to be transformed last (so it is contiguous)
         data = data.swapaxes(-1, axis)
-        data_sampled = data_sampled.swapaxes(-1, axis)
 
         # reshape to (n_batch, data.shape[-1])
         data_shape_pre = data.shape
-        data_sampled_shape_pre = data_sampled.shape
         data = data.reshape((-1, data.shape[-1]))
+    if data.ndim == 1:
+        data_sampled_shape_pre = data_sampled.shape
 
     for i, scale in enumerate(scales):
         step = x[1] - x[0]
@@ -194,8 +196,10 @@ def cwt(data, scales, wavelet, hop_size=1, sampling_period=1., method='conv', ax
         coef_temp = - np.sqrt(scale) * np.diff(conv, axis=-1)
         
         # Apply time downsampling
-        coef = coef_temp[::int(hop_size)]  # Selecting every `hop_size`-th sample 
-        
+        if data.ndim == 1:
+            coef = coef_temp[::int(hop_size)]  # Selecting every `hop_size`-th sample 
+        if data.ndim > 1:
+            coef = coef_temp
         if out.dtype.kind != 'c':
             coef = coef.real
             
@@ -208,8 +212,12 @@ def cwt(data, scales, wavelet, hop_size=1, sampling_period=1., method='conv', ax
                 f"Selected scale of {scale} too small.")
         if data.ndim > 1:
             # restore original data shape and axis position
-            coef = coef.reshape(data_sampled_shape_pre)
+            coef = coef.reshape(data_shape_pre)
             coef = coef.swapaxes(axis, -1)
+        # if data.ndim == 1:
+        #     # restore original data shape and axis position
+        #     coef = coef.reshape(data_sampled_shape_pre)
+        #     coef = coef.swapaxes(axis, -1)
         out[i, ...] = coef
 
     frequencies = scale2frequency(wavelet, scales, precision)
