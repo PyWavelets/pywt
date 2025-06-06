@@ -149,9 +149,11 @@ def cwt(data, scales, wavelet, hop_size=1, sampling_period=1., method='conv', ax
     if data.ndim > 1:
         # move axis to be transformed last (so it is contiguous)
         data = data.swapaxes(-1, axis)
+        data_sampled = data_sampled.swapaxes(-1, axis)
 
         # reshape to (n_batch, data.shape[-1])
         data_shape_pre = data.shape
+        data_sampled_shape_pre = data_sampled.shape
         data = data.reshape((-1, data.shape[-1]))
 
     for i, scale in enumerate(scales):
