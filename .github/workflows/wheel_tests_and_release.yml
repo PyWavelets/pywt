@@ -57,7 +57,7 @@ jobs:
           echo "CIBW_BUILD_FRONTEND=$NO_BUILD_ISOLATION" >> "$GITHUB_ENV"
 
       - name: Build the wheel
-        uses: pypa/cibuildwheel@faf86a6ed7efa889faf6996aa23820831055001a # v2.23.3
+        uses: pypa/cibuildwheel@5f22145df44122af0f5a201f93cf0207171beca7 # v3.0.0
         with:
           output-dir: dist
         env:
@@ -91,7 +91,7 @@ jobs:
           python-version: "3.12"
 
       - name: Build the wheel
-        uses: pypa/cibuildwheel@faf86a6ed7efa889faf6996aa23820831055001a # v2.23.3
+        uses: pypa/cibuildwheel@5f22145df44122af0f5a201f93cf0207171beca7 # v3.0.0
         with:
           output-dir: dist
         env:
@@ -145,7 +145,7 @@ jobs:
 
       - name: Build wheels for CPython (macOS) (x86_64)
         if: matrix.cibw_arch == 'x86_64'
-        uses: pypa/cibuildwheel@faf86a6ed7efa889faf6996aa23820831055001a # v2.23.3
+        uses: pypa/cibuildwheel@5f22145df44122af0f5a201f93cf0207171beca7 # v3.0.0
         with:
           output-dir: dist
         env:
@@ -154,7 +154,7 @@ jobs:
 
       - name: Build wheels for CPython (macOS) (arm64)
         if: matrix.cibw_arch == 'arm64'
-        uses: pypa/cibuildwheel@faf86a6ed7efa889faf6996aa23820831055001a # v2.23.3
+        uses: pypa/cibuildwheel@5f22145df44122af0f5a201f93cf0207171beca7 # v3.0.0
         with:
           output-dir: dist
         env:
@@ -212,7 +212,7 @@ jobs:
           echo "CIBW_BUILD_FRONTEND=$NO_BUILD_ISOLATION" >> "$GITHUB_ENV"
 
       - name: Build Windows wheels for CPython
-        uses: pypa/cibuildwheel@faf86a6ed7efa889faf6996aa23820831055001a # v2.23.3
+        uses: pypa/cibuildwheel@5f22145df44122af0f5a201f93cf0207171beca7 # v3.0.0
         with:
           output-dir: dist
         env:
