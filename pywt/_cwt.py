@@ -24,9 +24,8 @@ def next_fast_len(n):
     return 2**ceil(np.log2(n))
 
 
-def cwt(data, scales, wavelet, hop_size=1, sampling_period=1., method='conv', axis=-1):
+def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1, *, hop_size=1):
     """
-    cwt(data, scales, wavelet, hop_size)
 
     One dimensional Continuous Wavelet Transform.
 
@@ -41,14 +40,6 @@ def cwt(data, scales, wavelet, hop_size=1, sampling_period=1., method='conv', ax
         ``sampling_period`` is given in seconds.
     wavelet : Wavelet object or name
         Wavelet to use
-    hop_size : int
-        Specifies the down-sampling factor applied on temporal axis during the transform.
-        The output is sampled every hop_size samples, rather than at every consecutive sample.
-        For example:
-        A signal of length 1024 yields 1024 output samples when hop_size=1;
-        512 output samples when hop_size=2;
-        256 output samples when hop_size=4.
-        hop_size must be a positive integer (≥1).
     sampling_period : float
         Sampling period for the frequencies output (optional).
         The values computed for ``coefs`` are independent of the choice of
@@ -68,6 +59,14 @@ def cwt(data, scales, wavelet, hop_size=1, sampling_period=1., method='conv', ax
     axis: int, optional
         Axis over which to compute the CWT. If not given, the last axis is
         used.
+    hop_size : int
+        Specifies the down-sampling factor applied on temporal axis during the transform.
+        The output is sampled every hop size samples, rather than at every consecutive sample.
+        For example:
+        A signal of length 1024 yields 1024 output samples when ``hop_size=1``;
+        512 output samples when ``hop_size=2``;
+        256 output samples when ``hop_size=4``.
+        ``hop_size`` must be a positive integer (≥1).
 
     Returns
     -------
@@ -81,7 +80,7 @@ def cwt(data, scales, wavelet, hop_size=1, sampling_period=1., method='conv', ax
 
     Notes
     -----
-    Size of coefficients arrays depends on the length of the input array, the given hop_size and
+    Size of coefficients arrays depends on the length of the input array, the given hop size and
     the length of given scales.
 
     Examples
@@ -91,7 +90,7 @@ def cwt(data, scales, wavelet, hop_size=1, sampling_period=1., method='conv', ax
     >>> import matplotlib.pyplot as plt
     >>> x = np.arange(512)
     >>> y = np.sin(2*np.pi*x/32)
-    >>> coef, freqs=pywt.cwt(y,np.arange(1,129),1,'gaus1')
+    >>> coef, freqs=pywt.cwt(y,np.arange(1,129),'gaus1',hop_size=1)
     >>> plt.matshow(coef)
     >>> plt.show()
 
@@ -101,7 +100,7 @@ def cwt(data, scales, wavelet, hop_size=1, sampling_period=1., method='conv', ax
     >>> t = np.linspace(-1, 1, 200, endpoint=False)
     >>> sig  = np.cos(2 * np.pi * 7 * t) + np.real(np.exp(-7*(t-0.4)**2)*np.exp(1j*2*np.pi*2*(t-0.4)))
     >>> widths = np.arange(1, 31)
-    >>> cwtmatr, freqs = pywt.cwt(sig, widths, 2, 'mexh')
+    >>> cwtmatr, freqs = pywt.cwt(sig, widths, 'mexh', hop_size=2)
     >>> plt.imshow(cwtmatr, extent=[-1, 1, 1, 31], cmap='PRGn', aspect='auto',
     ...            vmax=abs(cwtmatr).max(), vmin=-abs(cwtmatr).max())
     >>> plt.show()
