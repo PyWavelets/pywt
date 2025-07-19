@@ -80,8 +80,8 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1, *, ho
 
     Notes
     -----
-    Size of coefficients arrays depends on the length of the input array, the given hop size and
-    the length of given scales.
+    Size of coefficients arrays depends on the length of the input array,
+    the length of given scales and the given hop size.
     
     References
     ----------
