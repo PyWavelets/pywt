@@ -82,6 +82,12 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1, *, ho
     -----
     Size of coefficients arrays depends on the length of the input array, the given hop size and
     the length of given scales.
+    
+    References
+    ----------
+    .. [1] Phan, D. T., Huynh, T. A., Pham, V. T., Tran, C. M., Mai, V. T., & Tran, N. Q. (2025). 
+           Optimal Scalogram for Computational Complexity Reduction in Acoustic Recognition Using Deep Learning. 
+           *arXiv preprint arXiv:2505.13017*. https://arxiv.org/abs/2505.13017
 
     Examples
     --------
