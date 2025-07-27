@@ -34,7 +34,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        cibw_python: ["cp311", "cp312", "cp313", "cp313t"]
+        cibw_python: ["cp311", "cp312", "cp313", "cp313t", "cp314", "cp314t"]
         cibw_arch: ["x86_64"]
     steps:
       - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
@@ -44,17 +44,6 @@ jobs:
         name: Install Python
         with:
           python-version: "3.12"
-
-      - name: Install build deps; set CIBW environment variables
-        if: ${{ matrix.cibw_python }} == "cp313t"
-        run: |
-          PYPI_URL="https://pypi.anaconda.org/scientific-python-nightly-wheels/simple"
-          CIBW_DEPS="pip install --pre -i $PYPI_URL cython &&\
-                     pip install numpy pytest meson-python ninja"
-          NO_BUILD_ISOLATION="pip; args: --no-build-isolation"
-          echo "CIBW_BEFORE_BUILD=$CIBW_DEPS" >> "$GITHUB_ENV"
-          echo "CIBW_BEFORE_TEST=$CIBW_DEPS" >> "$GITHUB_ENV"
-          echo "CIBW_BUILD_FRONTEND=$NO_BUILD_ISOLATION" >> "$GITHUB_ENV"
 
       - name: Build the wheel
         uses: pypa/cibuildwheel@ffd835cef18fa11522f608fc0fa973b89f5ddc87 # v3.1.0
@@ -77,7 +66,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-22.04-arm]
-        cibw_python: ["cp311", "cp312", "cp313"]
+        cibw_python: ["cp311", "cp312", "cp313", "cp313t", "cp314", "cp314t"]
         cibw_arch: ["aarch64"]
     steps:
       - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
@@ -95,6 +84,7 @@ jobs:
         env:
           CIBW_BUILD: ${{ matrix.cibw_python }}-*
           CIBW_ARCHS_LINUX: ${{ matrix.cibw_arch }}
+          CIBW_ENABLE: cpython-freethreading
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: wheels_linux_${{ matrix.cibw_arch }}_${{ matrix.cibw_python }}
@@ -108,16 +98,13 @@ jobs:
       matrix:
         # macos-13 is the last runner that supports Intel (x86_64) architecture
         os: [macos-13, macos-14]
-        cibw_python: ["cp311", "cp312", "cp313", "cp313t"]
+        cibw_python: ["cp311", "cp312", "cp313", "cp313t", "cp314", "cp314t"]
         cibw_arch: ["x86_64", "arm64"]
         exclude:
           - os: macos-14
             cibw_arch: "x86_64"
           - os: macos-13
             cibw_arch: "arm64"
-          - os: macos-13
-            cibw_arch: "x86_64"
-            cibw_python: "cp313t"
     steps:
       - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
         with:
@@ -128,17 +115,6 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install build deps; set CIBW environment variables
-        if: ${{ matrix.cibw_python }} == "cp313t"
-        run: |
-          PYPI_URL="https://pypi.anaconda.org/scientific-python-nightly-wheels/simple"
-          CIBW_DEPS="pip install --pre -i $PYPI_URL cython &&\
-                     pip install numpy pytest meson-python ninja"
-          NO_BUILD_ISOLATION="pip; args: --no-build-isolation"
-          echo "CIBW_BEFORE_BUILD=$CIBW_DEPS" >> "$GITHUB_ENV"
-          echo "CIBW_BEFORE_TEST=$CIBW_DEPS" >> "$GITHUB_ENV"
-          echo "CIBW_BUILD_FRONTEND=$NO_BUILD_ISOLATION" >> "$GITHUB_ENV"
-
       - name: Build wheels for CPython (macOS) (x86_64)
         if: matrix.cibw_arch == 'x86_64'
         uses: pypa/cibuildwheel@ffd835cef18fa11522f608fc0fa973b89f5ddc87 # v3.1.0
@@ -147,6 +123,7 @@ jobs:
         env:
           CIBW_BUILD: ${{ matrix.cibw_python }}-*
           CIBW_ARCHS_MACOS: ${{ matrix.cibw_arch }}
+          CIBW_ENABLE: cpython-freethreading
 
       - name: Build wheels for CPython (macOS) (arm64)
         if: matrix.cibw_arch == 'arm64'
@@ -172,7 +149,7 @@ jobs:
       matrix:
         os: [windows-latest]
         cibw_arch: ["AMD64", "x86"]
-        cibw_python: ["cp311", "cp312", "cp313", "cp313t"]
+        cibw_python: ["cp311", "cp312", "cp313", "cp313t", "cp314", "cp314t"]
     steps:
       - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
         with:
@@ -194,18 +171,6 @@ jobs:
         uses: bus1/cabuild/action/msdevshell@e22aba57d6e74891d059d66501b6b5aed8123c4d # v1
         with:
           architecture: x64
-
-      - name: Install build deps; set CIBW environment variables
-        if: ${{ matrix.cibw_python }} == "cp313t"
-        shell: bash -el {0}
-        run: |
-          PYPI_URL="https://pypi.anaconda.org/scientific-python-nightly-wheels/simple"
-          CIBW_DEPS="pip install --pre -i $PYPI_URL cython numpy &&\
-                     pip install pytest meson-python ninja"
-          NO_BUILD_ISOLATION="pip; args: --no-build-isolation"
-          echo "CIBW_BEFORE_BUILD=$CIBW_DEPS" >> "$GITHUB_ENV"
-          echo "CIBW_BEFORE_TEST=$CIBW_DEPS" >> "$GITHUB_ENV"
-          echo "CIBW_BUILD_FRONTEND=$NO_BUILD_ISOLATION" >> "$GITHUB_ENV"
 
       - name: Build Windows wheels for CPython
         uses: pypa/cibuildwheel@ffd835cef18fa11522f608fc0fa973b89f5ddc87 # v3.1.0
