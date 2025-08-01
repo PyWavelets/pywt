@@ -46,7 +46,7 @@ jobs:
           python-version: "3.12"
 
       - name: Build the wheel
-        uses: pypa/cibuildwheel@ffd835cef18fa11522f608fc0fa973b89f5ddc87 # v3.1.0
+        uses: pypa/cibuildwheel@9e4e50bd76b3190f55304387e333f6234823ea9b # v3.1.2
         with:
           output-dir: dist
         env:
@@ -78,7 +78,7 @@ jobs:
           python-version: "3.12"
 
       - name: Build the wheel
-        uses: pypa/cibuildwheel@ffd835cef18fa11522f608fc0fa973b89f5ddc87 # v3.1.0
+        uses: pypa/cibuildwheel@9e4e50bd76b3190f55304387e333f6234823ea9b # v3.1.2
         with:
           output-dir: dist
         env:
@@ -117,7 +117,7 @@ jobs:
 
       - name: Build wheels for CPython (macOS) (x86_64)
         if: matrix.cibw_arch == 'x86_64'
-        uses: pypa/cibuildwheel@ffd835cef18fa11522f608fc0fa973b89f5ddc87 # v3.1.0
+        uses: pypa/cibuildwheel@9e4e50bd76b3190f55304387e333f6234823ea9b # v3.1.2
         with:
           output-dir: dist
         env:
@@ -127,7 +127,7 @@ jobs:
 
       - name: Build wheels for CPython (macOS) (arm64)
         if: matrix.cibw_arch == 'arm64'
-        uses: pypa/cibuildwheel@ffd835cef18fa11522f608fc0fa973b89f5ddc87 # v3.1.0
+        uses: pypa/cibuildwheel@9e4e50bd76b3190f55304387e333f6234823ea9b # v3.1.2
         with:
           output-dir: dist
         env:
@@ -173,7 +173,7 @@ jobs:
           architecture: x64
 
       - name: Build Windows wheels for CPython
-        uses: pypa/cibuildwheel@ffd835cef18fa11522f608fc0fa973b89f5ddc87 # v3.1.0
+        uses: pypa/cibuildwheel@9e4e50bd76b3190f55304387e333f6234823ea9b # v3.1.2
         with:
           output-dir: dist
         env:
@@ -236,7 +236,7 @@ jobs:
           TWINE_PASSWORD: ${{ secrets.TWINE_TOKEN }}
 
       - name: Github release
-        uses: softprops/action-gh-release@da05d552573ad5aba039eaac05058a918a7bf631 # v2.2.2
+        uses: softprops/action-gh-release@72f2c25fcb47643c292f7107632f7a47c1df5cd8 # v2.3.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
