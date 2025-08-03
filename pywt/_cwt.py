@@ -24,8 +24,8 @@ def next_fast_len(n):
     return 2**ceil(np.log2(n))
 
 
-def cwt(data, scales, wavelet, sampling_period=1., method='conv', 
-        precision=12, axis=-1):
+def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1,
+        *, precision=12):
     """
     cwt(data, scales, wavelet)
 
@@ -58,14 +58,15 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv',
         The ``fft`` method is ``O(N * log2(N))`` with
         ``N = len(scale) + len(data) - 1``. It is well suited for large size
         signals but slightly slower than ``conv`` on small ones.
-    precision: int, optional
-        Length of wavelet (2 ** precision) used to compute the CWT. Greater
-        will increase resolution, especially for higher scales, but will
-        compute a bit slower. Too low will distort coefficients and their
-        norms, with a zipper-like effect; recommended >= 12.
     axis: int, optional
         Axis over which to compute the CWT. If not given, the last axis is
         used.
+    precision: int, optional
+        Length of wavelet (``2 ** precision``) used to compute the CWT. Greater
+        will increase resolution, especially for higher scales, but will
+        compute a bit slower. Too low will distort coefficients and their
+        norms, with a zipper-like effect. The default is 12, it's recommended
+        to use >=12.
 
     Returns
     -------
