@@ -24,10 +24,9 @@ def next_fast_len(n):
     return 2**ceil(np.log2(n))
 
 
-def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1):
+def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1,
+        *, precision=12):
     """
-    cwt(data, scales, wavelet)
-
     One dimensional Continuous Wavelet Transform.
 
     Parameters
@@ -60,6 +59,12 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1):
     axis: int, optional
         Axis over which to compute the CWT. If not given, the last axis is
         used.
+    precision: int, optional
+        Length of wavelet (``2 ** precision``) used to compute the CWT. Greater
+        will increase resolution, especially for higher scales, but will
+        compute a bit slower. Too low will distort coefficients and their
+        norms, with a zipper-like effect. The default is 12, it's recommended
+        to use >=12.
 
     Returns
     -------
@@ -116,7 +121,7 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1):
 
     dt_out = dt_cplx if wavelet.complex_cwt else dt
     out = np.empty((np.size(scales),) + data.shape, dtype=dt_out)
-    precision = 10
+
     int_psi, x = integrate_wavelet(wavelet, precision=precision)
     int_psi = np.conj(int_psi) if wavelet.complex_cwt else int_psi
 
