@@ -51,7 +51,7 @@ jobs:
           - runs-on: ubuntu-latest
             python-version: "3.11"
           - runs-on: ubuntu-latest
-            python-version: "3.11"
+            python-version: "3.14-dev"
             USE_SDIST: 1
             OPTIONS_NAME: "install-from-sdist"
           - runs-on: ubuntu-latest
@@ -137,13 +137,17 @@ jobs:
           popd
 
   test_pywavelets_linux_free_threaded:
-    name: linux-cp313t-default
+    name: linux-cp${{ matrix.python-version }}-default
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.13t", "3.14t-dev"]
     steps:
       - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
       - uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55 # v5.5.0
         with:
-          python-version: "3.13t"
+          python-version: ${{ matrix.python-version}}
 
       - name: Build package
         run: |
