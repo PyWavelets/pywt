@@ -81,9 +81,10 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1):
     >>> import pywt
     >>> import numpy as np
     >>> import matplotlib.pyplot as plt
-    >>> x = np.arange(512)
-    >>> y = np.sin(2*np.pi*x/32)
-    >>> coef, freqs=pywt.cwt(y,np.arange(1,129),'gaus1')
+    >>> x = np.exp(np.linspace(0, 2, 512))
+    >>> y = np.cos(2*np.pi*x)  # exponential chirp
+    >>> scales = np.logspace(np.log10(1), np.log10(128), 128)
+    >>> coef, freqs = pywt.cwt(y, scales, 'gaus1')
     >>> plt.matshow(coef)
     >>> plt.show()
 
@@ -92,7 +93,7 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1):
     >>> import matplotlib.pyplot as plt
     >>> t = np.linspace(-1, 1, 200, endpoint=False)
     >>> sig  = np.cos(2 * np.pi * 7 * t) + np.real(np.exp(-7*(t-0.4)**2)*np.exp(1j*2*np.pi*2*(t-0.4)))
-    >>> widths = np.arange(1, 31)
+    >>> widths = np.logspace(np.log10(1), np.log10(30), 30)
     >>> cwtmatr, freqs = pywt.cwt(sig, widths, 'mexh')
     >>> plt.imshow(cwtmatr, extent=[-1, 1, 1, 31], cmap='PRGn', aspect='auto',
     ...            vmax=abs(cwtmatr).max(), vmin=-abs(cwtmatr).max())
