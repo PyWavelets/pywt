@@ -84,7 +84,7 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1):
     >>> x = np.exp(np.linspace(0, 2, 512))
     >>> y = np.cos(2*np.pi*x)  # exponential chirp
     >>> scales = np.logspace(np.log10(1), np.log10(128), 128)
-    >>> coef, freqs=pywt.cwt(y,scales,'gaus1')
+    >>> coef, freqs = pywt.cwt(y, scales, 'gaus1')
     >>> plt.matshow(coef)
     >>> plt.show()
 
