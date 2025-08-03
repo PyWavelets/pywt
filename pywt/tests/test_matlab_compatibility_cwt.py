@@ -149,7 +149,7 @@ def _load_matlab_result_psi(wavelet):
 
 def _check_accuracy(data, w, scales, coefs, wavelet, epsilon):
     # PyWavelets result
-    coefs_pywt, freq = pywt.cwt(data, scales, w)
+    coefs_pywt, freq = pywt.cwt(data, scales, w, precision=10)
 
     # coefs from Matlab are from R2012a which is missing the complex conjugate
     # as shown in Eq. 2 of Torrence and Compo. We take the complex conjugate of
