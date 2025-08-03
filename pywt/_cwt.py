@@ -27,8 +27,6 @@ def next_fast_len(n):
 def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1,
         *, precision=12):
     """
-    cwt(data, scales, wavelet)
-
     One dimensional Continuous Wavelet Transform.
 
     Parameters
