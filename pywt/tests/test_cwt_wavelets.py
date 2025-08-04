@@ -2,7 +2,6 @@
 import os
 import pickle
 from itertools import product
-import math
 
 import numpy as np
 import pytest
@@ -425,7 +424,7 @@ def test_cwt_batch(axis, method):
 
     # verify expected shape
     assert_equal(cfs.shape[0], len(scales))
-    assert_equal(cfs.shape[1 + batch_axis], math.ceil(n_batch / hop_size))
+    assert_equal(cfs.shape[1 + batch_axis], np.ceil(n_batch / hop_size).astype(int))
     assert_equal(cfs.shape[1 + axis], sst.shape[axis])
 
     # batch result on stacked input is the same as stacked 1d result
