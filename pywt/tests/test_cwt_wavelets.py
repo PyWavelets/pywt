@@ -402,10 +402,10 @@ def test_cwt_batch(axis, method):
     dtype = np.float64
     time, sst = pywt.data.nino()
     n_batch = 8
-    hop_size = 128
+    hop_size = 1
     batch_axis = 1 - axis
     sst1 = np.asarray(sst, dtype=dtype)
-    sst = np.stack((sst1, ) * np.ceil(n_batch / hop_size).astype(int), axis=batch_axis)
+    sst = np.stack((sst1, ) * np.ceil(n_batch / hop_size).astype(int), axis=np.ceil(batch_axis / hop_size).astype(int))
     dt = time[1] - time[0]
     wavelet = 'cmor1.5-1.0'
     scales = np.arange(1, 32)
