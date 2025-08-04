@@ -2,6 +2,7 @@
 import os
 import pickle
 from itertools import product
+import math
 
 import numpy as np
 import pytest
