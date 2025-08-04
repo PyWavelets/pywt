@@ -379,9 +379,10 @@ def test_cwt_complex(dtype, tol, method):
     dt = time[1] - time[0]
     wavelet = 'cmor1.5-1.0'
     scales = np.arange(1, 32)
+    hop_size = 128
 
     # real-valued tranfsorm as a reference
-    [cfs, f] = pywt.cwt(sst, scales, wavelet, dt, method=method, hop_size=128)
+    [cfs, f] = pywt.cwt(sst, scales, wavelet, dt, method=method, hop_size=hop_size)
 
     # verify same precision
     assert_equal(cfs.real.dtype, sst.dtype)
@@ -390,7 +391,7 @@ def test_cwt_complex(dtype, tol, method):
     # and imaginary components
     sst_complex = sst + 1j*sst
     [cfs_complex, f] = pywt.cwt(sst_complex, scales, wavelet, dt,
-                                method=method, hop_size=128)
+                                method=method, hop_size=hop_size)
     assert_allclose(cfs + 1j*cfs, cfs_complex, atol=tol, rtol=tol)
     # verify dtype is preserved
     assert_equal(cfs_complex.dtype, sst_complex.dtype)
@@ -401,6 +402,7 @@ def test_cwt_batch(axis, method):
     dtype = np.float64
     time, sst = pywt.data.nino()
     n_batch = 8
+    hop_size = 128
     batch_axis = 1 - axis
     sst1 = np.asarray(sst, dtype=dtype)
     sst = np.stack((sst1, ) * n_batch, axis=batch_axis)
@@ -409,10 +411,10 @@ def test_cwt_batch(axis, method):
     scales = np.arange(1, 32)
 
     # non-batch transform as reference
-    [cfs1, f] = pywt.cwt(sst1, scales, wavelet, dt, method=method, axis=axis, hop_size=128)
+    [cfs1, f] = pywt.cwt(sst1, scales, wavelet, dt, method=method, axis=axis, hop_size=hop_size)
 
     shape_in = sst.shape
-    [cfs, f] = pywt.cwt(sst, scales, wavelet, dt, method=method, axis=axis, hop_size=128)
+    [cfs, f] = pywt.cwt(sst, scales, wavelet, dt, method=method, axis=axis, hop_size=hop_size)
 
     # shape of input is not modified
     assert_equal(shape_in, sst.shape)
@@ -422,7 +424,7 @@ def test_cwt_batch(axis, method):
 
     # verify expected shape
     assert_equal(cfs.shape[0], len(scales))
-    assert_equal(cfs.shape[1 + batch_axis], n_batch)
+    assert_equal(cfs.shape[1 + batch_axis], math.ceil(n_batch / hop_size))
     assert_equal(cfs.shape[1 + axis], sst.shape[axis])
 
     # batch result on stacked input is the same as stacked 1d result
