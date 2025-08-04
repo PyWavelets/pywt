@@ -24,9 +24,10 @@ def next_fast_len(n):
     return 2**ceil(np.log2(n))
 
 
-def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1,
-        *, precision=12):
+def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1, precision=12,
+        *, hop_size=1):
     """
+
     One dimensional Continuous Wavelet Transform.
 
     Parameters
@@ -65,6 +66,14 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1,
         compute a bit slower. Too low will distort coefficients and their
         norms, with a zipper-like effect. The default is 12, it's recommended
         to use >=12.
+    hop_size : int
+        Specifies the down-sampling factor applied on temporal axis during the transform.
+        The output is sampled every hop size samples, rather than at every consecutive sample.
+        For example:
+        A signal of length 1024 yields 1024 output samples when ``hop_size=1``;
+        512 output samples when ``hop_size=2``;
+        256 output samples when ``hop_size=4``.
+        ``hop_size`` must be a positive integer (≥1).
 
     Returns
     -------
@@ -78,8 +87,14 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1,
 
     Notes
     -----
-    Size of coefficients arrays depends on the length of the input array and
-    the length of given scales.
+    Size of coefficients arrays depends on the length of the input array,
+    the length of given scales and the given hop size.
+
+    References
+    ----------
+    .. [1] Phan, D. T., Huynh, T. A., Pham, V. T., Tran, C. M., Mai, V. T., & Tran, N. Q. (2025).
+           Optimal Scalogram for Computational Complexity Reduction in Acoustic Recognition Using Deep Learning.
+           *arXiv preprint arXiv:2505.13017*. https://arxiv.org/abs/2505.13017
 
     Examples
     --------
@@ -89,7 +104,7 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1,
     >>> x = np.exp(np.linspace(0, 2, 512))
     >>> y = np.cos(2*np.pi*x)  # exponential chirp
     >>> scales = np.logspace(np.log10(1), np.log10(128), 128)
-    >>> coef, freqs = pywt.cwt(y, scales, 'gaus1')
+    >>> coef, freqs = pywt.cwt(y, scales, 'gaus1', hop_size=16)
     >>> plt.matshow(coef)
     >>> plt.show()
 
@@ -99,7 +114,7 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1,
     >>> t = np.linspace(-1, 1, 200, endpoint=False)
     >>> sig  = np.cos(2 * np.pi * 7 * t) + np.real(np.exp(-7*(t-0.4)**2)*np.exp(1j*2*np.pi*2*(t-0.4)))
     >>> widths = np.logspace(np.log10(1), np.log10(30), 30)
-    >>> cwtmatr, freqs = pywt.cwt(sig, widths, 'mexh')
+    >>> cwtmatr, freqs = pywt.cwt(sig, widths, 'mexh', , hop_size=128)
     >>> plt.imshow(cwtmatr, extent=[-1, 1, 1, 31], cmap='PRGn', aspect='auto',
     ...            vmax=abs(cwtmatr).max(), vmin=-abs(cwtmatr).max())
     >>> plt.show()
@@ -120,8 +135,8 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1,
         raise AxisError("axis must be a scalar.")
 
     dt_out = dt_cplx if wavelet.complex_cwt else dt
-    out = np.empty((np.size(scales),) + data.shape, dtype=dt_out)
-
+    data_sampled = data[..., ::hop_size]
+    out = np.empty((np.size(scales),) + data_sampled.shape, dtype=dt_out)
     int_psi, x = integrate_wavelet(wavelet, precision=precision)
     int_psi = np.conj(int_psi) if wavelet.complex_cwt else int_psi
 
@@ -193,7 +208,7 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1,
             # restore original data shape and axis position
             coef = coef.reshape(data_shape_pre)
             coef = coef.swapaxes(axis, -1)
-        out[i, ...] = coef
+        out[i, ...] = coef[..., ::hop_size]
 
     frequencies = scale2frequency(wavelet, scales, precision)
     if np.isscalar(frequencies):
