@@ -428,7 +428,7 @@ def test_cwt_batch(axis, method):
     assert_equal(cfs.shape[1 + axis], sst.shape[axis])
 
     # batch result on stacked input is the same as stacked 1d result
-    assert_almost_equal(cfs, np.stack((cfs1,) * np.ceil(n_batch / hop_size).astype(int), axis=batch_axis + 1),
+    assert_almost_equal(cfs, np.stack((cfs1,) * np.ceil(n_batch / hop_size).astype(int), axis=np.ceil(batch_axis / hop_size).astype(int) + 1),
                         decimal=12)
 
 
