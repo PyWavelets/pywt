@@ -51,7 +51,7 @@ jobs:
           - runs-on: ubuntu-latest
             python-version: "3.11"
           - runs-on: ubuntu-latest
-            python-version: "3.11"
+            python-version: "3.14-dev"
             USE_SDIST: 1
             OPTIONS_NAME: "install-from-sdist"
           - runs-on: ubuntu-latest
@@ -62,11 +62,8 @@ jobs:
             python-version: "3.13"
             OPTIONS_NAME: "editable-install"
     steps:
-      - name: Checkout PyWavelets
-        uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
+      - uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55 # v5.5.0
         with:
           python-version: ${{ matrix.python-version}}
           allow-prereleases: true
@@ -140,35 +137,25 @@ jobs:
           popd
 
   test_pywavelets_linux_free_threaded:
-    name: linux-cp313t-default
+    name: linux-cp${{ matrix.python-version }}-default
     runs-on: ubuntu-latest
     strategy:
-      # Ensure that a wheel builder finishes even if another fails
       fail-fast: false
-
+      matrix:
+        python-version: ["3.13t", "3.14t-dev"]
     steps:
-      - name: Checkout PyWavelets
-        uses: actions/checkout@v4
-
-      # TODO: replace with setup-python when there is support
-      - uses: deadsnakes/action@e640ac8743173a67cca4d7d77cd837e514bf98e8 # v3.2.0
+      - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
+      - uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55 # v5.5.0
         with:
-          python-version: "3.13-dev"
-          nogil: true
+          python-version: ${{ matrix.python-version}}
 
       - name: Build package
         run: |
-          which python
-          python --version
           pip install --upgrade pip build
-          # We need nightly wheels for free-threaded support and latest fixes
-          pip install --pre -i https://pypi.anaconda.org/scientific-python-nightly-wheels/simple cython numpy
-          pip install pytest meson-python ninja
+          pip install cython numpy meson-python ninja pytest
           pip install . -v --no-build-isolation
 
       - name: Run tests
-        env:
-          PYTHON_GIL: 0
         run: |
           # Move out of source directory to avoid finding local pywt
           cd demo
@@ -196,11 +183,8 @@ jobs:
             OPTIONS_NAME: "pre-releases"
 
     steps:
-      - name: Checkout PyWavelets
-        uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
+      - uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55 # v5.5.0
         with:
           python-version: ${{ matrix.python-version}}
           allow-prereleases: true
@@ -253,8 +237,8 @@ jobs:
               python ../pywt/tests/test_doc.py
           elif [ "${REFGUIDE_CHECK}" == "1" ]; then
               # doctests docstrings
-              pytest --doctest-modules --pyargs pywt -v  --doctest-collect=api
-              pytest --doctest-modules --pyargs pywt.data -v
+              pytest --doctest-modules --doctest-only-doctests=true --pyargs pywt -v  --doctest-collect=api
+              pytest --doctest-modules --doctest-only-doctests=true --pyargs pywt.data -v
           else
               pytest --pyargs pywt
           fi

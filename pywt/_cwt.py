@@ -24,7 +24,8 @@ def next_fast_len(n):
     return 2**ceil(np.log2(n))
 
 
-def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1, precision=12, *, hop_size=1):
+def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1, precision=12,
+        *, hop_size=1):
     """
 
     One dimensional Continuous Wavelet Transform.

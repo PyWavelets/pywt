@@ -34,38 +34,25 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        cibw_python: ["cp311", "cp312", "cp313", "cp313t"]
+        cibw_python: ["cp311", "cp312", "cp313", "cp313t", "cp314", "cp314t"]
         cibw_arch: ["x86_64"]
     steps:
       - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
         with:
           fetch-depth: 0
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55 # v5.5.0
         name: Install Python
         with:
           python-version: "3.12"
 
-      - name: Install build deps; set CIBW environment variables
-        if: ${{ matrix.cibw_python }} == "cp313t"
-        run: |
-          PYPI_URL="https://pypi.anaconda.org/scientific-python-nightly-wheels/simple"
-          CIBW_DEPS="pip install --pre -i $PYPI_URL cython &&\
-                     pip install numpy pytest meson-python ninja"
-          NO_BUILD_ISOLATION="pip; args: --no-build-isolation"
-          echo "CIBW_BEFORE_BUILD=$CIBW_DEPS" >> "$GITHUB_ENV"
-          echo "CIBW_BEFORE_TEST=$CIBW_DEPS" >> "$GITHUB_ENV"
-          echo "CIBW_BUILD_FRONTEND=$NO_BUILD_ISOLATION" >> "$GITHUB_ENV"
-
       - name: Build the wheel
-        uses: pypa/cibuildwheel@faf86a6ed7efa889faf6996aa23820831055001a # v2.23.3
+        uses: pypa/cibuildwheel@9e4e50bd76b3190f55304387e333f6234823ea9b # v3.1.2
         with:
           output-dir: dist
         env:
           CIBW_BUILD: ${{ matrix.cibw_python }}-*
           CIBW_ARCHS_LINUX: ${{ matrix.cibw_arch }}
-          CIBW_MANYLINUX_X86_64_IMAGE: manylinux2014
-          CIBW_MUSLLINUX_X86_64_IMAGE: musllinux_1_2
-          CIBW_FREE_THREADED_SUPPORT: True
+          CIBW_ENABLE: cpython-freethreading
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: wheels_linux_${{ matrix.cibw_arch }}_${{ matrix.cibw_python }}
@@ -79,26 +66,25 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-22.04-arm]
-        cibw_python: ["cp311", "cp312", "cp313"]
+        cibw_python: ["cp311", "cp312", "cp313", "cp313t", "cp314", "cp314t"]
         cibw_arch: ["aarch64"]
     steps:
       - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
         with:
           fetch-depth: 0
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55 # v5.5.0
         name: Install Python
         with:
           python-version: "3.12"
 
       - name: Build the wheel
-        uses: pypa/cibuildwheel@faf86a6ed7efa889faf6996aa23820831055001a # v2.23.3
+        uses: pypa/cibuildwheel@9e4e50bd76b3190f55304387e333f6234823ea9b # v3.1.2
         with:
           output-dir: dist
         env:
           CIBW_BUILD: ${{ matrix.cibw_python }}-*
           CIBW_ARCHS_LINUX: ${{ matrix.cibw_arch }}
-          CIBW_MANYLINUX_AARCH64_IMAGE: manylinux2014
-          CIBW_MUSLLINUX_AARCH64_IMAGE: musllinux_1_2
+          CIBW_ENABLE: cpython-freethreading
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: wheels_linux_${{ matrix.cibw_arch }}_${{ matrix.cibw_python }}
@@ -112,55 +98,42 @@ jobs:
       matrix:
         # macos-13 is the last runner that supports Intel (x86_64) architecture
         os: [macos-13, macos-14]
-        cibw_python: ["cp311", "cp312", "cp313", "cp313t"]
+        cibw_python: ["cp311", "cp312", "cp313", "cp313t", "cp314", "cp314t"]
         cibw_arch: ["x86_64", "arm64"]
         exclude:
           - os: macos-14
             cibw_arch: "x86_64"
           - os: macos-13
             cibw_arch: "arm64"
-          - os: macos-13
-            cibw_arch: "x86_64"
-            cibw_python: "cp313t"
     steps:
       - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55 # v5.5.0
         name: Install Python
         with:
           python-version: "3.12"
 
-      - name: Install build deps; set CIBW environment variables
-        if: ${{ matrix.cibw_python }} == "cp313t"
-        run: |
-          PYPI_URL="https://pypi.anaconda.org/scientific-python-nightly-wheels/simple"
-          CIBW_DEPS="pip install --pre -i $PYPI_URL cython &&\
-                     pip install numpy pytest meson-python ninja"
-          NO_BUILD_ISOLATION="pip; args: --no-build-isolation"
-          echo "CIBW_BEFORE_BUILD=$CIBW_DEPS" >> "$GITHUB_ENV"
-          echo "CIBW_BEFORE_TEST=$CIBW_DEPS" >> "$GITHUB_ENV"
-          echo "CIBW_BUILD_FRONTEND=$NO_BUILD_ISOLATION" >> "$GITHUB_ENV"
-
       - name: Build wheels for CPython (macOS) (x86_64)
         if: matrix.cibw_arch == 'x86_64'
-        uses: pypa/cibuildwheel@faf86a6ed7efa889faf6996aa23820831055001a # v2.23.3
+        uses: pypa/cibuildwheel@9e4e50bd76b3190f55304387e333f6234823ea9b # v3.1.2
         with:
           output-dir: dist
         env:
           CIBW_BUILD: ${{ matrix.cibw_python }}-*
           CIBW_ARCHS_MACOS: ${{ matrix.cibw_arch }}
+          CIBW_ENABLE: cpython-freethreading
 
       - name: Build wheels for CPython (macOS) (arm64)
         if: matrix.cibw_arch == 'arm64'
-        uses: pypa/cibuildwheel@faf86a6ed7efa889faf6996aa23820831055001a # v2.23.3
+        uses: pypa/cibuildwheel@9e4e50bd76b3190f55304387e333f6234823ea9b # v3.1.2
         with:
           output-dir: dist
         env:
           CIBW_BUILD: ${{ matrix.cibw_python }}-*
           CIBW_ARCHS_MACOS: ${{ matrix.cibw_arch }}
-          CIBW_FREE_THREADED_SUPPORT: True
+          CIBW_ENABLE: cpython-freethreading
 
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
@@ -176,13 +149,13 @@ jobs:
       matrix:
         os: [windows-latest]
         cibw_arch: ["AMD64", "x86"]
-        cibw_python: ["cp311", "cp312", "cp313", "cp313t"]
+        cibw_python: ["cp311", "cp312", "cp313", "cp313t", "cp314", "cp314t"]
     steps:
       - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55 # v5.5.0
         name: Install Python
         with:
           python-version: "3.12"
@@ -199,26 +172,14 @@ jobs:
         with:
           architecture: x64
 
-      - name: Install build deps; set CIBW environment variables
-        if: ${{ matrix.cibw_python }} == "cp313t"
-        shell: bash -el {0}
-        run: |
-          PYPI_URL="https://pypi.anaconda.org/scientific-python-nightly-wheels/simple"
-          CIBW_DEPS="pip install --pre -i $PYPI_URL cython numpy &&\
-                     pip install pytest meson-python ninja"
-          NO_BUILD_ISOLATION="pip; args: --no-build-isolation"
-          echo "CIBW_BEFORE_BUILD=$CIBW_DEPS" >> "$GITHUB_ENV"
-          echo "CIBW_BEFORE_TEST=$CIBW_DEPS" >> "$GITHUB_ENV"
-          echo "CIBW_BUILD_FRONTEND=$NO_BUILD_ISOLATION" >> "$GITHUB_ENV"
-
       - name: Build Windows wheels for CPython
-        uses: pypa/cibuildwheel@faf86a6ed7efa889faf6996aa23820831055001a # v2.23.3
+        uses: pypa/cibuildwheel@9e4e50bd76b3190f55304387e333f6234823ea9b # v3.1.2
         with:
           output-dir: dist
         env:
           CIBW_BUILD: ${{ matrix.cibw_python }}-*
           CIBW_ARCHS_WINDOWS: ${{ matrix.cibw_arch }}
-          CIBW_FREE_THREADED_SUPPORT: True
+          CIBW_ENABLE: cpython-freethreading
 
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
@@ -243,7 +204,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55 # v5.5.0
         name: Install Python
         with:
           python-version: "3.12"
@@ -275,7 +236,7 @@ jobs:
           TWINE_PASSWORD: ${{ secrets.TWINE_TOKEN }}
 
       - name: Github release
-        uses: softprops/action-gh-release@da05d552573ad5aba039eaac05058a918a7bf631 # v2.2.2
+        uses: softprops/action-gh-release@72f2c25fcb47643c292f7107632f7a47c1df5cd8 # v2.3.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
