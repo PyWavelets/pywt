@@ -23,7 +23,7 @@ requires = [
 
 [project]
 name = "PyWavelets"
-version = "1.9.0.dev0"
+version = "1.10.0.dev0"
 license = "MIT and BSD-3-Clause"
 license-files = [
     "LICENSE",

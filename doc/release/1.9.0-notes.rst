@@ -1,0 +1,58 @@
+==============================
+PyWavelets 1.9.0 Release Notes
+==============================
+
+We are very pleased to announce the release of PyWavelets 1.9.0. This release
+contains a fix for a long-standing problem with ``pywt.cwt``, adding a
+``precision`` keyword and increasing the default precision used.
+
+This release makes a number of changes to the versions of dependencies that are
+supported:
+
+- Support for Python 3.14 is added, and support for Python 3.10 dropped,
+- The minimum supported NumPy version is now 1.25.0,
+- The optional dependency on SciPy has been removed,
+
+
+Authors
+=======
+
+* Evgeni Burovski
+* gabalafou +
+* Ralf Gommers
+* Agriya Khetarpal
+* John Muradeli +
+
+A total of 7 people contributed to this release.
+People with a "+" by their names contributed a patch for the first time.
+This list of names is automatically generated, and may not be fully complete.
+
+
+Issues closed for v1.9.0
+------------------------
+
+* `#531 <https://github.com/PyWavelets/pywt/issues/531>`__: precision of CWT
+* `#784 <https://github.com/PyWavelets/pywt/issues/784>`__: Spikes in wavelet after cwt
+* `#799 <https://github.com/PyWavelets/pywt/issues/799>`__: Wavelet name typo in documentation
+
+
+Pull requests for v1.9.0
+------------------------
+
+* `#570 <https://github.com/PyWavelets/pywt/pull/570>`__: ENH: allow user to set \`precision\` in CWT, increase default...
+* `#741 <https://github.com/PyWavelets/pywt/pull/741>`__: DOC: Add interactive notebooks to pages in the "Usage Examples"...
+* `#772 <https://github.com/PyWavelets/pywt/pull/772>`__: MAINT: update handling of license files to use PEP 639
+* `#788 <https://github.com/PyWavelets/pywt/pull/788>`__: CI: Build Linux AArch64 wheels natively, and add Arm runners...
+* `#789 <https://github.com/PyWavelets/pywt/pull/789>`__: Bump the github-actions group with 2 updates
+* `#791 <https://github.com/PyWavelets/pywt/pull/791>`__: MAINT: remove optional dependence on SciPy for FFT operations
+* `#793 <https://github.com/PyWavelets/pywt/pull/793>`__: Bump the github-actions group with 2 updates
+* `#794 <https://github.com/PyWavelets/pywt/pull/794>`__: MAINT: bump minimum Python version to 3.10 and NumPy to 1.25
+* `#802 <https://github.com/PyWavelets/pywt/pull/802>`__: \`cwt\`: log \`scales\` in docstring example
+* `#803 <https://github.com/PyWavelets/pywt/pull/803>`__: Bump the github-actions group with 3 updates
+* `#805 <https://github.com/PyWavelets/pywt/pull/805>`__: MAINT: require scipy_doctest>=1.8.0
+* `#810 <https://github.com/PyWavelets/pywt/pull/810>`__: BLD/CI: Use cibuildwheel v3
+* `#811 <https://github.com/PyWavelets/pywt/pull/811>`__: CI: add cp314/cp314t wheel builds; improve cp313t builds
+* `#812 <https://github.com/PyWavelets/pywt/pull/812>`__: DOC: fix typo in a wavelet name
+* `#813 <https://github.com/PyWavelets/pywt/pull/813>`__: CI: clean up free-threading job, and pin actions in tests.yml
+* `#814 <https://github.com/PyWavelets/pywt/pull/814>`__: Bump the github-actions group with 2 updates
+* `#815 <https://github.com/PyWavelets/pywt/pull/815>`__: CI: test Python 3.14 and 3.14t in regular CI jobs
