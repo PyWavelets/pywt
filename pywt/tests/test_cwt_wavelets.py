@@ -390,7 +390,7 @@ def test_cwt_complex(dtype, tol, method):
     # and imaginary components
     sst_complex = sst + 1j*sst
     [cfs_complex, f] = pywt.cwt(sst_complex, scales, wavelet, dt,
-                                method=method, hop_size=128)
+                                method=method, hop_size=1)
     assert_allclose(cfs + 1j*cfs, cfs_complex, atol=tol, rtol=tol)
     # verify dtype is preserved
     assert_equal(cfs_complex.dtype, sst_complex.dtype)
@@ -412,7 +412,7 @@ def test_cwt_batch(axis, method):
     [cfs1, f] = pywt.cwt(sst1, scales, wavelet, dt, method=method, axis=axis, hop_size=1)
 
     shape_in = sst.shape
-    [cfs, f] = pywt.cwt(sst, scales, wavelet, dt, method=method, axis=axis, hop_size=128)
+    [cfs, f] = pywt.cwt(sst, scales, wavelet, dt, method=method, axis=axis, hop_size=1)
 
     # shape of input is not modified
     assert_equal(shape_in, sst.shape)
