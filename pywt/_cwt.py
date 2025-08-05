@@ -105,7 +105,7 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1,
     >>> plt.show()
     """
 
-    # accept array_like input; make a copy to ensure a contiguous array
+    # accept array like input; make a copy to ensure a contiguous array
     dt = _check_dtype(data)
     data = np.asarray(data, dtype=dt)
     dt_cplx = np.result_type(dt, np.complex64)
