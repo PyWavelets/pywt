@@ -405,7 +405,7 @@ def test_cwt_batch(axis, method):
     hop_size = 1
     batch_axis = 1 - axis
     sst1 = np.asarray(sst, dtype=dtype)
-    sst = np.stack((sst1, ) * np.ceil(n_batch / hop_size).astype(int), axis=np.ceil(batch_axis / hop_size).astype(int))
+    sst = np.stack((sst1, ) * n_batch, axis=batch_axis)
     dt = time[1] - time[0]
     wavelet = 'cmor1.5-1.0'
     scales = np.arange(1, 32)
@@ -424,11 +424,11 @@ def test_cwt_batch(axis, method):
 
     # verify expected shape
     assert_equal(cfs.shape[0], len(scales))
-    assert_equal(cfs.shape[1 + batch_axis], np.ceil(n_batch / hop_size).astype(int))
+    assert_equal(cfs.shape[1 + batch_axis], n_batch)
     assert_equal(cfs.shape[1 + axis], sst.shape[axis])
 
     # batch result on stacked input is the same as stacked 1d result
-    assert_almost_equal(cfs, np.stack((cfs1,) * np.ceil(n_batch / hop_size).astype(int), axis=np.ceil(batch_axis / hop_size).astype(int) + 1),
+    assert_almost_equal(cfs, np.stack((cfs1,) * n_batch, axis=batch_axis + 1),
                         decimal=12)
 
 
