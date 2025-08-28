@@ -147,9 +147,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest]
-        cibw_arch: ["AMD64", "x86"]
+        os: [windows-latest, windows-11-arm]
+        cibw_arch: ["AMD64", "x86", "ARM64"]
         cibw_python: ["cp311", "cp312", "cp313", "cp313t", "cp314", "cp314t"]
+        exclude:
+          - os: windows-latest
+            cibw_arch: ARM64
+          - os: windows-11-arm
+            cibw_arch: x86
+          - os: windows-11-arm
+            cibw_arch: AMD64
     steps:
       - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
         with:
@@ -171,6 +178,12 @@ jobs:
         uses: bus1/cabuild/action/msdevshell@e22aba57d6e74891d059d66501b6b5aed8123c4d # v1
         with:
           architecture: x64
+
+      - name: Setup MSVC (ARM64)
+        if: matrix.cibw_arch == 'ARM64'
+        uses: bus1/cabuild/action/msdevshell@e22aba57d6e74891d059d66501b6b5aed8123c4d # v1
+        with:
+          architecture: arm64
 
       - name: Build Windows wheels for CPython
         uses: pypa/cibuildwheel@9e4e50bd76b3190f55304387e333f6234823ea9b # v3.1.2
