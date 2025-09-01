@@ -34,10 +34,10 @@ jobs:
     if: github.repository == 'PyWavelets/pywt'
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Build and test PyWavelets
-        uses: pypa/cibuildwheel@9e4e50bd76b3190f55304387e333f6234823ea9b # v3.1.2
+        uses: pypa/cibuildwheel@c923d83ad9c1bc00211c5041d0c3f73294ff88f6 # v3.1.4
         env:
           CIBW_PLATFORM: pyodide
           CIBW_TEST_REQUIRES: pytest matplotlib
