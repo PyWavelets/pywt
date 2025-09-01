@@ -24,8 +24,7 @@ def next_fast_len(n):
     return 2**ceil(np.log2(n))
 
 
-def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1, precision=12,
-        *, hop_size=1):
+def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1, *, precision=12, hop_size=1):
     """
 
     One dimensional Continuous Wavelet Transform.
@@ -66,7 +65,7 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1, preci
         compute a bit slower. Too low will distort coefficients and their
         norms, with a zipper-like effect. The default is 12, it's recommended
         to use >=12.
-    hop_size : int
+    hop_size : int, optional
         Specifies the down-sampling factor applied on temporal axis during the transform.
         The output is sampled every hop size samples, rather than at every consecutive sample.
         For example:
