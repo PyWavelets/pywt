@@ -410,10 +410,10 @@ def test_cwt_batch(axis, method):
     scales = np.arange(1, 32)
 
     # non-batch transform as reference
-    [cfs1, f] = pywt.cwt(sst1, scales, wavelet, dt, method=method, axis=axis, hop_size=hop_size)
+    [cfs1, f] = pywt.cwt(sst1, scales, wavelet, dt, method=method, axis=axis)
 
     shape_in = sst.shape
-    [cfs, f] = pywt.cwt(sst, scales, wavelet, dt, method=method, axis=axis, hop_size=hop_size)
+    [cfs, f] = pywt.cwt(sst, scales, wavelet, dt, method=method, axis=axis)
 
     # shape of input is not modified
     assert_equal(shape_in, sst.shape)
