@@ -402,7 +402,6 @@ def test_cwt_batch(axis, method):
     dtype = np.float64
     time, sst = pywt.data.nino()
     n_batch = 8
-    hop_size = 1
     batch_axis = 1 - axis
     sst1 = np.asarray(sst, dtype=dtype)
     sst = np.stack((sst1, ) * n_batch, axis=batch_axis)
