@@ -387,6 +387,10 @@ def test_cwt_complex(dtype, tol, method):
     # verify same precision
     assert_equal(cfs.real.dtype, sst.dtype)
 
+    # verify number of time steps reduced by hop_size
+    expected_time_len = int(np.ceil(len(sst) / hop_size))
+    assert_equal(cfs.shape[1], expected_time_len)
+
     # complex-valued transform equals sum of the transforms of the real
     # and imaginary components
     sst_complex = sst + 1j*sst
