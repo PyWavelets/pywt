@@ -40,13 +40,13 @@ jobs:
       - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v4.1.2
         with:
           fetch-depth: 0
-      - uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55 # v5.5.0
+      - uses: actions/setup-python@2e3e4b15a884dc73a63f962bff250a855150a234 # v5.5.0
         name: Install Python
         with:
           python-version: "3.12"
 
       - name: Build the wheel
-        uses: pypa/cibuildwheel@c923d83ad9c1bc00211c5041d0c3f73294ff88f6 # v3.1.4
+        uses: pypa/cibuildwheel@7c619efba910c04005a835b110b057fc28fd6e93 # v3.2.0
         with:
           output-dir: dist
         env:
@@ -72,13 +72,13 @@ jobs:
       - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v4.1.2
         with:
           fetch-depth: 0
-      - uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55 # v5.5.0
+      - uses: actions/setup-python@2e3e4b15a884dc73a63f962bff250a855150a234 # v5.5.0
         name: Install Python
         with:
           python-version: "3.12"
 
       - name: Build the wheel
-        uses: pypa/cibuildwheel@c923d83ad9c1bc00211c5041d0c3f73294ff88f6 # v3.1.4
+        uses: pypa/cibuildwheel@7c619efba910c04005a835b110b057fc28fd6e93 # v3.2.0
         with:
           output-dir: dist
         env:
@@ -110,14 +110,14 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55 # v5.5.0
+      - uses: actions/setup-python@2e3e4b15a884dc73a63f962bff250a855150a234 # v5.5.0
         name: Install Python
         with:
           python-version: "3.12"
 
       - name: Build wheels for CPython (macOS) (x86_64)
         if: matrix.cibw_arch == 'x86_64'
-        uses: pypa/cibuildwheel@c923d83ad9c1bc00211c5041d0c3f73294ff88f6 # v3.1.4
+        uses: pypa/cibuildwheel@7c619efba910c04005a835b110b057fc28fd6e93 # v3.2.0
         with:
           output-dir: dist
         env:
@@ -127,7 +127,7 @@ jobs:
 
       - name: Build wheels for CPython (macOS) (arm64)
         if: matrix.cibw_arch == 'arm64'
-        uses: pypa/cibuildwheel@c923d83ad9c1bc00211c5041d0c3f73294ff88f6 # v3.1.4
+        uses: pypa/cibuildwheel@7c619efba910c04005a835b110b057fc28fd6e93 # v3.2.0
         with:
           output-dir: dist
         env:
@@ -162,7 +162,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55 # v5.5.0
+      - uses: actions/setup-python@2e3e4b15a884dc73a63f962bff250a855150a234 # v5.5.0
         name: Install Python
         with:
           python-version: "3.12"
@@ -186,7 +186,7 @@ jobs:
           architecture: arm64
 
       - name: Build Windows wheels for CPython
-        uses: pypa/cibuildwheel@c923d83ad9c1bc00211c5041d0c3f73294ff88f6 # v3.1.4
+        uses: pypa/cibuildwheel@7c619efba910c04005a835b110b057fc28fd6e93 # v3.2.0
         with:
           output-dir: dist
         env:
@@ -217,7 +217,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55 # v5.5.0
+      - uses: actions/setup-python@2e3e4b15a884dc73a63f962bff250a855150a234 # v5.5.0
         name: Install Python
         with:
           python-version: "3.12"
@@ -249,7 +249,7 @@ jobs:
           TWINE_PASSWORD: ${{ secrets.TWINE_TOKEN }}
 
       - name: Github release
-        uses: softprops/action-gh-release@72f2c25fcb47643c292f7107632f7a47c1df5cd8 # v2.3.2
+        uses: softprops/action-gh-release@6cbd405e2c4e67a21c47fa9e383d020e4e28b836 # v2.3.3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
