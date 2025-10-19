@@ -55,6 +55,9 @@ homepage = "https://github.com/PyWavelets/pywt"
 source = "https://github.com/PyWavelets/pywt"
 documentation = "https://pywavelets.readthedocs.io/"
 
+[tool.meson-python]
+limited-api = true
+
 [tool.ruff]
 line-length = 88
 target-version = 'py310'
