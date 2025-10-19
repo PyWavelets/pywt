@@ -60,6 +60,8 @@ documentation = "https://pywavelets.readthedocs.io/"
 config-settings = {setup-args = ["--vsenv"]}
 before-build = "bash {project}/util/cibw_before_build_win.sh"
 
+[tool.meson-python]
+limited-api = true
 
 [tool.ruff]
 line-length = 88
