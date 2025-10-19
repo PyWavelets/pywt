@@ -3,11 +3,15 @@ project(
   'c', 'cython',
   version: '1.10.0.dev0',
   license: 'MIT',
-  meson_version: '>= 1.1.0',
+  meson_version: '>= 1.5.0',
   default_options: [
     'buildtype=debugoptimized',
     'b_ndebug=if-release',
     'c_std=c17',
+    # We default to false here (so produce wheels like cp314), and can opt into
+    # producing abi3 wheels. The setting in pyproject.toml is
+    # `limited-api=true`, but this default will ensure it is opt-in:
+    'python.allow_limited_api=false',
   ],
 )
 
