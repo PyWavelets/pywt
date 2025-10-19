@@ -1,6 +1,7 @@
 """ This script was used to generate dwt_matlabR2012a_result.npz by storing
 the outputs from Matlab R2012a. """
 
+import os.path
 
 import numpy as np
 
@@ -91,4 +92,5 @@ try:
 finally:
     mlab.stop()
 
-np.savez('dwt_matlabR2012a_result.npz', **all_matlab_results)
+np.savez(os.path.join('..', 'pywt', 'tests', 'data',
+                      'dwt_matlabR2012a_result.npz'), **all_matlab_results)
