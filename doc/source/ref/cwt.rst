@@ -10,6 +10,13 @@ This section focuses on the one-dimensional Continuous Wavelet Transform. It
 introduces the main function ``cwt`` alongside several helper function, and
 also gives an overview over the available wavelets for this transfom.
 
+.. note::
+
+    ``cwt`` and related functions in PyWavelets have some known issues;
+    you may be interested in trying the ``cwt`` implementation in
+    `ssqueezepy <https://pypi.org/project/ssqueezepy/>`__,
+    which is substantially faster and may also be more accurate.
+
 
 Introduction
 ------------
