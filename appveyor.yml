@@ -7,9 +7,7 @@ build: off
 environment:
   matrix:
     - arch: x64
-      PY_PYTHON: 3.11
-    - arch: x86
-      PY_PYTHON: 3.11-32
+      PY_PYTHON: 3.12
     - arch: x64
       PY_PYTHON: 3.13
 
