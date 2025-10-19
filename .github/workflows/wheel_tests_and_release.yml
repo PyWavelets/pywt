@@ -34,7 +34,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        cibw_python: ["cp311", "cp312", "cp313", "cp313t", "cp314", "cp314t"]
+        cibw_python: ["cp312", "cp313", "cp313t", "cp314", "cp314t"]
         cibw_arch: ["x86_64"]
     steps:
       - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v4.1.2
@@ -66,7 +66,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-22.04-arm]
-        cibw_python: ["cp311", "cp312", "cp313", "cp313t", "cp314", "cp314t"]
+        cibw_python: ["cp312", "cp313", "cp313t", "cp314", "cp314t"]
         cibw_arch: ["aarch64"]
     steps:
       - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v4.1.2
@@ -98,7 +98,7 @@ jobs:
       matrix:
         # macos-13 is the last runner that supports Intel (x86_64) architecture
         os: [macos-13, macos-14]
-        cibw_python: ["cp311", "cp312", "cp313", "cp313t", "cp314", "cp314t"]
+        cibw_python: ["cp312", "cp313", "cp313t", "cp314", "cp314t"]
         cibw_arch: ["x86_64", "arm64"]
         exclude:
           - os: macos-14
@@ -149,7 +149,7 @@ jobs:
       matrix:
         os: [windows-latest, windows-11-arm]
         cibw_arch: ["AMD64", "x86", "ARM64"]
-        cibw_python: ["cp311", "cp312", "cp313", "cp313t", "cp314", "cp314t"]
+        cibw_python: ["cp312", "cp313", "cp313t", "cp314", "cp314t"]
         exclude:
           - os: windows-latest
             cibw_arch: ARM64

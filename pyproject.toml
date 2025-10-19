@@ -8,7 +8,7 @@
 build-backend = "mesonpy"
 requires = [
     "meson-python>=0.18.0",
-    "Cython>=3.0.4",
+    "Cython>=3.1.3",
 
     # numpy requirement for wheel builds for distribution on PyPI - building
     # against 2.x yields wheels that are also compatible with numpy 1.x at
@@ -16,9 +16,7 @@ requires = [
     # Note that building against numpy 1.x works fine too - users and
     # redistributors can do this by installing the numpy version they like and
     # disabling build isolation.
-    "numpy>=2.0.0; python_version<'3.13'",
-    "numpy>=2.1.0; python_version>='3.13'",
-    "numpy>=2.3.2; python_version>='3.14'",
+    "numpy>=2.0.0",
 ]
 
 [project]
@@ -33,8 +31,8 @@ maintainers = [
     {name = "The PyWavelets Developers", email = "pywavelets@googlegroups.com"}
 ]
 description = "PyWavelets, wavelet transform module"
-requires-python = ">=3.11"
-dependencies = ["numpy>=1.25,<3"]
+requires-python = ">=3.12"
+dependencies = ["numpy>=1.26.4,<3"]
 readme = "README.rst"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -45,10 +43,10 @@ classifiers = [
     "Programming Language :: C",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: Free Threading :: 2 - Beta",
     "Topic :: Software Development :: Libraries :: Python Modules"
 ]
 
