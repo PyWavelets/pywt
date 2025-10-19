@@ -96,14 +96,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # macos-13 is the last runner that supports Intel (x86_64) architecture
-        os: [macos-13, macos-14]
+        os: [macos-15-intel, macos-14]
         cibw_python: ["cp312", "cp313", "cp313t", "cp314", "cp314t"]
         cibw_arch: ["x86_64", "arm64"]
         exclude:
           - os: macos-14
             cibw_arch: "x86_64"
-          - os: macos-13
+          - os: macos-15-intel
             cibw_arch: "arm64"
     steps:
       - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v4.1.2
