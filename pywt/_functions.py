@@ -152,11 +152,15 @@ def central_frequency(wavelet, precision=8):
     domain = float(x[-1] - x[0])
     assert domain > 0
 
-    index = np.argmax(abs(fft(psi)[1:])) + 2
-    if index > len(psi) / 2:
-        index = len(psi) - index + 2
+    # improve center frequency estimation by sampling DTFT(psi) more granularly
+    pad_factor = 3
+    psi_pad = np.pad(psi, [0, pad_factor * len(psi)])
 
-    return 1.0 / (domain / (index - 1))
+    index = np.argmax(abs(fft(psi_pad))[1:]) + 1  # omit dc, +1 to compensate
+    if index > len(psi_pad) / 2:  # if negative freq, use index of positive
+        index = len(psi_pad) - index
+
+    return 1.0 / ((pad_factor + 1) * domain / index)
 
 
 def scale2frequency(wavelet, scale, precision=8):
