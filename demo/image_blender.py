@@ -65,7 +65,7 @@ def array2image(arr, mode):
     arr = arr.swapaxes(1, 2).swapaxes(0, 2)
     arr[arr < 0] = 0
     arr[arr > 255] = 255
-    arr = numpy.fix(arr).astype(numpy.uint8)
+    arr = numpy.trunc(arr).astype(numpy.uint8)
     return Image.frombytes(mode, arr.shape[1::-1], arr.tobytes())
 
 

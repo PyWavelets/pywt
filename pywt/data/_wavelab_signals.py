@@ -200,12 +200,12 @@ def demo_signal(name='Bumps', n=None):
         f = f[512:1536]
     elif name == 'piece-regular':
         f = np.zeros(n)
-        n_12 = int(np.fix(n / 12))
-        n_7 = int(np.fix(n / 7))
-        n_5 = int(np.fix(n / 5))
-        n_3 = int(np.fix(n / 3))
-        n_2 = int(np.fix(n / 2))
-        n_20 = int(np.fix(n / 20))
+        n_12 = int(np.trunc(n / 12))
+        n_7 = int(np.trunc(n / 7))
+        n_5 = int(np.trunc(n / 5))
+        n_3 = int(np.trunc(n / 3))
+        n_2 = int(np.trunc(n / 2))
+        n_20 = int(np.trunc(n / 20))
         f1 = -15 * demo_signal('bumps', n)
         t = np.arange(1, n_12 + 1) / n_12
         f2 = -np.exp(4 * t)
@@ -231,9 +231,9 @@ def demo_signal(name='Bumps', n=None):
         f = bias - f
     elif name == 'piece-polynomial':
         f = np.zeros(n)
-        n_5 = int(np.fix(n / 5))
-        n_10 = int(np.fix(n / 10))
-        n_20 = int(np.fix(n / 20))
+        n_5 = int(np.trunc(n / 5))
+        n_10 = int(np.trunc(n / 10))
+        n_20 = int(np.trunc(n / 20))
         t = np.arange(1, n_5 + 1) / n_5
         f1 = 20 * (t**3 + t**2 + 4)
         f3 = 40 * (2 * t**3 + t) + 100
