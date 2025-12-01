@@ -37,7 +37,7 @@ jobs:
         cibw_python: ["cp312", "cp313", "cp313t", "cp314", "cp314t"]
         cibw_arch: ["x86_64"]
     steps:
-      - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v4.1.2
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v4.1.2
         with:
           fetch-depth: 0
       - uses: actions/setup-python@2e3e4b15a884dc73a63f962bff250a855150a234 # v5.5.0
@@ -46,7 +46,7 @@ jobs:
           python-version: "3.12"
 
       - name: Build the wheel
-        uses: pypa/cibuildwheel@9c00cb4f6b517705a3794b22395aedc36257242c # v3.2.1
+        uses: pypa/cibuildwheel@63fd63b352a9a8bdcc24791c9dbee952ee9a8abc # v3.3.0
         with:
           output-dir: dist
         env:
@@ -69,7 +69,7 @@ jobs:
         cibw_python: ["cp312", "cp313", "cp313t", "cp314", "cp314t"]
         cibw_arch: ["aarch64"]
     steps:
-      - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v4.1.2
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v4.1.2
         with:
           fetch-depth: 0
       - uses: actions/setup-python@2e3e4b15a884dc73a63f962bff250a855150a234 # v5.5.0
@@ -78,7 +78,7 @@ jobs:
           python-version: "3.12"
 
       - name: Build the wheel
-        uses: pypa/cibuildwheel@9c00cb4f6b517705a3794b22395aedc36257242c # v3.2.1
+        uses: pypa/cibuildwheel@63fd63b352a9a8bdcc24791c9dbee952ee9a8abc # v3.3.0
         with:
           output-dir: dist
         env:
@@ -105,7 +105,7 @@ jobs:
           - os: macos-15-intel
             cibw_arch: "arm64"
     steps:
-      - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v4.1.2
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v4.1.2
         with:
           fetch-depth: 0
 
@@ -116,7 +116,7 @@ jobs:
 
       - name: Build wheels for CPython (macOS) (x86_64)
         if: matrix.cibw_arch == 'x86_64'
-        uses: pypa/cibuildwheel@9c00cb4f6b517705a3794b22395aedc36257242c # v3.2.1
+        uses: pypa/cibuildwheel@63fd63b352a9a8bdcc24791c9dbee952ee9a8abc # v3.3.0
         with:
           output-dir: dist
         env:
@@ -126,7 +126,7 @@ jobs:
 
       - name: Build wheels for CPython (macOS) (arm64)
         if: matrix.cibw_arch == 'arm64'
-        uses: pypa/cibuildwheel@9c00cb4f6b517705a3794b22395aedc36257242c # v3.2.1
+        uses: pypa/cibuildwheel@63fd63b352a9a8bdcc24791c9dbee952ee9a8abc # v3.3.0
         with:
           output-dir: dist
         env:
@@ -157,7 +157,7 @@ jobs:
           - os: windows-11-arm
             cibw_arch: AMD64
     steps:
-      - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v4.1.2
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v4.1.2
         with:
           fetch-depth: 0
 
@@ -185,7 +185,7 @@ jobs:
           architecture: arm64
 
       - name: Build Windows wheels for CPython
-        uses: pypa/cibuildwheel@9c00cb4f6b517705a3794b22395aedc36257242c # v3.2.1
+        uses: pypa/cibuildwheel@63fd63b352a9a8bdcc24791c9dbee952ee9a8abc # v3.3.0
         with:
           output-dir: dist
         env:
@@ -212,7 +212,7 @@ jobs:
     if: github.repository == 'PyWavelets/pywt' && startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v4.1.2
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v4.1.2
         with:
           fetch-depth: 0
 
@@ -248,7 +248,7 @@ jobs:
           TWINE_PASSWORD: ${{ secrets.TWINE_TOKEN }}
 
       - name: Github release
-        uses: softprops/action-gh-release@6da8fa9354ddfdc4aeace5fc48d7f679b5214090 # v2.4.1
+        uses: softprops/action-gh-release@5be0e66d93ac7ed76da52eca8bb058f665c3a5fe # v2.4.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
@@ -270,7 +270,7 @@ jobs:
       (github.event_name == 'schedule')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v4.1.2
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v4.1.2
         with:
           fetch-depth: 0
 
