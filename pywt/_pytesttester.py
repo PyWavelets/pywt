@@ -33,12 +33,7 @@ __all__ = ['PytestTester']
 
 def _show_pywt_info():
     import pywt
-    from pywt._c99_config import _have_c99_complex
     print(f"PyWavelets version {pywt.__version__}")
-    if _have_c99_complex:
-        print("Compiled with C99 complex support.")
-    else:
-        print("Compiled without C99 complex support.")
 
 
 class PytestTester:
