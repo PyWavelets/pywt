@@ -62,7 +62,7 @@ jobs:
             python-version: "3.14"
             OPTIONS_NAME: "editable-install"
     steps:
-      - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v4.1.2
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v4.1.2
       - uses: actions/setup-python@2e3e4b15a884dc73a63f962bff250a855150a234 # v5.5.0
         with:
           python-version: ${{ matrix.python-version}}
@@ -144,7 +144,7 @@ jobs:
       matrix:
         python-version: ["3.13t", "3.14t"]
     steps:
-      - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v4.1.2
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v4.1.2
       - uses: actions/setup-python@2e3e4b15a884dc73a63f962bff250a855150a234 # v5.5.0
         with:
           python-version: ${{ matrix.python-version}}
@@ -183,7 +183,7 @@ jobs:
             OPTIONS_NAME: "pre-releases"
 
     steps:
-      - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v4.1.2
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v4.1.2
       - uses: actions/setup-python@2e3e4b15a884dc73a63f962bff250a855150a234 # v5.5.0
         with:
           python-version: ${{ matrix.python-version}}

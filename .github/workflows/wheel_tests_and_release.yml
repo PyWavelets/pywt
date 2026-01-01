@@ -37,7 +37,7 @@ jobs:
         cibw_python: ["cp312", "cp313", "cp313t", "cp314", "cp314t"]
         cibw_arch: ["x86_64"]
     steps:
-      - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v4.1.2
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v4.1.2
         with:
           fetch-depth: 0
       - uses: actions/setup-python@2e3e4b15a884dc73a63f962bff250a855150a234 # v5.5.0
@@ -46,14 +46,14 @@ jobs:
           python-version: "3.12"
 
       - name: Build the wheel
-        uses: pypa/cibuildwheel@9c00cb4f6b517705a3794b22395aedc36257242c # v3.2.1
+        uses: pypa/cibuildwheel@63fd63b352a9a8bdcc24791c9dbee952ee9a8abc # v3.3.0
         with:
           output-dir: dist
         env:
           CIBW_BUILD: ${{ matrix.cibw_python }}-*
           CIBW_ARCHS_LINUX: ${{ matrix.cibw_arch }}
           CIBW_ENABLE: cpython-freethreading
-      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: wheels_linux_${{ matrix.cibw_arch }}_${{ matrix.cibw_python }}
           path: ./dist/*.whl
@@ -69,7 +69,7 @@ jobs:
         cibw_python: ["cp312", "cp313", "cp313t", "cp314", "cp314t"]
         cibw_arch: ["aarch64"]
     steps:
-      - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v4.1.2
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v4.1.2
         with:
           fetch-depth: 0
       - uses: actions/setup-python@2e3e4b15a884dc73a63f962bff250a855150a234 # v5.5.0
@@ -78,14 +78,14 @@ jobs:
           python-version: "3.12"
 
       - name: Build the wheel
-        uses: pypa/cibuildwheel@9c00cb4f6b517705a3794b22395aedc36257242c # v3.2.1
+        uses: pypa/cibuildwheel@63fd63b352a9a8bdcc24791c9dbee952ee9a8abc # v3.3.0
         with:
           output-dir: dist
         env:
           CIBW_BUILD: ${{ matrix.cibw_python }}-*
           CIBW_ARCHS_LINUX: ${{ matrix.cibw_arch }}
           CIBW_ENABLE: cpython-freethreading
-      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: wheels_linux_${{ matrix.cibw_arch }}_${{ matrix.cibw_python }}
           path: ./dist/*.whl
@@ -105,7 +105,7 @@ jobs:
           - os: macos-15-intel
             cibw_arch: "arm64"
     steps:
-      - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v4.1.2
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v4.1.2
         with:
           fetch-depth: 0
 
@@ -116,7 +116,7 @@ jobs:
 
       - name: Build wheels for CPython (macOS) (x86_64)
         if: matrix.cibw_arch == 'x86_64'
-        uses: pypa/cibuildwheel@9c00cb4f6b517705a3794b22395aedc36257242c # v3.2.1
+        uses: pypa/cibuildwheel@63fd63b352a9a8bdcc24791c9dbee952ee9a8abc # v3.3.0
         with:
           output-dir: dist
         env:
@@ -126,7 +126,7 @@ jobs:
 
       - name: Build wheels for CPython (macOS) (arm64)
         if: matrix.cibw_arch == 'arm64'
-        uses: pypa/cibuildwheel@9c00cb4f6b517705a3794b22395aedc36257242c # v3.2.1
+        uses: pypa/cibuildwheel@63fd63b352a9a8bdcc24791c9dbee952ee9a8abc # v3.3.0
         with:
           output-dir: dist
         env:
@@ -134,7 +134,7 @@ jobs:
           CIBW_ARCHS_MACOS: ${{ matrix.cibw_arch }}
           CIBW_ENABLE: cpython-freethreading
 
-      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: wheels_macos_${{ matrix.cibw_arch }}_${{ matrix.cibw_python }}
           path: ./dist/*.whl
@@ -157,7 +157,7 @@ jobs:
           - os: windows-11-arm
             cibw_arch: AMD64
     steps:
-      - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v4.1.2
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v4.1.2
         with:
           fetch-depth: 0
 
@@ -185,7 +185,7 @@ jobs:
           architecture: arm64
 
       - name: Build Windows wheels for CPython
-        uses: pypa/cibuildwheel@9c00cb4f6b517705a3794b22395aedc36257242c # v3.2.1
+        uses: pypa/cibuildwheel@63fd63b352a9a8bdcc24791c9dbee952ee9a8abc # v3.3.0
         with:
           output-dir: dist
         env:
@@ -193,7 +193,7 @@ jobs:
           CIBW_ARCHS_WINDOWS: ${{ matrix.cibw_arch }}
           CIBW_ENABLE: cpython-freethreading
 
-      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: wheels_windows_${{ matrix.cibw_arch }}_${{ matrix.cibw_python }}
           path: ./dist/*.whl
@@ -212,7 +212,7 @@ jobs:
     if: github.repository == 'PyWavelets/pywt' && startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v4.1.2
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v4.1.2
         with:
           fetch-depth: 0
 
@@ -227,7 +227,7 @@ jobs:
           pip install twine
           pip install cython numpy build
 
-      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         id: download
         with:
           pattern: "wheels_*"
@@ -248,7 +248,7 @@ jobs:
           TWINE_PASSWORD: ${{ secrets.TWINE_TOKEN }}
 
       - name: Github release
-        uses: softprops/action-gh-release@6da8fa9354ddfdc4aeace5fc48d7f679b5214090 # v2.4.1
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
@@ -270,11 +270,11 @@ jobs:
       (github.event_name == 'schedule')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v4.1.2
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v4.1.2
         with:
           fetch-depth: 0
 
-      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         id: download
         with:
           pattern: "wheels_*"
@@ -282,7 +282,7 @@ jobs:
           merge-multiple: true
 
       - name: Push to Anaconda PyPI index
-        uses: scientific-python/upload-nightly-action@b36e8c0c10dbcfd2e05bf95f17ef8c14fd708dbf # v0.6.2
+        uses: scientific-python/upload-nightly-action@5748273c71e2d8d3a61f3a11a16421c8954f9ecf # v0.6.3
         with:
           artifacts_path: dist/
           anaconda_nightly_upload_token: ${{ secrets.ANACONDA_ORG_UPLOAD_TOKEN }}
