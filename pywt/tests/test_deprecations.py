@@ -1,34 +1,40 @@
 import warnings
 
 import numpy as np
-from numpy.testing import assert_array_equal, assert_warns
+import pytest
+from numpy.testing import assert_array_equal
 
 import pywt
 
 
 def test_intwave_deprecation():
     wavelet = pywt.Wavelet('db3')
-    assert_warns(DeprecationWarning, pywt.intwave, wavelet)
+    with pytest.warns(DeprecationWarning):
+        pywt.intwave(wavelet)
 
 
 def test_centrfrq_deprecation():
     wavelet = pywt.Wavelet('db3')
-    assert_warns(DeprecationWarning, pywt.centrfrq, wavelet)
+    with pytest.warns(DeprecationWarning):
+        pywt.centrfrq(wavelet)
 
 
 def test_scal2frq_deprecation():
     wavelet = pywt.Wavelet('db3')
-    assert_warns(DeprecationWarning, pywt.scal2frq, wavelet, 1)
+    with pytest.warns(DeprecationWarning):
+        pywt.scal2frq(wavelet, 1)
 
 
 def test_orthfilt_deprecation():
-    assert_warns(DeprecationWarning, pywt.orthfilt, range(6))
+    with pytest.warns(DeprecationWarning):
+        pywt.orthfilt(range(6))
 
 
 def test_integrate_wave_tuple():
     sig = [0, 1, 2, 3]
     xgrid = [0, 1, 2, 3]
-    assert_warns(DeprecationWarning, pywt.integrate_wavelet, (sig, xgrid))
+    with pytest.warns(DeprecationWarning):
+        pywt.integrate_wavelet((sig, xgrid))
 
 
 old_modes = ['zpd',
@@ -42,7 +48,8 @@ old_modes = ['zpd',
 
 def test_MODES_from_object_deprecation():
     for mode in old_modes:
-        assert_warns(DeprecationWarning, pywt.Modes.from_object, mode)
+        with pytest.warns(DeprecationWarning):
+            pywt.Modes.from_object(mode)
 
 
 def test_MODES_attributes_deprecation():
@@ -50,7 +57,8 @@ def test_MODES_attributes_deprecation():
         return getattr(Modes, name)
 
     for mode in old_modes:
-        assert_warns(DeprecationWarning, get_mode, pywt.Modes, mode)
+        with pytest.warns(DeprecationWarning):
+            get_mode(pywt.Modes, mode)
 
 
 def test_mode_equivalence():

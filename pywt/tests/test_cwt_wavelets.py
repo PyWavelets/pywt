@@ -10,7 +10,6 @@ from numpy.testing import (
     assert_almost_equal,
     assert_equal,
     assert_raises,
-    assert_warns,
 )
 
 import pywt
@@ -341,7 +340,8 @@ def test_cwt_parameters_in_names():
     for func in [pywt.ContinuousWavelet, pywt.DiscreteContinuousWavelet]:
         for name in ['fbsp', 'cmor', 'shan']:
             # additional parameters should be specified within the name
-            assert_warns(FutureWarning, func, name)
+            with pytest.warns(FutureWarning):
+                func(name)
 
         for name in ['cmor', 'shan']:
             # valid names
