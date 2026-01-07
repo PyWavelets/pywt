@@ -2,7 +2,6 @@ from numbers import Number
 
 import numpy as np
 
-from ._c99_config import _have_c99_complex
 from ._extensions._dwt import downcoef as _downcoef
 from ._extensions._dwt import dwt_axis, dwt_single, idwt_axis, idwt_single
 from ._extensions._dwt import dwt_coeff_len as _dwt_coeff_len
@@ -161,12 +160,6 @@ def dwt(data, wavelet, mode='symmetric', axis=-1):
     array([-0.70710678, -0.70710678, -0.70710678])
 
     """
-    if not _have_c99_complex and np.iscomplexobj(data):
-        data = np.asarray(data)
-        cA_r, cD_r = dwt(data.real, wavelet, mode, axis)
-        cA_i, cD_i = dwt(data.imag, wavelet, mode, axis)
-        return (cA_r + 1j*cA_i, cD_r + 1j*cD_i)
-
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(data)
     data = np.asarray(data, dtype=dt, order='C')
@@ -240,17 +233,6 @@ def idwt(cA, cD, wavelet, mode='symmetric', axis=-1):
     if cA is None and cD is None:
         raise ValueError("At least one coefficient parameter must be "
                          "specified.")
-
-    # for complex inputs: compute real and imaginary separately then combine
-    if not _have_c99_complex and (np.iscomplexobj(cA) or np.iscomplexobj(cD)):
-        if cA is None:
-            cD = np.asarray(cD)
-            cA = np.zeros_like(cD)
-        elif cD is None:
-            cA = np.asarray(cA)
-            cD = np.zeros_like(cA)
-        return (idwt(cA.real, cD.real, wavelet, mode, axis) +
-                1j*idwt(cA.imag, cD.imag, wavelet, mode, axis))
 
     if cA is not None:
         dt = _check_dtype(cA)
@@ -328,9 +310,6 @@ def downcoef(part, data, wavelet, mode='symmetric', level=1):
     upcoef
 
     """
-    if not _have_c99_complex and np.iscomplexobj(data):
-        return (downcoef(part, data.real, wavelet, mode, level) +
-                1j*downcoef(part, data.imag, wavelet, mode, level))
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(data)
     data = np.asarray(data, dtype=dt, order='C')
@@ -387,9 +366,6 @@ def upcoef(part, coeffs, wavelet, level=1, take=0):
     array([ 1.,  2.,  3.,  4.,  5.,  6.])
 
     """
-    if not _have_c99_complex and np.iscomplexobj(coeffs):
-        return (upcoef(part, coeffs.real, wavelet, level, take) +
-                1j*upcoef(part, coeffs.imag, wavelet, level, take))
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(coeffs)
     coeffs = np.asarray(coeffs, dtype=dt, order='C')
