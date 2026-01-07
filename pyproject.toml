@@ -55,6 +55,12 @@ homepage = "https://github.com/PyWavelets/pywt"
 source = "https://github.com/PyWavelets/pywt"
 documentation = "https://pywavelets.readthedocs.io/"
 
+
+[tool.cibuildwheel.windows]
+config-settings = {setup-args = ["--vsenv"]}
+before-build = "bash {project}/util/cibw_before_build_win.sh"
+
+
 [tool.ruff]
 line-length = 88
 target-version = 'py310'
