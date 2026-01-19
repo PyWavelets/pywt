@@ -19,6 +19,13 @@
     "branches": ["main"], // for git
     // "branches": ["tip"],    // for mercurial
 
+    // This is a frequent source of failures for `--compare`. Check the
+    // asv docs for what `build_command` does.
+    // Avoid build isolation, that will cause problems.
+    "build_command": [
+        "python -m build -wnx -o {build_cache_dir} {build_dir}"
+    ],
+
     // The DVCS being used.  If not set, it will be automatically
     // determined from "repo" by looking at the protocol in the URL
     // (if remote), or by looking for special directories, such as
@@ -30,7 +37,7 @@
     // If missing or the empty string, the tool will be automatically
     // determined by looking for tools on the PATH environment
     // variable.
-    // "environment_type": "virtualenv",
+    "environment_type": "virtualenv",
 
     // the base URL to show a commit for the project.
     "show_commit_url": "http://github.com/PyWavelets/pywt/commit/",
@@ -46,6 +53,7 @@
     "matrix": {
         "numpy": [],
         "Cython": [],
+        "meson-python": [],
     },
 
     // The directory (relative to the current directory) that benchmarks are
@@ -71,5 +79,5 @@
     // `asv` will cache wheels of the recent builds in each
     // environment, making them faster to install next time.  This is
     // number of builds to keep, per environment.
-    // "wheel_cache_size": 0
+    "wheel_cache_size": 20
 }
