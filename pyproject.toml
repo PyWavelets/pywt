@@ -98,3 +98,4 @@ Environments = [
     'spin.cmds.meson.python',
 ]
 Documentation = ["spin.cmds.meson.docs"]
+Metrics = [".spin/cmds.py:bench"]
