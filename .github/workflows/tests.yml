@@ -243,3 +243,61 @@ jobs:
               pytest --pyargs pywt
           fi
           popd
+
+  clang_ASan_UBSan:
+    name: Test under ASan and UBSan
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          submodules: recursive
+          fetch-tags: true
+          persist-credentials: false
+
+      - name: Set up pyenv
+        run: |
+          git clone https://github.com/pyenv/pyenv.git "$HOME/.pyenv"
+          PYENV_ROOT="$HOME/.pyenv"
+          PYENV_BIN="$PYENV_ROOT/bin"
+          PYENV_SHIMS="$PYENV_ROOT/shims"
+          echo "$PYENV_BIN" >> $GITHUB_PATH
+          echo "$PYENV_SHIMS" >> $GITHUB_PATH
+          echo "PYENV_ROOT=$PYENV_ROOT" >> $GITHUB_ENV
+
+      - name: Set up LLVM
+        run: |
+          brew install llvm@19
+          LLVM_PREFIX=$(brew --prefix llvm@19)
+          echo CC="$LLVM_PREFIX/bin/clang" >> $GITHUB_ENV
+          echo CXX="$LLVM_PREFIX/bin/clang++" >> $GITHUB_ENV
+          echo LDFLAGS="-L$LLVM_PREFIX/lib" >> $GITHUB_ENV
+          echo CPPFLAGS="-I$LLVM_PREFIX/include" >> $GITHUB_ENV
+
+      - name: Build Python with AddressSanitizer
+        run: |
+          CONFIGURE_OPTS="--with-address-sanitizer" pyenv install 3.14
+          pyenv global 3.14
+
+      - name: Install NumPy dependencies from PyPI
+        run: |
+          pip install meson-python ninja cython
+
+      - name: Build NumPy with ASan
+        run: |
+          pip install numpy --no-binary numpy --no-build-isolation -Csetup-args="-Db_sanitize=address" -v
+
+      - name: Install dependencies from PyPI
+        run: |
+          pip install spin pytest pytest-timeout
+
+      - name: Build PyWavelets with ASan and UBSan
+        run: |
+          export CFLAGS=-fno-sanitize=function  # suppressed upstream, see cython#7437
+          spin build -- -Db_sanitize=address,undefined -Db_lundef=false
+
+      - name: Test
+        run: |
+          # pass -s to pytest to see ASAN errors and warnings, otherwise pytest captures them
+          ASAN_OPTIONS=detect_leaks=0:symbolize=1:strict_init_order=true:allocator_may_return_null=1:use_sigaltstack=0 \
+          UBSAN_OPTIONS=halt_on_error=1 \
+          spin test -- -v -s --timeout=600 --durations=10

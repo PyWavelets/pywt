@@ -77,8 +77,7 @@ int CAT(TYPE, _downcoef_axis)(const TYPE * const restrict input, const ArrayInfo
     }
 
     for (i = 0; i < num_loops; ++i){
-        size_t j;
-        size_t input_offset = 0, output_offset = 0;
+        pywt_index_t j, axis_idx, input_offset = 0, output_offset = 0;
         const TYPE * input_row;
         TYPE * output_row;
 
@@ -88,7 +87,7 @@ int CAT(TYPE, _downcoef_axis)(const TYPE * const restrict input, const ArrayInfo
             for (j = 0; j < output_info.ndim; ++j){
                 size_t j_rev = output_info.ndim - 1 - j;
                 if (j_rev != axis){
-                    size_t axis_idx = reduced_idx % output_info.shape[j_rev];
+                    axis_idx = reduced_idx % output_info.shape[j_rev];
                     reduced_idx /= output_info.shape[j_rev];
 
                     input_offset += (axis_idx * input_info.strides[j_rev]);
@@ -232,8 +231,7 @@ int CAT(TYPE, _idwt_axis)(const TYPE * const restrict coefs_a, const ArrayInfo *
     }
 
     for (i = 0; i < num_loops; ++i){
-        size_t j;
-        size_t a_offset = 0, d_offset = 0, output_offset = 0;
+        pywt_index_t j, axis_idx, a_offset = 0, d_offset = 0, output_offset = 0;
         TYPE * output_row;
 
         // Calculate offset into linear buffer
@@ -242,7 +240,7 @@ int CAT(TYPE, _idwt_axis)(const TYPE * const restrict coefs_a, const ArrayInfo *
             for (j = 0; j < output_info.ndim; ++j){
                 size_t j_rev = output_info.ndim - 1 - j;
                 if (j_rev != axis){
-                    size_t axis_idx = reduced_idx % output_info.shape[j_rev];
+                    axis_idx = reduced_idx % output_info.shape[j_rev];
                     reduced_idx /= output_info.shape[j_rev];
 
                     if (have_a)
