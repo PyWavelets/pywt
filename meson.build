@@ -11,7 +11,8 @@ project(
     # We default to false here (so produce wheels like cp314), and can opt into
     # producing abi3 wheels. The setting in pyproject.toml is
     # `limited-api=true`, but this default will ensure it is opt-in:
-    'python.allow_limited_api=false',
+    'python.allow_limited_api=true',  #FIXME: set to true only for testing
+    #'python.allow_limited_api=false',
   ],
 )
 
