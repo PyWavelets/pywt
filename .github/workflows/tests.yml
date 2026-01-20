@@ -301,3 +301,60 @@ jobs:
           ASAN_OPTIONS=detect_leaks=0:symbolize=1:strict_init_order=true:allocator_may_return_null=1:use_sigaltstack=0 \
           UBSAN_OPTIONS=halt_on_error=1 \
           spin test -- -v -s --timeout=600 --durations=10
+
+  build_stable_abi_wheel:
+    name: build-abi3-${{ matrix.platform }}
+    runs-on: ${{ matrix.platform }}
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v4.1.2
+      - uses: actions/setup-python@2e3e4b15a884dc73a63f962bff250a855150a234 # v5.5.0
+        with:
+          python-version: "3.12"
+
+      - name: Build package
+        run: |
+          pip install build
+          python -m build --wheel -Csetup-args="--vsenv" -Csetup-args="-Dpython.allow_limited_api=true"
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          path: ./dist/*.whl
+          name: ${{ matrix.platform }}-abi3-wheel
+
+  test_stable_abi_wheel:
+    needs: build_stable_abi_wheel
+    name: test-abi3-${{ matrix.platform }}
+    runs-on: ${{ matrix.platform }}
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/setup-python@2e3e4b15a884dc73a63f962bff250a855150a234 # v5.5.0
+        with:
+          python-version: "3.14"
+
+      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+        with:
+          name: ${{ matrix.platform }}-abi3-wheel
+
+      - name: Check downloaded artifact
+        run: |
+          ls
+
+      - name: Install downloaded wheel
+        shell: bash
+        run: |
+          pip install pywavelets-*-abi3-*.whl
+
+      - name: Install test dependencies
+        run: |
+          pip install pytest numpy matplotlib
+
+      - name: Run tests
+        run: |
+          pytest --pyargs pywt

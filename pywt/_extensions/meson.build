@@ -106,6 +106,7 @@ foreach pyx_file: pyx_files
   py.extension_module(pyx_file[0],
     [cython_gen.process(pyx_file[1])],
     c_args : c_args,
+    limited_api: '3.12',
     include_directories : 'c',
     dependencies : [np_dep, cy_deps],
     link_with : libc_wt,
