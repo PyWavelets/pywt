@@ -165,3 +165,16 @@ def test_threshold_firm():
         mt_abs_firm = np.abs(d_firm[mt])
         assert_(np.all(mt_abs_firm < np.abs(d_hard[mt])))
         assert_(np.all(mt_abs_firm > np.abs(d_soft[mt])))
+
+
+def test_estimate_noise():
+    data = np.sin(np.linspace(0, 10, 1000))
+    np.random.seed(42)
+    noise = 0.5 * np.random.normal(0, 1, 1000)
+    sigma = pywt.estimate_noise(data + noise)
+    assert_allclose(sigma, 0.4867884459318056)
+
+    assert_raises(ValueError, pywt.estimate_noise, data,
+                  distribution='not_a_distribution')
+    assert_raises(ValueError, pywt.estimate_noise, data,
+                  distribution=42)
