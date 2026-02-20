@@ -241,6 +241,12 @@ def test_dwt_zero_size_axes():
     assert_raises(ValueError, pywt.dwt, x, 'db2', axis=0)
 
 
+def test_dwt_readonly_array():
+    data = np.random.randn(1000).astype(np.float64)
+    data.setflags(write=False)
+    pywt.dwt(data, "db4")
+
+
 def test_pad_1d():
     x = [1, 2, 3]
     assert_array_equal(pywt.pad(x, (4, 6), 'periodization'),

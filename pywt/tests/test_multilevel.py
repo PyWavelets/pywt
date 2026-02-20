@@ -76,6 +76,12 @@ def test_wavedec():
     assert_(pywt.dwt_max_level(len(x), db1) == 3)
 
 
+def test_wavedec_readonly_array():
+    data = np.random.randn(1000).astype(np.float64)
+    data.setflags(write=False)
+    pywt.wavedec(data, "db4", level=2)
+
+
 def test_waverec_invalid_inputs():
     # input must be list or tuple
     assert_raises(ValueError, pywt.waverec, np.ones(8), 'haar')

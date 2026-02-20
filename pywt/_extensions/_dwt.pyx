@@ -23,7 +23,7 @@ cpdef dwt_coeff_len(size_t data_len, size_t filter_len, MODE mode):
 
     return common.dwt_buffer_length(data_len, filter_len, mode)
 
-cpdef dwt_single(cdata_t[::1] data, Wavelet wavelet, MODE mode):
+cpdef dwt_single(const cdata_t[::1] data, Wavelet wavelet, MODE mode):
     cdef size_t output_len = dwt_coeff_len(data.size, wavelet.dec_len, mode)
     cdef np.ndarray cA, cD
     cdef int retval_a, retval_d
