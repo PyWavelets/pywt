@@ -34,7 +34,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        cibw_python: ["cp312", "cp313", "cp313t", "cp314", "cp314t"]
+        cibw_python: ["cp312", "cp313t", "cp314t"]
         cibw_arch: ["x86_64"]
     steps:
       - uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98 # v4.1.2
@@ -45,6 +45,11 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Enable Stable ABI for with-GIL interpreters
+        if: ${{ !endsWith(matrix.cibw_python, 't') }}
+        run: |
+          echo CIBW_CONFIG_SETTINGS="setup-args=-Dpython.allow_limited_api=true" >> "$GITHUB_ENV"
+
       - name: Build the wheel
         uses: pypa/cibuildwheel@298ed2fb2c105540f5ed055e8a6ad78d82dd3a7e # v3.3.1
         with:
@@ -54,6 +59,7 @@ jobs:
           CIBW_ARCHS_LINUX: ${{ matrix.cibw_arch }}
           CIBW_ENABLE: cpython-freethreading
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+
         with:
           name: wheels_linux_${{ matrix.cibw_arch }}_${{ matrix.cibw_python }}
           path: ./dist/*.whl
@@ -66,7 +72,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-22.04-arm]
-        cibw_python: ["cp312", "cp313", "cp313t", "cp314", "cp314t"]
+        cibw_python: ["cp312", "cp313t", "cp314t"]
         cibw_arch: ["aarch64"]
     steps:
       - uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98 # v4.1.2
@@ -77,6 +83,11 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Enable Stable ABI for with-GIL interpreters
+        if: ${{ !endsWith(matrix.cibw_python, 't') }}
+        run: |
+          echo CIBW_CONFIG_SETTINGS="setup-args=-Dpython.allow_limited_api=true" >> "$GITHUB_ENV"
+
       - name: Build the wheel
         uses: pypa/cibuildwheel@298ed2fb2c105540f5ed055e8a6ad78d82dd3a7e # v3.3.1
         with:
@@ -85,6 +96,7 @@ jobs:
           CIBW_BUILD: ${{ matrix.cibw_python }}-*
           CIBW_ARCHS_LINUX: ${{ matrix.cibw_arch }}
           CIBW_ENABLE: cpython-freethreading
+
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: wheels_linux_${{ matrix.cibw_arch }}_${{ matrix.cibw_python }}
@@ -97,7 +109,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [macos-15-intel, macos-14]
-        cibw_python: ["cp312", "cp313", "cp313t", "cp314", "cp314t"]
+        cibw_python: ["cp312", "cp313t", "cp314t"]
         cibw_arch: ["x86_64", "arm64"]
         exclude:
           - os: macos-14
@@ -113,6 +125,11 @@ jobs:
         name: Install Python
         with:
           python-version: "3.12"
+
+      - name: Enable Stable ABI for with-GIL interpreters
+        if: ${{ !endsWith(matrix.cibw_python, 't') }}
+        run: |
+          echo CIBW_CONFIG_SETTINGS="setup-args=-Dpython.allow_limited_api=true" >> "$GITHUB_ENV"
 
       - name: Build wheels for CPython (macOS) (x86_64)
         if: matrix.cibw_arch == 'x86_64'
@@ -148,7 +165,7 @@ jobs:
       matrix:
         os: [windows-latest, windows-11-arm]
         cibw_arch: ["AMD64", "x86", "ARM64"]
-        cibw_python: ["cp312", "cp313", "cp313t", "cp314", "cp314t"]
+        cibw_python: ["cp312", "cp313t", "cp314t"]
         exclude:
           - os: windows-latest
             cibw_arch: ARM64
@@ -183,6 +200,11 @@ jobs:
         uses: bus1/cabuild/action/msdevshell@e22aba57d6e74891d059d66501b6b5aed8123c4d # v1
         with:
           architecture: arm64
+
+      - name: Enable Stable ABI for with-GIL interpreters
+        if: ${{ !endsWith(matrix.cibw_python, 't') }}
+        run: |
+          echo CIBW_CONFIG_SETTINGS="setup-args=-Dpython.allow_limited_api=true" >> $env:GITHUB_ENV
 
       - name: Build Windows wheels for CPython
         uses: pypa/cibuildwheel@298ed2fb2c105540f5ed055e8a6ad78d82dd3a7e # v3.3.1
