@@ -81,6 +81,16 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1,
     Size of coefficients arrays depends on the length of the input array and
     the length of given scales.
 
+    The coefficients are independent of ``sampling_period``. The
+    ``sampling_period`` parameter only affects the values returned in
+    ``frequencies``.
+
+    When comparing against a direct numerical approximation of the
+    continuous-time CWT integral, keep in mind that a sampled implementation in
+    physical time introduces a ``dt`` factor from the Riemann sum. Depending on
+    the normalization used in a manual calculation, this can appear as an
+    additional amplitude factor of ``sqrt(dt)`` (equivalently ``1/sqrt(fs)``).
+
     Examples
     --------
     >>> import pywt
