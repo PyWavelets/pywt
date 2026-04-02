@@ -66,7 +66,7 @@ def swt(data, wavelet, level=None, start_level=0, axis=-1,
         If ``start_level = m`` is given, then the beginning m steps are
         skipped::
 
-            [(cAm+n, cDm+n), ..., (cAm+1, cDm+1), (cAm, cDm)]
+            [(cAm+n, cDm+n), ..., (cAm+2, cDm+2), (cAm+1, cDm+1)]
 
         If ``trim_approx`` is ``True``, then the output list is exactly as in
         ``pywt.wavedec``, where the first coefficient in the list is the
