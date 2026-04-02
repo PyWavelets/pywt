@@ -231,6 +231,35 @@ scales. The right column are the corresponding Fourier power spectra of each
 filter.. For scales 1 and 2 it can be seen that aliasing due to violation of
 the Nyquist limit occurs.
 
+
+Normalization with ``sampling_period``
+--------------------------------------
+
+The ``sampling_period`` argument changes only the reported frequencies
+(``scale2frequency(...)/sampling_period``). It does not rescale the CWT
+coefficients themselves.
+
+This can be confusing when comparing against a hand-written approximation to
+the continuous-time definition,
+
+.. math::
+
+    W_x(a, b) = \frac{1}{\sqrt{a}}\int x(t)\,\psi^*\left(\frac{t-b}{a}\right)\,dt.
+
+For sampled data ``t_n = n\,dt``, a direct Riemann-sum approximation is
+
+.. math::
+
+    W_x(a, b) \approx \frac{dt}{\sqrt{a}}\sum_n x[n]\,\psi^*\left(\frac{n\,dt-b}{a}\right).
+
+So a manual discrete convolution written in physical time includes the ``dt``
+factor from the integral approximation. If the scale is
+parameterized in seconds (``a_sec = a*dt``), then
+``dt/sqrt(a_sec) = sqrt(dt)/sqrt(a)``. Relative to a purely
+sample-index-based implementation with scale ``a`` in samples, this appears as
+an additional amplitude factor of ``sqrt(dt)`` (equivalently
+``1/sqrt(fs)`` with ``fs = 1/dt``).
+
 .. _Converting frequency:
 
 Converting frequency to scale for ``cwt``
