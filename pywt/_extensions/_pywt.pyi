@@ -1,5 +1,5 @@
 from enum import IntEnum
-from typing import Any, Literal, Optional, TypeVar
+from typing import Any, Literal, Optional, TypeAlias, TypeVar
 
 import numpy as np
 
@@ -20,17 +20,13 @@ _WaveletFamily = Literal[
     "cmor",
 ]
 
-DataT = TypeVar("DataT", np.float32, np.float64)
+DataT = TypeVar("DataT", bound=np.float32 | np.float64)
 
 CDataT = TypeVar(
-    "CDataT",
-    np.float32,
-    np.float64,
-    np.complex64,
-    np.complex128,
+    "CDataT", bound=np.float32 | np.float64 | np.complex64 | np.complex128
 )
 
-_Kind = Literal["all", "continuous", "discrete"]
+_Kind: TypeAlias = Literal["all", "continuous", "discrete"]
 
 _Symmetry = Literal[
     "asymmetric",
@@ -52,6 +48,8 @@ class MODE(IntEnum):
     MODE_ANTISYMMETRIC = 7
     MODE_ANTIREFLECT = 8
     MODE_MAX = 9
+
+ModeInt = MODE | Literal[-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 ModeName = Literal[
     "zero",
@@ -84,11 +82,11 @@ class _Modes:
 
 Modes = _Modes()
 
-def wavelist(family: _WaveletFamily | None = ..., kind: _Kind = ...) -> list[str]: ...
-def families(short: bool = ...) -> list[str]: ...
+def wavelist(family: _WaveletFamily | None = None, kind: _Kind = "all") -> list[str]: ...
+def families(short: bool = True) -> list[str]: ...
 
 class Wavelet:
-    def __init__(self, name: str = ..., filter_bank: Any = ...) -> None: ...
+    def __init__(self, name: str = "", filter_bank: Any = None) -> None: ...
     def __len__(self) -> int: ...
     @property
     def name(self) -> str: ...
@@ -140,7 +138,7 @@ class Wavelet:
     ) -> tuple[list[float], list[float], list[float], list[float]]: ...
 
 class ContinuousWavelet:
-    def __init__(self, name: str = ..., dtype: DataT = ...) -> None: ...
+    def __init__(self, name: str = "", dtype: DataT = np.float64) -> None: ...
     @property
     def family_number(self) -> int: ...
     @property
@@ -182,4 +180,6 @@ class ContinuousWavelet:
     @property
     def symmetry(self) -> _Symmetry: ...
 
-def DiscreteContinuousWavelet(name: str = ..., filter_bank: Any = ...) -> Wavelet | ContinuousWavelet : ...
+def DiscreteContinuousWavelet(
+    name: str = "", filter_bank: Any = None
+) -> Wavelet | ContinuousWavelet: ...
