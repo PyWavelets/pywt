@@ -10,7 +10,7 @@ Discrete forward and inverse wavelet transform, stationary wavelet transform,
 wavelet packets signal decomposition and reconstruction module.
 """
 
-from ._extensions._pywt import Modes, ContinuousWavelet, families, Wavelet, wavelist, DiscreteContinuousWavelet
+from ._extensions._pywt import Modes, ContinuousWavelet, families, Wavelet, wavelist, DiscreteContinuousWavelet, _check_dtype
 from ._functions import integrate_wavelet, central_frequency, scale2frequency, frequency2scale, qmf, orthogonal_filter_bank, intwave, centrfrq, scal2frq, orthfilt
 from ._multilevel import wavedec, waverec, wavedec2, waverec2, wavedecn, waverecn, coeffs_to_array, array_to_coeffs, ravel_coeffs, unravel_coeffs, dwtn_max_level, wavedecn_size, wavedecn_shapes, fswavedecn, fswaverecn, FswavedecnResult
 from ._multidim import dwt2, idwt2, dwtn, idwtn
@@ -23,7 +23,7 @@ from ._mra import mra, mra2, mran, imra, imra2, imran
 from .data import aero, ascent, camera, ecg, nino, demo_signal
 
 __all__ = ["ContinuousWavelet", "families", "Modes", "Wavelet", "wavelist",
-           "DiscreteContinuousWavelet", "integrate_wavelet",
+           "DiscreteContinuousWavelet", "_check_dtype", "integrate_wavelet",
            "central_frequency", "scale2frequency", "frequency2scale", "qmf",
            "orthogonal_filter_bank", "intwave", "centrfrq", "scal2frq",
            "orthfilt", "wavedec", "waverec", "wavedec2", "waverec2",

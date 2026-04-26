@@ -1,7 +1,8 @@
 from enum import IntEnum
-from typing import Any, Literal, Optional, TypeAlias, TypeVar
+from typing import Any, Literal, TypeAlias, TypeVar
 
 import numpy as np
+from numpy.typing import NDArray
 
 _WaveletFamily = Literal[
     "haar",
@@ -22,9 +23,7 @@ _WaveletFamily = Literal[
 
 DataT = TypeVar("DataT", bound=np.float32 | np.float64)
 
-CDataT = TypeVar(
-    "CDataT", bound=np.float32 | np.float64 | np.complex64 | np.complex128
-)
+CDataT = TypeVar("CDataT", bound=np.float32 | np.float64 | np.complex64 | np.complex128)
 
 _Kind: TypeAlias = Literal["all", "continuous", "discrete"]
 
@@ -78,11 +77,13 @@ class _Modes:
 
     modes: list[ModeName]
 
-    def from_object(self, mode: Mode) -> int: ...
+    def from_object(self, mode: int | str) -> ModeInt: ...
 
 Modes = _Modes()
 
-def wavelist(family: _WaveletFamily | None = None, kind: _Kind = "all") -> list[str]: ...
+def wavelist(
+    family: _WaveletFamily | None = None, kind: _Kind = "all"
+) -> list[str]: ...
 def families(short: bool = True) -> list[str]: ...
 
 class Wavelet:
@@ -136,9 +137,12 @@ class Wavelet:
     def get_reverse_filters_coeffs(
         self,
     ) -> tuple[list[float], list[float], list[float], list[float]]: ...
+    def wavefun(self, level: int = 8): ...
 
 class ContinuousWavelet:
-    def __init__(self, name: str = "", dtype: DataT = np.float64) -> None: ...
+    def __init__(
+        self, name: str = "", dtype: type[np.float32 | np.float64] = np.float64
+    ) -> None: ...
     @property
     def family_number(self) -> int: ...
     @property
@@ -179,7 +183,11 @@ class ContinuousWavelet:
     def fbsp_order(self, value: int) -> None: ...
     @property
     def symmetry(self) -> _Symmetry: ...
+    def wavefun(self, level: int = 8, length: int | None = None): ...
 
 def DiscreteContinuousWavelet(
     name: str = "", filter_bank: Any = None
 ) -> Wavelet | ContinuousWavelet: ...
+def _check_dtype(
+    data: Any,
+) -> np.float32 | np.float64 | np.complex64 | np.complex128: ...
