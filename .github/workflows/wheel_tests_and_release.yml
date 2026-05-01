@@ -46,14 +46,14 @@ jobs:
           python-version: "3.12"
 
       - name: Build the wheel
-        uses: pypa/cibuildwheel@ee02a1537ce3071a004a6b08c41e72f0fdc42d9a # v3.4.0
+        uses: pypa/cibuildwheel@8d2b08b68458a16aeb24b64e68a09ab1c8e82084 # v3.4.1
         with:
           output-dir: dist
         env:
           CIBW_BUILD: ${{ matrix.cibw_python }}-*
           CIBW_ARCHS_LINUX: ${{ matrix.cibw_arch }}
           CIBW_ENABLE: cpython-freethreading
-      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: wheels_linux_${{ matrix.cibw_arch }}_${{ matrix.cibw_python }}
           path: ./dist/*.whl
@@ -78,14 +78,14 @@ jobs:
           python-version: "3.12"
 
       - name: Build the wheel
-        uses: pypa/cibuildwheel@ee02a1537ce3071a004a6b08c41e72f0fdc42d9a # v3.4.0
+        uses: pypa/cibuildwheel@8d2b08b68458a16aeb24b64e68a09ab1c8e82084 # v3.4.1
         with:
           output-dir: dist
         env:
           CIBW_BUILD: ${{ matrix.cibw_python }}-*
           CIBW_ARCHS_LINUX: ${{ matrix.cibw_arch }}
           CIBW_ENABLE: cpython-freethreading
-      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: wheels_linux_${{ matrix.cibw_arch }}_${{ matrix.cibw_python }}
           path: ./dist/*.whl
@@ -116,7 +116,7 @@ jobs:
 
       - name: Build wheels for CPython (macOS) (x86_64)
         if: matrix.cibw_arch == 'x86_64'
-        uses: pypa/cibuildwheel@ee02a1537ce3071a004a6b08c41e72f0fdc42d9a # v3.4.0
+        uses: pypa/cibuildwheel@8d2b08b68458a16aeb24b64e68a09ab1c8e82084 # v3.4.1
         with:
           output-dir: dist
         env:
@@ -126,7 +126,7 @@ jobs:
 
       - name: Build wheels for CPython (macOS) (arm64)
         if: matrix.cibw_arch == 'arm64'
-        uses: pypa/cibuildwheel@ee02a1537ce3071a004a6b08c41e72f0fdc42d9a # v3.4.0
+        uses: pypa/cibuildwheel@8d2b08b68458a16aeb24b64e68a09ab1c8e82084 # v3.4.1
         with:
           output-dir: dist
         env:
@@ -134,7 +134,7 @@ jobs:
           CIBW_ARCHS_MACOS: ${{ matrix.cibw_arch }}
           CIBW_ENABLE: cpython-freethreading
 
-      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: wheels_macos_${{ matrix.cibw_arch }}_${{ matrix.cibw_python }}
           path: ./dist/*.whl
@@ -185,7 +185,7 @@ jobs:
           architecture: arm64
 
       - name: Build Windows wheels for CPython
-        uses: pypa/cibuildwheel@ee02a1537ce3071a004a6b08c41e72f0fdc42d9a # v3.4.0
+        uses: pypa/cibuildwheel@8d2b08b68458a16aeb24b64e68a09ab1c8e82084 # v3.4.1
         with:
           output-dir: dist
         env:
@@ -193,7 +193,7 @@ jobs:
           CIBW_ARCHS_WINDOWS: ${{ matrix.cibw_arch }}
           CIBW_ENABLE: cpython-freethreading
 
-      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: wheels_windows_${{ matrix.cibw_arch }}_${{ matrix.cibw_python }}
           path: ./dist/*.whl
@@ -248,7 +248,7 @@ jobs:
           TWINE_PASSWORD: ${{ secrets.TWINE_TOKEN }}
 
       - name: Github release
-        uses: softprops/action-gh-release@153bb8e04406b158c6c84fc1615b65b24149a1fe # v2.6.1
+        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
@@ -282,7 +282,7 @@ jobs:
           merge-multiple: true
 
       - name: Push to Anaconda PyPI index
-        uses: scientific-python/upload-nightly-action@5748273c71e2d8d3a61f3a11a16421c8954f9ecf # v0.6.3
+        uses: scientific-python/upload-nightly-action@e76cfec8a4611fd02808a801b0ff5a7d7c1b2d99 # v0.6.4
         with:
           artifacts_path: dist/
           anaconda_nightly_upload_token: ${{ secrets.ANACONDA_ORG_UPLOAD_TOKEN }}
