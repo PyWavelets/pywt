@@ -8,7 +8,7 @@ _DATADIR = importlib.resources.files('pywt.data')
 
 
 @functools.cache
-def ascent():
+def ascent() -> np.ndarray:
     """
     Get an 8-bit grayscale bit-depth, 512 x 512 derived image for
     easy use in demos
@@ -48,7 +48,7 @@ def ascent():
 
 
 @functools.cache
-def aero():
+def aero() -> np.ndarray:
     """
     Get an 8-bit grayscale bit-depth, 512 x 512 derived image for
     easy use in demos
@@ -85,7 +85,7 @@ def aero():
 
 
 @functools.cache
-def camera():
+def camera() -> np.ndarray:
     """
     Get an 8-bit grayscale bit-depth, 512 x 512 derived image for
     easy use in demos
@@ -133,7 +133,7 @@ def camera():
 
 
 @functools.cache
-def ecg():
+def ecg() -> np.ndarray:
     """
     Get 1024 points of an ECG timeseries.
 
@@ -165,7 +165,7 @@ def ecg():
 
 
 @functools.cache
-def nino():
+def nino() -> tuple[np.ndarray, np.ndarray]:
     """
     This data contains the averaged monthly sea surface temperature in degrees
     Celsius of the Pacific Ocean, between 0-10 degrees South and 90-80 degrees West, from 1950 to 2016.
