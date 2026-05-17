@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 
 
 def test_no_changes_implies_no_regression(baseline_report: Path, tmp_path: Path):
@@ -12,7 +13,7 @@ def test_no_changes_implies_no_regression(baseline_report: Path, tmp_path: Path)
 
     process: subprocess.CompletedProcess = subprocess.run(
         [
-            "python3",
+            sys.executable,
             ".github/scripts/check_pyrefly_coverage.py",
             "--baseline_report_path",
             baseline_report,
@@ -46,7 +47,7 @@ def test_increasing_type_coverage_implies_no_regression(
 
     process: subprocess.CompletedProcess = subprocess.run(
         [
-            "python3",
+            sys.executable,
             ".github/scripts/check_pyrefly_coverage.py",
             "--baseline_report_path",
             baseline_report,
@@ -80,7 +81,7 @@ def test_decreasing_type_coverage_implies_regression(
 
     process: subprocess.CompletedProcess = subprocess.run(
         [
-            "python3",
+            sys.executable,
             ".github/scripts/check_pyrefly_coverage.py",
             "--baseline_report_path",
             baseline_report,
@@ -136,7 +137,7 @@ def test_adding_fully_annotated_file_implies_no_regression(
 
     process: subprocess.CompletedProcess = subprocess.run(
         [
-            "python3",
+            sys.executable,
             ".github/scripts/check_pyrefly_coverage.py",
             "--baseline_report_path",
             baseline_report,
@@ -191,7 +192,7 @@ def test_adding_partially_annotated_file_implies_regression(
 
     process: subprocess.CompletedProcess = subprocess.run(
         [
-            "python3",
+            sys.executable,
             ".github/scripts/check_pyrefly_coverage.py",
             "--baseline_report_path",
             baseline_report,
