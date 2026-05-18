@@ -5,7 +5,9 @@ import subprocess
 import sys
 
 
-def test_no_changes_implies_no_regression(baseline_report: Path, tmp_path: Path):
+def test_no_changes_implies_no_regression(
+    baseline_report: Path, tmp_path: Path, pyrefly_script_path: Path
+):
 
     current_report = tmp_path / "pyrefly-test-current-report.json"
 
@@ -14,7 +16,7 @@ def test_no_changes_implies_no_regression(baseline_report: Path, tmp_path: Path)
     process: subprocess.CompletedProcess = subprocess.run(
         [
             sys.executable,
-            ".github/scripts/check_pyrefly_coverage.py",
+            pyrefly_script_path,
             "--baseline_report_path",
             baseline_report,
             "--current_report_path",
@@ -28,7 +30,7 @@ def test_no_changes_implies_no_regression(baseline_report: Path, tmp_path: Path)
 
 
 def test_increasing_type_coverage_implies_no_regression(
-    baseline_report: Path, tmp_path: Path
+    baseline_report: Path, tmp_path: Path, pyrefly_script_path: Path
 ):
 
     current_report = tmp_path / "pyrefly-test-current-report.json"
@@ -48,7 +50,7 @@ def test_increasing_type_coverage_implies_no_regression(
     process: subprocess.CompletedProcess = subprocess.run(
         [
             sys.executable,
-            ".github/scripts/check_pyrefly_coverage.py",
+            pyrefly_script_path,
             "--baseline_report_path",
             baseline_report,
             "--current_report_path",
@@ -62,7 +64,7 @@ def test_increasing_type_coverage_implies_no_regression(
 
 
 def test_decreasing_type_coverage_implies_regression(
-    baseline_report: Path, tmp_path: Path
+    baseline_report: Path, tmp_path: Path, pyrefly_script_path: Path
 ):
 
     current_report = tmp_path / "pyrefly-test-current-report.json"
@@ -82,7 +84,7 @@ def test_decreasing_type_coverage_implies_regression(
     process: subprocess.CompletedProcess = subprocess.run(
         [
             sys.executable,
-            ".github/scripts/check_pyrefly_coverage.py",
+            pyrefly_script_path,
             "--baseline_report_path",
             baseline_report,
             "--current_report_path",
@@ -97,7 +99,7 @@ def test_decreasing_type_coverage_implies_regression(
 
 
 def test_adding_fully_annotated_file_implies_no_regression(
-    baseline_report: Path, tmp_path: Path
+    baseline_report: Path, tmp_path: Path, pyrefly_script_path: Path
 ):
 
     current_report = tmp_path / "pyrefly-test-current-report.json"
@@ -138,7 +140,7 @@ def test_adding_fully_annotated_file_implies_no_regression(
     process: subprocess.CompletedProcess = subprocess.run(
         [
             sys.executable,
-            ".github/scripts/check_pyrefly_coverage.py",
+            pyrefly_script_path,
             "--baseline_report_path",
             baseline_report,
             "--current_report_path",
@@ -152,7 +154,7 @@ def test_adding_fully_annotated_file_implies_no_regression(
 
 
 def test_adding_partially_annotated_file_implies_regression(
-    baseline_report: Path, tmp_path: Path
+    baseline_report: Path, tmp_path: Path, pyrefly_script_path: Path
 ):
 
     current_report = tmp_path / "pyrefly-test-current-report.json"
@@ -193,7 +195,7 @@ def test_adding_partially_annotated_file_implies_regression(
     process: subprocess.CompletedProcess = subprocess.run(
         [
             sys.executable,
-            ".github/scripts/check_pyrefly_coverage.py",
+            pyrefly_script_path,
             "--baseline_report_path",
             baseline_report,
             "--current_report_path",

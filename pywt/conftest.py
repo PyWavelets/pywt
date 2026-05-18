@@ -4,6 +4,7 @@ from pathlib import Path
 from pytest import fixture
 from typing import Iterator
 
+
 def pytest_configure(config):
     config.addinivalue_line("markers",
                             "slow: Tests that are slow.")
@@ -68,3 +69,28 @@ def baseline_report(tmp_path: Path) -> Iterator[Path]:
     # Cleanup report file
     baseline_report_path.unlink()
 
+
+@pytest.fixture(scope="session")
+def pyrefly_script_path(request) -> Path:
+    """
+    Path to check_pyrefly_coverage.py script.
+    """
+    pytest_root = Path(request.config.rootdir).resolve()
+
+    print(pytest_root)
+
+    repo_root = pytest_root
+    while repo_root != repo_root.parent:
+        if (repo_root / ".github").exists():
+            break
+        repo_root = repo_root.parent
+
+    script_path = repo_root / ".github" / "scripts" / "check_pyrefly_coverage.py"
+
+    if not script_path.exists():
+        raise FileNotFoundError(
+            f"Could not locate check_pyrefly_coverage.py at: {script_path}\n"
+            f"Current working directory: {Path.cwd()}"
+        )
+
+    return script_path
