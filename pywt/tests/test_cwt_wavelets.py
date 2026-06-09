@@ -480,3 +480,16 @@ def test_continuous_wavelet_pickle(tmpdir):
         wavelet2 = pickle.load(f)
     assert isinstance(wavelet2, pywt.ContinuousWavelet)
     assert wavelet2.name == wavelet.name
+
+
+def test_cwt_discrete_wavelet_raises():
+    # A discrete wavelet such as 'coif1' has no continuous form; cwt should
+    # raise a clear error rather than an opaque AttributeError (gh-776).
+    data = np.ones(100)
+    for bad in ['coif1', 'db2', pywt.Wavelet('coif1')]:
+        with pytest.raises(ValueError, match='continuous wavelet'):
+            pywt.cwt(data, [1, 2], bad)
+
+    # a continuous wavelet still works
+    out, _ = pywt.cwt(data, [1, 2], 'morl')
+    assert out.shape == (2, 100)
