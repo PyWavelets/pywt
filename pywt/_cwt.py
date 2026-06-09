@@ -111,6 +111,12 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1,
     dt_cplx = np.result_type(dt, np.complex64)
     if not isinstance(wavelet, (ContinuousWavelet, Wavelet)):
         wavelet = DiscreteContinuousWavelet(wavelet)
+    if not isinstance(wavelet, ContinuousWavelet):
+        raise ValueError(
+            f"cwt() requires a continuous wavelet, but {wavelet.name!r} is a "
+            f"discrete wavelet. Use a continuous wavelet such as those returned "
+            f"by pywt.wavelist(kind='continuous') (e.g. 'morl', 'mexh', 'cmor')."
+        )
 
     scales = np.atleast_1d(scales)
     if np.any(scales <= 0):
