@@ -2,9 +2,9 @@ name: Pyrefly Coverage Check
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   check-type-coverage:
@@ -26,7 +26,7 @@ jobs:
 
       - name: Generate current Pyrefly coverage report
         run: |
-          pyrefly coverage report > pyrefly-current-report.json
+          pyrefly report > pyrefly-current-report.json
 
       - name: Compare against baseline
         run: |

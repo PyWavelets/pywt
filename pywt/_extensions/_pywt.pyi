@@ -2,7 +2,6 @@ from enum import IntEnum
 from typing import Any, Literal, TypeAlias, TypeVar
 
 import numpy as np
-from numpy.typing import NDArray
 
 _WaveletFamily = Literal[
     "haar",
@@ -20,10 +19,6 @@ _WaveletFamily = Literal[
     "fbsp",
     "cmor",
 ]
-
-DataT = TypeVar("DataT", bound=np.float32 | np.float64)
-
-CDataT = TypeVar("CDataT", bound=np.float32 | np.float64 | np.complex64 | np.complex128)
 
 _Kind: TypeAlias = Literal["all", "continuous", "discrete"]
 
