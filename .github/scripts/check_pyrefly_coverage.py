@@ -1,9 +1,9 @@
+import json
+import pprint
+import sys
 from argparse import ArgumentParser
 from difflib import unified_diff
 from pathlib import Path
-import pprint
-import json
-import sys
 
 if __name__ == "__main__":
     parser = ArgumentParser()
@@ -47,10 +47,10 @@ if __name__ == "__main__":
                 )
             continue
 
-        old_n_untpyed = baseline_module_report["n_untyped"]
-        new_n_untpyed = current_module_report["n_untyped"]
+        old_n_untyped = baseline_module_report["n_untyped"]
+        new_n_untyped = current_module_report["n_untyped"]
 
-        if new_n_untpyed > old_n_untpyed:
+        if new_n_untyped > old_n_untyped:
             dict1_lines = pprint.pformat(
                 baseline_module_report, sort_dicts=True
             ).splitlines()
@@ -64,7 +64,7 @@ if __name__ == "__main__":
 
             failures.append(
                 f"{module_name}: Untyped count increased "
-                f"from {old_n_untpyed} to {new_n_untpyed}\n"
+                f"from {old_n_untyped} to {new_n_untyped}\n"
                 f"\n{'\n'.join(diff)}"
             )
 
