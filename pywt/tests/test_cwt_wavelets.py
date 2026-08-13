@@ -396,7 +396,7 @@ def test_cwt_complex(dtype, tol, method):
     assert_equal(cfs_complex.dtype, sst_complex.dtype)
 
 
-@pytest.mark.parametrize('axis, method', product([0, 1], ['conv', 'fft']))
+@pytest.mark.parametrize('axis, method', list(product([0, 1], ['conv', 'fft'])))
 def test_cwt_batch(axis, method):
     dtype = np.float64
     time, sst = pywt.data.nino()
