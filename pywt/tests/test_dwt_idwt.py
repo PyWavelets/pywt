@@ -290,6 +290,19 @@ def test_pad_zero_width():
             assert_array_equal(pywt.pad(x, 0, mode), x,
                                err_msg=f"mode={mode}, ndim={ndim}")
 
+    assert_array_equal(pywt.pad([1, 2, 3], 0, 'periodization'), [1, 2, 3, 3])
+
+
+def test_pad_zero_size_axis():
+    # a zero-size axis has nothing to extend from, so a zero pad width leaves
+    # it alone rather than raising or (for 'antisymmetric') hanging (gh-589)
+    x = np.ones((0, 4))
+    for mode in pywt.Modes.modes:
+        assert_array_equal(pywt.pad(x, 0, mode), x, err_msg=f"mode={mode}")
+
+    # padding along the other axis only
+    assert_(pywt.pad(x, ((0, 0), (2, 2)), 'antisymmetric').shape == (0, 8))
+
 
 def test_pad_one_sided():
     # a zero pad width on only one side of the axis (gh-589)
