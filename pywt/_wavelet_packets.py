@@ -744,7 +744,7 @@ class WaveletPacket(Node):
         if self.has_any_subnode:
             data = super().reconstruct(update)
             if self.data_size is not None and (data.shape != self.data_size):
-                data = data[[slice(sz) for sz in self.data_size]]
+                data = data[tuple(slice(sz) for sz in self.data_size)]
             if update:
                 self.data = data
             return data
@@ -870,7 +870,7 @@ class WaveletPacket2D(Node2D):
         if self.has_any_subnode:
             data = super().reconstruct(update)
             if self.data_size is not None and (data.shape != self.data_size):
-                data = data[[slice(sz) for sz in self.data_size]]
+                data = data[tuple(slice(sz) for sz in self.data_size)]
             if update:
                 self.data = data
             return data
