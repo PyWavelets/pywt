@@ -279,6 +279,37 @@ def test_pad_1d():
                        pywt.pad(x, (4, 4), 'periodic'))
 
 
+def test_pad_zero_width():
+    # zero pad width is a no-op for all modes except 'periodization', which
+    # also promotes odd-length axes to even length (gh-589)
+    for ndim in [1, 2, 3]:
+        x = np.arange(3.0**ndim).reshape((3, ) * ndim)
+        for mode in pywt.Modes.modes:
+            if mode == 'periodization':
+                continue
+            assert_array_equal(pywt.pad(x, 0, mode), x,
+                               err_msg=f"mode={mode}, ndim={ndim}")
+
+
+def test_pad_one_sided():
+    # a zero pad width on only one side of the axis (gh-589)
+    x = [1, 2, 3]
+    assert_array_equal(pywt.pad(x, (2, 0), 'smooth'), [-1, 0, 1, 2, 3])
+    assert_array_equal(pywt.pad(x, (0, 2), 'smooth'), [1, 2, 3, 4, 5])
+    assert_array_equal(pywt.pad(x, (2, 0), 'antisymmetric'), [-2, -1, 1, 2, 3])
+    assert_array_equal(pywt.pad(x, (0, 2), 'antisymmetric'), [1, 2, 3, -3, -2])
+
+    # one-sided padding matches the corresponding slice of two-sided padding
+    for mode in pywt.Modes.modes:
+        if mode == 'periodization':
+            continue
+        two_sided = pywt.pad(x, (4, 6), mode)
+        assert_array_equal(pywt.pad(x, (4, 0), mode), two_sided[:-6],
+                           err_msg=f"mode={mode}")
+        assert_array_equal(pywt.pad(x, (0, 6), mode), two_sided[4:],
+                           err_msg=f"mode={mode}")
+
+
 def test_pad_errors():
     # negative pad width
     x = [1, 2, 3]

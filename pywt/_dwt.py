@@ -442,7 +442,7 @@ def pad(x, pad_widths, mode):
     pad_widths = np.array(pad_widths)
     pad_widths = np.round(pad_widths).astype(np.intp, copy=False)
     if pad_widths.min() < 0:
-        raise ValueError("pad_widths must be > 0")
+        raise ValueError("pad_widths must be >= 0")
     pad_widths = np.broadcast_to(pad_widths, (x.ndim, 2)).tolist()
 
     if mode in ['symmetric', 'reflect']:
@@ -468,9 +468,12 @@ def pad(x, pad_widths, mode):
                 left + np.arange(pad_width[0], 0, -1) * slope_left
 
             # smooth extension to right
-            right = vector[-pad_width[1] - 1]
-            slope_right = (right - vector[-pad_width[1] - 2])
-            vector[-pad_width[1]:] = \
+            # Note: indices are measured from the start of the vector so that
+            # a pad width of 0 gives an empty slice rather than the full one.
+            iright = vector.size - pad_width[1] - 1
+            right = vector[iright]
+            slope_right = (right - vector[iright - 1])
+            vector[iright + 1:] = \
                 right + np.arange(1, pad_width[1] + 1) * slope_right
             return vector
         xp = np.pad(x, pad_widths, pad_smooth)
@@ -481,7 +484,7 @@ def pad(x, pad_widths, mode):
             npad_l, npad_r = pad_width
             vsize_nonpad = vector.size - npad_l - npad_r
             # Note: must modify vector in-place
-            vector[:] = np.pad(vector[pad_width[0]:-pad_width[-1]],
+            vector[:] = np.pad(vector[npad_l:vector.size - npad_r],
                                pad_width, mode='symmetric')
             vp = vector
             r_edge = npad_l + vsize_nonpad - 1
