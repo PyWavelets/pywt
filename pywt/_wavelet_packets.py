@@ -675,6 +675,9 @@ class NodeND(BaseNode):
             )
         else:
             rec = idwtn(coeffs, self.wavelet, self.mode, axes=self.axes)
+            if self._data_shape is not None and (
+                    rec.shape != self._data_shape):
+                rec = rec[tuple([slice(sz) for sz in self._data_shape])]
             if update:
                 self.data = rec
             return rec

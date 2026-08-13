@@ -202,3 +202,22 @@ def test_wavelet_packet_odd_shape():
     wp.get_level(2)
     assert_allclose(wp.reconstruct(update=True), y, rtol=1e-12)
     assert_allclose(wp.reconstruct(update=True), y, rtol=1e-12)
+
+
+def test_wavelet_packet_odd_shape_subnode():
+    # a subnode reconstructs to the shape of its own coefficients, so an
+    # update does not grow the data stored in the node
+    rstate = np.random.RandomState(0)
+    y = rstate.standard_normal((9, 11))
+    wp = pywt.WaveletPacketND(data=y, wavelet='haar', mode='symmetric')
+    wp.get_level(2)
+
+    shape = wp['aa'].data.shape
+    assert_equal(wp['aa'].reconstruct(update=False).shape, shape)
+    wp['aa'].reconstruct(update=True)
+    assert_equal(wp['aa'].data.shape, shape)
+
+    # WaveletPacket2D already behaves this way
+    wp2 = pywt.WaveletPacket2D(data=y, wavelet='haar', mode='symmetric')
+    wp2.get_level(2)
+    assert_equal(wp2['a'].reconstruct(update=False).shape, shape)
