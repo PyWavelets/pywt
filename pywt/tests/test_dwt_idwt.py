@@ -290,6 +290,19 @@ def test_pad_zero_width():
             assert_array_equal(pywt.pad(x, 0, mode), x,
                                err_msg=f"mode={mode}, ndim={ndim}")
 
+    assert_array_equal(pywt.pad([1, 2, 3], 0, 'periodization'), [1, 2, 3, 3])
+
+
+def test_pad_zero_size_axis():
+    # a zero-size axis has nothing to extend from, so a zero pad width leaves
+    # it alone rather than raising or (for 'antisymmetric') hanging (gh-589)
+    x = np.ones((0, 4))
+    for mode in pywt.Modes.modes:
+        assert_array_equal(pywt.pad(x, 0, mode), x, err_msg=f"mode={mode}")
+
+    # padding along the other axis only
+    assert_(pywt.pad(x, ((0, 0), (2, 2)), 'antisymmetric').shape == (0, 8))
+
 
 def test_pad_one_sided():
     # a zero pad width on only one side of the axis (gh-589)
@@ -308,6 +321,25 @@ def test_pad_one_sided():
                            err_msg=f"mode={mode}")
         assert_array_equal(pywt.pad(x, (0, 6), mode), two_sided[4:],
                            err_msg=f"mode={mode}")
+
+
+def test_pad_smooth_short_signal():
+    # the slope used by 'smooth' is undefined for a signal shorter than two
+    # samples, so constant edge extension is used instead (gh-589)
+    assert_array_equal(pywt.pad([1.], 0, 'smooth'), [1.])
+    assert_array_equal(pywt.pad([1.], (2, 3), 'smooth'),
+                       pywt.pad([1.], (2, 3), 'constant'))
+
+    # only the length 1 axis of an nd array falls back
+    x = np.arange(3.0).reshape(1, 3)
+    assert_array_equal(pywt.pad(x, ((0, 0), (2, 2)), 'smooth'),
+                       [[-2, -1, 0, 1, 2, 3, 4]])
+    assert_array_equal(pywt.pad(x, ((2, 2), (0, 0)), 'smooth'),
+                       np.tile(x, (5, 1)))
+
+    # matches the fallback used by the transforms
+    assert_allclose(pywt.dwt([1.], 'db2', 'smooth'),
+                    pywt.dwt([1.], 'db2', 'constant'))
 
 
 def test_pad_errors():
