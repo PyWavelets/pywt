@@ -1,3 +1,4 @@
+from __future__ import annotations
 # Copyright (c) 2006-2012 Filip Wasilewski <http://en.ig.ma/>
 # Copyright (c) 2012-2016 The PyWavelets Developers
 #                         <https://github.com/PyWavelets/pywt>
@@ -13,13 +14,14 @@ from collections import OrderedDict
 from itertools import product
 
 import numpy as np
+from typing import Any, Callable, Iterator, Literal
 
 from ._dwt import dwt, dwt_max_level, idwt
 from ._extensions._pywt import Wavelet, _check_dtype
 from ._multidim import dwt2, dwtn, idwt2, idwtn
 
 
-def get_graycode_order(level, x='a', y='d'):
+def get_graycode_order(level: int, x: str = 'a', y: str = 'd') -> list[str]:
     graycode_order = [x, y]
     for i in range(level - 1):
         graycode_order = [x + path for path in graycode_order] + \
@@ -55,7 +57,7 @@ class BaseNode:
     PART_LEN = None
     PARTS = None
 
-    def __init__(self, parent, data, node_name):
+    def __init__(self, parent: BaseNode | None, data: np.ndarray | None, node_name: str) -> None:
         self.parent = parent
         if parent is not None:
             self.wavelet = parent.wavelet
@@ -82,15 +84,15 @@ class BaseNode:
 
         self._init_subnodes()
 
-    def _init_subnodes(self):
+    def _init_subnodes(self) -> None:
         for part in self.PARTS:
             self._set_node(part, None)
 
-    def _create_subnode(self, part, data=None, overwrite=True):
+    def _create_subnode(self, part: str, data: np.ndarray | None = None, overwrite: bool = True) -> BaseNode:
         raise NotImplementedError()
 
-    def _create_subnode_base(self, node_cls, part, data=None, overwrite=True,
-                             **kwargs):
+    def _create_subnode_base(self, node_cls: type[BaseNode], part: str, data: np.ndarray | None = None, overwrite: bool = True,
+                             **kwargs: Any) -> BaseNode:
         self._validate_node_name(part)
         if not overwrite and self._get_node(part) is not None:
             return self._get_node(part)
@@ -98,21 +100,21 @@ class BaseNode:
         self._set_node(part, node)
         return node
 
-    def _get_node(self, part):
+    def _get_node(self, part: str) -> BaseNode:
         return getattr(self, part)
 
-    def _set_node(self, part, node):
+    def _set_node(self, part: str, node: BaseNode | None) -> None:
         setattr(self, part, node)
 
-    def _delete_node(self, part):
+    def _delete_node(self, part: str) -> None:
         self._set_node(part, None)
 
-    def _validate_node_name(self, part):
+    def _validate_node_name(self, part: str) -> None:
         if part not in self.PARTS:
             raise ValueError("Subnode name must be in [{}], not '{}'.".format(', '.join("'%s'" % p for p in self.PARTS), part))
 
     @property
-    def path_tuple(self):
+    def path_tuple(self) -> tuple[str, ...]:
         """The path to the current node in tuple form.
 
         The length of the tuple is equal to the number of decomposition levels.
@@ -122,7 +124,7 @@ class BaseNode:
         return tuple([path[(n-1)*self.PART_LEN:n*self.PART_LEN]
                       for n in range(1, nlev+1)])
 
-    def _evaluate_maxlevel(self, evaluate_from='parent'):
+    def _evaluate_maxlevel(self, evaluate_from: Literal['parent', 'subnodes'] = 'parent') -> int | None:
         """
         Try to find the value of maximum decomposition level if it is not
         specified explicitly.
@@ -152,7 +154,7 @@ class BaseNode:
         return None
 
     @property
-    def maxlevel(self):
+    def maxlevel(self) -> int | None:
         if self._maxlevel is not None:
             return self._maxlevel
 
@@ -165,10 +167,10 @@ class BaseNode:
         return self._maxlevel
 
     @property
-    def node_name(self):
+    def node_name(self) -> str:
         return self.path[-self.PART_LEN:]
 
-    def decompose(self):
+    def decompose(self) -> Any:
         """
         Decompose node data creating DWT coefficients subnodes.
 
@@ -186,10 +188,10 @@ class BaseNode:
         else:
             raise ValueError("Maximum decomposition level reached.")
 
-    def _decompose(self):
+    def _decompose(self) -> Any:
         raise NotImplementedError()
 
-    def reconstruct(self, update=False):
+    def reconstruct(self, update: bool = False) -> Any:
         """
         Reconstruct node from subnodes.
 
@@ -207,10 +209,10 @@ class BaseNode:
             return self.data
         return self._reconstruct(update)
 
-    def _reconstruct(self):
+    def _reconstruct(self, update: bool) -> Any:
         raise NotImplementedError()  # override this in subclasses
 
-    def get_subnode(self, part, decompose=True):
+    def get_subnode(self, part: str, decompose: bool = True) -> BaseNode:
         """
         Returns subnode or None (see `decomposition` flag description).
 
@@ -231,7 +233,7 @@ class BaseNode:
             subnode = self._get_node(part)
         return subnode
 
-    def __getitem__(self, path):
+    def __getitem__(self, path: str | tuple[str, ...]) -> BaseNode:
         """
         Find node represented by the given path.
 
@@ -269,7 +271,7 @@ class BaseNode:
         else:
             raise TypeError(errmsg)
 
-    def __setitem__(self, path, data):
+    def __setitem__(self, path: str, data: np.ndarray | list | BaseNode) -> None:
         """
         Set node or node's data in the decomposition tree. Nodes are
         identified by string `path`.
@@ -306,7 +308,7 @@ class BaseNode:
             raise TypeError("Invalid path parameter type - expected string but"
                             " got %s." % type(path))
 
-    def __delitem__(self, path):
+    def __delitem__(self, path: str) -> None:
         """
         Remove node from the tree.
 
@@ -326,14 +328,14 @@ class BaseNode:
             parent._delete_node(node.node_name)
 
     @property
-    def is_empty(self):
+    def is_empty(self) -> bool:
         return self.data is None
 
     @property
-    def has_any_subnode(self):
+    def has_any_subnode(self) -> bool:
         return any(self._get_node(part) is not None for part in self.PARTS)
 
-    def get_leaf_nodes(self, decompose=False):
+    def get_leaf_nodes(self, decompose: bool = False) -> list[BaseNode]:
         """
         Returns leaf nodes.
 
@@ -344,7 +346,7 @@ class BaseNode:
         """
         result = []
 
-        def collect(node):
+        def collect(node: BaseNode):
             if node.level == node.maxlevel and not node.is_empty:
                 result.append(node)
                 return False
@@ -355,7 +357,7 @@ class BaseNode:
         self.walk(collect, decompose=decompose)
         return result
 
-    def walk(self, func, args=(), kwargs=None, decompose=True):
+    def walk(self, func: Callable, args: tuple = (), kwargs: dict | None = None, decompose: bool = True) -> None:
         """
         Traverses the decomposition tree and calls
         ``func(node, *args, **kwargs)`` on every node. If `func` returns True,
@@ -382,7 +384,7 @@ class BaseNode:
                 if subnode is not None:
                     subnode.walk(func, args, kwargs, decompose)
 
-    def walk_depth(self, func, args=(), kwargs=None, decompose=True):
+    def walk_depth(self, func: Callable, args: tuple = (), kwargs: dict | None = None, decompose: bool = True) -> None:
         """
         Walk tree and call func on every node starting from the bottom-most
         nodes.
@@ -408,7 +410,7 @@ class BaseNode:
                     subnode.walk_depth(func, args, kwargs, decompose)
         func(self, *args, **kwargs)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.path + ": " + str(self.data)
 
 
@@ -425,11 +427,11 @@ class Node(BaseNode):
     PARTS = A, D
     PART_LEN = 1
 
-    def _create_subnode(self, part, data=None, overwrite=True):
+    def _create_subnode(self, part: str, data: np.ndarray | None = None, overwrite: bool = True) -> BaseNode:
         return self._create_subnode_base(node_cls=Node, part=part, data=data,
                                          overwrite=overwrite)
 
-    def _decompose(self):
+    def _decompose(self) -> tuple[BaseNode, BaseNode]:
         """
 
         See also
@@ -449,7 +451,7 @@ class Node(BaseNode):
             self._create_subnode(self.D, data_d)
         return self._get_node(self.A), self._get_node(self.D)
 
-    def _reconstruct(self, update):
+    def _reconstruct(self, update: bool) -> np.ndarray:
         data_a, data_d = None, None
         node_a, node_d = self._get_node(self.A), self._get_node(self.D)
 
@@ -487,11 +489,11 @@ class Node2D(BaseNode):
     PARTS = LL, HL, LH, HH
     PART_LEN = 1
 
-    def _create_subnode(self, part, data=None, overwrite=True):
+    def _create_subnode(self, part: str, data: np.ndarray | None = None, overwrite: bool = True) -> BaseNode:
         return self._create_subnode_base(node_cls=Node2D, part=part, data=data,
                                          overwrite=overwrite)
 
-    def _decompose(self):
+    def _decompose(self) -> tuple[BaseNode, BaseNode, BaseNode, BaseNode]:
         """
         See also
         --------
@@ -509,7 +511,7 @@ class Node2D(BaseNode):
         return (self._get_node(self.LL), self._get_node(self.HL),
                 self._get_node(self.LH), self._get_node(self.HH))
 
-    def _reconstruct(self, update):
+    def _reconstruct(self, update: bool) -> np.ndarray:
         data_ll, data_lh, data_hl, data_hh = None, None, None, None
 
         node_ll, node_lh, node_hl, node_hh =\
@@ -541,7 +543,7 @@ class Node2D(BaseNode):
                 self.data = rec
             return rec
 
-    def expand_2d_path(self, path):
+    def expand_2d_path(self, path: str) -> tuple[str, str]:
         expanded_paths = {
             self.HH: 'hh',
             self.HL: 'hl',
@@ -579,7 +581,7 @@ class NodeND(BaseNode):
         The number of dimensions that are to be transformed.
 
     """
-    def __init__(self, parent, data, node_name, ndim, ndim_transform):
+    def __init__(self, parent: BaseNode, data: np.ndarray, node_name: str, ndim: int, ndim_transform: int) -> None:
         super().__init__(parent=parent, data=data,
                                      node_name=node_name)
         self.PART_LEN = ndim_transform
@@ -589,33 +591,33 @@ class NodeND(BaseNode):
         self.ndim = ndim
         self.ndim_transform = ndim_transform
 
-    def _init_subnodes(self):
+    def _init_subnodes(self) -> None:
         # need this empty so BaseNode's _init_subnodes isn't called during
         # __init__.  We use a dictionary for PARTS instead for the nd case.
         pass
 
-    def _get_node(self, part):
+    def _get_node(self, part: str) -> BaseNode:
         return self.PARTS[part]
 
-    def _set_node(self, part, node):
+    def _set_node(self, part: str, node: BaseNode | None) -> None:
         if part not in self.PARTS:
             raise ValueError("invalid part")
         self.PARTS[part] = node
 
-    def _delete_node(self, part):
+    def _delete_node(self, part: str) -> None:
         self._set_node(part, None)
 
-    def _validate_node_name(self, part):
+    def _validate_node_name(self, part: str) -> None:
         if part not in self.PARTS:
             raise ValueError(
                 "Subnode name must be in [{}], not '{}'.".format(', '.join("'%s'" % p for p in list(self.PARTS.keys())), part))
 
-    def _create_subnode(self, part, data=None, overwrite=True):
+    def _create_subnode(self, part: str, data: np.ndarray | None = None, overwrite: bool = True) -> BaseNode:
         return self._create_subnode_base(node_cls=NodeND, part=part, data=data,
                                          overwrite=overwrite, ndim=self.ndim,
                                          ndim_transform=self.ndim_transform)
 
-    def _evaluate_maxlevel(self, evaluate_from='parent'):
+    def _evaluate_maxlevel(self, evaluate_from: Literal['parent', 'subnodes'] = 'parent') -> int | None:
         """
         Try to find the value of maximum decomposition level if it is not
         specified explicitly.
@@ -643,7 +645,7 @@ class NodeND(BaseNode):
                         return level
         return None
 
-    def _decompose(self):
+    def _decompose(self) -> Iterator[BaseNode]:
         """
         See also
         --------
@@ -658,7 +660,7 @@ class NodeND(BaseNode):
             self._create_subnode(key, data)
         return (self._get_node(key) for key in self.PARTS)
 
-    def _reconstruct(self, update):
+    def _reconstruct(self, update: bool) -> np.ndarray:
         coeffs = {key: None for key in self.PARTS}
 
         nnodes = 0
@@ -700,8 +702,8 @@ class WaveletPacket(Node):
     axis : int, optional
         The axis to transform.
     """
-    def __init__(self, data, wavelet, mode='symmetric', maxlevel=None,
-                 axis=-1):
+    def __init__(self, data: np.ndarray | None, wavelet: Wavelet | str, mode: str = 'symmetric', maxlevel: int | None = None,
+                 axis: int = -1) -> None:
         super().__init__(None, data, "")
 
         if not isinstance(wavelet, Wavelet):
@@ -724,11 +726,11 @@ class WaveletPacket(Node):
 
         self._maxlevel = maxlevel
 
-    def __reduce__(self):
+    def __reduce__(self) -> tuple[type[WaveletPacket], tuple[Any, Wavelet, str, int | None]]:
         return (WaveletPacket,
                 (self.data, self.wavelet, self.mode, self.maxlevel))
 
-    def reconstruct(self, update=True):
+    def reconstruct(self, update: bool = True) -> np.ndarray:
         """
         Reconstruct data value using coefficients from subnodes.
 
@@ -747,7 +749,7 @@ class WaveletPacket(Node):
             return data
         return self.data  # return original data
 
-    def get_level(self, level, order="natural", decompose=True):
+    def get_level(self, level: int, order: Literal['natural', 'freq'] = "natural", decompose: bool = True) -> list[BaseNode]:
         """
         Returns all nodes on the specified level.
 
@@ -826,8 +828,8 @@ class WaveletPacket2D(Node2D):
     axes : 2-tuple of ints, optional
         The axes that will be transformed.
     """
-    def __init__(self, data, wavelet, mode='smooth', maxlevel=None,
-                 axes=(-2, -1)):
+    def __init__(self, data: np.ndarray, wavelet: Wavelet | str, mode: str = 'smooth', maxlevel: int | None = None,
+                 axes: tuple[int, int] = (-2, -1)) -> None:
         super().__init__(None, data, "")
 
         if not isinstance(wavelet, Wavelet):
@@ -850,11 +852,11 @@ class WaveletPacket2D(Node2D):
             self.data_size = None
         self._maxlevel = maxlevel
 
-    def __reduce__(self):
+    def __reduce__(self) -> tuple[type[WaveletPacket2D], tuple[Any, Wavelet, str, int | None]]:
         return (WaveletPacket2D,
                 (self.data, self.wavelet, self.mode, self.maxlevel))
 
-    def reconstruct(self, update=True):
+    def reconstruct(self, update: bool = True) -> np.ndarray:
         """
         Reconstruct data using coefficients from subnodes.
 
@@ -873,7 +875,7 @@ class WaveletPacket2D(Node2D):
             return data
         return self.data  # return original data
 
-    def get_level(self, level, order="natural", decompose=True):
+    def get_level(self, level: int, order: Literal['natural', 'freq'] = "natural", decompose: bool = True) -> list[BaseNode]:
         """
         Returns all nodes from specified level.
 
@@ -958,8 +960,8 @@ class WaveletPacketND(NodeND):
         The axes to transform.  The default value of `None` corresponds to all
         axes.
     """
-    def __init__(self, data, wavelet, mode='smooth', maxlevel=None,
-                 axes=None):
+    def __init__(self, data: np.ndarray, wavelet: Wavelet | str, mode: str = 'smooth', maxlevel: int | None = None,
+                 axes: int | tuple[int, ...] | None = None) -> None:
         if (data is None) and (axes is None):
             # ndim is required to create a NodeND object
             raise ValueError("If data is None, axes must be specified")
@@ -1002,7 +1004,7 @@ class WaveletPacketND(NodeND):
             self.data_size = None
         self._maxlevel = maxlevel
 
-    def reconstruct(self, update=True):
+    def reconstruct(self, update: bool = True) -> np.ndarray:
         """
         Reconstruct data using coefficients from subnodes.
 
@@ -1021,7 +1023,7 @@ class WaveletPacketND(NodeND):
             return data
         return self.data  # return original data
 
-    def get_level(self, level, decompose=True):
+    def get_level(self, level: int, decompose: bool = True) -> list[BaseNode]:
         """
         Returns all nodes from specified level.
 

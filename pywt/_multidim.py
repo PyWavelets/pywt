@@ -8,6 +8,8 @@
 """
 
 
+from typing import Sequence
+from pywt import Wavelet
 from itertools import product
 
 import numpy as np
@@ -19,7 +21,7 @@ from ._utils import AxisError, _modes_per_axis, _wavelets_per_axis
 __all__ = ['dwt2', 'idwt2', 'dwtn', 'idwtn']
 
 
-def dwt2(data, wavelet, mode='symmetric', axes=(-2, -1)):
+def dwt2(data: np.ndarray | list, wavelet: Wavelet | str | tuple[Wavelet], mode: str | tuple[str, str] = 'symmetric', axes: tuple[int, int] = (-2, -1)) -> tuple:
     """
     2D Discrete Wavelet Transform.
 
@@ -72,7 +74,7 @@ def dwt2(data, wavelet, mode='symmetric', axes=(-2, -1)):
     return coefs['aa'], (coefs['da'], coefs['ad'], coefs['dd'])
 
 
-def idwt2(coeffs, wavelet, mode='symmetric', axes=(-2, -1)):
+def idwt2(coeffs: tuple, wavelet: Wavelet | str | tuple[Wavelet], mode: str = 'symmetric', axes: tuple[int, int] = (-2, -1)) -> np.ndarray:
     """
     2-D Inverse Discrete Wavelet Transform.
 
@@ -116,7 +118,7 @@ def idwt2(coeffs, wavelet, mode='symmetric', axes=(-2, -1)):
     return idwtn(coeffs, wavelet, mode, axes)
 
 
-def dwtn(data, wavelet, mode='symmetric', axes=None):
+def dwtn(data: np.ndarray | list, wavelet: Wavelet | str | tuple[Wavelet], mode: str = 'symmetric', axes: Sequence[int] | None = None) -> dict[str, np.ndarray]:
     """
     Single-level n-dimensional Discrete Wavelet Transform.
 
@@ -190,7 +192,7 @@ def dwtn(data, wavelet, mode='symmetric', axes=None):
     return dict(coeffs)
 
 
-def _fix_coeffs(coeffs):
+def _fix_coeffs(coeffs: dict[str, np.ndarray]) -> dict[str, np.ndarray]:
     missing_keys = [k for k, v in coeffs.items() if v is None]
     if missing_keys:
         raise ValueError(
@@ -216,7 +218,7 @@ def _fix_coeffs(coeffs):
     return {k: np.asarray(v) for k, v in coeffs.items()}
 
 
-def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
+def idwtn(coeffs: dict[str, np.ndarray], wavelet: Wavelet | str, mode: str = 'symmetric', axes: Sequence[int] | None = None) -> np.ndarray:
     """
     Single-level n-dimensional Inverse Discrete Wavelet Transform.
 

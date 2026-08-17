@@ -12,12 +12,12 @@ from ._extensions._swt import swt_max_level
 from ._multidim import idwt2, idwtn
 from ._utils import AxisError, _as_wavelet, _wavelets_per_axis
 
-__all__ = ["swt", "swt_max_level", 'iswt', 'swt2', 'iswt2', 'swtn', 'iswtn']
+
+__all__ = ["swt", "swt_max_level", "iswt", "swt2", "iswt2", "swtn", "iswtn"]
 
 
-def _rescale_wavelet_filterbank(wavelet, sf):
-    wav = Wavelet(wavelet.name + 'r',
-                  [np.asarray(f) * sf for f in wavelet.filter_bank])
+def _rescale_wavelet_filterbank(wavelet: Wavelet, sf: float) -> Wavelet:
+    wav = Wavelet(wavelet.name + "r", [np.asarray(f) * sf for f in wavelet.filter_bank])
 
     # copy attributes from the original wavelet
     wav.orthogonal = wavelet.orthogonal
@@ -25,8 +25,15 @@ def _rescale_wavelet_filterbank(wavelet, sf):
     return wav
 
 
-def swt(data, wavelet, level=None, start_level=0, axis=-1,
-        trim_approx=False, norm=False):
+def swt(
+    data: np.ndarray | list,
+    wavelet: Wavelet | str,
+    level: int | None = None,
+    start_level: int = 0,
+    axis: int = -1,
+    trim_approx: bool = False,
+    norm: bool = False,
+) -> np.ndarray | list:
     """
     Multilevel 1D stationary wavelet transform.
 
@@ -113,17 +120,22 @@ def swt(data, wavelet, level=None, start_level=0, axis=-1,
 
     if not _have_c99_complex and np.iscomplexobj(data):
         data = np.asarray(data)
-        kwargs = {"wavelet": wavelet, "level": level, "start_level": start_level,
-                      "trim_approx": trim_approx, "axis": axis, "norm": norm}
+        kwargs = {
+            "wavelet": wavelet,
+            "level": level,
+            "start_level": start_level,
+            "trim_approx": trim_approx,
+            "axis": axis,
+            "norm": norm,
+        }
         coeffs_real = swt(data.real, **kwargs)
         coeffs_imag = swt(data.imag, **kwargs)
         if not trim_approx:
             coeffs_cplx = []
             for (cA_r, cD_r), (cA_i, cD_i) in zip(coeffs_real, coeffs_imag):
-                coeffs_cplx.append((cA_r + 1j*cA_i, cD_r + 1j*cD_i))
+                coeffs_cplx.append((cA_r + 1j * cA_i, cD_r + 1j * cD_i))
         else:
-            coeffs_cplx = [cr + 1j*ci
-                           for (cr, ci) in zip(coeffs_real, coeffs_imag)]
+            coeffs_cplx = [cr + 1j * ci for (cr, ci) in zip(coeffs_real, coeffs_imag)]
         return coeffs_cplx
 
     # accept array_like input; make a copy to ensure a contiguous array
@@ -135,8 +147,9 @@ def swt(data, wavelet, level=None, start_level=0, axis=-1,
         if not wavelet.orthogonal:
             warnings.warn(
                 "norm=True, but the wavelet is not orthogonal: \n"
-                "\tThe conditions for energy preservation are not satisfied.")
-        wavelet = _rescale_wavelet_filterbank(wavelet, 1/np.sqrt(2))
+                "\tThe conditions for energy preservation are not satisfied."
+            )
+        wavelet = _rescale_wavelet_filterbank(wavelet, 1 / np.sqrt(2))
 
     if axis < 0:
         axis = axis + data.ndim
@@ -153,7 +166,12 @@ def swt(data, wavelet, level=None, start_level=0, axis=-1,
     return ret
 
 
-def iswt(coeffs, wavelet, norm=False, axis=-1):
+def iswt(
+    coeffs: list[tuple[np.ndarray, np.ndarray]],
+    wavelet: Wavelet | str,
+    norm: bool | None = False,
+    axis: int = -1,
+) -> np.ndarray:
     """
     Multilevel 1D inverse discrete stationary wavelet transform.
 
@@ -191,9 +209,9 @@ def iswt(coeffs, wavelet, norm=False, axis=-1):
     if cA.ndim > 1:
         # convert to swtn coefficient format and call iswtn
         if trim_approx:
-            coeffs_nd = [cA] + [{'d': d} for d in coeffs[1:]]
+            coeffs_nd = [cA] + [{"d": d} for d in coeffs[1:]]
         else:
-            coeffs_nd = [{'a': a, 'd': d} for a, d in coeffs]
+            coeffs_nd = [{"a": a, "d": d} for a, d in coeffs]
         return iswtn(coeffs_nd, wavelet, axes=(axis,), norm=norm)
     elif axis != 0 and axis != -1:
         raise AxisError("Axis greater than data dimensions")
@@ -222,9 +240,9 @@ def iswt(coeffs, wavelet, norm=False, axis=-1):
     wavelet = _as_wavelet(wavelet)
     if norm:
         wavelet = _rescale_wavelet_filterbank(wavelet, np.sqrt(2))
-    mode = Modes.from_object('periodization')
+    mode = Modes.from_object("periodization")
     for j in range(num_levels, 0, -1):
-        step_size = int(pow(2, j-1))
+        step_size = int(pow(2, j - 1))
         last_index = step_size
         if trim_approx:
             cD = coeffs[-j]
@@ -233,7 +251,7 @@ def iswt(coeffs, wavelet, norm=False, axis=-1):
         cD = np.asarray(cD, dtype=_check_dtype(cD))
         if cD.dtype != output.dtype:
             # upcast to a common dtype (float64 or complex128)
-            if output.dtype.kind == 'c' or cD.dtype.kind == 'c':
+            if output.dtype.kind == "c" or cD.dtype.kind == "c":
                 dtype = np.complex128
             else:
                 dtype = np.float64
@@ -253,24 +271,27 @@ def iswt(coeffs, wavelet, norm=False, axis=-1):
             # making sure to use periodic boundary conditions
             # Note:  indexing with an array of ints returns a contiguous
             #        copy as required by idwt_single.
-            x1 = idwt_single(output[even_indices],
-                             cD[even_indices],
-                             wavelet, mode)
-            x2 = idwt_single(output[odd_indices],
-                             cD[odd_indices],
-                             wavelet, mode)
+            x1 = idwt_single(output[even_indices], cD[even_indices], wavelet, mode)
+            x2 = idwt_single(output[odd_indices], cD[odd_indices], wavelet, mode)
 
             # perform a circular shift right
             x2 = np.roll(x2, 1)
 
             # average and insert into the correct indices
-            output[indices] = (x1 + x2)/2.
+            output[indices] = (x1 + x2) / 2.0
 
     return output
 
 
-def swt2(data, wavelet, level, start_level=0, axes=(-2, -1),
-         trim_approx=False, norm=False):
+def swt2(
+    data: np.ndarray | list,
+    wavelet: Wavelet | str,
+    level: int,
+    start_level: int = 0,
+    axes: tuple[int, ...] = (-2, -1),
+    trim_approx: bool = False,
+    norm: bool = False,
+) -> list[tuple[np.ndarray, ...]]:
     """
     Multilevel 2D stationary wavelet transform.
 
@@ -362,8 +383,7 @@ def swt2(data, wavelet, level, start_level=0, axes=(-2, -1),
     if len(axes) != len(set(axes)):
         raise ValueError("The axes passed to swt2 must be unique.")
     if data.ndim < len(np.unique(axes)):
-        raise ValueError("Input array has fewer dimensions than the specified "
-                         "axes")
+        raise ValueError("Input array has fewer dimensions than the specified " "axes")
 
     coefs = swtn(data, wavelet, level, start_level, axes, trim_approx, norm)
     ret = []
@@ -372,13 +392,18 @@ def swt2(data, wavelet, level, start_level=0, axes=(-2, -1),
         coefs = coefs[1:]
     for c in coefs:
         if trim_approx:
-            ret.append((c['da'], c['ad'], c['dd']))
+            ret.append((c["da"], c["ad"], c["dd"]))
         else:
-            ret.append((c['aa'], (c['da'], c['ad'], c['dd'])))
+            ret.append((c["aa"], (c["da"], c["ad"], c["dd"])))
     return ret
 
 
-def iswt2(coeffs, wavelet, norm=False, axes=(-2, -1)):
+def iswt2(
+    coeffs: list[tuple[np.ndarray, np.ndarray]],
+    wavelet: Wavelet | str,
+    norm: bool | None = False,
+    axes: tuple[int, ...] = (-2, -1),
+) -> np.ndarray:
     """
     Multilevel 2D inverse discrete stationary wavelet transform.
 
@@ -435,11 +460,11 @@ def iswt2(coeffs, wavelet, norm=False, axes=(-2, -1)):
     if cA.ndim != 2 or axes != (-2, -1):
         # convert to swtn coefficient format and call iswtn instead
         if trim_approx:
-            coeffs_nd = [cA] + [{'da': h, 'ad': v, 'dd': d}
-                                for h, v, d in coeffs[1:]]
+            coeffs_nd = [cA] + [{"da": h, "ad": v, "dd": d} for h, v, d in coeffs[1:]]
         else:
-            coeffs_nd = [{'aa': a, 'da': h, 'ad': v, 'dd': d}
-                         for a, (h, v, d) in coeffs]
+            coeffs_nd = [
+                {"aa": a, "da": h, "ad": v, "dd": d} for a, (h, v, d) in coeffs
+            ]
         return iswtn(coeffs_nd, wavelet, axes=axes, norm=norm)
     if not _have_c99_complex and np.iscomplexobj(cA):
         if trim_approx:
@@ -448,10 +473,12 @@ def iswt2(coeffs, wavelet, norm=False, axes=(-2, -1)):
             coeffs_imag = [cA.imag]
             coeffs_imag += [(h.imag, v.imag, d.imag) for h, v, d in coeffs[1:]]
         else:
-            coeffs_real = [(a.real, (h.real, v.real, d.real))
-                            for a, (h, v, d) in coeffs]
-            coeffs_imag = [(a.imag, (h.imag, v.imag, d.imag))
-                            for a, (h, v, d) in coeffs]
+            coeffs_real = [
+                (a.real, (h.real, v.real, d.real)) for a, (h, v, d) in coeffs
+            ]
+            coeffs_imag = [
+                (a.imag, (h.imag, v.imag, d.imag)) for a, (h, v, d) in coeffs
+            ]
         kwargs = {"wavelet": wavelet, "norm": norm}
         y = iswt2(coeffs_real, **kwargs)
         return y + 1j * iswt2(coeffs_imag, **kwargs)
@@ -466,16 +493,16 @@ def iswt2(coeffs, wavelet, norm=False, axes=(-2, -1)):
     if output.ndim != 2:
         raise ValueError(
             "iswt2 only supports 2D arrays.  see iswtn for a general "
-            "n-dimensionsal ISWT")
+            "n-dimensionsal ISWT"
+        )
     # num_levels, equivalent to the decomposition level, n
     num_levels = len(coeffs)
     wavelets = _wavelets_per_axis(wavelet, axes=(0, 1))
     if norm:
-        wavelets = [_rescale_wavelet_filterbank(wav, np.sqrt(2))
-                    for wav in wavelets]
+        wavelets = [_rescale_wavelet_filterbank(wav, np.sqrt(2)) for wav in wavelets]
 
     for j in range(num_levels):
-        step_size = int(pow(2, num_levels-j-1))
+        step_size = int(pow(2, num_levels - j - 1))
         last_index = step_size
         if trim_approx:
             (cH, cV, cD) = coeffs[j]
@@ -483,13 +510,18 @@ def iswt2(coeffs, wavelet, norm=False, axes=(-2, -1)):
             _, (cH, cV, cD) = coeffs[j]
         # We are going to assume cH, cV, and cD are of equal size
         if (cH.shape != cV.shape) or (cH.shape != cD.shape):
-            raise RuntimeError(
-                "Mismatch in shape of intermediate coefficient arrays")
+            raise RuntimeError("Mismatch in shape of intermediate coefficient arrays")
 
         # make sure output shares the common dtype
         # (conversion of dtype for individual coeffs is handled within idwt2 )
-        common_dtype = np.result_type(*(
-            [dt, ] + [_check_dtype(c) for c in [cH, cV, cD]]))
+        common_dtype = np.result_type(
+            *(
+                [
+                    dt,
+                ]
+                + [_check_dtype(c) for c in [cH, cV, cD]]
+            )
+        )
         if output.dtype != common_dtype:
             output = output.astype(common_dtype)
 
@@ -499,33 +531,61 @@ def iswt2(coeffs, wavelet, norm=False, axes=(-2, -1)):
                 indices_h = slice(first_h, cH.shape[0], step_size)
                 indices_w = slice(first_w, cH.shape[1], step_size)
 
-                even_idx_h = slice(first_h, cH.shape[0], 2*step_size)
-                even_idx_w = slice(first_w, cH.shape[1], 2*step_size)
-                odd_idx_h = slice(first_h + step_size, cH.shape[0], 2*step_size)
-                odd_idx_w = slice(first_w + step_size, cH.shape[1], 2*step_size)
+                even_idx_h = slice(first_h, cH.shape[0], 2 * step_size)
+                even_idx_w = slice(first_w, cH.shape[1], 2 * step_size)
+                odd_idx_h = slice(first_h + step_size, cH.shape[0], 2 * step_size)
+                odd_idx_w = slice(first_w + step_size, cH.shape[1], 2 * step_size)
 
                 # perform the inverse dwt on the selected indices,
                 # making sure to use periodic boundary conditions
-                x1 = idwt2((output[even_idx_h, even_idx_w],
-                           (cH[even_idx_h, even_idx_w],
+                x1 = idwt2(
+                    (
+                        output[even_idx_h, even_idx_w],
+                        (
+                            cH[even_idx_h, even_idx_w],
                             cV[even_idx_h, even_idx_w],
-                            cD[even_idx_h, even_idx_w])),
-                           wavelets, 'periodization')
-                x2 = idwt2((output[even_idx_h, odd_idx_w],
-                           (cH[even_idx_h, odd_idx_w],
+                            cD[even_idx_h, even_idx_w],
+                        ),
+                    ),
+                    wavelets,
+                    "periodization",
+                )
+                x2 = idwt2(
+                    (
+                        output[even_idx_h, odd_idx_w],
+                        (
+                            cH[even_idx_h, odd_idx_w],
                             cV[even_idx_h, odd_idx_w],
-                            cD[even_idx_h, odd_idx_w])),
-                           wavelets, 'periodization')
-                x3 = idwt2((output[odd_idx_h, even_idx_w],
-                           (cH[odd_idx_h, even_idx_w],
+                            cD[even_idx_h, odd_idx_w],
+                        ),
+                    ),
+                    wavelets,
+                    "periodization",
+                )
+                x3 = idwt2(
+                    (
+                        output[odd_idx_h, even_idx_w],
+                        (
+                            cH[odd_idx_h, even_idx_w],
                             cV[odd_idx_h, even_idx_w],
-                            cD[odd_idx_h, even_idx_w])),
-                           wavelets, 'periodization')
-                x4 = idwt2((output[odd_idx_h, odd_idx_w],
-                           (cH[odd_idx_h, odd_idx_w],
+                            cD[odd_idx_h, even_idx_w],
+                        ),
+                    ),
+                    wavelets,
+                    "periodization",
+                )
+                x4 = idwt2(
+                    (
+                        output[odd_idx_h, odd_idx_w],
+                        (
+                            cH[odd_idx_h, odd_idx_w],
                             cV[odd_idx_h, odd_idx_w],
-                            cD[odd_idx_h, odd_idx_w])),
-                           wavelets, 'periodization')
+                            cD[odd_idx_h, odd_idx_w],
+                        ),
+                    ),
+                    wavelets,
+                    "periodization",
+                )
 
                 # perform a circular shifts
                 x2 = np.roll(x2, 1, axis=1)
@@ -537,8 +597,15 @@ def iswt2(coeffs, wavelet, norm=False, axes=(-2, -1)):
     return output
 
 
-def swtn(data, wavelet, level, start_level=0, axes=None, trim_approx=False,
-         norm=False):
+def swtn(
+    data: np.ndarray | list,
+    wavelet: Wavelet | str,
+    level: int,
+    start_level: int = 0,
+    axes: tuple[int, ...] | None = None,
+    trim_approx: bool = False,
+    norm: bool | None = False,
+) -> list[dict[str, np.ndarray]]:
     """
     n-dimensional stationary wavelet transform.
 
@@ -615,8 +682,14 @@ def swtn(data, wavelet, level, start_level=0, axes=None, trim_approx=False,
     """
     data = np.asarray(data)
     if not _have_c99_complex and np.iscomplexobj(data):
-        kwargs = {"wavelet": wavelet, "level": level, "start_level": start_level,
-                      "trim_approx": trim_approx, "axes": axes, "norm": norm}
+        kwargs = {
+            "wavelet": wavelet,
+            "level": level,
+            "start_level": start_level,
+            "trim_approx": trim_approx,
+            "axes": axes,
+            "norm": norm,
+        }
         real = swtn(data.real, **kwargs)
         imag = swtn(data.imag, **kwargs)
         if trim_approx:
@@ -626,11 +699,10 @@ def swtn(data, wavelet, level, start_level=0, axes=None, trim_approx=False,
             cplx = []
             offset = 0
         for rdict, idict in zip(real[offset:], imag[offset:]):
-            cplx.append(
-                {k: rdict[k] + 1j * idict[k] for k in rdict})
+            cplx.append({k: rdict[k] + 1j * idict[k] for k in rdict})
         return cplx
 
-    if data.dtype == np.dtype('object'):
+    if data.dtype == np.dtype("object"):
         raise TypeError("Input must be a numeric array-like")
     if data.ndim < 1:
         raise ValueError("Input data must be at least 1D")
@@ -649,35 +721,40 @@ def swtn(data, wavelet, level, start_level=0, axes=None, trim_approx=False,
         if not np.all([wav.orthogonal for wav in wavelets]):
             warnings.warn(
                 "norm=True, but the wavelets used are not orthogonal: \n"
-                "\tThe conditions for energy preservation are not satisfied.")
-        wavelets = [_rescale_wavelet_filterbank(wav, 1/np.sqrt(2))
-                    for wav in wavelets]
+                "\tThe conditions for energy preservation are not satisfied."
+            )
+        wavelets = [
+            _rescale_wavelet_filterbank(wav, 1 / np.sqrt(2)) for wav in wavelets
+        ]
     ret = []
     for i in range(start_level, start_level + level):
-        coeffs = [('', data)]
+        coeffs = [("", data)]
         for axis, wavelet in zip(axes, wavelets):
             new_coeffs = []
             for subband, x in coeffs:
-                cA, cD = _swt_axis(x, wavelet, level=1, start_level=i,
-                                   axis=axis)[0]
-                new_coeffs.extend([(subband + 'a', cA),
-                                   (subband + 'd', cD)])
+                cA, cD = _swt_axis(x, wavelet, level=1, start_level=i, axis=axis)[0]
+                new_coeffs.extend([(subband + "a", cA), (subband + "d", cD)])
             coeffs = new_coeffs
 
         coeffs = dict(coeffs)
         ret.append(coeffs)
 
         # data for the next level is the approximation coeffs from this level
-        data = coeffs['a' * num_axes]
+        data = coeffs["a" * num_axes]
         if trim_approx:
-            coeffs.pop('a' * num_axes)
+            coeffs.pop("a" * num_axes)
     if trim_approx:
         ret.append(data)
     ret.reverse()
     return ret
 
 
-def iswtn(coeffs, wavelet, axes=None, norm=False):
+def iswtn(
+    coeffs: list[dict],
+    wavelet: Wavelet | str,
+    axes: tuple[int, ...] | None = None,
+    norm: bool | None = False,
+) -> np.ndarray:
     """
     Multilevel nD inverse discrete stationary wavelet transform.
 
@@ -718,7 +795,7 @@ def iswtn(coeffs, wavelet, axes=None, norm=False):
     # key length matches the number of axes transformed
     ndim_transform = max(len(key) for key in coeffs[-1])
     trim_approx = not isinstance(coeffs[0], dict)
-    cA = coeffs[0] if trim_approx else coeffs[0]['a'*ndim_transform]
+    cA = coeffs[0] if trim_approx else coeffs[0]["a" * ndim_transform]
 
     if not _have_c99_complex and np.iscomplexobj(cA):
         if trim_approx:
@@ -748,56 +825,84 @@ def iswtn(coeffs, wavelet, axes=None, norm=False):
     if len(axes) != len(set(axes)):
         raise ValueError("The axes passed to swtn must be unique.")
     if ndim_transform != len(axes):
-        raise ValueError("The number of axes used in iswtn must match the "
-                         "number of dimensions transformed in swtn.")
+        raise ValueError(
+            "The number of axes used in iswtn must match the "
+            "number of dimensions transformed in swtn."
+        )
 
     # num_levels, equivalent to the decomposition level, n
     num_levels = len(coeffs)
     wavelets = _wavelets_per_axis(wavelet, axes)
     if norm:
-        wavelets = [_rescale_wavelet_filterbank(wav, np.sqrt(2))
-                    for wav in wavelets]
+        wavelets = [_rescale_wavelet_filterbank(wav, np.sqrt(2)) for wav in wavelets]
 
     # initialize various slice objects used in the loops below
     # these will remain slice(None) only on axes that aren't transformed
-    indices = [slice(None), ]*ndim
-    even_indices = [slice(None), ]*ndim
-    odd_indices = [slice(None), ]*ndim
-    odd_even_slices = [slice(None), ]*ndim
+    indices = [
+        slice(None),
+    ] * ndim
+    even_indices = [
+        slice(None),
+    ] * ndim
+    odd_indices = [
+        slice(None),
+    ] * ndim
+    odd_even_slices = [
+        slice(None),
+    ] * ndim
 
     for j in range(num_levels):
-        step_size = int(pow(2, num_levels-j-1))
+        step_size = int(pow(2, num_levels - j - 1))
         last_index = step_size
         if not trim_approx:
-            a = coeffs[j].pop('a'*ndim_transform)  # will restore later
+            a = coeffs[j].pop("a" * ndim_transform)  # will restore later
         details = coeffs[j]
         # make sure dtype matches the coarsest level approximation coefficients
-        common_dtype = np.result_type(*(
-            [dt, ] + [v.dtype for v in details.values()]))
+        common_dtype = np.result_type(
+            *(
+                [
+                    dt,
+                ]
+                + [v.dtype for v in details.values()]
+            )
+        )
         if output.dtype != common_dtype:
             output = output.astype(common_dtype)
 
         # We assume all coefficient arrays are of equal size
         shapes = [v.shape for k, v in details.items()]
         if len(set(shapes)) != 1:
-            raise RuntimeError(
-                "Mismatch in shape of intermediate coefficient arrays")
+            raise RuntimeError("Mismatch in shape of intermediate coefficient arrays")
 
         # shape of a single coefficient array, excluding non-transformed axes
         coeff_trans_shape = tuple([shapes[0][ax] for ax in axes])
 
         # nested loop over all combinations of axis offsets at this level
-        for firsts in product(*([range(last_index), ]*ndim_transform)):
+        for firsts in product(
+            *(
+                [
+                    range(last_index),
+                ]
+                * ndim_transform
+            )
+        ):
             for first, sh, ax in zip(firsts, coeff_trans_shape, axes):
                 indices[ax] = slice(first, sh, step_size)
-                even_indices[ax] = slice(first, sh, 2*step_size)
-                odd_indices[ax] = slice(first+step_size, sh, 2*step_size)
+                even_indices[ax] = slice(first, sh, 2 * step_size)
+                odd_indices[ax] = slice(first + step_size, sh, 2 * step_size)
 
             # nested loop over all combinations of odd/even inidices
             approx = output.copy()
             output[tuple(indices)] = 0
             ntransforms = 0
-            for odds in product(*([(0, 1), ]*ndim_transform)):
+            for odds in product(
+                *(
+                    [
+                        (0, 1),
+                    ]
+                    * ndim_transform
+                )
+            ):
                 for o, ax in zip(odds, axes):
                     if o:
                         odd_even_slices[ax] = odd_indices[ax]
@@ -807,12 +912,11 @@ def iswtn(coeffs, wavelet, axes=None, norm=False):
                 details_slice = {}
                 for key, value in details.items():
                     details_slice[key] = value[tuple(odd_even_slices)]
-                details_slice['a'*ndim_transform] = approx[
-                    tuple(odd_even_slices)]
+                details_slice["a" * ndim_transform] = approx[tuple(odd_even_slices)]
 
                 # perform the inverse dwt on the selected indices,
                 # making sure to use periodic boundary conditions
-                x = idwtn(details_slice, wavelets, 'periodization', axes=axes)
+                x = idwtn(details_slice, wavelets, "periodization", axes=axes)
                 for o, ax in zip(odds, axes):
                     # circular shift along any odd indexed axis
                     if o:
@@ -821,5 +925,5 @@ def iswtn(coeffs, wavelet, axes=None, norm=False):
                 ntransforms += 1
             output[tuple(indices)] /= ntransforms  # normalize
         if not trim_approx:
-            coeffs[j]['a'*ndim_transform] = a  # restore approx coeffs to dict
+            coeffs[j]["a" * ndim_transform] = a  # restore approx coeffs to dict
     return output

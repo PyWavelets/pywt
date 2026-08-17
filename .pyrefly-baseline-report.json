@@ -1,0 +1,3467 @@
+{
+  "module_reports": [
+    {
+      "name": "pywt.data",
+      "names": [],
+      "line_count": 3,
+      "symbol_reports": [],
+      "type_ignores": [],
+      "n_typable": 0,
+      "n_typed": 0,
+      "n_any": 0,
+      "n_untyped": 0,
+      "coverage": 100.0,
+      "strict_coverage": 100.0,
+      "n_functions": 0,
+      "n_methods": 0,
+      "n_function_params": 0,
+      "n_method_params": 0,
+      "n_classes": 0,
+      "n_attrs": 0,
+      "n_properties": 0,
+      "n_type_ignores": 0
+    },
+    {
+      "name": "pywt._doc_utils",
+      "names": [
+        "pywt._doc_utils.wavedec_keys",
+        "pywt._doc_utils.wavedec2_keys",
+        "pywt._doc_utils.draw_2d_wp_basis",
+        "pywt._doc_utils.draw_2d_fswavedecn_basis",
+        "pywt._doc_utils.boundary_mode_subplot"
+      ],
+      "line_count": 188,
+      "symbol_reports": [
+        {
+          "kind": "function",
+          "name": "pywt._doc_utils.wavedec_keys",
+          "n_typable": 2,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 2,
+          "location": {
+            "line": 13,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._doc_utils.wavedec2_keys",
+          "n_typable": 2,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 2,
+          "location": {
+            "line": 26,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._doc_utils.draw_2d_wp_basis",
+          "n_typable": 7,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 7,
+          "location": {
+            "line": 88,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._doc_utils.draw_2d_fswavedecn_basis",
+          "n_typable": 7,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 7,
+          "location": {
+            "line": 132,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._doc_utils.boundary_mode_subplot",
+          "n_typable": 5,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 5,
+          "location": {
+            "line": 154,
+            "column": 1
+          }
+        }
+      ],
+      "type_ignores": [],
+      "n_typable": 23,
+      "n_typed": 0,
+      "n_any": 0,
+      "n_untyped": 23,
+      "coverage": 0.0,
+      "strict_coverage": 0.0,
+      "n_functions": 5,
+      "n_methods": 0,
+      "n_function_params": 18,
+      "n_method_params": 0,
+      "n_classes": 0,
+      "n_attrs": 0,
+      "n_properties": 0,
+      "n_type_ignores": 0
+    },
+    {
+      "name": "pywt._mra",
+      "names": [
+        "pywt._mra.mra",
+        "pywt._mra.imra",
+        "pywt._mra.mra2",
+        "pywt._mra.imra2",
+        "pywt._mra.mran",
+        "pywt._mra.imran"
+      ],
+      "line_count": 437,
+      "symbol_reports": [
+        {
+          "kind": "function",
+          "name": "pywt._mra.mra",
+          "n_typable": 7,
+          "n_typed": 5,
+          "n_any": 2,
+          "n_untyped": 0,
+          "location": {
+            "line": 22,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._mra.imra",
+          "n_typable": 2,
+          "n_typed": 0,
+          "n_any": 2,
+          "n_untyped": 0,
+          "location": {
+            "line": 125,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._mra.mra2",
+          "n_typable": 7,
+          "n_typed": 5,
+          "n_any": 2,
+          "n_untyped": 0,
+          "location": {
+            "line": 152,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._mra.imra2",
+          "n_typable": 2,
+          "n_typed": 0,
+          "n_any": 2,
+          "n_untyped": 0,
+          "location": {
+            "line": 261,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._mra.mran",
+          "n_typable": 7,
+          "n_typed": 5,
+          "n_any": 2,
+          "n_untyped": 0,
+          "location": {
+            "line": 292,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._mra.imran",
+          "n_typable": 2,
+          "n_typed": 0,
+          "n_any": 2,
+          "n_untyped": 0,
+          "location": {
+            "line": 408,
+            "column": 1
+          }
+        }
+      ],
+      "type_ignores": [],
+      "n_typable": 27,
+      "n_typed": 15,
+      "n_any": 12,
+      "n_untyped": 0,
+      "coverage": 100.0,
+      "strict_coverage": 55.55555555555556,
+      "n_functions": 6,
+      "n_methods": 0,
+      "n_function_params": 21,
+      "n_method_params": 0,
+      "n_classes": 0,
+      "n_attrs": 0,
+      "n_properties": 0,
+      "n_type_ignores": 0
+    },
+    {
+      "name": "pywt._extensions._pywt",
+      "names": [
+        "pywt._extensions._pywt.ModeInt",
+        "pywt._extensions._pywt.ModeName",
+        "pywt._extensions._pywt.Mode",
+        "pywt._extensions._pywt.Modes",
+        "pywt._extensions._pywt.MODE.MODE_INVALID",
+        "pywt._extensions._pywt.MODE.MODE_ZEROPAD",
+        "pywt._extensions._pywt.MODE.MODE_SYMMETRIC",
+        "pywt._extensions._pywt.MODE.MODE_CONSTANT_EDGE",
+        "pywt._extensions._pywt.MODE.MODE_SMOOTH",
+        "pywt._extensions._pywt.MODE.MODE_PERIODIC",
+        "pywt._extensions._pywt.MODE.MODE_PERIODIZATION",
+        "pywt._extensions._pywt.MODE.MODE_REFLECT",
+        "pywt._extensions._pywt.MODE.MODE_ANTISYMMETRIC",
+        "pywt._extensions._pywt.MODE.MODE_ANTIREFLECT",
+        "pywt._extensions._pywt.MODE.MODE_MAX",
+        "pywt._extensions._pywt._Modes.from_object",
+        "pywt._extensions._pywt.wavelist",
+        "pywt._extensions._pywt.families",
+        "pywt._extensions._pywt.Wavelet.__init__",
+        "pywt._extensions._pywt.Wavelet.__len__",
+        "pywt._extensions._pywt.Wavelet.name",
+        "pywt._extensions._pywt.Wavelet.dec_lo",
+        "pywt._extensions._pywt.Wavelet.dec_hi",
+        "pywt._extensions._pywt.Wavelet.rec_lo",
+        "pywt._extensions._pywt.Wavelet.rec_hi",
+        "pywt._extensions._pywt.Wavelet.rec_len",
+        "pywt._extensions._pywt.Wavelet.dec_len",
+        "pywt._extensions._pywt.Wavelet.family_number",
+        "pywt._extensions._pywt.Wavelet.family_name",
+        "pywt._extensions._pywt.Wavelet.short_family_name",
+        "pywt._extensions._pywt.Wavelet.orthogonal",
+        "pywt._extensions._pywt.Wavelet.orthogonal",
+        "pywt._extensions._pywt.Wavelet.biorthogonal",
+        "pywt._extensions._pywt.Wavelet.biorthogonal",
+        "pywt._extensions._pywt.Wavelet.symmetry",
+        "pywt._extensions._pywt.Wavelet.vanishing_moments_psi",
+        "pywt._extensions._pywt.Wavelet.vanishing_moments_phi",
+        "pywt._extensions._pywt.Wavelet.filter_bank",
+        "pywt._extensions._pywt.Wavelet.get_filters_coeffs",
+        "pywt._extensions._pywt.Wavelet.inverse_filter_bank",
+        "pywt._extensions._pywt.Wavelet.get_reverse_filters_coeffs",
+        "pywt._extensions._pywt.Wavelet.wavefun",
+        "pywt._extensions._pywt.ContinuousWavelet.__init__",
+        "pywt._extensions._pywt.ContinuousWavelet.family_number",
+        "pywt._extensions._pywt.ContinuousWavelet.family_name",
+        "pywt._extensions._pywt.ContinuousWavelet.short_family_name",
+        "pywt._extensions._pywt.ContinuousWavelet.orthogonal",
+        "pywt._extensions._pywt.ContinuousWavelet.orthogonal",
+        "pywt._extensions._pywt.ContinuousWavelet.biorthogonal",
+        "pywt._extensions._pywt.ContinuousWavelet.biorthogonal",
+        "pywt._extensions._pywt.ContinuousWavelet.complex_cwt",
+        "pywt._extensions._pywt.ContinuousWavelet.complex_cwt",
+        "pywt._extensions._pywt.ContinuousWavelet.lower_bound",
+        "pywt._extensions._pywt.ContinuousWavelet.lower_bound",
+        "pywt._extensions._pywt.ContinuousWavelet.upper_bound",
+        "pywt._extensions._pywt.ContinuousWavelet.upper_bound",
+        "pywt._extensions._pywt.ContinuousWavelet.center_frequency",
+        "pywt._extensions._pywt.ContinuousWavelet.center_frequency",
+        "pywt._extensions._pywt.ContinuousWavelet.bandwidth_frequency",
+        "pywt._extensions._pywt.ContinuousWavelet.bandwidth_frequency",
+        "pywt._extensions._pywt.ContinuousWavelet.fbsp_order",
+        "pywt._extensions._pywt.ContinuousWavelet.fbsp_order",
+        "pywt._extensions._pywt.ContinuousWavelet.symmetry",
+        "pywt._extensions._pywt.ContinuousWavelet.wavefun",
+        "pywt._extensions._pywt.DiscreteContinuousWavelet",
+        "pywt._extensions._pywt.ContinuousWavelet",
+        "pywt._extensions._pywt.MODE",
+        "pywt._extensions._pywt.Wavelet",
+        "pywt._extensions._pywt._Modes"
+      ],
+      "line_count": 189,
+      "symbol_reports": [
+        {
+          "kind": "attr",
+          "name": "pywt._extensions._pywt.ModeInt",
+          "n_typable": 0,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 46,
+            "column": 1
+          }
+        },
+        {
+          "kind": "attr",
+          "name": "pywt._extensions._pywt.ModeName",
+          "n_typable": 0,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 48,
+            "column": 1
+          }
+        },
+        {
+          "kind": "attr",
+          "name": "pywt._extensions._pywt.Mode",
+          "n_typable": 0,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 60,
+            "column": 1
+          }
+        },
+        {
+          "kind": "attr",
+          "name": "pywt._extensions._pywt.Modes",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 77,
+            "column": 1
+          }
+        },
+        {
+          "kind": "attr",
+          "name": "pywt._extensions._pywt.MODE.MODE_INVALID",
+          "n_typable": 0,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 34,
+            "column": 5
+          }
+        },
+        {
+          "kind": "attr",
+          "name": "pywt._extensions._pywt.MODE.MODE_ZEROPAD",
+          "n_typable": 0,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 35,
+            "column": 5
+          }
+        },
+        {
+          "kind": "attr",
+          "name": "pywt._extensions._pywt.MODE.MODE_SYMMETRIC",
+          "n_typable": 0,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 36,
+            "column": 5
+          }
+        },
+        {
+          "kind": "attr",
+          "name": "pywt._extensions._pywt.MODE.MODE_CONSTANT_EDGE",
+          "n_typable": 0,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 37,
+            "column": 5
+          }
+        },
+        {
+          "kind": "attr",
+          "name": "pywt._extensions._pywt.MODE.MODE_SMOOTH",
+          "n_typable": 0,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 38,
+            "column": 5
+          }
+        },
+        {
+          "kind": "attr",
+          "name": "pywt._extensions._pywt.MODE.MODE_PERIODIC",
+          "n_typable": 0,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 39,
+            "column": 5
+          }
+        },
+        {
+          "kind": "attr",
+          "name": "pywt._extensions._pywt.MODE.MODE_PERIODIZATION",
+          "n_typable": 0,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 40,
+            "column": 5
+          }
+        },
+        {
+          "kind": "attr",
+          "name": "pywt._extensions._pywt.MODE.MODE_REFLECT",
+          "n_typable": 0,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 41,
+            "column": 5
+          }
+        },
+        {
+          "kind": "attr",
+          "name": "pywt._extensions._pywt.MODE.MODE_ANTISYMMETRIC",
+          "n_typable": 0,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 42,
+            "column": 5
+          }
+        },
+        {
+          "kind": "attr",
+          "name": "pywt._extensions._pywt.MODE.MODE_ANTIREFLECT",
+          "n_typable": 0,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 43,
+            "column": 5
+          }
+        },
+        {
+          "kind": "attr",
+          "name": "pywt._extensions._pywt.MODE.MODE_MAX",
+          "n_typable": 0,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 44,
+            "column": 5
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._extensions._pywt._Modes.from_object",
+          "n_typable": 2,
+          "n_typed": 2,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 75,
+            "column": 5
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._extensions._pywt.wavelist",
+          "n_typable": 3,
+          "n_typed": 3,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 79,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._extensions._pywt.families",
+          "n_typable": 2,
+          "n_typed": 2,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 82,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._extensions._pywt.Wavelet.__init__",
+          "n_typable": 3,
+          "n_typed": 2,
+          "n_any": 1,
+          "n_untyped": 0,
+          "location": {
+            "line": 85,
+            "column": 5
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._extensions._pywt.Wavelet.__len__",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 86,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.Wavelet.name",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 87,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.Wavelet.dec_lo",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 89,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.Wavelet.dec_hi",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 91,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.Wavelet.rec_lo",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 93,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.Wavelet.rec_hi",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 95,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.Wavelet.rec_len",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 97,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.Wavelet.dec_len",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 99,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.Wavelet.family_number",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 101,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.Wavelet.family_name",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 103,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.Wavelet.short_family_name",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 105,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.Wavelet.orthogonal",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 107,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.Wavelet.orthogonal",
+          "n_typable": 2,
+          "n_typed": 2,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 109,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.Wavelet.biorthogonal",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 111,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.Wavelet.biorthogonal",
+          "n_typable": 2,
+          "n_typed": 2,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 113,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.Wavelet.symmetry",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 115,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.Wavelet.vanishing_moments_psi",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 117,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.Wavelet.vanishing_moments_phi",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 119,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.Wavelet.filter_bank",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 121,
+            "column": 5
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._extensions._pywt.Wavelet.get_filters_coeffs",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 125,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.Wavelet.inverse_filter_bank",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 128,
+            "column": 5
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._extensions._pywt.Wavelet.get_reverse_filters_coeffs",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 132,
+            "column": 5
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._extensions._pywt.Wavelet.wavefun",
+          "n_typable": 2,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 135,
+            "column": 5
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._extensions._pywt.ContinuousWavelet.__init__",
+          "n_typable": 3,
+          "n_typed": 3,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 138,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.ContinuousWavelet.family_number",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 141,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.ContinuousWavelet.family_name",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 143,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.ContinuousWavelet.short_family_name",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 145,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.ContinuousWavelet.orthogonal",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 147,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.ContinuousWavelet.orthogonal",
+          "n_typable": 2,
+          "n_typed": 2,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 149,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.ContinuousWavelet.biorthogonal",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 151,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.ContinuousWavelet.biorthogonal",
+          "n_typable": 2,
+          "n_typed": 2,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 153,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.ContinuousWavelet.complex_cwt",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 155,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.ContinuousWavelet.complex_cwt",
+          "n_typable": 2,
+          "n_typed": 2,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 157,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.ContinuousWavelet.lower_bound",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 159,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.ContinuousWavelet.lower_bound",
+          "n_typable": 2,
+          "n_typed": 2,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 161,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.ContinuousWavelet.upper_bound",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 163,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.ContinuousWavelet.upper_bound",
+          "n_typable": 2,
+          "n_typed": 2,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 165,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.ContinuousWavelet.center_frequency",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 167,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.ContinuousWavelet.center_frequency",
+          "n_typable": 2,
+          "n_typed": 2,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 169,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.ContinuousWavelet.bandwidth_frequency",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 171,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.ContinuousWavelet.bandwidth_frequency",
+          "n_typable": 2,
+          "n_typed": 2,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 173,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.ContinuousWavelet.fbsp_order",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 175,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.ContinuousWavelet.fbsp_order",
+          "n_typable": 2,
+          "n_typed": 2,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 177,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._extensions._pywt.ContinuousWavelet.symmetry",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 179,
+            "column": 5
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._extensions._pywt.ContinuousWavelet.wavefun",
+          "n_typable": 3,
+          "n_typed": 2,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 181,
+            "column": 5
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._extensions._pywt.DiscreteContinuousWavelet",
+          "n_typable": 3,
+          "n_typed": 2,
+          "n_any": 1,
+          "n_untyped": 0,
+          "location": {
+            "line": 183,
+            "column": 1
+          }
+        },
+        {
+          "kind": "class",
+          "name": "pywt._extensions._pywt.ContinuousWavelet",
+          "n_typable": 0,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 137,
+            "column": 1
+          }
+        },
+        {
+          "kind": "class",
+          "name": "pywt._extensions._pywt.MODE",
+          "n_typable": 0,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 33,
+            "column": 1
+          }
+        },
+        {
+          "kind": "class",
+          "name": "pywt._extensions._pywt.Wavelet",
+          "n_typable": 0,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 84,
+            "column": 1
+          }
+        },
+        {
+          "kind": "class",
+          "name": "pywt._extensions._pywt._Modes",
+          "n_typable": 0,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 62,
+            "column": 1
+          }
+        }
+      ],
+      "type_ignores": [],
+      "n_typable": 74,
+      "n_typed": 69,
+      "n_any": 2,
+      "n_untyped": 3,
+      "coverage": 95.94594594594594,
+      "strict_coverage": 93.24324324324324,
+      "n_functions": 3,
+      "n_methods": 8,
+      "n_function_params": 5,
+      "n_method_params": 8,
+      "n_classes": 4,
+      "n_attrs": 15,
+      "n_properties": 39,
+      "n_type_ignores": 0
+    },
+    {
+      "name": "pywt.data._wavelab_signals",
+      "names": [
+        "pywt.data._wavelab_signals.demo_signal"
+      ],
+      "line_count": 268,
+      "symbol_reports": [
+        {
+          "kind": "function",
+          "name": "pywt.data._wavelab_signals.demo_signal",
+          "n_typable": 3,
+          "n_typed": 2,
+          "n_any": 1,
+          "n_untyped": 0,
+          "location": {
+            "line": 29,
+            "column": 1
+          }
+        }
+      ],
+      "type_ignores": [],
+      "n_typable": 3,
+      "n_typed": 2,
+      "n_any": 1,
+      "n_untyped": 0,
+      "coverage": 100.0,
+      "strict_coverage": 66.66666666666666,
+      "n_functions": 1,
+      "n_methods": 0,
+      "n_function_params": 2,
+      "n_method_params": 0,
+      "n_classes": 0,
+      "n_attrs": 0,
+      "n_properties": 0,
+      "n_type_ignores": 0
+    },
+    {
+      "name": "pywt._thresholding",
+      "names": [
+        "pywt._thresholding.thresholding_options",
+        "pywt._thresholding.soft",
+        "pywt._thresholding.nn_garrote",
+        "pywt._thresholding.hard",
+        "pywt._thresholding.greater",
+        "pywt._thresholding.less",
+        "pywt._thresholding.threshold",
+        "pywt._thresholding.threshold_firm"
+      ],
+      "line_count": 257,
+      "symbol_reports": [
+        {
+          "kind": "attr",
+          "name": "pywt._thresholding.thresholding_options",
+          "n_typable": 0,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 73,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._thresholding.soft",
+          "n_typable": 4,
+          "n_typed": 2,
+          "n_any": 2,
+          "n_untyped": 0,
+          "location": {
+            "line": 18,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._thresholding.nn_garrote",
+          "n_typable": 4,
+          "n_typed": 2,
+          "n_any": 2,
+          "n_untyped": 0,
+          "location": {
+            "line": 35,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._thresholding.hard",
+          "n_typable": 4,
+          "n_typed": 2,
+          "n_any": 2,
+          "n_untyped": 0,
+          "location": {
+            "line": 53,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._thresholding.greater",
+          "n_typable": 4,
+          "n_typed": 2,
+          "n_any": 2,
+          "n_untyped": 0,
+          "location": {
+            "line": 59,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._thresholding.less",
+          "n_typable": 4,
+          "n_typed": 2,
+          "n_any": 2,
+          "n_untyped": 0,
+          "location": {
+            "line": 66,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._thresholding.threshold",
+          "n_typable": 5,
+          "n_typed": 3,
+          "n_any": 2,
+          "n_untyped": 0,
+          "location": {
+            "line": 83,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._thresholding.threshold_firm",
+          "n_typable": 4,
+          "n_typed": 2,
+          "n_any": 2,
+          "n_untyped": 0,
+          "location": {
+            "line": 180,
+            "column": 1
+          }
+        }
+      ],
+      "type_ignores": [],
+      "n_typable": 29,
+      "n_typed": 15,
+      "n_any": 14,
+      "n_untyped": 0,
+      "coverage": 100.0,
+      "strict_coverage": 51.724137931034484,
+      "n_functions": 7,
+      "n_methods": 0,
+      "n_function_params": 22,
+      "n_method_params": 0,
+      "n_classes": 0,
+      "n_attrs": 1,
+      "n_properties": 0,
+      "n_type_ignores": 0
+    },
+    {
+      "name": "pywt._multilevel",
+      "names": [
+        "pywt._multilevel.wavedec",
+        "pywt._multilevel.waverec",
+        "pywt._multilevel.wavedec2",
+        "pywt._multilevel.waverec2",
+        "pywt._multilevel.wavedecn",
+        "pywt._multilevel.waverecn",
+        "pywt._multilevel.coeffs_to_array",
+        "pywt._multilevel.array_to_coeffs",
+        "pywt._multilevel.wavedecn_shapes",
+        "pywt._multilevel.wavedecn_size",
+        "pywt._multilevel.dwtn_max_level",
+        "pywt._multilevel.ravel_coeffs",
+        "pywt._multilevel.unravel_coeffs",
+        "pywt._multilevel.FswavedecnResult.__init__",
+        "pywt._multilevel.FswavedecnResult.coeffs",
+        "pywt._multilevel.FswavedecnResult.coeffs",
+        "pywt._multilevel.FswavedecnResult.coeff_slices",
+        "pywt._multilevel.FswavedecnResult.ndim",
+        "pywt._multilevel.FswavedecnResult.ndim_transform",
+        "pywt._multilevel.FswavedecnResult.axes",
+        "pywt._multilevel.FswavedecnResult.levels",
+        "pywt._multilevel.FswavedecnResult.wavelets",
+        "pywt._multilevel.FswavedecnResult.wavelet_names",
+        "pywt._multilevel.FswavedecnResult.modes",
+        "pywt._multilevel.FswavedecnResult.approx",
+        "pywt._multilevel.FswavedecnResult.approx",
+        "pywt._multilevel.FswavedecnResult.__getitem__",
+        "pywt._multilevel.FswavedecnResult.__setitem__",
+        "pywt._multilevel.FswavedecnResult.detail_keys",
+        "pywt._multilevel.fswavedecn",
+        "pywt._multilevel.fswaverecn",
+        "pywt._multilevel.FswavedecnResult"
+      ],
+      "line_count": 1563,
+      "symbol_reports": [
+        {
+          "kind": "function",
+          "name": "pywt._multilevel.wavedec",
+          "n_typable": 6,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 6,
+          "location": {
+            "line": 49,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._multilevel.waverec",
+          "n_typable": 5,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 5,
+          "location": {
+            "line": 112,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._multilevel.wavedec2",
+          "n_typable": 6,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 6,
+          "location": {
+            "line": 179,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._multilevel.waverec2",
+          "n_typable": 5,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 5,
+          "location": {
+            "line": 256,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._multilevel.wavedecn",
+          "n_typable": 6,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 6,
+          "location": {
+            "line": 360,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._multilevel.waverecn",
+          "n_typable": 5,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 5,
+          "location": {
+            "line": 461,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._multilevel.coeffs_to_array",
+          "n_typable": 4,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 4,
+          "location": {
+            "line": 674,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._multilevel.array_to_coeffs",
+          "n_typable": 4,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 4,
+          "location": {
+            "line": 801,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._multilevel.wavedecn_shapes",
+          "n_typable": 6,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 6,
+          "location": {
+            "line": 890,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._multilevel.wavedecn_size",
+          "n_typable": 2,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 2,
+          "location": {
+            "line": 948,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._multilevel.dwtn_max_level",
+          "n_typable": 4,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 4,
+          "location": {
+            "line": 991,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._multilevel.ravel_coeffs",
+          "n_typable": 3,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 3,
+          "location": {
+            "line": 1034,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._multilevel.unravel_coeffs",
+          "n_typable": 5,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 5,
+          "location": {
+            "line": 1119,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._multilevel.FswavedecnResult.__init__",
+          "n_typable": 5,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 5,
+          "location": {
+            "line": 1224,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._multilevel.FswavedecnResult.coeffs",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 1238,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._multilevel.FswavedecnResult.coeffs",
+          "n_typable": 2,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 2,
+          "location": {
+            "line": 1243,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._multilevel.FswavedecnResult.coeff_slices",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 1250,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._multilevel.FswavedecnResult.ndim",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 1255,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._multilevel.FswavedecnResult.ndim_transform",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 1260,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._multilevel.FswavedecnResult.axes",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 1265,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._multilevel.FswavedecnResult.levels",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 1270,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._multilevel.FswavedecnResult.wavelets",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 1275,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._multilevel.FswavedecnResult.wavelet_names",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 1280,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._multilevel.FswavedecnResult.modes",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 1285,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._multilevel.FswavedecnResult.approx",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 1298,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._multilevel.FswavedecnResult.approx",
+          "n_typable": 2,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 2,
+          "location": {
+            "line": 1304,
+            "column": 5
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._multilevel.FswavedecnResult.__getitem__",
+          "n_typable": 2,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 2,
+          "location": {
+            "line": 1332,
+            "column": 5
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._multilevel.FswavedecnResult.__setitem__",
+          "n_typable": 2,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 2,
+          "location": {
+            "line": 1345,
+            "column": 5
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._multilevel.FswavedecnResult.detail_keys",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 1368,
+            "column": 5
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._multilevel.fswavedecn",
+          "n_typable": 6,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 6,
+          "location": {
+            "line": 1381,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._multilevel.fswaverecn",
+          "n_typable": 2,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 2,
+          "location": {
+            "line": 1494,
+            "column": 1
+          }
+        },
+        {
+          "kind": "class",
+          "name": "pywt._multilevel.FswavedecnResult",
+          "n_typable": 0,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 1204,
+            "column": 1
+          }
+        }
+      ],
+      "type_ignores": [],
+      "n_typable": 93,
+      "n_typed": 0,
+      "n_any": 0,
+      "n_untyped": 93,
+      "coverage": 0.0,
+      "strict_coverage": 0.0,
+      "n_functions": 15,
+      "n_methods": 4,
+      "n_function_params": 54,
+      "n_method_params": 8,
+      "n_classes": 1,
+      "n_attrs": 0,
+      "n_properties": 12,
+      "n_type_ignores": 0
+    },
+    {
+      "name": "pywt._utils",
+      "names": [
+        "pywt._utils.AxisError"
+      ],
+      "line_count": 115,
+      "symbol_reports": [
+        {
+          "kind": "attr",
+          "name": "pywt._utils.AxisError",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 22,
+            "column": 1
+          }
+        }
+      ],
+      "type_ignores": [],
+      "n_typable": 1,
+      "n_typed": 1,
+      "n_any": 0,
+      "n_untyped": 0,
+      "coverage": 100.0,
+      "strict_coverage": 100.0,
+      "n_functions": 0,
+      "n_methods": 0,
+      "n_function_params": 0,
+      "n_method_params": 0,
+      "n_classes": 0,
+      "n_attrs": 1,
+      "n_properties": 0,
+      "n_type_ignores": 0
+    },
+    {
+      "name": "pywt._dwt",
+      "names": [
+        "pywt._dwt.dwt_max_level",
+        "pywt._dwt.dwt_coeff_len",
+        "pywt._dwt.dwt",
+        "pywt._dwt.idwt",
+        "pywt._dwt.downcoef",
+        "pywt._dwt.upcoef",
+        "pywt._dwt.pad"
+      ],
+      "line_count": 549,
+      "symbol_reports": [
+        {
+          "kind": "function",
+          "name": "pywt._dwt.dwt_max_level",
+          "n_typable": 3,
+          "n_typed": 3,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 23,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._dwt.dwt_coeff_len",
+          "n_typable": 4,
+          "n_typed": 4,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 88,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._dwt.dwt",
+          "n_typable": 5,
+          "n_typed": 3,
+          "n_any": 2,
+          "n_untyped": 0,
+          "location": {
+            "line": 125,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._dwt.idwt",
+          "n_typable": 6,
+          "n_typed": 3,
+          "n_any": 3,
+          "n_untyped": 0,
+          "location": {
+            "line": 201,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._dwt.downcoef",
+          "n_typable": 6,
+          "n_typed": 4,
+          "n_any": 2,
+          "n_untyped": 0,
+          "location": {
+            "line": 313,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._dwt.upcoef",
+          "n_typable": 6,
+          "n_typed": 4,
+          "n_any": 2,
+          "n_untyped": 0,
+          "location": {
+            "line": 370,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._dwt.pad",
+          "n_typable": 4,
+          "n_typed": 1,
+          "n_any": 3,
+          "n_untyped": 0,
+          "location": {
+            "line": 434,
+            "column": 1
+          }
+        }
+      ],
+      "type_ignores": [],
+      "n_typable": 34,
+      "n_typed": 22,
+      "n_any": 12,
+      "n_untyped": 0,
+      "coverage": 100.0,
+      "strict_coverage": 64.70588235294117,
+      "n_functions": 7,
+      "n_methods": 0,
+      "n_function_params": 27,
+      "n_method_params": 0,
+      "n_classes": 0,
+      "n_attrs": 0,
+      "n_properties": 0,
+      "n_type_ignores": 0
+    },
+    {
+      "name": "pywt._functions",
+      "names": [
+        "pywt._functions.intwave",
+        "pywt._functions.integrate_wavelet",
+        "pywt._functions.centrfrq",
+        "pywt._functions.central_frequency",
+        "pywt._functions.scal2frq",
+        "pywt._functions.scale2frequency",
+        "pywt._functions.orthfilt",
+        "pywt._functions.orthogonal_filter_bank",
+        "pywt._functions.frequency2scale",
+        "pywt._functions.qmf"
+      ],
+      "line_count": 267,
+      "symbol_reports": [
+        {
+          "kind": "function",
+          "name": "pywt._functions.intwave",
+          "n_typable": 3,
+          "n_typed": 0,
+          "n_any": 3,
+          "n_untyped": 0,
+          "location": {
+            "line": 35,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._functions.integrate_wavelet",
+          "n_typable": 3,
+          "n_typed": 2,
+          "n_any": 1,
+          "n_untyped": 0,
+          "location": {
+            "line": 59,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._functions.centrfrq",
+          "n_typable": 3,
+          "n_typed": 0,
+          "n_any": 3,
+          "n_untyped": 0,
+          "location": {
+            "line": 41,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._functions.central_frequency",
+          "n_typable": 3,
+          "n_typed": 2,
+          "n_any": 1,
+          "n_untyped": 0,
+          "location": {
+            "line": 122,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._functions.scal2frq",
+          "n_typable": 3,
+          "n_typed": 1,
+          "n_any": 2,
+          "n_untyped": 0,
+          "location": {
+            "line": 47,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._functions.scale2frequency",
+          "n_typable": 4,
+          "n_typed": 4,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 163,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._functions.orthfilt",
+          "n_typable": 3,
+          "n_typed": 0,
+          "n_any": 3,
+          "n_untyped": 0,
+          "location": {
+            "line": 53,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._functions.orthogonal_filter_bank",
+          "n_typable": 2,
+          "n_typed": 0,
+          "n_any": 2,
+          "n_untyped": 0,
+          "location": {
+            "line": 230,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._functions.frequency2scale",
+          "n_typable": 4,
+          "n_typed": 4,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 186,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._functions.qmf",
+          "n_typable": 2,
+          "n_typed": 0,
+          "n_any": 2,
+          "n_untyped": 0,
+          "location": {
+            "line": 207,
+            "column": 1
+          }
+        }
+      ],
+      "type_ignores": [],
+      "n_typable": 30,
+      "n_typed": 13,
+      "n_any": 17,
+      "n_untyped": 0,
+      "coverage": 100.0,
+      "strict_coverage": 43.333333333333336,
+      "n_functions": 10,
+      "n_methods": 0,
+      "n_function_params": 20,
+      "n_method_params": 0,
+      "n_classes": 0,
+      "n_attrs": 0,
+      "n_properties": 0,
+      "n_type_ignores": 0
+    },
+    {
+      "name": "pywt._cwt",
+      "names": [
+        "pywt._cwt.next_fast_len",
+        "pywt._cwt.cwt"
+      ],
+      "line_count": 212,
+      "symbol_reports": [
+        {
+          "kind": "function",
+          "name": "pywt._cwt.next_fast_len",
+          "n_typable": 2,
+          "n_typed": 2,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 19,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._cwt.cwt",
+          "n_typable": 8,
+          "n_typed": 5,
+          "n_any": 3,
+          "n_untyped": 0,
+          "location": {
+            "line": 28,
+            "column": 1
+          }
+        }
+      ],
+      "type_ignores": [],
+      "n_typable": 10,
+      "n_typed": 7,
+      "n_any": 3,
+      "n_untyped": 0,
+      "coverage": 100.0,
+      "strict_coverage": 70.0,
+      "n_functions": 2,
+      "n_methods": 0,
+      "n_function_params": 8,
+      "n_method_params": 0,
+      "n_classes": 0,
+      "n_attrs": 0,
+      "n_properties": 0,
+      "n_type_ignores": 0
+    },
+    {
+      "name": "pywt._extensions._dwt",
+      "names": [
+        "pywt._extensions._dwt.dwt_max_level",
+        "pywt._extensions._dwt.dwt_coeff_len",
+        "pywt._extensions._dwt.dwt_single",
+        "pywt._extensions._dwt.dwt_axis",
+        "pywt._extensions._dwt.idwt_single",
+        "pywt._extensions._dwt.idwt_axis",
+        "pywt._extensions._dwt.upcoef",
+        "pywt._extensions._dwt.downcoef"
+      ],
+      "line_count": 21,
+      "symbol_reports": [
+        {
+          "kind": "function",
+          "name": "pywt._extensions._dwt.dwt_max_level",
+          "n_typable": 3,
+          "n_typed": 3,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 13,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._extensions._dwt.dwt_coeff_len",
+          "n_typable": 4,
+          "n_typed": 4,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 14,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._extensions._dwt.dwt_single",
+          "n_typable": 4,
+          "n_typed": 2,
+          "n_any": 2,
+          "n_untyped": 0,
+          "location": {
+            "line": 15,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._extensions._dwt.dwt_axis",
+          "n_typable": 5,
+          "n_typed": 3,
+          "n_any": 2,
+          "n_untyped": 0,
+          "location": {
+            "line": 16,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._extensions._dwt.idwt_single",
+          "n_typable": 5,
+          "n_typed": 2,
+          "n_any": 3,
+          "n_untyped": 0,
+          "location": {
+            "line": 17,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._extensions._dwt.idwt_axis",
+          "n_typable": 6,
+          "n_typed": 3,
+          "n_any": 3,
+          "n_untyped": 0,
+          "location": {
+            "line": 18,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._extensions._dwt.upcoef",
+          "n_typable": 6,
+          "n_typed": 4,
+          "n_any": 2,
+          "n_untyped": 0,
+          "location": {
+            "line": 19,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._extensions._dwt.downcoef",
+          "n_typable": 6,
+          "n_typed": 4,
+          "n_any": 2,
+          "n_untyped": 0,
+          "location": {
+            "line": 20,
+            "column": 1
+          }
+        }
+      ],
+      "type_ignores": [],
+      "n_typable": 39,
+      "n_typed": 25,
+      "n_any": 14,
+      "n_untyped": 0,
+      "coverage": 100.0,
+      "strict_coverage": 64.1025641025641,
+      "n_functions": 8,
+      "n_methods": 0,
+      "n_function_params": 31,
+      "n_method_params": 0,
+      "n_classes": 0,
+      "n_attrs": 0,
+      "n_properties": 0,
+      "n_type_ignores": 0
+    },
+    {
+      "name": "pywt._extensions._swt",
+      "names": [
+        "pywt._extensions._swt.swt_max_level",
+        "pywt._extensions._swt.swt",
+        "pywt._extensions._swt.swt_axis"
+      ],
+      "line_count": 15,
+      "symbol_reports": [
+        {
+          "kind": "function",
+          "name": "pywt._extensions._swt.swt_max_level",
+          "n_typable": 2,
+          "n_typed": 2,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 12,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._extensions._swt.swt",
+          "n_typable": 6,
+          "n_typed": 4,
+          "n_any": 2,
+          "n_untyped": 0,
+          "location": {
+            "line": 13,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._extensions._swt.swt_axis",
+          "n_typable": 7,
+          "n_typed": 5,
+          "n_any": 2,
+          "n_untyped": 0,
+          "location": {
+            "line": 14,
+            "column": 1
+          }
+        }
+      ],
+      "type_ignores": [],
+      "n_typable": 15,
+      "n_typed": 11,
+      "n_any": 4,
+      "n_untyped": 0,
+      "coverage": 100.0,
+      "strict_coverage": 73.33333333333333,
+      "n_functions": 3,
+      "n_methods": 0,
+      "n_function_params": 12,
+      "n_method_params": 0,
+      "n_classes": 0,
+      "n_attrs": 0,
+      "n_properties": 0,
+      "n_type_ignores": 0
+    },
+    {
+      "name": "pywt._multidim",
+      "names": [
+        "pywt._multidim.dwt2",
+        "pywt._multidim.dwtn",
+        "pywt._multidim.idwt2",
+        "pywt._multidim.idwtn"
+      ],
+      "line_count": 314,
+      "symbol_reports": [
+        {
+          "kind": "function",
+          "name": "pywt._multidim.dwt2",
+          "n_typable": 5,
+          "n_typed": 3,
+          "n_any": 2,
+          "n_untyped": 0,
+          "location": {
+            "line": 24,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._multidim.dwtn",
+          "n_typable": 5,
+          "n_typed": 3,
+          "n_any": 2,
+          "n_untyped": 0,
+          "location": {
+            "line": 121,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._multidim.idwt2",
+          "n_typable": 5,
+          "n_typed": 3,
+          "n_any": 2,
+          "n_untyped": 0,
+          "location": {
+            "line": 77,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._multidim.idwtn",
+          "n_typable": 5,
+          "n_typed": 3,
+          "n_any": 2,
+          "n_untyped": 0,
+          "location": {
+            "line": 221,
+            "column": 1
+          }
+        }
+      ],
+      "type_ignores": [],
+      "n_typable": 20,
+      "n_typed": 12,
+      "n_any": 8,
+      "n_untyped": 0,
+      "coverage": 100.0,
+      "strict_coverage": 60.0,
+      "n_functions": 4,
+      "n_methods": 0,
+      "n_function_params": 16,
+      "n_method_params": 0,
+      "n_classes": 0,
+      "n_attrs": 0,
+      "n_properties": 0,
+      "n_type_ignores": 0
+    },
+    {
+      "name": "pywt._wavelet_packets",
+      "names": [
+        "pywt._wavelet_packets.BaseNode.parent",
+        "pywt._wavelet_packets.BaseNode.wavelet",
+        "pywt._wavelet_packets.BaseNode.mode",
+        "pywt._wavelet_packets.BaseNode.level",
+        "pywt._wavelet_packets.BaseNode.path",
+        "pywt._wavelet_packets.BaseNode.axes",
+        "pywt._wavelet_packets.BaseNode.data",
+        "pywt._wavelet_packets.NodeND.PART_LEN",
+        "pywt._wavelet_packets.NodeND.PARTS",
+        "pywt._wavelet_packets.NodeND.ndim",
+        "pywt._wavelet_packets.NodeND.ndim_transform",
+        "pywt._wavelet_packets.WaveletPacket.wavelet",
+        "pywt._wavelet_packets.WaveletPacket.mode",
+        "pywt._wavelet_packets.WaveletPacket.axes",
+        "pywt._wavelet_packets.WaveletPacket.data_size",
+        "pywt._wavelet_packets.WaveletPacket2D.wavelet",
+        "pywt._wavelet_packets.WaveletPacket2D.mode",
+        "pywt._wavelet_packets.WaveletPacket2D.axes",
+        "pywt._wavelet_packets.WaveletPacket2D.data_size",
+        "pywt._wavelet_packets.WaveletPacketND.wavelet",
+        "pywt._wavelet_packets.WaveletPacketND.mode",
+        "pywt._wavelet_packets.WaveletPacketND.axes",
+        "pywt._wavelet_packets.WaveletPacketND.ndim_transform",
+        "pywt._wavelet_packets.WaveletPacketND.data_size",
+        "pywt._wavelet_packets.get_graycode_order",
+        "pywt._wavelet_packets.BaseNode.__init__",
+        "pywt._wavelet_packets.BaseNode.path_tuple",
+        "pywt._wavelet_packets.BaseNode.maxlevel",
+        "pywt._wavelet_packets.BaseNode.node_name",
+        "pywt._wavelet_packets.BaseNode.decompose",
+        "pywt._wavelet_packets.BaseNode.reconstruct",
+        "pywt._wavelet_packets.BaseNode.get_subnode",
+        "pywt._wavelet_packets.BaseNode.__getitem__",
+        "pywt._wavelet_packets.BaseNode.__setitem__",
+        "pywt._wavelet_packets.BaseNode.__delitem__",
+        "pywt._wavelet_packets.BaseNode.is_empty",
+        "pywt._wavelet_packets.BaseNode.has_any_subnode",
+        "pywt._wavelet_packets.BaseNode.get_leaf_nodes",
+        "pywt._wavelet_packets.BaseNode.walk",
+        "pywt._wavelet_packets.BaseNode.walk_depth",
+        "pywt._wavelet_packets.BaseNode.__str__",
+        "pywt._wavelet_packets.Node2D.expand_2d_path",
+        "pywt._wavelet_packets.NodeND.__init__",
+        "pywt._wavelet_packets.WaveletPacket.__init__",
+        "pywt._wavelet_packets.WaveletPacket.__reduce__",
+        "pywt._wavelet_packets.WaveletPacket.reconstruct",
+        "pywt._wavelet_packets.WaveletPacket.get_level",
+        "pywt._wavelet_packets.WaveletPacket2D.__init__",
+        "pywt._wavelet_packets.WaveletPacket2D.__reduce__",
+        "pywt._wavelet_packets.WaveletPacket2D.reconstruct",
+        "pywt._wavelet_packets.WaveletPacket2D.get_level",
+        "pywt._wavelet_packets.WaveletPacketND.__init__",
+        "pywt._wavelet_packets.WaveletPacketND.reconstruct",
+        "pywt._wavelet_packets.WaveletPacketND.get_level",
+        "pywt._wavelet_packets.BaseNode",
+        "pywt._wavelet_packets.Node",
+        "pywt._wavelet_packets.Node2D",
+        "pywt._wavelet_packets.NodeND",
+        "pywt._wavelet_packets.WaveletPacket",
+        "pywt._wavelet_packets.WaveletPacket2D",
+        "pywt._wavelet_packets.WaveletPacketND"
+      ],
+      "line_count": 1054,
+      "symbol_reports": [
+        {
+          "kind": "attr",
+          "name": "pywt._wavelet_packets.BaseNode.parent",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 61,
+            "column": 14
+          }
+        },
+        {
+          "kind": "attr",
+          "name": "pywt._wavelet_packets.BaseNode.wavelet",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 63,
+            "column": 18
+          }
+        },
+        {
+          "kind": "attr",
+          "name": "pywt._wavelet_packets.BaseNode.mode",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 64,
+            "column": 18
+          }
+        },
+        {
+          "kind": "attr",
+          "name": "pywt._wavelet_packets.BaseNode.level",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 65,
+            "column": 18
+          }
+        },
+        {
+          "kind": "attr",
+          "name": "pywt._wavelet_packets.BaseNode.path",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 67,
+            "column": 18
+          }
+        },
+        {
+          "kind": "attr",
+          "name": "pywt._wavelet_packets.BaseNode.axes",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 68,
+            "column": 18
+          }
+        },
+        {
+          "kind": "attr",
+          "name": "pywt._wavelet_packets.BaseNode.data",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 77,
+            "column": 14
+          }
+        },
+        {
+          "kind": "attr",
+          "name": "pywt._wavelet_packets.NodeND.PART_LEN",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 587,
+            "column": 14
+          }
+        },
+        {
+          "kind": "attr",
+          "name": "pywt._wavelet_packets.NodeND.PARTS",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 588,
+            "column": 14
+          }
+        },
+        {
+          "kind": "attr",
+          "name": "pywt._wavelet_packets.NodeND.ndim",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 591,
+            "column": 14
+          }
+        },
+        {
+          "kind": "attr",
+          "name": "pywt._wavelet_packets.NodeND.ndim_transform",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 592,
+            "column": 14
+          }
+        },
+        {
+          "kind": "attr",
+          "name": "pywt._wavelet_packets.WaveletPacket.wavelet",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 711,
+            "column": 14
+          }
+        },
+        {
+          "kind": "attr",
+          "name": "pywt._wavelet_packets.WaveletPacket.mode",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 712,
+            "column": 14
+          }
+        },
+        {
+          "kind": "attr",
+          "name": "pywt._wavelet_packets.WaveletPacket.axes",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 713,
+            "column": 14
+          }
+        },
+        {
+          "kind": "attr",
+          "name": "pywt._wavelet_packets.WaveletPacket.data_size",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 721,
+            "column": 18
+          }
+        },
+        {
+          "kind": "attr",
+          "name": "pywt._wavelet_packets.WaveletPacket2D.wavelet",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 837,
+            "column": 14
+          }
+        },
+        {
+          "kind": "attr",
+          "name": "pywt._wavelet_packets.WaveletPacket2D.mode",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 838,
+            "column": 14
+          }
+        },
+        {
+          "kind": "attr",
+          "name": "pywt._wavelet_packets.WaveletPacket2D.axes",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 839,
+            "column": 14
+          }
+        },
+        {
+          "kind": "attr",
+          "name": "pywt._wavelet_packets.WaveletPacket2D.data_size",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 847,
+            "column": 18
+          }
+        },
+        {
+          "kind": "attr",
+          "name": "pywt._wavelet_packets.WaveletPacketND.wavelet",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 991,
+            "column": 14
+          }
+        },
+        {
+          "kind": "attr",
+          "name": "pywt._wavelet_packets.WaveletPacketND.mode",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 992,
+            "column": 14
+          }
+        },
+        {
+          "kind": "attr",
+          "name": "pywt._wavelet_packets.WaveletPacketND.axes",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 993,
+            "column": 14
+          }
+        },
+        {
+          "kind": "attr",
+          "name": "pywt._wavelet_packets.WaveletPacketND.ndim_transform",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 994,
+            "column": 14
+          }
+        },
+        {
+          "kind": "attr",
+          "name": "pywt._wavelet_packets.WaveletPacketND.data_size",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 999,
+            "column": 18
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._wavelet_packets.get_graycode_order",
+          "n_typable": 4,
+          "n_typed": 4,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 24,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._wavelet_packets.BaseNode.__init__",
+          "n_typable": 4,
+          "n_typed": 3,
+          "n_any": 1,
+          "n_untyped": 0,
+          "location": {
+            "line": 60,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._wavelet_packets.BaseNode.path_tuple",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 116,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._wavelet_packets.BaseNode.maxlevel",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 156,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._wavelet_packets.BaseNode.node_name",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 169,
+            "column": 5
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._wavelet_packets.BaseNode.decompose",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 1,
+          "n_untyped": 0,
+          "location": {
+            "line": 173,
+            "column": 5
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._wavelet_packets.BaseNode.reconstruct",
+          "n_typable": 2,
+          "n_typed": 1,
+          "n_any": 1,
+          "n_untyped": 0,
+          "location": {
+            "line": 194,
+            "column": 5
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._wavelet_packets.BaseNode.get_subnode",
+          "n_typable": 3,
+          "n_typed": 3,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 215,
+            "column": 5
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._wavelet_packets.BaseNode.__getitem__",
+          "n_typable": 2,
+          "n_typed": 2,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 236,
+            "column": 5
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._wavelet_packets.BaseNode.__setitem__",
+          "n_typable": 3,
+          "n_typed": 2,
+          "n_any": 1,
+          "n_untyped": 0,
+          "location": {
+            "line": 274,
+            "column": 5
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._wavelet_packets.BaseNode.__delitem__",
+          "n_typable": 2,
+          "n_typed": 2,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 311,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._wavelet_packets.BaseNode.is_empty",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 330,
+            "column": 5
+          }
+        },
+        {
+          "kind": "property",
+          "name": "pywt._wavelet_packets.BaseNode.has_any_subnode",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 334,
+            "column": 5
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._wavelet_packets.BaseNode.get_leaf_nodes",
+          "n_typable": 2,
+          "n_typed": 2,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 338,
+            "column": 5
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._wavelet_packets.BaseNode.walk",
+          "n_typable": 5,
+          "n_typed": 2,
+          "n_any": 3,
+          "n_untyped": 0,
+          "location": {
+            "line": 360,
+            "column": 5
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._wavelet_packets.BaseNode.walk_depth",
+          "n_typable": 5,
+          "n_typed": 2,
+          "n_any": 3,
+          "n_untyped": 0,
+          "location": {
+            "line": 387,
+            "column": 5
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._wavelet_packets.BaseNode.__str__",
+          "n_typable": 1,
+          "n_typed": 1,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 413,
+            "column": 5
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._wavelet_packets.Node2D.expand_2d_path",
+          "n_typable": 2,
+          "n_typed": 2,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 546,
+            "column": 5
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._wavelet_packets.NodeND.__init__",
+          "n_typable": 6,
+          "n_typed": 5,
+          "n_any": 1,
+          "n_untyped": 0,
+          "location": {
+            "line": 584,
+            "column": 5
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._wavelet_packets.WaveletPacket.__init__",
+          "n_typable": 6,
+          "n_typed": 5,
+          "n_any": 1,
+          "n_untyped": 0,
+          "location": {
+            "line": 705,
+            "column": 5
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._wavelet_packets.WaveletPacket.__reduce__",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 1,
+          "n_untyped": 0,
+          "location": {
+            "line": 729,
+            "column": 5
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._wavelet_packets.WaveletPacket.reconstruct",
+          "n_typable": 2,
+          "n_typed": 1,
+          "n_any": 1,
+          "n_untyped": 0,
+          "location": {
+            "line": 733,
+            "column": 5
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._wavelet_packets.WaveletPacket.get_level",
+          "n_typable": 4,
+          "n_typed": 4,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 752,
+            "column": 5
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._wavelet_packets.WaveletPacket2D.__init__",
+          "n_typable": 6,
+          "n_typed": 5,
+          "n_any": 1,
+          "n_untyped": 0,
+          "location": {
+            "line": 831,
+            "column": 5
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._wavelet_packets.WaveletPacket2D.__reduce__",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 1,
+          "n_untyped": 0,
+          "location": {
+            "line": 855,
+            "column": 5
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._wavelet_packets.WaveletPacket2D.reconstruct",
+          "n_typable": 2,
+          "n_typed": 1,
+          "n_any": 1,
+          "n_untyped": 0,
+          "location": {
+            "line": 859,
+            "column": 5
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._wavelet_packets.WaveletPacket2D.get_level",
+          "n_typable": 4,
+          "n_typed": 4,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 878,
+            "column": 5
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._wavelet_packets.WaveletPacketND.__init__",
+          "n_typable": 6,
+          "n_typed": 5,
+          "n_any": 1,
+          "n_untyped": 0,
+          "location": {
+            "line": 963,
+            "column": 5
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._wavelet_packets.WaveletPacketND.reconstruct",
+          "n_typable": 2,
+          "n_typed": 1,
+          "n_any": 1,
+          "n_untyped": 0,
+          "location": {
+            "line": 1007,
+            "column": 5
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._wavelet_packets.WaveletPacketND.get_level",
+          "n_typable": 3,
+          "n_typed": 3,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 1026,
+            "column": 5
+          }
+        },
+        {
+          "kind": "class",
+          "name": "pywt._wavelet_packets.BaseNode",
+          "n_typable": 0,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 32,
+            "column": 1
+          }
+        },
+        {
+          "kind": "class",
+          "name": "pywt._wavelet_packets.Node",
+          "n_typable": 0,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 417,
+            "column": 1
+          }
+        },
+        {
+          "kind": "class",
+          "name": "pywt._wavelet_packets.Node2D",
+          "n_typable": 0,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 476,
+            "column": 1
+          }
+        },
+        {
+          "kind": "class",
+          "name": "pywt._wavelet_packets.NodeND",
+          "n_typable": 0,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 557,
+            "column": 1
+          }
+        },
+        {
+          "kind": "class",
+          "name": "pywt._wavelet_packets.WaveletPacket",
+          "n_typable": 0,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 685,
+            "column": 1
+          }
+        },
+        {
+          "kind": "class",
+          "name": "pywt._wavelet_packets.WaveletPacket2D",
+          "n_typable": 0,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 811,
+            "column": 1
+          }
+        },
+        {
+          "kind": "class",
+          "name": "pywt._wavelet_packets.WaveletPacketND",
+          "n_typable": 0,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 0,
+          "location": {
+            "line": 942,
+            "column": 1
+          }
+        }
+      ],
+      "type_ignores": [],
+      "n_typable": 108,
+      "n_typed": 65,
+      "n_any": 19,
+      "n_untyped": 24,
+      "coverage": 77.77777777777779,
+      "strict_coverage": 60.18518518518518,
+      "n_functions": 1,
+      "n_methods": 24,
+      "n_function_params": 3,
+      "n_method_params": 51,
+      "n_classes": 7,
+      "n_attrs": 24,
+      "n_properties": 5,
+      "n_type_ignores": 0
+    },
+    {
+      "name": "pywt._swt",
+      "names": [
+        "pywt._swt.swt",
+        "pywt._swt.iswt",
+        "pywt._swt.iswtn",
+        "pywt._swt.swt2",
+        "pywt._swt.swtn",
+        "pywt._swt.iswt2"
+      ],
+      "line_count": 930,
+      "symbol_reports": [
+        {
+          "kind": "function",
+          "name": "pywt._swt.swt",
+          "n_typable": 8,
+          "n_typed": 6,
+          "n_any": 2,
+          "n_untyped": 0,
+          "location": {
+            "line": 28,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._swt.iswt",
+          "n_typable": 5,
+          "n_typed": 3,
+          "n_any": 2,
+          "n_untyped": 0,
+          "location": {
+            "line": 169,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._swt.iswtn",
+          "n_typable": 5,
+          "n_typed": 3,
+          "n_any": 2,
+          "n_untyped": 0,
+          "location": {
+            "line": 752,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._swt.swt2",
+          "n_typable": 8,
+          "n_typed": 6,
+          "n_any": 2,
+          "n_untyped": 0,
+          "location": {
+            "line": 286,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._swt.swtn",
+          "n_typable": 8,
+          "n_typed": 6,
+          "n_any": 2,
+          "n_untyped": 0,
+          "location": {
+            "line": 600,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt._swt.iswt2",
+          "n_typable": 5,
+          "n_typed": 3,
+          "n_any": 2,
+          "n_untyped": 0,
+          "location": {
+            "line": 401,
+            "column": 1
+          }
+        }
+      ],
+      "type_ignores": [],
+      "n_typable": 39,
+      "n_typed": 27,
+      "n_any": 12,
+      "n_untyped": 0,
+      "coverage": 100.0,
+      "strict_coverage": 69.23076923076923,
+      "n_functions": 6,
+      "n_methods": 0,
+      "n_function_params": 33,
+      "n_method_params": 0,
+      "n_classes": 0,
+      "n_attrs": 0,
+      "n_properties": 0,
+      "n_type_ignores": 0
+    },
+    {
+      "name": "pywt",
+      "names": [
+        "pywt.test"
+      ],
+      "line_count": 46,
+      "symbol_reports": [
+        {
+          "kind": "attr",
+          "name": "pywt.test",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 0,
+          "n_untyped": 1,
+          "location": {
+            "line": 44,
+            "column": 1
+          }
+        }
+      ],
+      "type_ignores": [],
+      "n_typable": 1,
+      "n_typed": 0,
+      "n_any": 0,
+      "n_untyped": 1,
+      "coverage": 0.0,
+      "strict_coverage": 0.0,
+      "n_functions": 0,
+      "n_methods": 0,
+      "n_function_params": 0,
+      "n_method_params": 0,
+      "n_classes": 0,
+      "n_attrs": 1,
+      "n_properties": 0,
+      "n_type_ignores": 0
+    },
+    {
+      "name": "pywt._extensions._cwt",
+      "names": [
+        "pywt._extensions._cwt.cwt_psi_single"
+      ],
+      "line_count": 12,
+      "symbol_reports": [
+        {
+          "kind": "function",
+          "name": "pywt._extensions._cwt.cwt_psi_single",
+          "n_typable": 4,
+          "n_typed": 1,
+          "n_any": 3,
+          "n_untyped": 0,
+          "location": {
+            "line": 9,
+            "column": 1
+          }
+        }
+      ],
+      "type_ignores": [],
+      "n_typable": 4,
+      "n_typed": 1,
+      "n_any": 3,
+      "n_untyped": 0,
+      "coverage": 100.0,
+      "strict_coverage": 25.0,
+      "n_functions": 1,
+      "n_methods": 0,
+      "n_function_params": 3,
+      "n_method_params": 0,
+      "n_classes": 0,
+      "n_attrs": 0,
+      "n_properties": 0,
+      "n_type_ignores": 0
+    },
+    {
+      "name": "pywt.data._readers",
+      "names": [
+        "pywt.data._readers.ascent",
+        "pywt.data._readers.aero",
+        "pywt.data._readers.camera",
+        "pywt.data._readers.ecg",
+        "pywt.data._readers.nino"
+      ],
+      "line_count": 213,
+      "symbol_reports": [
+        {
+          "kind": "function",
+          "name": "pywt.data._readers.ascent",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 1,
+          "n_untyped": 0,
+          "location": {
+            "line": 10,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt.data._readers.aero",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 1,
+          "n_untyped": 0,
+          "location": {
+            "line": 50,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt.data._readers.camera",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 1,
+          "n_untyped": 0,
+          "location": {
+            "line": 87,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt.data._readers.ecg",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 1,
+          "n_untyped": 0,
+          "location": {
+            "line": 135,
+            "column": 1
+          }
+        },
+        {
+          "kind": "function",
+          "name": "pywt.data._readers.nino",
+          "n_typable": 1,
+          "n_typed": 0,
+          "n_any": 1,
+          "n_untyped": 0,
+          "location": {
+            "line": 167,
+            "column": 1
+          }
+        }
+      ],
+      "type_ignores": [],
+      "n_typable": 5,
+      "n_typed": 0,
+      "n_any": 5,
+      "n_untyped": 0,
+      "coverage": 100.0,
+      "strict_coverage": 0.0,
+      "n_functions": 5,
+      "n_methods": 0,
+      "n_function_params": 0,
+      "n_method_params": 0,
+      "n_classes": 0,
+      "n_attrs": 0,
+      "n_properties": 0,
+      "n_type_ignores": 0
+    },
+    {
+      "name": "pywt._extensions",
+      "names": [],
+      "line_count": 1,
+      "symbol_reports": [],
+      "type_ignores": [],
+      "n_typable": 0,
+      "n_typed": 0,
+      "n_any": 0,
+      "n_untyped": 0,
+      "coverage": 100.0,
+      "strict_coverage": 100.0,
+      "n_functions": 0,
+      "n_methods": 0,
+      "n_function_params": 0,
+      "n_method_params": 0,
+      "n_classes": 0,
+      "n_attrs": 0,
+      "n_properties": 0,
+      "n_type_ignores": 0
+    }
+  ],
+  "summary": {
+    "n_modules": 20,
+    "n_typable": 555,
+    "n_typed": 285,
+    "n_any": 126,
+    "n_untyped": 144,
+    "coverage": 74.05405405405405,
+    "strict_coverage": 51.35135135135135,
+    "n_functions": 84,
+    "n_methods": 36,
+    "n_function_params": 275,
+    "n_method_params": 67,
+    "n_classes": 12,
+    "n_attrs": 42,
+    "n_properties": 56,
+    "n_type_ignores": 0
+  }
+}

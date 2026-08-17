@@ -1,3 +1,4 @@
+from __future__ import annotations
 # Copyright (c) 2017 The PyWavelets Developers
 #                    <https://github.com/PyWavelets/pywt>
 # See COPYING for license details.
@@ -13,6 +14,11 @@ from ._extensions._pywt import (
     Wavelet,
 )
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from ._extensions._pywt import ModeInt
+
 AxisError: type[Exception]
 if np.lib.NumpyVersion(np.__version__) >= '1.25.0':
     from numpy.exceptions import AxisError
@@ -20,7 +26,7 @@ else:
     from numpy import AxisError
 
 
-def _as_wavelet(wavelet):
+def _as_wavelet(wavelet: Wavelet | str) -> Wavelet:
     """Convert wavelet name to a Wavelet object."""
     if not isinstance(wavelet, (ContinuousWavelet, Wavelet)):
         wavelet = DiscreteContinuousWavelet(wavelet)
@@ -33,7 +39,9 @@ def _as_wavelet(wavelet):
     return wavelet
 
 
-def _wavelets_per_axis(wavelet, axes):
+def _wavelets_per_axis(
+    wavelet: Wavelet | tuple[Wavelet, ...], axes: list[int]
+) -> list[Wavelet]:
     """Initialize Wavelets for each axis to be transformed.
 
     Parameters
@@ -69,7 +77,9 @@ def _wavelets_per_axis(wavelet, axes):
     return wavelets
 
 
-def _modes_per_axis(modes, axes):
+def _modes_per_axis(
+    modes: str | int | tuple[str | int], axes: list[int]
+) -> list[ModeInt]:
     """Initialize mode for each axis to be transformed.
 
     Parameters
