@@ -41,7 +41,10 @@ def swt(data, wavelet, level=None, start_level=0, axis=-1,
     start_level : int, optional
         The level at which the decomposition will begin (it allows one to
         skip a given number of transform steps and compute
-        coefficients starting from start_level) (default: 0)
+        coefficients starting from start_level) (default: 0). The output
+        always contains exactly ``level`` sets of coefficients, corresponding
+        to decomposition levels ``start_level + 1`` through
+        ``start_level + level``.
     axis: int, optional
         Axis over which to compute the SWT. If not given, the
         last axis is used.
@@ -66,7 +69,7 @@ def swt(data, wavelet, level=None, start_level=0, axis=-1,
         If ``start_level = m`` is given, then the beginning m steps are
         skipped::
 
-            [(cAm+n, cDm+n), ..., (cAm+1, cDm+1), (cAm, cDm)]
+            [(cAm+n, cDm+n), ..., (cAm+1, cDm+1)]
 
         If ``trim_approx`` is ``True``, then the output list is exactly as in
         ``pywt.wavedec``, where the first coefficient in the list is the
@@ -165,7 +168,7 @@ def iswt(coeffs, wavelet, norm=False, axis=-1):
             [(cAn, cDn), ..., (cA2, cD2), (cA1, cD1)]
 
         where cA is approximation, cD is details.  Index 1 corresponds to
-        ``start_level`` from ``pywt.swt``.
+        ``start_level + 1`` from ``pywt.swt``.
     wavelet : Wavelet object or name string
         Wavelet to use
     norm : bool, optional
@@ -309,9 +312,6 @@ def swt2(data, wavelet, level, start_level=0, axes=(-2, -1),
                 ...,
                 (cA_m+1,
                     (cH_m+1, cV_m+1, cD_m+1)
-                ),
-                (cA_m,
-                    (cH_m, cV_m, cD_m)
                 )
             ]
 
@@ -327,7 +327,6 @@ def swt2(data, wavelet, level, start_level=0, axes=(-2, -1),
                 (cH_m+level, cV_m+level, cD_m+level),
                 ...,
                 (cH_m+1, cV_m+1, cD_m+1),
-                (cH_m, cV_m, cD_m),
             ]
 
     Notes
@@ -402,7 +401,7 @@ def iswt2(coeffs, wavelet, norm=False, axes=(-2, -1)):
 
         where cA is approximation, cH is horizontal details, cV is
         vertical details, cD is diagonal details and n is the number of
-        levels.  Index 1 corresponds to ``start_level`` from ``pywt.swt2``.
+        levels.  Index 1 corresponds to ``start_level + 1`` from ``pywt.swt2``.
     wavelet : Wavelet object or name string, or 2-tuple of wavelets
         Wavelet to use.  This can also be a 2-tuple of wavelets to apply per
         axis.
