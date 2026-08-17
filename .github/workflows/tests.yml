@@ -19,8 +19,6 @@ env:
   FORCE_COLOR: 3
   # Some common environment variables for both GNU/Linux and macOS jobs
   MPLBACKEND: Agg
-  CYTHON_TRACE: 1
-  CYTHONSPEC: cython
   NUMPY_MIN: numpy==1.26.4
   CYTHON_MIN: cython==3.1.3
 
@@ -246,7 +244,21 @@ jobs:
 
   clang_ASan_UBSan:
     name: Test under ASan and UBSan
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
+    container:
+      # Prebuilt ASan-instrumented CPython 3.14 + clang-21, from
+      # https://github.com/nascheme/cpython_sanity. To refresh the digest:
+      #   docker pull ghcr.io/nascheme/cpython-asan:3.14 && \
+      #   docker inspect --format='{{index .RepoDigests 0}}' ghcr.io/nascheme/cpython-asan:3.14
+      image: ghcr.io/nascheme/cpython-asan:3.14@sha256:5e7cfa58bbaff0a31efc199d7d39902b80f99ab526c9c74104cd909ff075fd0a
+      options: --shm-size=2g
+    env:
+      # LeakSanitizer is on by default under ASan on Linux (unlike on macOS, where it is
+      # unsupported). Without this, every Python subprocess spawned during the build exits
+      # non-zero over small leaks in CPython's own startup/import code - which breaks meson's
+      # `run_command(py, ..., check: true)` probe for numpy's include dir. Leak checking for
+      # the test run itself is configured in the "Test" step below.
+      ASAN_OPTIONS: detect_leaks=0
     steps:
       - uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a # v4.2.2
         with:
@@ -254,29 +266,8 @@ jobs:
           fetch-tags: true
           persist-credentials: false
 
-      - name: Set up pyenv
-        run: |
-          git clone https://github.com/pyenv/pyenv.git "$HOME/.pyenv"
-          PYENV_ROOT="$HOME/.pyenv"
-          PYENV_BIN="$PYENV_ROOT/bin"
-          PYENV_SHIMS="$PYENV_ROOT/shims"
-          echo "$PYENV_BIN" >> $GITHUB_PATH
-          echo "$PYENV_SHIMS" >> $GITHUB_PATH
-          echo "PYENV_ROOT=$PYENV_ROOT" >> $GITHUB_ENV
-
-      - name: Set up LLVM
-        run: |
-          brew install llvm@19
-          LLVM_PREFIX=$(brew --prefix llvm@19)
-          echo CC="$LLVM_PREFIX/bin/clang" >> $GITHUB_ENV
-          echo CXX="$LLVM_PREFIX/bin/clang++" >> $GITHUB_ENV
-          echo LDFLAGS="-L$LLVM_PREFIX/lib" >> $GITHUB_ENV
-          echo CPPFLAGS="-I$LLVM_PREFIX/include" >> $GITHUB_ENV
-
-      - name: Build Python with AddressSanitizer
-        run: |
-          CONFIGURE_OPTS="--with-address-sanitizer" pyenv install 3.14
-          pyenv global 3.14
+      - name: Trust working directory
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
       - name: Install NumPy dependencies from PyPI
         run: |
@@ -285,6 +276,9 @@ jobs:
       - name: Build NumPy with ASan
         run: |
           pip install numpy --no-binary numpy --no-build-isolation -Csetup-args="-Db_sanitize=address" -v
+          # pyenv only creates shims for newly installed scripts on rehash; without this
+          # `numpy-config` is not on PATH and meson falls back to probing the interpreter
+          pyenv rehash
 
       - name: Install dependencies from PyPI
         run: |
@@ -293,11 +287,16 @@ jobs:
       - name: Build PyWavelets with ASan and UBSan
         run: |
           export CFLAGS=-fno-sanitize=function  # suppressed upstream, see cython#7437
-          spin build -- -Db_sanitize=address,undefined -Db_lundef=false
+          # -j2 rather than -j4: ASan builds are memory-hungry and OOM in CI otherwise
+          spin build -j2 -- -Db_sanitize=address,undefined -Db_lundef=false
 
       - name: Test
         run: |
           # pass -s to pytest to see ASAN errors and warnings, otherwise pytest captures them
-          ASAN_OPTIONS=detect_leaks=0:symbolize=1:strict_init_order=true:allocator_may_return_null=1:use_sigaltstack=0 \
-          UBSAN_OPTIONS=halt_on_error=1 \
-          spin test -- -v -s --timeout=600 --durations=10
+          export ASAN_OPTIONS=detect_leaks=0:symbolize=1:strict_init_order=true:allocator_may_return_null=1:use_sigaltstack=0
+          export UBSAN_OPTIONS=halt_on_error=1
+          # test_swt2_iswt2_integration takes ~3.5 minutes under ASan and adds little here:
+          # it loops swt2/iswt2 over every discrete wavelet, but the same C code is already
+          # covered by test_swt2_iswt2_quick and test_swtn_iswtn_integration
+          spin test -- -v -s --timeout=600 --durations=10 \
+            -k "not test_swt2_iswt2_integration"
