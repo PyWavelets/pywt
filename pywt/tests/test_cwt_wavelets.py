@@ -379,18 +379,23 @@ def test_cwt_complex(dtype, tol, method):
     dt = time[1] - time[0]
     wavelet = 'cmor1.5-1.0'
     scales = np.arange(1, 32)
+    hop_size = 128
 
     # real-valued tranfsorm as a reference
-    [cfs, f] = pywt.cwt(sst, scales, wavelet, dt, method=method)
+    [cfs, f] = pywt.cwt(sst, scales, wavelet, dt, method=method, hop_size=hop_size)
 
     # verify same precision
     assert_equal(cfs.real.dtype, sst.dtype)
+
+    # verify number of time steps reduced by hop_size
+    expected_time_len = int(np.ceil(len(sst) / hop_size))
+    assert_equal(cfs.shape[1], expected_time_len)
 
     # complex-valued transform equals sum of the transforms of the real
     # and imaginary components
     sst_complex = sst + 1j*sst
     [cfs_complex, f] = pywt.cwt(sst_complex, scales, wavelet, dt,
-                                method=method)
+                                method=method, hop_size=hop_size)
     assert_allclose(cfs + 1j*cfs, cfs_complex, atol=tol, rtol=tol)
     # verify dtype is preserved
     assert_equal(cfs_complex.dtype, sst_complex.dtype)
