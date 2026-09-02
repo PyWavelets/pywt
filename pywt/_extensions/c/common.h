@@ -44,9 +44,11 @@
  *
  * For templating, the typedef names must not contain spaces.
  *
- * PYWT_TEST_STRUCT_COMPLEX forces the struct representation (NumPy's C++
- * branch) so that the MSVC code path can be compiled and tested with any
- * compiler.
+ * PYWT_TEST_STRUCT_COMPLEX is a testing hook: it swaps in plain structs with
+ * the same layout and no operators, so that MSVC-like semantics can be
+ * compiled and tested with any compiler (used by the struct-complex CI job).
+ * The structs match the ones NumPy's headers use when compiled as C++, where
+ * C99 `_Complex` is also unavailable.
  */
 
 #ifdef PYWT_TEST_STRUCT_COMPLEX
