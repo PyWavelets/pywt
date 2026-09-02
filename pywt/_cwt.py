@@ -1,4 +1,5 @@
 from math import ceil, floor
+from typing import Literal
 
 from ._extensions._pywt import (
     ContinuousWavelet,
@@ -15,7 +16,7 @@ __all__ = ["cwt"]
 import numpy as np
 
 
-def next_fast_len(n):
+def next_fast_len(n: int) -> int:
     """Round up size to the nearest power of two.
 
     Given a number of samples `n`, returns the next power of two
@@ -24,8 +25,16 @@ def next_fast_len(n):
     return 2**ceil(np.log2(n))
 
 
-def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1,
-        *, precision=12):
+def cwt(
+        data: np.ndarray | list,
+        scales: np.ndarray | list,
+        wavelet: Wavelet | str,
+        sampling_period: float = 1.0,
+        method: Literal["conv", "fft"] = 'conv',
+        axis: int = -1,
+        *,
+        precision: int = 12
+    ) -> tuple[np.ndarray, np.ndarray]:
     """
     One dimensional Continuous Wavelet Transform.
 

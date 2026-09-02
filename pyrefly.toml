@@ -1,0 +1,24 @@
+# set the directory Pyrefly will search for files to type check
+project-includes = ["pywt/**/*.py*"]
+project-excludes = ["**/tests/**", "**/*test*", "**/__pycache__", "**/*venv/**", "**/.[!/.]*/**"]
+use-ignore-files = true
+
+search-path = ["."]
+
+disable-search-path-heuristics = false
+# do not include any third-party packages (except those provided by an interpreter)
+site-package-path = []
+
+ignore-missing-imports = ["*"]
+
+# manually set the `sys.platform` Pyrefly will assume when type checking
+python-platform = "linux"
+
+min-severity = "warn"
+
+# a table mapping error codes to an `is-enabled` boolean
+[errors]
+# disable `bad-assignment` errors
+bad-assignment = false
+# disable `bad-return` errors
+bad-return = false

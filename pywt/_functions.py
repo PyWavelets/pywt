@@ -8,6 +8,7 @@ Other wavelet related functions.
 """
 
 
+from typing import Any
 import warnings
 
 import numpy as np
@@ -25,37 +26,37 @@ _DEPRECATION_MSG = ("`{old}` has been renamed to `{new}` and will "
                     "be removed in a future version of pywt.")
 
 
-def _integrate(arr, step):
+def _integrate(arr: np.ndarray | list, step: float) -> np.ndarray:
     integral = np.cumsum(arr)
     integral *= step
     return integral
 
 
-def intwave(*args, **kwargs):
+def intwave(*args: Any, **kwargs: Any) -> tuple[np.ndarray, ...]:
     msg = _DEPRECATION_MSG.format(old='intwave', new='integrate_wavelet')
     warnings.warn(msg, DeprecationWarning)
     return integrate_wavelet(*args, **kwargs)
 
 
-def centrfrq(*args, **kwargs):
+def centrfrq(*args: Any, **kwargs: Any) -> np.floating:
     msg = _DEPRECATION_MSG.format(old='centrfrq', new='central_frequency')
     warnings.warn(msg, DeprecationWarning)
     return central_frequency(*args, **kwargs)
 
 
-def scal2frq(*args, **kwargs):
+def scal2frq(*args: Any, **kwargs: Any) -> float:
     msg = _DEPRECATION_MSG.format(old='scal2frq', new='scale2frequency')
     warnings.warn(msg, DeprecationWarning)
     return scale2frequency(*args, **kwargs)
 
 
-def orthfilt(*args, **kwargs):
+def orthfilt(*args: Any, **kwargs: Any) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     msg = _DEPRECATION_MSG.format(old='orthfilt', new='orthogonal_filter_bank')
     warnings.warn(msg, DeprecationWarning)
     return orthogonal_filter_bank(*args, **kwargs)
 
 
-def integrate_wavelet(wavelet, precision=8):
+def integrate_wavelet(wavelet: Wavelet | list[Wavelet] | str, precision: int = 8) -> tuple[np.ndarray, ...]:
     """
     Integrate `psi` wavelet function from -Inf to x using the rectangle
     integration method.
@@ -118,7 +119,7 @@ def integrate_wavelet(wavelet, precision=8):
         return _integrate(psi_d, step), _integrate(psi_r, step), x
 
 
-def central_frequency(wavelet, precision=8):
+def central_frequency(wavelet: Wavelet | str, precision: int = 8) -> np.floating:
     """
     Computes the central frequency of the `psi` wavelet function.
 
@@ -159,7 +160,7 @@ def central_frequency(wavelet, precision=8):
     return 1.0 / (domain / (index - 1))
 
 
-def scale2frequency(wavelet, scale, precision=8):
+def scale2frequency(wavelet: Wavelet | str, scale: float, precision: int = 8) -> float:
     """Convert from CWT "scale" to normalized frequency.
 
     Parameters
@@ -182,7 +183,7 @@ def scale2frequency(wavelet, scale, precision=8):
     """
     return central_frequency(wavelet, precision=precision) / scale
 
-def frequency2scale(wavelet, freq, precision=8):
+def frequency2scale(wavelet: Wavelet | str, freq: float, precision: int = 8) -> float:
     """Convert from to normalized frequency to CWT "scale".
 
     Parameters
@@ -203,7 +204,7 @@ def frequency2scale(wavelet, freq, precision=8):
     """
     return central_frequency(wavelet, precision=precision) / freq
 
-def qmf(filt):
+def qmf(filt: np.ndarray | list) -> np.ndarray:
     """
     Returns the Quadrature Mirror Filter(QMF).
 
@@ -226,7 +227,9 @@ def qmf(filt):
     return qm_filter
 
 
-def orthogonal_filter_bank(scaling_filter):
+def orthogonal_filter_bank(
+        scaling_filter: np.ndarray | list
+    ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """
     Returns the orthogonal filter bank.
 

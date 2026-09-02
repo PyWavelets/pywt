@@ -1,3 +1,5 @@
+from typing import Literal
+from pywt import Wavelet
 from functools import partial, reduce
 
 import numpy as np
@@ -17,8 +19,8 @@ from ._utils import _modes_per_axis, _wavelets_per_axis
 __all__ = ["mra", "mra2", "mran", "imra", "imra2", "imran"]
 
 
-def mra(data, wavelet, level=None, axis=-1, transform='swt',
-        mode='periodization'):
+def mra(data: np.ndarray | list, wavelet: Wavelet | str, level: int | None = None, axis: int = -1, transform: Literal['swt', 'dwt'] = 'swt',
+        mode: str = 'periodization') -> list[np.ndarray]:
     """Forward 1D multiresolution analysis.
 
     It is a projection onto the wavelet subspaces.
@@ -120,7 +122,7 @@ def mra(data, wavelet, level=None, axis=-1, transform='swt',
     return mra_coeffs
 
 
-def imra(mra_coeffs):
+def imra(mra_coeffs: np.ndarray | list) -> np.ndarray:
     """Inverse 1D multiresolution analysis via summation.
 
     Parameters
@@ -147,8 +149,8 @@ def imra(mra_coeffs):
     return reduce(lambda x, y: x + y, mra_coeffs)
 
 
-def mra2(data, wavelet, level=None, axes=(-2, -1), transform='swt2',
-         mode='periodization'):
+def mra2(data: np.ndarray | list, wavelet: Wavelet | str, level: int | None = None, axes: tuple[int, int] = (-2, -1), transform: Literal['dwt2', 'swt2'] = 'swt2',
+         mode: str = 'periodization') -> list:
     """Forward 2D multiresolution analysis.
 
     It is a projection onto wavelet subspaces.
@@ -256,7 +258,7 @@ def mra2(data, wavelet, level=None, axes=(-2, -1), transform='swt2',
     return mra_coeffs
 
 
-def imra2(mra_coeffs):
+def imra2(mra_coeffs: list) -> np.ndarray:
     """Inverse 2D multiresolution analysis via summation.
 
     Parameters
@@ -287,8 +289,8 @@ def imra2(mra_coeffs):
     return rec
 
 
-def mran(data, wavelet, level=None, axes=None, transform='swtn',
-         mode='periodization'):
+def mran(data: np.ndarray | list, wavelet: Wavelet | str, level: int | None = None, axes: tuple[int, int] | None = None, transform: Literal['dwtn', 'swtn'] = 'swtn',
+         mode: str = 'periodization') -> list:
     """Forward nD multiresolution analysis.
 
     It is a projection onto the wavelet subspaces.
@@ -403,7 +405,7 @@ def mran(data, wavelet, level=None, axes=None, transform='swtn',
     return mra_coeffs
 
 
-def imran(mra_coeffs):
+def imran(mra_coeffs: list) -> np.ndarray:
     """Inverse nD multiresolution analysis via summation.
 
     Parameters

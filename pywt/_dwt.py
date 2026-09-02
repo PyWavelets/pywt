@@ -1,4 +1,6 @@
+from __future__ import annotations
 from numbers import Number
+from typing import TYPE_CHECKING, Sequence, cast
 
 import numpy as np
 
@@ -11,11 +13,14 @@ from ._extensions._dwt import upcoef as _upcoef
 from ._extensions._pywt import Modes, Wavelet, _check_dtype, wavelist
 from ._utils import AxisError, _as_wavelet
 
-__all__ = ["dwt", "idwt", "downcoef", "upcoef", "dwt_max_level",
-           "dwt_coeff_len", "pad"]
+if TYPE_CHECKING:
+    from ._extensions._pywt import Mode
 
 
-def dwt_max_level(data_len, filter_len):
+__all__ = ["dwt", "idwt", "downcoef", "upcoef", "dwt_max_level", "dwt_coeff_len", "pad"]
+
+
+def dwt_max_level(data_len: int, filter_len: int | str | Wavelet) -> int:
     r"""
     dwt_max_level(data_len, filter_len)
 
@@ -80,7 +85,7 @@ def dwt_max_level(data_len, filter_len):
     return _dwt_max_level(data_len, filter_len)
 
 
-def dwt_coeff_len(data_len, filter_len, mode):
+def dwt_coeff_len(data_len: int, filter_len: int, mode: Mode) -> int:
     """
     dwt_coeff_len(data_len, filter_len, mode='symmetric')
 
@@ -117,7 +122,12 @@ def dwt_coeff_len(data_len, filter_len, mode):
     return _dwt_coeff_len(data_len, filter_len, Modes.from_object(mode))
 
 
-def dwt(data, wavelet, mode='symmetric', axis=-1):
+def dwt(
+    data: np.ndarray | list,
+    wavelet: Wavelet | str,
+    mode: Mode = "symmetric",
+    axis: int = -1,
+) -> tuple[np.ndarray, np.ndarray]:
     """
     dwt(data, wavelet, mode='symmetric', axis=-1)
 
@@ -188,7 +198,13 @@ def dwt(data, wavelet, mode='symmetric', axis=-1):
     return (cA, cD)
 
 
-def idwt(cA, cD, wavelet, mode='symmetric', axis=-1):
+def idwt(
+    cA: np.ndarray | None,
+    cD: np.ndarray | None,
+    wavelet: Wavelet | str,
+    mode: Mode = "symmetric",
+    axis: int = -1,
+) -> np.ndarray:
     """
     idwt(cA, cD, wavelet, mode='symmetric', axis=-1)
 
@@ -273,6 +289,8 @@ def idwt(cA, cD, wavelet, mode='symmetric', axis=-1):
     elif cD is None:
         cD = np.zeros_like(cA)
 
+    cA = cast(np.ndarray, cA)
+    cD = cast(np.ndarray, cD)
     # cA and cD should be same dimension by here
     ndim = cA.ndim
 
@@ -292,7 +310,13 @@ def idwt(cA, cD, wavelet, mode='symmetric', axis=-1):
     return rec
 
 
-def downcoef(part, data, wavelet, mode='symmetric', level=1):
+def downcoef(
+    part: str,
+    data: np.ndarray | list,
+    wavelet: Wavelet | str,
+    mode: Mode | None = "symmetric",
+    level: int | None = 1,
+) -> np.ndarray:
     """
     downcoef(part, data, wavelet, mode='symmetric', level=1)
 
@@ -343,7 +367,13 @@ def downcoef(part, data, wavelet, mode='symmetric', level=1):
     return np.asarray(_downcoef(part == 'a', data, wavelet, mode, level))
 
 
-def upcoef(part, coeffs, wavelet, level=1, take=0):
+def upcoef(
+    part: str,
+    coeffs: np.ndarray | list,
+    wavelet: Wavelet | str,
+    level: int | None = 1,
+    take: int | None = 0,
+) -> np.ndarray:
     """
     upcoef(part, coeffs, wavelet, level=1, take=0)
 
@@ -401,7 +431,9 @@ def upcoef(part, coeffs, wavelet, level=1, take=0):
     return np.asarray(_upcoef(part == 'a', coeffs, wavelet, level, take))
 
 
-def pad(x, pad_widths, mode):
+def pad(
+    x: np.ndarray, pad_widths: Sequence | np.ndarray | int, mode: Mode
+) -> np.ndarray:
     """Extend a 1D signal using a given boundary mode.
 
     This function operates like :func:`numpy.pad` but supports all signal
