@@ -81,6 +81,19 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1,
     Size of coefficients arrays depends on the length of the input array and
     the length of given scales.
 
+    The transform is computed entirely in units of samples. With the scale
+    ``a`` and the translation ``b`` both expressed in samples, the returned
+    coefficients are::
+
+        C[a, b] = 1/sqrt(a) * sum_n data[n] * conj(psi((n - b)/a))
+
+    No sampling interval enters this expression, which is why ``coefs`` does
+    not depend on ``sampling_period``. To express the coefficients in
+    physical-time units instead, multiply them by ``sqrt(dt)`` (equivalently,
+    divide by ``sqrt(fs)``); that factor comes from approximating the integral
+    of the continuous-time transform by a Riemann sum. See the
+    :ref:`CWT normalization` section of the documentation for details.
+
     Examples
     --------
     >>> import pywt
