@@ -50,7 +50,12 @@ sources = [
   'c/wt.c',
 ]
 
-# pyx -> c transpile output depends on copied __init__.py and pxd files
+# No generated Cython sources are involved anymore, but these copies are
+# still needed for correct rebuilds: the `depends: _cython_tree` on the
+# generator is what re-cythonizes the .pyx files when a .pxd changes.
+# Cython's own depfile output (`cython -M`, used by Meson's native Cython
+# support) omits module-namespace cimports like `from . cimport c_wt`
+# (seen with Cython 3.2.9), so switching to it would cause stale builds.
 _cython_tree = [
   fs.copyfile('__init__.py'),
   fs.copyfile('common.pxd'),
