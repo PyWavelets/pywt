@@ -3,7 +3,6 @@ from itertools import product
 
 import numpy as np
 
-from ._c99_config import _have_c99_complex
 from ._extensions._dwt import idwt_single
 from ._extensions._pywt import Modes, Wavelet, _check_dtype
 from ._extensions._swt import swt as _swt
@@ -114,20 +113,6 @@ def swt(data, wavelet, level=None, start_level=0, axis=-1,
         Cambridge University Press, 2000.
     """
 
-    if not _have_c99_complex and np.iscomplexobj(data):
-        data = np.asarray(data)
-        kwargs = {"wavelet": wavelet, "level": level, "start_level": start_level,
-                      "trim_approx": trim_approx, "axis": axis, "norm": norm}
-        coeffs_real = swt(data.real, **kwargs)
-        coeffs_imag = swt(data.imag, **kwargs)
-        if not trim_approx:
-            coeffs_cplx = []
-            for (cA_r, cD_r), (cA_i, cD_i) in zip(coeffs_real, coeffs_imag):
-                coeffs_cplx.append((cA_r + 1j*cA_i, cD_r + 1j*cD_i))
-        else:
-            coeffs_cplx = [cr + 1j*ci
-                           for (cr, ci) in zip(coeffs_real, coeffs_imag)]
-        return coeffs_cplx
 
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(data)
@@ -200,16 +185,6 @@ def iswt(coeffs, wavelet, norm=False, axis=-1):
         return iswtn(coeffs_nd, wavelet, axes=(axis,), norm=norm)
     elif axis != 0 and axis != -1:
         raise AxisError("Axis greater than data dimensions")
-    if not _have_c99_complex and np.iscomplexobj(cA):
-        if trim_approx:
-            coeffs_real = [c.real for c in coeffs]
-            coeffs_imag = [c.imag for c in coeffs]
-        else:
-            coeffs_real = [(ca.real, cd.real) for ca, cd in coeffs]
-            coeffs_imag = [(ca.imag, cd.imag) for ca, cd in coeffs]
-        kwargs = {"wavelet": wavelet, "norm": norm}
-        y = iswt(coeffs_real, **kwargs)
-        return y + 1j * iswt(coeffs_imag, **kwargs)
 
     if trim_approx:
         coeffs = coeffs[1:]
@@ -440,20 +415,6 @@ def iswt2(coeffs, wavelet, norm=False, axes=(-2, -1)):
             coeffs_nd = [{'aa': a, 'da': h, 'ad': v, 'dd': d}
                          for a, (h, v, d) in coeffs]
         return iswtn(coeffs_nd, wavelet, axes=axes, norm=norm)
-    if not _have_c99_complex and np.iscomplexobj(cA):
-        if trim_approx:
-            coeffs_real = [cA.real]
-            coeffs_real += [(h.real, v.real, d.real) for h, v, d in coeffs[1:]]
-            coeffs_imag = [cA.imag]
-            coeffs_imag += [(h.imag, v.imag, d.imag) for h, v, d in coeffs[1:]]
-        else:
-            coeffs_real = [(a.real, (h.real, v.real, d.real))
-                            for a, (h, v, d) in coeffs]
-            coeffs_imag = [(a.imag, (h.imag, v.imag, d.imag))
-                            for a, (h, v, d) in coeffs]
-        kwargs = {"wavelet": wavelet, "norm": norm}
-        y = iswt2(coeffs_real, **kwargs)
-        return y + 1j * iswt2(coeffs_imag, **kwargs)
 
     if trim_approx:
         coeffs = coeffs[1:]
@@ -613,21 +574,6 @@ def swtn(data, wavelet, level, start_level=0, axes=None, trim_approx=False,
 
     """
     data = np.asarray(data)
-    if not _have_c99_complex and np.iscomplexobj(data):
-        kwargs = {"wavelet": wavelet, "level": level, "start_level": start_level,
-                      "trim_approx": trim_approx, "axes": axes, "norm": norm}
-        real = swtn(data.real, **kwargs)
-        imag = swtn(data.imag, **kwargs)
-        if trim_approx:
-            cplx = [real[0] + 1j * imag[0]]
-            offset = 1
-        else:
-            cplx = []
-            offset = 0
-        for rdict, idict in zip(real[offset:], imag[offset:]):
-            cplx.append(
-                {k: rdict[k] + 1j * idict[k] for k in rdict})
-        return cplx
 
     if data.dtype == np.dtype('object'):
         raise TypeError("Input must be a numeric array-like")
@@ -719,19 +665,6 @@ def iswtn(coeffs, wavelet, axes=None, norm=False):
     trim_approx = not isinstance(coeffs[0], dict)
     cA = coeffs[0] if trim_approx else coeffs[0]['a'*ndim_transform]
 
-    if not _have_c99_complex and np.iscomplexobj(cA):
-        if trim_approx:
-            coeffs_real = [coeffs[0].real]
-            coeffs_imag = [coeffs[0].imag]
-            coeffs = coeffs[1:]
-        else:
-            coeffs_real = []
-            coeffs_imag = []
-        coeffs_real += [{k: v.real for k, v in c.items()} for c in coeffs]
-        coeffs_imag += [{k: v.imag for k, v in c.items()} for c in coeffs]
-        kwargs = {"wavelet": wavelet, "axes": axes, "norm": norm}
-        y = iswtn(coeffs_real, **kwargs)
-        return y + 1j * iswtn(coeffs_imag, **kwargs)
 
     if trim_approx:
         coeffs = coeffs[1:]

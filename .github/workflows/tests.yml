@@ -41,6 +41,12 @@ jobs:
           # Linux arm64
           - runs-on: ubuntu-22.04-arm
             python-version: "3.14"
+          # Linux arm64, MSVC-style struct complex types forced, to exercise
+          # the operator-free complex code path on a C99-complex compiler
+          # (see PYWT_TEST_STRUCT_COMPLEX in pywt/_extensions/c/common.h)
+          - runs-on: ubuntu-22.04-arm
+            python-version: "3.14"
+            OPTIONS_NAME: "struct-complex"
           # Linux amd64
           - runs-on: ubuntu-latest
             python-version: "3.12"
@@ -100,6 +106,8 @@ jobs:
             elif [ "${REFGUIDE_CHECK}" == "1" ]; then
                 pip install sphinx numpydoc scipy-doctest
                 pip install . -v
+            elif [ "${OPTIONS_NAME}" == "struct-complex" ]; then
+                pip install . -v -Csetup-args=-Dc_args=-DPYWT_TEST_STRUCT_COMPLEX
             else
                 pip install . -v
             fi

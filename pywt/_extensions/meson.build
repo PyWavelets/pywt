@@ -42,13 +42,6 @@ print(incdir)
   np_dep = declare_dependency(include_directories: inc_np, compile_args: numpy_nodepr_api)
 endif
 
-config_pxi = configure_file(
-  input: 'config.pxi.in',
-  output: 'config.pxi',
-  configuration: cdata,
-  install: false
-)
-
 sources = [
   'c/common.c',
   'c/convolution.c',
@@ -57,7 +50,12 @@ sources = [
   'c/wt.c',
 ]
 
-# pyx -> c transpile output depends on copied __init__.py and pxd files
+# No generated Cython sources are involved anymore, but these copies are
+# still needed for correct rebuilds: the `depends: _cython_tree` on the
+# generator is what re-cythonizes the .pyx files when a .pxd changes.
+# Cython's own depfile output (`cython -M`, used by Meson's native Cython
+# support) omits module-namespace cimports like `from . cimport c_wt`
+# (seen with Cython 3.2.9), so switching to it would cause stale builds.
 _cython_tree = [
   fs.copyfile('__init__.py'),
   fs.copyfile('common.pxd'),
@@ -69,11 +67,7 @@ _cython_tree = [
   fs.copyfile('wavelets_list.pxi'),
 ]
 
-# avoid compiler warnings:  tell Cython to use C99 complex types
 c_args = ['-DPY_EXTENSION']
-if have_c99_complex
-  c_args += ['-DHAVE_C99_COMPLEX', '-DCYTHON_CCOMPLEX=1']
-endif
 
 libc_wt = static_library('c_wt',
   sources,
@@ -101,7 +95,7 @@ pyx_files = [
   ['_pywt', fs.copyfile('_pywt.pyx')],
 ]
 
-cy_deps = declare_dependency(sources: [__init__py, _cython_tree])#, config_pxi])
+cy_deps = declare_dependency(sources: [__init__py, _cython_tree])
 foreach pyx_file: pyx_files
   py.extension_module(pyx_file[0],
     [cython_gen.process(pyx_file[1])],
