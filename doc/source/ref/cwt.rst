@@ -277,7 +277,7 @@ No sampling interval appears in this expression. In particular, the
 ``frequencies``; the coefficients themselves do not depend on it.
 
 Relation to the continuous-time transform
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The continuous-time definition of the CWT, with a scale :math:`a_s` and a
 translation :math:`b_s` in seconds, is
@@ -303,7 +303,7 @@ expressed in physical-time units. PyWavelets does not apply that factor,
 because doing so would make the coefficients depend on ``sampling_period``.
 
 A common source of confusion
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 A frequent mistake when comparing a hand-written convolution against ``cwt`` is
 to *mix* the two conventions above: to use a scale in seconds,
@@ -352,7 +352,7 @@ differences the result, which effectively averages :math:`\psi` over each
 sample bin rather than sampling it pointwise.
 
 Limits of the agreement
-~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^
 
 :math:`C[a, b]` is what ``cwt`` computes in the limit of a finely sampled
 wavelet. Two discretization effects prevent an analytic implementation from
