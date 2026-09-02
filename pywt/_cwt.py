@@ -139,6 +139,7 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1,
     if method == 'fft':
         size_scale0 = -1
         fft_data = None
+        use_real_fft = data.dtype.kind != 'c' and int_psi.dtype.kind != 'c'
     elif method != "conv":
         raise ValueError("method must be 'conv' or 'fft'")
 
@@ -179,10 +180,19 @@ def cwt(data, scales, wavelet, sampling_period=1., method='conv', axis=-1,
             )
             if size_scale != size_scale0:
                 # Must recompute fft_data when the padding size changes.
-                fft_data = np.fft.fft(data, size_scale, axis=-1)
+                if use_real_fft:
+                    fft_data = np.fft.rfft(data, size_scale, axis=-1)
+                else:
+                    fft_data = np.fft.fft(data, size_scale, axis=-1)
             size_scale0 = size_scale
-            fft_wav = np.fft.fft(int_psi_scale, size_scale, axis=-1)
-            conv = np.fft.ifft(fft_wav * fft_data, axis=-1)
+            if use_real_fft:
+                fft_wav = np.fft.rfft(int_psi_scale, size_scale, axis=-1)
+                conv = np.fft.irfft(
+                    fft_wav * fft_data, n=size_scale, axis=-1
+                )
+            else:
+                fft_wav = np.fft.fft(int_psi_scale, size_scale, axis=-1)
+                conv = np.fft.ifft(fft_wav * fft_data, axis=-1)
             conv = conv[..., :data.shape[-1] + int_psi_scale.size - 1]
 
         coef = - np.sqrt(scale) * np.diff(conv, axis=-1)

@@ -471,6 +471,41 @@ def test_cwt_method_fft():
     assert_allclose(cfs_conv, cfs_fft, rtol=0, atol=1e-13)
 
 
+@pytest.mark.parametrize('dtype, tol', [(np.float32, 1e-5),
+                                        (np.float64, 1e-13)])
+@pytest.mark.parametrize('shape, axis', [((49,), -1),
+                                         ((3, 50), 1),
+                                         ((49, 3), 0)])
+def test_cwt_method_fft_real(dtype, tol, shape, axis):
+    rstate = np.random.RandomState(1)
+    data = rstate.randn(*shape).astype(dtype)
+    scales = np.r_[1.0625, np.arange(1, 64)]
+
+    cfs_conv, _ = pywt.cwt(
+        data, scales, 'morl', method='conv', axis=axis
+    )
+    cfs_fft, _ = pywt.cwt(
+        data, scales, 'morl', method='fft', axis=axis
+    )
+
+    assert_equal(cfs_fft.dtype, dtype)
+    assert_allclose(cfs_conv, cfs_fft, rtol=tol, atol=tol)
+
+
+@pytest.mark.parametrize('dtype, tol', [(np.complex64, 1e-5),
+                                        (np.complex128, 1e-13)])
+def test_cwt_method_fft_complex_data_real_wavelet(dtype, tol):
+    rstate = np.random.RandomState(1)
+    data = (rstate.randn(49) + 1j * rstate.randn(49)).astype(dtype)
+    scales = np.r_[1.0625, np.arange(1, 16)]
+
+    cfs_conv, _ = pywt.cwt(data, scales, 'morl', method='conv')
+    cfs_fft, _ = pywt.cwt(data, scales, 'morl', method='fft')
+
+    assert_equal(cfs_fft.dtype, dtype)
+    assert_allclose(cfs_conv, cfs_fft, rtol=tol, atol=tol)
+
+
 def test_continuous_wavelet_pickle(tmpdir):
     wavelet = pywt.ContinuousWavelet('cmor1.5-1.0')
     filename = os.path.join(tmpdir, 'cwav.pickle')
