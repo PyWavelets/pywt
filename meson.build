@@ -11,7 +11,7 @@ project(
   ],
 )
 
-cython = find_program('cython')
+cython = find_program('cython', version: '>=3.2.5')
 
 py = import('python').find_installation(pure: false)
 py_dep = py.dependency()

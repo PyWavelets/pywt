@@ -62,8 +62,7 @@ _cython_tree = [
   fs.copyfile('wavelets_list.pxi'),
 ]
 
-# avoid compiler warnings:  tell Cython to use C99 complex types
-c_args = ['-DPY_EXTENSION', '-DCYTHON_CCOMPLEX=1']
+c_args = ['-DPY_EXTENSION']
 
 libc_wt = static_library('c_wt',
   sources,
@@ -91,7 +90,7 @@ pyx_files = [
   ['_pywt', fs.copyfile('_pywt.pyx')],
 ]
 
-cy_deps = declare_dependency(sources: [__init__py, _cython_tree])#, config_pxi])
+cy_deps = declare_dependency(sources: [__init__py, _cython_tree])
 foreach pyx_file: pyx_files
   py.extension_module(pyx_file[0],
     [cython_gen.process(pyx_file[1])],

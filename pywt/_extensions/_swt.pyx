@@ -100,15 +100,15 @@ def swt(cdata_t[::1] data, Wavelet wavelet, size_t level, size_t start_level,
         elif cdata_t is np.complex128_t:
             cD = np.zeros(output_len, dtype=np.complex128)
             with nogil:
-                retval = c_wt.double_complex_swt_d(&data[0], data_size, wavelet.w,
-                                 &cD[0], output_len, i)
+                retval = c_wt.double_complex_swt_d(<c_wt.double_complex *> &data[0], data_size, wavelet.w,
+                                 <c_wt.double_complex *> &cD[0], output_len, i)
             if retval < 0:
                 raise RuntimeError("C swt failed.")
         elif cdata_t is np.complex64_t:
             cD = np.zeros(output_len, dtype=np.complex64)
             with nogil:
-                retval = c_wt.float_complex_swt_d(&data[0], data_size, wavelet.w,
-                                &cD[0], output_len, i)
+                retval = c_wt.float_complex_swt_d(<c_wt.float_complex *> &data[0], data_size, wavelet.w,
+                                <c_wt.float_complex *> &cD[0], output_len, i)
             if retval < 0:
                 raise RuntimeError("C swt failed.")
 
@@ -130,15 +130,15 @@ def swt(cdata_t[::1] data, Wavelet wavelet, size_t level, size_t start_level,
         elif cdata_t is np.complex128_t:
             cA = np.zeros(output_len, dtype=np.complex128)
             with nogil:
-                retval = c_wt.double_complex_swt_a(&data[0], data_size, wavelet.w,
-                                 &cA[0], output_len, i)
+                retval = c_wt.double_complex_swt_a(<c_wt.double_complex *> &data[0], data_size, wavelet.w,
+                                 <c_wt.double_complex *> &cA[0], output_len, i)
             if retval < 0:
                 raise RuntimeError("C swt failed.")
         elif cdata_t is np.complex64_t:
             cA = np.zeros(output_len, dtype=np.complex64)
             with nogil:
-                retval = c_wt.float_complex_swt_a(&data[0], data_size, wavelet.w,
-                                &cA[0], output_len, i)
+                retval = c_wt.float_complex_swt_a(<c_wt.float_complex *> &data[0], data_size, wavelet.w,
+                                <c_wt.float_complex *> &cA[0], output_len, i)
             if retval < 0:
                 raise RuntimeError("C swt failed.")
 
@@ -253,8 +253,8 @@ cpdef swt_axis(np.ndarray data, Wavelet wavelet, size_t level,
             cA = np.zeros(output_shape, dtype=np.complex128)
             with nogil:
                 retval = c_wt.double_complex_downcoef_axis(
-                    <double complex *> data.data, data_info,
-                    <double complex *> cA.data, output_info,
+                    <c_wt.double_complex *> data.data, data_info,
+                    <c_wt.double_complex *> cA.data, output_info,
                     wavelet.w, axis,
                     common.COEF_APPROX, common.MODE_PERIODIZATION,
                     i, common.SWT_TRANSFORM)
@@ -265,8 +265,8 @@ cpdef swt_axis(np.ndarray data, Wavelet wavelet, size_t level,
             cD = np.zeros(output_shape, dtype=np.complex128)
             with nogil:
                 retval = c_wt.double_complex_downcoef_axis(
-                    <double complex *> data.data, data_info,
-                    <double complex *> cD.data, output_info,
+                    <c_wt.double_complex *> data.data, data_info,
+                    <c_wt.double_complex *> cD.data, output_info,
                     wavelet.w, axis,
                     common.COEF_DETAIL, common.MODE_PERIODIZATION,
                     i, common.SWT_TRANSFORM)
@@ -278,8 +278,8 @@ cpdef swt_axis(np.ndarray data, Wavelet wavelet, size_t level,
             cA = np.zeros(output_shape, dtype=np.complex64)
             with nogil:
                 retval = c_wt.float_complex_downcoef_axis(
-                    <float complex *> data.data, data_info,
-                    <float complex *> cA.data, output_info,
+                    <c_wt.float_complex *> data.data, data_info,
+                    <c_wt.float_complex *> cA.data, output_info,
                     wavelet.w, axis,
                     common.COEF_APPROX, common.MODE_PERIODIZATION,
                     i, common.SWT_TRANSFORM)
@@ -290,8 +290,8 @@ cpdef swt_axis(np.ndarray data, Wavelet wavelet, size_t level,
             cD = np.zeros(output_shape, dtype=np.complex64)
             with nogil:
                 retval = c_wt.float_complex_downcoef_axis(
-                    <float complex *> data.data, data_info,
-                    <float complex *> cD.data, output_info,
+                    <c_wt.float_complex *> data.data, data_info,
+                    <c_wt.float_complex *> cD.data, output_info,
                     wavelet.w, axis,
                     common.COEF_DETAIL, common.MODE_PERIODIZATION,
                     i, common.SWT_TRANSFORM)
