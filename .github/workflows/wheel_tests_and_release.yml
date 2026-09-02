@@ -18,8 +18,8 @@ on:
         default: "false"
   # Upload wheels to anaconda.org on a schedule
   schedule:
-    # Run at 0300 hours on days 3 and 17 of the month
-    - cron: "0 3 3,17 * *"
+    # Run at 0300 hours on days 3, 13 and 23 of the month
+    - cron: "0 3 3,13,23 * *"
 env:
   CIBW_BUILD_VERBOSITY: 2
   CIBW_TEST_REQUIRES: pytest
