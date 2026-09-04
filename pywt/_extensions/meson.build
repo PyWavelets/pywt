@@ -67,7 +67,7 @@ _cython_tree = [
   fs.copyfile('wavelets_list.pxi'),
 ]
 
-c_args = ['-DPY_EXTENSION']
+c_args = ['-DPY_EXTENSION', '-D_USE_MATH_DEFINES']
 
 libc_wt = static_library('c_wt',
   sources,
