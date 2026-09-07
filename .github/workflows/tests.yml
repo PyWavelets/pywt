@@ -35,6 +35,7 @@ jobs:
         MINIMUM_REQUIREMENTS: [0]
         USE_SDIST: [0]
         REFGUIDE_CHECK: [1]
+        INSTALL_MATPLOTLIB: [1]
         PIP_FLAGS: [""]
         OPTIONS_NAME: ["default"]
         include:
@@ -55,8 +56,9 @@ jobs:
           - runs-on: ubuntu-latest
             python-version: "3.12"
           - runs-on: ubuntu-latest
-            python-version: "3.14"
+            python-version: "3.15-dev"
             USE_SDIST: 1
+            INSTALL_MATPLOTLIB: 0
             OPTIONS_NAME: "install-from-sdist"
           - runs-on: ubuntu-latest
             python-version: "3.14"
@@ -79,6 +81,7 @@ jobs:
           PIP_FLAGS: ${{ matrix.PIP_FLAGS }}
           USE_SDIST: ${{ matrix.USE_SDIST }}
           REFGUIDE_CHECK: ${{ matrix.REFGUIDE_CHECK }}
+          INSTALL_MATPLOTLIB: ${{ matrix.INSTALL_MATPLOTLIB }}
           OPTIONS_NAME: ${{ matrix.OPTIONS_NAME }}
         run: |
           uname -a
@@ -97,7 +100,10 @@ jobs:
               pip install ${PIP_FLAGS} cython
               pip install ${PIP_FLAGS} numpy
           fi
-          pip install ${PIP_FLAGS} matplotlib pytest
+          pip install ${PIP_FLAGS} pytest
+          if [ "${INSTALL_MATPLOTLIB}" != "0" ]; then
+              pip install ${PIP_FLAGS} matplotlib
+          fi
 
             set -o pipefail
             if [ "${USE_SDIST}" == "1" ]; then
@@ -148,7 +154,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.14t"]
+        python-version: ["3.14t", "3.15t-dev"]
     steps:
       - uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a # v4.1.2
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v5.5.0
