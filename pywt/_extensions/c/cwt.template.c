@@ -15,7 +15,6 @@
 #elif defined __GNUC__
 #define restrict __restrict__
 #endif
-#define _USE_MATH_DEFINES
 #include "math.h"
 
 
