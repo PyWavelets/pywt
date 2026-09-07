@@ -3,44 +3,15 @@ if m_dep.found()
   add_project_link_arguments('-lm', language : 'c')
 endif
 
-# Don't use the deprecated NumPy C API. Define this to a fixed version instead of
-# NPY_API_VERSION in order not to break compilation for released PyWavelets
-# versions when NumPy introduces a new deprecation.
-numpy_nodepr_api = ['-DNPY_NO_DEPRECATED_API=NPY_1_22_API_VERSION']
-
-# Uses the `numpy-config` executable (or a user's numpy.pc pkg-config file),
-# will work for numpy>=2.0.0b1 and meson>=1.4.0
-_numpy_dep = dependency('numpy', required: false)
-if _numpy_dep.found()
-  np_dep = declare_dependency(dependencies: _numpy_dep, compile_args: numpy_nodepr_api)
-else
-  # For cross-compilation it is often not possible to run the Python interpreter
-  # in order to retrieve numpy's include directory. It can be specified in the
-  # cross file instead:
-  #   [properties]
-  #   numpy-include-dir = /abspath/to/host-pythons/site-packages/numpy/core/include
-  #
-  # This uses the path as is, and avoids running the interpreter.
-  incdir_numpy = meson.get_external_property('numpy-include-dir', 'not-given')
-  if incdir_numpy == 'not-given'
-    incdir_numpy = run_command(py,
-      [
-        '-c',
-        '''import os
-import numpy as np
-try:
-  incdir = os.path.relpath(np.get_include())
-except Exception:
-  incdir = np.get_include()
-print(incdir)
-    '''
-      ],
-      check: true
-    ).stdout().strip()
-  endif
-  inc_np = include_directories(incdir_numpy)
-  np_dep = declare_dependency(include_directories: inc_np, compile_args: numpy_nodepr_api)
-endif
+# Uses the `numpy-config` executable (or a user's numpy.pc pkg-config file).
+_numpy_dep = dependency('numpy', version: ['>=2.0', '<3'])
+np_dep = declare_dependency(
+  dependencies: _numpy_dep,
+  # Don't use the deprecated NumPy C API. Define this to a fixed version
+  # instead of NPY_API_VERSION in order not to break compilation for released
+  # PyWavelets versions when NumPy introduces a new deprecation.
+  compile_args: ['-DNPY_NO_DEPRECATED_API=NPY_2_0_API_VERSION'],
+)
 
 sources = [
   'c/common.c',
