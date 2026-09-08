@@ -23,6 +23,13 @@ on:
     # Run at 0300 hours on days 3 and 17 of the month
     - cron: "0 3 3,17 * *"
 
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 env:
   FORCE_COLOR: 3
 

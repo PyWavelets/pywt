@@ -9,9 +9,11 @@ on:
       - main
       - v1.**
 
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
 concurrency:
-  # avoid duplicate runs on both pushes and PRs
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
 env:
