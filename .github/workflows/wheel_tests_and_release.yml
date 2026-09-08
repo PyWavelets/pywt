@@ -50,10 +50,11 @@ jobs:
         cibw_python: ["cp312", "cp313", "cp314", "cp314t", "cp315", "cp315t"]
         cibw_arch: ["x86_64"]
     steps:
-      - uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a # v4.1.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v5.5.0
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         name: Install Python
         with:
           python-version: "3.12"
@@ -81,10 +82,11 @@ jobs:
         cibw_python: ["cp312", "cp313", "cp314", "cp314t", "cp315", "cp315t"]
         cibw_arch: ["aarch64"]
     steps:
-      - uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a # v4.1.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v5.5.0
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         name: Install Python
         with:
           python-version: "3.12"
@@ -116,11 +118,12 @@ jobs:
           - os: macos-15-intel
             cibw_arch: "arm64"
     steps:
-      - uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a # v4.1.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
 
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v5.5.0
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         name: Install Python
         with:
           python-version: "3.12"
@@ -166,30 +169,31 @@ jobs:
           - os: windows-11-arm
             cibw_arch: AMD64
     steps:
-      - uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a # v4.1.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
 
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v5.5.0
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         name: Install Python
         with:
           python-version: "3.12"
 
       - name: Setup MSVC (32-bit)
         if: matrix.cibw_arch == 'x86'
-        uses: bus1/cabuild/action/msdevshell@e22aba57d6e74891d059d66501b6b5aed8123c4d # v1
+        uses: bus1/cabuild/action/msdevshell@06ea2833eef61e9b0d0ce0d728416e617e4fb1fe # v1
         with:
           architecture: x86
 
       - name: Setup MSVC (64-bit)
         if: matrix.cibw_arch == 'AMD64'
-        uses: bus1/cabuild/action/msdevshell@e22aba57d6e74891d059d66501b6b5aed8123c4d # v1
+        uses: bus1/cabuild/action/msdevshell@06ea2833eef61e9b0d0ce0d728416e617e4fb1fe # v1
         with:
           architecture: x64
 
       - name: Setup MSVC (ARM64)
         if: matrix.cibw_arch == 'ARM64'
-        uses: bus1/cabuild/action/msdevshell@e22aba57d6e74891d059d66501b6b5aed8123c4d # v1
+        uses: bus1/cabuild/action/msdevshell@06ea2833eef61e9b0d0ce0d728416e617e4fb1fe # v1
         with:
           architecture: arm64
 
@@ -215,7 +219,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v5.5.0
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         name: Install Python
         with:
           python-version: "3.12"
@@ -321,11 +325,11 @@ jobs:
           print-hash: true
           attestations: true
 
-      - name: Github release
-        uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3.0.2
+      - name: GitHub release
+        run: gh release create "${GITHUB_REF_NAME}" --verify-tag --notes ""
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
 
   deploy_anaconda:
     name: Release (Anaconda)
@@ -339,14 +343,15 @@ jobs:
     # Run only on pushes to the main branch, on schedule, or when triggered manually
     if: >-
       github.repository == 'PyWavelets/pywt' &&
-      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+      ((github.event_name == 'push' && github.ref == 'refs/heads/main') ||
       (github.event_name == 'workflow_dispatch' && github.event.inputs.push_wheels == 'true') ||
-      (github.event_name == 'schedule')
+      github.event_name == 'schedule')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a # v4.1.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         id: download
@@ -356,7 +361,7 @@ jobs:
           merge-multiple: true
 
       - name: Push to Anaconda PyPI index
-        uses: scientific-python/upload-nightly-action@e76cfec8a4611fd02808a801b0ff5a7d7c1b2d99 # v0.6.4
+        uses: scientific-python/upload-nightly-action@e76cfec8a4611fd02808a801b0ff5a7d7c1b2d99 # 0.6.4
         with:
           artifacts_path: dist/
           anaconda_nightly_upload_token: ${{ secrets.ANACONDA_ORG_UPLOAD_TOKEN }}
