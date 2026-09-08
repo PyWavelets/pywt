@@ -8,9 +8,14 @@ on:
       # Runs on every merge to main to upload .dev0 wheels to anaconda.org
       - main
       - v1.**
-  # Make it possible to upload wheels manually if needed (for anaconda.org only, not PyPI)
+  # Make it possible to upload to TestPyPI or Anaconda manually if needed
   workflow_dispatch:
     inputs:
+      environment:
+        description: Which PyPI environment to upload to, if any
+        required: true
+        type: choice
+        options: ["none", "testpypi"]
       push_wheels:
         description: >
           Push wheels to Anaconda if "true". Default is "false". Warning: this will overwrite existing wheels.
@@ -202,55 +207,119 @@ jobs:
           path: ./dist/*.whl
           if-no-files-found: error
 
-  deploy_pypi:
-    name: Release (PyPI)
-    needs:
-      [
-        build_linux_x86_64_wheels,
-        build_linux_aarch64_wheels,
-        build_macos_wheels,
-        build_windows_wheels,
-      ]
-    # Run only on tags pushed to the repository
-    if: github.repository == 'PyWavelets/pywt' && startsWith(github.ref, 'refs/tags/v')
+  build_sdist:
+    name: Build sdist
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-      - uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a # v4.1.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          fetch-depth: 0
+          persist-credentials: false
 
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v5.5.0
         name: Install Python
         with:
           python-version: "3.12"
 
-      - name: Install Twine
+      - name: Build sdist
         run: |
-          python -m pip install --upgrade pip
-          pip install twine
-          pip install cython numpy build
+          python -m pip install --upgrade pip build
+          python -m build --sdist
 
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
-        id: download
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          pattern: "wheels_*"
-          path: ./dist
+          name: sdist
+          path: ./dist/*.tar.gz
+          if-no-files-found: error
+
+  testpypi-publish:
+    name: Publish release to TestPyPI
+    if: >-
+      github.repository == 'PyWavelets/pywt' &&
+      github.event_name == 'workflow_dispatch' &&
+      github.event.inputs.environment == 'testpypi'
+    needs:
+      [
+        build_linux_x86_64_wheels,
+        build_linux_aarch64_wheels,
+        build_macos_wheels,
+        build_windows_wheels,
+        build_sdist,
+      ]
+    runs-on: ubuntu-latest
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/p/pywavelets
+    permissions:
+      id-token: write # mandatory for trusted publishing
+    steps:
+      - name: Download sdist and wheels
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          path: dist
           merge-multiple: true
 
-      - name: Publish the source distribution on PyPI
+      - name: Publish
+        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          skip-existing: true
+          print-hash: true
+          attestations: true
+
+  check_version:
+    name: Ensure commit is tag before upload to PyPI
+    if: >-
+      github.repository == 'PyWavelets/pywt' &&
+      github.event_name == 'push' &&
+      startsWith(github.ref, 'refs/tags/v')
+    needs:
+      [
+        build_linux_x86_64_wheels,
+        build_linux_aarch64_wheels,
+        build_macos_wheels,
+        build_windows_wheels,
+        build_sdist,
+      ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PyWavelets
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          submodules: false
+          persist-credentials: false
+
+      - name: Examine git commit
         run: |
-          PYWT_VERSION=$(git describe --tags)
-          python -m build --sdist
-          ls -la ${{ github.workspace }}/dist
-          # We prefer to release wheels before source because otherwise there is a
-          # small window during which users who pip install pywt will require compilation.
-          twine upload ${{ github.workspace }}/dist/*.whl
-          twine upload ${{ github.workspace }}/dist/pywavelets-${PYWT_VERSION:1}.tar.gz
-        env:
-          TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.TWINE_TOKEN }}
+          git describe --exact-match --tags HEAD
+
+  pypi-publish:
+    name: Publish release to PyPI
+    if: >-
+      github.repository == 'PyWavelets/pywt' &&
+      github.event_name == 'push' &&
+      startsWith(github.ref, 'refs/tags/v')
+    needs: [check_version]
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/pywavelets
+    permissions:
+      contents: write # needed to create the GitHub release
+      id-token: write # mandatory for trusted publishing
+    steps:
+      - name: Download sdist and wheels
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Publish
+        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
+        with:
+          print-hash: true
+          attestations: true
 
       - name: Github release
         uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3.0.2
