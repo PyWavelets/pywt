@@ -4,7 +4,7 @@
 import inspect
 from collections.abc import Iterable
 
-import numpy as np
+from numpy.exceptions import AxisError
 
 from ._extensions._pywt import (
     ContinuousWavelet,
@@ -12,12 +12,6 @@ from ._extensions._pywt import (
     Modes,
     Wavelet,
 )
-
-AxisError: type[Exception]
-if np.lib.NumpyVersion(np.__version__) >= '1.25.0':
-    from numpy.exceptions import AxisError
-else:
-    from numpy import AxisError
 
 
 def _as_wavelet(wavelet):

@@ -9,14 +9,7 @@ build-backend = "mesonpy"
 requires = [
     "meson-python>=0.18.0",
     "Cython>=3.2.5",
-
-    # numpy requirement for wheel builds for distribution on PyPI - building
-    # against 2.x yields wheels that are also compatible with numpy 1.x at
-    # runtime.
-    # Note that building against numpy 1.x works fine too - users and
-    # redistributors can do this by installing the numpy version they like and
-    # disabling build isolation.
-    "numpy>=2.0.0",
+    "numpy>=2.0.0,<3",
 ]
 
 [project]
@@ -32,7 +25,7 @@ maintainers = [
 ]
 description = "PyWavelets, wavelet transform module"
 requires-python = ">=3.12"
-dependencies = ["numpy>=1.26.4,<3"]
+dependencies = ["numpy>=2.0.0,<3"]
 readme = "README.rst"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
