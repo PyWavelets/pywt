@@ -8,9 +8,14 @@ on:
       # Runs on every merge to main to upload .dev0 wheels to anaconda.org
       - main
       - v1.**
-  # Make it possible to upload wheels manually if needed (for anaconda.org only, not PyPI)
+  # Make it possible to upload to TestPyPI or Anaconda manually if needed
   workflow_dispatch:
     inputs:
+      environment:
+        description: Which PyPI environment to upload to, if any
+        required: true
+        type: choice
+        options: ["none", "testpypi"]
       push_wheels:
         description: >
           Push wheels to Anaconda if "true". Default is "false". Warning: this will overwrite existing wheels.
@@ -20,6 +25,14 @@ on:
   schedule:
     # Run at 0300 hours on days 3, 13 and 23 of the month
     - cron: "0 3 3,13,23 * *"
+
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 env:
   CIBW_BUILD_VERBOSITY: 2
   CIBW_TEST_REQUIRES: pytest
@@ -37,10 +50,11 @@ jobs:
         cibw_python: ["cp312", "cp313", "cp314", "cp314t", "cp315", "cp315t"]
         cibw_arch: ["x86_64"]
     steps:
-      - uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a # v4.1.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v5.5.0
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         name: Install Python
         with:
           python-version: "3.12"
@@ -68,10 +82,11 @@ jobs:
         cibw_python: ["cp312", "cp313", "cp314", "cp314t", "cp315", "cp315t"]
         cibw_arch: ["aarch64"]
     steps:
-      - uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a # v4.1.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v5.5.0
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         name: Install Python
         with:
           python-version: "3.12"
@@ -103,11 +118,12 @@ jobs:
           - os: macos-15-intel
             cibw_arch: "arm64"
     steps:
-      - uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a # v4.1.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
 
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v5.5.0
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         name: Install Python
         with:
           python-version: "3.12"
@@ -153,30 +169,31 @@ jobs:
           - os: windows-11-arm
             cibw_arch: AMD64
     steps:
-      - uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a # v4.1.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
 
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v5.5.0
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         name: Install Python
         with:
           python-version: "3.12"
 
       - name: Setup MSVC (32-bit)
         if: matrix.cibw_arch == 'x86'
-        uses: bus1/cabuild/action/msdevshell@e22aba57d6e74891d059d66501b6b5aed8123c4d # v1
+        uses: bus1/cabuild/action/msdevshell@06ea2833eef61e9b0d0ce0d728416e617e4fb1fe # v1
         with:
           architecture: x86
 
       - name: Setup MSVC (64-bit)
         if: matrix.cibw_arch == 'AMD64'
-        uses: bus1/cabuild/action/msdevshell@e22aba57d6e74891d059d66501b6b5aed8123c4d # v1
+        uses: bus1/cabuild/action/msdevshell@06ea2833eef61e9b0d0ce0d728416e617e4fb1fe # v1
         with:
           architecture: x64
 
       - name: Setup MSVC (ARM64)
         if: matrix.cibw_arch == 'ARM64'
-        uses: bus1/cabuild/action/msdevshell@e22aba57d6e74891d059d66501b6b5aed8123c4d # v1
+        uses: bus1/cabuild/action/msdevshell@06ea2833eef61e9b0d0ce0d728416e617e4fb1fe # v1
         with:
           architecture: arm64
 
@@ -194,59 +211,125 @@ jobs:
           path: ./dist/*.whl
           if-no-files-found: error
 
-  deploy_pypi:
-    name: Release (PyPI)
+  build_sdist:
+    name: Build sdist
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        name: Install Python
+        with:
+          python-version: "3.12"
+
+      - name: Build sdist
+        run: |
+          python -m pip install --upgrade pip build
+          python -m build --sdist
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: sdist
+          path: ./dist/*.tar.gz
+          if-no-files-found: error
+
+  testpypi-publish:
+    name: Publish release to TestPyPI
+    if: >-
+      github.repository == 'PyWavelets/pywt' &&
+      github.event_name == 'workflow_dispatch' &&
+      github.event.inputs.environment == 'testpypi'
     needs:
       [
         build_linux_x86_64_wheels,
         build_linux_aarch64_wheels,
         build_macos_wheels,
         build_windows_wheels,
+        build_sdist,
       ]
-    # Run only on tags pushed to the repository
-    if: github.repository == 'PyWavelets/pywt' && startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/p/pywavelets
+    permissions:
+      id-token: write # mandatory for trusted publishing
     steps:
-      - uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a # v4.1.2
+      - name: Download sdist and wheels
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          fetch-depth: 0
-
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v5.5.0
-        name: Install Python
-        with:
-          python-version: "3.12"
-
-      - name: Install Twine
-        run: |
-          python -m pip install --upgrade pip
-          pip install twine
-          pip install cython numpy build
-
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
-        id: download
-        with:
-          pattern: "wheels_*"
-          path: ./dist
+          path: dist
           merge-multiple: true
 
-      - name: Publish the source distribution on PyPI
-        run: |
-          PYWT_VERSION=$(git describe --tags)
-          python -m build --sdist
-          ls -la ${{ github.workspace }}/dist
-          # We prefer to release wheels before source because otherwise there is a
-          # small window during which users who pip install pywt will require compilation.
-          twine upload ${{ github.workspace }}/dist/*.whl
-          twine upload ${{ github.workspace }}/dist/pywavelets-${PYWT_VERSION:1}.tar.gz
-        env:
-          TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.TWINE_TOKEN }}
+      - name: Publish
+        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          skip-existing: true
+          print-hash: true
+          attestations: true
 
-      - name: Github release
-        uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3.0.2
+  check_version:
+    name: Ensure commit is tag before upload to PyPI
+    if: >-
+      github.repository == 'PyWavelets/pywt' &&
+      github.event_name == 'push' &&
+      startsWith(github.ref, 'refs/tags/v')
+    needs:
+      [
+        build_linux_x86_64_wheels,
+        build_linux_aarch64_wheels,
+        build_macos_wheels,
+        build_windows_wheels,
+        build_sdist,
+      ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PyWavelets
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          submodules: false
+          persist-credentials: false
+
+      - name: Examine git commit
+        run: |
+          git describe --exact-match --tags HEAD
+
+  pypi-publish:
+    name: Publish release to PyPI
+    if: >-
+      github.repository == 'PyWavelets/pywt' &&
+      github.event_name == 'push' &&
+      startsWith(github.ref, 'refs/tags/v')
+    needs: [check_version]
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/pywavelets
+    permissions:
+      contents: write # needed to create the GitHub release
+      id-token: write # mandatory for trusted publishing
+    steps:
+      - name: Download sdist and wheels
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Publish
+        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
+        with:
+          print-hash: true
+          attestations: true
+
+      - name: GitHub release
+        run: gh release create "${GITHUB_REF_NAME}" --verify-tag --notes ""
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
 
   deploy_anaconda:
     name: Release (Anaconda)
@@ -260,14 +343,15 @@ jobs:
     # Run only on pushes to the main branch, on schedule, or when triggered manually
     if: >-
       github.repository == 'PyWavelets/pywt' &&
-      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+      ((github.event_name == 'push' && github.ref == 'refs/heads/main') ||
       (github.event_name == 'workflow_dispatch' && github.event.inputs.push_wheels == 'true') ||
-      (github.event_name == 'schedule')
+      github.event_name == 'schedule')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a # v4.1.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         id: download
@@ -277,7 +361,7 @@ jobs:
           merge-multiple: true
 
       - name: Push to Anaconda PyPI index
-        uses: scientific-python/upload-nightly-action@e76cfec8a4611fd02808a801b0ff5a7d7c1b2d99 # v0.6.4
+        uses: scientific-python/upload-nightly-action@e76cfec8a4611fd02808a801b0ff5a7d7c1b2d99 # 0.6.4
         with:
           artifacts_path: dist/
           anaconda_nightly_upload_token: ${{ secrets.ANACONDA_ORG_UPLOAD_TOKEN }}

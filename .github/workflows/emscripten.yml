@@ -23,6 +23,13 @@ on:
     # Run at 0300 hours on days 3 and 17 of the month
     - cron: "0 3 3,17 * *"
 
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 env:
   FORCE_COLOR: 3
 
@@ -34,7 +41,9 @@ jobs:
     if: github.repository == 'PyWavelets/pywt'
     steps:
       - name: Check out repository
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Build and test PyWavelets
         uses: pypa/cibuildwheel@4726cd35bb13f7bde50cf2761f2499ac7b3aa32c # v4.1.1
@@ -47,11 +56,11 @@ jobs:
         # WARNING: this job will overwrite existing wheels.
       - name: Push wheels to Anaconda PyPI index
         if: >-
-          (github.repository == 'PyWavelets/pywt') &&
-          (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+          github.repository == 'PyWavelets/pywt' &&
+          ((github.event_name == 'push' && github.ref == 'refs/heads/main') ||
           (github.event_name == 'workflow_dispatch' && github.event.inputs.push_wheels == 'true') ||
-          (github.event_name == 'schedule')
-        uses: scientific-python/upload-nightly-action@e76cfec8a4611fd02808a801b0ff5a7d7c1b2d99 # v0.6.4
+          github.event_name == 'schedule')
+        uses: scientific-python/upload-nightly-action@e76cfec8a4611fd02808a801b0ff5a7d7c1b2d99 # 0.6.4
         with:
           artifacts_path: wheelhouse/
           anaconda_nightly_upload_token: ${{ secrets.ANACONDA_ORG_UPLOAD_TOKEN }}
