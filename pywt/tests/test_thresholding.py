@@ -165,3 +165,38 @@ def test_threshold_firm():
         mt_abs_firm = np.abs(d_firm[mt])
         assert_(np.all(mt_abs_firm < np.abs(d_hard[mt])))
         assert_(np.all(mt_abs_firm > np.abs(d_soft[mt])))
+
+
+def test_threshold_zero_value_with_zeros():
+    # Issue 866: value==0 and exact-zero data used to yield NaN (0/0).
+    data = np.array([0.0, 1.0, -2.0])
+    expected = np.array([0.0, 1.0, -2.0])
+
+    assert_allclose(pywt.threshold(data, 0.0, 'soft'), expected, rtol=1e-12)
+    assert_allclose(pywt.threshold(data, 0.0, 'garrote'), expected, rtol=1e-12)
+    assert_allclose(pywt.threshold_firm(data, 0.0, 0.0), expected, rtol=1e-12)
+
+    # all zeros remain zeros (and must not warn: pytest treats warnings as errors)
+    zeros = np.zeros(8)
+    assert_allclose(pywt.threshold(zeros, 0.0, 'soft'), zeros, rtol=1e-12)
+    assert_allclose(pywt.threshold(zeros, 0.0, 'garrote'), zeros, rtol=1e-12)
+    assert_allclose(pywt.threshold_firm(zeros, 0.0, 0.0), zeros, rtol=1e-12)
+
+    # complex: same 0/0 path, result must be 0+0j not nan+nanj
+    cdata = np.array([0.0, 1.0 + 1.0j])
+    cexpected = np.array([0.0 + 0.0j, 1.0 + 1.0j])
+    assert_allclose(pywt.threshold(cdata, 0.0, 'soft'), cexpected, rtol=1e-12)
+    assert_allclose(pywt.threshold(cdata, 0.0, 'garrote'), cexpected, rtol=1e-12)
+    assert_allclose(pywt.threshold_firm(cdata, 0.0, 0.0), cexpected, rtol=1e-12)
+
+    for dtype in float_dtypes:
+        typed = np.asarray(data if dtype in real_dtypes else cdata, dtype=dtype)
+        out_soft = pywt.threshold(typed, 0.0, 'soft')
+        out_garrote = pywt.threshold(typed, 0.0, 'garrote')
+        out_firm = pywt.threshold_firm(typed, 0.0, 0.0)
+        assert_equal(out_soft.dtype, typed.dtype)
+        assert_equal(out_garrote.dtype, typed.dtype)
+        assert_equal(out_firm.dtype, typed.dtype)
+        assert_(not np.isnan(out_soft).any())
+        assert_(not np.isnan(out_garrote).any())
+        assert_(not np.isnan(out_firm).any())

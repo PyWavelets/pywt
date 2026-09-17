@@ -17,11 +17,14 @@ def soft(data, value, substitute=0):
     data = np.asarray(data)
     magnitude = np.absolute(data)
 
-    with np.errstate(divide='ignore'):
+    with np.errstate(divide='ignore', invalid='ignore'):
         # divide by zero okay as np.inf values get clipped, so ignore warning.
+        # 0/0 (value==0 and data==0) is invalid and yields NaN; zero those below.
         thresholded = (1 - value/magnitude)
         thresholded.clip(min=0, max=None, out=thresholded)
         thresholded = data * thresholded
+    # Keep dtype; sign(0) is undefined, but soft-threshold(0) is 0 for any λ≥0.
+    thresholded[magnitude == 0] = 0
 
     if substitute == 0:
         return thresholded
@@ -35,11 +38,13 @@ def nn_garrote(data, value, substitute=0):
     data = np.asarray(data)
     magnitude = np.absolute(data)
 
-    with np.errstate(divide='ignore'):
+    with np.errstate(divide='ignore', invalid='ignore'):
         # divide by zero okay as np.inf values get clipped, so ignore warning.
+        # 0/0 (value==0 and data==0) is invalid and yields NaN; zero those below.
         thresholded = (1 - value**2/magnitude**2)
         thresholded.clip(min=0, max=None, out=thresholded)
         thresholded = data * thresholded
+    thresholded[magnitude == 0] = 0
 
     if substitute == 0:
         return thresholded
@@ -235,12 +240,14 @@ def threshold_firm(data, value_low, value_high):
 
     data = np.asarray(data)
     magnitude = np.absolute(data)
-    with np.errstate(divide='ignore'):
+    with np.errstate(divide='ignore', invalid='ignore'):
         # divide by zero okay as np.inf values get clipped, so ignore warning.
+        # 0/0 (value_low==0 and data==0) is invalid and yields NaN; zero those below.
         vdiff = value_high - value_low
         thresholded = value_high * (1 - value_low/magnitude) / vdiff
         thresholded.clip(min=0, max=None, out=thresholded)
         thresholded = data * thresholded
+    thresholded[magnitude == 0] = 0
 
     # restore hard-thresholding behavior for values > value_high
     large_vals = np.where(magnitude > value_high)
