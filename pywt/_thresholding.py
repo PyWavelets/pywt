@@ -239,6 +239,10 @@ def threshold_firm(data, value_low, value_high):
             "value_high must be greater than or equal to value_low.")
 
     data = np.asarray(data)
+
+    if value_low == value_high:
+        return hard(data, value_low)
+
     magnitude = np.absolute(data)
     with np.errstate(divide='ignore', invalid='ignore'):
         # divide by zero okay as np.inf values get clipped, so ignore warning.
