@@ -161,11 +161,11 @@ def mra2(data, wavelet, level=None, axes=(-2, -1), transform='swt2',
         Wavelet to use.  This can also be a tuple containing a wavelet to
         apply along each axis in `axes`.
     level : int, optional
-        Decomposition level (must be >= 0). If level is None (default) then it
-        will be calculated using the `dwt_max_level` function.
+        Decomposition level (must be >= 0). If level is None (default), it is
+        calculated for the transformed axes using `swt_max_level` for SWT or
+        `dwt_max_level` for DWT.
     axes : 2-tuple of ints, optional
         Axes over which to compute the DWT. Repeated elements are not allowed.
-        Currently only available when ``transform='dwt2'``.
     transform : {'dwt2', 'swt2'}
         Whether to use the DWT or SWT for the transforms.
     mode : str or 2-tuple of str, optional
@@ -207,7 +207,8 @@ def mra2(data, wavelet, level=None, axes=(-2, -1), transform='swt2',
             raise ValueError(
                 "transform swt only supports mode='periodization'")
         if level is None:
-            level = min(swt_max_level(s) for s in data.shape)
+            _, axes_shapes, _ = _prep_axes_wavedecn(data.shape, axes)
+            level = min(swt_max_level(s) for s in axes_shapes)
         kwargs = {"wavelet": wavelet, "axes": axes, "norm": True}
         forward = partial(swt2, level=level, trim_approx=True, **kwargs)
         inverse = partial(iswt2, **kwargs)
@@ -301,8 +302,9 @@ def mran(data, wavelet, level=None, axes=None, transform='swtn',
         Wavelet to use. This can also be a tuple containing a wavelet to
         apply along each axis in `axes`.
     level : int, optional
-        Decomposition level (must be >= 0). If level is None (default) then it
-        will be calculated using the `dwt_max_level` function.
+        Decomposition level (must be >= 0). If level is None (default), it is
+        calculated for the transformed axes using `swt_max_level` for SWT or
+        `dwt_max_level` for DWT.
     axes : tuple of ints, optional
         Axes over which to compute the DWT. Repeated elements are not allowed.
     transform : {'dwtn', 'swtn'}
@@ -350,7 +352,7 @@ def mran(data, wavelet, level=None, axes=None, transform='swtn',
             raise ValueError(
                 "transform swt only supports mode='periodization'")
         if level is None:
-            level = min(swt_max_level(s) for s in data.shape)
+            level = min(swt_max_level(s) for s in axes_shapes)
         kwargs = {"wavelet": wavelets, "axes": axes, "norm": True}
         forward = partial(swtn, level=level, trim_approx=True, **kwargs)
         inverse = partial(iswtn, **kwargs)
