@@ -4,6 +4,7 @@ import os
 import pickle
 
 import numpy as np
+import pytest
 from numpy.testing import assert_, assert_allclose, assert_equal, assert_raises
 
 import pywt
@@ -196,6 +197,29 @@ def test_wavelet_packet_dtypes():
         r = wp.reconstruct(False)
         assert_equal(r.dtype, transform_dtype)
         assert_allclose(r, x.astype(transform_dtype), atol=1e-5, rtol=1e-5)
+
+
+@pytest.mark.parametrize('packet_class, shape, kwargs', [
+    (pywt.WaveletPacket, (2,), {}),
+    (pywt.WaveletPacket2D, (2, 2), {}),
+    (pywt.WaveletPacketND, (2, 2, 2), {'axes': (0, 1, 2)}),
+])
+@pytest.mark.parametrize('dtype', [np.float32, np.float64,
+                                   np.complex64, np.complex128])
+@pytest.mark.parametrize('mode', ['symmetric', 'periodization'])
+def test_wavelet_packet_node_assignment(packet_class, shape, kwargs, dtype, mode):
+    x = np.arange(1, np.prod(shape) + 1, dtype=dtype).reshape(shape)
+    if np.iscomplexobj(x):
+        x += 1j * (x + 1)
+    wp = packet_class(x, 'haar', mode=mode, maxlevel=1, **kwargs)
+    new_wp = packet_class(None, 'haar', mode=mode, maxlevel=1, **kwargs)
+
+    for node in wp.get_level(1):
+        new_wp[node.path] = node
+        assert_equal(new_wp[node.path].data.dtype, node.data.dtype)
+        assert_equal(new_wp[node.path].data, node.data)
+
+    assert_allclose(new_wp.reconstruct(), x, atol=1e-6, rtol=1e-6)
 
 
 def test_db3_roundtrip():
