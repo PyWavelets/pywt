@@ -926,7 +926,7 @@ def wavedecn_shapes(shape, wavelet, mode='symmetric', level=None, axes=None):
     modes = _modes_per_axis(mode, axes)
     dec_lengths = [w.dec_len for w in wavelets]
 
-    level = _check_level(min(axes_shapes), max(dec_lengths), level)
+    level = _check_level(axes_shapes, dec_lengths, level)
 
     shapes = []
     for i in range(level):
