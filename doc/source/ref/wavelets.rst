@@ -262,7 +262,7 @@ from plain Python lists of filter coefficients and a *filter bank-like* object.
 ``ContinuousWavelet`` object
 ----------------------------
 
-.. class:: ContinuousWavelet(name, dtype=np.float64)
+.. class:: ContinuousWavelet(name, dtype=np.float64, lower_bound=None, upper_bound=None)
 
   Describes properties of a continuous wavelet identified by the specified wavelet ``name``.
   In order to use a built-in wavelet the ``name`` parameter must be a valid
@@ -270,13 +270,22 @@ from plain Python lists of filter coefficients and a *filter bank-like* object.
 
   :param name: Wavelet name
   :param dtype: numpy.dtype to use for the wavelet. Can be numpy.float64 or numpy.float32.
+  :param lower_bound: Lower bound of the effective support. ``None`` keeps the family's default.
+  :param upper_bound: Upper bound of the effective support. ``None`` keeps the family's default.
+
+  The bounds determine the interval sampled by :meth:`wavefun` and used in
+  :func:`pywt.cwt`. Defaults depend on the wavelet family: for example, ``gaus1``
+  uses [-5, 5], while ``morl`` uses [-8, 8]. They remain writable after construction.
 
   **Example:**
 
   .. try_examples::
 
     >>> import pywt
-    >>> wavelet = pywt.ContinuousWavelet('gaus1')
+    >>> wavelet = pywt.ContinuousWavelet('gaus1', lower_bound=-4, upper_bound=4)
+    >>> psi, x = wavelet.wavefun()
+    >>> float(x[0]), float(x[-1])
+    (-4.0, 4.0)
 
   .. attribute:: name
 
@@ -340,6 +349,8 @@ from plain Python lists of filter coefficients and a *filter bank-like* object.
       DWT:            False
       CWT:            True
       Complex CWT:    False
+      Lower bound:    -5.0
+      Upper bound:    5.0
 
 Approximating wavelet functions - ``ContinuousWavelet.wavefun()``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -398,3 +409,5 @@ Approximating wavelet functions - ``ContinuousWavelet.wavefun()``
       DWT:            False
       CWT:            True
       Complex CWT:    False
+      Lower bound:    -5.0
+      Upper bound:    5.0

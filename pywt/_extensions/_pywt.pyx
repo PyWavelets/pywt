@@ -680,15 +680,34 @@ cdef public class Wavelet [type WaveletType, object WaveletObject]:
 
 cdef public class ContinuousWavelet [type ContinuousWaveletType, object ContinuousWaveletObject]:
     """
-    ContinuousWavelet(name, dtype) object describe properties of
-    a continuous wavelet identified by name.
+    ContinuousWavelet(name, dtype=np.float64, lower_bound=None, upper_bound=None)
 
-    In order to use a built-in wavelet the parameter name must be
-    a valid name from the wavelist() list.
+    Describe the properties of a continuous wavelet identified by name.
 
+    Parameters
+    ----------
+    name : str
+        Built-in continuous wavelet name from ``wavelist(kind='continuous')``.
+    dtype : numpy.dtype, optional
+        Data type for wavelet evaluation: ``numpy.float64`` (default) or
+        ``numpy.float32``.
+    lower_bound, upper_bound : float or None, optional
+        Bounds of the effective support used by ``wavefun`` and the continuous
+        wavelet transform. Each ``None`` retains the wavelet family's default
+        bound. For example, ``morl`` uses [-8, 8] and ``gaus1`` uses [-5, 5].
+        The bounds can also be changed after construction using the attributes
+        of the same names.
+
+    Examples
+    --------
+    >>> import pywt
+    >>> wavelet = pywt.ContinuousWavelet('morl', lower_bound=-6, upper_bound=6)
+    >>> wavelet.lower_bound, wavelet.upper_bound
+    (-6.0, 6.0)
     """
     #cdef readonly properties
-    def __cinit__(self, name=u"", dtype=np.float64):
+    def __cinit__(self, name=u"", dtype=np.float64, lower_bound=None,
+                  upper_bound=None):
         cdef object family_code, family_number
 
         # builtin wavelet
@@ -771,6 +790,10 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
                 raise ValueError(
                     "Invalid continuous wavelet name '%s'." % self.name)
 
+        if lower_bound is not None:
+            self.lower_bound = lower_bound
+        if upper_bound is not None:
+            self.upper_bound = upper_bound
 
     def __dealloc__(self):
         if self.w is not NULL:
@@ -778,7 +801,8 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
             self.w = NULL
 
     def __reduce__(self):
-        return (ContinuousWavelet, (self.name, self.dt))
+        return (ContinuousWavelet, (self.name, self.dt,
+                                   self.w.lower_bound, self.w.upper_bound))
 
     property family_number:
         "Wavelet family number"
@@ -987,7 +1011,9 @@ cdef public class ContinuousWavelet [type ContinuousWaveletType, object Continuo
             u"  Symmetry:       %s" % self.symmetry,
             u"  DWT:            False",
             u"  CWT:            True",
-            u"  Complex CWT:    %s" % self.complex_cwt
+            u"  Complex CWT:    %s" % self.complex_cwt,
+            u"  Lower bound:    %s" % self.lower_bound,
+            u"  Upper bound:    %s" % self.upper_bound
             ]:
             s.append(x.rstrip())
         return u'\n'.join(s)
