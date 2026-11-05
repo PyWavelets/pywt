@@ -65,8 +65,8 @@ For more usage examples see the `demo`_ directory in the source package.
 Installation
 ------------
 
-PyWavelets supports `Python`_ >=3.10, and is only dependent on `NumPy`_
-(supported versions are currently ``>= 1.23.0``). To pass all of the tests,
+PyWavelets supports `Python`_ >=3.12, and is only dependent on `NumPy`_
+(supported versions are currently ``>=2.0.0,<3``). To pass all of the tests,
 `Matplotlib`_ is also required.
 
 There are binary wheels for Intel Linux, Windows and macOS / OSX on PyPi.  If

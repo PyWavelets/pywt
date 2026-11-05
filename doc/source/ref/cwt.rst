@@ -256,3 +256,123 @@ of frequency directly.
 
 
 .. plot:: pyplots/cwt_scaling_demo.py
+
+
+.. _CWT normalization:
+
+Normalization of the CWT coefficients
+-------------------------------------
+
+``cwt`` works entirely in units of samples. Writing :math:`x[n]` for the input
+signal and taking both the scale :math:`a` and the translation :math:`b` to be
+expressed in samples, the returned coefficients are
+
+.. math::
+
+    C[a, b] = \frac{1}{\sqrt{a}}\sum_n x[n]\,
+              \psi^*\!\left(\frac{n - b}{a}\right).
+
+No sampling interval appears in this expression. In particular, the
+``sampling_period`` argument of :func:`pywt.cwt` rescales only the returned
+``frequencies``; the coefficients themselves do not depend on it.
+
+Relation to the continuous-time transform
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The continuous-time definition of the CWT, with a scale :math:`a_s` and a
+translation :math:`b_s` in seconds, is
+
+.. math::
+
+    W_x(a_s, b_s) = \frac{1}{\sqrt{a_s}}
+        \int x(t)\,\psi^*\!\left(\frac{t - b_s}{a_s}\right)\,\mathrm{d}t.
+
+For data sampled at :math:`t_n = n\,\mathrm{d}t`, approximating that integral by
+a Riemann sum introduces a factor :math:`\mathrm{d}t`. Substituting
+:math:`a_s = a\,\mathrm{d}t` and :math:`b_s = b\,\mathrm{d}t` then gives
+
+.. math::
+
+    W_x(a_s, b_s) \approx \frac{\mathrm{d}t}{\sqrt{a\,\mathrm{d}t}}
+        \sum_n x[n]\,\psi^*\!\left(\frac{n - b}{a}\right)
+        = \sqrt{\mathrm{d}t}\, C[a, b].
+
+So the coefficients returned by ``cwt`` have to be **multiplied** by
+:math:`\sqrt{\mathrm{d}t}` (equivalently, divided by :math:`\sqrt{f_s}`) to be
+expressed in physical-time units. PyWavelets does not apply that factor,
+because doing so would make the coefficients depend on ``sampling_period``.
+
+A common source of confusion
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+A frequent mistake when comparing a hand-written convolution against ``cwt`` is
+to *mix* the two conventions above: to use a scale in seconds,
+:math:`a_s = a\,\mathrm{d}t`, in the :math:`1/\sqrt{a_s}` prefactor, while
+summing over raw samples without the :math:`\mathrm{d}t` coming from the
+integral. Such a result is too large by a factor
+:math:`1/\sqrt{\mathrm{d}t} = \sqrt{f_s}`, and an otherwise unexplained factor
+:math:`1/\sqrt{f_s}` then has to be inserted by hand to make the amplitudes
+agree with ``cwt``. Either keep everything in samples, as :math:`C[a, b]` does,
+or write out the full Riemann sum including :math:`\mathrm{d}t` — but do not
+combine the two.
+
+The example below evaluates :math:`C[a, b]` directly and compares it to
+``cwt``:
+
+.. try_examples::
+
+  >>> import numpy as np
+  >>> import pywt
+  >>> fs = 3000.0  # sampling rate in Hz
+  >>> t = np.arange(3000) / fs
+  >>> x = np.sin(2 * np.pi * 40 * t)
+  >>> wavelet = pywt.ContinuousWavelet('cmor14-2')
+  >>> a = pywt.frequency2scale(wavelet, 40 / fs)  # scale, in samples
+  >>> coefs, freqs = pywt.cwt(x, a, wavelet, sampling_period=1 / fs)
+
+  Now the same transform, written out as a convolution over samples. ``Fb`` and
+  ``Fc`` are the bandwidth and center frequency of ``'cmor14-2'``:
+
+  >>> Fb, Fc = 14.0, 2.0
+  >>> lb, ub = wavelet.lower_bound, wavelet.upper_bound
+  >>> k = np.arange(int(a * (ub - lb)) + 1)
+  >>> u = lb + (k + 0.5) / a
+  >>> psi = np.exp(2j*np.pi*Fc*u) * np.exp(-u**2 / Fb) / np.sqrt(np.pi * Fb)
+  >>> conv = np.convolve(x, np.conj(psi)[::-1]) / np.sqrt(a)
+  >>> trim = (conv.size - x.size) // 2
+  >>> manual = conv[trim:trim + x.size]
+  >>> rel = np.max(np.abs(manual - coefs[0])) / np.max(np.abs(coefs[0]))
+  >>> bool(rel < 1e-3)
+  True
+
+Note that :math:`\psi` is conjugated *and* reversed before the convolution, and
+that it is evaluated at bin midpoints, ``(k + 0.5) / a``. The half-sample offset
+is there because ``cwt`` convolves with the integral of :math:`\psi` and then
+differences the result, which effectively averages :math:`\psi` over each
+sample bin rather than sampling it pointwise.
+
+Limits of the agreement
+^^^^^^^^^^^^^^^^^^^^^^^
+
+:math:`C[a, b]` is what ``cwt`` computes in the limit of a finely sampled
+wavelet. Two discretization effects prevent an analytic implementation from
+reproducing it exactly:
+
+* :math:`\psi` is only evaluated over
+  ``[wavelet.lower_bound, wavelet.upper_bound]``, so its tails are truncated
+  (see :ref:`Choosing scales`). With the default bounds of :math:`[-8, 8]`,
+  ``cmor14-2`` still retains about 1% of its peak amplitude at the edges, and
+  that truncation dominates the residual in the example above.
+* ``cwt`` resamples the precomputed integral of :math:`\psi` onto the grid for a
+  given scale by truncated indexing rather than by interpolation. The resulting
+  jitter grows with the scale and is reduced by raising ``precision``; it is the
+  "zipper-like" effect mentioned in the ``precision`` documentation of
+  :func:`pywt.cwt`. It largely averages out for narrowband signals such as the
+  one above, but is clearly visible for broadband input.
+
+Finally, note that the amplitude of the wavelets themselves does not follow a
+single convention across families — ``mexh`` and ``gaus`` are normalized to unit
+energy, ``morl`` carries no normalization constant at all, and ``cmor``,
+``shan`` and ``fbsp`` use yet other conventions (see the formulas above). CWT
+coefficient magnitudes are therefore not directly comparable between wavelet
+families.

@@ -32,6 +32,8 @@ Central frequency of ``psi`` wavelet function
 
 .. autofunction:: scale2frequency
 
+.. autofunction:: frequency2scale
+
 
 Quadrature Mirror Filter
 ------------------------

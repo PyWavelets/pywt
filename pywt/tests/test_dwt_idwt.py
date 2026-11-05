@@ -279,6 +279,69 @@ def test_pad_1d():
                        pywt.pad(x, (4, 4), 'periodic'))
 
 
+def test_pad_zero_width():
+    # zero pad width is a no-op for all modes except 'periodization', which
+    # also promotes odd-length axes to even length (gh-589)
+    for ndim in [1, 2, 3]:
+        x = np.arange(3.0**ndim).reshape((3, ) * ndim)
+        for mode in pywt.Modes.modes:
+            if mode == 'periodization':
+                continue
+            assert_array_equal(pywt.pad(x, 0, mode), x,
+                               err_msg=f"mode={mode}, ndim={ndim}")
+
+    assert_array_equal(pywt.pad([1, 2, 3], 0, 'periodization'), [1, 2, 3, 3])
+
+
+def test_pad_zero_size_axis():
+    # a zero-size axis has nothing to extend from, so a zero pad width leaves
+    # it alone rather than raising or (for 'antisymmetric') hanging (gh-589)
+    x = np.ones((0, 4))
+    for mode in pywt.Modes.modes:
+        assert_array_equal(pywt.pad(x, 0, mode), x, err_msg=f"mode={mode}")
+
+    # padding along the other axis only
+    assert_(pywt.pad(x, ((0, 0), (2, 2)), 'antisymmetric').shape == (0, 8))
+
+
+def test_pad_one_sided():
+    # a zero pad width on only one side of the axis (gh-589)
+    x = [1, 2, 3]
+    assert_array_equal(pywt.pad(x, (2, 0), 'smooth'), [-1, 0, 1, 2, 3])
+    assert_array_equal(pywt.pad(x, (0, 2), 'smooth'), [1, 2, 3, 4, 5])
+    assert_array_equal(pywt.pad(x, (2, 0), 'antisymmetric'), [-2, -1, 1, 2, 3])
+    assert_array_equal(pywt.pad(x, (0, 2), 'antisymmetric'), [1, 2, 3, -3, -2])
+
+    # one-sided padding matches the corresponding slice of two-sided padding
+    for mode in pywt.Modes.modes:
+        if mode == 'periodization':
+            continue
+        two_sided = pywt.pad(x, (4, 6), mode)
+        assert_array_equal(pywt.pad(x, (4, 0), mode), two_sided[:-6],
+                           err_msg=f"mode={mode}")
+        assert_array_equal(pywt.pad(x, (0, 6), mode), two_sided[4:],
+                           err_msg=f"mode={mode}")
+
+
+def test_pad_smooth_short_signal():
+    # the slope used by 'smooth' is undefined for a signal shorter than two
+    # samples, so constant edge extension is used instead (gh-589)
+    assert_array_equal(pywt.pad([1.], 0, 'smooth'), [1.])
+    assert_array_equal(pywt.pad([1.], (2, 3), 'smooth'),
+                       pywt.pad([1.], (2, 3), 'constant'))
+
+    # only the length 1 axis of an nd array falls back
+    x = np.arange(3.0).reshape(1, 3)
+    assert_array_equal(pywt.pad(x, ((0, 0), (2, 2)), 'smooth'),
+                       [[-2, -1, 0, 1, 2, 3, 4]])
+    assert_array_equal(pywt.pad(x, ((2, 2), (0, 0)), 'smooth'),
+                       np.tile(x, (5, 1)))
+
+    # matches the fallback used by the transforms
+    assert_allclose(pywt.dwt([1.], 'db2', 'smooth'),
+                    pywt.dwt([1.], 'db2', 'constant'))
+
+
 def test_pad_errors():
     # negative pad width
     x = [1, 2, 3]

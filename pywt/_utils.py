@@ -5,7 +5,7 @@ from __future__ import annotations
 import inspect
 from collections.abc import Iterable
 
-import numpy as np
+from numpy.exceptions import AxisError
 
 from ._extensions._pywt import (
     ContinuousWavelet,
@@ -18,12 +18,6 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from ._extensions._pywt import ModeInt
-
-AxisError: type[Exception]
-if np.lib.NumpyVersion(np.__version__) >= '1.25.0':
-    from numpy.exceptions import AxisError
-else:
-    from numpy import AxisError
 
 
 def _as_wavelet(wavelet: Wavelet | str) -> Wavelet:

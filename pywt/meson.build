@@ -35,26 +35,32 @@ generate_version = custom_target(
 
 cc = meson.get_compiler('c')
 
-# Check for C99 complex types support. MSVC shouldn't have it, other compilers
-# most likely will.
-cdata = configuration_data()
-have_c99_complex = cc.has_type('complex float', prefix: '#include <complex.h>')
-if have_c99_complex
-  cdata.set('have_c99_complex', 'True')
-  cdata.set('have_c99_complex_cy', '1')
-else
-  cdata.set('have_c99_complex', 'False')
-  cdata.set('have_c99_complex_cy', '0')
+# Check for complex support (same check as numpy/_core/meson.build; MSVC has
+# no C99 complex and provides struct-based types instead, see
+# pywt/_extensions/c/common.h)
+if not cc.has_header('complex.h')
+  error('"complex.h" header not found')
 endif
 
-_c99_config = configure_file(
-  input: '_c99_config.py.in',
-  output: '_c99_config.py',
-  configuration: cdata,
-  install: true,
-  install_dir: py.get_install_dir() / 'pywt',
-  install_tag: 'python-runtime',
-)
+if cc.get_id() == 'msvc' or cc.get_id() == 'clang-cl'
+  complex_types_to_check = [
+    ['PYWT_SIZEOF_COMPLEX_FLOAT', '_Fcomplex'],
+    ['PYWT_SIZEOF_COMPLEX_DOUBLE', '_Dcomplex'],
+  ]
+else
+  complex_types_to_check = [
+    ['PYWT_SIZEOF_COMPLEX_FLOAT', 'complex float'],
+    ['PYWT_SIZEOF_COMPLEX_DOUBLE', 'complex double'],
+  ]
+endif
+cdata = configuration_data()
+foreach symbol_type: complex_types_to_check
+  if not cc.has_type(symbol_type[1], prefix: '#include <complex.h>')
+    t = symbol_type[1]
+    error(f'"complex.h" header does not include complex type @t@')
+  endif
+  cdata.set(symbol_type[0], cc.sizeof(symbol_type[1], prefix: '#include <complex.h>'))
+endforeach
 
 install_subdir('data', install_dir: py.get_install_dir() / 'pywt')
 install_subdir('tests', install_dir:  py.get_install_dir() / 'pywt')

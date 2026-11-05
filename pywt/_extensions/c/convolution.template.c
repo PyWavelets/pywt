@@ -23,6 +23,18 @@
 #define restrict __restrict__
 #endif
 
+/* Type-generic arithmetic, implemented in common.h.  MSVC's struct-based
+ * complex types have no arithmetic operators, so every operation on TYPE
+ * values must go through these.  ADD_PRODUCT(s, f, x) means `s += f * x`,
+ * SUB_PRODUCT(s, f, x) means `s -= f * x`.  The multiplier `f` is always
+ * REAL_TYPE; the filters stay real for complex data. */
+#define ZERO CAT(TYPE, _zero)()
+#define ADD(a, b) CAT(TYPE, _add)((a), (b))
+#define SUB(a, b) CAT(TYPE, _sub)((a), (b))
+#define MUL(f, x) CAT(TYPE, _mul)((f), (x))
+#define ADD_PRODUCT(s, f, x) ((s) = ADD((s), MUL((f), (x))))
+#define SUB_PRODUCT(s, f, x) ((s) = SUB((s), MUL((f), (x))))
+
 /* This file contains several functions for computing the convolution of a
  * signal with a filter. The general scheme is:
  *   output[o] = sum(filter[j] * input[i-j] for j = [0..F) and i = [0..N))
@@ -50,74 +62,74 @@ int CAT(TYPE, _downsampling_convolution_periodization)(const TYPE * const restri
     const size_t padding = (step - (N % step)) % step;
 
     for (; i < F && i < N; i += step, ++o) {
-        TYPE sum = 0;
+        TYPE sum = ZERO;
         size_t j;
         size_t k_start = 0;
         for (j = 0; j <= i; j += fstep)
-            sum += filter[j] * input[i-j];
+            ADD_PRODUCT(sum, filter[j], input[i-j]);
         if (fstep > 1)
             k_start = j - (i + 1);
         while (j < F){
             size_t k;
             for (k = k_start; k < padding && j < F; k += fstep, j += fstep)
-                sum += filter[j] * input[N-1];
+                ADD_PRODUCT(sum, filter[j], input[N-1]);
             for (k = k_start; k < N && j < F; k += fstep, j += fstep)
-                sum += filter[j] * input[N-1-k];
+                ADD_PRODUCT(sum, filter[j], input[N-1-k]);
         }
         output[o] = sum;
     }
 
     for(; i < N; i+=step, ++o){
-        TYPE sum = 0;
+        TYPE sum = ZERO;
         size_t j;
         for(j = 0; j < F; j += fstep)
-            sum += input[i-j]*filter[j];
+            ADD_PRODUCT(sum, filter[j], input[i-j]);
         output[o] = sum;
     }
 
     for (; i < F && i < N + F/2; i += step, ++o) {
-        TYPE sum = 0;
+        TYPE sum = ZERO;
         size_t j = 0;
         size_t k_start = 0;
         while (i-j >= N){
             size_t k;
             // for simplicity, not using fstep here
             for (k = 0; k < padding && i-j >= N; ++k, ++j)
-                sum += filter[i-N-j] * input[N-1];
+                ADD_PRODUCT(sum, filter[i-N-j], input[N-1]);
             for (k = 0; k < N && i-j >= N; ++k, ++j)
-                sum += filter[i-N-j] * input[k];
+                ADD_PRODUCT(sum, filter[i-N-j], input[k]);
         }
         if (fstep > 1)
             j += (fstep - j % fstep) % fstep;  // move to next non-zero entry
         for (; j <= i; j += fstep)
-            sum += filter[j] * input[i-j];
+            ADD_PRODUCT(sum, filter[j], input[i-j]);
         if (fstep > 1)
             k_start = j - (i + 1);
         while (j < F){
             size_t k;
             for (k = k_start; k < padding && j < F; k += fstep, j += fstep)
-                sum += filter[j] * input[N-1];
+                ADD_PRODUCT(sum, filter[j], input[N-1]);
             for (k = k_start; k < N && j < F; k += fstep, j += fstep)
-                sum += filter[j] * input[N-1-k];
+                ADD_PRODUCT(sum, filter[j], input[N-1-k]);
         }
         output[o] = sum;
     }
 
     for(; i < N + F/2; i += step, ++o){
-        TYPE sum = 0;
+        TYPE sum = ZERO;
         size_t j = 0;
         while (i-j >= N){
             // for simplicity, not using fstep here
             size_t k;
             for (k = 0; k < padding && i-j >= N; ++k, ++j)
-                sum += filter[i-N-j] * input[N-1];
+                ADD_PRODUCT(sum, filter[i-N-j], input[N-1]);
             for (k = 0; k < N && i-j >= N; ++k, ++j)
-                sum += filter[i-N-j] * input[k];
+                ADD_PRODUCT(sum, filter[i-N-j], input[k]);
         }
         if (fstep > 1)
             j += (fstep - j % fstep) % fstep;  // move to next non-zero entry
         for (; j < F; j += fstep)
-            sum += filter[j] * input[i-j];
+            ADD_PRODUCT(sum, filter[j], input[i-j]);
         output[o] = sum;
     }
     return 0;
@@ -144,19 +156,19 @@ int CAT(TYPE, _downsampling_convolution)(const TYPE * const restrict input, cons
 
     // left boundary overhang
     for(; i < F && i < N; i+=step, ++o){
-        TYPE sum = 0;
+        TYPE sum = ZERO;
         size_t j;
         for(j = 0; j <= i; ++j)
-            sum += filter[j]*input[i-j];
+            ADD_PRODUCT(sum, filter[j], input[i-j]);
 
         switch(mode) {
         case MODE_SYMMETRIC:
             while (j < F){
                 size_t k;
                 for(k = 0; k < N && j < F; ++j, ++k)
-                    sum += filter[j]*input[k];
+                    ADD_PRODUCT(sum, filter[j], input[k]);
                 for(k = 0; k < N && j < F; ++k, ++j)
-                    sum += filter[j]*input[N-1-k];
+                    ADD_PRODUCT(sum, filter[j], input[N-1-k]);
             }
             break;
         case MODE_ANTISYMMETRIC:
@@ -164,34 +176,34 @@ int CAT(TYPE, _downsampling_convolution)(const TYPE * const restrict input, cons
             while (j < F){
                 size_t k;
                 for(k = 0; k < N && j < F; ++j, ++k)
-                    sum -= filter[j]*input[k];
+                    SUB_PRODUCT(sum, filter[j], input[k]);
                 for(k = 0; k < N && j < F; ++k, ++j)
-                    sum += filter[j]*input[N-1-k];
+                    ADD_PRODUCT(sum, filter[j], input[N-1-k]);
             }
             break;
         case MODE_REFLECT:
             while (j < F){
                 size_t k;
                 for(k = 1; k < N && j < F; ++j, ++k)
-                    sum += filter[j]*input[k];
+                    ADD_PRODUCT(sum, filter[j], input[k]);
                 for(k = 1; k < N && j < F; ++k, ++j)
-                    sum += filter[j]*input[N-1-k];
+                    ADD_PRODUCT(sum, filter[j], input[N-1-k]);
             }
             break;
         case MODE_ANTIREFLECT:{
             // whole-sample anti-symmetric
             size_t k;
             TYPE le = input[0];    // current left edge value
-            TYPE tmp = 0;
+            TYPE tmp = ZERO;
             while (j < F) {
                 for(k = 1; k < N && j < F; ++j, ++k){
-                    tmp = le - (input[k] - input[0]);
-                    sum += filter[j]*tmp;
+                    tmp = SUB(le, SUB(input[k], input[0]));
+                    ADD_PRODUCT(sum, filter[j], tmp);
                 }
                 le = tmp;
                 for(k = 1; k < N && j < F; ++j, ++k){
-                    tmp = le + (input[N-1-k] - input[N-1]);
-                    sum += filter[j]*tmp;
+                    tmp = ADD(le, SUB(input[N-1-k], input[N-1]));
+                    ADD_PRODUCT(sum, filter[j], tmp);
                 }
                 le = tmp;
             }
@@ -199,19 +211,19 @@ int CAT(TYPE, _downsampling_convolution)(const TYPE * const restrict input, cons
         }
         case MODE_CONSTANT_EDGE:
             for(; j < F; ++j)
-                sum += filter[j]*input[0];
+                ADD_PRODUCT(sum, filter[j], input[0]);
             break;
         case MODE_SMOOTH:{
             size_t k;
             for(k = 1; j < F; ++j, ++k)
-                sum += filter[j]*(input[0] + k * (input[0] - input[1]));
+                ADD_PRODUCT(sum, filter[j], ADD(input[0], MUL((REAL_TYPE)k, SUB(input[0], input[1]))));
             break;
         }
         case MODE_PERIODIC:
             while (j < F){
                 size_t k;
                 for(k = 0; k < N && j < F; ++k, ++j)
-                    sum += filter[j]*input[N-1-k];
+                    ADD_PRODUCT(sum, filter[j], input[N-1-k]);
             }
             break;
         case MODE_ZEROPAD:
@@ -223,16 +235,16 @@ int CAT(TYPE, _downsampling_convolution)(const TYPE * const restrict input, cons
 
     // center (if input equal or wider than filter: N >= F)
     for(; i < N; i+=step, ++o){
-        TYPE sum = 0;
+        TYPE sum = ZERO;
         size_t j;
         for(j = 0; j < F; ++j)
-            sum += input[i-j]*filter[j];
+            ADD_PRODUCT(sum, filter[j], input[i-j]);
         output[o] = sum;
     }
 
     // center (if filter is wider than input: F > N)
     for(; i < F; i+=step, ++o){
-        TYPE sum = 0;
+        TYPE sum = ZERO;
         size_t j = 0;
 
         switch(mode) {
@@ -244,9 +256,9 @@ int CAT(TYPE, _downsampling_convolution)(const TYPE * const restrict input, cons
             while (i - j >= N){
                 size_t k;
                 for(k = 0; k < N && i-j >= N; ++j, ++k)
-                    sum += filter[i-N-j]*input[N-1-k];
+                    ADD_PRODUCT(sum, filter[i-N-j], input[N-1-k]);
                 for(k = 0; k < N && i-j >= N; ++j, ++k)
-                    sum += filter[i-N-j]*input[k];
+                    ADD_PRODUCT(sum, filter[i-N-j], input[k]);
             }
             break;
         case MODE_ANTISYMMETRIC:
@@ -254,34 +266,34 @@ int CAT(TYPE, _downsampling_convolution)(const TYPE * const restrict input, cons
             while (i - j >= N){
                 size_t k;
                 for(k = 0; k < N && i-j >= N; ++j, ++k)
-                    sum -= filter[i-N-j]*input[N-1-k];
+                    SUB_PRODUCT(sum, filter[i-N-j], input[N-1-k]);
                 for(k = 0; k < N && i-j >= N; ++j, ++k)
-                    sum += filter[i-N-j]*input[k];
+                    ADD_PRODUCT(sum, filter[i-N-j], input[k]);
             }
             break;
         case MODE_REFLECT:
             while (i - j >= N){
                 size_t k;
                 for(k = 1; k < N && i-j >= N; ++j, ++k)
-                    sum += filter[i-N-j]*input[N-1-k];
+                    ADD_PRODUCT(sum, filter[i-N-j], input[N-1-k]);
                 for(k = 1; k < N && i-j >= N; ++j, ++k)
-                    sum += filter[i-N-j]*input[k];
+                    ADD_PRODUCT(sum, filter[i-N-j], input[k]);
             }
             break;
         case MODE_ANTIREFLECT:{
             // whole-sample anti-symmetric
             size_t k;
             TYPE re = input[N-1];    // current right edge value
-            TYPE tmp = 0;
+            TYPE tmp = ZERO;
             while (i - j >= N) {
                 for(k = 1; k < N && i-j >= N; ++j, ++k){
-                    tmp = re - (input[N-1-k] - input[N-1]);
-                    sum += filter[i-N-j]*tmp;
+                    tmp = SUB(re, SUB(input[N-1-k], input[N-1]));
+                    ADD_PRODUCT(sum, filter[i-N-j], tmp);
                 }
                 re = tmp;
                 for(k = 1; k < N && i-j >= N; ++j, ++k){
-                    tmp = re + (input[k] - input[0]);
-                    sum += filter[i-N-j]*tmp;
+                    tmp = ADD(re, SUB(input[k], input[0]));
+                    ADD_PRODUCT(sum, filter[i-N-j], tmp);
                 }
                 re = tmp;
             }
@@ -289,19 +301,19 @@ int CAT(TYPE, _downsampling_convolution)(const TYPE * const restrict input, cons
         }
         case MODE_CONSTANT_EDGE:
             for(; i-j >= N; ++j)
-                sum += filter[j]*input[N-1];
+                ADD_PRODUCT(sum, filter[j], input[N-1]);
             break;
         case MODE_SMOOTH:{
             size_t k;
             for(k = i - N + 1; i-j >= N; ++j, --k)
-                sum += filter[j]*(input[N-1] + k * (input[N-1] - input[N-2]));
+                ADD_PRODUCT(sum, filter[j], ADD(input[N-1], MUL((REAL_TYPE)k, SUB(input[N-1], input[N-2]))));
             break;
         }
         case MODE_PERIODIC:
             while (i-j >= N){
                 size_t k;
                 for (k = 0; k < N && i-j >= N; ++j, ++k)
-                    sum += filter[i-N-j]*input[k];
+                    ADD_PRODUCT(sum, filter[i-N-j], input[k]);
             }
             break;
         case MODE_ZEROPAD:
@@ -311,16 +323,16 @@ int CAT(TYPE, _downsampling_convolution)(const TYPE * const restrict input, cons
         }
 
         for(; j <= i; ++j)
-            sum += filter[j]*input[i-j];
+            ADD_PRODUCT(sum, filter[j], input[i-j]);
 
         switch(mode) {
         case MODE_SYMMETRIC:
             while (j < F){
                 size_t k;
                 for(k = 0; k < N && j < F; ++j, ++k)
-                    sum += filter[j]*input[k];
+                    ADD_PRODUCT(sum, filter[j], input[k]);
                 for(k = 0; k < N && j < F; ++k, ++j)
-                    sum += filter[j]*input[N-1-k];
+                    ADD_PRODUCT(sum, filter[j], input[N-1-k]);
             }
             break;
         case MODE_ANTISYMMETRIC:
@@ -328,34 +340,34 @@ int CAT(TYPE, _downsampling_convolution)(const TYPE * const restrict input, cons
             while (j < F){
                 size_t k;
                 for(k = 0; k < N && j < F; ++j, ++k)
-                    sum -= filter[j]*input[k];
+                    SUB_PRODUCT(sum, filter[j], input[k]);
                 for(k = 0; k < N && j < F; ++k, ++j)
-                    sum += filter[j]*input[N-1-k];
+                    ADD_PRODUCT(sum, filter[j], input[N-1-k]);
             }
             break;
         case MODE_REFLECT:
             while (j < F){
                 size_t k;
                 for(k = 1; k < N && j < F; ++j, ++k)
-                    sum += filter[j]*input[k];
+                    ADD_PRODUCT(sum, filter[j], input[k]);
                 for(k = 1; k < N && j < F; ++k, ++j)
-                    sum += filter[j]*input[N-1-k];
+                    ADD_PRODUCT(sum, filter[j], input[N-1-k]);
             }
             break;
         case MODE_ANTIREFLECT:{
             // whole-sample anti-symmetric
             size_t k;
             TYPE le = input[0];    // current left edge value
-            TYPE tmp = 0;
+            TYPE tmp = ZERO;
             while (j < F) {
                 for(k = 1; k < N && j < F; ++j, ++k){
-                    tmp = le - (input[k] - input[0]);
-                    sum += filter[j]*tmp;
+                    tmp = SUB(le, SUB(input[k], input[0]));
+                    ADD_PRODUCT(sum, filter[j], tmp);
                 }
                 le = tmp;
                 for(k = 1; k < N && j < F; ++j, ++k){
-                    tmp = le + (input[N-1-k] - input[N-1]);
-                    sum += filter[j]*tmp;
+                    tmp = ADD(le, SUB(input[N-1-k], input[N-1]));
+                    ADD_PRODUCT(sum, filter[j], tmp);
                 }
                 le = tmp;
             }
@@ -363,19 +375,19 @@ int CAT(TYPE, _downsampling_convolution)(const TYPE * const restrict input, cons
             }
         case MODE_CONSTANT_EDGE:
             for(; j < F; ++j)
-                sum += filter[j]*input[0];
+                ADD_PRODUCT(sum, filter[j], input[0]);
             break;
         case MODE_SMOOTH:{
             size_t k;
             for(k = 1; j < F; ++j, ++k)
-                sum += filter[j]*(input[0] + k * (input[0] - input[1]));
+                ADD_PRODUCT(sum, filter[j], ADD(input[0], MUL((REAL_TYPE)k, SUB(input[0], input[1]))));
             break;
         }
         case MODE_PERIODIC:
             while (j < F){
                 size_t k;
                 for(k = 0; k < N && j < F; ++k, ++j)
-                    sum += filter[j]*input[N-1-k];
+                    ADD_PRODUCT(sum, filter[j], input[N-1-k]);
             }
             break;
         case MODE_ZEROPAD:
@@ -387,7 +399,7 @@ int CAT(TYPE, _downsampling_convolution)(const TYPE * const restrict input, cons
 
     // right boundary overhang
     for(; i < N+F-1; i += step, ++o){
-        TYPE sum = 0;
+        TYPE sum = ZERO;
         size_t j = 0;
         switch(mode) {
         case MODE_SYMMETRIC:
@@ -395,9 +407,9 @@ int CAT(TYPE, _downsampling_convolution)(const TYPE * const restrict input, cons
             while (i - j >= N){
                 size_t k;
                 for(k = 0; k < N && i-j >= N; ++j, ++k)
-                    sum += filter[i-N-j]*input[N-1-k];
+                    ADD_PRODUCT(sum, filter[i-N-j], input[N-1-k]);
                 for(k = 0; k < N && i-j >= N; ++j, ++k)
-                    sum += filter[i-N-j]*input[k];
+                    ADD_PRODUCT(sum, filter[i-N-j], input[k]);
             }
             break;
         case MODE_ANTISYMMETRIC:
@@ -405,36 +417,36 @@ int CAT(TYPE, _downsampling_convolution)(const TYPE * const restrict input, cons
             while (i - j >= N){
                 size_t k;
                 for(k = 0; k < N && i-j >= N; ++j, ++k)
-                    sum -= filter[i-N-j]*input[N-1-k];
+                    SUB_PRODUCT(sum, filter[i-N-j], input[N-1-k]);
                 for(k = 0; k < N && i-j >= N; ++j, ++k)
-                    sum += filter[i-N-j]*input[k];
+                    ADD_PRODUCT(sum, filter[i-N-j], input[k]);
             }
             break;
         case MODE_REFLECT:
             while (i - j >= N){
                 size_t k;
                 for(k = 1; k < N && i-j >= N; ++j, ++k)
-                    sum += filter[i-N-j]*input[N-1-k];
+                    ADD_PRODUCT(sum, filter[i-N-j], input[N-1-k]);
                 for(k = 1; k < N && i-j >= N; ++j, ++k)
-                    sum += filter[i-N-j]*input[k];
+                    ADD_PRODUCT(sum, filter[i-N-j], input[k]);
             }
             break;
         case MODE_ANTIREFLECT:{
             // whole-sample anti-symmetric
             size_t k;
             TYPE re = input[N-1];    //current right edge value
-            TYPE tmp = 0;
+            TYPE tmp = ZERO;
             while (i - j >= N) {
                 //first reflection
                 for(k = 1; k < N && i-j >= N; ++j, ++k){
-                    tmp = re - (input[N-1-k] - input[N-1]);
-                    sum += filter[i-N-j]*tmp;
+                    tmp = SUB(re, SUB(input[N-1-k], input[N-1]));
+                    ADD_PRODUCT(sum, filter[i-N-j], tmp);
                 }
                 re = tmp;
                 //second reflection
                 for(k = 1; k < N && i-j >= N; ++j, ++k){
-                    tmp = re + (input[k] - input[0]);
-                    sum += filter[i-N-j]*tmp;
+                    tmp = ADD(re, SUB(input[k], input[0]));
+                    ADD_PRODUCT(sum, filter[i-N-j], tmp);
                 }
                 re = tmp;
             }
@@ -442,19 +454,19 @@ int CAT(TYPE, _downsampling_convolution)(const TYPE * const restrict input, cons
             }
         case MODE_CONSTANT_EDGE:
             for(; i-j >= N; ++j)
-                sum += filter[j]*input[N-1];
+                ADD_PRODUCT(sum, filter[j], input[N-1]);
             break;
         case MODE_SMOOTH:{
             size_t k;
             for(k = i - N + 1; i-j >= N; ++j, --k)
-                sum += filter[j]*(input[N-1] + k * (input[N-1] - input[N-2]));
+                ADD_PRODUCT(sum, filter[j], ADD(input[N-1], MUL((REAL_TYPE)k, SUB(input[N-1], input[N-2]))));
             break;
         }
         case MODE_PERIODIC:
             while (i-j >= N){
                 size_t k;
                 for (k = 0; k < N && i-j >= N; ++j, ++k)
-                    sum += filter[i-N-j]*input[k];
+                    ADD_PRODUCT(sum, filter[i-N-j], input[k]);
             }
             break;
         case MODE_ZEROPAD:
@@ -463,7 +475,7 @@ int CAT(TYPE, _downsampling_convolution)(const TYPE * const restrict input, cons
             break;
         }
         for(; j < F; ++j)
-            sum += filter[j]*input[i-j];
+            ADD_PRODUCT(sum, filter[j], input[i-j]);
         output[o] = sum;
     }
     return 0;
@@ -492,32 +504,32 @@ int CAT(TYPE, _upsampling_convolution_full)(const TYPE * const restrict input, c
     for(; i < N && i < F/2; ++i, o += 2){
         size_t j;
         for(j = 0; j <= i; ++j){
-            output[o] += filter[j*2] * input[i-j];
-            output[o+1] += filter[j*2+1] * input[i-j];
+            ADD_PRODUCT(output[o], filter[j*2], input[i-j]);
+            ADD_PRODUCT(output[o+1], filter[j*2+1], input[i-j]);
         }
     }
 
     for(; i < N; ++i, o += 2){
         size_t j;
         for(j = 0; j < F/2; ++j){
-            output[o] += filter[j*2] * input[i-j];
-            output[o+1] += filter[j*2+1] * input[i-j];
+            ADD_PRODUCT(output[o], filter[j*2], input[i-j]);
+            ADD_PRODUCT(output[o+1], filter[j*2+1], input[i-j]);
         }
     }
 
     for(; i < F/2; ++i, o += 2){
         size_t j;
         for(j = i-(N-1); j <= i; ++j){
-            output[o] += filter[j*2] * input[i-j];
-            output[o+1] += filter[j*2+1] * input[i-j];
+            ADD_PRODUCT(output[o], filter[j*2], input[i-j]);
+            ADD_PRODUCT(output[o+1], filter[j*2+1], input[i-j]);
         }
     }
 
     for(; i < N+F/2; ++i, o += 2){
         size_t j;
         for(j = i-(N-1); j < F/2; ++j){
-            output[o] += filter[j*2] * input[i-j];
-            output[o+1] += filter[j*2+1] * input[i-j];
+            ADD_PRODUCT(output[o], filter[j*2], input[i-j]);
+            ADD_PRODUCT(output[o+1], filter[j*2+1], input[i-j]);
         }
     }
     return 0;
@@ -545,19 +557,19 @@ static int CAT(TYPE, _upsampling_convolution_valid_sf_periodization)(const TYPE 
         while(j <= start-1){
             size_t k;
             for (k = 0; k < N && j <= start-1; ++k, ++j){
-                output[2*N-1] += filter[2*(start-1-j)] * input[k];
-                output[0] += filter[2*(start-1-j)+1] * input[k];
+                ADD_PRODUCT(output[2*N-1], filter[2*(start-1-j)], input[k]);
+                ADD_PRODUCT(output[0], filter[2*(start-1-j)+1], input[k]);
             }
         }
         for (; j <= N+start-1 && j < F/2; ++j){
-            output[2*N-1] += filter[2*j] * input[N+start-1-j];
-            output[0] += filter[2*j+1] * input[N+start-1-j];
+            ADD_PRODUCT(output[2*N-1], filter[2*j], input[N+start-1-j]);
+            ADD_PRODUCT(output[0], filter[2*j+1], input[N+start-1-j]);
         }
         while (j < F / 2){
             size_t k;
             for (k = 0; k < N && j < F/2; ++k, ++j){
-                output[2*N-1] += filter[2*j] * input[N-1-k];
-                output[0] += filter[2*j+1] * input[N-1-k];
+                ADD_PRODUCT(output[2*N-1], filter[2*j], input[N-1-k]);
+                ADD_PRODUCT(output[0], filter[2*j+1], input[N-1-k]);
             }
         }
 
@@ -567,14 +579,14 @@ static int CAT(TYPE, _upsampling_convolution_valid_sf_periodization)(const TYPE 
     for (; i < F/2 && i < N; ++i, o += 2){
         size_t j = 0;
         for(; j <= i; ++j){
-            output[o] += filter[2*j] * input[i-j];
-            output[o+1] += filter[2*j+1] * input[i-j];
+            ADD_PRODUCT(output[o], filter[2*j], input[i-j]);
+            ADD_PRODUCT(output[o+1], filter[2*j+1], input[i-j]);
         }
         while (j < F/2){
             size_t k;
             for(k = 0; k < N && j < F/2; ++k, ++j){
-                output[o] += filter[2*j] * input[N-1-k];
-                output[o+1] += filter[2*j+1] * input[N-1-k];
+                ADD_PRODUCT(output[o], filter[2*j], input[N-1-k]);
+                ADD_PRODUCT(output[o+1], filter[2*j+1], input[N-1-k]);
             }
         }
     }
@@ -582,8 +594,8 @@ static int CAT(TYPE, _upsampling_convolution_valid_sf_periodization)(const TYPE 
     for (; i < N; ++i, o += 2){
         size_t j;
         for(j = 0; j < F/2; ++j){
-            output[o] += filter[2*j] * input[i-j];
-            output[o+1] += filter[2*j+1] * input[i-j];
+            ADD_PRODUCT(output[o], filter[2*j], input[i-j]);
+            ADD_PRODUCT(output[o+1], filter[2*j+1], input[i-j]);
         }
     }
 
@@ -592,19 +604,19 @@ static int CAT(TYPE, _upsampling_convolution_valid_sf_periodization)(const TYPE 
         while(i-j >= N){
             size_t k;
             for (k = 0; k < N && i-j >= N; ++k, ++j){
-                output[o] += filter[2*(i-N-j)] * input[k];
-                output[o+1] += filter[2*(i-N-j)+1] * input[k];
+                ADD_PRODUCT(output[o], filter[2*(i-N-j)], input[k]);
+                ADD_PRODUCT(output[o+1], filter[2*(i-N-j)+1], input[k]);
             }
         }
         for (; j <= i && j < F/2; ++j){
-            output[o] += filter[2*j] * input[i-j];
-            output[o+1] += filter[2*j+1] * input[i-j];
+            ADD_PRODUCT(output[o], filter[2*j], input[i-j]);
+            ADD_PRODUCT(output[o+1], filter[2*j+1], input[i-j]);
         }
         while (j < F / 2){
             size_t k;
             for (k = 0; k < N && j < F/2; ++k, ++j){
-                output[o] += filter[2*j] * input[N-1-k];
-                output[o+1] += filter[2*j+1] * input[N-1-k];
+                ADD_PRODUCT(output[o], filter[2*j], input[N-1-k]);
+                ADD_PRODUCT(output[o+1], filter[2*j+1], input[N-1-k]);
             }
         }
     }
@@ -614,13 +626,13 @@ static int CAT(TYPE, _upsampling_convolution_valid_sf_periodization)(const TYPE 
         while(i-j >= N){
             size_t k;
             for (k = 0; k < N && i-j >= N; ++k, ++j){
-                output[o] += filter[2*(i-N-j)] * input[k];
-                output[o+1] += filter[2*(i-N-j)+1] * input[k];
+                ADD_PRODUCT(output[o], filter[2*(i-N-j)], input[k]);
+                ADD_PRODUCT(output[o+1], filter[2*(i-N-j)+1], input[k]);
             }
         }
         for (; j <= i && j < F/2; ++j){
-            output[o] += filter[2*j] * input[i-j];
-            output[o+1] += filter[2*j+1] * input[i-j];
+            ADD_PRODUCT(output[o], filter[2*j], input[i-j]);
+            ADD_PRODUCT(output[o+1], filter[2*j+1], input[i-j]);
         }
     }
 
@@ -653,15 +665,15 @@ int CAT(TYPE, _upsampling_convolution_valid_sf)(const TYPE * const restrict inpu
     {
         size_t o, i;
         for(o = 0, i = F/2 - 1; i < N; ++i, o += 2){
-            TYPE sum_even = 0;
-            TYPE sum_odd = 0;
+            TYPE sum_even = ZERO;
+            TYPE sum_odd = ZERO;
             size_t j;
             for(j = 0; j < F/2; ++j){
-                sum_even += filter[j*2] * input[i-j];
-                sum_odd += filter[j*2+1] * input[i-j];
+                ADD_PRODUCT(sum_even, filter[j*2], input[i-j]);
+                ADD_PRODUCT(sum_odd, filter[j*2+1], input[i-j]);
             }
-            output[o] += sum_even;
-            output[o+1] += sum_odd;
+            output[o] = ADD(output[o], sum_even);
+            output[o+1] = ADD(output[o+1], sum_odd);
         }
     }
     return 0;
@@ -676,6 +688,12 @@ int CAT(TYPE, _upsampled_filter_convolution)(const TYPE * const restrict input, 
     return -1;
 }
 
+#undef ZERO
+#undef ADD
+#undef SUB
+#undef MUL
+#undef ADD_PRODUCT
+#undef SUB_PRODUCT
 #undef restrict
 #endif /* REAL_TYPE */
 #endif /* TYPE */

@@ -3,7 +3,6 @@ from itertools import product
 
 import numpy as np
 
-from ._c99_config import _have_c99_complex
 from ._extensions._dwt import idwt_single
 from ._extensions._pywt import Modes, Wavelet, _check_dtype
 from ._extensions._swt import swt as _swt
@@ -48,7 +47,10 @@ def swt(
     start_level : int, optional
         The level at which the decomposition will begin (it allows one to
         skip a given number of transform steps and compute
-        coefficients starting from start_level) (default: 0)
+        coefficients starting from start_level) (default: 0). The output
+        always contains exactly ``level`` sets of coefficients, corresponding
+        to decomposition levels ``start_level + 1`` through
+        ``start_level + level``.
     axis: int, optional
         Axis over which to compute the SWT. If not given, the
         last axis is used.
@@ -73,7 +75,7 @@ def swt(
         If ``start_level = m`` is given, then the beginning m steps are
         skipped::
 
-            [(cAm+n, cDm+n), ..., (cAm+1, cDm+1), (cAm, cDm)]
+            [(cAm+n, cDm+n), ..., (cAm+1, cDm+1)]
 
         If ``trim_approx`` is ``True``, then the output list is exactly as in
         ``pywt.wavedec``, where the first coefficient in the list is the
@@ -107,7 +109,7 @@ def swt(
         2. variance is partitioned across scales
 
     When used with ``norm=True``, this transform is closely related to the
-    multiple-overlap DWT (MODWT) as popularized for time-series analysis,
+    maximal-overlap DWT (MODWT) as popularized for time-series analysis,
     although the underlying implementation is slightly different from the one
     published in [1]_. Specifically, the implementation used here requires a
     signal that is a multiple of ``2**level`` in length.
@@ -118,25 +120,6 @@ def swt(
         Cambridge University Press, 2000.
     """
 
-    if not _have_c99_complex and np.iscomplexobj(data):
-        data = np.asarray(data)
-        kwargs = {
-            "wavelet": wavelet,
-            "level": level,
-            "start_level": start_level,
-            "trim_approx": trim_approx,
-            "axis": axis,
-            "norm": norm,
-        }
-        coeffs_real = swt(data.real, **kwargs)
-        coeffs_imag = swt(data.imag, **kwargs)
-        if not trim_approx:
-            coeffs_cplx = []
-            for (cA_r, cD_r), (cA_i, cD_i) in zip(coeffs_real, coeffs_imag):
-                coeffs_cplx.append((cA_r + 1j * cA_i, cD_r + 1j * cD_i))
-        else:
-            coeffs_cplx = [cr + 1j * ci for (cr, ci) in zip(coeffs_real, coeffs_imag)]
-        return coeffs_cplx
 
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(data)
@@ -183,7 +166,7 @@ def iswt(
             [(cAn, cDn), ..., (cA2, cD2), (cA1, cD1)]
 
         where cA is approximation, cD is details.  Index 1 corresponds to
-        ``start_level`` from ``pywt.swt``.
+        ``start_level + 1`` from ``pywt.swt``.
     wavelet : Wavelet object or name string
         Wavelet to use
     norm : bool, optional
@@ -215,16 +198,6 @@ def iswt(
         return iswtn(coeffs_nd, wavelet, axes=(axis,), norm=norm)
     elif axis != 0 and axis != -1:
         raise AxisError("Axis greater than data dimensions")
-    if not _have_c99_complex and np.iscomplexobj(cA):
-        if trim_approx:
-            coeffs_real = [c.real for c in coeffs]
-            coeffs_imag = [c.imag for c in coeffs]
-        else:
-            coeffs_real = [(ca.real, cd.real) for ca, cd in coeffs]
-            coeffs_imag = [(ca.imag, cd.imag) for ca, cd in coeffs]
-        kwargs = {"wavelet": wavelet, "norm": norm}
-        y = iswt(coeffs_real, **kwargs)
-        return y + 1j * iswt(coeffs_imag, **kwargs)
 
     if trim_approx:
         coeffs = coeffs[1:]
@@ -330,9 +303,6 @@ def swt2(
                 ...,
                 (cA_m+1,
                     (cH_m+1, cV_m+1, cD_m+1)
-                ),
-                (cA_m,
-                    (cH_m, cV_m, cD_m)
                 )
             ]
 
@@ -348,7 +318,6 @@ def swt2(
                 (cH_m+level, cV_m+level, cD_m+level),
                 ...,
                 (cH_m+1, cV_m+1, cD_m+1),
-                (cH_m, cV_m, cD_m),
             ]
 
     Notes
@@ -427,7 +396,7 @@ def iswt2(
 
         where cA is approximation, cH is horizontal details, cV is
         vertical details, cD is diagonal details and n is the number of
-        levels.  Index 1 corresponds to ``start_level`` from ``pywt.swt2``.
+        levels.  Index 1 corresponds to ``start_level + 1`` from ``pywt.swt2``.
     wavelet : Wavelet object or name string, or 2-tuple of wavelets
         Wavelet to use.  This can also be a 2-tuple of wavelets to apply per
         axis.
@@ -466,22 +435,6 @@ def iswt2(
                 {"aa": a, "da": h, "ad": v, "dd": d} for a, (h, v, d) in coeffs
             ]
         return iswtn(coeffs_nd, wavelet, axes=axes, norm=norm)
-    if not _have_c99_complex and np.iscomplexobj(cA):
-        if trim_approx:
-            coeffs_real = [cA.real]
-            coeffs_real += [(h.real, v.real, d.real) for h, v, d in coeffs[1:]]
-            coeffs_imag = [cA.imag]
-            coeffs_imag += [(h.imag, v.imag, d.imag) for h, v, d in coeffs[1:]]
-        else:
-            coeffs_real = [
-                (a.real, (h.real, v.real, d.real)) for a, (h, v, d) in coeffs
-            ]
-            coeffs_imag = [
-                (a.imag, (h.imag, v.imag, d.imag)) for a, (h, v, d) in coeffs
-            ]
-        kwargs = {"wavelet": wavelet, "norm": norm}
-        y = iswt2(coeffs_real, **kwargs)
-        return y + 1j * iswt2(coeffs_imag, **kwargs)
 
     if trim_approx:
         coeffs = coeffs[1:]
@@ -681,26 +634,6 @@ def swtn(
 
     """
     data = np.asarray(data)
-    if not _have_c99_complex and np.iscomplexobj(data):
-        kwargs = {
-            "wavelet": wavelet,
-            "level": level,
-            "start_level": start_level,
-            "trim_approx": trim_approx,
-            "axes": axes,
-            "norm": norm,
-        }
-        real = swtn(data.real, **kwargs)
-        imag = swtn(data.imag, **kwargs)
-        if trim_approx:
-            cplx = [real[0] + 1j * imag[0]]
-            offset = 1
-        else:
-            cplx = []
-            offset = 0
-        for rdict, idict in zip(real[offset:], imag[offset:]):
-            cplx.append({k: rdict[k] + 1j * idict[k] for k in rdict})
-        return cplx
 
     if data.dtype == np.dtype("object"):
         raise TypeError("Input must be a numeric array-like")
@@ -797,19 +730,6 @@ def iswtn(
     trim_approx = not isinstance(coeffs[0], dict)
     cA = coeffs[0] if trim_approx else coeffs[0]["a" * ndim_transform]
 
-    if not _have_c99_complex and np.iscomplexobj(cA):
-        if trim_approx:
-            coeffs_real = [coeffs[0].real]
-            coeffs_imag = [coeffs[0].imag]
-            coeffs = coeffs[1:]
-        else:
-            coeffs_real = []
-            coeffs_imag = []
-        coeffs_real += [{k: v.real for k, v in c.items()} for c in coeffs]
-        coeffs_imag += [{k: v.imag for k, v in c.items()} for c in coeffs]
-        kwargs = {"wavelet": wavelet, "axes": axes, "norm": norm}
-        y = iswtn(coeffs_real, **kwargs)
-        return y + 1j * iswtn(coeffs_imag, **kwargs)
 
     if trim_approx:
         coeffs = coeffs[1:]

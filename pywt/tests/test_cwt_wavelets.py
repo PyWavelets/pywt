@@ -471,6 +471,74 @@ def test_cwt_method_fft():
     assert_allclose(cfs_conv, cfs_fft, rtol=0, atol=1e-13)
 
 
+@pytest.mark.parametrize('dtype, tol', [(np.float32, 1e-5),
+                                        (np.float64, 1e-13)])
+@pytest.mark.parametrize('shape, axis', [((49,), -1),
+                                         ((3, 50), 1),
+                                         ((49, 3), 0)])
+def test_cwt_method_fft_real(dtype, tol, shape, axis):
+    rstate = np.random.RandomState(1)
+    data = rstate.randn(*shape).astype(dtype)
+    scales = np.r_[1.0625, np.arange(1, 64)]
+
+    cfs_conv, _ = pywt.cwt(
+        data, scales, 'morl', method='conv', axis=axis
+    )
+    cfs_fft, _ = pywt.cwt(
+        data, scales, 'morl', method='fft', axis=axis
+    )
+
+    assert_equal(cfs_fft.dtype, dtype)
+    assert_allclose(cfs_conv, cfs_fft, rtol=tol, atol=tol)
+
+
+@pytest.mark.parametrize('dtype, tol', [(np.complex64, 1e-5),
+                                        (np.complex128, 1e-13)])
+def test_cwt_method_fft_complex_data_real_wavelet(dtype, tol):
+    rstate = np.random.RandomState(1)
+    data = (rstate.randn(49) + 1j * rstate.randn(49)).astype(dtype)
+    scales = np.r_[1.0625, np.arange(1, 16)]
+
+    cfs_conv, _ = pywt.cwt(data, scales, 'morl', method='conv')
+    cfs_fft, _ = pywt.cwt(data, scales, 'morl', method='fft')
+
+    assert_equal(cfs_fft.dtype, dtype)
+    assert_allclose(cfs_conv, cfs_fft, rtol=tol, atol=tol)
+
+
+def test_cwt_normalization_convention():
+    # cwt works in units of samples: with the scale a and the shift b both
+    # given in samples, coefs[a, b] == 1/sqrt(a) * sum_n x[n] conj(psi((n-b)/a))
+    # and no sampling interval enters.
+    fs = 3000.
+    Fb, Fc = 14., 2.
+    wavelet = pywt.ContinuousWavelet(f'cmor{Fb:g}-{Fc:g}')
+    x = np.sin(2 * np.pi * 40 * np.arange(3000) / fs)
+    scale = pywt.frequency2scale(wavelet, 40 / fs)
+
+    cfs, freqs = pywt.cwt(x, scale, wavelet, sampling_period=1 / fs)
+    assert_allclose(freqs, [40.], rtol=1e-12)
+
+    # psi is sampled at bin midpoints because cwt convolves with the integral
+    # of psi and then differences it, which averages psi over each sample bin.
+    lb, ub = wavelet.lower_bound, wavelet.upper_bound
+    k = np.arange(int(scale * (ub - lb)) + 1)
+    psi, _ = ref_cmor(lb + 0.5 / scale, ub + 0.5 / scale, k.size, Fb, Fc)
+    # the filter is conjugated *and* reversed; convolving with conj(psi) alone
+    # gives the complex conjugate of the correct result, which an abs()
+    # comparison would not catch
+    conv = np.convolve(x, np.conj(psi)[::-1]) / np.sqrt(scale)
+    trim = (conv.size - x.size) // 2
+    manual = conv[trim:trim + x.size]
+
+    assert_allclose(manual, cfs[0], atol=1e-3 * np.max(np.abs(cfs[0])))
+
+    # the coefficients themselves are unaffected by sampling_period
+    cfs_unit, freqs_unit = pywt.cwt(x, scale, wavelet, sampling_period=1.)
+    assert_allclose(cfs_unit, cfs, rtol=0, atol=0)
+    assert_allclose(freqs_unit * fs, freqs, rtol=1e-12)
+
+
 def test_continuous_wavelet_pickle(tmpdir):
     wavelet = pywt.ContinuousWavelet('cmor1.5-1.0')
     filename = os.path.join(tmpdir, 'cwav.pickle')
@@ -480,3 +548,16 @@ def test_continuous_wavelet_pickle(tmpdir):
         wavelet2 = pickle.load(f)
     assert isinstance(wavelet2, pywt.ContinuousWavelet)
     assert wavelet2.name == wavelet.name
+
+
+def test_cwt_discrete_wavelet_raises():
+    # A discrete wavelet such as 'coif1' has no continuous form; cwt should
+    # raise a clear error rather than an opaque AttributeError (gh-776).
+    data = np.ones(100)
+    for bad in ['coif1', 'db2', pywt.Wavelet('coif1')]:
+        with pytest.raises(ValueError, match='continuous wavelet'):
+            pywt.cwt(data, [1, 2], bad)
+
+    # a continuous wavelet still works
+    out, _ = pywt.cwt(data, [1, 2], 'morl')
+    assert out.shape == (2, 100)

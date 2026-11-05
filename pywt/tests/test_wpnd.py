@@ -168,3 +168,56 @@ def test_wavelet_packet_axes():
     # must have non-duplicate axes
     assert_raises(ValueError, pywt.WaveletPacketND, data=x, wavelet='db1',
                   axes=(0, 0))
+
+
+def test_wavelet_packet_odd_shape():
+    # the reconstruction has to be trimmed back to the original shape when a
+    # transformed axis has an odd length
+    x = np.arange(2 * 2 * 3, dtype=np.float64).reshape(2, 2, 3)
+    wp = pywt.WaveletPacketND(data=x, wavelet='haar', mode='symmetric',
+                              axes=(0, 1, 2))
+    wp.get_level(1)
+    r = wp.reconstruct(update=False)
+    assert_equal(r.shape, x.shape)
+    assert_allclose(r, x, atol=1e-12, rtol=1e-12)
+
+    rstate = np.random.RandomState(0)
+    y = rstate.standard_normal((9, 11))
+    for level in [1, 2, 3]:
+        wp = pywt.WaveletPacketND(data=y, wavelet='haar', mode='symmetric')
+        wp.get_level(level)
+        r = wp.reconstruct(update=False)
+        assert_equal(r.shape, y.shape)
+        assert_allclose(r, y, rtol=1e-12)
+
+    # only some of the axes transformed
+    z = rstate.standard_normal((3, 5, 7))
+    wp = pywt.WaveletPacketND(data=z, wavelet='haar', mode='symmetric',
+                              axes=(1, 2))
+    wp.get_level(1)
+    assert_allclose(wp.reconstruct(update=False), z, rtol=1e-12)
+
+    # reconstructing again after an update gives the same result
+    wp = pywt.WaveletPacketND(data=y, wavelet='haar', mode='symmetric')
+    wp.get_level(2)
+    assert_allclose(wp.reconstruct(update=True), y, rtol=1e-12)
+    assert_allclose(wp.reconstruct(update=True), y, rtol=1e-12)
+
+
+def test_wavelet_packet_odd_shape_subnode():
+    # a subnode reconstructs to the shape of its own coefficients, so an
+    # update does not grow the data stored in the node
+    rstate = np.random.RandomState(0)
+    y = rstate.standard_normal((9, 11))
+    wp = pywt.WaveletPacketND(data=y, wavelet='haar', mode='symmetric')
+    wp.get_level(2)
+
+    shape = wp['aa'].data.shape
+    assert_equal(wp['aa'].reconstruct(update=False).shape, shape)
+    wp['aa'].reconstruct(update=True)
+    assert_equal(wp['aa'].data.shape, shape)
+
+    # WaveletPacket2D already behaves this way
+    wp2 = pywt.WaveletPacket2D(data=y, wavelet='haar', mode='symmetric')
+    wp2.get_level(2)
+    assert_equal(wp2['a'].reconstruct(update=False).shape, shape)

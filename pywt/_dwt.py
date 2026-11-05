@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING, Sequence, cast
 
 import numpy as np
 
-from ._c99_config import _have_c99_complex
 from ._extensions._dwt import downcoef as _downcoef
 from ._extensions._dwt import dwt_axis, dwt_single, idwt_axis, idwt_single
 from ._extensions._dwt import dwt_coeff_len as _dwt_coeff_len
@@ -171,12 +170,6 @@ def dwt(
     array([-0.70710678, -0.70710678, -0.70710678])
 
     """
-    if not _have_c99_complex and np.iscomplexobj(data):
-        data = np.asarray(data)
-        cA_r, cD_r = dwt(data.real, wavelet, mode, axis)
-        cA_i, cD_i = dwt(data.imag, wavelet, mode, axis)
-        return (cA_r + 1j*cA_i, cD_r + 1j*cD_i)
-
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(data)
     data = np.asarray(data, dtype=dt, order='C')
@@ -256,17 +249,6 @@ def idwt(
     if cA is None and cD is None:
         raise ValueError("At least one coefficient parameter must be "
                          "specified.")
-
-    # for complex inputs: compute real and imaginary separately then combine
-    if not _have_c99_complex and (np.iscomplexobj(cA) or np.iscomplexobj(cD)):
-        if cA is None:
-            cD = np.asarray(cD)
-            cA = np.zeros_like(cD)
-        elif cD is None:
-            cA = np.asarray(cA)
-            cD = np.zeros_like(cA)
-        return (idwt(cA.real, cD.real, wavelet, mode, axis) +
-                1j*idwt(cA.imag, cD.imag, wavelet, mode, axis))
 
     if cA is not None:
         dt = _check_dtype(cA)
@@ -352,9 +334,6 @@ def downcoef(
     upcoef
 
     """
-    if not _have_c99_complex and np.iscomplexobj(data):
-        return (downcoef(part, data.real, wavelet, mode, level) +
-                1j*downcoef(part, data.imag, wavelet, mode, level))
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(data)
     data = np.asarray(data, dtype=dt, order='C')
@@ -417,9 +396,6 @@ def upcoef(
     array([ 1.,  2.,  3.,  4.,  5.,  6.])
 
     """
-    if not _have_c99_complex and np.iscomplexobj(coeffs):
-        return (upcoef(part, coeffs.real, wavelet, level, take) +
-                1j*upcoef(part, coeffs.imag, wavelet, level, take))
     # accept array_like input; make a copy to ensure a contiguous array
     dt = _check_dtype(coeffs)
     coeffs = np.asarray(coeffs, dtype=dt, order='C')
@@ -474,7 +450,7 @@ def pad(
     pad_widths = np.array(pad_widths)
     pad_widths = np.round(pad_widths).astype(np.intp, copy=False)
     if pad_widths.min() < 0:
-        raise ValueError("pad_widths must be > 0")
+        raise ValueError("pad_widths must be >= 0")
     pad_widths = np.broadcast_to(pad_widths, (x.ndim, 2)).tolist()
 
     if mode in ['symmetric', 'reflect']:
@@ -493,6 +469,20 @@ def pad(
         xp = np.pad(x, pad_widths, mode='edge')
     elif mode == 'smooth':
         def pad_smooth(vector, pad_width, iaxis, kwargs):
+            # Note: indices are measured from the start of the vector so that
+            # a pad width of 0 gives an empty slice rather than the full one.
+            iright = vector.size - pad_width[1] - 1  # last unpadded sample
+            vsize_nonpad = iright + 1 - pad_width[0]
+            if vsize_nonpad < 2:
+                # The slope is undefined for a signal shorter than two
+                # samples, so use constant edge extension instead. This is
+                # what the transforms do as well (see the MODE_SMOOTH case in
+                # convolution.template.c).
+                if vsize_nonpad == 1:
+                    vector[:pad_width[0]] = vector[iright]
+                    vector[iright + 1:] = vector[iright]
+                return vector
+
             # smooth extension to left
             left = vector[pad_width[0]]
             slope_left = (left - vector[pad_width[0] + 1])
@@ -500,20 +490,23 @@ def pad(
                 left + np.arange(pad_width[0], 0, -1) * slope_left
 
             # smooth extension to right
-            right = vector[-pad_width[1] - 1]
-            slope_right = (right - vector[-pad_width[1] - 2])
-            vector[-pad_width[1]:] = \
+            right = vector[iright]
+            slope_right = (right - vector[iright - 1])
+            vector[iright + 1:] = \
                 right + np.arange(1, pad_width[1] + 1) * slope_right
             return vector
         xp = np.pad(x, pad_widths, pad_smooth)
     elif mode == 'antisymmetric':
         def pad_antisymmetric(vector, pad_width, iaxis, kwargs):
-            # smooth extension to left
-            # implement by flipping portions symmetric padding
+            # implement by flipping portions of symmetric padding
             npad_l, npad_r = pad_width
             vsize_nonpad = vector.size - npad_l - npad_r
+            if vsize_nonpad == 0:
+                # Nothing to reflect. The reflected segments below would have
+                # zero width, so the loops over them would never terminate.
+                return vector
             # Note: must modify vector in-place
-            vector[:] = np.pad(vector[pad_width[0]:-pad_width[-1]],
+            vector[:] = np.pad(vector[npad_l:vector.size - npad_r],
                                pad_width, mode='symmetric')
             vp = vector
             r_edge = npad_l + vsize_nonpad - 1

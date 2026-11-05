@@ -1,0 +1,82 @@
+===============================
+PyWavelets 1.10.0 Release Notes
+===============================
+
+We are very pleased to announce the release of PyWavelets 1.10.0. This release
+adds unconditional support for complex-valued input and improves the performance
+of ``pywt.cwt`` for real-valued input by using real-valued FFTs.
+
+This release also fixes handling of read-only input arrays, zero-width padding,
+and reconstruction of wavelet packets with non-power-of-two sizes. Support for
+Python 3.15 is added, support for Python 3.11 is dropped, and the minimum
+supported NumPy version is now 1.26.4.
+
+
+Authors
+=======
+
+* Aman Atman +
+* ChS-YHWH +
+* Green Committer +
+* Achraf Ez +
+* Clément Fauchereau +
+* Bing Gao +
+* Ralf Gommers
+* Veit Heller +
+* Filip Jankovic +
+* Julian Hoßbach +
+* Vineet Kumar +
+* Kevin Lee +
+* Dang Thoai Phan +
+
+A total of 13 people contributed to this release.
+People with a "+" by their names contributed a patch for the first time.
+This list of names is automatically generated, and may not be fully complete.
+
+
+Issues closed for v1.10.0
+-------------------------
+
+* `#589 <https://github.com/PyWavelets/pywt/issues/589>`__: Padding error when padding width is 0 for antisymmetric and smooth
+* `#776 <https://github.com/PyWavelets/pywt/issues/776>`__: cwt always fails with the message AttributeError: 'pywt._extensions._pywt.Wavelet' object has no attribute 'complex_cwt'
+* `#801 <https://github.com/PyWavelets/pywt/issues/801>`__: Scaling mismatch between PyWavelets CWT and my implementation
+* `#838 <https://github.com/PyWavelets/pywt/issues/838>`__: swt documentation mistake
+* `#839 <https://github.com/PyWavelets/pywt/issues/839>`__: DWT of read-only numpy arrays fails
+* `#856 <https://github.com/PyWavelets/pywt/issues/856>`__: WaveletPacketND.reconstruct() raises IndexError for non-power-of-two...
+
+
+Pull requests for v1.10.0
+-------------------------
+
+* `#790 <https://github.com/PyWavelets/pywt/pull/790>`__: ENH: enable complex dtype support unconditionally
+* `#816 <https://github.com/PyWavelets/pywt/pull/816>`__: DOC: add note at top of \`cwt\` docs referring to \`ssqueezepy\`
+* `#818 <https://github.com/PyWavelets/pywt/pull/818>`__: MAINT: a tiny edit rewording a single code code comment
+* `#819 <https://github.com/PyWavelets/pywt/pull/819>`__: CI: Add support for building pywt wheels for windows arm64
+* `#821 <https://github.com/PyWavelets/pywt/pull/821>`__: Bump the github-actions group with 3 updates
+* `#824 <https://github.com/PyWavelets/pywt/pull/824>`__: Bump the github-actions group with 3 updates
+* `#825 <https://github.com/PyWavelets/pywt/pull/825>`__: MAINT: drop Python 3.11, NumPy 1.25 and Cython 3.0.x support
+* `#826 <https://github.com/PyWavelets/pywt/pull/826>`__: TST: fix CI failures in Matlab test generation files
+* `#827 <https://github.com/PyWavelets/pywt/pull/827>`__: CI: use macos-15-intel image for macOS x86-64 wheel builds
+* `#829 <https://github.com/PyWavelets/pywt/pull/829>`__: Bump the github-actions group with 4 updates
+* `#830 <https://github.com/PyWavelets/pywt/pull/830>`__: MAINT: move away from numpy.fix in favor of numpy.trunc
+* `#833 <https://github.com/PyWavelets/pywt/pull/833>`__: TST: remove usages of deprecated \`numpy.testing.assert_warns\`
+* `#835 <https://github.com/PyWavelets/pywt/pull/835>`__: DEV/MAINT: fix benchmarks for latest \`asv\`, and add a \`spin...
+* `#836 <https://github.com/PyWavelets/pywt/pull/836>`__: CI/MAINT: add a CI job with ASan and UBSan on macOS, fix one...
+* `#840 <https://github.com/PyWavelets/pywt/pull/840>`__: fix: Read-only arrays in dwt (Issue #839)
+* `#842 <https://github.com/PyWavelets/pywt/pull/842>`__: DOC: clarify CWT normalization details around sampling_period...
+* `#845 <https://github.com/PyWavelets/pywt/pull/845>`__: Build(deps): Bump the github-actions group with 3 updates
+* `#849 <https://github.com/PyWavelets/pywt/pull/849>`__: BUG: raise a clear error when cwt() is given a discrete wavelet...
+* `#851 <https://github.com/PyWavelets/pywt/pull/851>`__: DOC: update terminology from 'multiple-overlap' to 'maximal-overlap'
+* `#854 <https://github.com/PyWavelets/pywt/pull/854>`__: BUG: fix pywt.pad for a zero pad width in 'smooth' and 'antisymmetric'...
+* `#855 <https://github.com/PyWavelets/pywt/pull/855>`__: MAINT: fix pytest deprecation warning
+* `#857 <https://github.com/PyWavelets/pywt/pull/857>`__: BUG: fix indexing in WaveletPacketND.reconstruct for data_size
+* `#858 <https://github.com/PyWavelets/pywt/pull/858>`__: CI: drop all 3.13t free-threading jobs
+* `#859 <https://github.com/PyWavelets/pywt/pull/859>`__: MAINT: fix two more issues with padding length 0 and size-0 axis...
+* `#860 <https://github.com/PyWavelets/pywt/pull/860>`__: BUG: fix indexing in \`reconstruct\` method of 1-D/2-D wavelet...
+* `#861 <https://github.com/PyWavelets/pywt/pull/861>`__: CI: revert change to cibuildwheel version for Emscripten job
+* `#862 <https://github.com/PyWavelets/pywt/pull/862>`__: CI: run the ASan/UBSan job in a container instead of on macOS
+* `#863 <https://github.com/PyWavelets/pywt/pull/863>`__: DOC: fix the swt/swt2 \`start_level\` coefficient ranges
+* `#864 <https://github.com/PyWavelets/pywt/pull/864>`__: ENH: use real FFTs for real-valued CWT convolution
+* `#869 <https://github.com/PyWavelets/pywt/pull/869>`__: CI: update nightly wheel build cron job from 2x to 3x per month
+* `#870 <https://github.com/PyWavelets/pywt/pull/870>`__: BLD: define _USE_MATH_DEFINES in c_args
+* `#872 <https://github.com/PyWavelets/pywt/pull/872>`__: CI/BLD: add Python 3.15 support

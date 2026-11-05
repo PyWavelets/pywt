@@ -90,6 +90,19 @@ def cwt(
     Size of coefficients arrays depends on the length of the input array and
     the length of given scales.
 
+    The transform is computed entirely in units of samples. With the scale
+    ``a`` and the translation ``b`` both expressed in samples, the returned
+    coefficients are::
+
+        C[a, b] = 1/sqrt(a) * sum_n data[n] * conj(psi((n - b)/a))
+
+    No sampling interval enters this expression, which is why ``coefs`` does
+    not depend on ``sampling_period``. To express the coefficients in
+    physical-time units instead, multiply them by ``sqrt(dt)`` (equivalently,
+    divide by ``sqrt(fs)``); that factor comes from approximating the integral
+    of the continuous-time transform by a Riemann sum. See the
+    :ref:`CWT normalization` section of the documentation for details.
+
     Examples
     --------
     >>> import pywt
@@ -120,6 +133,12 @@ def cwt(
     dt_cplx = np.result_type(dt, np.complex64)
     if not isinstance(wavelet, (ContinuousWavelet, Wavelet)):
         wavelet = DiscreteContinuousWavelet(wavelet)
+    if not isinstance(wavelet, ContinuousWavelet):
+        raise ValueError(
+            f"cwt() requires a continuous wavelet, but {wavelet.name!r} is a "
+            f"discrete wavelet. Use a continuous wavelet such as those returned "
+            f"by pywt.wavelist(kind='continuous') (e.g. 'morl', 'mexh', 'cmor')."
+        )
 
     scales = np.atleast_1d(scales)
     if np.any(scales <= 0):
@@ -142,6 +161,7 @@ def cwt(
     if method == 'fft':
         size_scale0 = -1
         fft_data = None
+        use_real_fft = data.dtype.kind != 'c' and int_psi.dtype.kind != 'c'
     elif method != "conv":
         raise ValueError("method must be 'conv' or 'fft'")
 
@@ -182,10 +202,19 @@ def cwt(
             )
             if size_scale != size_scale0:
                 # Must recompute fft_data when the padding size changes.
-                fft_data = np.fft.fft(data, size_scale, axis=-1)
+                if use_real_fft:
+                    fft_data = np.fft.rfft(data, size_scale, axis=-1)
+                else:
+                    fft_data = np.fft.fft(data, size_scale, axis=-1)
             size_scale0 = size_scale
-            fft_wav = np.fft.fft(int_psi_scale, size_scale, axis=-1)
-            conv = np.fft.ifft(fft_wav * fft_data, axis=-1)
+            if use_real_fft:
+                fft_wav = np.fft.rfft(int_psi_scale, size_scale, axis=-1)
+                conv = np.fft.irfft(
+                    fft_wav * fft_data, n=size_scale, axis=-1
+                )
+            else:
+                fft_wav = np.fft.fft(int_psi_scale, size_scale, axis=-1)
+                conv = np.fft.ifft(fft_wav * fft_data, axis=-1)
             conv = conv[..., :data.shape[-1] + int_psi_scale.size - 1]
 
         coef = - np.sqrt(scale) * np.diff(conv, axis=-1)

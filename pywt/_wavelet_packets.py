@@ -677,6 +677,9 @@ class NodeND(BaseNode):
             )
         else:
             rec = idwtn(coeffs, self.wavelet, self.mode, axes=self.axes)
+            if self._data_shape is not None and (
+                    rec.shape != self._data_shape):
+                rec = rec[tuple([slice(sz) for sz in self._data_shape])]
             if update:
                 self.data = rec
             return rec
@@ -743,7 +746,7 @@ class WaveletPacket(Node):
         if self.has_any_subnode:
             data = super().reconstruct(update)
             if self.data_size is not None and (data.shape != self.data_size):
-                data = data[[slice(sz) for sz in self.data_size]]
+                data = data[tuple(slice(sz) for sz in self.data_size)]
             if update:
                 self.data = data
             return data
@@ -869,7 +872,7 @@ class WaveletPacket2D(Node2D):
         if self.has_any_subnode:
             data = super().reconstruct(update)
             if self.data_size is not None and (data.shape != self.data_size):
-                data = data[[slice(sz) for sz in self.data_size]]
+                data = data[tuple(slice(sz) for sz in self.data_size)]
             if update:
                 self.data = data
             return data
@@ -1017,7 +1020,7 @@ class WaveletPacketND(NodeND):
         if self.has_any_subnode:
             data = super().reconstruct(update)
             if self.data_size is not None and (data.shape != self.data_size):
-                data = data[[slice(sz) for sz in self.data_size]]
+                data = data[tuple(slice(sz) for sz in self.data_size)]
             if update:
                 self.data = data
             return data

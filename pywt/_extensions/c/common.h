@@ -8,12 +8,6 @@
 
 #pragma once
 
-#ifdef HAVE_C99_COMPLEX
-    /* For templating, we need typedefs without spaces for complex types. */
-    typedef float _Complex float_complex;
-    typedef double _Complex double_complex;
-#endif
-
 /* ##### Typedefs ##### */
 
 #ifdef PY_EXTENSION
@@ -38,6 +32,191 @@
 
 #include <stdlib.h>
 #include <memory.h>
+
+/* ##### Complex types #####
+ *
+ * Portable complex types and accessors, following NumPy's approach (see
+ * numpy/_core/include/numpy/npy_common.h and npy_math.h): MSVC has no C99
+ * `_Complex` and provides the struct-based `_Fcomplex`/`_Dcomplex` instead,
+ * with no arithmetic operators.  All complex arithmetic in the C sources
+ * therefore goes through the inline helpers below, which only rely on the
+ * layout (two consecutive reals) that all representations share.
+ *
+ * For templating, the typedef names must not contain spaces.
+ *
+ * PYWT_TEST_STRUCT_COMPLEX is a testing hook: it swaps in plain structs with
+ * the same layout and no operators, so that MSVC-like semantics can be
+ * compiled and tested with any compiler (used by the struct-complex CI job).
+ * The structs match the ones NumPy's headers use when compiled as C++, where
+ * C99 `_Complex` is also unavailable.
+ */
+
+#ifdef PYWT_TEST_STRUCT_COMPLEX
+
+typedef struct
+{
+    float _Val[2];
+} float_complex;
+
+typedef struct
+{
+    double _Val[2];
+} double_complex;
+
+#else
+
+#include <complex.h>
+
+#if defined(_MSC_VER) && !defined(__INTEL_COMPILER) && !defined(__INTEL_LLVM_COMPILER)
+typedef _Fcomplex float_complex;
+typedef _Dcomplex double_complex;
+#else
+typedef float _Complex float_complex;
+typedef double _Complex double_complex;
+#endif
+
+#endif
+
+static inline float pywt_crealf(const float_complex z)
+{
+#ifdef PYWT_TEST_STRUCT_COMPLEX
+    return z._Val[0];
+#else
+    return crealf(z);
+#endif
+}
+
+static inline float pywt_cimagf(const float_complex z)
+{
+#ifdef PYWT_TEST_STRUCT_COMPLEX
+    return z._Val[1];
+#else
+    return cimagf(z);
+#endif
+}
+
+static inline void pywt_csetrealf(float_complex *z, const float r)
+{
+    ((float *) z)[0] = r;
+}
+
+static inline void pywt_csetimagf(float_complex *z, const float i)
+{
+    ((float *) z)[1] = i;
+}
+
+static inline double pywt_creal(const double_complex z)
+{
+#ifdef PYWT_TEST_STRUCT_COMPLEX
+    return z._Val[0];
+#else
+    return creal(z);
+#endif
+}
+
+static inline double pywt_cimag(const double_complex z)
+{
+#ifdef PYWT_TEST_STRUCT_COMPLEX
+    return z._Val[1];
+#else
+    return cimag(z);
+#endif
+}
+
+static inline void pywt_csetreal(double_complex *z, const double r)
+{
+    ((double *) z)[0] = r;
+}
+
+static inline void pywt_csetimag(double_complex *z, const double i)
+{
+    ((double *) z)[1] = i;
+}
+
+/* Arithmetic helpers used by the type-templated convolution kernels; the
+ * CAT(TYPE, _op) spellings must exist for every TYPE the templates are
+ * instantiated with.  The complex variants only need a real second factor in
+ * _mul because the wavelet filters are always real. */
+
+static inline float float_zero(void) { return 0.0f; }
+static inline float float_add(const float a, const float b) { return a + b; }
+static inline float float_sub(const float a, const float b) { return a - b; }
+static inline float float_mul(const float a, const float b) { return a * b; }
+
+static inline double double_zero(void) { return 0.0; }
+static inline double double_add(const double a, const double b) { return a + b; }
+static inline double double_sub(const double a, const double b) { return a - b; }
+static inline double double_mul(const double a, const double b) { return a * b; }
+
+static inline float_complex float_complex_zero(void)
+{
+    float_complex z;
+    pywt_csetrealf(&z, 0.0f);
+    pywt_csetimagf(&z, 0.0f);
+    return z;
+}
+
+static inline float_complex float_complex_add(const float_complex a,
+                                              const float_complex b)
+{
+    float_complex z;
+    pywt_csetrealf(&z, pywt_crealf(a) + pywt_crealf(b));
+    pywt_csetimagf(&z, pywt_cimagf(a) + pywt_cimagf(b));
+    return z;
+}
+
+static inline float_complex float_complex_sub(const float_complex a,
+                                              const float_complex b)
+{
+    float_complex z;
+    pywt_csetrealf(&z, pywt_crealf(a) - pywt_crealf(b));
+    pywt_csetimagf(&z, pywt_cimagf(a) - pywt_cimagf(b));
+    return z;
+}
+
+static inline float_complex float_complex_mul(const float a,
+                                              const float_complex b)
+{
+    float_complex z;
+    pywt_csetrealf(&z, a * pywt_crealf(b));
+    pywt_csetimagf(&z, a * pywt_cimagf(b));
+    return z;
+}
+
+static inline double_complex double_complex_zero(void)
+{
+    double_complex z;
+    pywt_csetreal(&z, 0.0);
+    pywt_csetimag(&z, 0.0);
+    return z;
+}
+
+static inline double_complex double_complex_add(const double_complex a,
+                                                const double_complex b)
+{
+    double_complex z;
+    pywt_csetreal(&z, pywt_creal(a) + pywt_creal(b));
+    pywt_csetimag(&z, pywt_cimag(a) + pywt_cimag(b));
+    return z;
+}
+
+static inline double_complex double_complex_sub(const double_complex a,
+                                                const double_complex b)
+{
+    double_complex z;
+    pywt_csetreal(&z, pywt_creal(a) - pywt_creal(b));
+    pywt_csetimag(&z, pywt_cimag(a) - pywt_cimag(b));
+    return z;
+}
+
+static inline double_complex double_complex_mul(const double a,
+                                                const double_complex b)
+{
+    double_complex z;
+    pywt_csetreal(&z, a * pywt_creal(b));
+    pywt_csetimag(&z, a * pywt_cimag(b));
+    return z;
+}
 
 /* standard c memory management */
 #define wtmalloc(size)      malloc(size)

@@ -3,50 +3,14 @@ if m_dep.found()
   add_project_link_arguments('-lm', language : 'c')
 endif
 
-# Don't use the deprecated NumPy C API. Define this to a fixed version instead of
-# NPY_API_VERSION in order not to break compilation for released PyWavelets
-# versions when NumPy introduces a new deprecation.
-numpy_nodepr_api = ['-DNPY_NO_DEPRECATED_API=NPY_1_22_API_VERSION']
-
-# Uses the `numpy-config` executable (or a user's numpy.pc pkg-config file),
-# will work for numpy>=2.0.0b1 and meson>=1.4.0
-_numpy_dep = dependency('numpy', required: false)
-if _numpy_dep.found()
-  np_dep = declare_dependency(dependencies: _numpy_dep, compile_args: numpy_nodepr_api)
-else
-  # For cross-compilation it is often not possible to run the Python interpreter
-  # in order to retrieve numpy's include directory. It can be specified in the
-  # cross file instead:
-  #   [properties]
-  #   numpy-include-dir = /abspath/to/host-pythons/site-packages/numpy/core/include
-  #
-  # This uses the path as is, and avoids running the interpreter.
-  incdir_numpy = meson.get_external_property('numpy-include-dir', 'not-given')
-  if incdir_numpy == 'not-given'
-    incdir_numpy = run_command(py,
-      [
-        '-c',
-        '''import os
-import numpy as np
-try:
-  incdir = os.path.relpath(np.get_include())
-except Exception:
-  incdir = np.get_include()
-print(incdir)
-    '''
-      ],
-      check: true
-    ).stdout().strip()
-  endif
-  inc_np = include_directories(incdir_numpy)
-  np_dep = declare_dependency(include_directories: inc_np, compile_args: numpy_nodepr_api)
-endif
-
-config_pxi = configure_file(
-  input: 'config.pxi.in',
-  output: 'config.pxi',
-  configuration: cdata,
-  install: false
+# Uses the `numpy-config` executable (or a user's numpy.pc pkg-config file).
+_numpy_dep = dependency('numpy', version: ['>=2.0', '<3'])
+np_dep = declare_dependency(
+  dependencies: _numpy_dep,
+  # Don't use the deprecated NumPy C API. Define this to a fixed version
+  # instead of NPY_API_VERSION in order not to break compilation for released
+  # PyWavelets versions when NumPy introduces a new deprecation.
+  compile_args: ['-DNPY_NO_DEPRECATED_API=NPY_2_0_API_VERSION'],
 )
 
 sources = [
@@ -57,7 +21,12 @@ sources = [
   'c/wt.c',
 ]
 
-# pyx -> c transpile output depends on copied __init__.py and pxd files
+# No generated Cython sources are involved anymore, but these copies are
+# still needed for correct rebuilds: the `depends: _cython_tree` on the
+# generator is what re-cythonizes the .pyx files when a .pxd changes.
+# Cython's own depfile output (`cython -M`, used by Meson's native Cython
+# support) omits module-namespace cimports like `from . cimport c_wt`
+# (seen with Cython 3.2.9), so switching to it would cause stale builds.
 _cython_tree = [
   fs.copyfile('__init__.py'),
   fs.copyfile('common.pxd'),
@@ -69,11 +38,7 @@ _cython_tree = [
   fs.copyfile('wavelets_list.pxi'),
 ]
 
-# avoid compiler warnings:  tell Cython to use C99 complex types
-c_args = ['-DPY_EXTENSION']
-if have_c99_complex
-  c_args += ['-DHAVE_C99_COMPLEX', '-DCYTHON_CCOMPLEX=1']
-endif
+c_args = ['-DPY_EXTENSION', '-D_USE_MATH_DEFINES']
 
 libc_wt = static_library('c_wt',
   sources,
@@ -101,7 +66,7 @@ pyx_files = [
   ['_pywt', fs.copyfile('_pywt.pyx')],
 ]
 
-cy_deps = declare_dependency(sources: [__init__py, _cython_tree])#, config_pxi])
+cy_deps = declare_dependency(sources: [__init__py, _cython_tree])
 foreach pyx_file: pyx_files
   py.extension_module(pyx_file[0],
     [cython_gen.process(pyx_file[1])],
