@@ -15,7 +15,7 @@ import numpy as np
 __all__ = ['threshold', 'threshold_firm']
 
 
-def soft(data: np.ndarray | list, value: float, substitute: float = 0.0) -> np.ndarray:
+def soft(data: np.ndarray | list, value: float, substitute: float = 0) -> np.ndarray:
     data = np.asarray(data)
     magnitude = np.absolute(data)
 
@@ -28,14 +28,14 @@ def soft(data: np.ndarray | list, value: float, substitute: float = 0.0) -> np.n
     # Keep dtype; sign(0) is undefined, but soft-threshold(0) is 0 for any λ≥0.
     thresholded[magnitude == 0] = 0
 
-    if substitute == 0.0:
+    if substitute == 0:
         return thresholded
     else:
         cond = np.less(magnitude, value)
         return np.where(cond, substitute, thresholded)
 
 
-def nn_garrote(data: np.ndarray | list, value: float, substitute: float = 0.0) -> np.ndarray:
+def nn_garrote(data: np.ndarray | list, value: float, substitute: float = 0) -> np.ndarray:
     """Non-negative Garrote."""
     data = np.asarray(data)
     magnitude = np.absolute(data)
@@ -48,27 +48,27 @@ def nn_garrote(data: np.ndarray | list, value: float, substitute: float = 0.0) -
         thresholded = data * thresholded
     thresholded[magnitude == 0] = 0
 
-    if substitute == 0.0:
+    if substitute == 0:
         return thresholded
     else:
         cond = np.less(magnitude, value)
         return np.where(cond, substitute, thresholded)
 
 
-def hard(data: np.ndarray | list, value: float, substitute: float = 0.0) -> np.ndarray:
+def hard(data: np.ndarray | list, value: float, substitute: float = 0) -> np.ndarray:
     data = np.asarray(data)
     cond = np.less(np.absolute(data), value)
     return np.where(cond, substitute, data)
 
 
-def greater(data: np.ndarray | list, value: float, substitute: float = 0.0) -> np.ndarray:
+def greater(data: np.ndarray | list, value: float, substitute: float = 0) -> np.ndarray:
     data = np.asarray(data)
     if np.iscomplexobj(data):
         raise ValueError("greater thresholding only supports real data")
     return np.where(np.less(data, value), substitute, data)
 
 
-def less(data: np.ndarray | float, value: float, substitute: float = 0.0) -> np.ndarray:
+def less(data: np.ndarray | float, value: float, substitute: float = 0) -> np.ndarray:
     data = np.asarray(data)
     if np.iscomplexobj(data):
         raise ValueError("less thresholding only supports real data")
@@ -89,7 +89,7 @@ def threshold(
         data: np.ndarray | list,
         value: float,
         mode: Literal['soft', 'hard', 'garrote', 'greater', 'less'] = 'soft',
-        substitute: float = 0.0
+        substitute: float = 0
     ) -> np.ndarray:
     """
     Thresholds the input data depending on the mode argument.
