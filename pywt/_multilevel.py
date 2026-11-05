@@ -9,10 +9,14 @@ and Inverse Discrete Wavelet Transform.
 """
 
 
+from __future__ import annotations
+
 import numbers
 import warnings
+from collections.abc import Mapping, Sequence
 from copy import copy
 from itertools import product
+from typing import TYPE_CHECKING, Literal, overload
 
 import numpy as np
 
@@ -22,13 +26,26 @@ from ._extensions._pywt import Modes, Wavelet
 from ._multidim import _fix_coeffs, dwt2, dwtn, idwt2, idwtn
 from ._utils import AxisError, _as_wavelet, _modes_per_axis, _wavelets_per_axis
 
+if TYPE_CHECKING:
+    from ._extensions._pywt import Mode, ModeName
+
 __all__ = ['wavedec', 'waverec', 'wavedec2', 'waverec2', 'wavedecn',
            'waverecn', 'coeffs_to_array', 'array_to_coeffs', 'ravel_coeffs',
            'unravel_coeffs', 'dwtn_max_level', 'wavedecn_size',
            'wavedecn_shapes', 'fswavedecn', 'fswaverecn', 'FswavedecnResult']
 
+# Coefficient layouts returned by wavedec, wavedec2 and wavedecn: the
+# approximation array first, followed by the detail coefficients per level.
+_WavedecCoeffs = list[np.ndarray]
+_Wavedec2Coeffs = list[np.ndarray | tuple[np.ndarray, np.ndarray, np.ndarray]]
+_WavedecnCoeffs = list[np.ndarray | dict[str, np.ndarray]]
 
-def _check_level(sizes, dec_lens, level):
+
+def _check_level(
+    sizes: int | Sequence[int],
+    dec_lens: int | Sequence[int],
+    level: int | None,
+) -> int:
     if np.isscalar(sizes):
         sizes = (sizes, )
     if np.isscalar(dec_lens):
@@ -46,7 +63,13 @@ def _check_level(sizes, dec_lens, level):
     return level
 
 
-def wavedec(data, wavelet, mode='symmetric', level=None, axis=-1):
+def wavedec(
+    data: np.ndarray | list,
+    wavelet: Wavelet | str,
+    mode: Mode = 'symmetric',
+    level: int | None = None,
+    axis: int = -1,
+) -> _WavedecCoeffs:
     """
     Multilevel 1D Discrete Wavelet Transform of data.
 
@@ -96,7 +119,7 @@ def wavedec(data, wavelet, mode='symmetric', level=None, axis=-1):
         raise AxisError("Axis greater than data dimensions")
     level = _check_level(axes_shape, wavelet.dec_len, level)
 
-    coeffs_list = []
+    coeffs_list: _WavedecCoeffs = []
 
     a = data
     for i in range(level):
@@ -109,7 +132,12 @@ def wavedec(data, wavelet, mode='symmetric', level=None, axis=-1):
     return coeffs_list
 
 
-def waverec(coeffs, wavelet, mode='symmetric', axis=-1):
+def waverec(
+    coeffs: Sequence[np.ndarray | None],
+    wavelet: Wavelet | str,
+    mode: Mode = 'symmetric',
+    axis: int = -1,
+) -> np.ndarray:
     """
     Multilevel 1D Inverse Discrete Wavelet Transform.
 
@@ -176,7 +204,13 @@ def waverec(coeffs, wavelet, mode='symmetric', axis=-1):
     return a
 
 
-def wavedec2(data, wavelet, mode='symmetric', level=None, axes=(-2, -1)):
+def wavedec2(
+    data: np.ndarray | list,
+    wavelet: Wavelet | str | Sequence[Wavelet | str],
+    mode: Mode | Sequence[Mode] = 'symmetric',
+    level: int | None = None,
+    axes: Sequence[int] = (-2, -1),
+) -> _Wavedec2Coeffs:
     """
     Multilevel 2D Discrete Wavelet Transform.
 
@@ -240,7 +274,7 @@ def wavedec2(data, wavelet, mode='symmetric', level=None, axes=(-2, -1)):
 
     level = _check_level(axes_sizes, dec_lengths, level)
 
-    coeffs_list = []
+    coeffs_list: _Wavedec2Coeffs = []
 
     a = data
     for i in range(level):
@@ -253,7 +287,15 @@ def wavedec2(data, wavelet, mode='symmetric', level=None, axes=(-2, -1)):
     return coeffs_list
 
 
-def waverec2(coeffs, wavelet, mode='symmetric', axes=(-2, -1)):
+def waverec2(
+    coeffs: Sequence[
+        np.ndarray
+        | tuple[np.ndarray | None, np.ndarray | None, np.ndarray | None]
+    ],
+    wavelet: Wavelet | str | Sequence[Wavelet | str],
+    mode: Mode | Sequence[Mode] = 'symmetric',
+    axes: Sequence[int] = (-2, -1),
+) -> np.ndarray:
     """
     Multilevel 2D Inverse Discrete Wavelet Transform.
 
@@ -337,7 +379,9 @@ def waverec2(coeffs, wavelet, mode='symmetric', axes=(-2, -1)):
     return a
 
 
-def _prep_axes_wavedecn(shape, axes):
+def _prep_axes_wavedecn(
+    shape: Sequence[int], axes: int | Sequence[int] | None
+) -> tuple[Sequence[int], list[int], int]:
     if len(shape) < 1:
         raise ValueError("Expected at least 1D input data.")
     ndim = len(shape)
@@ -357,7 +401,13 @@ def _prep_axes_wavedecn(shape, axes):
     return axes, axes_shapes, ndim_transform
 
 
-def wavedecn(data, wavelet, mode='symmetric', level=None, axes=None):
+def wavedecn(
+    data: np.ndarray | list,
+    wavelet: Wavelet | str | Sequence[Wavelet | str],
+    mode: Mode | Sequence[Mode] = 'symmetric',
+    level: int | None = None,
+    axes: Sequence[int] | None = None,
+) -> _WavedecnCoeffs:
     """
     Multilevel nD Discrete Wavelet Transform.
 
@@ -428,7 +478,7 @@ def wavedecn(data, wavelet, mode='symmetric', level=None, axes=None):
 
     level = _check_level(axes_shapes, dec_lengths, level)
 
-    coeffs_list = []
+    coeffs_list: _WavedecnCoeffs = []
 
     a = data
     for i in range(level):
@@ -442,7 +492,9 @@ def wavedecn(data, wavelet, mode='symmetric', level=None, axes=None):
     return coeffs_list
 
 
-def _match_coeff_dims(a_coeff, d_coeff_dict):
+def _match_coeff_dims(
+    a_coeff: np.ndarray | None, d_coeff_dict: dict[str, np.ndarray]
+) -> np.ndarray | None:
     # For each axis, compare the approximation coeff shape to one of the
     # stored detail coeffs and truncate the last element along the axis
     # if necessary.
@@ -458,7 +510,12 @@ def _match_coeff_dims(a_coeff, d_coeff_dict):
     return a_coeff[tuple(slice(s) for s in d_coeff.shape)]
 
 
-def waverecn(coeffs, wavelet, mode='symmetric', axes=None):
+def waverecn(
+    coeffs: Sequence[np.ndarray | dict[str, np.ndarray] | None],
+    wavelet: Wavelet | str | Sequence[Wavelet | str],
+    mode: Mode | Sequence[Mode] = 'symmetric',
+    axes: Sequence[int] | None = None,
+) -> np.ndarray:
     """
     Multilevel nD Inverse Discrete Wavelet Transform.
 
@@ -578,7 +635,7 @@ def waverecn(coeffs, wavelet, mode='symmetric', axes=None):
     return a
 
 
-def _coeffs_wavedec_to_wavedecn(coeffs):
+def _coeffs_wavedec_to_wavedecn(coeffs: _WavedecCoeffs) -> _WavedecnCoeffs:
     """Convert wavedec coefficients to the wavedecn format."""
     if len(coeffs) == 0:
         return coeffs
@@ -592,7 +649,7 @@ def _coeffs_wavedec_to_wavedecn(coeffs):
     return coeffs
 
 
-def _coeffs_wavedec2_to_wavedecn(coeffs):
+def _coeffs_wavedec2_to_wavedecn(coeffs: _Wavedec2Coeffs) -> _WavedecnCoeffs:
     """Convert wavedec2 coefficients to the wavedecn format."""
     if len(coeffs) == 0:
         return coeffs
@@ -609,7 +666,9 @@ def _coeffs_wavedec2_to_wavedecn(coeffs):
     return coeffs
 
 
-def _determine_coeff_array_shape(coeffs, axes):
+def _determine_coeff_array_shape(
+    coeffs: _WavedecnCoeffs, axes: Sequence[int]
+) -> tuple[tuple[int, ...], bool]:
     arr_shape = np.asarray(coeffs[0].shape)
     axes = np.asarray(axes)  # axes that were transformed
     ndim_transform = len(axes)
@@ -625,7 +684,10 @@ def _determine_coeff_array_shape(coeffs, axes):
     return arr_shape, is_tight_packing
 
 
-def _prepare_coeffs_axes(coeffs, axes):
+def _prepare_coeffs_axes(
+    coeffs: _WavedecCoeffs | _Wavedec2Coeffs | _WavedecnCoeffs,
+    axes: Sequence[int] | None,
+) -> tuple[_WavedecnCoeffs, Sequence[int] | None, int, int | None]:
     """Helper function to check type of coeffs and axes.
 
     This code is used by both coeffs_to_array and ravel_coeffs.
@@ -671,7 +733,11 @@ def _prepare_coeffs_axes(coeffs, axes):
     return coeffs, axes, ndim, ndim_transform
 
 
-def coeffs_to_array(coeffs, padding=0, axes=None):
+def coeffs_to_array(
+    coeffs: _WavedecCoeffs | _Wavedec2Coeffs | _WavedecnCoeffs,
+    padding: float | None = 0,
+    axes: Sequence[int] | None = None,
+) -> tuple[np.ndarray, list[tuple[slice, ...] | dict[str, tuple[slice, ...]]]]:
     """
     Arrange a wavelet coefficient list from ``wavedecn`` into a single array.
 
@@ -768,7 +834,7 @@ def coeffs_to_array(coeffs, padding=0, axes=None):
     coeff_arr[a_slices] = a_coeffs
 
     # initialize list of coefficient slices
-    coeff_slices = []
+    coeff_slices: list[tuple[slice, ...] | dict[str, tuple[slice, ...]]] = []
     coeff_slices.append(a_slices)
 
     # loop over the detail coefficients, adding them to coeff_arr
@@ -798,7 +864,29 @@ def coeffs_to_array(coeffs, padding=0, axes=None):
     return coeff_arr, coeff_slices
 
 
-def array_to_coeffs(arr, coeff_slices, output_format='wavedecn'):
+@overload
+def array_to_coeffs(
+    arr: np.ndarray | list,
+    coeff_slices: Sequence[tuple[slice, ...] | dict[str, tuple[slice, ...]]],
+    output_format: Literal['wavedec'],
+) -> _WavedecCoeffs: ...
+@overload
+def array_to_coeffs(
+    arr: np.ndarray | list,
+    coeff_slices: Sequence[tuple[slice, ...] | dict[str, tuple[slice, ...]]],
+    output_format: Literal['wavedec2'],
+) -> _Wavedec2Coeffs: ...
+@overload
+def array_to_coeffs(
+    arr: np.ndarray | list,
+    coeff_slices: Sequence[tuple[slice, ...] | dict[str, tuple[slice, ...]]],
+    output_format: Literal['wavedecn'] = 'wavedecn',
+) -> _WavedecnCoeffs: ...
+def array_to_coeffs(
+    arr: np.ndarray | list,
+    coeff_slices: Sequence[tuple[slice, ...] | dict[str, tuple[slice, ...]]],
+    output_format: Literal['wavedec', 'wavedec2', 'wavedecn'] = 'wavedecn',
+) -> _WavedecCoeffs | _Wavedec2Coeffs | _WavedecnCoeffs:
     """
     Convert a combined array of coefficients back to a list compatible with
     ``waverecn``.
@@ -887,7 +975,13 @@ def array_to_coeffs(arr, coeff_slices, output_format='wavedecn'):
     return coeffs
 
 
-def wavedecn_shapes(shape, wavelet, mode='symmetric', level=None, axes=None):
+def wavedecn_shapes(
+    shape: Sequence[int],
+    wavelet: Wavelet | str | Sequence[Wavelet | str],
+    mode: Mode | Sequence[Mode] = 'symmetric',
+    level: int | None = None,
+    axes: Sequence[int] | None = None,
+) -> list[tuple[int, ...] | dict[str, tuple[int, ...]]]:
     """Subband shapes for a multilevel nD discrete wavelet transform.
 
     Parameters
@@ -928,10 +1022,10 @@ def wavedecn_shapes(shape, wavelet, mode='symmetric', level=None, axes=None):
 
     level = _check_level(min(axes_shapes), max(dec_lengths), level)
 
-    shapes = []
+    shapes: list[tuple[int, ...] | dict[str, tuple[int, ...]]] = []
     for i in range(level):
         detail_keys = [''.join(c) for c in product('ad', repeat=len(axes))]
-        new_shapes = {k: list(shape) for k in detail_keys}
+        new_shapes: dict[str, list[int] | tuple[int, ...]] = {k: list(shape) for k in detail_keys}
         for axis, wav, mode in zip(axes, wavelets, modes):
             s = dwt_coeff_len(shape[axis], filter_len=wav.dec_len, mode=mode)
             for k in detail_keys:
@@ -945,7 +1039,13 @@ def wavedecn_shapes(shape, wavelet, mode='symmetric', level=None, axes=None):
     return shapes
 
 
-def wavedecn_size(shapes):
+def wavedecn_size(
+    shapes: Sequence[
+        tuple[int, ...]
+        | np.ndarray
+        | Mapping[str, tuple[int, ...] | np.ndarray]
+    ],
+) -> int:
     """Compute the total number of wavedecn coefficients.
 
     Parameters
@@ -972,7 +1072,7 @@ def wavedecn_size(shapes):
     >>> pywt.wavedecn_size(coeffs)
     3087
     """
-    def _size(x):
+    def _size(x: tuple[int, ...] | np.ndarray) -> int:
         """Size corresponding to ``x`` as either a shape tuple or ndarray."""
         if isinstance(x, np.ndarray):
             return x.size
@@ -988,7 +1088,11 @@ def wavedecn_size(shapes):
     return ncoeffs
 
 
-def dwtn_max_level(shape, wavelet, axes=None):
+def dwtn_max_level(
+    shape: Sequence[int],
+    wavelet: Wavelet | str | Sequence[Wavelet | str],
+    axes: Sequence[int] | None = None,
+) -> int:
     """Compute the maximum level of decomposition for n-dimensional data.
 
     This returns the maximum number of levels of decomposition suitable for use
@@ -1031,7 +1135,14 @@ def dwtn_max_level(shape, wavelet, axes=None):
     return min(max_levels)
 
 
-def ravel_coeffs(coeffs, axes=None):
+def ravel_coeffs(
+    coeffs: _WavedecCoeffs | _Wavedec2Coeffs | _WavedecnCoeffs,
+    axes: Sequence[int] | None = None,
+) -> tuple[
+    np.ndarray,
+    list[slice | dict[str, slice]],
+    list[tuple[int, ...] | dict[str, tuple[int, ...]]],
+]:
     """Ravel a set of multilevel wavelet coefficients into a single 1D array.
 
     Parameters
@@ -1089,8 +1200,8 @@ def ravel_coeffs(coeffs, axes=None):
     coeff_arr[a_slice] = a_coeffs.ravel()
 
     # initialize list of coefficient slices
-    coeff_slices = []
-    coeff_shapes = []
+    coeff_slices: list[slice | dict[str, slice]] = []
+    coeff_shapes: list[tuple[int, ...] | dict[str, tuple[int, ...]]] = []
     coeff_slices.append(a_slice)
     coeff_shapes.append(coeffs[0].shape)
 
@@ -1116,7 +1227,33 @@ def ravel_coeffs(coeffs, axes=None):
     return coeff_arr, coeff_slices, coeff_shapes
 
 
-def unravel_coeffs(arr, coeff_slices, coeff_shapes, output_format='wavedecn'):
+@overload
+def unravel_coeffs(
+    arr: np.ndarray | list,
+    coeff_slices: Sequence[slice | dict[str, slice]],
+    coeff_shapes: Sequence[tuple[int, ...] | dict[str, tuple[int, ...]]],
+    output_format: Literal['wavedec', 'swt'],
+) -> _WavedecCoeffs: ...
+@overload
+def unravel_coeffs(
+    arr: np.ndarray | list,
+    coeff_slices: Sequence[slice | dict[str, slice]],
+    coeff_shapes: Sequence[tuple[int, ...] | dict[str, tuple[int, ...]]],
+    output_format: Literal['wavedec2', 'swt2'],
+) -> _Wavedec2Coeffs: ...
+@overload
+def unravel_coeffs(
+    arr: np.ndarray | list,
+    coeff_slices: Sequence[slice | dict[str, slice]],
+    coeff_shapes: Sequence[tuple[int, ...] | dict[str, tuple[int, ...]]],
+    output_format: Literal['wavedecn', 'swtn'] = 'wavedecn',
+) -> _WavedecnCoeffs: ...
+def unravel_coeffs(
+    arr: np.ndarray | list,
+    coeff_slices: Sequence[slice | dict[str, slice]],
+    coeff_shapes: Sequence[tuple[int, ...] | dict[str, tuple[int, ...]]],
+    output_format: Literal['wavedec', 'wavedec2', 'wavedecn', 'swt', 'swt2', 'swtn'] = 'wavedecn',
+) -> _WavedecCoeffs | _Wavedec2Coeffs | _WavedecnCoeffs:
     """Unravel a raveled array of multilevel wavelet coefficients.
 
     Parameters
@@ -1191,7 +1328,7 @@ def unravel_coeffs(arr, coeff_slices, coeff_shapes, output_format='wavedecn'):
     return coeffs
 
 
-def _check_fswavedecn_axes(data, axes):
+def _check_fswavedecn_axes(data: np.ndarray, axes: Sequence[int]) -> None:
     """Axes checks common to fswavedecn, fswaverecn."""
     if len(axes) != len(set(axes)):
         raise AxisError("The axes passed to fswavedecn must be unique.")
@@ -1221,8 +1358,14 @@ class FswavedecnResult:
         The set of axes over which the transform was performed.
 
     """
-    def __init__(self, coeffs, coeff_slices, wavelets, mode_enums,
-                 axes):
+    def __init__(
+        self,
+        coeffs: np.ndarray,
+        coeff_slices: list[list[slice]],
+        wavelets: Sequence[Wavelet],
+        mode_enums: Sequence[int],
+        axes: Sequence[int],
+    ) -> None:
         self._coeffs = coeffs
         self._coeff_slices = coeff_slices
         self._axes = axes
@@ -1236,80 +1379,80 @@ class FswavedecnResult:
         self._mode_enums = mode_enums
 
     @property
-    def coeffs(self):
+    def coeffs(self) -> np.ndarray:
         """ndarray: All coefficients stacked into a single array."""
         return self._coeffs
 
     @coeffs.setter
-    def coeffs(self, c):
+    def coeffs(self, c: np.ndarray) -> None:
         if c.shape != self._coeffs.shape:
             raise ValueError("new coefficient array must match the existing "
                              "coefficient shape")
         self._coeffs = c
 
     @property
-    def coeff_slices(self):
+    def coeff_slices(self) -> list[list[slice]]:
         """List: List of coefficient slices."""
         return self._coeff_slices
 
     @property
-    def ndim(self):
+    def ndim(self) -> int:
         """int: Number of data dimensions."""
         return self.coeffs.ndim
 
     @property
-    def ndim_transform(self):
+    def ndim_transform(self) -> int:
         """int: Number of axes transformed."""
         return len(self.axes)
 
     @property
-    def axes(self):
+    def axes(self) -> Sequence[int]:
         """List of str: The axes the transform was performed along."""
         return self._axes
 
     @property
-    def levels(self):
+    def levels(self) -> list[int]:
         """List of int: Levels of decomposition along each transformed axis."""
         return [len(s) - 1 for s in self.coeff_slices]
 
     @property
-    def wavelets(self):
+    def wavelets(self) -> Sequence[Wavelet]:
         """List of pywt.DiscreteWavelet: wavelet for each transformed axis."""
         return self._wavelets
 
     @property
-    def wavelet_names(self):
+    def wavelet_names(self) -> list[str]:
         """List of pywt.DiscreteWavelet: wavelet for each transformed axis."""
         return [w.name for w in self._wavelets]
 
     @property
-    def modes(self):
+    def modes(self) -> list[ModeName]:
         """List of str: The border mode used along each transformed axis."""
         names_dict = {getattr(Modes, mode): mode
                       for mode in Modes.modes}
         return [names_dict[m] for m in self._mode_enums]
 
-    def _get_coef_sl(self, levels):
+    def _get_coef_sl(self, levels: Sequence[int]) -> tuple[slice, ...]:
         sl = [slice(None), ] * self.ndim
         for n, (ax, lev) in enumerate(zip(self.axes, levels)):
             sl[ax] = self.coeff_slices[n][lev]
         return tuple(sl)
 
     @property
-    def approx(self):
+    def approx(self) -> np.ndarray:
         """ndarray: The approximation coefficients."""
         sl = self._get_coef_sl((0, )*self.ndim)
         return self._coeffs[sl]
 
     @approx.setter
-    def approx(self, a):
+    def approx(self, a: np.ndarray) -> None:
         sl = self._get_coef_sl((0, )*self.ndim)
         if self._coeffs[sl].shape != a.shape:
             raise ValueError(
                 "x does not match the shape of the requested coefficient")
         self._coeffs[sl] = a
 
-    def _validate_index(self, levels):
+    def _validate_index(self, levels: Sequence[int]) -> None:
         levels = tuple(levels)
 
         if len(levels) != len(self.axes):
@@ -1329,7 +1472,7 @@ class FswavedecnResult:
             raise ValueError(
                 "Specified indices exceed the number of transform levels.")
 
-    def __getitem__(self, levels):
+    def __getitem__(self, levels: Sequence[int]) -> np.ndarray:
         """Retrieve a coefficient subband.
 
         Parameters
@@ -1342,7 +1485,7 @@ class FswavedecnResult:
         sl = self._get_coef_sl(levels)
         return self._coeffs[sl]
 
-    def __setitem__(self, levels, x):
+    def __setitem__(self, levels: Sequence[int], x: np.ndarray) -> None:
         """Assign values to a coefficient subband.
 
         Parameters
@@ -1365,7 +1508,7 @@ class FswavedecnResult:
                           f"dtype {current_dtype}")
         self._coeffs[sl] = x
 
-    def detail_keys(self):
+    def detail_keys(self) -> list[tuple[int, ...]]:
         """Return a list of all detail coefficient keys.
 
         Returns
@@ -1378,7 +1521,13 @@ class FswavedecnResult:
         return sorted(keys)
 
 
-def fswavedecn(data, wavelet, mode='symmetric', levels=None, axes=None):
+def fswavedecn(
+    data: np.ndarray | list,
+    wavelet: Wavelet | str | Sequence[Wavelet | str],
+    mode: Mode | Sequence[Mode] = 'symmetric',
+    levels: int | Sequence[int | None] | None = None,
+    axes: Sequence[int] | None = None,
+) -> FswavedecnResult:
     """Fully Separable Wavelet Decomposition.
 
     This is a variant of the multilevel discrete wavelet transform where all
@@ -1491,7 +1640,7 @@ def fswavedecn(data, wavelet, mode='symmetric', levels=None, axes=None):
     return FswavedecnResult(coeffs_arr, coeff_slices, wavelets, modes, axes)
 
 
-def fswaverecn(fswavedecn_result):
+def fswaverecn(fswavedecn_result: FswavedecnResult) -> np.ndarray:
     """Fully Separable Inverse Wavelet Reconstruction.
 
     Parameters
