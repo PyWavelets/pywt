@@ -1,7 +1,7 @@
 from typing import TypeVar
 
 import numpy as np
-from _pywt import ContinuousWavelet
+from ._pywt import ContinuousWavelet
 from numpy.typing import NDArray
 
 _DataT = TypeVar("_DataT", bound=np.float32 | np.float64)
