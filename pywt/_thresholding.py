@@ -68,7 +68,7 @@ def greater(data: np.ndarray | list, value: float, substitute: float = 0) -> np.
     return np.where(np.less(data, value), substitute, data)
 
 
-def less(data: np.ndarray | float, value: float, substitute: float = 0) -> np.ndarray:
+def less(data: np.ndarray | list, value: float, substitute: float = 0) -> np.ndarray:
     data = np.asarray(data)
     if np.iscomplexobj(data):
         raise ValueError("less thresholding only supports real data")
