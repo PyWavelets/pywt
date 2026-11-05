@@ -1,5 +1,6 @@
 import warnings
 from itertools import product
+from typing import Literal, overload
 
 import numpy as np
 
@@ -24,6 +25,28 @@ def _rescale_wavelet_filterbank(wavelet: Wavelet, sf: float) -> Wavelet:
     return wav
 
 
+@overload
+def swt(
+    data: np.ndarray | list,
+    wavelet: Wavelet | str,
+    level: int | None = None,
+    start_level: int = 0,
+    axis: int = -1,
+    trim_approx: Literal[False] = False,
+    norm: bool = False,
+) -> list[tuple[np.ndarray, np.ndarray]]: ...
+@overload
+def swt(
+    data: np.ndarray | list,
+    wavelet: Wavelet | str,
+    level: int | None = None,
+    start_level: int = 0,
+    axis: int = -1,
+    *,
+    trim_approx: Literal[True],
+    norm: bool = False,
+) -> list[np.ndarray]: ...
+@overload
 def swt(
     data: np.ndarray | list,
     wavelet: Wavelet | str,
@@ -32,7 +55,16 @@ def swt(
     axis: int = -1,
     trim_approx: bool = False,
     norm: bool = False,
-) -> np.ndarray | list:
+) -> list[tuple[np.ndarray, np.ndarray]] | list[np.ndarray]: ...
+def swt(
+    data: np.ndarray | list,
+    wavelet: Wavelet | str,
+    level: int | None = None,
+    start_level: int = 0,
+    axis: int = -1,
+    trim_approx: bool = False,
+    norm: bool = False,
+) -> list[tuple[np.ndarray, np.ndarray]] | list[np.ndarray]:
     """
     Multilevel 1D stationary wavelet transform.
 
