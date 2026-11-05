@@ -26,7 +26,7 @@ _implemented_signals = [
     'Riemann']
 
 
-def demo_signal(name='Bumps', n=None):
+def demo_signal(name: str = 'Bumps', n: int | None = None) -> np.ndarray:
     """Simple 1D wavelet test functions.
 
     This function can generate a number of common 1D test signals used in
