@@ -54,6 +54,10 @@ documentation = "https://pywavelets.readthedocs.io/"
 config-settings = {setup-args = ["--vsenv"]}
 before-build = "bash {project}/util/cibw_before_build_win.sh"
 
+[tool.cibuildwheel.pyodide]
+test-requires = ["pytest", "matplotlib"]
+test-command = '''python -c "import pywt; pywt.test(extra_argv=['-m', 'not slow'])"'''
+
 
 [tool.ruff]
 line-length = 88

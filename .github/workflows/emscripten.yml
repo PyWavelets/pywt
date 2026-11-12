@@ -49,8 +49,6 @@ jobs:
         uses: pypa/cibuildwheel@f9b966cfadf4109556cadc5bb39ddb72d0ce664e # v4.3.5
         env:
           CIBW_PLATFORM: pyodide
-          CIBW_TEST_REQUIRES: pytest matplotlib
-          CIBW_TEST_COMMAND: python -c "import pywt; pywt.test(extra_argv=['-m', 'not slow'])"
 
         # https://anaconda.org/scientific-python-nightly-wheels/pywavelets
         # WARNING: this job will overwrite existing wheels.
