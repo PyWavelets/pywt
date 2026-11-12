@@ -58,6 +58,11 @@ before-build = "bash {project}/util/cibw_before_build_win.sh"
 test-requires = ["pytest", "matplotlib"]
 test-command = '''python -c "import pywt; pywt.test(extra_argv=['-m', 'not slow'])"'''
 
+[[tool.cibuildwheel.overrides]]
+# matplotlib is not available for cp315 on Pyodide yet
+select = "cp315-pyodide_wasm32"
+test-requires = ["pytest"]
+
 
 [tool.ruff]
 line-length = 88
