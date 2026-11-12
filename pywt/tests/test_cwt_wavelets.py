@@ -561,3 +561,44 @@ def test_cwt_discrete_wavelet_raises():
     # a continuous wavelet still works
     out, _ = pywt.cwt(data, [1, 2], 'morl')
     assert out.shape == (2, 100)
+
+
+@pytest.mark.parametrize('name', ['gaus1', 'morl', 'cmor1.5-1.0', 'shan1-1'])
+@pytest.mark.parametrize('dtype', [np.float32, np.float64])
+def test_continuous_wavelet_constructor_bounds(name, dtype):
+    wavelet = pywt.ContinuousWavelet(name, dtype, lower_bound=-4, upper_bound=6)
+    assigned = pywt.ContinuousWavelet(name, dtype)
+    assigned.lower_bound = -4
+    assigned.upper_bound = 6
+    for actual, expected in zip(wavelet.wavefun(), assigned.wavefun()):
+        assert_equal(actual, expected)
+    data = np.sin(np.arange(64))
+    for actual, expected in zip(pywt.cwt(data, [1, 2], wavelet),
+                                pywt.cwt(data, [1, 2], assigned)):
+        assert_equal(actual, expected)
+    assert 'Lower bound:    -4.0' in str(wavelet)
+    assert 'Upper bound:    6.0' in str(wavelet)
+    for protocol in range(pickle.HIGHEST_PROTOCOL + 1):
+        restored = pickle.loads(pickle.dumps(wavelet, protocol=protocol))
+        assert restored.lower_bound == -4
+        assert restored.upper_bound == 6
+        for actual, expected in zip(restored.wavefun(), wavelet.wavefun()):
+            assert_equal(actual, expected)
+
+
+@pytest.mark.parametrize('name', ['gaus1', 'morl', 'shan1-1'])
+def test_continuous_wavelet_constructor_default_bounds(name):
+    default = pywt.ContinuousWavelet(name)
+    lower = pywt.ContinuousWavelet(name, lower_bound=-3)
+    upper = pywt.ContinuousWavelet(name, upper_bound=3)
+    assert (lower.lower_bound, lower.upper_bound) == (-3, default.upper_bound)
+    assert (upper.lower_bound, upper.upper_bound) == (default.lower_bound, 3)
+    explicit_none = pywt.ContinuousWavelet(name, lower_bound=None, upper_bound=None)
+    assert explicit_none.lower_bound == default.lower_bound
+    assert explicit_none.upper_bound == default.upper_bound
+
+
+@pytest.mark.parametrize('bound', ['lower_bound', 'upper_bound'])
+def test_continuous_wavelet_invalid_constructor_bound(bound):
+    with pytest.raises(TypeError):
+        pywt.ContinuousWavelet('morl', **{bound: object()})
