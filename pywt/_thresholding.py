@@ -55,7 +55,11 @@ def nn_garrote(data, value, substitute=0):
 
 def hard(data, value, substitute=0):
     data = np.asarray(data)
-    cond = np.less(np.absolute(data), value)
+    magnitude = np.absolute(data)
+    if magnitude.dtype.kind == 'i':
+        # abs(minimum signed integer) wraps; its bits encode the unsigned magnitude.
+        magnitude = magnitude.view(magnitude.dtype.str.replace('i', 'u'))
+    cond = np.less(magnitude, value)
     return np.where(cond, substitute, data)
 
 
