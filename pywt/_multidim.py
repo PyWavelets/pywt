@@ -196,19 +196,26 @@ def _fix_coeffs(coeffs):
             "use\n"
             "\tcoeffs[key] = np.zeros_like(coeffs[key])\n")
 
-    invalid_keys = [k for k, v in coeffs.items() if
-                    not set(k) <= set('ad')]
+    allowed = {'a', 'd'}
+    invalid_keys = []
+    lengths = set()
+    add_len = lengths.add
+    for k in coeffs:
+        if set(k) <= allowed:
+            add_len(len(k))
+        else:
+            invalid_keys.append(k)
     if invalid_keys:
         raise ValueError(
             "The following invalid keys were found in the detail "
             f"coefficient dictionary: {invalid_keys}.")
 
-    key_lengths = [len(k) for k in coeffs]
-    if len(np.unique(key_lengths)) > 1:
+    if len(lengths) > 1:
         raise ValueError(
             "All detail coefficient names must have equal length.")
 
-    return {k: np.asarray(v) for k, v in coeffs.items()}
+    asarray = np.asarray
+    return {k: asarray(v) for k, v in coeffs.items()}
 
 
 def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
@@ -241,29 +248,25 @@ def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
         Original signal reconstructed from input data.
 
     """
-
-    # drop the keys corresponding to value = None
-    coeffs = {k: v for k, v in coeffs.items() if v is not None}
-
     # drop the keys corresponding to value = None
     coeffs = {k: v for k, v in coeffs.items() if v is not None}
 
     # Raise error for invalid key combinations
     coeffs = _fix_coeffs(coeffs)
 
-
     # key length matches the number of axes transformed
-    ndim_transform = max(len(key) for key in coeffs)
+    for key in coeffs:
+        ndim_transform = len(key)
+        break
+    else:
+        ndim_transform = max(())
 
-    try:
-        coeff_shapes = (v.shape for k, v in coeffs.items()
-                        if v is not None and len(k) == ndim_transform)
-        coeff_shape = next(coeff_shapes)
-    except StopIteration:
-        raise ValueError("`coeffs` must contain at least one non-null wavelet "
-                         "band")
-    if any(s != coeff_shape for s in coeff_shapes):
-        raise ValueError("`coeffs` must all be of equal size (or None)")
+    # all keys have equal length after validation
+    coeff_shapes = (v.shape for v in coeffs.values())
+    coeff_shape = next(coeff_shapes)
+    for s in coeff_shapes:
+        if s != coeff_shape:
+            raise ValueError("`coeffs` must all be of equal size (or None)")
 
     if axes is None:
         axes = range(ndim_transform)
@@ -274,27 +277,33 @@ def idwtn(coeffs, wavelet, mode='symmetric', axes=None):
 
     modes = _modes_per_axis(mode, axes)
     wavelets = _wavelets_per_axis(wavelet, axes)
-    for key_length, (axis, wav, mode) in reversed(
-            list(enumerate(zip(axes, wavelets, modes)))):
+    join = ''.join
+    asarray = np.asarray
+    for key_length in range(len(axes) - 1, -1, -1):
+        axis = axes[key_length]
+        wav = wavelets[key_length]
+        md = modes[key_length]
         if axis < 0 or axis >= ndim:
             raise AxisError("Axis greater than data dimensions")
 
+        get = coeffs.get
         new_coeffs = {}
-        new_keys = [''.join(coef) for coef in product('ad', repeat=key_length)]
-
-        for key in new_keys:
-            L = coeffs.get(key + 'a', None)
-            H = coeffs.get(key + 'd', None)
+        for coef in product('ad', repeat=key_length):
+            key = join(coef)
+            L = get(key + 'a')
+            H = get(key + 'd')
             if L is not None and H is not None:
-                if L.dtype != H.dtype:
+                ldt = L.dtype
+                hdt = H.dtype
+                if ldt is not hdt and ldt != hdt:
                     # upcast to a common dtype (float64 or complex128)
-                    if L.dtype.kind == 'c' or H.dtype.kind == 'c':
+                    if ldt.kind == 'c' or hdt.kind == 'c':
                         dtype = np.complex128
                     else:
                         dtype = np.float64
-                    L = np.asarray(L, dtype=dtype)
-                    H = np.asarray(H, dtype=dtype)
-            new_coeffs[key] = idwt_axis(L, H, wav, mode, axis)
+                    L = asarray(L, dtype=dtype)
+                    H = asarray(H, dtype=dtype)
+            new_coeffs[key] = idwt_axis(L, H, wav, md, axis)
         coeffs = new_coeffs
 
     return coeffs['']
