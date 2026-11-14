@@ -33,12 +33,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
-env:
-  CIBW_BUILD_VERBOSITY: 2
-  CIBW_TEST_REQUIRES: pytest
-  CIBW_TEST_COMMAND: pytest --pyargs pywt -m "not slow"
-  CIBW_ENVIRONMENT: PIP_PREFER_BINARY=1
-
 jobs:
   build_linux_x86_64_wheels:
     name: Build ${{ matrix.cibw_python }} ${{ matrix.cibw_arch }} ${{ matrix.os }}
