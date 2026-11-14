@@ -697,6 +697,36 @@ def test_wavedecn_shapes_and_size():
                 assert_equal(size, expected_size)
 
 
+@pytest.mark.parametrize('shape, axes, wavelets', [
+    ((128, 32), None, ('db16', 'db1')),
+    ((32, 128), (1, 0), ('db16', 'db1')),
+    ((2, 128, 32), (1, 2), ('db16', 'db1')),
+    ((128, 2, 32), (-1, 0), ('db1', 'db16')),
+])
+@pytest.mark.parametrize('mode', [
+    'symmetric', 'periodization', ('zero', 'periodization'),
+])
+@pytest.mark.parametrize('level', [None, 0, 2])
+def test_wavedecn_shapes_per_axis_wavelets(shape, axes, wavelets, mode, level):
+    # The longest filter is applied to the longest axis. Metadata must use
+    # the same decomposition level as the transform, also for strided input.
+    data = np.random.RandomState(0).standard_normal(shape)[::-1]
+    with warnings.catch_warnings():
+        warnings.simplefilter('error', UserWarning)
+        shapes = pywt.wavedecn_shapes(shape, wavelets, mode=mode, level=level,
+                                      axes=axes)
+        coeffs = pywt.wavedecn(data, wavelets, mode=mode, level=level,
+                              axes=axes)
+    arr, slices, actual_shapes = pywt.ravel_coeffs(coeffs, axes=axes)
+    assert_equal(shapes, actual_shapes)
+    assert_equal(pywt.wavedecn_size(shapes), arr.size)
+
+    restored_coeffs = pywt.unravel_coeffs(arr, slices, shapes)
+    reconstructed = pywt.waverecn(restored_coeffs, wavelets, mode=mode,
+                                  axes=axes)
+    assert_allclose(reconstructed, data, rtol=1e-12, atol=1e-12)
+
+
 def test_dwtn_max_level():
     # predicted and empirical dwtn_max_level match
     for wav in [pywt.Wavelet('db2'), 'sym8']:
