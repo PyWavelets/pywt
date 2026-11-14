@@ -200,3 +200,15 @@ def test_threshold_zero_value_with_zeros():
         assert_(not np.isnan(out_soft).any())
         assert_(not np.isnan(out_garrote).any())
         assert_(not np.isnan(out_firm).any())
+
+
+def test_threshold_firm_large_value_first():
+    # Values above value_high must be returned unchanged even when the only
+    # such value sits at index 0 (of the first axis).
+    assert_allclose(pywt.threshold_firm(np.array([5.0, 0.5]), 1.0, 2.0),
+                    [5.0, 0.0], rtol=1e-12)
+    assert_allclose(pywt.threshold_firm(np.array([[-5.0, 0.5], [0.5, 0.5]]),
+                                        1.0, 2.0),
+                    [[-5.0, 0.0], [0.0, 0.0]], rtol=1e-12)
+    assert_allclose(pywt.threshold_firm(np.array([3.0 + 4.0j, 0.5]), 1.0, 2.0),
+                    [3.0 + 4.0j, 0.0], rtol=1e-12)

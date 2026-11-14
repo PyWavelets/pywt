@@ -250,7 +250,6 @@ def threshold_firm(data, value_low, value_high):
     thresholded[magnitude == 0] = 0
 
     # restore hard-thresholding behavior for values > value_high
-    large_vals = np.where(magnitude > value_high)
-    if np.any(large_vals[0]):
-        thresholded[large_vals] = data[large_vals]
+    large_vals = magnitude > value_high
+    thresholded[large_vals] = data[large_vals]
     return thresholded
