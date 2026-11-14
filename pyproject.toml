@@ -50,6 +50,12 @@ source = "https://github.com/PyWavelets/pywt"
 documentation = "https://pywavelets.readthedocs.io/"
 
 
+[tool.cibuildwheel]
+build-verbosity = 2
+environment = {PIP_PREFER_BINARY = "1"}
+test-requires = ["pytest"]
+test-command = 'pytest --pyargs pywt -m "not slow"'
+
 [tool.cibuildwheel.windows]
 config-settings = {setup-args = ["--vsenv"]}
 before-build = "bash {project}/util/cibw_before_build_win.sh"
