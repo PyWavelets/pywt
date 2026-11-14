@@ -295,9 +295,8 @@ class BaseNode:
                 subnode[path[self.PART_LEN:]] = data
             else:
                 if isinstance(data, BaseNode):
-                    self.data = np.asarray(data.data)
-                else:
-                    self.data = np.asarray(data)
+                    data = data.data
+                self.data = np.asarray(data)
                 # convert data to nearest supported dtype
                 dtype = _check_dtype(data)
                 if self.data.dtype != dtype:
