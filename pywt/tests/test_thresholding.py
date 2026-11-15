@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 from numpy.testing import assert_, assert_allclose, assert_equal, assert_raises
 
 import pywt
@@ -200,3 +201,44 @@ def test_threshold_zero_value_with_zeros():
         assert_(not np.isnan(out_soft).any())
         assert_(not np.isnan(out_garrote).any())
         assert_(not np.isnan(out_firm).any())
+
+
+@pytest.mark.parametrize("dtype", [np.int8, np.int16, np.int32, np.int64])
+@pytest.mark.parametrize("substitute", [0, 7])
+@pytest.mark.parametrize("threshold_kind", ['one', 'minimum_magnitude', 'above_minimum'])
+def test_hard_threshold_signed_minimum(dtype, substitute, threshold_kind):
+    info = np.iinfo(dtype)
+    data = np.array([info.min, info.min + 1, -1, 0, 1, info.max], dtype=dtype)
+    original = data.copy()
+    thresholds = {'one': 1, 'minimum_magnitude': -int(info.min),
+                  'above_minimum': -int(info.min) + 1}
+    value = thresholds[threshold_kind]
+    expected = np.array([substitute if abs(int(x)) < value else x for x in data],
+                        dtype=dtype)
+
+    actual = pywt.threshold(data, value, mode='hard', substitute=substitute)
+
+    assert_equal(actual, expected)
+    assert_equal(actual.dtype, data.dtype)
+    assert_equal(data, original)
+
+
+@pytest.mark.parametrize("dtype", ['<i8', '>i8'])
+@pytest.mark.parametrize("threshold_type", [int, np.int64, np.asarray])
+def test_hard_threshold_preserves_large_integer_comparisons(dtype, threshold_type):
+    maximum = np.iinfo(np.int64).max
+    data = np.array([maximum - 2, maximum - 1, maximum], dtype=dtype)
+    value = threshold_type(maximum - 1)
+
+    actual = pywt.threshold(data, value, mode='hard')
+
+    assert_equal(actual, [0, maximum - 1, maximum])
+    assert actual.dtype.kind == 'i'
+
+
+@pytest.mark.parametrize("dtype", [np.int8, np.int16, np.int32, np.int64])
+def test_hard_threshold_signed_minimum_scalar(dtype):
+    minimum = np.iinfo(dtype).min
+    data = np.array(minimum, dtype=dtype)
+
+    assert_equal(pywt.threshold(data, 1, mode='hard'), data)
