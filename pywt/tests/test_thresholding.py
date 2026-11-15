@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 from numpy.testing import assert_, assert_allclose, assert_equal, assert_raises
 
 import pywt
@@ -200,3 +201,19 @@ def test_threshold_zero_value_with_zeros():
         assert_(not np.isnan(out_soft).any())
         assert_(not np.isnan(out_garrote).any())
         assert_(not np.isnan(out_firm).any())
+
+
+@pytest.mark.parametrize("dtype", [np.float32, np.float64, np.complex64, np.complex128])
+@pytest.mark.parametrize("value_low", [0.0, 2.0])
+def test_threshold_firm_infinite_upper_threshold(dtype, value_low):
+    data = np.array([-4, -2, -1, 0, 1, 2, 4], dtype=dtype)
+    if np.issubdtype(dtype, np.complexfloating):
+        data = data * (1 + 1j)
+    original = data.copy()
+
+    actual = pywt.threshold_firm(data, value_low, np.inf)
+    expected = pywt.threshold(data, value_low, mode='soft')
+
+    assert_allclose(actual, expected)
+    assert actual.dtype == expected.dtype
+    assert_allclose(data, original)
