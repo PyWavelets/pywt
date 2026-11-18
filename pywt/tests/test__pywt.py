@@ -2,6 +2,7 @@
 
 
 import numpy as np
+import pytest
 from numpy.testing import assert_, assert_allclose, assert_raises
 
 import pywt
@@ -86,6 +87,22 @@ def test_upcoef_complex():
     a_ref = pywt.upcoef('a', r.real, 'haar', level=nlevels)
     a_ref = a_ref + 1j*pywt.upcoef('a', r.imag, 'haar', level=nlevels)
     assert_allclose(a, a_ref)
+
+
+@pytest.mark.parametrize('transform', [pywt.downcoef, pywt.upcoef])
+@pytest.mark.parametrize('part', ['a', 'd'])
+@pytest.mark.parametrize('dtype', [np.float32, np.float64, np.complex64,
+                                   np.complex128])
+def test_partial_transform_readonly(transform, part, dtype):
+    data = np.arange(32, dtype=dtype)
+    if np.issubdtype(dtype, np.complexfloating):
+        data += 1j * data
+    expected = transform(part, data, 'db4', level=3)
+    readonly = data.copy()
+    readonly.flags.writeable = False
+
+    assert_allclose(transform(part, readonly, 'db4', level=3), expected)
+    assert_allclose(readonly, data)
 
 
 def test_upcoef_errs():
