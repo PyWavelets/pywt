@@ -280,7 +280,7 @@ def imra2(mra_coeffs):
         Statistical Association Vol. 92, No. 439 (Sep., 1997), pp. 868-880.
         https://doi.org/10.2307/2965551
     """
-    rec = mra_coeffs[0]
+    rec = mra_coeffs[0].copy()
     for j in range(1, len(mra_coeffs)):
         for n in range(3):
             rec += mra_coeffs[j][n]
@@ -427,7 +427,7 @@ def imran(mra_coeffs):
         Statistical Association Vol. 92, No. 439 (Sep., 1997), pp. 868-880.
         https://doi.org/10.2307/2965551
     """
-    rec = mra_coeffs[0]
+    rec = mra_coeffs[0].copy()
     for j in range(1, len(mra_coeffs)):
         for k, v in mra_coeffs[j].items():
             rec += v
