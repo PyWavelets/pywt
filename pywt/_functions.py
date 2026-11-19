@@ -17,7 +17,7 @@ from ._extensions._pywt import ContinuousWavelet, DiscreteContinuousWavelet, Wav
 
 __all__ = ["integrate_wavelet", "central_frequency",
            "scale2frequency", "frequency2scale", "qmf",
-           "orthogonal_filter_bank",
+           "orthogonal_filter_bank", "refinement_matrix",
            "intwave", "centrfrq", "scal2frq", "orthfilt"]
 
 
@@ -53,6 +53,59 @@ def orthfilt(*args, **kwargs):
     msg = _DEPRECATION_MSG.format(old='orthfilt', new='orthogonal_filter_bank')
     warnings.warn(msg, DeprecationWarning)
     return orthogonal_filter_bank(*args, **kwargs)
+
+
+def refinement_matrix(wavelet, *, dual=False):
+    r"""Return the integer-grid refinement matrix of a discrete wavelet.
+
+    Parameters
+    ----------
+    wavelet : Wavelet or str
+        Discrete wavelet object or name.
+    dual : bool, optional
+        Use the dual scaling function. Its synthesis filter is the
+        time-reversed decomposition low-pass filter. The default uses the
+        reconstruction low-pass filter.
+
+    Returns
+    -------
+    matrix : ndarray
+        Square matrix with one row and column for each low-pass filter tap.
+        Filter indices, including any zero padding, are preserved.
+
+    Notes
+    -----
+    For a synthesis filter :math:`h` of length :math:`L`, the entry at
+    :math:`(n,k)` is :math:`\sqrt{2}\,h[2n-k]`, with taps outside
+    :math:`[0,L-1]` taken as zero. The two-scale equation implies that the
+    integer samples of a continuous scaling function form a fixed point of
+    this matrix. If the scaling function is differentiable, the samples of
+    its derivative have eigenvalue 1/2.
+
+    Examples
+    --------
+    The reconstruction scaling function of ``bior2.2`` is a linear B-spline.
+    At integer filter-grid positions its peak lies at index 2:
+
+    >>> import numpy as np
+    >>> import pywt
+    >>> M = pywt.refinement_matrix('bior2.2')
+    >>> samples = np.eye(M.shape[0])[2]
+    >>> np.allclose(M @ samples, samples)
+    True
+    """
+    if isinstance(wavelet, str):
+        wavelet = Wavelet(wavelet)
+    if not isinstance(wavelet, Wavelet):
+        raise TypeError("refinement_matrix requires a discrete wavelet")
+
+    h = np.asarray(wavelet.dec_lo[::-1] if dual else wavelet.rec_lo)
+    grid = np.arange(h.size)
+    taps = 2 * grid[:, None] - grid
+    inside = (taps >= 0) & (taps < h.size)
+    matrix = np.zeros((h.size, h.size))
+    matrix[inside] = np.sqrt(2) * h[taps[inside]]
+    return matrix
 
 
 def integrate_wavelet(wavelet, precision=8):

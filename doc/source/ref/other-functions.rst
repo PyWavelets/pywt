@@ -7,6 +7,12 @@ Other functions
 ===============
 
 
+Discrete scaling function refinement
+------------------------------------
+
+.. autofunction:: refinement_matrix
+
+
 Integrating wavelet functions
 -----------------------------
 
