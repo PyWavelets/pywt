@@ -228,12 +228,6 @@ html_theme_options = {
             # The type of image to be used (see below for details)
             "type": "fontawesome",
         },
-        {
-            "name": "Explore PyWavelets",
-            "url": "http://wavelets.pybytes.com/",
-            "icon": "fa-solid fa-wave-square",
-            "type": "fontawesome",
-        }
    ],
 "icon_links_label": "Quick Links",
 }
