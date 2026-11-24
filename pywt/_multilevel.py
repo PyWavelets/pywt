@@ -274,6 +274,11 @@ def waverec2(coeffs, wavelet, mode='symmetric', axes=(-2, -1)):
 
     Notes
     -----
+    The coefficient shapes can correspond to either an even or an odd input
+    length along each transformed axis. Save the original shape when an exact
+    shape is needed. After reconstruction, slice each transformed axis to its
+    original length to remove any extra sample at the end.
+
     It may sometimes be desired to run ``waverec2`` with some sets of
     coefficients omitted.  This can best be done by setting the corresponding
     arrays to zero arrays of matching shape and dtype.  Explicitly removing
@@ -296,6 +301,16 @@ def waverec2(coeffs, wavelet, mode='symmetric', axes=(-2, -1)):
            [ 1.,  1.,  1.,  1.],
            [ 1.,  1.,  1.,  1.],
            [ 1.,  1.,  1.,  1.]])
+
+    Reconstruct an array with odd dimensions:
+
+    >>> data = np.arange(15).reshape(3, 5)
+    >>> coeffs = pywt.wavedec2(data, 'db1', mode='zero', level=1)
+    >>> reconstructed = pywt.waverec2(coeffs, 'db1', mode='zero')
+    >>> reconstructed.shape
+    (4, 6)
+    >>> trimmed = reconstructed[:data.shape[0], :data.shape[1]]
+    >>> np.testing.assert_allclose(trimmed, data, atol=1e-12)
     """
     if not isinstance(coeffs, (list, tuple)):
         raise ValueError("Expected sequence of coefficient arrays.")
