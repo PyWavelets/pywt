@@ -47,7 +47,7 @@ The main features of PyWavelets are:
   * 1D and 2D Wavelet Packet decomposition and reconstruction
   * 1D Continuous Wavelet Transform
   * Computing Approximations of wavelet and scaling functions
-  * Over 100 `built-in wavelet filters`_ and support for custom wavelets
+  * Over 100 built-in wavelet filters and support for custom wavelets
   * Single and double precision calculations
   * Real and complex calculations
   * Results compatible with Matlab Wavelet Toolbox (TM)
@@ -145,7 +145,6 @@ the link in the badge below to Zenodo:
 .. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.1407171.svg
    :target: https://doi.org/10.5281/zenodo.1407171
 
-.. _built-in wavelet filters: http://wavelets.pybytes.com/
 .. _Cython: http://cython.org/
 .. _demo: https://github.com/PyWavelets/pywt/tree/main/demo
 .. _Anaconda: https://www.continuum.io

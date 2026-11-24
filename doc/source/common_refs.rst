@@ -1,4 +1,3 @@
-.. _built-in wavelet filters: http://wavelets.pybytes.com/
 .. _Cython: http://cython.org/
 .. _demo: https://github.com/PyWavelets/pywt/tree/main/demo
 .. _Anaconda: https://www.continuum.io
@@ -18,4 +17,3 @@
 .. _community guidelines: https://github.com/PyWavelets/pywt/tree/main/community_guidelines.rst
 .. _code of conduct: https://github.com/PyWavelets/pywt/tree/main/doc/source/dev/conduct/community_guidelines.rst
 .. _StackOverflow: https://stackoverflow.com
-.. _wavelets.pybytes.com: http://wavelets.pybytes.com/
