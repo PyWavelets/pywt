@@ -11,9 +11,9 @@ original = pywt.data.camera()
 titles = ['Approximation', ' Horizontal detail',
           'Vertical detail', 'Diagonal detail']
 coeffs2 = pywt.dwt2(original, 'bior1.3')
-LL, (LH, HL, HH) = coeffs2
+LL, (HL, LH, HH) = coeffs2
 fig = plt.figure(figsize=(12, 3))
-for i, a in enumerate([LL, LH, HL, HH]):
+for i, a in enumerate([LL, HL, LH, HH]):
     ax = fig.add_subplot(1, 4, i + 1)
     ax.imshow(a, interpolation="nearest", cmap=plt.cm.gray)
     ax.set_title(titles[i], fontsize=10)
