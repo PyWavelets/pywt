@@ -304,6 +304,14 @@ WaveletPacket and Node
                     from the reconstruction.
 
 
+     When initialized with data, the packet remembers the input shape and
+     trims the reconstruction to that shape. When initialized with
+     ``data=None``, the coefficients can correspond to signals of different
+     lengths, so the reconstruction may have extra samples at the end. To
+     have the packet trim the reconstruction automatically, initialize it
+     with a zero array of the original shape before assigning coefficients.
+
+
 WaveletPacket2D and Node2D
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 

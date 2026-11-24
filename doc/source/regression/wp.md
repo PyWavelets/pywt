@@ -282,6 +282,34 @@ print([n.path for n in new_wp.get_leaf_nodes(False)])
 print([n.path for n in new_wp.get_leaf_nodes(True)])
 ```
 
+### Preserving the original length
+
+A packet initialized with `data=None` relies on the coefficient lengths,
+which can correspond to more than one input length. The five-sample signal
+below reconstructs to six samples. The extension adds the extra sample at
+the end.
+
+```{code-cell}
+import numpy as np
+
+signal = np.arange(1.0, 6.0)
+source = pywt.WaveletPacket(signal, 'haar', maxlevel=1)
+from_coefficients = pywt.WaveletPacket(None, 'haar', maxlevel=1)
+for path in ('a', 'd'):
+    from_coefficients[path] = source[path].data
+print(format_array(from_coefficients.reconstruct()))
+```
+
+Initialize the packet with zeros of the original shape to trim the
+reconstruction automatically.
+
+```{code-cell}
+with_shape = pywt.WaveletPacket(np.zeros_like(signal), 'haar', maxlevel=1)
+for path in ('a', 'd'):
+    with_shape[path] = source[path].data
+print(format_array(with_shape.reconstruct()))
+```
+
 ## Removing nodes from Wavelet Packet tree
 
 Let's create some sample data:
