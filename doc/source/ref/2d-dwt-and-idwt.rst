@@ -12,23 +12,23 @@ Single level ``dwt2``
 
 .. autofunction:: dwt2
 
-The relation to the other common data layout where all the approximation and
-details coefficients are stored in one big 2D array is as follows:
+The following diagram shows the coefficients packed into a single array
+with the default axes. This matches :func:`coeffs_to_array` applied to the
+output of :func:`wavedec2` with ``level=1``:
 
   ::
 
                                 -------------------
                                 |        |        |
-                                | cA(LL) | cH(LH) |
+                                | cA(LL) | cV(LH) |
                                 |        |        |
     (cA, (cH, cV, cD))  <--->   -------------------
                                 |        |        |
-                                | cV(HL) | cD(HH) |
+                                | cH(HL) | cD(HH) |
                                 |        |        |
                                 -------------------
 
-PyWavelets does not follow this pattern because of pure practical reasons of simple
-access to particular type of the output coefficients.
+:func:`dwt2` returns separate arrays for direct access to each subband.
 
 
 Single level ``idwt2``

@@ -313,8 +313,8 @@ WaveletPacket2D and Node2D
 
      For :class:`WaveletPacket2D` case it is just as in :func:`dwt2`:
         - ``a`` - approximation coefficients (`LL`)
-        - ``h`` - horizontal detail coefficients (`LH`)
-        - ``v`` - vertical detail coefficients (`HL`)
+        - ``h`` - horizontal detail coefficients (`HL`)
+        - ``v`` - vertical detail coefficients (`LH`)
         - ``d`` - diagonal detail coefficients (`HH`)
 
   .. method:: decompose()

@@ -80,8 +80,8 @@ children), we have four basic path names based on the dwt 2D output convention
 to address the WP2D structure:
 
 - `a` - LL, low-low coefficients
-- `h` - LH, low-high coefficients
-- `v` - HL, high-low coefficients
+- `h` - HL, high-low coefficients
+- `v` - LH, low-high coefficients
 - `d` - HH, high-high coefficients
 
 In other words, subnode naming corresponds to the `dwt2` function output
@@ -90,11 +90,11 @@ naming convention (as wavelet packet transform is based on the dwt2 transform):
 ```
                             -------------------
                             |        |        |
-                            | cA(LL) | cH(LH) |
+                            | cA(LL) | cV(LH) |
                             |        |        |
 (cA, (cH, cV, cD))  <--->   -------------------
                             |        |        |
-                            | cV(HL) | cD(HH) |
+                            | cH(HL) | cD(HH) |
                             |        |        |
                             -------------------
 

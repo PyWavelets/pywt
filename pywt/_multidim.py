@@ -25,7 +25,8 @@ def dwt2(data, wavelet, mode='symmetric', axes=(-2, -1)):
     Parameters
     ----------
     data : array_like
-        2D array with input data
+        Input array. With more than two dimensions, the transform is
+        applied only along the selected axes.
     wavelet : Wavelet object or name string, or 2-tuple of wavelets
         Wavelet to use.  This can also be a tuple containing a wavelet to
         apply along each axis in ``axes``.
@@ -34,15 +35,19 @@ def dwt2(data, wavelet, mode='symmetric', axes=(-2, -1)):
         also be a tuple of modes specifying the mode to use on each axis in
         ``axes``.
     axes : 2-tuple of ints, optional
-        Axes over which to compute the DWT. Repeated elements mean the DWT will
-        be performed multiple times along these axes.
+        Axes over which to compute the DWT. The default is the last two axes.
+        Repeated elements mean the DWT is performed multiple times along the
+        same axis.
 
     Returns
     -------
     (cA, (cH, cV, cD)) : tuple
         Approximation, horizontal detail, vertical detail and diagonal
-        detail coefficients respectively.  Horizontal refers to array axis 0
-        (or ``axes[0]`` for user-specified ``axes``).
+        detail coefficients, respectively. The horizontal detail (``cH``)
+        uses high-pass filtering along ``axes[0]`` and low-pass filtering along
+        ``axes[1]``. The vertical detail (``cV``) uses low-pass filtering along
+        ``axes[0]`` and high-pass filtering along ``axes[1]``. The diagonal detail
+        (``cD``) uses high-pass filtering along both.
 
     Examples
     --------
