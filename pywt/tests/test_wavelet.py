@@ -3,7 +3,8 @@ import os
 import pickle
 
 import numpy as np
-from numpy.testing import assert_, assert_allclose
+import pytest
+from numpy.testing import assert_, assert_allclose, assert_equal
 
 import pywt
 
@@ -276,3 +277,29 @@ def test_wavelet_pickle(tmpdir):
         wavelet2 = pickle.load(f)
     assert isinstance(wavelet2, pywt.Wavelet)
     assert wavelet2.name == wavelet.name
+
+
+@pytest.mark.parametrize("order", [2, 3])
+def test_low_order_symlet_coefficients(order):
+    # Daubechies and symlet filter taps coincide for these orders.
+    # https://people.tamu.edu/~brani/wavelet/wp/problem.pdf
+    symlet = pywt.Wavelet(f"sym{order}")
+    daubechies = pywt.Wavelet(f"db{order}")
+    assert_equal(symlet.filter_bank, daubechies.filter_bank)
+
+
+@pytest.mark.parametrize("order", [2, 3])
+@pytest.mark.parametrize("dtype", [np.float32, np.float64,
+                                   np.complex64, np.complex128])
+@pytest.mark.parametrize("mode", pywt.Modes.modes)
+def test_low_order_symlet_reconstruction(order, dtype, mode):
+    rng = np.random.default_rng(978)
+    data = rng.standard_normal(65)
+    if np.issubdtype(dtype, np.complexfloating):
+        data = data + 1j * rng.standard_normal(65)
+    data = data.astype(dtype)
+    wavelet = pywt.Wavelet(f"sym{order}")
+    coeffs = pywt.wavedec(data, wavelet, mode=mode, level=3)
+    reconstructed = pywt.waverec(coeffs, wavelet, mode=mode)[:len(data)]
+    error = np.linalg.norm(reconstructed - data) / np.linalg.norm(data)
+    assert error < 8 * np.finfo(data.real.dtype).eps
